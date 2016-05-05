@@ -2,4 +2,8 @@ node_modules/
 www/build/
 platforms/
 plugins/
+.idea
+.iws
+workspace.xml
+tasks.xml
 .DS_Store
