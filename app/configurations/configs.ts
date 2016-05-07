@@ -1,47 +1,28 @@
 /**
  * Created by tim on 04/05/16.
+ * Here we will define all configurations of both apps.
+ * This is a factory pattern that returns the configurations of given target.
  */
-/*export class Configs {
-
- public static projectName : string = "VitOnJob Employeur" ; // "VitOnJob Jobyer"
-
-
- constructor() {
-
- }
- }*/
-
 
 interface AbstractConfigs {
     projectName:string;
-    /*method(param?:any):void;
-    getProjectName():string;*/
+    themeColor: string;
 }
 
 class EmployerConfigs implements AbstractConfigs {
+
+    // Application title
     projectName:string = "VitOnJob Employeur";
-    /*method = (param?:any) => {
-        this.projectName = "VitOnJob Employeur";
-    };
-
-    public getProjectName = function ():string {
-        return this.projectName;
-    };
-
-    private setProjectName = function (name:string):void {
-        this.projectName = name;
-    }*/
+    // Application theme color
+    themeColor: string = "#757575";
 }
 
 class JobyerConfigs implements AbstractConfigs {
-    projectName:string = "VitOnJob Jobyer";
-    /*method = (param?:any) => {
-     this.projectName = "VitOnJob Jobyer";
-     };
 
-     public getProjectName = function ():string {
-     return this.projectName;
-     }*/
+    // Application title
+    projectName:string = "VitOnJob Jobyer";
+    // Application theme color
+    themeColor: string = "#14baa6";
 }
 
 

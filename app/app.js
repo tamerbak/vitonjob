@@ -12,7 +12,7 @@ define(["require", "exports", 'ionic-angular', 'ionic-native', './pages/home/hom
             platform.ready().then(() => {
                 // Okay, so the platform is ready and our plugins are available.
                 // Here you can do any higher level native things you might need.
-                target: string = "employer"; //Jobyer
+                // target:string = "employer"; //Jobyer
                 ionic_native_1.StatusBar.styleDefault();
             });
         }

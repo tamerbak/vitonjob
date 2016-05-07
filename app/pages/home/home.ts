@@ -1,20 +1,32 @@
-import {Page, Config} from 'ionic-angular';
-//import {Config} from 'ionic';
+import {Page} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
-import {myApp} from '../../app';
+import {GlobalConfigs} from '../../configurations/globalConfigs';
 
 @Page({
-    templateUrl: 'build/pages/home/home.html'
+    templateUrl: 'build/pages/home/home.html',
+    providers: [GlobalConfigs]
 })
 export class HomePage {
     private projectName;
+    private themeColor;
+    private isEmployer;
 
-    constructor() {
+    constructor(gc:GlobalConfigs) {
+        // Get target to determine configs
+        let projectTarget:string = gc.getProjectTarget();
 
-        //var config = new Config();
-        myApp.
-        let config = Configs.setConfigs("employer");
-        this.projectName = config.get('projectName');
-        //let test:string = Page.name;
+        // get config of selected target
+        let config = Configs.setConfigs(projectTarget);
+
+        //Initialize controller variables :
+        this.projectName = config.projectName;
+        this.themeColor = config.themeColor;
+
+        if (projectTarget == 'employer')
+            this.isEmployer = false;
+        else
+            this.isEmployer = true;
+
+
     }
 }
