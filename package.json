@@ -16,7 +16,10 @@
     "ionic-gulp-html-copy": "^1.0.0",
     "ionic-gulp-sass-build": "^1.0.0",
     "ionic-gulp-scripts-copy": "^1.0.1",
-    "run-sequence": "1.1.5"
+    "jquery": "^2.2.3",
+    "jquery-ui": "^1.10.5",
+    "run-sequence": "1.1.5",
+    "typings": "^0.8.1"
   },
   "cordovaPlugins": [
     "cordova-plugin-device",
@@ -32,7 +35,8 @@
       "platform": "ios",
       "version": "",
       "locator": "ios"
-    }
+    },
+    "android"
   ],
   "name": "vitonjob",
   "description": "vitonjob: An Ionic project"
