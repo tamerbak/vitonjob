@@ -1,5 +1,14 @@
 .home {
-  .ion-navbar {
-    background-color: #14baa6;
-  }
+
 }
+
+.withoutOverflow {
+  overflow: visible !important;
+  font-size: small;
+}
+
+.searchIcon {
+  font-size: xx-large;
+  line-height: 2 !important;
+}
+

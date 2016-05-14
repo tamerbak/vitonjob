@@ -4,27 +4,51 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-define(["require", "exports", 'ionic-angular', '../../configurations/configs', '../../configurations/globalConfigs'], function (require, exports, ionic_angular_1, configs_1, globalConfigs_1) {
+define(["require", "exports", 'ionic-angular', '../../configurations/configs', '../../configurations/globalConfigs', "../../providers/search-service/search-service", "../logins/logins"], function (require, exports, ionic_angular_1, configs_1, globalConfigs_1, search_service_1, logins_1) {
     "use strict";
     let HomePage = class HomePage {
-        constructor(gc) {
+        constructor(gc, app, nav, navParams, ss) {
+            this.gc = gc;
+            this.app = app;
+            this.nav = nav;
+            this.navParams = navParams;
+            this.ss = ss;
             // Get target to determine configs
-            let projectTarget = gc.getProjectTarget();
+            this.projectTarget = gc.getProjectTarget();
             // get config of selected target
-            let config = configs_1.Configs.setConfigs(projectTarget);
+            let config = configs_1.Configs.setConfigs(this.projectTarget);
             //Initialize controller variables :
             this.projectName = config.projectName;
             this.themeColor = config.themeColor;
-            if (projectTarget == 'employer')
-                this.isEmployer = false;
+            this.imageURL = config.imageURL;
+            this.highlightSentence = config.highlightSentence;
+            this.isEmployer = this.projectTarget == 'employer';
+            this.searchPlaceHolder = "Veuillez saisir votre recherche...";
+            this.nav = nav;
+            // If we navigated to this page, we will have an item available as a nav param
+            this.selectedItem = navParams.get('item');
+            this.search = ss;
+        }
+        static get parameters() {
+            return [[globalConfigs_1.GlobalConfigs], [ionic_angular_1.IonicApp], [ionic_angular_1.NavController], [ionic_angular_1.NavParams], [search_service_1.SearchService]];
+        }
+        onFocus() {
+            if (this.projectTarget == 'employer')
+                this.searchPlaceHolder = "Ex : Je cherche un serveur débutant disponible demain sur Villepinte";
             else
-                this.isEmployer = true;
+                this.searchPlaceHolder = "Ex : Je cherche une offre d'emploi pour serveur débutant demain sur Villepinte";
+        }
+        onBlur() {
+            this.searchPlaceHolder = "Veuillez saisir votre recherche...";
+        }
+        openLoginsPage() {
+            this.nav.push(logins_1.LoginsPage);
         }
     };
     HomePage = __decorate([
         ionic_angular_1.Page({
             templateUrl: 'build/pages/home/home.html',
-            providers: [globalConfigs_1.GlobalConfigs]
+            providers: [globalConfigs_1.GlobalConfigs, search_service_1.SearchService]
         })
     ], HomePage);
     exports.HomePage = HomePage;
