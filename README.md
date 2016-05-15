@@ -9,10 +9,10 @@ La structure du projet :
 `|`  
 `├── app/                               * Working directory`  
 `│   ├── pages/                         * Contains all of our pages`  
-`│   │   ├── about/                     * About tab page`  
-`│   │   │    ├── home.html             * AboutPage template`  
-`│   │   │    └── home.js               * AboutPage code`  
-`│   │   │    └── home.scss             * AboutPage stylesheet`  
+`│   │   ├── home/                      * Home tab page`  
+`│   │   │    ├── home.html             * HomePage template`  
+`│   │   │    └── home.js               * HomePage code`  
+`│   │   │    └── home.scss             * HomePage stylesheet`  
 `│   │   │`  
 `│   │   │── logins/                    * Logins Tab page`  
 `│   │   │    ├── logins.html           * LoginPage Tab template`  
