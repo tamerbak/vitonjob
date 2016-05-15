@@ -2,7 +2,6 @@ import {Page, NavController} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SearchService} from "../../providers/search-service/search-service";
 import {Configs} from "../../configurations/configs";
-import {SwipeVertical} from "../../components/swipe-vertical/swipe-vertical";
 
 
 /*
@@ -13,8 +12,7 @@ import {SwipeVertical} from "../../components/swipe-vertical/swipe-vertical";
  */
 @Page({
     templateUrl: 'build/pages/offer/offer.html',
-    providers: [SearchService],
-    directives: [SwipeVertical]
+    providers: [SearchService]
 })
 export class OfferPage {
 
