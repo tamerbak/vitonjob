@@ -13,7 +13,7 @@ import {GlobalConfigs} from './configurations/globalConfigs';
 })
 export class MyApp {
   rootPage: any = HomePage;
-  public pages: Array<{title: string, component: any}>;
+  public pages: Array<{title: string, component: any, icon: string}>;
 
   constructor(private platform: Platform,
               private app: IonicApp,
