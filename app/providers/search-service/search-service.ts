@@ -38,7 +38,7 @@ export class SearchService {
 
     var payload = {
       'class' : 'fr.protogen.masterdata.model.CCallout',
-      id : 102,
+      id : 126,
       args : [
         {
           class : 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -91,9 +91,18 @@ export class SearchService {
   /**
    * @description Persists the last results into phone data base for quick access and history management
    * @param data results of the last search
-     */
+   */
   persistLastSearch(data){
     this.db.set('LAST_RESULTS', JSON.stringify(data));
+  }
+
+  /**
+   * @description Get the last results from search
+   * @return List of results or a void array
+   */
+  retrieveLastSearch(){
+    return this.db.get('LAST_RESULTS');
+
   }
 }
 

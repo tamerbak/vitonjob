@@ -1,4 +1,4 @@
-import {Page, IonicApp, IonicApp, NavParams, NavController} from 'ionic-angular';
+import {Page, IonicApp, IonicApp, NavParams, NavController, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
@@ -30,7 +30,7 @@ export class HomePage {
                 private app: IonicApp,
                 private nav: NavController,
                 private navParams: NavParams,
-                private ss: SearchService) {
+                    private ss: SearchService) {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -72,9 +72,19 @@ export class HomePage {
      * @description perform semantic search and pushes the results view
      */
     doSemanticSearch(){
+        let loading = Loading.create({
+            content: ` 
+                <div>
+                    <img src='img/loading.gif' />
+                </div>
+                `,
+            spinner : 'hide'
+        });
+        this.nav.present(loading);
         console.log('Initiating search for '+this.scQuery);
         this.ss.semanticSearch(this.scQuery, 0, this.projectTarget).then((data) => {
             this.ss.persistLastSearch(data);
+            loading.dismiss();
             this.nav.push(SearchResultsPage);
         });
     }
