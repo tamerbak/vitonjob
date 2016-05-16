@@ -80,7 +80,7 @@ La structure du projet :
 `├── package.json                       * Our javascript dependencies`  
 `└── README.md                          * Documentation on contributing to this repo (This file)`  
 
-Les partie manquantes du projet, vous pouvez les récupérer d'un projet template vide d'Ionic : 
+Les parties manquantes du projet, vous pouvez les récupérer d'un projet template vide d'Ionic : 
 `$ ionic start test blank --v2 --ts`
 
 Il faut alors copier les dossiers suivants : nodes_modules - plateforms - plugins
