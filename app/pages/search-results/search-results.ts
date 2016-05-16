@@ -37,7 +37,7 @@ export class SearchResultsPage {
   itemSelected(item){
     let actionSheet = ActionSheet.create({
       title: 'Options',
-      buttons: [
+      buttons: [  
         {
           text: 'Envoyer SMS',
           icon: 'md-mail',
