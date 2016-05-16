@@ -1,6 +1,6 @@
 # vitonjob
 
-Le projet vitonjob sur Github ne contient que les parties de dévelepement qui seront modifiées par les différents
+Le projet vitonjob sur Github ne contient que les parties de développement qui seront modifiées par les différents
 collaborateurs du projet.
 
 La structure du projet :
