@@ -4,16 +4,21 @@ import {HomePage} from './pages/home/home';
 import {LoginsPage} from './pages/logins/logins';
 import {Configs} from './configurations/configs';
 import {GlobalConfigs} from './configurations/globalConfigs';
+import {SearchService} from "./providers/search-service/search-service";
 
 
 @App({
   templateUrl: 'build/menu.html',
   config: {test: 'toto'}, // http://ionicframework.com/docs/v2/api/config/Config/
-  providers : [GlobalConfigs]
+  providers : [GlobalConfigs, SearchService]
 })
 export class MyApp {
   rootPage: any = HomePage;
   public pages: Array<{title: string, component: any, icon: string}>;
+
+  projectTarget : any;
+  isEmployer : boolean;
+  bgMenuURL : string;
 
   constructor(private platform: Platform,
               private app: IonicApp,
@@ -55,8 +60,8 @@ export class MyApp {
   }
 
   openPage(page) {
-    this.nav = this.app.getComponent('nav');
+    let nav = this.app.getComponent('nav');
     this.menu.close();
-    this.nav.setRoot(page.component);
+    nav.setRoot(page.component);
   }
 }

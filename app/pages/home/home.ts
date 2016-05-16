@@ -3,10 +3,11 @@ import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
 import {LoginsPage} from "../logins/logins";
+import {SearchResultsPage} from "../search-results/search-results";
 
 @Page({
     templateUrl: 'build/pages/home/home.html',
-    providers: [GlobalConfigs, SearchService]
+    providers: [GlobalConfigs]
 })
 export class HomePage {
     private projectName:string;
@@ -17,6 +18,9 @@ export class HomePage {
     private projectTarget:string;
     private highlightSentence:string;
     private search : any;
+    private selectedItem : any;
+
+    scQuery : string;
 
     static get parameters() {
         return [[GlobalConfigs], [IonicApp], [NavController], [NavParams], [SearchService]];
@@ -27,6 +31,7 @@ export class HomePage {
                 private nav: NavController,
                 private navParams: NavParams,
                 private ss: SearchService) {
+
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
 
@@ -60,5 +65,29 @@ export class HomePage {
 
     openLoginsPage() {
         this.nav.push(LoginsPage);
+    }
+
+    /**
+     * @author abdeslam jakjoud
+     * @description perform semantic search and pushes the results view
+     */
+    doSemanticSearch(){
+        console.log('Initiating search for '+this.scQuery);
+        this.ss.semanticSearch(this.scQuery, 0, this.projectTarget).then((data) => {
+            this.ss.persistLastSearch(data);
+            this.nav.push(SearchResultsPage);
+        });
+    }
+
+    /**
+     * @author abdeslam jakjoud
+     * @description checking whether the user used the enter button to startup the semantic search
+     * @param e Key Up javascript event allowing us to access the keyboard used key
+     */
+    checkForEnterKey(e){
+        if(e.code != "Enter")
+            return;
+
+        this.doSemanticSearch();
     }
 }

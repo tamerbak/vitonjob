@@ -20,7 +20,9 @@
         <ion-item>
 
             <ion-label floating class="withoutOverflow">{{searchPlaceHolder}}</ion-label>
-            <ion-input type="text" (focus)="onFocus($event)" (blur)="onBlur($event)"></ion-input>
+            <ion-input type="text" (focus)="onFocus($event)"
+                       (blur)="onBlur($event)" (keyup)="checkForEnterKey($event)"
+                       [(ngModel)]="scQuery"></ion-input>
 
         </ion-item>
     </ion-row>
@@ -35,7 +37,7 @@
         <ion-col width-10></ion-col>
         <ion-col text-center>
             <!-- if jobyer set button-secondary style, else button-primary is activated (default style)-->
-            <button [ngClass]="{'button-secondary': isEmployer==false}">
+            <button [ngClass]="{'button-secondary': isEmployer==false}" (click)="doSemanticSearch()">
                 <ion-icon name="search"></ion-icon>
             Lancer la recherche
             </button>

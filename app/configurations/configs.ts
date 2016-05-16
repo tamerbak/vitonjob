@@ -10,6 +10,8 @@ interface AbstractConfigs {
     imageURL: string;
     highlightSentence : string;
     bgMenuURL: string;
+    calloutURL : string;
+    sqlURL : string;
 }
 
 class EmployerConfigs implements AbstractConfigs {
@@ -22,6 +24,8 @@ class EmployerConfigs implements AbstractConfigs {
     imageURL: string = 'img/logo_employeur.png';
     bgMenuURL: string = 'img/bg_employer.png';
     highlightSentence : string = 'Trouvez vos jobyers immédiatement disponibles!';
+    calloutURL : string = 'http://ns389914.ovh.net/vitonjobv1/api/business';
+    sqlURL : string = 'http://ns389914.ovh.net/vitonjobv1/api/sql';
 }
 
 class JobyerConfigs implements AbstractConfigs {
@@ -34,6 +38,8 @@ class JobyerConfigs implements AbstractConfigs {
     imageURL: string = "img/logo_jobyer.png";
     bgMenuURL: string = 'img/bg_jobyer.png';
     highlightSentence : string = "Des milliers d'offres à proximité!";
+    calloutURL : string = 'http://ns389914.ovh.net/vitonjobv1/api/business';
+    sqlURL : string = 'http://ns389914.ovh.net/vitonjobv1/api/sql';
 }
 
 
