@@ -95,5 +95,9 @@ export class SearchService {
   persistLastSearch(data){
     this.db.set('LAST_RESULTS', JSON.stringify(data));
   }
+  
+  
+  
+  
 }
 
