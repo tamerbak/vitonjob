@@ -1,4 +1,4 @@
-import {NavController, Page, ViewController, Loading} from 'ionic-angular';
+import {NavController, Page, ViewController, Loading, Slides} from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
 import {SearchResultsPage} from "../search-results/search-results";
@@ -13,10 +13,11 @@ import {SearchResultsPage} from "../search-results/search-results";
   providers: [GlobalConfigs]
 })
 export class SearchCriteriaPage {
+  
   filters : any = [];
   projectTarget : string;
   activeCount : number = 0;
-
+  
   constructor(private viewCtrl: ViewController,
               public globalConfig: GlobalConfigs,
               private searchService: SearchService,
@@ -24,7 +25,10 @@ export class SearchCriteriaPage {
     this.viewCtrl = viewCtrl;
     this.projectTarget = globalConfig.getProjectTarget();
     this.buildFilters();
+
   }
+
+
 
   /**
    * @descirption depending on the nature of the project this method constructs the required buttons and input for filters
@@ -172,9 +176,12 @@ export class SearchCriteriaPage {
    * @description send criteria search to web service and load results view
    */
   validateSearch(){
+
     //  check first if there are any criteria with value
     var voidQuery = true;
-    for(var f in this.filters){
+    for(var i = 0; i < this.filters.length ; i++){
+      var f = this.filters[i];
+      console.log(f);
       if(f.activated && f.value != ''){
         voidQuery = false;
         break;
@@ -189,6 +196,7 @@ export class SearchCriteriaPage {
     }
 
     //  Construct the search query in the correct format then summon search service
+
     var searchFields = {
       class : 'com.vitonjob.callouts.recherche.SearchQuery',
       job : this.filters[1].value,
