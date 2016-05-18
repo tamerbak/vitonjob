@@ -17,10 +17,14 @@
   <ion-list *ngIf="listView">
     <ion-item-sliding *ngFor="#item of searchResults">
       <button ion-item class="large-btn" (click)="itemSelected(item)" >
+        <ion-avatar item-left>
+          <img src="img/{{avatar}}.png">
+        </ion-avatar>
+
         {{item.titre}} {{item.prenom}} {{item.nom}}
-        <div class="item-note" item-right>
-          {{item.matching}}
-        </div>
+
+        <ion-badge item-right secondary>{{item.matching}} %</ion-badge>
+
       </button>
       <ion-item-options>
         <button (click)="addGroupContract(item)" secondary>
