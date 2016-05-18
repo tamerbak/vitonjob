@@ -15,8 +15,7 @@ export class SearchService {
   configuration : any;
   db : any;
   constructor(public http: Http) {
-    
-
+    this.db = new Storage(SqlStorage);
   }
 
 
@@ -30,7 +29,7 @@ export class SearchService {
 
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
-    this.db = new Storage(SqlStorage);
+
 
     //  Start by identifying the wanted table and prepare the pay load
     var table = projectTarget == 'jobyer'?'user_jobyer':'user_entreprise';
@@ -58,16 +57,50 @@ export class SearchService {
       ]
     };
 
-    /*
-    * Performing search directly on server
-    */
-    console.log(JSON.stringify(payload));
-    if (this.data) {
-      // already loaded data
-      return Promise.resolve(this.data);
-      console.log(this.data);
-    }
 
+    // don't have the data yet
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers.append("Content-Type", 'application/json');
+      this.http.post(this.configuration.calloutURL, JSON.stringify(payload), {headers:headers})
+          .map(res => res.json())
+          .subscribe(data => {
+            // we've got back the raw data, now generate the core schedule data
+            // and save the data for later reference
+            this.data = data;
+            console.log(this.data);
+            resolve(this.data);
+          });
+    });
+  }
+
+  /**
+   * @description Make search by criteria and return a promise of results
+   * @param searchQuery The filters of the search
+   * @param projectTarget project configuration (jobyer/employer)
+   * @return a promise of data results in the same format of the semantic search
+     */
+  criteriaSearch(searchQuery : any, projectTarget : string){
+    //  Init project parameters
+    this.configuration = Configs.setConfigs(projectTarget);
+
+    //  Prepare payload
+    var query = JSON.stringify(searchQuery);
+
+    var payload = {
+      'class' : 'fr.protogen.masterdata.model.CCallout',
+      id : 118,
+      args : [
+        {
+          class : 'fr.protogen.masterdata.model.CCalloutArguments',
+          label : 'Requete de recherche',
+          value : btoa(query)
+        }
+      ]
+    };
 
     // don't have the data yet
     return new Promise(resolve => {
@@ -104,5 +137,6 @@ export class SearchService {
     return this.db.get('LAST_RESULTS');
 
   }
+
 }
 

@@ -1,0 +1,9 @@
+<ion-content class="search-guide">
+  <ion-row><span class="guided-search-span">{{jobLabel}}</span><ion-input class="guided-search-input" type="text" placeholder="Compétence, métier, ..." [(ngModel)]="job"></ion-input></ion-row>
+  <ion-row><span class="guided-search-span">{{levelLabel}}</span><ion-input class="guided-search-input" type="text" placeholder="Débutant ou Expert" [(ngModel)]="level"></ion-input></ion-row>
+  <ion-row><span class="guided-search-span">{{availabilityLabel}}</span><ion-input class="guided-search-input" type="text" placeholder="JJ/MM/AAAA" [(ngModel)]="availability"></ion-input></ion-row>
+  <ion-toolbar class="bottom-toolbar" position="bottom">
+    <button (click)="validateSearch()" secondary block>Valider</button>
+    <button (click)="close()" dark block>Annuler</button>
+  </ion-toolbar>
+</ion-content>

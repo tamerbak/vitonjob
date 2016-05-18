@@ -1,9 +1,11 @@
-import {Page, IonicApp, IonicApp, NavParams, NavController, Loading} from 'ionic-angular';
+import {Page, IonicApp, IonicApp, NavParams, NavController, Loading, Modal} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
 import {LoginsPage} from "../logins/logins";
 import {SearchResultsPage} from "../search-results/search-results";
+import {SearchCriteriaPage} from "../search-criteria/search-criteria";
+import {SearchGuidePage} from "../search-guide/search-guide";
 
 @Page({
     templateUrl: 'build/pages/home/home.html',
@@ -19,21 +21,21 @@ export class HomePage {
     private highlightSentence:string;
     private search : any;
     private selectedItem : any;
-
     scQuery : string;
+    popinCrietria : boolean = false;
 
     static get parameters() {
         return [[GlobalConfigs], [IonicApp], [NavController], [NavParams], [SearchService]];
     }
 
-    constructor(public gc: GlobalConfigs,
+    constructor(public globalConfig: GlobalConfigs,
                 private app: IonicApp,
                 private nav: NavController,
                 private navParams: NavParams,
-                    private ss: SearchService) {
+                    private searchService: SearchService) {
 
         // Get target to determine configs
-        this.projectTarget = gc.getProjectTarget();
+        this.projectTarget = globalConfig.getProjectTarget();
 
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
@@ -49,7 +51,8 @@ export class HomePage {
         this.nav = nav;
         // If we navigated to this page, we will have an item available as a nav param
         this.selectedItem = navParams.get('item');
-        this.search = ss;
+        this.search = searchService;
+
     }
 
     onFocus() {
@@ -82,8 +85,8 @@ export class HomePage {
         });
         this.nav.present(loading);
         console.log('Initiating search for '+this.scQuery);
-        this.ss.semanticSearch(this.scQuery, 0, this.projectTarget).then((data) => {
-            this.ss.persistLastSearch(data);
+        this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((data) => {
+            this.searchService.persistLastSearch(data);
             loading.dismiss();
             this.nav.push(SearchResultsPage);
         });
@@ -99,5 +102,39 @@ export class HomePage {
             return;
 
         this.doSemanticSearch();
+    }
+
+    /**
+     * @description this method allows to render the multicriteria modal component
+     */
+    showCriteriaModal(){
+        var dismissedModal = function(){
+            this.popinCrietria = false;
+        };
+
+        if(this.popinCrietria)
+            return;
+        console.log('TEST');
+        let m = new Modal(SearchCriteriaPage);
+        m.onDismiss(dismissedModal.bind(this));
+        this.popinCrietria = true;
+        this.nav.present(m);
+    }
+
+    /**
+     * @description this method allows to render the guided search modal component
+     */
+    showGuideModal(){
+        var dismissedModal = function(){
+            this.popinCrietria = false;
+        };
+
+        if(this.popinCrietria)
+            return;
+        console.log('TEST');
+        let m = new Modal(SearchGuidePage);
+        m.onDismiss(dismissedModal.bind(this));
+        this.popinCrietria = true;
+        this.nav.present(m);
     }
 }

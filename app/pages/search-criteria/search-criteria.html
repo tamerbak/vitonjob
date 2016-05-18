@@ -1,0 +1,20 @@
+
+<ion-content padding class="search-criteria" >
+  <ion-list class="criteria-list">
+    <ion-list-header>
+      <button *ngFor="#f of filters" (click)="toogleFilter(f)"
+              style="font-size: small;" [ngClass]="{'button-secondary': f.activated==true}" >
+        <ion-icon name="{{f.icon}}"></ion-icon>
+      </button>
+    </ion-list-header>
+    <ion-item *ngFor="#f of filters" [ngClass]="{'hide': f.activated==false }" >
+      <ion-input placeholder="{{f.placeHolder}}" clearInput [(ngModel)]="f.value" ></ion-input>
+    </ion-item>
+
+  </ion-list>
+  <ion-toolbar class="bottom-toolbar" position="bottom">
+    <button (click)="validateSearch()" secondary block>Valider</button>
+    <button (click)="close()" dark block>Annuler</button>
+  </ion-toolbar>
+
+</ion-content>

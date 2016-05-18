@@ -1,0 +1,37 @@
+.search-criteria {
+  background-color: #69BB7B !important;
+}
+.left-bottom-btn {
+  position: fixed;
+  bottom: -5px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.right-bottom-btn {
+  position: fixed;
+  bottom: -5px;
+  right:0px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.search-criteria-page {
+
+  /*width: 86%;
+  margin-left: 7%;
+  margin-top: 100%;
+  position: fixed;*/
+}
+
+.search-criteria-page > ion-content {
+  /*border-top-left-radius: 4%;
+  border-top-right-radius: 4%;
+  overflow: scroll;*/
+}
+
+.criteria-list > ion-list-header {
+  background : #606060;
+  color: #ffffff;
+  padding: 0px;
+  text-align: center;
+}
