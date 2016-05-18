@@ -52,7 +52,7 @@ export class SearchResultsPage {
           }
         },{
           text: 'Contrat',
-          icon: 'md-call',
+          icon: 'md-document',
           handler: () => {
 
           }
