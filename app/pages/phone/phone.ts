@@ -5,6 +5,8 @@ import {SearchService} from '../../providers/search-service/search-service';
 import {AuthenticationService} from "../../providers/authentication.service";
 import {LoadListService} from "../../providers/load-list.service";
 import {DataProviderService} from "../../providers/data-provider.service";
+import {GlobalService} from "../../providers/global.service";
+import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
 import 'rxjs/add/operator/catch';
 //import { enableProdMode } from 'angular2/core';
@@ -19,7 +21,7 @@ import 'rxjs/add/operator/catch';
 */
 @Page({
 	templateUrl: 'build/pages/phone/phone.html',
-	providers: [GlobalConfigs, SearchService, AuthenticationService, LoadListService, DataProviderService]
+	providers: [GlobalConfigs, SearchService, AuthenticationService, LoadListService, DataProviderService, GlobalService, ValidationDataService]
 })
 
 export class PhonePage {
@@ -39,7 +41,7 @@ export class PhonePage {
 	
 	
 	constructor(public nav: NavController,
-	public gc: GlobalConfigs, private authService: AuthenticationService, private loadListService: LoadListService, private dataProviderService: DataProviderService) {
+	public gc: GlobalConfigs, private authService: AuthenticationService, private loadListService: LoadListService, private dataProviderService: DataProviderService, private globalService: GlobalService, private validationDataService: ValidationDataService) {
 		
 		// Set global configs
 		// Get target to determine configs
@@ -51,13 +53,16 @@ export class PhonePage {
 		// Set local variables and messages
 		this.isEmployer = (this.projectTarget=='employer');
 		this.phoneTitle = "Téléphone";
-		//charge la liste des pays
+		
+		//load countrie list
 		this.loadListService.loadCountries().then((data) =>{
 			this.pays = data.data;
 		});
+		//init data form
 		this.index = 33;
+		this.libelleButton = "Se connecter";
 	}
-	
+	//show alert of the countries list
 	doRadioAlert(){
 		let alert = Alert.create();
 		alert.setTitle('Choisissez votre pays');
@@ -66,6 +71,7 @@ export class PhonePage {
 				type: 'radio',
 				label: p.nom,
 				value: p.indicatif_telephonique,
+				//france code by default checked
 				checked: p.indicatif_telephonique == '33'
 			});			
 		}
@@ -87,95 +93,94 @@ export class PhonePage {
 	
 	authenticate(){
 		var indPhone = this.index + this.phone;
-		this.authService.authenticate(this.email, indPhone, this.password, 'jobyer')
+		this.authService.authenticate(this.email, indPhone, this.password1, 'jobyer')
 		.then(data =>{
-			this.temp = data;
-			this.onAuthenticateSuccess(this.temp);
-			console.log(this.temp);
+			this.onAuthenticateSuccess(data);
+			console.log(data[0]['value']);
 		});
 	}
 	
 	onAuthenticateSuccess(data){
-		/*if (!data) {
-			OnAuthenticateError(data);
+		if (!data) {
+			console.log(data);
+			this.globalService.showAlertValidation("Serveur non disponible ou problème de connexion.");
 			return;
-		}*/
-		//console.log(data);
-		data = this.temp;
-		console.log(this.temp);
-		console.log(data);
-		console.log("a");
+		}
 		data = data[0]['value'];
-		console.log("b");
-		console.log("c");
-		
-		/*if (data.length == 0) {
-			this.onAuthenticateError(data);
+		console.log(data);
+		if (data.length == 0) {
+			console.log(data);
+			this.globalService.showAlertValidation("Serveur non disponible ou problème de connexion.");
 			return;
-		}*/
-		
+		}		
 		data = JSON.parse(data);
-		console.log("d");
-		
 		if (data.id == 0 && data.status == "failure") {
-			console.log("e");
-			//this.onAuthenticateError(data);
-			//return;
+			console.log(data);
+			this.globalService.showAlertValidation("Serveur non disponible ou problème de connexion.");
+			return;
 		}
-		console.log("f");
-		
 		if (data.id == 0 && data.status == "passwordError") {
-			console.log("g");
-			//Global.showAlertPassword("Votre mot de passe est incorrect");
-			//return;
+			console.log("Password error");
+			this.globalService.showAlertValidation("Votre mot de passe est incorrect");
+			return;
 		}
-		console.log("h");
 		
 		//localStorageService.remove('connexion');
 		//localStorageService.remove('currentEmployer');
+		this.authService.setObj('connexion', null);
+		this.authService.setObj('currentEmployer', null);
 		var connexion = {
 			'etat': true,
 			'libelle': 'Se déconnecter',
 			'employeID': data.jobyerId
 		};
-		console.log("i");
 		
 		//Load device token to current account :
 		var token = this.authService.getObj('deviceToken');
-		console.log("j");
+		console.log(token);
 		var accountId = data.id;
-		console.log("k");
+		console.log(accountId);
 		
 		if (token) {
-			
 			console.log("insertion du token : "+ token);
 			this.authService.insertToken(token, accountId);
-			console.log("l");
 		}
-		console.log("m");
 		this.authService.setObj('connexion', connexion);
-		console.log("n");
 		this.authService.setObj('currentEmployer', data);
-		console.log("o");
+		
 		var isNewUser = data.new;
-		console.log("p");
+		console.log(data)
+		console.log(data.new)
 		if (isNewUser == 'true') {
-			console.log("q");
-			//Global.showAlertValidation("Bienvenue dans votre espace VitOnJob!");
+			this.globalService.showAlertValidation("Bienvenue dans votre espace VitOnJob!");
+			//todo : change HomePage by the correct page
+			this.nav.push(HomePage);
 			//$state.go("menu.infoTabs.saisieCiviliteEmployeur");
 			} else {
-			console.log("r");
+			//todo : change HomePage by the correct page
+			this.nav.push(HomePage);
 			//$state.go("menu.app");
 		}
 	}
 	
+	//function called to decide if the auth/inscr button should be disabled
+	isAuthDisabled(){
+		if (this.showEmailField == true) {
+			//inscription
+			return (!this.index || !this.phone || !this.password1
+			|| !this.password2 || !this.email) && !$scope.password2IsValid()
+			} else {
+			//connection
+			return (!this.index || !this.phone || !this.password1)
+		}
+	}
 	
-	watchPhone(){
-		
+	//function called on change of the phone input : validation
+	watchPhone(e, el){
 		if (this.phone) {
 			this.phone = this.phone.replace("-", "").replace(".", "").replace("+", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "").replace(",", "").replace("#", "").replace("*", "").replace(";", "").replace("N", "");
 			
-			//unreacheable : attribute maxlengthof input equals 9
+			//todo : unreacheable : attribute maxlengthof input equals 9
 			if (this.phone.length == 10) {
 				if (this.phone.substring(0, 1) == '0') {
 					this.phone = this.phone.substring(1, 10);
@@ -187,18 +192,21 @@ export class PhonePage {
 				$scope.formData.email = "";
 			$scope.libelleButton = "Se connecter";*/
 			if (this.phone.length == 9) {
-				this.isRegistration();
+				this.isRegistration(el);
 			}
 		}
 	}
 	
-	isRegistration() {
+	//function called when the phone input is valid
+	//to decide if the form is for inscription or authentication
+	isRegistration(el) {
 		if (this.isPhoneValid()) {
 			//On teste si le tél existe dans la base
 			var tel = "+" + this.index + this.phone;
 			
 			this.dataProviderService.getUserByPhone(tel).then((data) =>{
 				if (!data || data.data.length == 0) {
+					//el.setFocus();
 					this.showEmailField = true;
 					//$scope.email = "";
 					this.email = "";
@@ -212,13 +220,15 @@ export class PhonePage {
 			})
 			} else {
 			//ça sera toujours une connexion
+			//el.setFocus();
 			this.showEmailField = true;
 			//$scope.email = "";
 			this.libelleButton = "S'inscrire";
 			this.email = "";
 		}
-	};
+	}
 	
+	//validation of the phone input
 	isPhoneValid() {
 		if (this.phone != undefined) {
 			var phone_REGEXP = /^0/;
@@ -231,12 +241,20 @@ export class PhonePage {
 			else
 			return false;
 		} else
-        return false;
-	};
-	
-	validatEmail() {
-		//console.log("ab" + id + "cd");
+		return false;
 	}
+	
+	//todo
+	validateEmail(e) {
+		//this.validationDataService.checkEmail(e);
+	}
+	
+	password2IsValid() {
+		return (
+			this.password1 == this.password2;
+		)
+	}
+	
 	goBack(){
 		this.nav.push(HomePage);
 	}

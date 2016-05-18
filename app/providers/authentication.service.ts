@@ -12,7 +12,7 @@ export class AuthenticationService {
 		this.db = new Storage(SqlStorage);
 	}
 	
-	authenticate(email: string, phone: number, password: string, role: string){
+	authenticate(email: string, phone: number, password, role: string){
 		var login =
 		{
 			'class': 'com.vitonjob.callouts.auth.AuthToken',
@@ -21,8 +21,11 @@ export class AuthenticationService {
 			'password': password,
 			'role': role
 		};
+		console.log(login);
 		login = JSON.stringify(login);
+		console.log(login);
 		var encodedLogin = btoa(login);
+		console.log(encodedLogin);
 		var dataLog = {
 			'class': 'fr.protogen.masterdata.model.CCallout',
 			'id': 96,//95,//74,//71,//70,//67,//49,
@@ -35,13 +38,6 @@ export class AuthenticationService {
 		let url = 'http://vps259989.ovh.net:8080/vitonjobv1/api/callout';
         let body = JSON.stringify(dataLog);
 		
-		if (this.data) {
-			// already loaded data
-			return Promise.resolve(this.data);
-			console.log("already loaded data" + this.data);
-		}
-		
-		
 	    // don't have the data yet
 	    return new Promise(resolve => {
 			let headers = new Headers();
@@ -50,7 +46,7 @@ export class AuthenticationService {
 			.map(res => res.json())
 			.subscribe(data => {
 	            this.data = data;
-	            console.log("Newly loaded data" + this.data);
+	            console.log(this.data);
 	            resolve(this.data);
 			});
 		})
@@ -77,7 +73,7 @@ export class AuthenticationService {
 	}
 	
 	setObj(key, obj){
-		this.db.set(key, JSON.stringify(ojb));
+		this.db.set(key, JSON.stringify(obj));
 	}
 	
 	getObj(key){

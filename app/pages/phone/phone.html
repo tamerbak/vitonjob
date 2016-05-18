@@ -12,46 +12,45 @@
 </ion-navbar>
 
 <ion-content padding class="phone">
-		
-			<ion-label stacked>Entrez votre numéro de téléphone</ion-label>
-			<ion-row baseline>
-				<ion-col width-25>
-					<ion-item>
-						<ion-input type="number" [(ngModel)]="index"></ion-input>
-					</ion-item>
-				</ion-col>
-				<ion-col width-10>
-				<button (click)="doRadioAlert()" class="disable-hover button button-clear button-outline"><ion-icon name="ios-arrow-down"></ion-icon></button>
-				</ion-col>
-				<ion-col>
-					<ion-item>
-						<ion-input [(ngModel)]="phone" [hideCancelButton]="true" (change)="watchPhone($event)" maxlength="9"></ion-input>
-					</ion-item>
-				</ion-col>
-			</ion-row>
-			
-			<ion-item [hidden]="!showEmailField">
-				<ion-label stacked>Votre email</ion-label>
-				<ion-input type="email" [(ngModel)]="email"></ion-input>
-			</ion-item>
-			
-			<ion-label stacked>Votre mot de passe</ion-label>
+	
+	<ion-label stacked>Entrez votre numéro de téléphone</ion-label>
+	<ion-row baseline>
+		<ion-col width-25>
 			<ion-item>
-				<ion-input type="password" [(ngModel)]="password1"></ion-input>
+				<ion-input type="number" [(ngModel)]="index"></ion-input>
 			</ion-item>
-			<ion-item [hidden]="!showEmailField">
-				<ion-label stacked>Confirmation du mot de passe</ion-label>
-				<ion-input type="password" [(ngModel)]="password2"></ion-input>
+		</ion-col>
+		<ion-col width-10>
+			<button (click)="doRadioAlert()" class="disable-hover button button-clear button-outline"><ion-icon name="ios-arrow-down"></ion-icon></button>
+		</ion-col>
+		<ion-col>
+			<ion-item>
+				<ion-input [(ngModel)]="phone" [hideCancelButton]="true" (input)="watchPhone($event, focusable)" maxlength="9"></ion-input>
 			</ion-item>
-			
-			
-			<ion-row responsive-sm>
-				<ion-col>
-					<button (click)="authenticate()" type="submit" primary block>Se connecter</button>
-				</ion-col>
-				<ion-col>
-					<button (click)="goBack()" light block>Quitter</button>
-				</ion-col>
-			</ion-row>
-
+		</ion-col>
+	</ion-row>
+	
+	<ion-label [hidden]="!showEmailField" stacked>Votre email</ion-label>
+	<ion-item [hidden]="!showEmailField">
+		<ion-input #focusable id="email" type="email" [(ngModel)]="email" (change)="validateEmail($event.target.value)"></ion-input>
+	</ion-item>
+	
+	<ion-label stacked>Votre mot de passe</ion-label>
+	<ion-item>
+		<ion-input type="password" [(ngModel)]="password1"></ion-input>
+	</ion-item>
+	
+	<ion-label [hidden]="!showEmailField" stacked>Confirmation du mot de passe</ion-label>
+	<ion-item [hidden]="!showEmailField">
+		<ion-input type="password" [(ngModel)]="password2"></ion-input>
+	</ion-item>
+	
+	<ion-row responsive-sm>
+		<ion-col>
+			<button (click)="authenticate()" [disabled]="isAuthDisabled()" type="submit" primary block>{{libelleButton}}</button>
+		</ion-col>
+		<ion-col>
+			<button (click)="goBack()" light block>Quitter</button>
+		</ion-col>
+	</ion-row>
 </ion-content>
