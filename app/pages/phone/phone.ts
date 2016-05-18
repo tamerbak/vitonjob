@@ -8,6 +8,7 @@ import {DataProviderService} from "../../providers/data-provider.service";
 import {GlobalService} from "../../providers/global.service";
 import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
+import {InfoUserPage} from "../info-user/info-user";
 import 'rxjs/add/operator/catch';
 //import { enableProdMode } from 'angular2/core';
 // enable production mode and thus disable debugging information
@@ -153,8 +154,7 @@ export class PhonePage {
 		console.log(data.new)
 		if (isNewUser == 'true') {
 			this.globalService.showAlertValidation("Bienvenue dans votre espace VitOnJob!");
-			//todo : change HomePage by the correct page
-			this.nav.push(HomePage);
+			this.nav.push(InfoUserPage);
 			//$state.go("menu.infoTabs.saisieCiviliteEmployeur");
 			} else {
 			//todo : change HomePage by the correct page
@@ -168,7 +168,7 @@ export class PhonePage {
 		if (this.showEmailField == true) {
 			//inscription
 			return (!this.index || !this.phone || !this.password1
-			|| !this.password2 || !this.email) && !$scope.password2IsValid()
+			|| !this.password2 || !this.email) && !this.password2IsValid()
 			} else {
 			//connection
 			return (!this.index || !this.phone || !this.password1)
@@ -251,7 +251,7 @@ export class PhonePage {
 	
 	password2IsValid() {
 		return (
-			this.password1 == this.password2;
+			this.password1 == this.password2
 		)
 	}
 	

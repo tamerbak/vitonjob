@@ -2,6 +2,11 @@ import {Injectable} from 'angular2/core';
 import {Http, Headers, RequestOptions} from 'angular2/http';
 import {Storage, SqlStorage} from 'ionic-angular';
 
+/**
+ * @author Amal ROCHD
+ * @description web service access point for user authentication and inscription
+ * @module Authentication
+ */
 
 @Injectable()
 export class AuthenticationService {
@@ -12,7 +17,13 @@ export class AuthenticationService {
 		this.db = new Storage(SqlStorage);
 	}
 	
+	/**
+   * @description Insert a user_account if it does not exist
+   * @param email, phone, password, role
+   * @return JSON results in the form of user accounts
+     */
 	authenticate(email: string, phone: number, password, role: string){
+		//Prepare the request
 		var login =
 		{
 			'class': 'com.vitonjob.callouts.auth.AuthToken',
@@ -21,11 +32,8 @@ export class AuthenticationService {
 			'password': password,
 			'role': role
 		};
-		console.log(login);
 		login = JSON.stringify(login);
-		console.log(login);
 		var encodedLogin = btoa(login);
-		console.log(encodedLogin);
 		var dataLog = {
 			'class': 'fr.protogen.masterdata.model.CCallout',
 			'id': 96,//95,//74,//71,//70,//67,//49,
@@ -38,7 +46,6 @@ export class AuthenticationService {
 		let url = 'http://vps259989.ovh.net:8080/vitonjobv1/api/callout';
         let body = JSON.stringify(dataLog);
 		
-	    // don't have the data yet
 	    return new Promise(resolve => {
 			let headers = new Headers();
 			headers.append("Content-Type", 'application/json');
@@ -72,6 +79,7 @@ export class AuthenticationService {
 			});
 	}
 	
+	//Not sur if this 2 methods should be here or in a separate service
 	setObj(key, obj){
 		this.db.set(key, JSON.stringify(obj));
 	}

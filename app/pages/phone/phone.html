@@ -15,6 +15,9 @@
 	
 	<ion-label stacked>Entrez votre numéro de téléphone</ion-label>
 	<ion-row baseline>
+		<ion-col width-10>
+			<ion-icon name="md-call"></ion-icon>
+		</ion-col>
 		<ion-col width-25>
 			<ion-item>
 				<ion-input type="number" [(ngModel)]="index"></ion-input>
@@ -25,7 +28,7 @@
 		</ion-col>
 		<ion-col>
 			<ion-item>
-				<ion-input [(ngModel)]="phone" [hideCancelButton]="true" (input)="watchPhone($event, focusable)" maxlength="9"></ion-input>
+				<ion-input [(ngModel)]="phone" placeholder="Téléphone" (input)="watchPhone($event, focusable)" maxlength="9"></ion-input>
 			</ion-item>
 		</ion-col>
 	</ion-row>

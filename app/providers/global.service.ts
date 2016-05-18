@@ -5,7 +5,7 @@ import {Alert, NavController} from 'ionic-angular';
 
 @Injectable()
 export class GlobalService {
-	constructor(public nav: NavController,) {
+	constructor(public nav: NavController) {
 		
 	}
 	
