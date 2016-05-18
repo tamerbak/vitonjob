@@ -1,4 +1,5 @@
 import {Page, NavController, ActionSheet, Platform, Slides} from 'ionic-angular';
+import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {ViewChild} from 'angular2/core'
 import {SearchService} from "../../providers/search-service/search-service";
 
@@ -24,15 +25,22 @@ export class SearchResultsPage {
     loop: false
   };
   currentCardIndex : number = 0;
+  projectTarget : any;
+  avatar : string;
 
   /**
    * @description While constructing the view we get the last results of the search from the user
    * @param nav Navigation controller of the application
    * @param searchService the provider that allows us to get data from search service
      */
-  constructor(public nav: NavController,
+  constructor(public globalConfig: GlobalConfigs,
+              public nav: NavController,
               private searchService: SearchService,
               platform : Platform) {
+    // Get target to determine configs
+    this.projectTarget = globalConfig.getProjectTarget();
+    this.avatar = this.projectTarget == 'jobyer' ? 'jobyer_avatar':'eemployer_avatar';
+
     this.platform = platform;
     searchService.retrieveLastSearch().then(results =>{
       var jsonResults = JSON.parse(results);
