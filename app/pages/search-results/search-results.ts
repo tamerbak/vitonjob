@@ -38,11 +38,13 @@ export class SearchResultsPage {
       var jsonResults = JSON.parse(results);
       if(jsonResults){
         this.searchResults = jsonResults;
+        for(var i = 0 ; i < this.searchResults.length ; i++){
+          let r = this.searchResults[i];
+          r.matching = Number(r.matching).toFixed(2);
+        }
         console.log(this.searchResults);
       }
     });
-
-    this.initializeMap();
   }
 
   /**
@@ -96,6 +98,10 @@ export class SearchResultsPage {
     });
     this.nav.present(actionSheet);
     ;
+  }
+
+  contract(item){
+    console.log('Contract');
   }
 
   /**

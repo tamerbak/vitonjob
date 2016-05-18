@@ -33,24 +33,38 @@
   <ion-slides #cardSlider [options]="cardsOptions" (didChange)="onSlideChanged()" *ngIf="cardView">
     <ion-slide *ngFor="#item of searchResults">
       <ion-card>
-        <ion-card-header>
-          {{item.titre}} {{item.prenom}} {{item.nom}}
+        <ion-card-header class="candidate-card-header">
+          <span >{{item.titre}} {{item.prenom}} {{item.nom}}</span><ion-badge item-right secondary="">{{item.matching}} %</ion-badge>
         </ion-card-header>
-        <ion-card-content>
-          <ion-row>
-            <span>Correspondance : {{item.matching}}</span>
-          </ion-row>
+        <ion-card-content class="candidate-card-content">
+          <h2>{{item.titreoffre}}</h2>
           <ion-row>
             <span>Tel : {{item.tel}}</span>
           </ion-row>
           <ion-row>
             <span>Email : {{item.email}}</span>
           </ion-row>
+          <ion-row>
+            <ion-col width-10>
+              <button secondary (click)="contract(item)" >Recruter</button>
+            </ion-col>
+            <ion-col width-50></ion-col>
+            <ion-col  width-40>
+              <button secondary>
+                <ion-icon name="md-mail"></ion-icon>
+              </button>
+              <button secondary>
+                <ion-icon name="md-call"></ion-icon>
+              </button>
+            </ion-col >
+          </ion-row>
         </ion-card-content>
       </ion-card>
     </ion-slide>
   </ion-slides>
 
-  <div id="map" *ngIf="mapView"> test </div>
+  <div id="map" *ngIf="mapView">
+
+  </div>
 
 </ion-content>
