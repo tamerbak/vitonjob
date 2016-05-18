@@ -1,0 +1,29 @@
+.search-guide {
+  background-color: #757575 !important;
+  padding:0px;
+}
+.guided-search-span{
+  color: #FFFFFF;
+  margin-right: 2px;
+  margin-left: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+.guided-search-input{
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+.guided-search-input > input{
+  margin-top : 10px;
+}
+
+.bottom-toolbar{
+  position : fixed;
+}
+
+.bottom-toolbar > .toolbar-background{
+  background-color: transparent;
+  border-style: none;
+}

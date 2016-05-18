@@ -1,5 +1,4 @@
-import {Modal, NavController, Page, ViewController, Loading} from 'ionic-angular';
-import {Configs} from '../../configurations/configs';
+import {NavController, Page, ViewController, Loading} from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
 import {SearchResultsPage} from "../search-results/search-results";
@@ -186,6 +185,7 @@ export class SearchCriteriaPage {
       //  Nothing to do here
       console.log('No search criteria given');
       this.viewCtrl.dismiss();
+      return;
     }
 
     //  Construct the search query in the correct format then summon search service

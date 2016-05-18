@@ -5,6 +5,7 @@ import {SearchService} from "../../providers/search-service/search-service";
 import {LoginsPage} from "../logins/logins";
 import {SearchResultsPage} from "../search-results/search-results";
 import {SearchCriteriaPage} from "../search-criteria/search-criteria";
+import {SearchGuidePage} from "../search-guide/search-guide";
 
 @Page({
     templateUrl: 'build/pages/home/home.html',
@@ -115,6 +116,23 @@ export class HomePage {
             return;
         console.log('TEST');
         let m = new Modal(SearchCriteriaPage);
+        m.onDismiss(dismissedModal.bind(this));
+        this.popinCrietria = true;
+        this.nav.present(m);
+    }
+
+    /**
+     * @description this method allows to render the guided search modal component
+     */
+    showGuideModal(){
+        var dismissedModal = function(){
+            this.popinCrietria = false;
+        };
+
+        if(this.popinCrietria)
+            return;
+        console.log('TEST');
+        let m = new Modal(SearchGuidePage);
         m.onDismiss(dismissedModal.bind(this));
         this.popinCrietria = true;
         this.nav.present(m);
