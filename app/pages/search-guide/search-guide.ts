@@ -4,7 +4,6 @@ import {SearchService} from "../../providers/search-service/search-service";
 import {SearchResultsPage} from "../search-results/search-results";
 
 
-
 @Page({
   templateUrl: 'build/pages/search-guide/search-guide.html',
 })

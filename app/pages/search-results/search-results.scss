@@ -1,3 +1,37 @@
 .search-results {
 
 }
+
+.view-toggle{
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+
+.candidate-card-header{
+  background-color: #14baa6;
+}
+
+.candidate-card-header > ion-badge {
+  background-color: #29bb00;
+}
+
+.candidate-card-header > span {
+  margin-right: 20px;
+}
+
+.candidate-card-content {
+  text-align: center;
+}
+
+.candidate-card-content > h2 {
+  margin-top:7px !important;
+  margin-bottom:7px !important;
+  font-size: large;
+  font-weight: bold;
+}
+
+.candidate-card-content > ion-row {
+  margin:10px;
+}
+
