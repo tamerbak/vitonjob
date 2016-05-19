@@ -4,7 +4,11 @@
     "module": "commonjs",
     "rootDir": ".",
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+
+    "sourceMap": true,
+    "removeComments": false,
+    "noImplicitAny": false
   },
   "filesGlob": [
     "**/*.ts",

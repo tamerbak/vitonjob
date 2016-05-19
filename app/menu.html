@@ -1,9 +1,17 @@
 <ion-menu [content]="menuContent" id="leftOffMenu">
-    <!--ion-toolbar >
-        <ion-title>Menu</ion-title>
-    </ion-toolbar-->
+    <ion-toolbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+        <ion-title>
+            <ion-item style="background-color: transparent;">
+                <ion-avatar item-left>
+                    <img [src]="userImageURL">
+                </ion-avatar>
+                <h2 style="color: white;">{{userName}}</h2>
+                <p style="color: white;">{{userMail}}</p>
+            </ion-item>
+        </ion-title>
+    </ion-toolbar>
     <ion-content>
-        <img [src]="bgMenuURL" style="width: 100%;">
+        <!--img [src]="bgMenuURL" style="width: 100%;">
         <div class="about-header">
             <ion-icon name="contact" style=
                     "font-size: -webkit-xxx-large;
@@ -11,11 +19,12 @@
                     left: 130px;
                     z-index: 1;">
             </ion-icon>
-        </div>
+        </div-->
         <ion-list>
             <button menuClose ion-item *ngFor="#p of pages" (click)="openPage(p)">
                 <ion-icon name="{{p.icon}}" icon-top></ion-icon>
                 &nbsp;&nbsp;{{p.title}}
+                <ion-badge [style.backgroundColor]="themeColor" *ngIf="p.isBadged">231</ion-badge>
             </button>
         </ion-list>
     </ion-content>
@@ -39,7 +48,9 @@
             <button menuClose ion-item *ngFor="#p of pages" (click)="openPage(p)">
                 <ion-icon name="{{p.icon}}" icon-top></ion-icon>
                 &nbsp;&nbsp;{{p.title}}
+                test
             </button>
+            <ion-badge  >231</ion-badge>
         </ion-list>
     </ion-content>
 </ion-menu>

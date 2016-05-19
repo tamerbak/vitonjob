@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-define(["require", "exports", 'ionic-angular', 'ionic-native', './pages/home/home', './pages/logins/logins', './configurations/configs', './configurations/globalConfigs'], function (require, exports, ionic_angular_1, ionic_native_1, home_1, logins_1, configs_1, globalConfigs_1) {
+define(["require", "exports", 'ionic-angular', 'ionic-native', './pages/home/home', './pages/logins/logins', './configurations/configs', './configurations/globalConfigs', "./providers/search-service/search-service"], function (require, exports, ionic_angular_1, ionic_native_1, home_1, logins_1, configs_1, globalConfigs_1, search_service_1) {
     "use strict";
     let MyApp = class MyApp {
         constructor(platform, app, menu, gc) {
@@ -40,16 +40,16 @@ define(["require", "exports", 'ionic-angular', 'ionic-native', './pages/home/hom
             });
         }
         openPage(page) {
-            this.nav = this.app.getComponent('nav');
+            let nav = this.app.getComponent('nav');
             this.menu.close();
-            this.nav.setRoot(page.component);
+            nav.setRoot(page.component);
         }
     };
     MyApp = __decorate([
         ionic_angular_1.App({
             templateUrl: 'build/menu.html',
             config: { test: 'toto' },
-            providers: [globalConfigs_1.GlobalConfigs]
+            providers: [globalConfigs_1.GlobalConfigs, search_service_1.SearchService]
         })
     ], MyApp);
     exports.MyApp = MyApp;
