@@ -4,6 +4,8 @@ import {SearchService} from "../../providers/search-service/search-service";
 import {Configs} from "../../configurations/configs";
 import {OfferAddPage} from "../offer-add/offer-add";
 import {OfferDetailPage} from "../offer-detail/offer-detail";
+import {OffersService} from "../../providers/offers-service/offers-service";
+import {isUndefined} from "ionic-angular/util";
 
 /*
  Generated class for the OfferListPage page.
@@ -13,13 +15,16 @@ import {OfferDetailPage} from "../offer-detail/offer-detail";
  */
 @Page({
     templateUrl: 'build/pages/offer-list/offer-list.html',
-    providers: [SearchService, GlobalConfigs]
+    providers: [SearchService, GlobalConfigs, OffersService]
 })
 export class OfferListPage {
 
+    offersList = [];
+
     constructor(public nav:NavController,
                 public gc:GlobalConfigs,
-                public search:SearchService) {
+                public search:SearchService,
+                public offersService : OffersService) {
 
         // Set global configs
         // Get target to determine configs
@@ -41,6 +46,25 @@ export class OfferListPage {
         // jQuery code for dragging components
         // console.log($( "#draggable" ).draggable());
 
+        offersService.loadOffersList().then(data =>{
+
+            let rawData = JSON.parse((data));
+            console.log(rawData.entreprises);
+            if(rawData && rawData.entreprises && rawData.entreprises[0].offers){
+                this.offersList = rawData.entreprises[0].offers;
+                for(var i = 0 ; i < rawData.entreprises[0].offers.length ; i++){
+                    let o = rawData.entreprises[0].offers[i];
+                    o.correspondantsCount = 0;
+                    if( isUndefined(o) || !o|| !o.pricticesJob || o.pricticesJob.length == 0){
+                        continue;
+                    }
+                    offersService.getCorrespondingOffers(o, this.projectTarget).then(data =>{
+                        console.log('TEST  '+data);
+                       o.correspondantsCount = data.length;
+                    });
+                }
+            }
+        });
 
     }
 
@@ -74,6 +98,17 @@ export class OfferListPage {
         this.nav.push(OfferDetailPage, {selectedOffer: offer});
     }
 
+    getOfferBadge(item){
 
+        if( isUndefined(item) || !item || !item.pricticesJob || item.pricticesJob.length == 0){
+            item.correspondantsCount = 0;
+            return;
+        }
+
+        this.offersService.getBadgeCount(item.pricticesJob[0].pricticeJobId, this.projectTarget).then(count => {
+            console.log(count);
+            item.correspondantsCount = count;
+        });
+    }
 
 }

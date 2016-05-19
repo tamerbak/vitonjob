@@ -27,6 +27,7 @@ export class SearchResultsPage {
   currentCardIndex : number = 0;
   projectTarget : any;
   avatar : string;
+  resultsCount : number = 0;
 
   /**
    * @description While constructing the view we get the last results of the search from the user
@@ -39,13 +40,14 @@ export class SearchResultsPage {
               platform : Platform) {
     // Get target to determine configs
     this.projectTarget = globalConfig.getProjectTarget();
-    this.avatar = this.projectTarget == 'jobyer' ? 'jobyer_avatar':'eemployer_avatar';
+    this.avatar = this.projectTarget == 'jobyer' ? 'jobyer_avatar':'employer_avatar';
 
     this.platform = platform;
     searchService.retrieveLastSearch().then(results =>{
       var jsonResults = JSON.parse(results);
       if(jsonResults){
         this.searchResults = jsonResults;
+        this.resultsCount = this.searchResults.length;
         for(var i = 0 ; i < this.searchResults.length ; i++){
           let r = this.searchResults[i];
           r.matching = Number(r.matching).toFixed(2);

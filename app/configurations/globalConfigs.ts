@@ -11,7 +11,7 @@ export class GlobalConfigs {
     private projectTarget;
 
     constructor() {
-        this.projectTarget = "jobyer";
+        this.projectTarget = "employer";
     }
 
     setProjectTarget(value) {
