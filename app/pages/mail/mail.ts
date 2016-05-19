@@ -1,7 +1,6 @@
 import {Page, NavController} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
-import {OfferPage} from "../offer/offer";
 
 /*
   Generated class for the MailPage page.
@@ -11,7 +10,7 @@ import {OfferPage} from "../offer/offer";
 */
 @Page({
   templateUrl: 'build/pages/mail/mail.html',
-  prividers: [GlobalConfigs]
+  providers: [GlobalConfigs]
 })
 export class MailPage {
 
@@ -34,9 +33,5 @@ export class MailPage {
     this.mailTitle = "E-mail";
     this.themeColor = config.themeColor;
     this.nav = nav;
-  }
-
-  openOfferPage() {
-    this.nav.push(OfferPage);
   }
 }
