@@ -1,0 +1,52 @@
+<!--
+  Generated template for the OfferAddPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+  <ion-title>Nouvelle offre</ion-title>
+</ion-navbar>
+
+<ion-content padding class="offer-add">
+
+  <!-- Validate Offer -->
+  <ion-row >
+    <ion-col text-center>
+      <button [style.backgroundColor]="themeColor"
+              [disabled] = "!isOfferValidated" >
+        <ion-icon name="add" is-active="false"></ion-icon>
+        Ajouter l'offre
+      </button>
+    </ion-col>
+  </ion-row>
+
+  <!-- Job -->
+  <button fab class = "offer-top-left"
+          [style.backgroundColor]="themeColor" (click)="showJobModal()">
+    <ion-icon name="briefcase" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
+  </button>
+  <!-- QI -->
+  <button fab class = "offer-top-right"
+          [style.backgroundColor]="themeColor" (click)="showQualityModal()">
+    <ion-icon name="happy" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
+  </button>
+
+  <!-- Languages -->
+  <button fab class = "offer-bottom-left"
+          [style.backgroundColor]="themeColor" (click)="showLanguageModal()">
+    <ion-icon name="globe" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
+  </button>
+  <!-- Calendar -->
+  <button fab class = "offer-bottom-right"
+          [style.backgroundColor]="themeColor" (click)="showCalendarModal()">
+    <ion-icon name="calendar" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
+  </button>
+
+
+
+
+  <div class="bar-footer"></div>
+
+
+</ion-content>

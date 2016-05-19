@@ -1,0 +1,35 @@
+$offer-button-size : 120px;
+$horizontal-align : calc(10% - 1px);
+$vertical-align : calc(20% - 1px);
+
+.offer-add {
+
+  .offer-top-left {
+    top: $vertical-align;
+    left: $horizontal-align;
+    width: $offer-button-size;
+    height: $offer-button-size;
+  }
+  .offer-top-right {
+    top: $vertical-align;
+    right: $horizontal-align;
+    width: $offer-button-size;
+    height: $offer-button-size;
+  }
+
+  .offer-bottom-left {
+    bottom: $vertical-align;
+    left: $horizontal-align;
+    width: $offer-button-size;
+    height: $offer-button-size;
+  }
+  .offer-bottom-right {
+    bottom: $vertical-align;
+    right: $horizontal-align;
+    width: $offer-button-size;
+    height: $offer-button-size;
+  }
+
+
+
+}

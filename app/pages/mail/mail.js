@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-define(["require", "exports", 'ionic-angular', '../../configurations/configs', '../../configurations/globalConfigs', "../offer/offer"], function (require, exports, ionic_angular_1, configs_1, globalConfigs_1, offer_1) {
+define(["require", "exports", 'ionic-angular', '../../configurations/configs', '../../configurations/globalConfigs', "../offer-list/offer-list"], function (require, exports, ionic_angular_1, configs_1, globalConfigs_1, offer_1) {
     "use strict";
     /*
       Generated class for the MailPage page.
@@ -27,7 +27,7 @@ define(["require", "exports", 'ionic-angular', '../../configurations/configs', '
             this.nav = nav;
         }
         openOfferPage() {
-            this.nav.push(offer_1.OfferPage);
+            this.nav.push(offer_1.OfferListPage);
         }
     };
     MailPage = __decorate([

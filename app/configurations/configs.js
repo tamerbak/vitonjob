@@ -13,8 +13,11 @@ define(["require", "exports"], function (require, exports) {
             this.themeColor = '#757575';
             // VitOnJob Employer image
             this.imageURL = 'img/logo_employeur.png';
+            this.userImageURL = 'img/employer.png';
             this.bgMenuURL = 'img/bg_employer.png';
             this.highlightSentence = 'Trouvez vos jobyers immédiatement disponibles!';
+            this.calloutURL = 'http://ns389914.ovh.net/vitonjobv1/api/business';
+            this.sqlURL = 'http://ns389914.ovh.net/vitonjobv1/api/sql';
         }
     }
     class JobyerConfigs {
@@ -25,8 +28,11 @@ define(["require", "exports"], function (require, exports) {
             this.themeColor = "#14baa6";
             // VitOnJob Jobyer image
             this.imageURL = "img/logo_jobyer.png";
+            this.userImageURL = 'img/jobyer.png';
             this.bgMenuURL = 'img/bg_jobyer.png';
             this.highlightSentence = "Des milliers d'offres à proximité!";
+            this.calloutURL = 'http://ns389914.ovh.net/vitonjobv1/api/business';
+            this.sqlURL = 'http://ns389914.ovh.net/vitonjobv1/api/sql';
         }
     }
     class Configs {

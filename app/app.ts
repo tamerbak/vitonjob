@@ -5,6 +5,7 @@ import {LoginsPage} from './pages/logins/logins';
 import {Configs} from './configurations/configs';
 import {GlobalConfigs} from './configurations/globalConfigs';
 import {SearchService} from "./providers/search-service/search-service";
+import {OfferListPage} from "./pages/offer-list/offer-list";
 import {UserService} from "./providers/user-service/user-service";
 import {ContractService} from "./providers/contract-service/contract-service";
 import {SmsService} from "./providers/sms-service/sms-service";
@@ -12,16 +13,20 @@ import {SmsService} from "./providers/sms-service/sms-service";
 
 @App({
   templateUrl: 'build/menu.html',
-  config: {test: 'toto'}, // http://ionicframework.com/docs/v2/api/config/Config/
+  config: {backButtonText: 'Retour'}, // http://ionicframework.com/docs/v2/api/config/Config/
   providers : [GlobalConfigs, SearchService,UserService,ContractService,SmsService]
 })
 export class MyApp {
   rootPage: any = HomePage;
-  public pages: Array<{title: string, component: any, icon: string}>;
+  public pages: Array<{title: string, component: any, icon: string, isBadged: boolean}>;
 
   projectTarget : any;
   isEmployer : boolean;
   bgMenuURL : string;
+  userImageURL: string;
+  userName: string;
+  userMail:string;
+  themeColor: string;
 
   constructor(private platform: Platform,
               private app: IonicApp,
@@ -34,10 +39,11 @@ export class MyApp {
     this.initializeApp();
 
     this.pages = [
-      { title: "Lancer une recherche", component: HomePage, icon: "search" },
-      { title: "Se connecter", component: LoginsPage, icon: "person" }
+      { title: "Se connecter", component: LoginsPage, icon: "log-in", isBadged: false },
+      { title: "Lancer une recherche", component: HomePage, icon: "search", isBadged: false },
+      { title: "Mes offres", component: OfferListPage, icon: "list", isBadged: true }
     ];
-    this.rootPage = HomePage;
+    this.rootPage = HomePage;//OfferAddPage;//
 
     // Set global configs
     // Get target to determine configs
@@ -49,6 +55,11 @@ export class MyApp {
     //local menu variables
     this.isEmployer = (this.projectTarget == 'employer');
     this.bgMenuURL = config.bgMenuURL;
+    this.userImageURL = config.userImageURL;
+    this.userName = "Nom d'utilisateur";
+    this.userMail = "mail@compte.com";
+    this.themeColor = config.themeColor;
+
 
   }
 

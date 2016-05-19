@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-define(["require", "exports", 'ionic-angular', '../../configurations/configs', '../../configurations/globalConfigs', "../../providers/search-service/search-service", "../logins/logins"], function (require, exports, ionic_angular_1, configs_1, globalConfigs_1, search_service_1, logins_1) {
+define(["require", "exports", 'ionic-angular', '../../configurations/configs', '../../configurations/globalConfigs', "../../providers/search-service/search-service", "../logins/logins", "../search-results/search-results"], function (require, exports, ionic_angular_1, configs_1, globalConfigs_1, search_service_1, logins_1, search_results_1) {
     "use strict";
     let HomePage = class HomePage {
         constructor(gc, app, nav, navParams, ss) {
@@ -44,11 +44,32 @@ define(["require", "exports", 'ionic-angular', '../../configurations/configs', '
         openLoginsPage() {
             this.nav.push(logins_1.LoginsPage);
         }
+        /**
+         * @author abdeslam jakjoud
+         * @description perform semantic search and pushes the results view
+         */
+        doSemanticSearch() {
+            console.log('Initiating search for ' + this.scQuery);
+            this.ss.semanticSearch(this.scQuery, 0, this.projectTarget).then((data) => {
+                this.ss.persistLastSearch(data);
+                this.nav.push(search_results_1.SearchResultsPage);
+            });
+        }
+        /**
+         * @author abdeslam jakjoud
+         * @description checking whether the user used the enter button to startup the semantic search
+         * @param e Key Up javascript event allowing us to access the keyboard used key
+         */
+        checkForEnterKey(e) {
+            if (e.code != "Enter")
+                return;
+            this.doSemanticSearch();
+        }
     };
     HomePage = __decorate([
         ionic_angular_1.Page({
             templateUrl: 'build/pages/home/home.html',
-            providers: [globalConfigs_1.GlobalConfigs, search_service_1.SearchService]
+            providers: [globalConfigs_1.GlobalConfigs]
         })
     ], HomePage);
     exports.HomePage = HomePage;
