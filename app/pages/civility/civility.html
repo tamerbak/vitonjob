@@ -1,0 +1,57 @@
+<!--
+  Generated template for the PhonePage page.
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+    <button menuToggle>
+    <ion-icon name="menu"></ion-icon>
+  </button>
+    <ion-title>Saisie de la civilité</ion-title>
+</ion-navbar>
+
+<ion-content padding>
+    <ion-item>
+        <ion-label>Titre</ion-label>
+        <ion-select>
+            <ion-option value="0">Mme</ion-option>
+            <ion-option value="1">Mlle</ion-option>
+            <ion-option value="2">M.</ion-option>
+        </ion-select>
+    </ion-item>
+
+    <ion-item>
+        <ion-input type="text" value="" placeholder="Nom"></ion-input>
+    </ion-item>
+
+    <ion-item>
+        <ion-input type="text" placeholder="Prénom"></ion-input>
+    </ion-item>
+
+    <ion-item>
+        <ion-input type="text" value="" placeholder="Date de naissance (JJ/MM/YYYY)"></ion-input>
+    </ion-item>
+
+    <ion-item>
+        <ion-input type="text" placeholder="Lieu de naissance (ex :Palaiseau (91))"></ion-input>
+    </ion-item>
+
+    <ion-item>
+        <ion-input type="text" value="" placeholder="CNI"></ion-input>
+    </ion-item>
+
+    <ion-item>
+        <ion-input type="text" placeholder="N° SS"></ion-input>
+    </ion-item>
+
+    <ion-item>
+        <ion-label>Nationalité</ion-label>
+        <ion-select>
+            <ion-option value="0">Français</ion-option>
+            <ion-option value="1">Allemand</ion-option>
+            <ion-option value="2">Portugais</ion-option>
+        </ion-select>
+    </ion-item>
+
+    <button light round>Valider</button>
+</ion-content>
