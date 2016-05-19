@@ -5,6 +5,7 @@ import {SearchService} from "../../providers/search-service/search-service";
 import {LoginsPage} from "../logins/logins";
 import {SearchResultsPage} from "../search-results/search-results";
 import {InfoUserPage} from "../info-user/info-user";
+
 @Page({
     templateUrl: 'build/pages/home/home.html',
     providers: [GlobalConfigs]
@@ -19,7 +20,7 @@ export class HomePage {
     private highlightSentence:string;
     private search : any;
     private selectedItem : any;
-
+    private cnxBtnName : string;
     scQuery : string;
 
     static get parameters() {
@@ -34,6 +35,9 @@ export class HomePage {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
+        
+        //get name of the connexion btn
+        this.cnxBtnName = gc.getCnxBtnName();
 
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);

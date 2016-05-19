@@ -6,7 +6,6 @@ import {Configs} from './configurations/configs';
 import {GlobalConfigs} from './configurations/globalConfigs';
 import {SearchService} from "./providers/search-service/search-service";
 
-
 @App({
   templateUrl: 'build/menu.html',
   config: {test: 'toto'}, // http://ionicframework.com/docs/v2/api/config/Config/
