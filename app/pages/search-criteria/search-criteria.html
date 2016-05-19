@@ -1,5 +1,6 @@
 
 <ion-content class="search-criteria" >
+
   <ion-list class="criteria-list">
     <ion-list-header>
       <button *ngFor="#f of filters" (click)="toogleFilter(f)"
@@ -12,6 +13,13 @@
     </ion-item>
 
   </ion-list>
+
+  <ion-card *ngIf="activeCount == 0">
+    <ion-card-content>
+      Choisissez vos critères à partir de la barre ci-dessus
+    </ion-card-content>
+  </ion-card>
+
   <ion-toolbar class="bottom-toolbar" position="bottom">
     <button (click)="validateSearch()" secondary block>Valider</button>
     <button (click)="close()" dark block>Annuler</button>
