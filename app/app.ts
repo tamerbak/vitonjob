@@ -5,12 +5,15 @@ import {LoginsPage} from './pages/logins/logins';
 import {Configs} from './configurations/configs';
 import {GlobalConfigs} from './configurations/globalConfigs';
 import {SearchService} from "./providers/search-service/search-service";
+import {UserService} from "./providers/user-service/user-service";
+import {ContractService} from "./providers/contract-service/contract-service";
+import {SmsService} from "./providers/sms-service/sms-service";
 
 
 @App({
   templateUrl: 'build/menu.html',
   config: {test: 'toto'}, // http://ionicframework.com/docs/v2/api/config/Config/
-  providers : [GlobalConfigs, SearchService]
+  providers : [GlobalConfigs, SearchService,UserService,ContractService,SmsService]
 })
 export class MyApp {
   rootPage: any = HomePage;

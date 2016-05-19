@@ -1,7 +1,14 @@
-import {Page, NavController, ActionSheet, Platform, Slides} from 'ionic-angular';
+import {Page, NavController, ActionSheet, Platform, Slides,Alert} from 'ionic-angular';
+import {Storage, SqlStorage} from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {ViewChild} from 'angular2/core'
 import {SearchService} from "../../providers/search-service/search-service";
+import {UserService} from "../../providers/user-service/user-service";
+import {ContractPage} from '../contract/contract';
+import {CivilityPage} from '../civility/civility';
+import {JobAddressPage} from '../job-address/job-address';
+import {PersonalAddressPage} from '../personal-address/personal-address';
+import {LoginsPage} from '../logins/logins';
 
 
 /**
@@ -27,6 +34,8 @@ export class SearchResultsPage {
   currentCardIndex : number = 0;
   projectTarget : any;
   avatar : string;
+  isUserAuthenticated : boolean;
+  employer:any;
 
   /**
    * @description While constructing the view we get the last results of the search from the user
@@ -36,6 +45,7 @@ export class SearchResultsPage {
   constructor(public globalConfig: GlobalConfigs,
               public nav: NavController,
               private searchService: SearchService,
+              private userService:UserService,
               platform : Platform) {
     // Get target to determine configs
     this.projectTarget = globalConfig.getProjectTarget();
@@ -53,6 +63,27 @@ export class SearchResultsPage {
         console.log(this.searchResults);
       }
     });
+    
+    //get the connexion object and define if the there is a user connected
+    userService.getConnexionObject().then(results =>{
+        var connexion = JSON.parse(results);
+        if(connexion && connexion.etat){
+                this.isUserAuthenticated = true;
+        }else{
+            this.isUserAuthenticated = false;
+        }
+        console.log(connexion);
+    });
+    
+    //get the currentEmployer
+    userService.getCurrentEmployer().then(results =>{
+        var currentEmployer = JSON.parse(results);
+        if(currentEmployer){
+            this.employer = currentEmployer;
+        }
+        console.log(currentEmployer);
+    });
+    
   }
 
   /**
@@ -92,7 +123,7 @@ export class SearchResultsPage {
           text: 'Contrat',
           icon: 'md-document',
           handler: () => {
-
+              this.recruitJobyer(item);
           }
         },{
           text: 'Annuler',
@@ -139,4 +170,97 @@ export class SearchResultsPage {
       this.mapView = true;
     }
   }
+  
+  
+  /**
+   * @description verify informations of Employer/Jobyer and redirect to recruitement contract
+   * @param item the selected Employer/Jobyer
+     */
+   recruitJobyer(jobyer){
+      
+        //init local database
+        let storage = new Storage(SqlStorage);
+      
+        console.log(jobyer);
+
+        if(this.isUserAuthenticated){
+          
+            var currentEmployer = this.employer;
+            
+            //verification of employer informations
+            var redirectToStep1 = (currentEmployer && currentEmployer.entreprises[0]) ?
+                                    (currentEmployer.titre == "") ||
+                                    (currentEmployer.prenom == "") ||
+                                    (currentEmployer.nom == "") ||
+                                    (currentEmployer.entreprises[0].name == "") ||
+                                    (currentEmployer.entreprises[0].siret == "") ||
+                                    (currentEmployer.entreprises[0].naf == "") : true;
+                                
+            var redirectToStep2 = (currentEmployer && currentEmployer.entreprises[0]) ?
+                                    (typeof (currentEmployer.entreprises[0].adresses) == "undefined") ||
+                                    (typeof (currentEmployer.entreprises[0].adresses[0]) == "undefined") : true;
+                                    
+            var redirectToStep3 = (currentEmployer && currentEmployer.entreprises[0]) ?
+                                    (typeof (currentEmployer.entreprises[0].adresses) == "undefined") ||
+                                    (typeof (currentEmployer.entreprises[0].adresses[1]) == "undefined") : true;
+                                    
+            var isDataValid = ((!redirectToStep1) && (!redirectToStep2) && (!redirectToStep3));
+                
+            var steps = {
+                "state": false,
+                "step1": redirectToStep1,
+                "step2": redirectToStep2,
+                "step3": redirectToStep3
+            };
+            
+            if (isDataValid) {
+                steps.state = false;
+                storage.set('STEPS', steps);
+                
+                //navigate to contract page
+                this.nav.push(ContractPage, {jobyer: jobyer});
+            }
+            else 
+            {
+                //redirect employer to fill the missing informations
+                steps.state = true;
+                storage.set('STEPS', steps);
+
+                if (redirectToStep1){
+                    this.nav.push(CivilityPage, {jobyer: jobyer});
+                }
+                else if (redirectToStep2){
+                    this.nav.push(PersonalAddressPage, {jobyer: jobyer});
+                } 
+                else if (redirectToStep3){
+                    this.nav.push(JobAddressPage, {jobyer: jobyer});
+                }
+            }
+      
+        }
+        else
+        {
+            let alert = Alert.create({
+                title: 'Attention',
+                message: 'Pour contacter ce jobyer, vous devez être connectés.',
+                buttons: [
+                    {
+                        text: 'Annuler',
+                        role: 'cancel',
+                    },
+                    {
+                        text: 'Connexion',
+                        handler: () => {
+                            this.nav.push(LoginsPage);
+                        }
+                    }
+                ]
+            });
+            this.nav.present(alert);
+        }
+      
+       
+      
+   }
+  
 }
