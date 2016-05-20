@@ -12,7 +12,6 @@ import {ContractService} from "./providers/contract-service/contract-service";
 import {SmsService} from "./providers/sms-service/sms-service";
 import {MissionService} from "./providers/mission-service/mission-service";
 
-
 @App({
   templateUrl: 'build/menu.html',
   config: {backButtonText: 'Retour'}, // http://ionicframework.com/docs/v2/api/config/Config/
