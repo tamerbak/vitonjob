@@ -1,6 +1,8 @@
 import {Injectable} from 'angular2/core';
 import {Http, Headers, RequestOptions} from 'angular2/http';
 import {Storage, SqlStorage} from 'ionic-angular';
+import {Configs} from '../configurations/configs';
+
 
 /**
  * @author Amal ROCHD
@@ -11,6 +13,7 @@ import {Storage, SqlStorage} from 'ionic-angular';
 @Injectable()
 export class AuthenticationService {
 	db : any;
+	configuration;
 	
 	constructor(http: Http) {
 		this.http = http;
@@ -22,7 +25,10 @@ export class AuthenticationService {
    * @param email, phone, password, role
    * @return JSON results in the form of user accounts
      */
-	authenticate(email: string, phone: number, password, role: string){
+	authenticate(email: string, phone: number, password, projectTarget: string){
+		//  Init project parameters
+		this.configuration = Configs.setConfigs(projectTarget);
+		
 		//Prepare the request
 		var login =
 		{
@@ -30,7 +36,7 @@ export class AuthenticationService {
 			'email': email,
 			'telephone': "+" + phone,
 			'password': password,
-			'role': role
+			'role': projectTarget
 		};
 		login = JSON.stringify(login);
 		var encodedLogin = btoa(login);
@@ -43,13 +49,12 @@ export class AuthenticationService {
 				value: encodedLogin
 			}]
 		};
-		let url = 'http://vps259989.ovh.net:8080/vitonjobv1/api/callout';
-        let body = JSON.stringify(dataLog);
+		let body = JSON.stringify(dataLog);
 		
 	    return new Promise(resolve => {
 			let headers = new Headers();
 			headers.append("Content-Type", 'application/json');
-			this.http.post(url, body, {headers:headers})
+			this.http.post(this.configuration.calloutURL, body, {headers:headers})
 			.map(res => res.json())
 			.subscribe(data => {
 	            this.data = data;
@@ -59,18 +64,20 @@ export class AuthenticationService {
 		})
 	}
 	
-	insertToken(token, accountId){
-		let url = 'http://vps259989.ovh.net:8080/vitonjobv1/api/sql';
-        var sql = "Update user_account set device_token = '" + token + "' where pk_user_account = '" + accountId + "';";
+	/**
+		* @description Update user_account with the new device token and accountid
+		* @param token, accountId
+	*/
+	insertToken(token, accountId, projectTarget){
+		//  Init project parameters
+		this.configuration = Configs.setConfigs(projectTarget);
 		
-	    // don't have the data yet
+		var sql = "Update user_account set device_token = '" + token + "' where pk_user_account = '" + accountId + "';";
+		
 	    return new Promise(resolve => {
-			// We're using Angular Http provider to request the data,
-			// then on the response it'll map the JSON data to a parsed JS object.
-			// Next we process the data and resolve the promise with the new data.
 			let headers = new Headers();
 			headers.append("Content-Type", 'text/plain');
-			this.http.post(url, sql, {headers:headers})
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
 			.map(res => res.json())
 			.subscribe(
 			data => console.log("device token bien inséré pour l'utilisateur " + accountId),
@@ -78,6 +85,7 @@ export class AuthenticationService {
 			)
 			});
 	}
+	
 	
 	//Not sur if this 2 methods should be here or in a separate service
 	setObj(key, obj){
