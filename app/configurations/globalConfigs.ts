@@ -9,9 +9,12 @@ export class GlobalConfigs {
 
     //Project Target : employer or jobyer
     private projectTarget;
+    //Name of the connexion button : Connexion or Deconnexion
+    private cnxBtnName: string;
 
     constructor() {
-        this.projectTarget = "employer";
+        this.projectTarget = "jobyer";
+        this.cnxBtnName = "Se connecter / S'inscrire";
     }
 
     setProjectTarget(value) {
@@ -20,6 +23,14 @@ export class GlobalConfigs {
 
     getProjectTarget() {
         return this.projectTarget;
+    }
+    
+    setCnxBtnName(value) {
+        this.cnxBtnName = value;
+    }
+
+    getCnxBtnName() {
+        return this.cnxBtnName;
     }
 
 }

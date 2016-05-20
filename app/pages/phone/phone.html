@@ -1,6 +1,6 @@
 <!--
 	Generated template for the PhonePage page.
-	
+
 	See http://ionicframework.com/docs/v2/components/#navigation for more info on
 	Ionic pages and navigation.
 -->
@@ -12,7 +12,7 @@
 </ion-navbar>
 
 <ion-content padding class="phone">
-	
+
 	<ion-label stacked>Entrez votre numéro de téléphone</ion-label>
 	<ion-row baseline>
 		<ion-col width-10>
@@ -28,32 +28,41 @@
 		</ion-col>
 		<ion-col>
 			<ion-item>
-				<ion-input [(ngModel)]="phone" placeholder="Téléphone" (input)="watchPhone($event, focusable)" maxlength="9"></ion-input>
+				<ion-input [(ngModel)]="phone" (input)="watchPhone($event, focusable)" maxlength="9"></ion-input>
 			</ion-item>
 		</ion-col>
 	</ion-row>
-	
+
 	<ion-label [hidden]="!showEmailField" stacked>Votre email</ion-label>
 	<ion-item [hidden]="!showEmailField">
 		<ion-input #focusable id="email" type="email" [(ngModel)]="email" (change)="validateEmail($event.target.value)"></ion-input>
 	</ion-item>
-	
+
 	<ion-label stacked>Votre mot de passe</ion-label>
 	<ion-item>
 		<ion-input type="password" [(ngModel)]="password1"></ion-input>
 	</ion-item>
-	
+
 	<ion-label [hidden]="!showEmailField" stacked>Confirmation du mot de passe</ion-label>
 	<ion-item [hidden]="!showEmailField">
 		<ion-input type="password" [(ngModel)]="password2"></ion-input>
 	</ion-item>
-	
-	<ion-row responsive-sm>
-		<ion-col>
-			<button (click)="authenticate()" [disabled]="isAuthDisabled()" type="submit" primary block>{{libelleButton}}</button>
+
+	<ion-row>
+		<ion-col width-10></ion-col>
+		<ion-col text-center>
+				<button (click)="authenticate()" [style.backgroundColor]="themeColor" [disabled]="isAuthDisabled()" type="submit">
+					<ion-icon name="log-in"></ion-icon>
+					{{libelleButton}}
+				</button>
 		</ion-col>
-		<ion-col>
-			<button (click)="goBack()" light block>Quitter</button>
+		<ion-col width-10></ion-col>
+	</ion-row>
+	<ion-row>
+		<ion-col width-10></ion-col>
+		<ion-col text-center>
+			<button (click)="goBack()" light>Quitter</button>
 		</ion-col>
+		<ion-col width-10></ion-col>
 	</ion-row>
 </ion-content>

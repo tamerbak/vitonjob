@@ -8,6 +8,7 @@ import {SearchCriteriaPage} from "../search-criteria/search-criteria";
 import {SearchGuidePage} from "../search-guide/search-guide";
 
 import {InfoUserPage} from "../info-user/info-user";
+
 @Page({
     templateUrl: 'build/pages/home/home.html',
     providers: [GlobalConfigs]
@@ -22,6 +23,7 @@ export class HomePage {
     private highlightSentence:string;
     private search : any;
     private selectedItem : any;
+    private cnxBtnName : string;
     scQuery : string;
     popinCrietria : boolean = false;
 
@@ -37,6 +39,10 @@ export class HomePage {
 
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
+        this.projectTarget = globalConfig.getProjectTarget();
+        
+        //get name of the connexion btn
+        this.cnxBtnName = globalConfig.getCnxBtnName();
 
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
