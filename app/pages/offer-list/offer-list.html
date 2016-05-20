@@ -18,26 +18,6 @@
 </ion-navbar>
 
 <ion-content padding class="offer">
-    <!--div swipe-vertical [swipeUp]="mySwipeUpAction()"
-         [swipeDown]="mySwipeDownAction($event)"
-         (mousemove)="somethingMoved($event)" style="height: 100%;width: 100%;">
-        <button> test</button>
-        <ion-list>
-            <ion-item *ngFor="#person of people">
-                <ion-avatar item-left>
-                    <img src="{{person.picture.thumbnail}}">
-                </ion-avatar>
-                <h2>{{person.name.first}} {{person.name.last}}</h2>
-                <p>{{person.email}}</p>
-            </ion-item>
-        </ion-list>
-    <!--/div>
-
-    <!--div id="parent" style="width: 100%; height: 100%; border : 1px solid red"
-         (mousedown)="onStartDragging($event)">
-        <button fab id="draggable" (drag)="onDragAction($event)" > test</button>
-        <button id="zzzzz"  > Win</button>
-    </div-->
 
     <ion-card [hidden]="!listMode">
         <ion-card-header style = "text-align: center;">
@@ -45,22 +25,12 @@
         </ion-card-header>
 
         <ion-list>
-            <!-- Insert here offer items with *ngFor attribute-->
-            <button ion-item (click)="goToDetailOffer('itemOffer')">
+            <button *ngFor="#item of offersList" ion-item (click)="goToDetailOffer(item)">
                 <ion-icon name="eye" item-left></ion-icon>
-                Serveur débutant
-                <ion-badge [style.backgroundColor]="themeColor">32</ion-badge>
+                {{item.title}}
+                <ion-badge [style.backgroundColor]="themeColor" item-right>{{item.correspondantsCount}}</ion-badge>
             </button>
-            <button ion-item (click)="goToDetailOffer('itemOffer')">
-                <ion-icon name="eye-off" item-left></ion-icon>
-                Serveur expérimenté
-                <ion-badge [style.backgroundColor]="themeColor">54</ion-badge>
-            </button>
-            <button ion-item (click)="goToDetailOffer('itemOffer')">
-                <ion-icon name="eye" item-left></ion-icon>
-                Cuisinier débutant
-                <ion-badge [style.backgroundColor]="themeColor">145</ion-badge>
-            </button>
+
         </ion-list>
     </ion-card>
 

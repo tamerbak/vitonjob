@@ -33,9 +33,15 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
-
+  <ion-card *ngIf="resultsCount == 0 ">
+    <ion-card-content>Vitonjob n'a retrouvé aucune offre correspondante à votre recherche</ion-card-content>
+  </ion-card>
   <ion-slides #cardSlider [options]="cardsOptions" (didChange)="onSlideChanged()" *ngIf="cardView">
     <ion-slide *ngFor="#item of searchResults">
+      <ion-card>
+        <ion-card-header>Vitonjob a retrouvé {{resultsCount}} offre(s) correspondante(s) à votre recherche</ion-card-header>
+      </ion-card>
+
       <ion-card>
         <ion-card-header class="candidate-card-header">
           <span >{{item.titre}} {{item.prenom}} {{item.nom}}</span><ion-badge item-right secondary="">{{item.matching}} %</ion-badge>
