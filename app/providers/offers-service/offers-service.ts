@@ -15,12 +15,22 @@ export class OffersService {
   count;
   offersList : any = null;
   db : any;
+  listSectors : any;
+  listJobs : any;
+  listLanguages : any;
+  listQualities : any;
 
   constructor(public http: Http) {
     this.count = 0;
     this.db = new Storage(SqlStorage);
   }
 
+  /**
+   * Calculating the number of candidates corresponding to each offer
+   * @param jobId the practice job id is used to deduce the convenient job
+   * @param projectTarget Identifying if it is the jobyer version of the employer version
+   * @return {Promise<T>|Promise<R>|Promise} 
+     */
   getBadgeCount(jobId : number, projectTarget : string){
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
@@ -105,6 +115,90 @@ export class OffersService {
 
   loadOffersList(){
     return this.db.get('currentEmployer');
+  }
+
+  loadSecotrs(){
+    var sql = 'select pk_user_metier as id, libelle as libelle from user_metier';
+    console.log(sql);
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers.append("Content-Type", 'text/plain');
+      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+          .map(res => res.json())
+          .subscribe(data => {
+            // we've got back the raw data, now generate the core schedule data
+            // and save the data for later reference
+            console.log(data);
+            this.listSectors = data.data;
+            resolve(this.listSectors );
+          });
+    });
+  }
+
+  loadSecotrs(){
+    var sql = 'select pk_user_job as id, fk_user_metier as idsector, libelle as libelle from user_job';
+    console.log(sql);
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers.append("Content-Type", 'text/plain');
+      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+          .map(res => res.json())
+          .subscribe(data => {
+            // we've got back the raw data, now generate the core schedule data
+            // and save the data for later reference
+            console.log(data);
+            this.listJobs = data.data;
+            resolve(this.listJobs);
+          });
+    });
+  }
+
+  loadLanguages(){
+    var sql = 'select pk_user_langue as id, libelle as libelle from user_langue';
+    console.log(sql);
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers.append("Content-Type", 'text/plain');
+      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+          .map(res => res.json())
+          .subscribe(data => {
+            // we've got back the raw data, now generate the core schedule data
+            // and save the data for later reference
+            console.log(data);
+            this.listLanguages = data.data;
+            resolve(this.listLanguages );
+          });
+    });
+  }
+
+  loadQualities(){
+    var sql = 'select pk_user_indispensable as id, libelle as libelle from user_indispensable';
+    console.log(sql);
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers.append("Content-Type", 'text/plain');
+      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+          .map(res => res.json())
+          .subscribe(data => {
+            // we've got back the raw data, now generate the core schedule data
+            // and save the data for later reference
+            console.log(data);
+            this.listQualities = data.data;
+            resolve(this.listQualities );
+          });
+    });
   }
 }
 
