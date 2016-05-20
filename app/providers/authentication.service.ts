@@ -3,7 +3,6 @@ import {Http, Headers, RequestOptions} from 'angular2/http';
 import {Storage, SqlStorage} from 'ionic-angular';
 import {Configs} from '../configurations/configs';
 
-
 /**
  * @author Amal ROCHD
  * @description web service access point for user authentication and inscription

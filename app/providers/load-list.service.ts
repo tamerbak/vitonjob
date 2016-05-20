@@ -1,5 +1,6 @@
 import {Injectable} from 'angular2/core';
 import {Http, Headers, RequestOptions} from 'angular2/http';
+import {Configs} from '../configurations/configs';
 
 /**
 	* @author Amal ROCHD
@@ -9,6 +10,8 @@ import {Http, Headers, RequestOptions} from 'angular2/http';
 
 @Injectable()
 export class LoadListService {
+	configuration;
+	
 	constructor(http: Http) {
 		this.http = http;
 	}
@@ -18,29 +21,17 @@ export class LoadListService {
 		* @return JSON results in the form of {country name, country code}
 	*/
 	loadCountries(){
-		let url = 'http://vps259989.ovh.net:8080/vitonjobv1/api/sql';
-        var sql = "SELECT nom, indicatif_telephonique FROM user_pays ORDER BY nom";
+		//  Init project parameters
+		this.configuration = Configs.setConfigs(projectTarget);
+		
+		var sql = "SELECT nom, indicatif_telephonique FROM user_pays ORDER BY nom";
 
-
-	    /*
-	    * Performing search directly on server
-	    */
-	    if (this.data) {
-	      // already loaded data
-	      return Promise.resolve(this.data);
-	      console.log("already loaded data" + this.data);
-	    }
-
-
-	    // don't have the data yet
 	    return new Promise(resolve => {
 	      let headers = new Headers();
 	      headers.append("Content-Type", 'text/plain');
-	      this.http.post(url, sql, {headers:headers})
+	      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
 	          .map(res => res.json())
 	          .subscribe(data => {
-	            // we've got back the raw data, now generate the core schedule data
-	            // and save the data for later reference
 	            this.data = data;
 	            console.log("Newly loaded data" + this.data);
 	            resolve(this.data);
