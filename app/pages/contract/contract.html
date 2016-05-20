@@ -1,0 +1,145 @@
+<!--
+  Generated template for the ContractPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+  <ion-title>{{contractTitle}}</ion-title>
+  <ion-buttons end>
+    <button (click)="showMenuToEditContract()">
+      <ion-icon name="create"></ion-icon>
+    </button>
+  </ion-buttons>
+</ion-navbar>
+
+<ion-content padding class="contract">
+    <div id="iframPlaceHolder" style="width: 100%;height: 100%;" [hidden]="isIFrameHidden" ><!--ng-show="showiFrame">-->
+    </div>
+    
+    <div>
+        <div id="printableContent" ng-if="hideiFrame">
+            <div class="row">
+                <img class="col-50 text-left">
+            </div>
+            <div class="col-50 col-center text-right">
+                Contrat n° VB0902005<br/>
+                Intérimaire TEST
+            </div>
+        </div>
+        <h3>CONTRAT DE MISSION</h3>
+        <div class="row">
+            <div class="col-50 text-left">Société utilisatrice : {{society}}</div>
+            <div class="col-50 text-right">Contact : {{employerFullName}}</div>
+        </div>
+        <div class="row">
+            <div class="col-50 text-left">Lieu de la mission : {{lieu}}</div>
+        </div>
+        <h4 class="text-left">SALARIE INTERIMAIRE</h4>
+        <div class="row">
+            <div class="col-33 text-left">Nom : {{jobyerLastName}}</div>
+            <div class="col-33 text-center">Prénoms : {{jobyerfirstNameJ}}</div>
+            <div class="col-34 text-right">N° SS : 1 99 999 999 999 999</div>
+        </div>
+        <div class="row">
+            <div class="col-33 text-left">Né(e) le : 01/01/1975</div>
+            <div class="col-33 text-center">Lieu de naissance : Paris</div>
+            <div class="col-34 text-right">Nationalité : Française</div>
+        </div>
+        <h4 class="text-left">MISSION</h4>
+        <div class="row">
+            <div class="col-50 text-left">Dates de la mission : du 01/02/2009 au 30/04/2009</div>
+            <div class="col-50 text-right">Période d'essai : 5 jour(s) travaillé(s)</div>
+        </div>
+        <div class="row">
+            Le terme de la mission peut être avancé ou reporté entre le 20/04/2009 et le 10/05/2009
+        </div>
+        <div class="row">
+            <div class="col-50 text-left">Motif du recours : Remplacement Maladie</div>
+            <div class="col-50 text-right">Justification précise du recours : Mme MARTIN Monique</div>
+        </div>
+        <h4 class="text-left">POSTE DE TRAVAIL ET ORGANISATION DU TEMPS DE TRAVAIL</h4>
+        <div class="row">
+            <div class="col-50 text-left">Qualification : Magasinier qualifie</div>
+            <div class="col-50 text-right">Caractéristiques du poste : Gestion du stock pièces</div>
+        </div>
+        <div class="row">
+            <div class="col-50 text-left">Temps de travail : 35H hebdo. Variables</div>
+            <div class="col-50 text-right">Horaires habituels de travail : 8H00/17H00 variables</div>
+        </div>
+        <div class="row">
+            <div class="col-33 text-left">Poste à risques : non</div>
+            <div class="col-33 text-center">Surveillance médicale spéciale : non</div>
+            <div class="col-34 text-right">EPI : chaussures de sécurité</div>
+        </div>
+        <h4 class="text-left">SALAIRE DE REFERENCE-DUREE DU TRAVAIL</h4>
+        <div class="row">
+            <div class="col-50 text-left">Salaire de base : 15,00€ B/H</div>
+            <div class="col-50 text-right">Durée collective moyenne mensuelle du travail 35H Hebdomadaires</div>
+        </div>
+        <h4 class="text-left">REMENURATION</h4>
+        <div class="row">
+            <div class="col-50 text-left">Heures normales : 15,00€ B/H</div>
+            <div class="col-50 text-right">HS au-dela de 35H +25%, 43H +50%</div>
+        </div>
+        <div class="row">
+            Droit au repos compensateur>41H 50%
+        </div>
+        <h4 class="text-left">MEDECINE DU TRAVAIL</h4>
+        <div class="row">
+            Gestion intérim : ASMIS 77 RUE DEBAUSSAUX 80000 AMIENS
+        </div>
+        <div class="row">
+            Client : ASMIS 
+        </div>
+        <h4 class="text-left">INFORMATIONS COMPLEMENTAIRES</h4>
+        <div class="row">
+            Primes diverses : néant
+        </div>
+        <div class="row">
+            <div class="col-50 text-left">
+                Fait à HARGICOURT le 01/02/2009
+            </div>
+            <div class="col-50 text-right">
+                SIGNATURE DU SALARIE
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-50 text-left">Pour GESTION INTERIM</div>
+            <div class="col-50 text-right">INTERIMAIRE</div>
+        </div>
+        <div style="border: 1px solid black;margin-top:20px;margin-bottom: 20px;">
+            <b>GESTION INTERIM</b>
+            <br/>
+            22, rue de l'Avenir 80500 HARGICOURT
+            <br/>
+            <b>Tél. 03 22 78 55 58</b>
+            <br/>
+            <b>Fax. 03 22 88 23 83</b>
+            <br/>
+            <b>gestion.interim@orange.fr</b>
+            <br/>
+            SIRET 480 167 543 000 10-RCS AMIENS
+            <br/>
+            GARANT FINANCIER CREDIT DU NORD
+            <br/>
+        </div>
+    </div>
+    
+    
+  
+</ion-content>
+<ion-toolbar position="bottom">
+    <ion-row>
+        <ion-col>
+            <button [style.backgroundColor]="themeColor" (click)="callYousign()">
+                Accepter le contrat
+            </button>
+        </ion-col>
+        <ion-col> 
+            <button [style.backgroundColor]="themeColor" (click)="goToPayment()">
+                Paiement
+            </button>
+        </ion-col>
+    </ion-row>
+</ion-toolbar>

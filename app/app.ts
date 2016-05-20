@@ -2,16 +2,21 @@ import {App, Platform, IonicApp, MenuController} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {HomePage} from './pages/home/home';
 import {LoginsPage} from './pages/logins/logins';
+import {MissionListPage} from './pages/mission-list/mission-list';
 import {Configs} from './configurations/configs';
 import {GlobalConfigs} from './configurations/globalConfigs';
 import {SearchService} from "./providers/search-service/search-service";
 import {OfferListPage} from "./pages/offer-list/offer-list";
+import {UserService} from "./providers/user-service/user-service";
+import {ContractService} from "./providers/contract-service/contract-service";
+import {SmsService} from "./providers/sms-service/sms-service";
+import {MissionService} from "./providers/mission-service/mission-service";
 
 
 @App({
   templateUrl: 'build/menu.html',
   config: {backButtonText: 'Retour'}, // http://ionicframework.com/docs/v2/api/config/Config/
-  providers : [GlobalConfigs, SearchService]
+  providers : [GlobalConfigs, SearchService,UserService,ContractService,SmsService,MissionService]
 })
 export class MyApp {
   rootPage: any = HomePage;
@@ -28,7 +33,8 @@ export class MyApp {
   constructor(private platform: Platform,
               private app: IonicApp,
               private menu: MenuController,
-              private gc: GlobalConfigs) {
+              private gc: GlobalConfigs,
+              private missionService:MissionService) {
     this.app = app;
     this.platform = platform;
     this.menu = menu;
@@ -38,7 +44,8 @@ export class MyApp {
     this.pages = [
       { title: "Se connecter", component: LoginsPage, icon: "log-in", isBadged: false },
       { title: "Lancer une recherche", component: HomePage, icon: "search", isBadged: false },
-      { title: "Mes offres", component: OfferListPage, icon: "list", isBadged: true }
+      { title: "Mes offres", component: OfferListPage, icon: "list", isBadged: true },
+      { title: "Gestion des missions", component: MissionListPage, icon: "list", isBadged: false },
     ];
     this.rootPage = HomePage;//OfferAddPage;//
 
@@ -56,6 +63,9 @@ export class MyApp {
     this.userName = "Nom d'utilisateur";
     this.userMail = "mail@compte.com";
     this.themeColor = config.themeColor;
+    
+    //fake call of setMissions from mission-service to fill local db with missions data for test
+    missionService.setMissions();
 
 
   }
@@ -73,6 +83,13 @@ export class MyApp {
   openPage(page) {
     let nav = this.app.getComponent('nav');
     this.menu.close();
-    nav.setRoot(page.component);
+    if(page.title == 'Gestion des missions' ){
+        nav.push(page.component);
+    }
+    else
+    {
+        nav.setRoot(page.component);
+    }
+    
   }
 }

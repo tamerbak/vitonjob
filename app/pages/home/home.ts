@@ -33,7 +33,7 @@ export class HomePage {
                 private app: IonicApp,
                 private nav: NavController,
                 private navParams: NavParams,
-                    private searchService: SearchService) {
+                private searchService: SearchService) {
 
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();

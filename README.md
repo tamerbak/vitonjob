@@ -32,7 +32,7 @@ collaborateurs du projet.
  │   │   │  
  │   │   │── Offer/                     * Offer page  
  │   │        ├── offer.html            * offer template  
- │   │        └── offer-list.js              * offer code
+ │   │        └── offer.js              * offer code  
  │   │        └── offer.scss            * offer stylesheet  
  │   │  
  │   │  

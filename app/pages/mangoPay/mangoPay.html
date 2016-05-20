@@ -1,0 +1,41 @@
+<ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+  <button menuToggle>
+    <ion-icon name="menu"></ion-icon>
+  </button>
+  <ion-title>{{mangoPayTitle}}</ion-title>
+</ion-navbar>
+
+<ion-content padding class="mangoPay">
+
+    <ion-row>
+        <ion-item>
+            <ion-label floating>Numéro de carte de crédit</ion-label>
+            <ion-input type="text" 
+                       [(ngModel)]="cardNumber"></ion-input>
+        </ion-item>
+    </ion-row>
+    
+    <ion-row>
+        <ion-col width-30>
+            <ion-item>
+                <ion-label floating>MMDD</ion-label>
+                <ion-input type="text" 
+                        [(ngModel)]="cardExpirationDate"></ion-input>
+            </ion-item>
+        </ion-col>
+    
+        <ion-col width-70>
+            <ion-item>
+                <ion-label floating>Code Sécurité</ion-label>
+                <ion-input type="text" 
+                        [(ngModel)]="cardCvv"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    
+    <button [style.backgroundColor]="themeColor" (click)="doPayment()">
+        <ion-icon name="profile"></ion-icon>
+            Accepter
+    </button>
+  
+</ion-content>
