@@ -59,6 +59,10 @@ export class AuthenticationService {
 		})
 	}
 	
+	/**
+		* @description Update user_account with the new device token and accountid
+		* @param token, accountId
+	*/
 	insertToken(token, accountId){
 		let url = 'http://vps259989.ovh.net:8080/vitonjobv1/api/sql';
         var sql = "Update user_account set device_token = '" + token + "' where pk_user_account = '" + accountId + "';";
@@ -78,6 +82,7 @@ export class AuthenticationService {
 			)
 			});
 	}
+	
 	
 	//Not sur if this 2 methods should be here or in a separate service
 	setObj(key, obj){
