@@ -58,6 +58,12 @@ export class OffersService {
     });
   }
 
+    /**
+     * @description Get the corresponding candidates of a specific offer
+     * @param offer the reference offer
+     * @param projectTarget the project target configuration (jobyer/employer)
+     * @return {Promise<T>|Promise<R>|Promise} a promise of returning the candidates
+     */
   getCorrespondingOffers(offer : any, projectTarget : string){
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
@@ -113,10 +119,18 @@ export class OffersService {
     });
   }
 
+    /**
+     * @description     Returning the persisted offers list from the local data base
+     * @return {any}    A promise of getting serialized data from SQLite phone database
+     */
   loadOffersList(){
     return this.db.get('currentEmployer');
   }
 
+    /**
+     * @description     loading sector list
+     * @return sector list in the format {id : X, libelle : X}
+     */
   loadSecotrs(){
     var sql = 'select pk_user_metier as id, libelle as libelle from user_metier';
     console.log(sql);
@@ -138,7 +152,11 @@ export class OffersService {
     });
   }
 
-  loadSecotrs(){
+    /**
+     * loading
+     * @return {Promise<T>|Promise<R>|Promise}
+     */
+  loadJobs(){
     var sql = 'select pk_user_job as id, fk_user_metier as idsector, libelle as libelle from user_job';
     console.log(sql);
     return new Promise(resolve => {
