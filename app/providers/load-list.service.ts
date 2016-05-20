@@ -1,6 +1,11 @@
 import {Injectable} from 'angular2/core';
 import {Http, Headers, RequestOptions} from 'angular2/http';
 
+/**
+	* @author Amal ROCHD
+	* @description web service access point for loading data from server
+	* @module Authentication
+*/
 
 @Injectable()
 export class LoadListService {
@@ -8,6 +13,10 @@ export class LoadListService {
 		this.http = http;
 	}
 	
+	/**
+		* @description load a list of countries with their codes
+		* @return JSON results in the form of {country name, country code}
+	*/
 	loadCountries(){
 		let url = 'http://vps259989.ovh.net:8080/vitonjobv1/api/sql';
         var sql = "SELECT nom, indicatif_telephonique FROM user_pays ORDER BY nom";
@@ -25,9 +34,6 @@ export class LoadListService {
 
 	    // don't have the data yet
 	    return new Promise(resolve => {
-	      // We're using Angular Http provider to request the data,
-	      // then on the response it'll map the JSON data to a parsed JS object.
-	      // Next we process the data and resolve the promise with the new data.
 	      let headers = new Headers();
 	      headers.append("Content-Type", 'text/plain');
 	      this.http.post(url, sql, {headers:headers})
