@@ -46,7 +46,7 @@ export class DataProviderService {
 	*/
 	getUserByMail(mail, role){
 		//  Init project parameters
-		this.configuration = Configs.setConfigs(projectTarget);
+		this.configuration = Configs.setConfigs(role);
 		
 		var sql = "select pk_user_account, email from user_account where email = '"+mail+"' and role = '" + role +"'";
 

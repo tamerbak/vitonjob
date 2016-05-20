@@ -55,7 +55,7 @@ export class MailPage {
 		this.libelleButton = "Se connecter";
 		
 		//load countrie list
-		this.loadListService.loadCountries().then((data) => {
+		this.loadListService.loadCountries(this.projectTarget).then((data) => {
 			this.pays = data.data;
 		});
 	}

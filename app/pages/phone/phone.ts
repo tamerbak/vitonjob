@@ -54,7 +54,7 @@ export class PhonePage {
 		this.libelleButton = "Se connecter";
 		
 		//load countries list
-		this.loadListService.loadCountries().then((data) => {
+		this.loadListService.loadCountries(this.projectTarget).then((data) => {
 			this.pays = data.data;
 		});
 	}

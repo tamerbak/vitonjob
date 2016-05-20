@@ -20,7 +20,7 @@ export class LoadListService {
 		* @description load a list of countries with their codes
 		* @return JSON results in the form of {country name, country code}
 	*/
-	loadCountries(){
+	loadCountries(projectTarget){
 		//  Init project parameters
 		this.configuration = Configs.setConfigs(projectTarget);
 		
