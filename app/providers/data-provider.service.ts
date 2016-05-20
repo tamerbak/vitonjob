@@ -1,6 +1,11 @@
 import { Injectable } from 'angular2/core';
 import {Http, Headers, RequestOptions} from 'angular2/http';
 
+/**
+	* @author Amal ROCHD
+	* @description web service access point for searching user by criteria
+	* @module Authentication
+*/
 
 @Injectable()
 export class DataProviderService {
@@ -8,6 +13,11 @@ export class DataProviderService {
 		this.http = http;
 	}
 	
+	/**
+		* @description get user information by his phone and role
+		* @param phone, role
+		* @return JSON results in the form of user accounts
+	*/
 	getUserByPhone(tel, role){
 		let url = 'http://vps259989.ovh.net:8080/vitonjobv1/api/sql';
 		var sql = "select pk_user_account, email from user_account where telephone = '"+tel+"' and role = '" + role +"'";
@@ -34,6 +44,11 @@ export class DataProviderService {
 	    })
 	}
 	
+	/**
+		* @description get user information by his mail and role
+		* @param mail, role
+		* @return JSON results in the form of user accounts
+	*/
 	getUserByMail(mail, role){
 		let url = 'http://vps259989.ovh.net:8080/vitonjobv1/api/sql';
 		var sql = "select pk_user_account, email from user_account where email = '"+mail+"' and role = '" + role +"'";
