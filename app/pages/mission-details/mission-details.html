@@ -1,0 +1,56 @@
+<!--
+  Generated template for the MissionDetailsPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" *navbar>
+  <ion-title>{{missionDetailsTitle}}</ion-title>
+</ion-navbar>
+
+<ion-content padding class="mission-details">
+    <ion-card *ngFor="#day of mission.days">
+        <ion-card-header>
+            Jour {{day.index}}: {{day.date}}  
+        </ion-card-header>
+        
+        <ion-list>
+            <ion-item-sliding>
+                <button ion-item class="large-btn" (click)="updateTime(day.time[0].start,mission.index,day.index,true,true)" >
+                    <ion-row>
+                        <ion-col>
+                            Heure de début:
+                        </ion-col>
+                        <ion-col>
+                            {{day.time[0].start}}
+                        </ion-col>
+                    </ion-row>
+                </button>
+            </ion-item-sliding>
+            <ion-item-sliding>
+                <button ion-item class="large-btn" (click)="updateTime(day.time[0].end,mission.index,day.index,true,false)" >
+                    <ion-row>
+                        <ion-col>
+                            Heure de fin:
+                        </ion-col>
+                        <ion-col>
+                            {{day.time[0].end}}
+                        </ion-col>
+                    </ion-row>
+                </button>
+            </ion-item-sliding>
+        </ion-list>
+    </ion-card>
+  
+</ion-content>
+<ion-toolbar position="bottom">
+    <ion-row>
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button [style.backgroundColor]="themeColor" (click)="goToHomePage()">
+                Quitter
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+</ion-toolbar>
