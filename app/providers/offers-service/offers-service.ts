@@ -19,6 +19,7 @@ export class OffersService {
   listJobs : any;
   listLanguages : any;
   listQualities : any;
+  data : any;
 
   constructor(public http: Http) {
     this.count = 0;
@@ -131,7 +132,10 @@ export class OffersService {
      * @description     loading sector list
      * @return sector list in the format {id : X, libelle : X}
      */
-  loadSecotrs(){
+  loadSecotrs(projectTarget : string){
+    //  Init project parameters
+    this.configuration = Configs.setConfigs(projectTarget);
+
     var sql = 'select pk_user_metier as id, libelle as libelle from user_metier';
     console.log(sql);
     return new Promise(resolve => {
@@ -153,10 +157,13 @@ export class OffersService {
   }
 
     /**
-     * loading
-     * @return {Promise<T>|Promise<R>|Promise}
+     * loading jobs list from server
+     * @return jobs list in the format {id : X, idsector : X, libelle : X}
      */
-  loadJobs(){
+  loadJobs(projectTarget : string){
+    //  Init project parameters
+    this.configuration = Configs.setConfigs(projectTarget);
+
     var sql = 'select pk_user_job as id, fk_user_metier as idsector, libelle as libelle from user_job';
     console.log(sql);
     return new Promise(resolve => {
@@ -177,7 +184,13 @@ export class OffersService {
     });
   }
 
-  loadLanguages(){
+    /**
+     * @description     loading languages list
+     * @return languages list in the format {id : X, libelle : X}
+     */
+  loadLanguages(projectTarget : string){
+    //  Init project parameters
+    this.configuration = Configs.setConfigs(projectTarget);
     var sql = 'select pk_user_langue as id, libelle as libelle from user_langue';
     console.log(sql);
     return new Promise(resolve => {
@@ -198,7 +211,13 @@ export class OffersService {
     });
   }
 
-  loadQualities(){
+    /**
+     * @description     loading qualities list
+     * @return qualities list in the format {id : X, libelle : X}
+     */
+  loadQualities(projectTarget : string){
+    //  Init project parameters
+    this.configuration = Configs.setConfigs(projectTarget);
     var sql = 'select pk_user_indispensable as id, libelle as libelle from user_indispensable';
     console.log(sql);
     return new Promise(resolve => {
