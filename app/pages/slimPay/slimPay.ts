@@ -3,6 +3,7 @@ import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {OfferPage} from "../offer/offer";
 
+
 @Page({
   templateUrl: 'build/pages/slimPay/slimPay.html',
 })
