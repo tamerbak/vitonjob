@@ -144,4 +144,8 @@ export class HomePage {
         this.popinCrietria = true;
         this.nav.present(m);
     }
+
+    onDrag(){
+        console.log('dragini');
+    }
 }

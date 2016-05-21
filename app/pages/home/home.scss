@@ -12,3 +12,17 @@
   line-height: 2 !important;
 }
 
+#draggable {
+  top : 500px;
+  left : 50px;
+  width: 150px; 
+  height: 150px; 
+  padding: 0px;
+  text-align: center;
+  position: absolute;
+  background-color:  #69BB7B;
+}
+
+#draggable > h2{
+  color: #fff;
+}
