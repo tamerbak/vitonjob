@@ -44,7 +44,9 @@
 
       <ion-card>
         <ion-card-header class="candidate-card-header">
-          <span >{{item.titre}} {{item.prenom}} {{item.nom}}</span><ion-badge item-right secondary="">{{item.matching}} %</ion-badge>
+          <span>{{searchResults.indexOf(item) + 1 }} / {{resultsCount}}</span>
+          <span >{{item.titre}} {{item.prenom}} {{item.nom}}</span>
+          <ion-badge item-right secondary="">{{item.matching}} %</ion-badge>
         </ion-card-header>
         <ion-card-content class="candidate-card-content">
           <h2>{{item.titreoffre}}</h2>
