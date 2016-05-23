@@ -96,7 +96,6 @@ export class MailPage {
 	*/
 	authenticate() {
 		var indPhone = this.index + this.phone;
-		var role = (this.projectTarget == 'jobyer' ? 'jobyer' : 'employeur');
 		//call the service of autentication
 		this.authService.authenticate(this.email, indPhone, this.password1, this.projectTarget)
 		.then(data => {

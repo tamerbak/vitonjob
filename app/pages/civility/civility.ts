@@ -5,7 +5,11 @@ import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SqlStorageService} from "../../providers/sql-storage.service";
 import {PersonalAddress} from "../personal-address/personal-address";
 import {AuthenticationService} from "../../providers/authentication.service";
-
+/**
+	* @author Amal ROCHD
+	* @description update civility information
+	* @module Authentication
+*/
 @Page({
 	templateUrl: 'build/pages/civility/civility.html',
 	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService]
@@ -26,6 +30,9 @@ export class CivilityPage {
 	siret;
 	ape;
 	
+	/**
+		* @description While constructing the view, we load the list of nationalities, and get the currentEmployer passed as parameter from the connection page
+	*/
 	constructor(public nav: NavController, private authService: AuthenticationService,
 	public gc: GlobalConfigs, private loadListService: LoadListService, private sqlStorageService: SqlStorageService, tabs:Tabs, params: NavParams) {
 		// Set global configs
@@ -45,17 +52,12 @@ export class CivilityPage {
 		//load nationality list
 		this.loadListService.loadNationalities(this.projectTarget).then((data) => {
 			this.nationalities = data.data;
-			console.log(this.nationalities);
-			console.log(this.nationalities[0]);
-			//console.log(this.nationalities[0].natId);
-			console.log(this.nationalities[0].libelle);
 		});
 	}
-	
+	/**
+		* @description update civility information for employer and jobyer
+	*/
 	updateCivility(){
-		//parse current employer into json
-		//this.currentEmployer = JSON.parse(this.currentEmployer);
-		//get the role id
 		if(this.isEmployer){
 			//get the role id
 			var employerId = this.currentEmployer.employerId;
@@ -109,8 +111,10 @@ export class CivilityPage {
 		this.tabs.select(1);
 	}
 	
-	
-	isBtnUpdtDisabled(){
+	/**
+		* @description function called to decide if the validate button should be disabled or not
+	*/
+	isUpdateDisabled(){
 		if(!this.isEmployer){
 			return (!this.title || !this.firstname || !this.lastname || !this.cni || !this.numSS || !this.nationality || !this.birthplace || !this.birthdate)
 		}

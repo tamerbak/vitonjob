@@ -3,10 +3,10 @@ import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
 import {LoginsPage} from "../logins/logins";
-import {InfoUserPage} from "../info-user/info-user";
 import {SearchResultsPage} from "../search-results/search-results";
 import {SearchCriteriaPage} from "../search-criteria/search-criteria";
 import {SearchGuidePage} from "../search-guide/search-guide";
+//import {InfoUserPage} from "../info-user/info-user";
 
 @Page({
     templateUrl: 'build/pages/home/home.html',
