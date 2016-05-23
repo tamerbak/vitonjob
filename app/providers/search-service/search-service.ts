@@ -28,7 +28,7 @@ export class SearchService {
   semanticSearch(textQuery : string, referenceOffer : number, projectTarget : string){
 
     //  Start by identifying the wanted table and prepare the pay load
-    var table = projectTarget == 'jobyer'?'user_jobyer':'user_entreprise';
+    var table = projectTarget == 'jobyer'?'user_entreprise':'user_jobyer';
     var query = table+';'+textQuery;
 
     var payload = {
@@ -88,7 +88,7 @@ export class SearchService {
 
     var payload = {
       'class' : 'fr.protogen.masterdata.model.CCallout',
-      id : 127,
+      id : 129,
       args : [
         {
           class : 'fr.protogen.masterdata.model.CCalloutArguments',

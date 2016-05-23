@@ -58,7 +58,7 @@ export class SearchGuidePage {
       nom : '',
       entreprise : '',
       date : this.availability,
-      table : this.projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise',
+      table : this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer',
       idOffre :'0'
     };
     console.log(searchFields);
