@@ -61,7 +61,7 @@ export class SearchResultsPage {
                 platform : Platform) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
-        this.avatar = this.projectTarget == 'jobyer' ? 'jobyer_avatar':'employer_avatar';
+        this.avatar = this.projectTarget != 'jobyer' ? 'jobyer_avatar':'employer_avatar';
         this.platform = platform;
 
         //  Retrieving last search
@@ -330,4 +330,23 @@ export class SearchResultsPage {
         });
     }
 
+    /**
+     * @description removes from the proposition list a specific language
+     * @param language
+     */
+    deleteLanguage(language){
+        let index = this.proposedLanguages.indexOf(language);
+        this.proposedLanguages.splice(index, 1);
+        console.log(this.proposedLanguages);
+    }
+
+    /**
+     * @description removes from the proposition list a specific quality
+     * @param quality
+     */
+    deleteQuality(quality){
+        let index = this.proposedQualities.indexOf(quality);
+        this.proposedQualities.splice(index, 1);
+        console.log(this.proposedQualities);
+    }
 }

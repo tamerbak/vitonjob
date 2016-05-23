@@ -8,8 +8,6 @@ function touchHandler(event) {
     var x = touch.clientX-(150/2);
     var y = touch.clientY-100;
 
-    console.log('touch position : '+x+', '+y);
-
     var spX = $('.draggable').css('left') ;
     var spY = $('.draggable').css('top') ;
 
@@ -19,11 +17,7 @@ function touchHandler(event) {
     var pX = parseFloat(spX) - 75;
     var pY = parseFloat(spY) - 75;
 
-
-    console.log('draggable position : '+pX+', '+pY);
-
     if(x>=pX && x <=pX+150 && y>=pY && y <=pY+100){
-        console.log('You touched me !')
         $('.draggable').css('left', x+'px');
         $('.draggable').css('top', y+'px');
     }
