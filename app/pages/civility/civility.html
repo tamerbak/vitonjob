@@ -1,57 +1,86 @@
 <!--
-  Generated template for the PhonePage page.
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
+	Generated template for the CivilityPage page.
+	See http://ionicframework.com/docs/v2/components/#navigation for more info on
+	Ionic pages and navigation.
 -->
 <ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
     <button menuToggle>
-    <ion-icon name="menu"></ion-icon>
-  </button>
+		<ion-icon name="menu"></ion-icon>
+	</button>
     <ion-title>Saisie de la civilité</ion-title>
 </ion-navbar>
 
 <ion-content padding>
     <ion-item>
-        <ion-label>Titre</ion-label>
-        <ion-select>
-            <ion-option value="0">Mme</ion-option>
-            <ion-option value="1">Mlle</ion-option>
-            <ion-option value="2">M.</ion-option>
-        </ion-select>
-    </ion-item>
-
+        <ion-label floating>Titre</ion-label>
+        <ion-select [(ngModel)]="title">
+			<ion-option value="Mme">Mme</ion-option>
+            <ion-option value="Mlle">Mlle</ion-option>
+            <ion-option value="M.">M.</ion-option>
+		</ion-select>
+	</ion-item>
+	
     <ion-item>
-        <ion-input type="text" value="" placeholder="Nom"></ion-input>
-    </ion-item>
-
+        <ion-label floating>Nom</ion-label>
+        <ion-input type="text" [(ngModel)]="lastname"></ion-input>
+	</ion-item>
+	
     <ion-item>
-        <ion-input type="text" placeholder="Prénom"></ion-input>
-    </ion-item>
-
-    <ion-item>
-        <ion-input type="text" value="" placeholder="Date de naissance (JJ/MM/YYYY)"></ion-input>
-    </ion-item>
-
-    <ion-item>
-        <ion-input type="text" placeholder="Lieu de naissance (ex :Palaiseau (91))"></ion-input>
-    </ion-item>
-
-    <ion-item>
-        <ion-input type="text" value="" placeholder="CNI"></ion-input>
-    </ion-item>
-
-    <ion-item>
-        <ion-input type="text" placeholder="N° SS"></ion-input>
-    </ion-item>
-
-    <ion-item>
-        <ion-label>Nationalité</ion-label>
-        <ion-select>
-            <ion-option value="0">Français</ion-option>
-            <ion-option value="1">Allemand</ion-option>
-            <ion-option value="2">Portugais</ion-option>
-        </ion-select>
-    </ion-item>
-
-    <button light round>Valider</button>
+        <ion-label floating>Prénom</ion-label>
+        <ion-input type="text" [(ngModel)]="firstname"></ion-input>
+	</ion-item>
+	
+	<ion-item [hidden]="!isEmployer">
+        <ion-label floating >Nom entreprise</ion-label>
+        <ion-input type="text" [(ngModel)]="companyname"></ion-input>
+	</ion-item>
+	
+	<ion-item [hidden]="!isEmployer">
+        <ion-label floating>SIRET: 999 999 999 99999</ion-label>
+        <ion-input type="text" [(ngModel)]="siret"></ion-input>
+	</ion-item>
+	
+	<ion-item [hidden]="!isEmployer">
+        <ion-label floating>NAF: 9999A</ion-label>
+        <ion-input type="text" [(ngModel)]="ape"></ion-input>
+	</ion-item>
+	
+	
+    <ion-item [hidden]="isEmployer">
+        <ion-label floating>Date de naissance (JJ/MM/YYYY)</ion-label>
+		<ion-input type="text" [(ngModel)]="birthdate"></ion-input>
+	</ion-item>
+	
+    <ion-item [hidden]="isEmployer">
+        <ion-label floating>Lieu de naissance (ex :Palaiseau (91))</ion-label>
+		<ion-input type="text" [(ngModel)]="birthplace"></ion-input>
+	</ion-item>
+	
+    <ion-item [hidden]="isEmployer">
+        <ion-label floating>CNI</ion-label>
+		<ion-input type="text" [(ngModel)]="cni"></ion-input>
+	</ion-item>
+	
+    <ion-item [hidden]="isEmployer">
+        <ion-label floating>N° SS</ion-label>
+		<ion-input type="text" [(ngModel)]="numSS"></ion-input>
+	</ion-item>
+	
+    <ion-item [hidden]="isEmployer">
+        <ion-label floating>Nationalité</ion-label>
+        <ion-select [(ngModel)]="nationality" >
+            <ion-option *ngFor="#n of nationalities" value="{{n.pk_user_nationalite}}">{{n.libelle}}</ion-option>
+		</ion-select>
+	</ion-item>
+	
+    <ion-row>
+		<ion-col width-10></ion-col>
+		<ion-col text-center>
+			<button block (click)="updateCivility()" [style.backgroundColor]="themeColor" [disabled]="isBtnUpdtDisabled()" type="submit">
+				<ion-icon name="done-all"></ion-icon>
+				Valider
+			</button>
+		</ion-col>
+		<ion-col width-10></ion-col>
+	</ion-row>
 </ion-content>

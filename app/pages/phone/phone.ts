@@ -8,6 +8,8 @@ import {GlobalService} from "../../providers/global.service";
 import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
 import {InfoUserPage} from "../info-user/info-user";
+import {Storage, SqlStorage} from 'ionic-angular';
+
 
 /**
 	* @author Amal ROCHD
@@ -33,6 +35,9 @@ export class PhonePage {
 	libelleButton: string;
 	password1: string;
 	password2: string;
+	db : any;
+	temp: any;
+	
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
@@ -42,6 +47,7 @@ export class PhonePage {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
+		this.db = new Storage(SqlStorage);
 		
 		// get config of selected target
 		let config = Configs.setConfigs(this.projectTarget);
@@ -121,31 +127,39 @@ export class PhonePage {
 				'etat': true,
 				'libelle': 'Se déconnecter',
 				'employeID' : (this.projectTarget == 'jobyer' ? data.jobyerId : data.employerId)
+				//'employeID' : data.jobyerId
 			};
 			
 			//load device token to current account
-			var token = this.authService.getObj('deviceToken');
-			console.log(token);
+			var token;
+			this.authService.getObj('deviceToken').then(val => {
+				token = val;
+			});
 			var accountId = data.id;
-			console.log(accountId);
-			
 			if (token) {
 				console.log("insertion du token : " + token);
 				this.authService.insertToken(token, accountId, this.projectTarget);
 			}
+			
 			this.authService.setObj('connexion', connexion);
 			this.authService.setObj('currentEmployer', data);
+			var temp;
+			/*this.authService.getObj('currentEmployer').then(val => {
+				temp = val;
+				console.log(val);
+				console.log(temp);
+			});
+			console.log(temp);*/
 			
 			//user is connected, then change the name of connexion btn to deconnection
-			console.log("a" + this.gc.getCnxBtnName());
 			this.gc.setCnxBtnName("Déconnexion");
-			console.log("b" + this.gc.getCnxBtnName());
 			
 			//if user is connected for the first time, redirect him to the page 'civility', else redirect him to the home page
 			var isNewUser = data.new;
 			if (isNewUser == 'true') {
 				this.globalService.showAlertValidation("Bienvenue dans votre espace VitOnJob!");
-				this.nav.push(InfoUserPage);
+				this.nav.push(InfoUserPage, {
+				currentEmployer: data});
 				} else {
 				this.nav.pop(HomePage);
 			}
@@ -170,6 +184,7 @@ export class PhonePage {
 		* @description function called on change of the phone input to validate it
 	*/
 	watchPhone(e, el) {
+		//var value = e.srcElement.value;
 		if (this.phone) {
 			this.phone = this.phone.replace("-", "").replace(".", "").replace("+", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "").replace(",", "").replace("#", "").replace("*", "").replace(";", "").replace("N", "");
 			

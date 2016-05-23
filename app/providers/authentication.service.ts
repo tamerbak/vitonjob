@@ -4,10 +4,10 @@ import {Storage, SqlStorage} from 'ionic-angular';
 import {Configs} from '../configurations/configs';
 
 /**
- * @author Amal ROCHD
- * @description web service access point for user authentication and inscription
- * @module Authentication
- */
+	* @author Amal ROCHD
+	* @description web service access point for user authentication and inscription
+	* @module Authentication
+*/
 
 @Injectable()
 export class AuthenticationService {
@@ -20,10 +20,10 @@ export class AuthenticationService {
 	}
 	
 	/**
-   * @description Insert a user_account if it does not exist
-   * @param email, phone, password, role
-   * @return JSON results in the form of user accounts
-     */
+		* @description Insert a user_account if it does not exist
+		* @param email, phone, password, role
+		* @return JSON results in the form of user accounts
+	*/
 	authenticate(email: string, phone: number, password, projectTarget: string){
 		//  Init project parameters
 		this.configuration = Configs.setConfigs(projectTarget);
@@ -35,7 +35,7 @@ export class AuthenticationService {
 			'email': email,
 			'telephone': "+" + phone,
 			'password': password,
-			'role': projectTarget
+			'role': (projectTarget == 'employer' ? 'employeur' : projectTarget) 
 		};
 		login = JSON.stringify(login);
 		var encodedLogin = btoa(login);
@@ -57,7 +57,6 @@ export class AuthenticationService {
 			.map(res => res.json())
 			.subscribe(data => {
 	            this.data = data;
-	            console.log(this.data);
 	            resolve(this.data);
 			});
 		})
@@ -82,7 +81,85 @@ export class AuthenticationService {
 			data => console.log("device token bien inséré pour l'utilisateur " + accountId),
 			err => console.log(err)
 			)
+		});
+	}
+	
+	/**
+		* @description update jobyer information
+		* @param title, lastname, firstname, num securite social, cni, nationalityId, roleId, birthdate, birthplace
+	*/
+	updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, projectTarget){
+		//  Init project parameters
+		this.configuration = Configs.setConfigs(projectTarget);
+		
+		//split the birth date into a table to store day, month and year
+		var fromStringDate = birthdate.split("/");
+		var toStringDate = fromStringDate[2].toString() + "-" + (fromStringDate[1]).toString() + "-" + fromStringDate[0].toString();
+		var sql = "";
+		//building the sql request 
+		if (nationalityId){
+			sql = "update user_jobyer set  " +
+			"titre='" + title + "', " +
+			"nom='" + lastname + "', " +
+			"prenom='" + firstname + "', " +
+			"numero_securite_sociale='" + numSS + "', " +
+			"cni='" + cni + "', " +
+			"date_de_naissance ='"+ toStringDate +"'," +
+			"lieu_de_naissance ='" + birthplace + "', " +
+			"fk_user_nationalite ='" + nationalityId + "' " +
+			"where pk_user_jobyer ='" + roleId + "';";
+			} else {
+			sql = "update user_jobyer set  " +
+			"titre='" + title + "', " +
+			"nom='" + lastname + "', " +
+			"prenom='" + firstname + "', " +
+			"numero_securite_sociale='" + numSS + "', " +
+			"cni='" + cni + "', " +
+			"date_de_naissance ='"+ toStringDate +"'," +
+			"lieu_de_naissance ='" + birthplace + "' " +
+			"where pk_user_jobyer ='" + roleId + "';";
+		}
+		
+		return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'text/plain');
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			.map(res => res.json())
+			.subscribe(data => {
+	            this.data = data;
+	            console.log(this.data);
+	            resolve(this.data);
 			});
+		})
+	}
+	
+	/**
+		* @description update employer information
+		* @param title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId
+	*/
+	updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, projectTarget: string){
+		//  Init project parameters
+		this.configuration = Configs.setConfigs(projectTarget);
+		
+		var sql = "update user_employeur set ";
+		sql = sql + " titre='" + title + "', ";
+		sql = sql + " nom='" + lastname + "', prenom='" + firstname + "' where pk_user_employeur=" + roleId + ";";
+		sql = sql + " update user_entreprise set nom_ou_raison_sociale='" + companyname + "', ";
+		sql = sql + "siret='" + siret + "', ";
+		//sql = sql + "urssaf='" + numUrssaf + "', ";
+		sql = sql + "ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
+		
+		return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'text/plain');
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			.map(res => res.json())
+			.subscribe(data => {
+	            this.data = data;
+	            console.log(this.data);
+	            resolve(this.data);
+			});
+		})
 	}
 	
 	
@@ -91,11 +168,22 @@ export class AuthenticationService {
 		this.db.set(key, JSON.stringify(obj));
 	}
 	
-	getObj(key){
+	/*getObj(key){
 		return this.db.get(key).then((res) => {
-			console.log(res);
-			}, (err) => {
-			console.log('Error: ', err);
+		this.res = res;
+		console.log(res);
+		}, (err) => {
+		console.log('Error: ', err);
+		});
+	}*/
+	getObj(key) {
+		return new Promise((resolve, reject) => {
+			this.db.get(key).then((value) => {
+				resolve(value);
+				}).catch( error => {
+				reject(error);
+			})
 		});
 	}
+	
 }

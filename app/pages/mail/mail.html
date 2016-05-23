@@ -46,7 +46,7 @@
 	<ion-row>
 		<ion-col width-10></ion-col>
 		<ion-col text-center>
-				<button (click)="authenticate()" [style.backgroundColor]="themeColor" [disabled]="isAuthDisabled()" type="submit">
+				<button block (click)="authenticate()" [style.backgroundColor]="themeColor" [disabled]="isAuthDisabled()" type="submit">
 					<ion-icon name="log-in"></ion-icon>
 					{{libelleButton}}
 				</button>
@@ -56,7 +56,9 @@
 	<ion-row>
 		<ion-col width-10></ion-col>
 		<ion-col text-center>
-			<button (click)="goBack()" light>Quitter</button>
+			<button block (click)="goBack()" light>
+				<ion-icon name="undo"></ion-icon>
+				Quitter</button>
 		</ion-col>
 		<ion-col width-10></ion-col>
 	</ion-row>

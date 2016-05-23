@@ -142,7 +142,8 @@ export class MailPage {
 			var isNewUser = data.new;
 			if (isNewUser == 'true') {
 				this.globalService.showAlertValidation("Bienvenue dans votre espace VitOnJob!");
-				this.nav.push(InfoUserPage);
+				this.nav.push(InfoUserPage, {
+				currentEmployer: data});
 				} else {
 				this.nav.pop(HomePage);
 			}
