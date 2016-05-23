@@ -14,7 +14,7 @@
 <ion-content padding class="mail">
 	<ion-label stacked>Entrez votre email</ion-label>
 	<ion-item>
-		<ion-input type="email" placeholder="Email" [(ngModel)]="email" (change)="watchEmail($event)"></ion-input>
+		<ion-input type="email" [(ngModel)]="email" (change)="watchEmail($event)"></ion-input>
 	</ion-item>
 	
 	<ion-label stacked [hidden]="!showPhoneField">Votre numéro de téléphone</ion-label>
@@ -29,7 +29,7 @@
 		</ion-col>
 		<ion-col>
 			<ion-item>
-				<ion-input type="number" placeholder="Téléphone" [(ngModel)]="phone" maxlength="9"></ion-input>
+				<ion-input type="number" [(ngModel)]="phone" maxlength="9"></ion-input>
 			</ion-item>
 		</ion-col>
 	</ion-row>
@@ -43,12 +43,23 @@
 		<ion-input type="password" [(ngModel)]="password2"></ion-input>
 	</ion-item>
 	
-	<ion-row responsive-sm>
-		<ion-col>
-			<button (click)="authenticate()" type="submit" [disabled]="isAuthDisabled()" primary block>{{libelleButton}}</button>
+	<ion-row>
+		<ion-col width-10></ion-col>
+		<ion-col text-center>
+				<button block (click)="authenticate()" [style.backgroundColor]="themeColor" [disabled]="isAuthDisabled()" type="submit">
+					<ion-icon name="log-in"></ion-icon>
+					{{libelleButton}}
+				</button>
 		</ion-col>
-		<ion-col>
-			<button (click)="goBack()" light block>Quitter</button>
+		<ion-col width-10></ion-col>
+	</ion-row>
+	<ion-row>
+		<ion-col width-10></ion-col>
+		<ion-col text-center>
+			<button block (click)="goBack()" light>
+				<ion-icon name="undo"></ion-icon>
+				Quitter</button>
 		</ion-col>
+		<ion-col width-10></ion-col>
 	</ion-row>
 </ion-content>

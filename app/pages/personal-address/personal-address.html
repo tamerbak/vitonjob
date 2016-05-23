@@ -13,7 +13,8 @@
 <ion-content padding>
     <ion-list>
         <ion-item>
-            <ion-input type="text" value="" placeholder="Veuillez saisir votre adresse personnelle..."></ion-input>
+            <ion-searchbar [(ngModel)]="placeQuery" (input)="getPlaces($event)" placeholder="Veuillez saisir votre adresse personnelle..."></ion-searchbar>
+			
         </ion-item>
     </ion-list>
     

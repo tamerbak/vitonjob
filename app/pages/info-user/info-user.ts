@@ -5,29 +5,32 @@ import {JobAddressPage} from '../job-address/job-address';
 
 
 @Page({
-  templateUrl: 'build/pages/info-user/info-user.html'
+	templateUrl: 'build/pages/info-user/info-user.html'
 })
 export class InfoUserPage {
-
-  civilityRoot: any;
-  pAddressRoot: any;
-  jAddressRoot: any;
-  civilityTabTitle : string;
-  pAddressTabTitle: string;
-  jAddressTabTitle: string;
-
-  constructor(public nav: NavController,
-              app: IonicApp,
-              navParams: NavParams) {
-    // set the root pages for each tab
-    this.civilityRoot = CivilityPage;
-    this.pAddressRoot = PersonalAddressPage;
-    this.jAddressRoot = JobAddressPage;
-
-    this.nav = nav;
-
-    this.civilityTabTitle = "Civilité";
-    this.pAddressTabTitle = "A. personnelle";
-    this.jAddressTabTitle = "A. départ au travail";
-  }
+	civilityRoot: any;
+	pAddressRoot: any;
+	jAddressRoot: any;
+	civilityTabTitle : string;
+	pAddressTabTitle: string;
+	jAddressTabTitle: string;
+	
+	constructor(public nav: NavController,
+	app: IonicApp,
+	navParams: NavParams) {
+		// set the root pages for each tab
+		this.civilityRoot = CivilityPage;
+		this.pAddressRoot = PersonalAddressPage;
+		this.jAddressRoot = JobAddressPage;
+		
+		this.nav = nav;
+		this.navParams = navParams;
+		this.dataParams = this.navParams.data; 
+		
+		this.civilityTabTitle = "Civilité";
+		this.pAddressTabTitle = "A. personnelle";
+		this.jAddressTabTitle = "A. départ au travail";
+		
+		
+	}
 }

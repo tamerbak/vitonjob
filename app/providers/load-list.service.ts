@@ -1,44 +1,57 @@
 import {Injectable} from 'angular2/core';
 import {Http, Headers, RequestOptions} from 'angular2/http';
+import {Configs} from '../configurations/configs';
 
+/**
+	* @author Amal ROCHD
+	* @description web service access point for loading data from server
+	* @module Authentication
+*/
 
 @Injectable()
 export class LoadListService {
+	configuration;
+	
 	constructor(http: Http) {
 		this.http = http;
 	}
 	
-	loadCountries(){
-		let url = 'http://vps259989.ovh.net:8080/vitonjobv1/api/sql';
-        var sql = "SELECT nom, indicatif_telephonique FROM user_pays ORDER BY nom";
+	/**
+		* @description load a list of countries with their codes
+		* @return JSON results in the form of {country name, country code}
+	*/
+	loadCountries(projectTarget){
+		//  Init project parameters
+		this.configuration = Configs.setConfigs(projectTarget);
+		var sql = "SELECT nom, indicatif_telephonique FROM user_pays ORDER BY nom";
 
-
-	    /*
-	    * Performing search directly on server
-	    */
-	    if (this.data) {
-	      // already loaded data
-	      return Promise.resolve(this.data);
-	      console.log("already loaded data" + this.data);
-	    }
-
-
-	    // don't have the data yet
 	    return new Promise(resolve => {
-	      // We're using Angular Http provider to request the data,
-	      // then on the response it'll map the JSON data to a parsed JS object.
-	      // Next we process the data and resolve the promise with the new data.
 	      let headers = new Headers();
 	      headers.append("Content-Type", 'text/plain');
-	      this.http.post(url, sql, {headers:headers})
+	      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
 	          .map(res => res.json())
 	          .subscribe(data => {
-	            // we've got back the raw data, now generate the core schedule data
-	            // and save the data for later reference
 	            this.data = data;
-	            console.log("Newly loaded data" + this.data);
 	            resolve(this.data);
 	          });
 	    });
+	}
+	
+	loadNationalities(projectTarget) {
+		//  Init project parameters
+		this.configuration = Configs.setConfigs(projectTarget);
+		var sql = "select pk_user_nationalite, libelle from user_nationalite";
+		
+		return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'text/plain');
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			.map(res => res.json())
+			.subscribe(data => {
+	            this.data = data;
+	            console.log(this.data);
+	            resolve(this.data);
+			});
+		})
 	}
 }
