@@ -135,7 +135,7 @@ export class OffersService {
      * @description     loading sector list
      * @return sector list in the format {id : X, libelle : X}
      */
-  loadSecotrs(projectTarget : string){
+  loadSectors(projectTarget : string){
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
 

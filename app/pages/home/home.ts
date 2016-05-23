@@ -144,7 +144,4 @@ export class HomePage {
         this.nav.present(m);
     }
 
-    onDrag(){
-        console.log('dragini');
-    }
 }

@@ -22,7 +22,12 @@
   position: absolute;
 }
 
-.draggable > h2 {
+.large-draggable {
+  width:60% !important;
+  height:300px !important;
+}
+
+.large-draggable > h2 {
   margin-top:10px !important;
-  margin-bottom:10px !important;
+  margin-bottom:20px !important;
 }

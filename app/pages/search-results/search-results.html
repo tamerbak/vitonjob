@@ -39,7 +39,7 @@
   <ion-slides #cardSlider [options]="cardsOptions" (didChange)="onSlideChanged()" *ngIf="cardView">
     <ion-slide *ngFor="#item of searchResults">
       <ion-card>
-        <ion-card-header>Vitonjob a retrouvé {{resultsCount}} offre(s) correspondante(s) à votre recherche</ion-card-header>
+        <ion-card-header>Vitonjob a retrouvé {{resultsCount}} offre(s)</ion-card-header>
       </ion-card>
 
       <ion-card>
@@ -79,9 +79,9 @@
 
   </div>
 
-  <div class="draggable ui-widget-content" *ngIf="offerProposition">
+  <div class="draggable large-draggable ui-widget-content" *ngIf="offerProposition">
     <h2>Proposition</h2>
-    <ion-list style="height:150px; overflow:scroll;">
+    <ion-list style="height:240px; overflow:scroll;">
       <ion-list-header>Job</ion-list-header>
       <ion-item>
         <span>{{proposedJob.libellejob}}</span>
@@ -89,14 +89,14 @@
       <ion-list-header>Langues</ion-list-header>
       <ion-item *ngFor="#l of proposedLanguages">
         <span>{{l.libelle}}</span>
-        <button item-right >
-          <ion-icon name="md-trash"></ion-icon>
+        <button item-right secondary (click)="deleteLanguage(l)" >
+          <ion-icon name="md-trash" ></ion-icon>
         </button>
       </ion-item>
       <ion-list-header>Indispensables</ion-list-header>
       <ion-item *ngFor="#q of proposedQualities">
         <span>{{q.libelle}}</span>
-        <button item-right>
+        <button item-right secondary (click)="deleteQuality(l)">
           <ion-icon name="md-trash"></ion-icon>
         </button>
       </ion-item>
