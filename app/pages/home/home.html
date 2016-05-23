@@ -55,23 +55,21 @@
         <ion-col width-10></ion-col>
     </ion-row>
 
-    <div id="draggable" class="ui-widget-content">
-        <h2>Recherche</h2>
-        <button secondary block (click)="showCriteriaModal()" >
-            <ion-icon name="md-search"></ion-icon>Par critères
-        </button>
+    <div class="draggable ui-widget-content">
+        <ion-list>
+            <ion-list-header>Recherche</ion-list-header>
+            <ion-item>
+                <button secondary block (click)="showCriteriaModal()" >
+                    <ion-icon name="md-search"></ion-icon>Par critères
+                </button>
+            </ion-item>
+            <ion-item>
+                <button primary block (click)="showGuideModal()">
+                    <ion-icon name="md-search"></ion-icon>Guidée
+                </button>
+            </ion-item>
+        </ion-list>
 
-        <button primary block (click)="showGuideModal()">
-            <ion-icon name="md-search"></ion-icon>Guidée
-        </button>
     </div>
-    <!--
-    <button secondary ngClass="left-bottom-btn" (click)="showCriteriaModal()" >
-        <ion-icon name="md-search"></ion-icon>
-    </button>
 
-    <button primary ngClass="right-bottom-btn" (click)="showGuideModal()">
-        <ion-icon name="md-search"></ion-icon>
-    </button>
-    -->
 </ion-content>

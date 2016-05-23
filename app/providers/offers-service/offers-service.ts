@@ -20,6 +20,9 @@ export class OffersService {
   listLanguages : any;
   listQualities : any;
   data : any;
+  offerJob : any;
+  offerLangs : any;
+  offerQuelities : any;
 
   constructor(public http: Http) {
     this.count = 0;
@@ -46,7 +49,7 @@ export class OffersService {
       // Next we process the data and resolve the promise with the new data.
       let headers = new Headers();
       headers.append("Content-Type", 'text/plain');
-      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+      this.http.post(Configs.sqlURL, sql, {headers:headers})
           .map(res => res.json())
           .subscribe(data => {
             // we've got back the raw data, now generate the core schedule data
@@ -108,7 +111,7 @@ export class OffersService {
       // Next we process the data and resolve the promise with the new data.
       let headers = new Headers();
       headers.append("Content-Type", 'application/json');
-      this.http.post(this.configuration.calloutURL, JSON.stringify(payload), {headers:headers})
+      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers:headers})
           .map(res => res.json())
           .subscribe(data => {
             // we've got back the raw data, now generate the core schedule data
@@ -144,7 +147,7 @@ export class OffersService {
       // Next we process the data and resolve the promise with the new data.
       let headers = new Headers();
       headers.append("Content-Type", 'text/plain');
-      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+      this.http.post(Configs.sqlURL, sql, {headers:headers})
           .map(res => res.json())
           .subscribe(data => {
             // we've got back the raw data, now generate the core schedule data
@@ -199,7 +202,7 @@ export class OffersService {
       // Next we process the data and resolve the promise with the new data.
       let headers = new Headers();
       headers.append("Content-Type", 'text/plain');
-      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+      this.http.post(Configs.sqlURL, sql, {headers:headers})
           .map(res => res.json())
           .subscribe(data => {
             // we've got back the raw data, now generate the core schedule data
@@ -226,7 +229,7 @@ export class OffersService {
       // Next we process the data and resolve the promise with the new data.
       let headers = new Headers();
       headers.append("Content-Type", 'text/plain');
-      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+      this.http.post(Configs.sqlURL, sql, {headers:headers})
           .map(res => res.json())
           .subscribe(data => {
             // we've got back the raw data, now generate the core schedule data
@@ -234,6 +237,101 @@ export class OffersService {
             console.log(data);
             this.listQualities = data.data;
             resolve(this.listQualities );
+          });
+    });
+  }
+
+  /**
+   * @description getting details of a specific job from an offer
+   * @param idOffer
+   * @param offerTable as user_offre_jobyer or user_offre_entreprise
+   * @return the promise of job propositions
+     */
+  getOffersJob(idOffer : number, offerTable : string){
+    var sql = "select job.pk_user_job as id, job.libelle as libellejob, metier.pk_user_metier as idmetier, metier.libelle as libellemetier " +
+        "from user_job job, user_metier metier where job.fk_user_metier = metier.pk_user_metier and " +
+        "job.pk_user_job in (select fk_user_job from user_pratique_job where fk_"+offerTable+" = "+idOffer+")";
+    console.log(sql);
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers.append("Content-Type", 'text/plain');
+      this.http.post(Configs.sqlURL, sql, {headers:headers})
+          .map(res => res.json())
+          .subscribe(data => {
+            // we've got back the raw data, now generate the core schedule data
+            // and save the data for later reference
+            console.log(data);
+            this.offerJob = data.data;
+            resolve(this.offerJob);
+          });
+    });
+  }
+
+  /**
+   * @description listing languages related to a set of offers
+   * @param idOffers list of offers ID
+   * @param offerTable offerTable as user_offre_jobyer or user_offre_entreprise
+   * @return the proposition of grouped languages
+   */
+  getOffersLanguages(idOffers : any, offerTable : string){
+    let ids = '('+idOffers[0];
+    for(var i = 1 ; i < idOffers.length; i++)
+      ids = ids+','+idOffers[i];
+    ids = ids+')';
+    var sql = "select pk_user_langue as id, libelle from user_langue where " +
+        "pk_user_langue in (select fk_user_langue from user_pratique_langue where fk_"+offerTable+" in "+ids+")" +
+        " group by id, libelle";
+    console.log(sql);
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers.append("Content-Type", 'text/plain');
+      this.http.post(Configs.sqlURL, sql, {headers:headers})
+          .map(res => res.json())
+          .subscribe(data => {
+            // we've got back the raw data, now generate the core schedule data
+            // and save the data for later reference
+            console.log(data);
+            this.offerLangs = data.data;
+            resolve(this.offerLangs);
+          });
+    });
+  }
+
+  /**
+   * @description listing qualities related to a set of offers
+   * @param idOffers list of offers ID
+   * @param offerTable offerTable as user_offre_jobyer or user_offre_entreprise
+   * @return the proposition of grouped qualities
+   */
+  getOffersQualities(idOffers : any, offerTable : string){
+    let ids = '('+idOffers[0];
+    for(var i = 1 ; i < idOffers.length; i++)
+      ids = ids+','+idOffers[i];
+    ids = ids+')';
+    var sql = "select pk_user_indispensable as id, libelle from user_indispensable where " +
+        "pk_user_indispensable in (select fk_user_indispensable from user_pratique_indispensable where fk_"+offerTable+" in "+ids+")" +
+        " group by id, libelle";
+    console.log(sql);
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers.append("Content-Type", 'text/plain');
+      this.http.post(Configs.sqlURL, sql, {headers:headers})
+          .map(res => res.json())
+          .subscribe(data => {
+            // we've got back the raw data, now generate the core schedule data
+            // and save the data for later reference
+            console.log(data);
+            this.offerQuelities = data.data;
+            resolve(this.offerQuelities);
           });
     });
   }

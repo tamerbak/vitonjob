@@ -2,17 +2,6 @@
  * Created by jakjoud on 20/05/16.
  */
 
-var start = true;
-
-function doNothing(milliseconds){
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-        if ((new Date().getTime() - start) > milliseconds){
-            break;
-        }
-    }
-}
-
 function touchHandler(event) {
 
     var touch = event.changedTouches[0];
@@ -21,8 +10,8 @@ function touchHandler(event) {
 
     console.log('touch position : '+x+', '+y);
 
-    var spX = $('#draggable').css('left') ;
-    var spY = $('#draggable').css('top') ;
+    var spX = $('.draggable').css('left') ;
+    var spY = $('.draggable').css('top') ;
 
     spX = spX.replace('px', '');
     spY = spY.replace('px', '');
@@ -35,8 +24,8 @@ function touchHandler(event) {
 
     if(x>=pX && x <=pX+150 && y>=pY && y <=pY+100){
         console.log('You touched me !')
-        $('#draggable').css('left', x+'px');
-        $('#draggable').css('top', y+'px');
+        $('.draggable').css('left', x+'px');
+        $('.draggable').css('top', y+'px');
     }
 
 }
@@ -45,8 +34,8 @@ function touchHandler(event) {
 function init() {
     var height = screen.height;
     var width = screen.width;
-    $('#draggable').css('top', (height-100)+'px');
-    $('#draggable').css('left', (width/2-75)+'px');
+    $('.draggable').css('top', (height-100)+'px');
+    $('.draggable').css('left', (width/2-75)+'px');
     document.addEventListener("touchstart", touchHandler, true);
     document.addEventListener("touchmove", touchHandler, true);
     document.addEventListener("touchend", touchHandler, true);
@@ -54,5 +43,5 @@ function init() {
 }
 $(function() {
     init();
-    $( "#draggable" ).draggable();
+    $( ".draggable" ).draggable();
 });
