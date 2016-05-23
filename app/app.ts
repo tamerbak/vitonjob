@@ -11,11 +11,15 @@ import {UserService} from "./providers/user-service/user-service";
 import {ContractService} from "./providers/contract-service/contract-service";
 import {SmsService} from "./providers/sms-service/sms-service";
 import {MissionService} from "./providers/mission-service/mission-service";
+import {NetworkService} from "./providers/network-service/network-service";
+import {ChangeDetectorRef} from 'angular2/src/core/change_detection/change_detector_ref';
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/observable/fromEvent';
 
 @App({
   templateUrl: 'build/menu.html',
   config: {backButtonText: 'Retour'}, // http://ionicframework.com/docs/v2/api/config/Config/
-  providers : [GlobalConfigs, SearchService,UserService,ContractService,SmsService,MissionService]
+  providers : [GlobalConfigs, SearchService,UserService,ContractService,SmsService,MissionService,NetworkService]
 })
 export class MyApp {
   rootPage: any = HomePage;
@@ -33,7 +37,9 @@ export class MyApp {
               private app: IonicApp,
               private menu: MenuController,
               private gc: GlobalConfigs,
-              private missionService:MissionService) {
+              private missionService:MissionService,
+              private networkService:NetworkService,
+              private changeDetRef: ChangeDetectorRef) {
     this.app = app;
     this.platform = platform;
     this.menu = menu;
@@ -74,6 +80,23 @@ export class MyApp {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       // target:string = "employer"; //Jobyer
+      
+      this.networkService.updateNetworkStat();
+      
+      var offline = Observable.fromEvent(document, "offline");
+      var online = Observable.fromEvent(document, "online");
+      
+      
+      
+      offline.subscribe(() => {
+            this.networkService.setNetworkStat("Vous n'êtes pas connecté.");
+            this.changeDetRef.detectChanges();
+      });
+
+      online.subscribe(()=>{
+            this.networkService.setNetworkStat("");
+            this.changeDetRef.detectChanges();
+      });
 
       StatusBar.styleDefault();
     });
