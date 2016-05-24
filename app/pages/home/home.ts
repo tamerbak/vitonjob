@@ -7,6 +7,7 @@ import {SearchResultsPage} from "../search-results/search-results";
 import {SearchCriteriaPage} from "../search-criteria/search-criteria";
 import {SearchGuidePage} from "../search-guide/search-guide";
 import {NetworkService} from "../../providers/network-service/network-service";
+import {InfoUserPage} from "../info-user/info-user";
 
 @Page({
     templateUrl: 'build/pages/home/home.html',

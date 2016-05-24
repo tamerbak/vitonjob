@@ -36,8 +36,6 @@ export class InfoUserPage {
 		
 		this.civilityTabTitle = "Civilité";
 		this.pAddressTabTitle = "A. personnelle";
-		this.jAddressTabTitle = "A. départ au travail";
-		
-		
+		this.jAddressTabTitle = "A. départ au travail";	
 	}
 }

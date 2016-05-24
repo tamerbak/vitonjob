@@ -1,4 +1,4 @@
-import {Component, Output, EventEmitter, ViewChild} from 'angular2/core';
+import {Component, Input, Output, EventEmitter, ViewChild} from 'angular2/core';
 import {IONIC_DIRECTIVES, Searchbar } from 'ionic-angular';
 
 /**
@@ -19,13 +19,12 @@ export class GooglePlaces {
 	
 	constructor() {
 	}
-	
+	//output property that fires events to which we can subscribe with an event binding
 	@Output() onPlaceChanged: EventEmitter<any> = new EventEmitter();
-	
+	//Binds the first result of the component view query 'searchbar' to the 'searchBar' property of the class
 	@ViewChild('searchbar') searchBar: Searchbar;
-	
 	/**
-		* @description construction of the component after initializing the view
+		* @description Component views are initialized here
 	*/
 	ngAfterViewInit() {
 		var input = this.searchBar.inputElement;
@@ -34,4 +33,15 @@ export class GooglePlaces {
 			this.onPlaceChanged.emit(acutocomplete.getPlace());
 		});
 	}
+	//input property of the search bar that we can update via property binding
+	@Input() bindModelData: any;
+	//output property that fires events to which we can subscribe with an event binding
+	@Output() bindModelDataChange: EventEmitter = new EventEmitter();
+    /**
+		* @description method that bind the ngModel of the searchbar to the component
+	*/
+	updateData(event) {
+      this.bindModelData = event;
+      this.bindModelDataChange.emit(event);
+    }
 }

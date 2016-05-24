@@ -4,6 +4,8 @@ import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {GooglePlaces} from '../../components/google-places/google-places';
 import {AuthenticationService} from "../../providers/authentication.service";
 import {Geolocation} from 'ionic-native';
+import {enableProdMode} from 'angular2/core'; 
+enableProdMode();
 
 /**
 	* @author Amal ROCHD
@@ -16,10 +18,12 @@ import {Geolocation} from 'ionic-native';
 	providers: [AuthenticationService]
 })
 export class PersonalAddressPage {
+	searchData : string;
 	/**
 		* @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
 	*/
 	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, tabs:Tabs, public nav: NavController) {
+		this.searchData = "" 
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -33,10 +37,10 @@ export class PersonalAddressPage {
 		this.params = params;
 		this.currentEmployer = this.params.data.currentEmployer;
 		//geolocalisation alert
-		//this.displayRequestAlert();
+		this.displayRequestAlert();
 	}
 	
-	/*displayRequestAlert(){
+	displayRequestAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
 			message: "Localisation: êtes-vous dans votre domicile?",
@@ -91,14 +95,21 @@ export class PersonalAddressPage {
 		}
 		).then(position => {
 			console.log(position);
-			let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-			new google.maps.Geocoder().geocode({'location':latLng}, function(results, status){
-				if(status === google.maps.GeocoderStatus.OK){
-					console.log(results[0].formatted_address);
-				}     
-			});
+			this.getAddressFromGeolocation(position);
 		});
-	}*/
+	}
+	
+	getAddressFromGeolocation(position){
+		let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+		new google.maps.Geocoder().geocode({'location':latLng}, (results, status) =>{
+			if(status === google.maps.GeocoderStatus.OK){
+				console.log(results[0].formatted_address);
+				//display geolocated address in the searchbar
+				this.searchData = results[0].formatted_address;
+				//this.selectedPlace = results[0];
+			}
+		});
+	}
 	
 	/**
 		* @description function to get the selected result in the google place autocomplete
