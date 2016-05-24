@@ -1,14 +1,14 @@
 import {Storage, SqlStorage} from 'ionic-angular';
-import {Page, NavController, NavParams, Loading,ActionSheet} from 'ionic-angular';
+import {Page, NavController, NavParams, Loading,ActionSheet,Alert} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {ContractService} from '../../providers/contract-service/contract-service';
 import {SmsService} from "../../providers/sms-service/sms-service";
 import {UserService} from "../../providers/user-service/user-service";
-import {PaymentPage} from "../payment/payment";
 import {CivilityPage} from '../civility/civility';
 import {JobAddressPage} from '../job-address/job-address';
 import {PersonalAddressPage} from '../personal-address/personal-address';
+import {YousignPage} from '../yousign/yousign';
 
 
 /**
@@ -32,15 +32,14 @@ export class ContractPage {
     jobyerFirstName:string;
     jobyerLastName:string;
     contractTitle:string;
-    isIFrameHidden:boolean;
+    dataObject:any;
+    contractData:any;
     
     
     constructor(public gc: GlobalConfigs, 
                 public nav: NavController, 
                 private navParams:NavParams,
-                private contractService:ContractService,
-                private userService:UserService,
-                private smsService:SmsService ) {
+                private userService:UserService ) {
         
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -64,15 +63,49 @@ export class ContractPage {
         this.themeColor = config.themeColor;
         this.contractTitle = "Contrat de Mission";
         this.isEmployer = (this.projectTarget=='employer');
-        this.isIFrameHidden = true;
+
         this.jobyer = navParams.get('jobyer');
         this.jobyerFirstName = this.jobyer.prenom;
         this.jobyerLastName = this.jobyer.nom;
         
+        //to verify
+        this.contractData = {
+            num:"VB0902005",
+            interim:"Test1",
+            missionStartDate: "01/02/2009",
+            missionEndDate:"30/04/2009",
+            trialPeriod: 5,
+            termStartDate: "20/04/2009",
+            termEndDate: "10/05/2009",
+            motif: "Remplacement Maladie",
+            justification: "Mme MARTIN Monique",
+            qualification: "Magasinier qualifie",
+            characteristics:"Gestion du stock pièces",
+            workTimeHours: 30,
+            workTimeVariable: 35,
+            workStartHour: "08:00",
+            workEndHour:"17:00",
+            workHourVariable:"???",
+            postRisks:"non",
+            medicalSurv:"non",
+            epi:"chaussures de sécurité",
+            baseSalary:"15,00€ B/H",
+            MonthlyAverageDuration: "35h",
+            salaryNHours: "15,00€ B/H",
+            salarySH35: "+25%",
+            salarySH43: "+50%",
+            restRight: "50%",
+            interimAddress:"ASMIS 77 RUE DEBAUSSAUX 80000 AMIENS",
+            customer: "ASMIS",
+            primes: "néant",
+        };
     }
     
-    goToPayment() {
-        this.nav.push(PaymentPage);
+    goToYousignPage() {
+        this.nav.push(YousignPage,{
+            jobyer:this.jobyer,
+            contractData:this.contractData
+        });
     }
     
     /**
@@ -115,68 +148,40 @@ export class ContractPage {
         this.nav.present(actionSheet);
     };
     
-    
     /**
      * @author daoudi amine
-     * @description call yousign service and send sms to the jobyer
+     * @param item name of the param
+     * @title description of the param 
+     * @description change a contractData parametre
      */
-    callYousign(){
-        let loading = Loading.create({
-            content: ` 
-                <div>
-                    <img src='img/loading.gif' />
-                </div>
-                `,
-            spinner : 'hide'
-        });
-        this.nav.present(loading);
+    changeContractData(item,title) {
         
-        this.contractService.callYousign(this.employer, this.jobyer, this.projectTarget).then((data) => {
-            loading.dismiss();
-            
-            if (data == null || data.length == 0) {
-                console.log("Yousign result is null");
-                return;
-            }
-            
-            var dataValue = data[0]['value'];
-            var yousignData = JSON.parse(dataValue);
-            console.log(yousignData);
-            
-            //get the link yousign of the contract for the employer
-            var yousignEmployerLink = yousignData.iFrameURLs[0].iFrameURL;
-            
-            this.isIFrameHidden = false;
-            
-            //Create to Iframe to show the contract in the NavPage
-            var iframe = document.createElement('iframe');
-            iframe.frameBorder = "0";
-            iframe.width = "100%";
-            iframe.height = "100%";
-            iframe.id = "youSign";
-            iframe.style.overflow = "hidden";
-            iframe.style.height = "100%";
-            iframe.style.width = "100%";
-            iframe.setAttribute("src", yousignEmployerLink);
-            
-            document.getElementById("iframPlaceHolder").appendChild(iframe);
-
-            // get the yousign link of the contract and the phoneNumber of the jobyer
-            var yousignJobyerLink = yousignData.iFrameURLs[1].iFrameURL;
-            var jobyerPhoneNumber = this.jobyer.tel;
-            
-            // Send sms to jobyer
-            this.smsService.sendSms(jobyerPhoneNumber, yousignJobyerLink).then((dataSms) => {
-                console.log("The message was sent successfully");
-            }).catch(function(err) {
-                console.log(err);
-            });
-            
-            
-        }).catch(function(err) {
-            console.log(err);
+        
+        let prompt = Alert.create({
+            title: title,
+            message: "Veuillez saisir la nouvelle valeur",
+            inputs: [
+                {
+                    name: 'value',
+                },
+            ],
+            buttons: [
+                {
+                    text: 'Cancel',
+                    handler: data => {
+                        console.log('Cancel clicked');
+                    }
+                },
+                {
+                    text: 'Save',
+                    handler: data => {
+                        this.contractData[item] = data.value;
+                    }
+                }
+            ]
         });
-    }
-    
+        
+        this.nav.present(prompt);
+    };
     
 }

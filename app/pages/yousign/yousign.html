@@ -5,7 +5,7 @@
   Ionic pages and navigation.
 -->
 <ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-  <ion-title>{{contractTitle}}</ion-title>
+  <ion-title>{{yousignTitle}}</ion-title>
   <ion-buttons end>
     <button (click)="showMenuToEditContract()">
       <ion-icon name="create"></ion-icon>
@@ -13,7 +13,9 @@
   </ion-buttons>
 </ion-navbar>
 
-<ion-content class="contract">
+<ion-content padding class="yousign">
+    <div id="iframPlaceHolder" style="width: 100%;height: 100%;" ><!--ng-show="showiFrame">-->
+    </div>
     
     <ion-list>
         <ion-list-header>
@@ -469,8 +471,13 @@
 <ion-toolbar position="bottom">
     <ion-row>
         <ion-col>
-            <button [style.backgroundColor]="themeColor" (click)="goToYousignPage()">
-                Afficher le contrat
+            <button [style.backgroundColor]="themeColor" (click)="callYousign()">
+                Accepter le contrat
+            </button>
+        </ion-col>
+        <ion-col> 
+            <button [style.backgroundColor]="themeColor" (click)="goToPayment()">
+                Paiement
             </button>
         </ion-col>
     </ion-row>
