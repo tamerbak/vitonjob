@@ -29,13 +29,13 @@ export class SearchGuidePage {
   }
 
   prepareLabelsJobyer(){
-    this.jobLabel = "Je cherche des offres d'emploi concernant ";
+    this.jobLabel = "Je cherche de l'emploi comme ";
     this.levelLabel = "Mon niveau est ";
     this.availabilityLabel = "Disponibles à parir du ";
   }
 
   prepareLabelsEmployer(){
-    this.jobLabel = "Je cherche des offres de service concernant ";
+    this.jobLabel = "Je cherche candidats pour ";
     this.levelLabel = "Le niveau requis est ";
     this.availabilityLabel = "Disponibles à parir du ";
   }
@@ -58,7 +58,7 @@ export class SearchGuidePage {
       nom : '',
       entreprise : '',
       date : this.availability,
-      table : this.projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise',
+      table : this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer',
       idOffre :'0'
     };
     console.log(searchFields);

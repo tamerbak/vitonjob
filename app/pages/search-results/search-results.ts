@@ -9,6 +9,8 @@ import {CivilityPage} from '../civility/civility';
 import {JobAddressPage} from '../job-address/job-address';
 import {PersonalAddressPage} from '../personal-address/personal-address';
 import {LoginsPage} from '../logins/logins';
+import {isUndefined} from "ionic-angular/util";
+import {OffersService} from "../../providers/offers-service/offers-service";
 
 
 /**
@@ -17,212 +19,224 @@ import {LoginsPage} from '../logins/logins';
  * @module Search
  */
 @Page({
-  templateUrl: 'build/pages/search-results/search-results.html',
+    templateUrl: 'build/pages/search-results/search-results.html',
+    providers : [OffersService]
 })
 export class SearchResultsPage {
-  @ViewChild('cardSlider') slider: Slides;
+    @ViewChild('cardSlider') slider: Slides;
 
-  searchResults : any;
-  listView : boolean = true;
-  cardView : boolean = false;
-  mapView : boolean = false;
-  platform : Platform;
-  map : any;
-  cardsOptions= {
-    loop: false
-  };
-  currentCardIndex : number = 0;
-  projectTarget : any;
-  avatar : string;
-  resultsCount : number = 0;
-  isUserAuthenticated : boolean;
-  employer:any;
+    searchResults : any;
+    listView : boolean = true;
+    cardView : boolean = false;
+    mapView : boolean = false;
+    platform : Platform;
+    map : any;
+    cardsOptions= {
+        loop: false
+    };
+    currentCardIndex : number = 0;
+    projectTarget : any;
+    avatar : string;
+    resultsCount : number = 0;
+    isUserAuthenticated : boolean;
+    employer:any;
 
-  /**
-   * @description While constructing the view we get the last results of the search from the user
-   * @param nav Navigation controller of the application
-   * @param searchService the provider that allows us to get data from search service
+    //  Attributes for offer creation proposition
+    proposedJob : any;
+    proposedLanguages : any = [];
+    proposedQualities : any = [];
+    offerProposition : boolean = false;
+    offersService : any;
+
+    /**
+     * @description While constructing the view we get the last results of the search from the user
+     * @param nav Navigation controller of the application
+     * @param searchService the provider that allows us to get data from search service
      */
-  constructor(public globalConfig: GlobalConfigs,
-              public nav: NavController,
-              private searchService: SearchService,
-              private userService:UserService,
-              platform : Platform) {
-    // Get target to determine configs
-    this.projectTarget = globalConfig.getProjectTarget();
-    this.avatar = this.projectTarget == 'jobyer' ? 'jobyer_avatar':'employer_avatar';
+    constructor(public globalConfig: GlobalConfigs,
+                public nav: NavController,
+                private searchService: SearchService,
+                private userService:UserService,
+                private offersService : OffersService,
+                platform : Platform) {
+        // Get target to determine configs
+        this.projectTarget = globalConfig.getProjectTarget();
+        this.avatar = this.projectTarget != 'jobyer' ? 'jobyer_avatar':'employer_avatar';
+        this.platform = platform;
 
-    this.platform = platform;
-    searchService.retrieveLastSearch().then(results =>{
-      var jsonResults = JSON.parse(results);
-      if(jsonResults){
-        this.searchResults = jsonResults;
-        this.resultsCount = this.searchResults.length;
-        for(var i = 0 ; i < this.searchResults.length ; i++){
-          let r = this.searchResults[i];
-          r.matching = Number(r.matching).toFixed(2);
-        }
-        console.log(this.searchResults);
-      }
-    });
-    
-    //get the connexion object and define if the there is a user connected
-    userService.getConnexionObject().then(results =>{
-        var connexion = JSON.parse(results);
-        if(connexion && connexion.etat){
+        //  Retrieving last search
+        searchService.retrieveLastSearch().then(results =>{
+            var jsonResults = JSON.parse(results);
+            if(jsonResults){
+                this.searchResults = jsonResults;
+                this.resultsCount = this.searchResults.length;
+                for(var i = 0 ; i < this.searchResults.length ; i++){
+                    let r = this.searchResults[i];
+                    r.matching = Number(r.matching).toFixed(2);
+                }
+                console.log(this.searchResults);
+                //  Determine constraints for proposed offer
+                this.createCriteria();
+            }
+        });
+
+        //get the connexion object and define if the there is a user connected
+        userService.getConnexionObject().then(results =>{
+            var connexion = JSON.parse(results);
+            if(connexion && connexion.etat){
                 this.isUserAuthenticated = true;
-        }else{
-            this.isUserAuthenticated = false;
-        }
-        console.log(connexion);
-    });
-    
-    //get the currentEmployer
-    userService.getCurrentEmployer().then(results =>{
-        var currentEmployer = JSON.parse(results);
-        if(currentEmployer){
-            this.employer = currentEmployer;
-        }
-        console.log(currentEmployer);
-    });
-    
-  }
+            }else{
+                this.isUserAuthenticated = false;
+            }
+            console.log(connexion);
+        });
 
-  /**
-   * @description Detecting the motion of cards to the right or to the left in order to decide if we add or reject the candidate
-   */
-  onSlideChanged(){
-    let currentIndex = this.slider.getActiveIndex();
-    if(currentIndex > this.currentCardIndex){
-      console.log("went right");
-    } else {
-      console.log("went left");
+        //get the currentEmployer
+        userService.getCurrentEmployer().then(results =>{
+            var currentEmployer = JSON.parse(results);
+            if(currentEmployer){
+                this.employer = currentEmployer;
+            }
+            console.log(currentEmployer);
+        });
+
     }
-    this.currentCardIndex = currentIndex;
-  }
 
-  /**
-   * @description Selecting an item allows to call an action sheet for communications and contract
-   * @param item the selected Employer/Jobyer
-   */
-  itemSelected(item){
-    let actionSheet = ActionSheet.create({
-      title: 'Options',
-      buttons: [
-        {
-          text: 'Envoyer SMS',
-          icon: 'md-mail',
-          handler: () => {
-
-          }
-        },{
-          text: 'Appeller',
-          icon: 'md-call',
-          handler: () => {
-
-          }
-        },{
-          text: 'Contrat',
-          icon: 'md-document',
-          handler: () => {
-              this.recruitJobyer(item);
-          }
-        },{
-          text: 'Annuler',
-          role: 'cancel',
-          icon: 'md-close',
-          handler: () => {
-
-          }
+    /**
+     * @description Detecting the motion of cards to the right or to the left in order to decide if we add or reject the candidate
+     */
+    onSlideChanged(){
+        let currentIndex = this.slider.getActiveIndex();
+        if(currentIndex > this.currentCardIndex){
+            console.log("went right");
+        } else {
+            console.log("went left");
         }
-      ]
-    });
-    this.nav.present(actionSheet);
-    ;
-  }
-
-  contract(item){
-    console.log('Contract');
-  }
-
-  /**
-   * @description This function allows to select the candidate for a group recruitment
-   * @param item the selected Employer/Jobyer
-     */
-  addGroupContract(item){
-    console.log(item);
-  }
-
-  /**
-   * @description changing layout of results
-   * @param mode
-   */
-  changeViewMode(mode){
-    if(mode == 1){          //  List view
-      this.listView = true;
-      this.cardView = false;
-      this.mapView = false;
-    } else if (mode == 2){  //  Cards view
-      this.listView = false;
-      this.cardView = true;
-      this.mapView = false;
-    } else {                //  Map view
-      this.listView = false;
-      this.cardView = false;
-      this.mapView = true;
+        this.currentCardIndex = currentIndex;
     }
-  }
-  
-  
-  /**
-   * @description verify informations of Employer/Jobyer and redirect to recruitement contract
-   * @param item the selected Employer/Jobyer
+
+    /**
+     * @description Selecting an item allows to call an action sheet for communications and contract
+     * @param item the selected Employer/Jobyer
      */
-   recruitJobyer(jobyer){
-      
+    itemSelected(item){
+        let actionSheet = ActionSheet.create({
+            title: 'Options',
+            buttons: [
+                {
+                    text: 'Envoyer SMS',
+                    icon: 'md-mail',
+                    handler: () => {
+
+                    }
+                },{
+                    text: 'Appeller',
+                    icon: 'md-call',
+                    handler: () => {
+
+                    }
+                },{
+                    text: 'Contrat',
+                    icon: 'md-document',
+                    handler: () => {
+                        this.recruitJobyer(item);
+                    }
+                },{
+                    text: 'Annuler',
+                    role: 'cancel',
+                    icon: 'md-close',
+                    handler: () => {
+
+                    }
+                }
+            ]
+        });
+        this.nav.present(actionSheet);
+        ;
+    }
+
+    contract(item){
+        console.log('Contract');
+    }
+
+    /**
+     * @description This function allows to select the candidate for a group recruitment
+     * @param item the selected Employer/Jobyer
+     */
+    addGroupContract(item){
+        console.log(item);
+    }
+
+    /**
+     * @description changing layout of results
+     * @param mode
+     */
+    changeViewMode(mode){
+        if(mode == 1){          //  List view
+            this.listView = true;
+            this.cardView = false;
+            this.mapView = false;
+        } else if (mode == 2){  //  Cards view
+            this.listView = false;
+            this.cardView = true;
+            this.mapView = false;
+        } else {                //  Map view
+            this.listView = false;
+            this.cardView = false;
+            this.mapView = true;
+        }
+    }
+
+
+    /**
+     * @description verify informations of Employer/Jobyer and redirect to recruitement contract
+     * @param item the selected Employer/Jobyer
+     */
+    recruitJobyer(jobyer){
+
         //init local database
         let storage = new Storage(SqlStorage);
-      
+
         console.log(jobyer);
 
         if(this.isUserAuthenticated){
-          
+
             var currentEmployer = this.employer;
-            
+
             //verification of employer informations
             var redirectToStep1 = (currentEmployer && currentEmployer.entreprises[0]) ?
-                                    (currentEmployer.titre == "") ||
-                                    (currentEmployer.prenom == "") ||
-                                    (currentEmployer.nom == "") ||
-                                    (currentEmployer.entreprises[0].name == "") ||
-                                    (currentEmployer.entreprises[0].siret == "") ||
-                                    (currentEmployer.entreprises[0].naf == "") : true;
-                                
+            (currentEmployer.titre == "") ||
+            (currentEmployer.prenom == "") ||
+            (currentEmployer.nom == "") ||
+            (currentEmployer.entreprises[0].name == "") ||
+            (currentEmployer.entreprises[0].siret == "") ||
+            (currentEmployer.entreprises[0].naf == "") : true;
+
             var redirectToStep2 = (currentEmployer && currentEmployer.entreprises[0]) ?
-                                    (typeof (currentEmployer.entreprises[0].adresses) == "undefined") ||
-                                    (typeof (currentEmployer.entreprises[0].adresses[0]) == "undefined") : true;
-                                    
+            (typeof (currentEmployer.entreprises[0].adresses) == "undefined") ||
+            (typeof (currentEmployer.entreprises[0].adresses[0]) == "undefined") : true;
+
             var redirectToStep3 = (currentEmployer && currentEmployer.entreprises[0]) ?
-                                    (typeof (currentEmployer.entreprises[0].adresses) == "undefined") ||
-                                    (typeof (currentEmployer.entreprises[0].adresses[1]) == "undefined") : true;
-                                    
+            (typeof (currentEmployer.entreprises[0].adresses) == "undefined") ||
+            (typeof (currentEmployer.entreprises[0].adresses[1]) == "undefined") : true;
+
             var isDataValid = ((!redirectToStep1) && (!redirectToStep2) && (!redirectToStep3));
-                
+
             var steps = {
                 "state": false,
                 "step1": redirectToStep1,
                 "step2": redirectToStep2,
                 "step3": redirectToStep3
             };
-            
+
             if (isDataValid) {
                 steps.state = false;
                 storage.set('STEPS', steps);
-                
+
                 //navigate to contract page
                 this.nav.push(ContractPage, {jobyer: jobyer});
             }
-            else 
+            else
             {
                 //redirect employer to fill the missing informations
                 steps.state = true;
@@ -233,12 +247,12 @@ export class SearchResultsPage {
                 }
                 else if (redirectToStep2){
                     this.nav.push(PersonalAddressPage, {jobyer: jobyer});
-                } 
+                }
                 else if (redirectToStep3){
                     this.nav.push(JobAddressPage, {jobyer: jobyer});
                 }
             }
-      
+
         }
         else
         {
@@ -260,9 +274,79 @@ export class SearchResultsPage {
             });
             this.nav.present(alert);
         }
-      
-       
-      
-   }
-  
+
+    }
+
+    /**
+     * @description Create a draggable widget to propose criteria for creating an offer from search results
+     */
+    createCriteria(){
+        if(!this.searchResults || isUndefined(this.searchResults) || this.searchResults.length == 0)
+            return;
+
+
+
+        this.offerProposition = true;
+
+        /*
+         *  We will start by identifying the proposed job
+         *  by using the first result and getting job details
+         */
+        let table = this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer';
+        let idOffer = this.searchResults[0].idOffre;
+        console.log('job base : '+JSON.stringify(this.searchResults[0]));
+        this.proposedJob = {
+            id : 0,
+            libellejob : '',
+            idmetier : 0,
+            libellemetier : 0
+        };
+
+        this.offersService.getOffersJob(idOffer,table).then(data =>{
+            console.log('retrieved job data '+data);
+            if(data && data.length>0)
+                this.proposedJob = data[0];
+            else
+                this.offerProposition = false;
+        });
+
+        //  To manage resources and calls we will group offers ids
+        let listOffersId = [];
+        for(var i = 0 ; i < this.searchResults.length ; i++){
+            let o = this.searchResults[i];
+            listOffersId.push(o.idOffre);
+            console.log('list off ids : '+listOffersId)
+        }
+
+        //  Now let us get the list of languages and qualities
+        this.offersService.getOffersLanguages(listOffersId, table).then(data =>{
+
+            this.proposedLanguages = data;
+        });
+
+        this.offersService.getOffersQualities(listOffersId, table).then(data =>{
+
+            this.proposedQualities = data;
+        });
+    }
+
+    /**
+     * @description removes from the proposition list a specific language
+     * @param language
+     */
+    deleteLanguage(language){
+        let index = this.proposedLanguages.indexOf(language);
+        this.proposedLanguages.splice(index, 1);
+        console.log(this.proposedLanguages);
+    }
+
+    /**
+     * @description removes from the proposition list a specific quality
+     * @param quality
+     */
+    deleteQuality(quality){
+        let index = this.proposedQualities.indexOf(quality);
+        this.proposedQualities.splice(index, 1);
+        console.log(this.proposedQualities);
+    }
 }

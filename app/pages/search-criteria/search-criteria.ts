@@ -205,7 +205,7 @@ export class SearchCriteriaPage {
       nom : this.filters[2].value,
       entreprise : this.projectTarget == 'jobyer'?this.filters[5].value:'',
       date : this.filters[4].value,
-      table : this.projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise',
+      table : this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer',
       idOffre :'0'
     };
     console.log(searchFields);

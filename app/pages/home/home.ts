@@ -6,7 +6,7 @@ import {LoginsPage} from "../logins/logins";
 import {SearchResultsPage} from "../search-results/search-results";
 import {SearchCriteriaPage} from "../search-criteria/search-criteria";
 import {SearchGuidePage} from "../search-guide/search-guide";
-//import {InfoUserPage} from "../info-user/info-user";
+import {NetworkService} from "../../providers/network-service/network-service";
 
 @Page({
     templateUrl: 'build/pages/home/home.html',
@@ -27,14 +27,15 @@ export class HomePage {
     popinCrietria : boolean = false;
 
     static get parameters() {
-        return [[GlobalConfigs], [IonicApp], [NavController], [NavParams], [SearchService]];
+        return [[GlobalConfigs], [IonicApp], [NavController], [NavParams], [SearchService],[NetworkService]];
     }
 
     constructor(public globalConfig: GlobalConfigs,
                 private app: IonicApp,
                 private nav: NavController,
                 private navParams: NavParams,
-                private searchService: SearchService) {
+                private searchService: SearchService,
+                public networkService: NetworkService) {
 
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
@@ -144,7 +145,4 @@ export class HomePage {
         this.nav.present(m);
     }
 
-    onDrag(){
-        console.log('dragini');
-    }
 }
