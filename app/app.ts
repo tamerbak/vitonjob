@@ -18,6 +18,7 @@ import 'rxjs/add/observable/fromEvent';
 import {OfferAddPage} from "./pages/offer-add/offer-add";
 import {OfferDetailPage} from "./pages/offer-detail/offer-detail";
 import {ProfilePage} from "./pages/profile/profile";
+import {ContractPage} from "./pages/contract/contract";
 
 @App({
   templateUrl: 'build/menu.html',
