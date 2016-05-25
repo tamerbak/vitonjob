@@ -56,7 +56,7 @@ export class Configs {
     public static sqlURL : string = 'http://ns389914.ovh.net/vitonjobv1/api/sql';
     public static yousignURL : string = 'http://ns389914.ovh.net:8080/vitonjobv1/api/business';
     public static smsURL : string = 'http://ns389914.ovh.net/vitonjobv1/api/sms';
-    public static emailURL : string = 'http://ns389914.ovh.net/vitonjobv1/api/esms';
+    public static emailURL : string = 'http://ns389914.ovh.net/vitonjobv1/api/email';
 
     public static setConfigs(type:string):AbstractConfigs {
         if (type === "employer") {
