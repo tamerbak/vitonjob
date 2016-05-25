@@ -20,7 +20,7 @@ import {OfferDetailPage} from "./pages/offer-detail/offer-detail";
 import {ProfilePage} from "./pages/profile/profile";
 import {Storage, SqlStorage} from 'ionic-angular';
 import {Events} from 'ionic-angular';
-
+import {ContractPage} from "./pages/contract/contract";
 
 @App({
 	templateUrl: 'build/menu.html',
@@ -151,3 +151,4 @@ export class MyApp {
 		}
 	}
 }
+

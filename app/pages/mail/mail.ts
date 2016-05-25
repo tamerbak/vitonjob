@@ -114,7 +114,7 @@ export class MailPage {
 			
 			//case of authentication success
 			this.authService.setObj('connexion', null);
-			this.authService.setObj('currentEmployer', null);
+			this.authService.setObj('currentUser', null);
 			var connexion = {
 				'etat': true,
 				'libelle': 'Se déconnecter',
@@ -134,7 +134,7 @@ export class MailPage {
 			
 			//user is connected, then change the name of connexion btn to deconnection
 			this.authService.setObj('connexion', connexion);
-			this.authService.setObj('currentEmployer', data);
+			this.authService.setObj('currentUser', data);
 			this.gc.setCnxBtnName("Déconnexion");
 			
 			//if user is connected for the first time, redirect him to the page 'civility', else redirect him to the home page

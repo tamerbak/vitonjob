@@ -11,6 +11,9 @@ function touchHandler(event) {
     var spX = $('.draggable').css('left') ;
     var spY = $('.draggable').css('top') ;
 
+    if(!spX || !spY)
+        return;
+
     spX = spX.replace('px', '');
     spY = spY.replace('px', '');
 
