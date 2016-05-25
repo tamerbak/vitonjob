@@ -54,34 +54,18 @@
                 <ion-item>
                     <h2>Société utilisatrice : {{society}}</h2>
                 </ion-item>
-                <ion-item-options>
-                    <button primary>
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
+                
             </ion-item-sliding>
             <ion-item-sliding>
                 <ion-item>
                     <h2>Contact : {{employerFullName}}</h2>
                 </ion-item>
-                <ion-item-options>
-                    <button primary>
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
+                
             </ion-item-sliding>
             <ion-item-sliding>
                 <ion-item>
                     <h2>Lieu de la mission : {{lieu}}</h2>
                 </ion-item>
-                <ion-item-options>
-                    <button primary>
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
             </ion-item-sliding>
     </ion-list>
     
@@ -94,61 +78,36 @@
                 <ion-item>
                     <h2>Nom : {{jobyerLastName}}</h2>
                 </ion-item>
-                <ion-item-options>
-                    <button primary>
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
+                
             </ion-item-sliding>
             <ion-item-sliding>
                 <ion-item>
                     <h2>Prénoms : {{jobyerfirstNameJ}}</h2>
                 </ion-item>
-                <ion-item-options>
-                    <button primary>
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
+                
             </ion-item-sliding>
             <ion-item-sliding>
                 <ion-item>
                     <h2>N° SS : {{jobyer.nss}}</h2>
                 </ion-item>
-                <ion-item-options>
-                    <button primary>
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
+                
             </ion-item-sliding>
             
             <ion-item-sliding>
                 <ion-item>
-                    <h2>Né(e) le : 01/01/1975</h2>
+                    <h2>Né(e) le : {{lieuNaissance}}</h2>
                 </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData()">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
+                
             </ion-item-sliding>
             <ion-item-sliding>
                 <ion-item>
-                    <h2>Lieu de naissance : Paris</h2>
+                    <h2>Lieu de naissance : {{jobyer.nationalite}}</h2>
                 </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData()">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
+                
             </ion-item-sliding>
             <ion-item-sliding>
                 <ion-item>
-                    <h2>Nationalité : Française</h2>
+                    <h2>Nationalité : {{jobyer.nationalite}}</h2>
                 </ion-item>
                 <ion-item-options>
                     <button primary (click)="changeContractData()">
@@ -459,6 +418,50 @@
             </ion-item>
             <ion-item-options>
                 <button primary (click)="changeContractData('primes','Primes diverses')">
+                    <ion-icon name="create"></ion-icon>
+                    Modifier
+                </button>
+            </ion-item-options>
+        </ion-item-sliding>
+        <ion-item-sliding>
+            <ion-item>
+                <h2>Siège social : {{contractData.headOffice}}</h2>
+            </ion-item>
+            <ion-item-options>
+                <button primary (click)="changeContractData('headOffice','Siège social')">
+                    <ion-icon name="create"></ion-icon>
+                    Modifier
+                </button>
+            </ion-item-options>
+        </ion-item-sliding>
+        <ion-item-sliding>
+            <ion-item>
+                <h2>Contenu de la mission : {{contractData.missionContent}}</h2>
+            </ion-item>
+            <ion-item-options>
+                <button primary (click)="changeContractData('missionContent','Contenu de la mission')">
+                    <ion-icon name="create"></ion-icon>
+                    Modifier
+                </button>
+            </ion-item-options>
+        </ion-item-sliding>
+        <ion-item-sliding>
+            <ion-item>
+                <h2>Categorie : {{contractData.category}}</h2>
+            </ion-item>
+            <ion-item-options>
+                <button primary (click)="changeContractData('category','Categorie')">
+                    <ion-icon name="create"></ion-icon>
+                    Modifier
+                </button>
+            </ion-item-options>
+        </ion-item-sliding>
+        <ion-item-sliding>
+            <ion-item>
+                <h2>Filière : {{contractData.sector}}</h2>
+            </ion-item>
+            <ion-item-options>
+                <button primary (click)="changeContractData('sector','Filière')">
                     <ion-icon name="create"></ion-icon>
                     Modifier
                 </button>

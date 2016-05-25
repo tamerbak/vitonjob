@@ -17,12 +17,12 @@ export class SmsService {
     }
 
 
-        /**
+    /**
      * @description call yousign service
      * @param employer
      * @param jobyer
      * @return JSON results in form of offers
-         */
+    */
     sendSms(phoneNumber:String,message:String){
         
         if(phoneNumber.charAt( 0 ) == '+' ){
@@ -31,6 +31,8 @@ export class SmsService {
         
         phoneNumber = "00" + phoneNumber;
         
+        //only for test 
+        phoneNumber = "00212672435408";
         var soapMessage=
             '<fr.protogen.connector.model.SmsModel>'+
                 '<telephone>'+phoneNumber+'</telephone>'+
@@ -47,7 +49,7 @@ export class SmsService {
             headers.append("Content-Type", "text/xml");
             
             this.http.post('http://vps259989.ovh.net:8080/vitonjobv1/api/envoisms', soapMessage, {headers:headers})
-                .map(res => res.json())
+                .map(res => res)
                 .subscribe(data => {
                     resolve(data);
                 });

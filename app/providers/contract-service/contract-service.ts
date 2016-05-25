@@ -26,18 +26,17 @@ export class ContractService {
      * @param jobyer
      * @return JSON results in form of youSign Object
          */
-    callYousign(employer:any, jobyer:any,projectTarget:string){
+    callYousign(employer:any, jobyer:any,contract:any,projectTarget:string){
         
         //get configuration
         this.configuration = Configs.setConfigs(projectTarget);
         
-        
         var jsonData = {
-            "titre" : "M.",
-            "prenom": "Didier",
-            "nom": "MONTEGUT",
-            "entreprise" : "GROUPEMENT INTERACTIF DU DEGIVRAGE ET DU DENEIGEMENT (G.I.D)",
-            "adresseEntreprise" : "Paris",
+            "titre" : employer.titre,
+            "prenom":  employer.prenom,
+            "nom":  employer.nom,
+            "entreprise" : employer.entreprises[0] == null ? "":employer.entreprises[0].name,
+            "adresseEntreprise" : employer.entreprises[0] == null || employer.entreprises[0].adresses[0] == null ? "":employer.entreprises[0].adresses[0].fullAdress,
             "jobyerPrenom" : jobyer.prenom,
             "jobyerNom" : jobyer.nom,
             "nss" : jobyer.numSS,
@@ -45,42 +44,42 @@ export class ContractService {
             "lieuNaissance" : jobyer.lieuNaissance, 
             "nationalite" : jobyer.nationalite, 
             "adresseDomicile" : jobyer.address,
-            "dateDebutMission" : "23/01/2016",
-            "dateFinMission" : "23/01/2016",
-            "periodeEssai" : "3 jours",
-            "dateDebutTerme" : "23/01/2016",
-            "dateFinTerme" : "23/01/2016",
-            "motifRecours" : "Remplacement Maladie",
-            "justificationRecours" : "Mme Martin Monique",
-            "qualification" : "Magasinier confirmé",
-            "caracteristiquePoste" : "Gestion du stock pièces",
+            "dateDebutMission" : contract.missionStartDate,
+            "dateFinMission" : contract.missionEndDate,
+            "periodeEssai" :  contract.trialPeriod == null ? "":( contract.trialPeriod == 1 ? "1 jour": (contract.trialPeriod + " jours")),
+            "dateDebutTerme" : contract.termStartDate,
+            "dateFinTerme" : contract.termEndDate,
+            "motifRecours" : contract.motif,
+            "justificationRecours" : contract.justification,
+            "qualification" : contract.qualification,
+            "caracteristiquePoste" : contract.characteristics,
             "tempsTravail" : {
-            "nombreHeures" : "35H Hebdo",
-            "variables" : "Oui"
+                "nombreHeures" : contract.workTimeHours,
+                "variables" : contract.workTimeVariable,
             },
             "horaireHabituel" : {
-            "debut" : "22H00",
-            "fin" : "23H00",
-            "variables" : "Oui"
+                "debut" : contract.workStartHour,
+                "fin" : contract.workEndHour,
+                "variables" : contract.workHourVariable,
             },
-            "posteARisque" : "Non",
-            "surveillanceMedicale" : "Non",
-            "epi" : "chaussures de sécurité",
-            "salaireBase" : "13,00 euros B/H",
-            "dureeMoyenneMensuelle" : "35H Hebdo",
-            "salaireHN" : "115,00€ B/H",
+            "posteARisque" : contract.postRisks,
+            "surveillanceMedicale" : contract.medicalSurv,
+            "epi" : contract.epi,
+            "salaireBase" : contract.baseSalary,
+            "dureeMoyenneMensuelle" : contract.MonthlyAverageDuration,
+            "salaireHN" : contract.salaryNHours,
             "salaireHS": {
-            "35h" : "+25%",
-            "43h" : "+50%"
+                "35h" : contract.salarySH35,
+                "43h" : contract.salarySH43,
             },
-            "droitRepos" : "> 41H 50%",
-            "adresseInterim" : "",
-            "client" : "",
-            "primeDiverses" : "néant",
-            "SiegeSocial" : "31 rue du Moulin 31320 CASTANET TOLOSAN",
-            "ContenuMission" : "d opérateur déneigement et dégivrage – coefficient 185",
-            "categorie" : "ouvrier",
-            "filiere" : "exploitation",
+            "droitRepos" : contract.restRight,
+            "adresseInterim" : contract.interimAddress,
+            "client" : contract.customer,
+            "primeDiverses" : contract.primes,
+            "SiegeSocial" : contract.headOffice,
+            "ContenuMission" : contract.headOffice,
+            "categorie" : contract.category,
+            "filiere" : contract.sector,
             "HeureDebutMission" : "22H",
             "HeureFinMission" : "23H"
         };
@@ -88,7 +87,7 @@ export class ContractService {
         var dataSign =JSON.stringify(
         {
             'class': 'com.vitonjob.yousign.callouts.YousignConfig',
-            'employerFirstName': employer.nom,
+            'employerFirstName': employer.prenom,
             'employerLastName':employer.nom,
             'employerEmail': employer.email,
             'employerPhone': employer.tel,

@@ -17,7 +17,7 @@ import {PersonalAddressPage} from '../personal-address/personal-address';
  * @module Contract
  */
 @Page({
-  templateUrl: 'build/pages/contract/contract.html',
+  templateUrl: 'build/pages/yousign/yousign.html',
 })
 export class YousignPage {
     
@@ -30,7 +30,6 @@ export class YousignPage {
     yousignTitle:string;
     dataObject:any;
     contractData:any;
-    
     
     constructor(public gc: GlobalConfigs, 
                 public nav: NavController, 
@@ -61,6 +60,7 @@ export class YousignPage {
         this.isEmployer = (this.projectTarget=='employer');
         this.jobyer = navParams.get('jobyer');
         this.contractData = navParams.get('contractData');
+
     }
     
     goToPayment() {
@@ -82,7 +82,7 @@ export class YousignPage {
         });
         this.nav.present(loading);
         
-        this.contractService.callYousign(this.employer, this.jobyer, this.projectTarget).then((data) => {
+        this.contractService.callYousign(this.employer, this.jobyer,this.contractData, this.projectTarget).then((data) => {
             loading.dismiss();
             
             if (data == null || data.length == 0) {
@@ -93,6 +93,10 @@ export class YousignPage {
             var dataValue = data[0]['value'];
             var yousignData = JSON.parse(dataValue);
             console.log(yousignData);
+            
+            //change jobyer 'contacted' status
+            this.jobyer.contacted = true;
+            this.jobyer.date_invit = new Date();
             
             //get the link yousign of the contract for the employer
             var yousignEmployerLink = yousignData.iFrameURLs[0].iFrameURL;
