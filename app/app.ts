@@ -138,7 +138,7 @@ export class MyApp {
 		this.menu.close();
 		
 		if(page.title == 'Déconnexion' ){
-			this.storage.set("currentEmployer", null);
+			this.storage.set("currentUser", null);
 			this.events.publish('user:logout');
 		}
 		
