@@ -1,5 +1,5 @@
 import {Page, NavController, ActionSheet, Platform, Slides,Alert} from 'ionic-angular';
-import {Storage, SqlStorage} from 'ionic-angular';
+import {Storage, SqlStorage, LocalStorage} from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {ViewChild} from 'angular2/core'
 import {SearchService} from "../../providers/search-service/search-service";
@@ -11,6 +11,7 @@ import {PersonalAddressPage} from '../personal-address/personal-address';
 import {LoginsPage} from '../logins/logins';
 import {isUndefined} from "ionic-angular/util";
 import {OffersService} from "../../providers/offers-service/offers-service";
+import {OfferAddPage} from "../offer-add/offer-add";
 
 
 /**
@@ -346,5 +347,49 @@ export class SearchResultsPage {
         let index = this.proposedQualities.indexOf(quality);
         this.proposedQualities.splice(index, 1);
         console.log(this.proposedQualities);
+    }
+
+    /**
+     * @description saves the job proposition in the local storage of the phone
+     */
+    saveProposition(){
+        //  Initialize local storage
+        let local = new Storage(LocalStorage);
+
+        //  Persist the proposed job
+        let jobData = {
+            sector : this.proposedJob.libellemetier,
+            job : this.proposedJob.libellejob,
+            idSector : this.proposedJob.idmetier,
+            idJob : this.proposedJob.id,
+            level : "junior",
+            remuneration : 0,
+            validated : false
+        };
+        local.set('jobData', JSON.stringify(jobData));
+
+        //  Persist languages
+        let languageData = [];
+        for(let i = 0 ; i < this.proposedLanguages.length ; i++){
+            let l = this.proposedLanguages[i];
+            languageData.push({
+                id : l.id,
+                libelle : l.libelle,
+                idlevel : 2,
+                level : "junior"
+            });
+        }
+        local.set('languages', JSON.stringify(languageData));
+
+        //  Persist qualities
+        let qualitiesData = [];
+        for(let i = 0 ; i < this.proposedQualities.length ; i++){
+            let q = this.proposedQualities[i];
+            qualitiesData.push(q);
+        }
+        local.set('qualities', JSON.stringify(qualitiesData));
+
+        //  Offer is ready show page
+        this.nav.push(OfferAddPage);
     }
 }
