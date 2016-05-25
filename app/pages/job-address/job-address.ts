@@ -168,7 +168,7 @@ export class JobAddressPage {
 					"fullAddress": this.selectedPlace.formatted_address
 				};
 			}
-			this.authService.setObj('currentEmployer', this.currentEmployer);
+			this.authService.setObj('currentUser', this.currentEmployer);
 			}).catch( error => {
 			reject(error);
 		});

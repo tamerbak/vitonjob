@@ -77,7 +77,7 @@ export class CivilityPage {
 				this.currentEmployer.entreprises[0].siret = this.siret;
 				this.currentEmployer.entreprises[0].naf = this.ape;
 				// PUT IN SESSION
-				this.authService.setObj('currentEmployer', this.currentEmployer);
+				this.authService.setObj('currentUser', this.currentEmployer);
 			}
 			).catch( error => {
 				reject(error);
@@ -101,7 +101,7 @@ export class CivilityPage {
 				this.currentEmployer.dateNaissance = this.birthdate;
 				this.currentEmployer.lieuNaissance = this.birthplace;
 				// PUT IN SESSION
-				this.authService.setObj('currentEmployer', this.currentEmployer);
+				this.authService.setObj('currentUser', this.currentEmployer);
 			}
 			).catch( error => {
 				reject(error);

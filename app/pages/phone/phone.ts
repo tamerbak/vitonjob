@@ -121,7 +121,7 @@ export class PhonePage {
 			
 			//case of authentication success
 			this.authService.setObj('connexion', null);
-			this.authService.setObj('currentEmployer', null);
+			this.authService.setObj('currentUser', null);
 			var connexion = {
 				'etat': true,
 				'libelle': 'Se déconnecter',
@@ -141,7 +141,7 @@ export class PhonePage {
 			}
 			
 			this.storage.set('connexion', connexion);
-			this.storage.set('currentEmployer', data);
+			this.storage.set('currentUser', data);
 			
 			//user is connected, then change the name of connexion btn to deconnection
 			this.gc.setCnxBtnName("Déconnexion");
