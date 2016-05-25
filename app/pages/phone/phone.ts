@@ -1,4 +1,4 @@
-import {Page, Alert, NavController} from 'ionic-angular';
+import {Page, Alert, NavController, Events} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -42,7 +42,7 @@ export class PhonePage {
 		* @description While constructing the view, we load the list of countries to display their codes
 	*/
 	constructor(public nav: NavController,
-	public gc: GlobalConfigs, private authService: AuthenticationService, private loadListService: LoadListService, private dataProviderService: DataProviderService, private globalService: GlobalService, private validationDataService: ValidationDataService) {
+	public gc: GlobalConfigs, private authService: AuthenticationService, private loadListService: LoadListService, private dataProviderService: DataProviderService, private globalService: GlobalService, private validationDataService: ValidationDataService, public events: Events) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -142,6 +142,7 @@ export class PhonePage {
 			
 			this.storage.set('connexion', connexion);
 			this.storage.set('currentEmployer', data);
+			this.events.publish('user:login');
 			
 			//user is connected, then change the name of connexion btn to deconnection
 			this.gc.setCnxBtnName("Déconnexion");
@@ -169,7 +170,7 @@ export class PhonePage {
 			return (!this.index || !this.phone || this.showPhoneError() || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError())
 			} else {
 			//connection
-			return (!this.index || !this.phone || this.showPhoneError() || !this.password1)
+			return (!this.index || !this.phone || !this.password1)
 		}
 	}
 	
@@ -277,6 +278,6 @@ export class PhonePage {
 		* @description return to the home page
 	*/
 	goBack() {
-		this.nav.pop(HomePage);
+		this.nav.rootNav.setRoot(HomePage)
 	}
 }
