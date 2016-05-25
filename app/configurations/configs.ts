@@ -7,6 +7,7 @@
 interface AbstractConfigs {
     projectName:string;
     themeColor: string;
+    inversedThemeColor : string;
     imageURL: string;
     highlightSentence : string;
     bgMenuURL: string;
@@ -22,6 +23,8 @@ class EmployerConfigs implements AbstractConfigs {
     projectName:string = 'VitOnJob Employeur';
     // Application theme color
     themeColor: string = '#757575';
+    // Application opposite theme color
+    inversedThemeColor: string = '#14baa6';
     // VitOnJob Employer image
     imageURL: string = 'img/logo_employeur.png';
     // User employer image
@@ -39,6 +42,8 @@ class JobyerConfigs implements AbstractConfigs {
     projectName:string = "VitOnJob Jobyer";
     // Application theme color
     themeColor: string = "#14baa6";
+    // Application opposite theme color
+    inversedThemeColor: string = '#757575';
     // VitOnJob Jobyer image
     imageURL: string = "img/logo_jobyer.png";
     // User employer image

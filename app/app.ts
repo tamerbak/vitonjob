@@ -15,6 +15,9 @@ import {NetworkService} from "./providers/network-service/network-service";
 import {ChangeDetectorRef} from 'angular2/src/core/change_detection/change_detector_ref';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
+import {OfferAddPage} from "./pages/offer-add/offer-add";
+import {OfferDetailPage} from "./pages/offer-detail/offer-detail";
+import {ProfilePage} from "./pages/profile/profile";
 
 @App({
   templateUrl: 'build/menu.html',
@@ -49,10 +52,11 @@ export class MyApp {
     this.pages = [
       { title: "Se connecter", component: LoginsPage, icon: "log-in", isBadged: false },
       { title: "Lancer une recherche", component: HomePage, icon: "search", isBadged: false },
+      { title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false },
       { title: "Mes offres", component: OfferListPage, icon: "list", isBadged: true },
       { title: "Gestion des missions", component: MissionListPage, icon: "list", isBadged: false },
     ];
-    this.rootPage = HomePage;//OfferAddPage;//
+    this.rootPage = HomePage;//ProfilePage;//OfferDetailPage;//OfferAddPage;//
 
     // Set global configs
     // Get target to determine configs

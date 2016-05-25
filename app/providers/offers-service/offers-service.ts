@@ -163,29 +163,73 @@ export class OffersService {
      * loading jobs list from server
      * @return jobs list in the format {id : X, idsector : X, libelle : X}
      */
-  loadJobs(projectTarget : string){
+  loadJobs(projectTarget : string, idSector: number){
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
 
-    var sql = 'select pk_user_job as id, fk_user_metier as idsector, libelle as libelle from user_job';
-    console.log(sql);
-    return new Promise(resolve => {
-      // We're using Angular Http provider to request the data,
-      // then on the response it'll map the JSON data to a parsed JS object.
-      // Next we process the data and resolve the promise with the new data.
-      let headers = new Headers();
-      headers.append("Content-Type", 'text/plain');
-      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
-          .map(res => res.json())
-          .subscribe(data => {
-            // we've got back the raw data, now generate the core schedule data
-            // and save the data for later reference
-            console.log(data);
-            this.listJobs = data.data;
-            resolve(this.listJobs);
-          });
-    });
-  }
+        let sql = "";
+        if (idSector && idSector > 0)
+            sql = 'SELECT pk_user_job as id, user_job.libelle as libelle, fk_user_metier as idsector, user_metier.libelle as libelleSector  ' +
+                'FROM user_job, user_metier ' +
+                'WHERE fk_user_metier = pk_user_metier ' +
+                'AND fk_user_metier ='+idSector;
+        else
+            sql = 'SELECT pk_user_job as id, user_job.libelle as libelle, fk_user_metier as idsector, user_metier.libelle as libelleSector ' +
+                'FROM user_job, user_metier ' +
+                'WHERE fk_user_metier = pk_user_metier';
+
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    console.log(data);
+                    this.listJobs = data.data;
+                    resolve(this.listJobs);
+                });
+        });
+    }
+
+
+    /**
+     * loading sector by its Id
+     * @return sector in the format {id : X, libelle : X}
+     */
+    loadSectorById(projectTarget:string, idSector:number) {
+        //  Init project parameters
+        this.configuration = Configs.setConfigs(projectTarget);
+
+        let sql = "";
+        if (idSector && idSector > 0)
+            sql = 'SELECT pk_user_metier as id, libelle as libelle ' +
+                'FROM user_metier ' +
+                'WHERE pk_user_metier ='+idSector;
+        else
+            return ;
+
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    console.log(data);
+                    this.listJobs = data.data;
+                    resolve(this.listJobs);
+                });
+        });
+    }
 
     /**
      * @description     loading languages list
@@ -194,7 +238,7 @@ export class OffersService {
   loadLanguages(projectTarget : string){
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
-    var sql = 'select pk_user_langue as id, libelle as libelle from user_langue';
+    var sql = 'select pk_user_langue as id, libelle as libelle, 2 as idlevel, \'junior\' as level from user_langue';
     console.log(sql);
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,

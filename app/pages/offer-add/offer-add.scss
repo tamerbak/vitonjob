@@ -30,6 +30,84 @@ $vertical-align : calc(20% - 1px);
     height: $offer-button-size;
   }
 
+  .icon-top-left {
+    font-size: -webkit-xxx-large;
+    position: absolute;
+    top: calc(20% + 90px);
+    left: calc(10% + 90px);
+    z-index: 99;
+  }
+
+  .icon-top-right {
+    font-size: -webkit-xxx-large;
+    position: absolute;
+    top: calc(20% + 90px);
+    right: calc(10% - 9px);
+    z-index: 99;
+  }
+
+  .icon-bottom-left {
+    font-size: -webkit-xxx-large;
+    position: absolute;
+    bottom: calc(20% - 10px);
+    left: calc(10% + 90px);
+    z-index: 99;
+  }
+
+  .icon-bottom-right {
+    font-size: -webkit-xxx-large;
+    position: absolute;
+    bottom: calc(20% - 10px);
+    right: calc(10% - 9px);
+    z-index: 99;
+  }
+
+  .text-top-left {
+    position: absolute;
+    /*font-style: italic;*/
+    font-size: large;
+    width: 32px;
+    font-weight: bolder;
+    color: white;
+    top: calc(20% + 70px);
+    left: calc(10% + 44px);
+    z-index: 99;
+  }
+
+  .text-top-right {
+    position: absolute;
+    font-size: large;
+    font-weight: bold;
+    color: white;
+    top: calc(20% + 70px);
+    right: calc(10% + 22px);
+    z-index: 99;
+  }
+
+  .text-bottom-left {
+    position: absolute;
+    font-size: large;
+    font-weight: bolder;
+    color: white;
+    bottom: calc(20% + 10px);
+    left: calc(10% + 25px);
+    z-index: 99;
+  }
+
+  .text-bottom-right {
+    position: absolute;
+    font-size: large;
+    font-weight: bold;
+    /*width: 100px;*/
+    color: white;
+    bottom: calc(20% + 10px);
+    right: calc(10% + 22px);
+    z-index: 99;
+    /*background-color: #757575;
+    border-radius: 20px;
+    text-align: center;*/
+  }
+
 
 
 }

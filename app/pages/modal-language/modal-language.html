@@ -25,13 +25,28 @@
 
 
     <div *ngFor="#item of languages">
-        <ion-list radio-group>
-            <ion-list-header>
-                <h5>{{ item.libelle }}</h5>
+        <ion-list radio-group [(ngModel)]="item.level">
+            <ion-list-header style="margin-left: 0; padding: 0 0 0 0;">
+                <h5 style="margin-bottom: 0; margin-top: auto">
+                    <ion-row style="background-color: lightgray;">
+                        <ion-col>{{ item.libelle }}</ion-col>
+                        <ion-col text-right style="padding-right: 0;">
+                            <!--button item-right clear (click)="removeLanguage(item)">
+                                <ion-icon name="close-circle" [style.color]="themeColor"></ion-icon>
+                            </button-->
+                            <button clear small text-right (click)="removeLanguage(item)"
+                                    class="delete-button">
+                                Retirer
+                                <!--ion-icon name="close-circle"></ion-icon-->
+                            </button>
+                        </ion-col>
+                    </ion-row>
+                </h5>
+
             </ion-list-header>
             <ion-item>
                 <ion-label>Débutant</ion-label>
-                <ion-radio checked="true" value="junior"></ion-radio>
+                <ion-radio value="junior"></ion-radio>
             </ion-item>
             <ion-item>
                 <ion-label>Courant</ion-label>

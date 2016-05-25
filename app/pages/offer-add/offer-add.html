@@ -14,33 +14,47 @@
   <ion-row >
     <ion-col text-center>
       <button [style.backgroundColor]="themeColor"
-              [disabled] = "!isOfferValidated" >
-        <ion-icon name="add" is-active="false"></ion-icon>
+              [disabled] = "!(validated.isJob && validated.isCalendar)" >
+        <ion-icon name="add-circle" is-active="false"></ion-icon>
         Ajouter l'offre
       </button>
     </ion-col>
   </ion-row>
 
   <!-- Job -->
-  <button fab class = "offer-top-left"
+  <ion-label class="text-top-left">Job</ion-label>
+  <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
+            class="icon-top-left" [hidden]="!validated.isJob"></ion-icon>
+  <button fab class = "offer-top-left" [disabled] = "!steps.isJob"
           [style.backgroundColor]="themeColor" (click)="showJobModal()">
     <ion-icon name="briefcase" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
   </button>
-  <!-- QI -->
-  <button fab class = "offer-top-right"
+
+  <!-- Calendar -->
+  <ion-label class="text-top-right">Agenda</ion-label>
+  <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
+            class="icon-top-right" [hidden]="!validated.isCalendar"></ion-icon>
+  <button fab class = "offer-top-right" [disabled] = "!steps.isCalendar"
+          [style.backgroundColor]="themeColor" (click)="showCalendarModal()">
+    <ion-icon name="calendar" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
+  </button>
+
+  <!-- Quality -->
+  <ion-label class="text-bottom-left">Qualités</ion-label>
+  <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
+            class="icon-bottom-left" [hidden]="!validated.isQuality"></ion-icon>
+  <button fab class = "offer-bottom-left" [disabled] = "!validated.isCalendar"
           [style.backgroundColor]="themeColor" (click)="showQualityModal()">
     <ion-icon name="happy" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
   </button>
 
   <!-- Languages -->
-  <button fab class = "offer-bottom-left"
+  <ion-label class="text-bottom-right">Langues</ion-label>
+  <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
+            class="icon-bottom-right" [hidden]="!validated.isLanguage"></ion-icon>
+  <button fab class = "offer-bottom-right" [disabled] = "!validated.isCalendar"
           [style.backgroundColor]="themeColor" (click)="showLanguageModal()">
     <ion-icon name="globe" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
-  </button>
-  <!-- Calendar -->
-  <button fab class = "offer-bottom-right"
-          [style.backgroundColor]="themeColor" (click)="showCalendarModal()">
-    <ion-icon name="calendar" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
   </button>
 
 

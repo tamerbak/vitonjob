@@ -5,21 +5,64 @@
   Ionic pages and navigation.
 -->
 <ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-  <ion-title>Agenda</ion-title>
-  <ion-buttons end>
-    <button (click)="closeModal()">
-      <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
-    </button>
-  </ion-buttons>
+    <ion-title>Agenda</ion-title>
+    <ion-buttons end>
+        <button (click)="closeModal()">
+            <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+        </button>
+    </ion-buttons>
 </ion-navbar>
 
 <ion-content padding class="modal-calendar">
-  <ion-row>
-    <ion-col text-center>
-      <button [style.backgroundColor]="themeColor" (click)="showDatePicker()">
-        <ion-icon name="add-circle"></ion-icon>
-        Ajouter une qualité indispensable
-      </button>
-    </ion-col>
-  </ion-row>
+    <ion-row>
+        <ion-col text-center>
+            <button [style.backgroundColor]="themeColor" (click)="showDatePicker('datetime')">
+                <ion-icon name="add-circle"></ion-icon>
+                Ajouter un créneau
+            </button>
+        </ion-col>
+    </ion-row>
+
+    <ion-list>
+        <ion-card *ngFor="#item of slots">
+            <ion-card-header style="padding-right: 0;padding-left: 0;padding-bottom: 0;">
+                <ion-row>
+                    <ion-col>
+                        Créneau de {{item.date.toLocaleDateString("fr-FR")}}
+                    </ion-col>
+
+                    <ion-col style="text-align: right;">
+                        <button clear small text-right (click)="removeSlot(item)"
+                                class="delete-button">
+                            Retirer
+                            <!--ion-icon name="close-circle"></ion-icon-->
+                        </button>
+                    </ion-col>
+
+                </ion-row>
+            </ion-card-header>
+
+            <ion-item>
+                <ion-icon name="calendar" item-left large></ion-icon>
+                <h2>Le {{item.date.toLocaleDateString("fr-FR", dateOptions)}}</h2>
+                <p>De {{item.startHour}} à {{item.endHour}}</p>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Ajouter à l'agenda</ion-label>
+                <ion-toggle checked="false"></ion-toggle>
+            </ion-item>
+        </ion-card>
+    </ion-list>
+
+    <ion-row>
+        <ion-col text-center>
+            <button [hidden]="(slots.length == 0)"
+                    [style.backgroundColor]="themeColor" (click)="validateCalendar()">
+                Valider
+                <ion-icon name="checkmark-circle"></ion-icon>
+            </button>
+        </ion-col>
+    </ion-row>
+
 </ion-content>

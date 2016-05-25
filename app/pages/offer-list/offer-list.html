@@ -30,7 +30,14 @@
                 {{item.title}}
                 <ion-badge [style.backgroundColor]="themeColor" item-right>{{item.correspondantsCount}}</ion-badge>
             </button>
+        </ion-list>
 
+        <ion-list>
+            <button ion-item (click)="goToDetailOffer(item)">
+                <ion-icon name="eye" item-left></ion-icon>
+                Serveur Débutant
+                <ion-badge [style.backgroundColor]="themeColor" item-right>4</ion-badge>
+            </button>
         </ion-list>
     </ion-card>
 

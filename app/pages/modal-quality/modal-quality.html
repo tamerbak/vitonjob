@@ -18,14 +18,17 @@
     <ion-col text-center>
       <button [style.backgroundColor]="themeColor" (click)="showQualityList()">
         <ion-icon name="add-circle"></ion-icon>
-        Ajouter une qualité indispensable
+        Ajouter une qualité
       </button>
     </ion-col>
   </ion-row>
 
-  <ion-list>
+  <ion-list text-wrap>
     <ion-item *ngFor="#item of qualities">
       {{ item.libelle }}
+      <button item-right clear (click)="removeQuality(item)">
+        <ion-icon name="close-circle" [style.color]="themeColor"></ion-icon>
+      </button>
     </ion-item>
   </ion-list>
 

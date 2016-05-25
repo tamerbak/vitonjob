@@ -32,6 +32,14 @@ export class OfferDetailPage {
 
         // Get Offer passed in NavParams
         this.offer = params.get('selectedOffer');
+        this.showJob = false;
+        this.jobIconName = 'add';
+        this.showQuality = false;
+        this.qualityIconName = 'add';
+        this.showLanguage = false;
+        this.languageIconName = 'add';
+        this.showCalendar = false;
+        this.calendarIconName = 'add';
         // 
 
     }
@@ -58,5 +66,50 @@ export class OfferDetailPage {
             loading.dismiss();
             this.nav.push(SearchResultsPage);
         });
+    }
+
+
+    /**
+     * Show job card
+     */
+    showJobCard(){
+        this.showJob = !(this.showJob);
+        if (this.showJob)
+            this.jobIconName = 'remove';
+        else
+            this.jobIconName = 'add';
+    }
+
+    /**
+     * Show quality card
+     */
+    showQualityCard(){
+        this.showQuality = !(this.showQuality);
+        if (this.showQuality)
+            this.qualityIconName = 'remove';
+        else
+            this.qualityIconName = 'add';
+    }
+
+    /**
+     * Show language card
+     */
+    showLanguageCard(){
+        this.showLanguage = !(this.showLanguage);
+        if (this.showLanguage)
+            this.languageIconName = 'remove';
+        else
+            this.languageIconName = 'add';
+    }
+
+    /**
+     * Show calendar card
+     */
+    showCalendarCard(){
+        this.showCalendar = !(this.showCalendar);
+        if (this.showCalendar)
+            this.calendarIconName = 'remove';
+        else
+            this.calendarIconName = 'add';
     }
 }

@@ -5,18 +5,173 @@
   Ionic pages and navigation.
 -->
 <ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-  <ion-title>Détail</ion-title>
+    <ion-title>Détail</ion-title>
+    <ion-buttons end>
+        <button>
+            <ion-icon name="copy"></ion-icon>
+        </button>
+        <button>
+            <ion-icon name="eye-off"></ion-icon>
+        </button>
+        <button (click)="launchSearch()">
+            <ion-icon name="search"></ion-icon>
+        </button>
+    </ion-buttons>
 </ion-navbar>
 
 <ion-content padding class="offer-detail">
-  Ici le détail de l'offre...
+    <ion-list>
+        <div style="display: flex">
+            <ion-list-header style="width: 100%">
+                Job
+            </ion-list-header>
+            <button clear small style="position: relative; top: 5px" (click)="showJobCard()">
+                <ion-icon [name]="jobIconName"></ion-icon>
+            </button>
+        </div>
 
-  <ion-row>
-    <ion-col text-center>
-      <button [style.backgroundColor]="themeColor" (click)="launchSearch()">
-        <ion-icon name="search"></ion-icon>
-        Lancer la recherche
-      </button>
-    </ion-col>
-  </ion-row>
+        <ion-card [hidden] = "!showJob">
+            <div class="img-header">
+                <img src="img/job2.png"/>
+                <ion-icon name="euro"></ion-icon>
+                <div class="card-title">Job</div>
+            </div>
+            <!--ion-item>
+                <ion-label>
+                    <ion-icon name="briefcase"></ion-icon> Secteur : Restauration
+                </ion-label>
+            </ion-item>
+            <ion-item>
+                <ion-label>
+                    <ion-icon name="briefcase"></ion-icon> Job : Serveur
+                </ion-label>
+            </ion-item>
+            <ion-item>
+                <ion-label>
+                    <ion-icon name="briefcase"></ion-icon> Niveau : Débutant
+                </ion-label>
+            </ion-item>
+            <ion-item>
+                <ion-label>
+                    <ion-icon name="briefcase"></ion-icon> Rénumération : 40 €/h
+                </ion-label>
+            </ion-item-->
+            <div>
+                <ul>
+                    <li>Secteur : Restauration/Hotellerie</li>
+                    <li>Job : Serveur</li>
+                    <li>Niveau : Débutant</li>
+                    <li>Rémunération : 40 €/h</li>
+                </ul>
+            </div>
+            <div class="button-footer">
+                <button clear [style.color]="themeColor">
+                    <ion-icon name="create"></ion-icon>
+                    <div>Modifier</div>
+                </button>
+            </div>
+        </ion-card>
+
+        <!-- Qualities Card-->
+        <div style="display: flex">
+            <ion-list-header style="width: 100%">
+                Qualités indispensables
+            </ion-list-header>
+            <button clear small style="position: relative; top: 5px" (click)="showQualityCard()">
+                <ion-icon [name]="qualityIconName"></ion-icon>
+            </button>
+        </div>
+        <ion-card [hidden] = "!showQuality">
+            <div class="img-header">
+                <img src="img/quality2.png"/>
+                <div class="card-title" style="color: #757575">Qualités</div>
+                <div class="card-subtitle" style="color: #757575">indispensables</div>
+            </div>
+            <div>
+                <ul>
+                    <li>BAFA</li>
+                    <li>Autonome</li>
+                </ul>
+            </div>
+            <div class="button-footer">
+                <button clear [style.color]="themeColor">
+                    <ion-icon name="create"></ion-icon>
+                    <div>Modifier</div>
+                </button>
+            </div>
+        </ion-card>
+
+        <!-- Languages Card-->
+        <div style="display: flex">
+            <ion-list-header style="width: 100%">
+                Langues
+            </ion-list-header>
+            <button clear small style="position: relative; top: 5px" (click)="showLanguageCard()">
+                <ion-icon [name]="languageIconName"></ion-icon>
+            </button>
+        </div>
+        <ion-card [hidden] = "!showLanguage">
+            <div class="img-header">
+                <img src="img/language.png"/>
+                <div class="card-title">Langues</div>
+            </div>
+            <div>
+                <ul>
+                    <li>Français : Courant</li>
+                    <li>Anglais : Débutant</li>
+                </ul>
+            </div>
+            <div class="button-footer">
+                <button clear [style.color]="themeColor">
+                    <ion-icon name="create"></ion-icon>
+                    <div>Modifier</div>
+                </button>
+            </div>
+        </ion-card>
+
+        <!-- Calendar Card-->
+        <div style="display: flex">
+            <ion-list-header style="width: 100%">
+                Agenda
+            </ion-list-header>
+            <button clear small style="position: relative; top: 5px" (click)="showCalendarCard()">
+                <ion-icon [name]="calendarIconName"></ion-icon>
+            </button>
+        </div>
+        <ion-card [hidden] = "!showCalendar">
+            <div class="img-header">
+                <img src="img/calendar.png"/>
+                <div class="card-title" style="color: #757575">Agenda</div>
+            </div>
+            <div>
+                <ul>
+                    <li>Créneau de 30/05/2016
+                        <ul>
+                            <li>De 8:00 à 18:00</li>
+                        </ul>
+                    </li>
+                    <li>Créneau de 31/05/2016
+                        <ul>
+                            <li>De 8:00 à 18:00</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="button-footer">
+                <button clear [style.color]="themeColor">
+                    <ion-icon name="create"></ion-icon>
+                    <div>Modifier</div>
+                </button>
+            </div>
+        </ion-card>
+    </ion-list>
+
+    <ion-row>
+        <ion-col text-center>
+            <button [style.backgroundColor]="themeColor" (click)="launchSearch()">
+                <ion-icon name="search"></ion-icon>
+                Lancer la recherche
+            </button>
+        </ion-col>
+    </ion-row>
 </ion-content>

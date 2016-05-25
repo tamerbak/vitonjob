@@ -15,34 +15,63 @@
 
 <ion-content padding class="modal-job">
     <form [ngFormModel]="jobForm">
+        <!-- Sector field-->
         <ion-item>
             <ion-label floating>Secteur</ion-label>
-            <ion-input type="text" [(ngModel)]="sector" ></ion-input>
+            <ion-input type="text" [(ngModel)]="jobData.sector" (focus)="showSectorList()"></ion-input>
         </ion-item>
-        <div class="error-box" [hidden]="sector">* Merci de saisir un secteur!</div>
+        <div class="error-box" [hidden]="jobData.sector">* Merci de saisir un secteur!</div>
+        <!-- Job field-->
         <ion-item>
             <ion-label floating>Job</ion-label>
-            <ion-input type="text" [(ngModel)]="job" (focus)="showJobList()"> </ion-input>
+            <ion-input type="text" [(ngModel)]="jobData.job" (focus)="showJobList()"></ion-input>
         </ion-item>
-        <div class="error-box" [hidden]="job">* Merci de saisir un job!</div>
-
-        <ion-list radio-group>
+        <div class="error-box" [hidden]="jobData.job">* Merci de saisir un job!</div>
+        <ion-row>&nbsp;</ion-row>
+        <!-- Level field-->
+        <ion-list radio-group [(ngModel)]="jobData.level" style="margin-bottom: 5px;">
             <ion-list-header>
-                Expérience
+                Niveau
             </ion-list-header>
             <ion-item>
                 <ion-label>Débutant</ion-label>
-                <ion-radio checked="true" value="junior"></ion-radio>
+                <ion-radio value="junior"></ion-radio>
             </ion-item>
             <ion-item>
-                <ion-label>Expérimenté</ion-label>
+                <ion-label>Expert</ion-label>
                 <ion-radio value="senior"></ion-radio>
             </ion-item>
         </ion-list>
+        <!-- Remuneration field-->
+
+        <ion-row>
+
+            <ion-col>
+                <ion-item style="padding-left: 0;">
+                    <ion-label floating>Rémunération</ion-label>
+                    <ion-input type="number" [(ngModel)]="jobData.remuneration"></ion-input>
+                </ion-item>
+            </ion-col>
+
+            <ion-col width-33 style="display: flex">
+                <ion-item text-wrap>
+                    <ion-icon name="euro"></ion-icon>
+                    <ion-select [(ngModel)]="jobData.currency"
+                                style="padding: 0;overflow: visible; max-width: 100%;"
+                                [alertOptions]="alertOptions"
+                                okText="Ok" cancelText="Annuler">
+                        <ion-option value="euro" checked="true">Euro</ion-option>
+                        <ion-option value="dollar" disabled="true">Dollar</ion-option>
+                    </ion-select>
+                </ion-item>
+            </ion-col>
+
+        </ion-row>
+
 
         <ion-row>
             <ion-col text-center>
-                <button [disabled]="!job || !sector" (click)="submitForm()">
+                <button [style.backgroundColor]="themeColor" [disabled]="!jobData.job || !jobData.sector || !jobData.remuneration" (click)="validateJob()">
                     Valider
                     <ion-icon name="checkmark-circle"></ion-icon>
                 </button>
@@ -50,7 +79,6 @@
         </ion-row>
 
     </form>
-
 
 
 </ion-content>

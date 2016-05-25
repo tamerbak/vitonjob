@@ -18,7 +18,7 @@
                  (input)="getItems($event)"
                  [placeholder]="searchPlaceholder"
                  [cancelButtonText]="cancelButtonText"></ion-searchbar>
-  <ion-list>
+  <ion-list text-wrap>
     <ion-item *ngFor="#item of list">
       <button ion-item (click)="validateModal(item)">{{ item.libelle }}</button>
     </ion-item>

@@ -62,8 +62,20 @@ export class ModalSelectionPage {
     validateModal(item) {
 
         switch (this.params.get('type')) {
+            case 'secteur' :
+                this.params.get('selection').jobData.sector = item.libelle;
+                this.params.get('selection').jobData.idSector = item.id;
+                if (!(this.params.get('selection').jobData.job === ''))
+                    this.params.get('selection').jobData.job = '';
+                break;
             case 'job' :
-                this.params.get('selection').job = item.libelle;
+                this.params.get('selection').jobData.job = item.libelle;
+                this.params.get('selection').jobData.idJob = item.id;
+                if (!this.params.get('selection').jobData.sector ||
+                    this.params.get('selection').jobData.sector === '') {
+                    this.params.get('selection').jobData.sector = item.libellesector;
+                    this.params.get('selection').jobData.idSector = item.idsector;
+                }
                 break;
             case 'qualité' :
                 if (this.params.get('selection').qualities.filter((v) => {
