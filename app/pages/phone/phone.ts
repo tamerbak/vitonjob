@@ -34,7 +34,6 @@ export class PhonePage {
 	libelleButton: string;
 	password1: string;
 	password2: string;
-	db : any;
 	temp: any;
 	
 	
@@ -46,7 +45,7 @@ export class PhonePage {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
-		this.db = new Storage(SqlStorage);
+		this.storage = new Storage(SqlStorage);
 		
 		// get config of selected target
 		let config = Configs.setConfigs(this.projectTarget);
@@ -140,8 +139,8 @@ export class PhonePage {
 				this.authService.insertToken(token, accountId, this.projectTarget);
 			}
 			
-			this.authService.setObj('connexion', connexion);
-			this.authService.setObj('currentEmployer', data);
+			this.storage.set('connexion', connexion);
+			this.storage.set('currentEmployer', data);
 			
 			//user is connected, then change the name of connexion btn to deconnection
 			this.gc.setCnxBtnName("Déconnexion");
@@ -153,7 +152,7 @@ export class PhonePage {
 				this.nav.push(InfoUserPage, {
 				currentEmployer: data});
 				} else {
-				this.nav.pop(HomePage);
+				this.nav.rootNav.setRoot(HomePage)
 				//this.nav.push(InfoUserPage, {currentEmployer: data});
 				
 			}
