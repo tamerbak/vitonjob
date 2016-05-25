@@ -18,7 +18,6 @@ export class GlobalService {
 	*/
 	showAlertValidation(msg){
 		let alert = Alert.create({
-			//title: "<div class='vimgBar'><img src='img/vit1job-mini2.png'></div>",
 			title: "",
 			subTitle: msg,
 			buttons: ['OK']

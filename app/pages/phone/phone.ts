@@ -10,7 +10,6 @@ import {HomePage} from "../home/home";
 import {InfoUserPage} from "../info-user/info-user";
 import {Storage, SqlStorage} from 'ionic-angular';
 
-
 /**
 	* @author Amal ROCHD
 	* @description authentication by phone view
@@ -143,13 +142,6 @@ export class PhonePage {
 			
 			this.authService.setObj('connexion', connexion);
 			this.authService.setObj('currentEmployer', data);
-			var temp;
-			/*this.authService.getObj('currentEmployer').then(val => {
-				temp = val;
-				console.log(val);
-				console.log(temp);
-			});
-			console.log(temp);*/
 			
 			//user is connected, then change the name of connexion btn to deconnection
 			this.gc.setCnxBtnName("Déconnexion");
@@ -162,6 +154,8 @@ export class PhonePage {
 				currentEmployer: data});
 				} else {
 				this.nav.pop(HomePage);
+				//this.nav.push(InfoUserPage, {currentEmployer: data});
+				
 			}
 		});
 	}

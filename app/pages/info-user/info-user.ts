@@ -3,7 +3,11 @@ import {CivilityPage} from '../civility/civility';
 import {PersonalAddressPage} from '../personal-address/personal-address';
 import {JobAddressPage} from '../job-address/job-address';
 
-
+/**
+	* @author Amal ROCHD
+	* @description tabs of user information entry : civility, personal address and job address
+	* @module Authentication
+*/
 @Page({
 	templateUrl: 'build/pages/info-user/info-user.html'
 })
@@ -15,6 +19,9 @@ export class InfoUserPage {
 	pAddressTabTitle: string;
 	jAddressTabTitle: string;
 	
+	/**
+		* @description While constructing the tabs, we bind each tab to its page
+	*/
 	constructor(public nav: NavController,
 	app: IonicApp,
 	navParams: NavParams) {
@@ -29,8 +36,6 @@ export class InfoUserPage {
 		
 		this.civilityTabTitle = "Civilité";
 		this.pAddressTabTitle = "A. personnelle";
-		this.jAddressTabTitle = "A. départ au travail";
-		
-		
+		this.jAddressTabTitle = "A. départ au travail";	
 	}
 }

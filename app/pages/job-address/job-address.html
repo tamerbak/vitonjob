@@ -1,5 +1,5 @@
 <!--
-  Generated template for the PhonePage page.
+  Generated template for the JobAddressPage page.
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 -->
@@ -12,10 +12,16 @@
 
 <ion-content padding>
     <ion-list>
-        <ion-item>
-            <ion-input type="text" value="" placeholder="Veuillez saisir votre adresse de départ au travail..."></ion-input>
-        </ion-item>
-    </ion-list>
+		<google-places [(bindModelData)]="searchData" (onPlaceChanged)='showResults($event)'></google-places>
+	</ion-list>
     
-    <button light round>Valider</button>
+    <ion-row>
+		<ion-col width-10></ion-col>
+		<ion-col text-center>
+			<button block (click)="updateJobAddress()" [style.backgroundColor]="themeColor" type="submit">
+				<ion-icon name="done-all"></ion-icon>Valider
+			</button>
+		</ion-col>
+		<ion-col width-10></ion-col>
+	</ion-row>
 </ion-content>

@@ -13,7 +13,7 @@ export class GlobalConfigs {
     private cnxBtnName: string;
 
     constructor() {
-        this.projectTarget = "employer";
+        this.projectTarget = "jobyer";
         this.cnxBtnName = "Se connecter / S'inscrire";
     }
 
