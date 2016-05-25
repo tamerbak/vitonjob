@@ -9,6 +9,8 @@ import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
 import {InfoUserPage} from "../info-user/info-user";
 import {Storage, SqlStorage} from 'ionic-angular';
+import {enableProdMode} from 'angular2/core'; 
+enableProdMode();
 
 /**
 	* @author Amal ROCHD
@@ -35,7 +37,6 @@ export class PhonePage {
 	password1: string;
 	password2: string;
 	temp: any;
-	
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
@@ -165,11 +166,10 @@ export class PhonePage {
 	isAuthDisabled() {
 		if (this.showEmailField == true) {
 			//inscription
-			return (!this.index || !this.phone || !this.password1
-			|| !this.password2 || !this.email) && !this.password2IsValid()
+			return (!this.index || !this.phone || this.showPhoneError() || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError())
 			} else {
 			//connection
-			return (!this.index || !this.phone || !this.password1)
+			return (!this.index || !this.phone || this.showPhoneError() || !this.password1)
 		}
 	}
 	
@@ -177,7 +177,6 @@ export class PhonePage {
 		* @description function called on change of the phone input to validate it
 	*/
 	watchPhone(e, el) {
-		//var value = e.srcElement.value;
 		if (this.phone) {
 			this.phone = this.phone.replace("-", "").replace(".", "").replace("+", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "").replace(",", "").replace("#", "").replace("*", "").replace(";", "").replace("N", "");
 			
@@ -189,13 +188,15 @@ export class PhonePage {
 					this.phone = this.phone.substring(0, 9);
 				}
 			}
-			/*$scope.showEmailField = true;
-				$scope.formData.email = "";
-			$scope.libelleButton = "Se connecter";*/
 			if (this.phone.length == 9) {
 				this.isRegistration(el);
 			}
 		}
+	}
+	
+	showPhoneError(){
+		if(this.phone)
+			return (this.phone.length != 9);
 	}
 	
 	/**
@@ -250,18 +251,27 @@ export class PhonePage {
 	/**
 		* @description validate the email format
 	*/
-	validateEmail(e) {
-		//this.validationDataService.checkEmail(e);
+	showEmailError() {
+		if(this.email)
+			return !(this.validationDataService.checkEmail(this.email));
+		else
+			return false
+	}
+	
+	showPassword1Error(){
+		if(this.password1 && this.showEmailField)
+			return this.password1.length < 6;
 	}
 	
 	/**
 		* @description check if the password and its confirmation are the same 
 	*/
-	password2IsValid() {
-		return (
-		this.password1 == this.password2
-		)
+	showPassword2Error(){
+		if(this.password2)
+			return this.password2 != this.password1;
 	}
+	
+
 	
 	/**
 		* @description return to the home page
