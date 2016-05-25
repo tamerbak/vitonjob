@@ -67,7 +67,7 @@ export class HomePage {
         this.selectedItem = navParams.get('item');
         this.search = searchService;
 		//verify if the user is already connected
-		this.storage.get("currentEmployer").then((value) => {
+		this.storage.get("currentUser").then((value) => {
 			if(value){
 				this.cnxBtnName = "Déconnexion";
 				this.isConnected = true;
@@ -91,7 +91,7 @@ export class HomePage {
 	
     openLoginsPage() {
 		if(this.isConnected){
-			this.storage.set("currentEmployer", null);
+			this.storage.set("currentUser", null);
 			this.cnxBtnName = "Se connecter / S'inscrire";
 			this.isConnected = false;
 			this.events.publish('user:logout');
