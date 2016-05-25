@@ -69,12 +69,26 @@ export class OffersService {
      * @param projectTarget : project target (jobyer/employer)
      *
      */
-    setOfferInLocal(offerData: any,projectTarget:string){
+    setOfferInLocal(offerData:any, projectTarget:string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
-        this.db.get('currentUser');
+        let offers:any;
+        let user = this.db.get('currentUser').then(data => {
+            if (projectTarget === 'employer') {
+                let rawData = JSON.parse((data));
+                console.log(rawData.entreprises);
+                if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
+                    offers = rawData.entreprises[0].offers;
+                    debugger;
+                }
+            } else { // jobyer
+                let rawData = JSON.parse((data));
+                debugger;
+            }
 
-    }
+        })
+    };
+
 
     /**
      * @Author : TEL
@@ -83,19 +97,19 @@ export class OffersService {
      * @param projectTarget : project target (jobyer/employer)
      *
      */
-    setOfferInRemote(offerData: any, projectTarget: string){
+    setOfferInRemote(offerData:any, projectTarget:string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
         var data = {
-            "class" : 'com.vitonjob.Offre',
-            "entreprise" : id,
-            "titre" : titre,
-            "remuneration" : remuneration,
-            "job" : job,
-            "langues" : langues,
-            "indispensables":indispensables,
-            "disponibilites":disponibilites
+            "class": 'com.vitonjob.Offre',
+            "entreprise": id,
+            "titre": titre,
+            "remuneration": remuneration,
+            "job": job,
+            "langues": langues,
+            "indispensables": indispensables,
+            "disponibilites": disponibilites
         };
 
     }

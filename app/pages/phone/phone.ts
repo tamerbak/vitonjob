@@ -153,7 +153,7 @@ export class PhonePage {
 				this.nav.push(InfoUserPage, {
 				currentEmployer: data});
 				} else {
-				this.nav.rootNav.setRoot(HomePage)
+				this.nav.rootNav.setRoot(HomePage);
 				//this.nav.push(InfoUserPage, {currentEmployer: data});
 				
 			}
