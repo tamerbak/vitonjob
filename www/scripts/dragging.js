@@ -11,8 +11,8 @@ function touchHandler(event) {
     var spX = $('.draggable').css('left') ;
     var spY = $('.draggable').css('top') ;
 
-    //spX = spX.replace('px', '');
-    //spY = spY.replace('px', '');
+    spX = spX.replace('px', '');
+    spY = spY.replace('px', '');
 
     var pX = parseFloat(spX) - 75;
     var pY = parseFloat(spY) - 75;
