@@ -294,7 +294,6 @@ export class SearchResultsPage {
          */
         let table = this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer';
         let idOffer = this.searchResults[0].idOffre;
-        console.log('job base : '+JSON.stringify(this.searchResults[0]));
         this.proposedJob = {
             id : 0,
             libellejob : '',
@@ -303,7 +302,6 @@ export class SearchResultsPage {
         };
 
         this.offersService.getOffersJob(idOffer,table).then(data =>{
-            console.log('retrieved job data '+data);
             if(data && data.length>0)
                 this.proposedJob = data[0];
             else
@@ -315,7 +313,7 @@ export class SearchResultsPage {
         for(var i = 0 ; i < this.searchResults.length ; i++){
             let o = this.searchResults[i];
             listOffersId.push(o.idOffre);
-            console.log('list off ids : '+listOffersId)
+
         }
 
         //  Now let us get the list of languages and qualities
