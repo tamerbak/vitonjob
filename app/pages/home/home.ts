@@ -141,7 +141,6 @@ export class HomePage {
 
 		if(this.popinCrietria)
 			return;
-		console.log('TEST');
 		let m = new Modal(SearchCriteriaPage);
 		m.onDismiss(dismissedModal.bind(this));
 		this.popinCrietria = true;
@@ -158,7 +157,6 @@ export class HomePage {
 
 		if(this.popinCrietria)
 			return;
-		console.log('TEST');
 		let m = new Modal(SearchGuidePage);
 		m.onDismiss(dismissedModal.bind(this));
 		this.popinCrietria = true;
