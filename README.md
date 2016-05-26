@@ -86,3 +86,10 @@ Les parties manquantes du projet, vous pouvez les récupérer d'un projet templa
 
 Il faut alors copier les dossiers suivants : nodes_modules - plateforms - plugins
 Le dossier www/build sera généré automatiquement lors de votre prmière execution de `ionic serve`.
+
+## Les composantes natives à installer:
+
+```
+$ ionic plugin add cordova-plugin-datepicker
+$ ionic plugin add cordova-plugin-network-information
+```
