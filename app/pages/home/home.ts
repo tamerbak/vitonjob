@@ -48,9 +48,6 @@ export class HomePage {
 		this.projectTarget = globalConfig.getProjectTarget();
 		this.storage = new Storage(SqlStorage);
 
-		//get name of the connexion btn
-		//this.cnxBtnName = globalConfig.getCnxBtnName();
-
 		// get config of selected target
 		let config = Configs.setConfigs(this.projectTarget);
 
