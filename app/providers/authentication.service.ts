@@ -93,8 +93,8 @@ export class AuthenticationService {
 		this.configuration = Configs.setConfigs(projectTarget);
 		
 		//split the birth date into a table to store day, month and year
-		var fromStringDate = birthdate.split("/");
-		var toStringDate = fromStringDate[2].toString() + "-" + (fromStringDate[1]).toString() + "-" + fromStringDate[0].toString();
+		//var fromStringDate = birthdate.split("/");
+		//var toStringDate = fromStringDate[2].toString() + "-" + (fromStringDate[1]).toString() + "-" + fromStringDate[0].toString();
 		var sql = "";
 		//building the sql request 
 		if (nationalityId){
@@ -104,7 +104,7 @@ export class AuthenticationService {
 			"prenom='" + firstname + "', " +
 			"numero_securite_sociale='" + numSS + "', " +
 			"cni='" + cni + "', " +
-			"date_de_naissance ='"+ toStringDate +"'," +
+			"date_de_naissance ='"+ birthdate +"'," +
 			"lieu_de_naissance ='" + birthplace + "', " +
 			"fk_user_nationalite ='" + nationalityId + "' " +
 			"where pk_user_jobyer ='" + roleId + "';";
@@ -115,7 +115,7 @@ export class AuthenticationService {
 			"prenom='" + firstname + "', " +
 			"numero_securite_sociale='" + numSS + "', " +
 			"cni='" + cni + "', " +
-			"date_de_naissance ='"+ toStringDate +"'," +
+			"date_de_naissance ='"+ birthdate +"'," +
 			"lieu_de_naissance ='" + birthplace + "' " +
 			"where pk_user_jobyer ='" + roleId + "';";
 		}

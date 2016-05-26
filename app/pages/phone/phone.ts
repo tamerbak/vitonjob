@@ -177,6 +177,12 @@ export class PhonePage {
 	/**
 		* @description function called on change of the phone input to validate it
 	*/
+	checkForString(e){
+		if (e.keyCode < 48 || e.keyCode > 57){
+			e.preventDefault();
+			return;
+		}
+	}
 	watchPhone(e, el) {
 		if (this.phone) {
 			this.phone = this.phone.replace("-", "").replace(".", "").replace("+", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "").replace(",", "").replace("#", "").replace("*", "").replace(";", "").replace("N", "");

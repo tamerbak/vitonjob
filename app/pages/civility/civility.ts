@@ -5,6 +5,7 @@ import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SqlStorageService} from "../../providers/sql-storage.service";
 import {PersonalAddress} from "../personal-address/personal-address";
 import {AuthenticationService} from "../../providers/authentication.service";
+import {MaskDirective} from '../../directives/mask.directive';
 /**
 	* @author Amal ROCHD
 	* @description update civility information
@@ -12,6 +13,7 @@ import {AuthenticationService} from "../../providers/authentication.service";
 */
 @Page({
 	templateUrl: 'build/pages/civility/civility.html',
+	directives: [MaskDirective],
 	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService]
 })
 export class CivilityPage {
@@ -19,7 +21,7 @@ export class CivilityPage {
 	title: string;
 	lastname: string;
 	firstname: string;
-	birthdate: string;
+	birthdate;
 	birthplace: string;
 	cni: string;
 	numSS: string;
@@ -116,10 +118,45 @@ export class CivilityPage {
 	*/
 	isUpdateDisabled(){
 		if(!this.isEmployer){
-			return (!this.title || !this.firstname || !this.lastname || !this.cni || !this.numSS || !this.nationality || !this.birthplace || !this.birthdate)
+			return (!this.title || !this.firstname || !this.lastname || !this.cni || this.cni.length < 12 || !this.numSS || this.numSS.length < 21 || !this.nationality || !this.birthplace || !this.birthdate)
 		}
 		else{
 			return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || !this.ape)
 		}	
+	}
+	
+	watchNumSS(e){
+		if (e.keyCode < 48 || e.keyCode > 57){
+			e.preventDefault();
+			return;
+		}
+		if(!this.numSS){
+			return;
+		}
+		if(this.numSS.length == 1){
+			this.numSS = this.numSS + " ";
+		}
+		if(this.numSS.length == 4){
+			this.numSS = this.numSS + " ";
+		}
+		if(this.numSS.length == 7){
+			this.numSS = this.numSS + " ";
+		}
+		if(this.numSS.length == 10){
+			this.numSS = this.numSS + " ";
+		}
+		if(this.numSS.length == 14){
+			this.numSS = this.numSS + " ";
+		}
+		if(this.numSS.length == 18){
+			this.numSS = this.numSS + " ";
+		}
+	}
+	
+	watchCNI(e){
+		if (e.keyCode < 48 || e.keyCode > 57){
+			e.preventDefault();
+			return;
+		}
 	}
 }
