@@ -27,8 +27,8 @@ export class HomePage {
 	private search : any;
 	private selectedItem : any;
 	private cnxBtnName : string;
-	scQuery : string;
-	popinCrietria : boolean = false;
+	private scQuery : string;
+	private popinCrietria : boolean = false;
 	private isConnected : boolean;
 
 
