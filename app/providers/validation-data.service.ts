@@ -21,8 +21,6 @@ export class ValidationDataService {
 	checkEmail(email) {
       var EMAIL_REGEXP = /^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/;
       var isMatchRegex = EMAIL_REGEXP.test(email);
-      console.log("Email : " + email);
-	  console.log("is valid : " + isMatchRegex);
-	  return isMatchRegex;
+      return isMatchRegex;
     }
 }
