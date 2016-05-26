@@ -47,8 +47,8 @@
 	
 	
     <ion-item [hidden]="isEmployer">
-        <ion-label floating>Date de naissance (JJ/MM/YYYY)</ion-label>
-		<ion-input type="text" [(ngModel)]="birthdate"></ion-input>
+        <ion-label stacked>Date de naissance (JJ/MM/YYYY)</ion-label>
+		<ion-input type="date" [(ngModel)]="birthdate"></ion-input>
 	</ion-item>
 	
     <ion-item [hidden]="isEmployer">
@@ -58,12 +58,12 @@
 	
     <ion-item [hidden]="isEmployer">
         <ion-label floating>CNI</ion-label>
-		<ion-input type="text" [(ngModel)]="cni"></ion-input>
+		<ion-input type="text" [(ngModel)]="cni" (keypress)="watchCNI($event)" maxlength="12" ></ion-input>
 	</ion-item>
 	
     <ion-item [hidden]="isEmployer">
         <ion-label floating>N° SS</ion-label>
-		<ion-input type="text" [(ngModel)]="numSS"></ion-input>
+		<ion-input type="text" [(ngModel)]="numSS" (keypress)="watchNumSS($event)" maxlength="21"></ion-input>
 	</ion-item>
 	
     <ion-item [hidden]="isEmployer">

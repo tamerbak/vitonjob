@@ -18,11 +18,13 @@ import {Geolocation} from 'ionic-native';
 })
 export class JobAddressPage {
 	searchData : string;
+	geolocAddress;
 	/**
 		* @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
 	*/
 	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, tabs:Tabs, public nav: NavController) {
-		this.searchData = "" 
+		this.searchData = ""; 
+		this.geolocAddress = "";
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -105,6 +107,7 @@ export class JobAddressPage {
 				console.log(results[0].formatted_address);
 				//display geolocated address in the searchbar
 				this.searchData = results[0].formatted_address;
+				this.geolocAddress = results[0].formatted_address;
 				//this.selectedPlace = results[0];
 			}
 		});
@@ -114,6 +117,7 @@ export class JobAddressPage {
 	*/
 	showResults(place) {
 		this.selectedPlace = place;
+		this.geolocAddress = "";
 	}
 	
 	/**
@@ -160,8 +164,6 @@ export class JobAddressPage {
 				);
 				entreprises.adresses = addresses;
 				this.currentEmployer.entreprises = entreprises;
-				//redirecting to offer list page
-				this.nav.push(OfferListPage);
 			}else{
 				this.currentEmployer.adresseDepTravail = {
 					"addressId": data.id,
@@ -172,5 +174,7 @@ export class JobAddressPage {
 			}).catch( error => {
 			reject(error);
 		});
+		//redirecting to offer list page
+		this.nav.push(OfferListPage);
 	}
 }	

@@ -19,11 +19,13 @@ enableProdMode();
 })
 export class PersonalAddressPage {
 	searchData : string;
+	geolocAddress;
 	/**
 		* @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
 	*/
 	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, tabs:Tabs, public nav: NavController) {
-		this.searchData = "" 
+		this.searchData = "";
+		this.geolocAddress = "";
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -106,6 +108,7 @@ export class PersonalAddressPage {
 				console.log(results[0].formatted_address);
 				//display geolocated address in the searchbar
 				this.searchData = results[0].formatted_address;
+				this.geolocAddress = results[0].formatted_address;
 				//this.selectedPlace = results[0];
 			}
 		});
@@ -116,6 +119,7 @@ export class PersonalAddressPage {
 	*/
 	showResults(place) {
 		this.selectedPlace = place;
+		this.geolocAddress = "";
 	}
 	
 	/**

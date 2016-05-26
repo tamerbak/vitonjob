@@ -98,6 +98,10 @@ export class ContractPage {
             interimAddress:"ASMIS 77 RUE DEBAUSSAUX 80000 AMIENS",
             customer: "ASMIS",
             primes: "néant",
+            headOffice : "31 rue du Moulin 31320 CASTANET TOLOSAN",
+            missionContent : "d opérateur déneigement et dégivrage – coefficient 185",
+            category: "ouvrier",
+            sector : "exploitation",
         };
     }
     
@@ -167,13 +171,13 @@ export class ContractPage {
             ],
             buttons: [
                 {
-                    text: 'Cancel',
+                    text: 'Annuler',
                     handler: data => {
                         console.log('Cancel clicked');
                     }
                 },
                 {
-                    text: 'Save',
+                    text: 'OK',
                     handler: data => {
                         this.contractData[item] = data.value;
                     }

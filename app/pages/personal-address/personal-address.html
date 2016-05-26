@@ -13,9 +13,11 @@
 <ion-content padding>
     <ion-list>
 		<google-places [(bindModelData)]="searchData" (onPlaceChanged)='showResults($event)'></google-places>
-		</ion-list>
-		
-    <ion-row>
+	</ion-list>
+	
+	{{geolocAddress}}	
+    
+	<ion-row>
 		<ion-col width-10></ion-col>
 		<ion-col text-center>
 			<button block (click)="updatePersonalAddress()" [style.backgroundColor]="themeColor" type="submit">
