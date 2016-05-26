@@ -1,4 +1,4 @@
-import {Page, Alert, NavController, Events} from 'ionic-angular';
+import {Page, Alert, NavController, Events, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -102,6 +102,15 @@ export class PhonePage {
 		//this.gc.setCnxBtnName("Déconnexion");
 		//this.nav.push(HomePage);
 		var indPhone = this.index + this.phone;
+		let loading = Loading.create({
+      content: ` 
+                <div>
+                    <img src='img/loading.gif' />
+                </div>
+                `,
+      spinner : 'hide'
+    });
+    this.nav.present(loading);
 		//call the service of autentication
 		this.authService.authenticate(this.email, indPhone, this.password1, this.projectTarget)
 		.then(data => {
@@ -109,12 +118,14 @@ export class PhonePage {
 			//case of authentication failure : server unavailable or connection probleme 
 			if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
 				console.log(data);
+				loading.dismiss();
 				this.globalService.showAlertValidation("Serveur non disponible ou problème de connexion.");
 				return;
 			}
 			//case of authentication failure : incorrect password 
 			if (data.id == 0 && data.status == "passwordError") {
 				console.log("Password error");
+				loading.dismiss();
 				this.globalService.showAlertValidation("Votre mot de passe est incorrect");
 				return;
 			}
@@ -146,6 +157,7 @@ export class PhonePage {
 			
 			//user is connected, then change the name of connexion btn to deconnection
 			this.gc.setCnxBtnName("Déconnexion");
+			loading.dismiss();
 			
 			//if user is connected for the first time, redirect him to the page 'civility', else redirect him to the home page
 			var isNewUser = data.newAccount;
