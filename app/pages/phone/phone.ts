@@ -150,7 +150,7 @@ export class PhonePage {
 			//if user is connected for the first time, redirect him to the page 'civility', else redirect him to the home page
 			var isNewUser = data.new;
 			if (isNewUser == 'true') {
-				this.globalService.showAlertValidation("Bienvenue dans votre espace VitOnJob!");
+				this.globalService.showAlertValidation("VitOnJob", "Bienvenue dans votre espace VitOnJob!");
 				this.nav.push(InfoUserPage, {
 				currentEmployer: data});
 				} else {

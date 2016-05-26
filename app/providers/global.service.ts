@@ -16,9 +16,9 @@ export class GlobalService {
 		* @description show validation alerts with ok button
 		* @param msg to show in the alert
 	*/
-	showAlertValidation(msg){
+	showAlertValidation(title, msg){
 		let alert = Alert.create({
-			title: "",
+			title: title,
 			subTitle: msg,
 			buttons: ['OK']
 		});

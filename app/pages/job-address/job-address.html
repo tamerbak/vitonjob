@@ -14,6 +14,8 @@
     <ion-list>
 		<google-places [(bindModelData)]="searchData" (onPlaceChanged)='showResults($event)'></google-places>
 	</ion-list>
+	
+	{{geolocAddress}}	
     
     <ion-row>
 		<ion-col width-10></ion-col>

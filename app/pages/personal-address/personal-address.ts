@@ -127,6 +127,8 @@ export class PersonalAddressPage {
 	*/
 	updatePersonalAddress(){
 		if(!this.selectedPlace){
+			//temporarely, erase after saving the geolocating address
+			this.tabs.select(2);
 			return;
 		}
 		// put personal address in session

@@ -159,4 +159,61 @@ export class CivilityPage {
 			return;
 		}
 	}
+	
+	watchSIRET(e){
+		if (e.keyCode < 48 || e.keyCode > 57){
+			e.preventDefault();
+			return;
+		}
+		if(!this.siret){
+			return;
+		}
+		if(this.siret.length == 3){
+			this.siret = this.siret + " ";
+		}
+		if(this.siret.length == 7){
+			this.siret = this.siret + " ";
+		}
+		if(this.siret.length == 11){
+			this.siret = this.siret + " ";
+		}
+	}
+	
+	watchAPE(e){
+		//if first characte is string, prevent
+		if(!this.ape){
+			if (e.keyCode < 48 || e.keyCode > 57){
+				e.preventDefault();
+				return;
+			}	
+		}
+		//
+		if(this.ape.length <= 4){
+			if (e.keyCode < 48 || e.keyCode > 57){
+				e.preventDefault();
+				return;
+			}	
+		}
+		if(this.ape.length > 4){
+			if (e.keyCode >= 48 && e.keyCode <= 57){
+				e.preventDefault();
+				return;
+			}	
+		}
+		if(!this.ape){
+			return;
+		}
+	}
+	
+	showCNIError(){
+		if(this.cni && this.cni.length < 12){
+			return true;
+		}
+	}
+	
+	showNSSError(){
+		if(this.numSS && this.numSS.length < 21){
+			return true;
+		}
+	}
 }

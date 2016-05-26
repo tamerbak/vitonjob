@@ -37,12 +37,12 @@
 	
 	<ion-item [hidden]="!isEmployer">
         <ion-label floating>SIRET: 999 999 999 99999</ion-label>
-        <ion-input type="text" [(ngModel)]="siret"></ion-input>
+        <ion-input type="text" [(ngModel)]="siret" (keypress)="watchSIRET($event)" maxlength="17"></ion-input>
 	</ion-item>
 	
 	<ion-item [hidden]="!isEmployer">
         <ion-label floating>NAF: 9999A</ion-label>
-        <ion-input type="text" [(ngModel)]="ape"></ion-input>
+        <ion-input type="text" [(ngModel)]="ape" (keypress)="watchAPE($event)" maxlength="5"></ion-input>
 	</ion-item>
 	
 	
@@ -60,11 +60,15 @@
         <ion-label floating>CNI</ion-label>
 		<ion-input type="text" [(ngModel)]="cni" (keypress)="watchCNI($event)" maxlength="12" ></ion-input>
 	</ion-item>
+	<div *ngIf="showCNIError()" 
+            class="error-box">* Saisissez les 12 chiffres du CNI</div>
 	
     <ion-item [hidden]="isEmployer">
         <ion-label floating>N° SS</ion-label>
 		<ion-input type="text" [(ngModel)]="numSS" (keypress)="watchNumSS($event)" maxlength="21"></ion-input>
 	</ion-item>
+	<div *ngIf="showNSSError()" 
+            class="error-box">* Saisissez les 21 chiffres du n° SS</div>
 	
     <ion-item [hidden]="isEmployer">
         <ion-label floating>Nationalité</ion-label>
