@@ -92,4 +92,5 @@ Le dossier www/build sera généré automatiquement lors de votre prmière execu
 ```
 $ ionic plugin add cordova-plugin-datepicker
 $ ionic plugin add cordova-plugin-network-information
+cordova plugin add cordova-plugin-geolocation
 ```
