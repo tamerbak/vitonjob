@@ -119,6 +119,14 @@ export class MyApp {
 	}
 	
 	listenToLoginEvents() {
+		//verify if the user is already connected
+		this.storage.get("currentUser").then((value) => {
+			if(value){
+				this.enableMenu(true);
+			}else{
+				this.enableMenu(false);
+			}
+		});
 		this.events.subscribe('user:login', () => {
 			this.enableMenu(true);
 		});
