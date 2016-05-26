@@ -9,6 +9,8 @@ import {SearchGuidePage} from "../search-guide/search-guide";
 import {NetworkService} from "../../providers/network-service/network-service";
 import {InfoUserPage} from "../info-user/info-user";
 import {Storage, SqlStorage} from 'ionic-angular';
+import {Events} from 'ionic-angular';
+
 
 @Page({
     templateUrl: 'build/pages/home/home.html',
@@ -29,8 +31,9 @@ export class HomePage {
     popinCrietria : boolean = false;
 	private isConnected : boolean;
 	
+	
     static get parameters() {
-        return [[GlobalConfigs], [IonicApp], [NavController], [NavParams], [SearchService],[NetworkService]];
+	return [[GlobalConfigs], [IonicApp], [NavController], [NavParams], [SearchService],[NetworkService], [Events]];
 	}
 	
     constructor(public globalConfig: GlobalConfigs,
@@ -38,12 +41,13 @@ export class HomePage {
 	private nav: NavController,
 	private navParams: NavParams,
 	private searchService: SearchService,
-	public networkService: NetworkService) {
+	public networkService: NetworkService, 
+	public events: Events) {
 		
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
 		this.storage = new Storage(SqlStorage);
-        
+		
         //get name of the connexion btn
         //this.cnxBtnName = globalConfig.getCnxBtnName();
 		
@@ -63,9 +67,9 @@ export class HomePage {
         this.selectedItem = navParams.get('item');
         this.search = searchService;
 		//verify if the user is already connected
-		this.storage.get("currentEmployer").then((value) => {
+		this.storage.get("currentUser").then((value) => {
 			if(value){
-				this.cnxBtnName = "Déconnecter";
+				this.cnxBtnName = "Déconnexion";
 				this.isConnected = true;
 			}else{
 				this.cnxBtnName = "Se connecter / S'inscrire";
@@ -87,9 +91,10 @@ export class HomePage {
 	
     openLoginsPage() {
 		if(this.isConnected){
-			this.storage.set("currentEmployer", null);
+			this.storage.set("currentUser", null);
 			this.cnxBtnName = "Se connecter / S'inscrire";
 			this.isConnected = false;
+			this.events.publish('user:logout');
 		}else{
 			this.nav.push(LoginsPage);
 		}
