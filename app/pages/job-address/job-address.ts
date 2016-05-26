@@ -125,6 +125,8 @@ export class JobAddressPage {
 	*/
 	 updateJobAddress(){
 		if(!this.selectedPlace){
+			//temporarely, erase after saving the geolocating address
+			this.nav.push(OfferListPage);
 			return;
 		}
 		// put job address in session

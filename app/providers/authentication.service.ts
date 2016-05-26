@@ -207,7 +207,6 @@ export class AuthenticationService {
 			let headers = new Headers();
 			headers.append("Content-Type", 'application/json');
 			this.http.post(this.configuration.calloutURL, stringData, {headers:headers})
-			.map(res => res.json())
 			.subscribe(data => {
 	            this.data = data;
 	            resolve(this.data);
@@ -260,7 +259,6 @@ export class AuthenticationService {
 			let headers = new Headers();
 			headers.append("Content-Type", 'application/json');
 			this.http.post(this.configuration.calloutURL, stringData, {headers:headers})
-			.map(res => res.json())
 			.subscribe(data => {
 	            this.data = data;
 	            resolve(this.data);
