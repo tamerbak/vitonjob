@@ -6,6 +6,9 @@ import {SqlStorageService} from "../../providers/sql-storage.service";
 import {PersonalAddress} from "../personal-address/personal-address";
 import {AuthenticationService} from "../../providers/authentication.service";
 import {MaskDirective} from '../../directives/mask.directive';
+import {Storage, SqlStorage} from 'ionic-angular';
+import {GlobalService} from "../../providers/global.service";
+
 /**
 	* @author Amal ROCHD
 	* @description update civility information
@@ -14,7 +17,7 @@ import {MaskDirective} from '../../directives/mask.directive';
 @Page({
 	templateUrl: 'build/pages/civility/civility.html',
 	directives: [MaskDirective],
-	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService]
+	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService]
 })
 export class CivilityPage {
 	tabs:Tabs;
@@ -27,19 +30,20 @@ export class CivilityPage {
 	numSS: string;
 	nationality;
 	nationalities = [];
-	currentEmployer;
+	currentUser;
 	companyname;
 	siret;
 	ape;
 	
 	/**
-		* @description While constructing the view, we load the list of nationalities, and get the currentEmployer passed as parameter from the connection page
+		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page
 	*/
 	constructor(public nav: NavController, private authService: AuthenticationService,
-	public gc: GlobalConfigs, private loadListService: LoadListService, private sqlStorageService: SqlStorageService, tabs:Tabs, params: NavParams) {
+	public gc: GlobalConfigs, private loadListService: LoadListService, private sqlStorageService: SqlStorageService, tabs:Tabs, params: NavParams, private globalService: GlobalService) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
+		this.storage = new Storage(SqlStorage);
 		
 		// get config of selected target
 		let config = Configs.setConfigs(this.projectTarget);
@@ -49,8 +53,7 @@ export class CivilityPage {
 		this.isEmployer = (this.projectTarget == 'employer');
 		this.tabs=tabs;
 		this.params = params;
-		this.currentEmployer = this.params.data.currentEmployer;
-		
+		this.currentUser = this.params.data.currentUser;
 		//load nationality list
 		this.loadListService.loadNationalities(this.projectTarget).then((data) => {
 			this.nationalities = data.data;
@@ -62,50 +65,48 @@ export class CivilityPage {
 	updateCivility(){
 		if(this.isEmployer){
 			//get the role id
-			var employerId = this.currentEmployer.employerId;
+			var employerId = this.currentUser.employer.id;
 			//get entreprise id of the current employer
-			var entrepriseId = this.currentEmployer.entreprises[0].entrepriseId;
+			var entrepriseId = this.currentUser.employer.entreprises[0].id;
 			// update employer
 			this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget)
 			.then((data) => {
 				// data saved
 				console.log("response update civility : " + data.status);
-				if (!this.currentEmployer)
-				this.currentEmployer = {};
-				this.currentEmployer.titre = this.title;
-				this.currentEmployer.nom = this.lastname;
-				this.currentEmployer.prenom = this.firstname;
-				this.currentEmployer.entreprises[0].name = this.companyname;
-				this.currentEmployer.entreprises[0].siret = this.siret;
-				this.currentEmployer.entreprises[0].naf = this.ape;
+				this.currentUser.titre = this.title;
+				this.currentUser.nom = this.lastname;
+				this.currentUser.prenom = this.firstname;
+				this.currentUser.employer.entreprises[0].nom = this.companyname;
+				this.currentUser.employer.entreprises[0].siret = this.siret;
+				this.currentUser.employer.entreprises[0].naf = this.ape;
 				// PUT IN SESSION
-				this.authService.setObj('currentUser', this.currentEmployer);
+				this.storage.set('currentUser', this.currentUser);
 			}
 			).catch( error => {
+				this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
 				reject(error);
 			});
 			}else{
 			//get the role id
-			var employerId = this.currentEmployer.jobyerId;
+			var jobyerId = this.currentUser.jobyer.id;
 			// update jobyer
-			this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni, this.nationality, employerId, this.birthdate, this.birthplace, this.projectTarget)
+			this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni, this.nationality, jobyerId, this.birthdate, this.birthplace, this.projectTarget)
 			.then((data) => {
 				// data saved
 				console.log("response update civility : " + data.status);
-				if (!this.currentEmployer)
-				this.currentEmployer = {};
-				this.currentEmployer.titre = this.title;
-				this.currentEmployer.nom = this.lastname;
-				this.currentEmployer.prenom = this.firstname;
-				this.currentEmployer.cni = this.cni;
-				this.currentEmployer.numSS = this.numSS;
-				this.currentEmployer.nationalite = this.nationality;
-				this.currentEmployer.dateNaissance = this.birthdate;
-				this.currentEmployer.lieuNaissance = this.birthplace;
+				this.currentUser.titre = this.title;
+				this.currentUser.nom = this.lastname;
+				this.currentUser.prenom = this.firstname;
+				this.currentUser.jobyer.cni = this.cni;
+				this.currentUser.jobyer.numSS = this.numSS;
+				this.currentUser.jobyer.natId = this.nationality;
+				this.currentUser.jobyer.dateNaissance = this.birthdate;
+				this.currentUser.jobyer.lieuNaissance = this.birthplace;
 				// PUT IN SESSION
-				this.authService.setObj('currentUser', this.currentEmployer);
+				this.storage.set('currentUser', this.currentUser);
 			}
 			).catch( error => {
+				this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
 				reject(error);
 			});
 		}
@@ -199,11 +200,12 @@ export class CivilityPage {
 				return;
 			}	
 		}
-		this.ape = this.ape.toUpperCase();
 	}
 	
 	changeToUppercase(){
-		this.ape = this.ape.toUpperCase();
+		if(this.ape){
+			this.ape = this.ape.toUpperCase();
+		}
 	}
 	
 	showCNIError(){
