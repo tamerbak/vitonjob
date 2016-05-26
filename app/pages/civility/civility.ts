@@ -184,25 +184,26 @@ export class CivilityPage {
 		if(!this.ape){
 			if (e.keyCode < 48 || e.keyCode > 57){
 				e.preventDefault();
-				return;
-			}	
+			}
+			return;
 		}
-		//
-		if(this.ape.length <= 4){
+		if(this.ape.length < 4){
 			if (e.keyCode < 48 || e.keyCode > 57){
 				e.preventDefault();
 				return;
 			}	
 		}
-		if(this.ape.length > 4){
+		if(this.ape.length == 4){
 			if (e.keyCode >= 48 && e.keyCode <= 57){
 				e.preventDefault();
 				return;
 			}	
 		}
-		if(!this.ape){
-			return;
-		}
+		this.ape = this.ape.toUpperCase();
+	}
+	
+	changeToUppercase(){
+		this.ape = this.ape.toUpperCase();
 	}
 	
 	showCNIError(){
