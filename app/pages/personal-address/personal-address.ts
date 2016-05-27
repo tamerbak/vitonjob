@@ -4,7 +4,7 @@ import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {GooglePlaces} from '../../components/google-places/google-places';
 import {AuthenticationService} from "../../providers/authentication.service";
 import {Geolocation} from 'ionic-native';
-import {enableProdMode} from 'angular2/core'; 
+import {enableProdMode, ElementRef, Renderer} from 'angular2/core'; 
 enableProdMode();
 
 /**
@@ -23,7 +23,7 @@ export class PersonalAddressPage {
 	/**
 		* @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
 	*/
-	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, tabs:Tabs, public nav: NavController) {
+	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, tabs:Tabs, public nav: NavController, public elementRef: ElementRef, public renderer: Renderer) {
 		this.searchData = "";
 		this.geolocAddress = "";
 		// Set global configs
@@ -110,6 +110,11 @@ export class PersonalAddressPage {
 				this.searchData = results[0].formatted_address;
 				this.geolocAddress = results[0].formatted_address;
 				//this.selectedPlace = results[0];
+				const searchInput = this.elementRef.nativeElement.querySelector('input');
+				setTimeout(() => {
+				  //delay required or ionic styling gets finicky
+				  this.renderer.invokeElementMethod(searchInput, 'focus', []);
+				}, 0);
 			}
 		});
 	}
