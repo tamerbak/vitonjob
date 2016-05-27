@@ -12,6 +12,7 @@ import {LoginsPage} from '../logins/logins';
 import {isUndefined} from "ionic-angular/util";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {OfferAddPage} from "../offer-add/offer-add";
+import {timeout} from "rxjs/operator/timeout";
 
 
 /**
@@ -76,10 +77,14 @@ export class SearchResultsPage {
                     r.matching = Number(r.matching).toFixed(2);
                 }
                 console.log(this.searchResults);
+
                 //  Determine constraints for proposed offer
                 this.createCriteria();
+
             }
         });
+
+
 
         //get the connexion object and define if the there is a user connected
         userService.getConnexionObject().then(results =>{
@@ -173,6 +178,7 @@ export class SearchResultsPage {
      * @param mode
      */
     changeViewMode(mode){
+
         if(mode == 1){          //  List view
             this.listView = true;
             this.cardView = false;
@@ -182,6 +188,16 @@ export class SearchResultsPage {
             this.cardView = true;
             this.mapView = false;
         } else {                //  Map view
+            /*let latLng = new google.maps.LatLng(-34.9290, 138.6010);
+
+            let mapOptions = {
+                center: latLng,
+                zoom: 15,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+
+            this.map = new google.maps.Map(document.getElementById("map"), mapOptions);*/
+
             this.listView = false;
             this.cardView = false;
             this.mapView = true;
@@ -294,6 +310,7 @@ export class SearchResultsPage {
          *  by using the first result and getting job details
          */
         let table = this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer';
+        console.log(JSON.stringify(this.searchResults[0]));
         let idOffer = this.searchResults[0].idOffre;
         this.proposedJob = {
             id : 0,
