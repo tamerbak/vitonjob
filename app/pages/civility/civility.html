@@ -42,7 +42,7 @@
 	
 	<ion-item [hidden]="!isEmployer">
         <ion-label floating>NAF: 9999A</ion-label>
-        <ion-input type="text" [(ngModel)]="ape" (keypress)="watchAPE($event)" maxlength="5"></ion-input>
+        <ion-input type="text" [(ngModel)]="ape" (keypress)="watchAPE($event)" (keyup)="changeToUppercase()" maxlength="5"></ion-input>
 	</ion-item>
 	
 	

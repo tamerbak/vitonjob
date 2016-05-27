@@ -152,6 +152,7 @@ export class PhonePage {
 			}
 			
 			this.storage.set('connexion', connexion);
+			//stock current user in the local database
 			this.storage.set('currentUser', data);
 			this.events.publish('user:login');
 			
@@ -164,10 +165,10 @@ export class PhonePage {
 			if (isNewUser) {
 				this.globalService.showAlertValidation("VitOnJob", "Bienvenue dans votre espace VitOnJob!");
 				this.nav.push(InfoUserPage, {
-				currentEmployer: data});
+				currentUser: data});
 				} else {
 				this.nav.rootNav.setRoot(HomePage);
-				//this.nav.push(InfoUserPage, {currentEmployer: data});
+				//this.nav.push(InfoUserPage, {currentUser: data});
 				
 			}
 		});

@@ -32,28 +32,28 @@
 			</ion-item>
 		</ion-col>
 	</ion-row>
-	<div *ngIf="showPhoneError()" 
+	<div [hidden]="!showPhoneError()" 
             class="error-box">* Saisissez les 9 chiffres sans le 0</div>
 	
 	<ion-label [hidden]="!showEmailField" stacked>Votre email</ion-label>
 	<ion-item [hidden]="!showEmailField">
 		<ion-input #focusable id="email" type="email" [(ngModel)]="email"></ion-input>
 	</ion-item>
-	<div *ngIf="showEmailError()" 
+	<div [hidden]="!showEmailError()" 
             class="error-box">* Veuillez saisir un email valide</div>
 	
 	<ion-label stacked>Votre mot de passe</ion-label>
 	<ion-item>
 		<ion-input type="password" [(ngModel)]="password1"></ion-input>
 	</ion-item>
-	<div *ngIf="showPassword1Error()" 
+	<div [hidden]="!showPassword1Error()" 
             class="error-box">* Taille minimale: 6 caractères</div>
 	
 	<ion-label [hidden]="!showEmailField" stacked>Confirmation du mot de passe</ion-label>
 	<ion-item [hidden]="!showEmailField">
 		<ion-input type="password" [(ngModel)]="password2"></ion-input>
 	</ion-item>
-	<div *ngIf="showPassword2Error()" 
+	<div [hidden]="!showPassword2Error()" 
             class="error-box">* Les deux mots de passe doivent être identiques!</div>
 	
 	<ion-row>
