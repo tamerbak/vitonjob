@@ -11,6 +11,7 @@ import {UserService} from "./providers/user-service/user-service";
 import {ContractService} from "./providers/contract-service/contract-service";
 import {SmsService} from "./providers/sms-service/sms-service";
 import {MissionService} from "./providers/mission-service/mission-service";
+import {Helpers} from './providers/helpers.service.ts';
 import {NetworkService} from "./providers/network-service/network-service";
 import {ChangeDetectorRef} from 'angular2/src/core/change_detection/change_detector_ref';
 import {Observable} from 'rxjs/Observable';
@@ -19,7 +20,7 @@ import 'rxjs/add/observable/fromEvent';
 @App({
   templateUrl: 'build/menu.html',
   config: {backButtonText: 'Retour'}, // http://ionicframework.com/docs/v2/api/config/Config/
-  providers : [GlobalConfigs, SearchService,UserService,ContractService,SmsService,MissionService,NetworkService]
+  providers : [GlobalConfigs, SearchService,UserService,ContractService,SmsService,MissionService,NetworkService,Helpers]
 })
 export class MyApp {
   rootPage: any = HomePage;
