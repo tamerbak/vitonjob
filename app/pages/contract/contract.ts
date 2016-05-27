@@ -89,7 +89,7 @@ export class ContractPage {
             postRisks:"non",
             medicalSurv:"non",
             epi:"chaussures de sécurité",
-            baseSalary:"15,00€ B/H",
+            baseSalary:15,
             MonthlyAverageDuration: "35h",
             salaryNHours: "15,00€ B/H",
             salarySH35: "+25%",
