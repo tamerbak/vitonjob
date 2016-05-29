@@ -133,8 +133,8 @@ export class MailPage {
 			}
 			
 			//user is connected, then change the name of connexion btn to deconnection
-			this.authService.setObj('connexion', connexion);
-			this.authService.setObj('currentUser', data);
+			this.authService.setObj('connexion', JSON.stringify(connexion));
+			this.authService.setObj('currentUser', JSON.stringify(data));
 			this.gc.setCnxBtnName("Déconnexion");
 			
 			//if user is connected for the first time, redirect him to the page 'civility', else redirect him to the home page

@@ -16,7 +16,11 @@ import {OffersService} from "../../providers/offers-service/offers-service";
 })
 export class ModalQualityPage {
 
-    qualities:Array<{id:number, libelle:string}>;
+    qualities:Array<{
+        'class': "com.vitonjob.callouts.auth.model.LanguageData",
+        idQuality:number,
+        libelle:string
+    }>;
 
     constructor(public nav:NavController,
                 gc:GlobalConfigs,

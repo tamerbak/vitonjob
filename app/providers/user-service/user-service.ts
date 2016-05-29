@@ -16,7 +16,6 @@ export class UserService {
         this.db = new Storage(SqlStorage);
     }
 
-
     /**
      * @description get the connexion object
      * @return promise

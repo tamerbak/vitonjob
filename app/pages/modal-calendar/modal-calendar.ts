@@ -16,9 +16,12 @@ import {DatePickerOptions} from "ionic-native/dist/plugins/datepicker";
 export class ModalCalendarPage {
 
     slots:Array<{
-        date:Date,
-        startHour:string,
-        endHour:string
+        'class' : "com.vitonjob.callouts.auth.model.CalendarData",
+        idCalendar : number,
+        type : string,
+        date:number,
+        startHour:number,
+        endHour:number
     }>;
 
     dateOptions: DatePickerOptions;
@@ -39,9 +42,12 @@ export class ModalCalendarPage {
         this.nav = nav;
 
         this.slots = [{
-            date: new Date(Date.UTC(2013, 1, 1, 14, 0, 0)),
-            startHour: '21h00',
-            endHour: '23h00'
+            'class' : "com.vitonjob.callouts.auth.model.CalendarData",
+            idCalendar : 0,
+            date: Date.now(),
+            startHour: 630,
+            endHour: 1260,
+            type : "regular"
         }];
         this.dateOptions = {
             weekday: "long", year: "numeric", month: "long",
@@ -96,9 +102,9 @@ export class ModalCalendarPage {
             date => {
                 console.log("Got date: ", date);
                 firstPartDate = {
-                    date: date,
-                    startHour: date.toLocaleString('fr-FR', this.timeOptions),
-                    endHour: "--:--"};
+                    date: date.getMilliseconds(),
+                    startHour: date.getHours() * 60 + date.getMinutes(),//date.toLocaleString('fr-FR', this.timeOptions),
+                    endHour: 0};
                 DatePicker.show({
                     date: new Date(),
                     mode: 'time',
@@ -108,9 +114,10 @@ export class ModalCalendarPage {
                         console.log("Got date: ", date);
                         //TODO: Control date value before adding theme.
                         this.slots.push({
-                            date: firstPartDate.date,
+                            'class' : 'com.vitonjob.callouts.auth.model.CalendarData',
+                            date: firstPartDate.date.getMilliseconds(),
                             startHour: firstPartDate.startHour,
-                            endHour: date.toLocaleString('fr-FR', this.timeOptions)})
+                            endHour: date.getHours() * 60 + date.getMinutes()})
                     },
                     err => console.log("Error occurred while getting date:", err)
                 );
@@ -147,6 +154,26 @@ export class ModalCalendarPage {
             ]
         });
         this.nav.present(confirm);
+    }
+
+    /**
+     * @Description Converts a timeStamp to date string :
+     * @param date : a timestamp date
+     * @param options Date options
+     */
+    toDateString(date:number, options: any) {
+        return new Date(date).toLocaleDateString('fr-FR', options);
+    }
+
+
+    /**
+     * @Description Converts a timeStamp to date string
+     * @param time : a timestamp date
+     */
+    toHourString(time:number) {
+        let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+        let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+        return hours + ":" + minutes;
     }
 
 

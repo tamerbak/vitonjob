@@ -151,9 +151,8 @@ export class PhonePage {
 				this.authService.insertToken(token, accountId, this.projectTarget);
 			}
 			
-			this.storage.set('connexion', connexion);
-			//stock current user in the local database
-			this.storage.set('currentUser', data);
+			this.storage.set('connexion', JSON.stringify(connexion));
+			this.storage.set('currentUser', JSON.stringify(data));
 			this.events.publish('user:login');
 			
 			//user is connected, then change the name of connexion btn to deconnection

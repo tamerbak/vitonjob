@@ -5,6 +5,9 @@ import {ModalJobPage} from "../modal-job/modal-job";
 import {ModalQualityPage} from "../modal-quality/modal-quality";
 import {ModalLanguagePage} from "../modal-language/modal-language";
 import {ModalCalendarPage} from "../modal-calendar/modal-calendar";
+import {OffersService} from "../../providers/offers-service/offers-service";
+import {OfferListPage} from "../offer-list/offer-list";
+import {isUndefined} from "ionic-angular/util";
 
 /*
  Generated class for the OfferAddPage page.
@@ -14,7 +17,7 @@ import {ModalCalendarPage} from "../modal-calendar/modal-calendar";
  */
 @Page({
     templateUrl: 'build/pages/offer-add/offer-add.html',
-    providers: [GlobalConfigs]
+    providers: [GlobalConfigs, OffersService]
 })
 export class OfferAddPage {
 
@@ -33,9 +36,14 @@ export class OfferAddPage {
         isLanguage:boolean,
         isCalendar:boolean
     };
+    nav: NavController;
     localOffer:Storage;
+    offerService:OffersService;
+    visibleOffer:boolean;
+    offerToBeAdded:{jobData:any, calendarData:any, qualityData:any, languageData:any,
+        visible:boolean, title:string, status:string};
 
-    constructor(public nav:NavController, private gc:GlobalConfigs) {
+    constructor(public nav:NavController, private gc:GlobalConfigs, private os:OffersService) {
 
         // Set global configs
         // Get target to determine configs
@@ -46,7 +54,8 @@ export class OfferAddPage {
 
         //Initializing PAGE:
         this.initializePage(config);
-
+        this.offerService = os;
+this.nav = nav;
 
     }
 
@@ -76,36 +85,68 @@ export class OfferAddPage {
             isCalendar: false
         };
 
+        this.visibleOffer = true;
+
+        this.offerToBeAdded = {
+            jobData: "", calendarData: "", qualityData: "", languageData: "",
+            visible: this.visibleOffer, title: "", status: "open"
+        };
+
+        this.initLocalStorageOffer();
+
+
+    }
+
+    /**
+     * @description Initializing local storage dara
+     */
+    initLocalStorageOffer(){
         // --> Job state
         this.localOffer.get('jobData').then(value => {
-            this.validated.isJob = (value) ? JSON.parse(value).validated : false;
-            this.steps.isCalendar = this.validated.isJob;
+            value = JSON.parse(value);
+            if (value) {
+                let level = (this.offerToBeAdded.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant'
+                this.offerToBeAdded.jobData = value;
+                this.offerToBeAdded.title = this.offerToBeAdded.jobData.job + " " + level;
+                this.validated.isJob = value.validated;
+                this.steps.isCalendar = this.validated.isJob;
+            }
             // --> Calendar state
             this.localOffer.get('slots').then(value => {
-                this.validated.isCalendar = (value) ? JSON.parse(value).length > 0 : false;
-                this.steps.isQuality = this.validated.isCalendar;
+                value = JSON.parse(value);
+                if (value) {
+                    this.offerToBeAdded.calendarData = value;
+                    this.validated.isCalendar = value.length > 0;
+                    this.steps.isQuality = this.validated.isCalendar;
+                }
+
                 // --> Quality state
                 this.localOffer.get('qualities').then(value => {
-                    this.validated.isQuality = (value) ? JSON.parse(value).length > 0 : false;
-                    this.steps.isLanguage = this.validated.isQuality;
+                    value = JSON.parse(value);
+                    if (value) {
+                        this.offerToBeAdded.qualityData = value;
+                        this.validated.isQuality = value.length > 0;
+                        this.steps.isLanguage = this.validated.isQuality;
+                    }
                     // --> Language state
                     this.localOffer.get('languages').then(value => {
-                        this.validated.isLanguage = (value) ? JSON.parse(value).length > 0 : false;
+                        value = JSON.parse(value);
+                        if (value) {
+                            this.offerToBeAdded.languageData = value;
+                            this.validated.isLanguage = value.length > 0;
+                        }
                     });
                 });
             });
         });
-
-
     }
 
     /** ########### Toast #############*/
 
     /**
-     *  @Description : Present the global toast that validate offer-list insertion
-     *  @params :
-     *  message : the text showed in the toast
-     *  duration : the duration in seconds
+     * @description Present the global toast that validate offer-list insertion
+     * @param message
+     * @param duration
      */
     presentToast(message:string, duration:number) {
         let toast = Toast.create({
@@ -189,6 +230,27 @@ export class OfferAddPage {
                         "Pour plus de précision pensez à saisir les qualités et langues...", 3);
             })
         });
+    }
+
+    /**
+     * Description : Adding offer in local and remote databases
+     */
+    addOffer() {
+        this.initLocalStorageOffer();
+        this.offerService.setOfferInLocal(this.offerToBeAdded, this.projectTarget)
+            .then(()=> {
+                console.log('••• Adding offer : local storing success!');
+                debugger;
+                this.offerService.setOfferInRemote(this.offerToBeAdded, this.projectTarget)
+                    .then(data => {
+                        console.log('••• Adding offer : remote storing success!');
+                        debugger;
+                        this.localOffer.clear();
+                        this.nav.setRoot(OfferListPage);
+                    })
+
+            });
+
     }
 
 }

@@ -60,15 +60,16 @@ export class ModalSelectionPage {
      * @Description : Validating selection page with one value selected..
      */
     validateModal(item) {
-
         switch (this.params.get('type')) {
             case 'secteur' :
+                this.params.get('selection').jobData.class = 'com.vitonjob.callouts.auth.model.JobData';
                 this.params.get('selection').jobData.sector = item.libelle;
                 this.params.get('selection').jobData.idSector = item.id;
                 if (!(this.params.get('selection').jobData.job === ''))
                     this.params.get('selection').jobData.job = '';
                 break;
             case 'job' :
+                this.params.get('selection').jobData.class = 'com.vitonjob.callouts.auth.model.JobData';
                 this.params.get('selection').jobData.job = item.libelle;
                 this.params.get('selection').jobData.idJob = item.id;
                 if (!this.params.get('selection').jobData.sector ||
@@ -80,26 +81,30 @@ export class ModalSelectionPage {
             case 'qualité' :
                 if (this.params.get('selection').qualities.filter((v) => {
                         return (v.libelle.toLowerCase().indexOf(item.libelle.toLowerCase()) > -1)
-                    }).length == 0)
+                    }).length == 0){
+                    item.class = 'com.vitonjob.callouts.auth.model.QualityData';
                     this.params.get('selection').qualities.push(item);
-                else {
-                    let toast = Toast.create({
-                        message: "Vous avez déjà choisi cette qualité! Merci de sélectionner une autre.",
-                        duration: 3000
-                    });
-
-                    toast.onDismiss(() => {
-                        console.log('Dismissed toast');
-                    });
-
-                    this.nav.present(toast);
                 }
+            else {
+                let toast = Toast.create({
+                    message: "Vous avez déjà choisi cette qualité! Merci de sélectionner une autre.",
+                    duration: 3000
+                });
+
+                toast.onDismiss(() => {
+                    console.log('Dismissed toast');
+                });
+
+                this.nav.present(toast);
+            }
                 break;
             case 'langue' :
                 if (this.params.get('selection').languages.filter((v) => {
                         return (v.libelle.toLowerCase().indexOf(item.libelle.toLowerCase()) > -1)
-                    }).length == 0)
+                    }).length == 0){
+                    item.class = 'com.vitonjob.callouts.auth.model.LanguageData';
                     this.params.get('selection').languages.push(item);
+                }
                 else {
                     let toast = Toast.create({
                         message: "Vous avez déjà choisi cette langue! Merci de sélectionner une autre.",
@@ -114,6 +119,7 @@ export class ModalSelectionPage {
                 }
                 break;
         }
+
 
         this.viewCtrl.dismiss();
     }
