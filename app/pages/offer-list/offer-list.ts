@@ -61,8 +61,13 @@ export class OfferListPage {
                 this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
                     console.log('getCorrespondingOffers result : ' + data);
                     offer.correspondantsCount = data.length;
+                    // Sort offers corresponding to their search results :
+                    this.offerList.sort((a, b) => {
+                        return b.correspondantsCount - a.correspondantsCount;
+                    })
                 });
             }
+
         });
     }
 
