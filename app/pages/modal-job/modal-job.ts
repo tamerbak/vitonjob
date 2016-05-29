@@ -18,6 +18,7 @@ import {OffersService} from "../../providers/offers-service/offers-service";
 export class ModalJobPage {
 
     public jobData:{
+        'class': "com.vitonjob.callouts.auth.model.JobData",
         idJob:string,
         job:number,
         idSector:number,
@@ -75,10 +76,12 @@ export class ModalJobPage {
 
         let jobData = params.get('jobData');
 
-        if (jobData && !(jobData === '[object Object]')) {
+        if (jobData) {
+            debugger;
             this.jobData = jobData;
         } else {
             this.jobData = {
+                'class' : "com.vitonjob.callouts.auth.model.JobData",
                 job: "",
                 sector: "",
                 idSector: 0,

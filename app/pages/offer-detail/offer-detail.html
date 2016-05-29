@@ -20,13 +20,25 @@
 </ion-navbar>
 
 <ion-content padding class="offer-detail">
+
+    <!--Offer title-->
+    <h5 style="text-align: center;">{{offer.title}}</h5>
+
     <ion-list>
-        <div style="display: flex">
-            <ion-list-header style="width: 100%">
+
+        <!--Job-->
+        <div style="display: flex; background-size: cover;"
+             [style.backgroundImage]="jobStyle.backgroundImage">
+            <ion-list-header style="width: 100%;"
+                             [style.color]="jobStyle.fontColor"
+                             [style.fontWeight]="jobStyle.fontWeight">
                 Job
             </ion-list-header>
-            <button clear small style="position: relative; top: 5px" (click)="showJobCard()">
-                <ion-icon [name]="jobIconName"></ion-icon>
+            <button outline small style="position: relative; top: 0;"
+                    [style.color]="jobStyle.buttonColor"
+                    [style.borderColor] = "jobStyle.fontColor"
+                     (click)="showJobCard()">
+                <ion-icon [name]="jobIconName"></ion-icon> Détails
             </button>
         </div>
 
@@ -36,78 +48,70 @@
                 <ion-icon name="euro"></ion-icon>
                 <div class="card-title">Job</div>
             </div>
-            <!--ion-item>
-                <ion-label>
-                    <ion-icon name="briefcase"></ion-icon> Secteur : Restauration
-                </ion-label>
-            </ion-item>
-            <ion-item>
-                <ion-label>
-                    <ion-icon name="briefcase"></ion-icon> Job : Serveur
-                </ion-label>
-            </ion-item>
-            <ion-item>
-                <ion-label>
-                    <ion-icon name="briefcase"></ion-icon> Niveau : Débutant
-                </ion-label>
-            </ion-item>
-            <ion-item>
-                <ion-label>
-                    <ion-icon name="briefcase"></ion-icon> Rénumération : 40 €/h
-                </ion-label>
-            </ion-item-->
             <div>
                 <ul>
-                    <li>Secteur : Restauration/Hotellerie</li>
-                    <li>Job : Serveur</li>
-                    <li>Niveau : Débutant</li>
-                    <li>Rémunération : 40 €/h</li>
+                    <li><span style="font-weight: bold">Secteur </span>: {{offer.jobData.sector}}</li>
+                    <li><span style="font-weight: bold">Job </span>: {{offer.jobData.job}}</li>
+                    <li><span style="font-weight: bold">Niveau </span>: {{(offer.jobData.level ==='senior')? 'Expérimenté':'Débutant'}}</li>
+                    <li><span style="font-weight: bold">Rémunération </span>: {{offer.jobData.remuneration}} €/h</li>
                 </ul>
             </div>
             <div class="button-footer">
-                <button clear [style.color]="themeColor">
+                <button clear [style.color]="themeColor" (click)="showJobModal()">
                     <ion-icon name="create"></ion-icon>
                     <div>Modifier</div>
                 </button>
             </div>
         </ion-card>
 
+        <ion-row></ion-row>
+
         <!-- Qualities Card-->
-        <div style="display: flex">
-            <ion-list-header style="width: 100%">
-                Qualités indispensables
+        <div style="display: flex; background-size: cover;"
+             [style.backgroundImage]="qualityStyle.backgroundImage">
+            <ion-list-header style="width: 100%" [style.color]="qualityStyle.fontColor"
+                             [style.fontWeight]="qualityStyle.fontWeight">
+                Qualités
             </ion-list-header>
-            <button clear small style="position: relative; top: 5px" (click)="showQualityCard()">
-                <ion-icon [name]="qualityIconName"></ion-icon>
+            <button  outline small style="position: relative; top: 0"
+                     [style.color]="qualityStyle.buttonColor"
+                     [style.borderColor] = "qualityStyle.fontColor"
+                     (click)="showQualityCard()">
+                <ion-icon [name]="qualityIconName"></ion-icon> Détails
             </button>
         </div>
         <ion-card [hidden] = "!showQuality">
             <div class="img-header">
                 <img src="img/quality.png"/>
-                <div class="card-title" style="color: #757575">Qualités</div>
-                <div class="card-subtitle" style="color: #757575">indispensables</div>
+                <div class="card-title" style="color: white">Qualités</div>
+                <div class="card-subtitle" style="color: white">indispensables</div>
             </div>
             <div>
                 <ul>
-                    <li>BAFA</li>
-                    <li>Autonome</li>
+                    <li *ngFor="#item of offer.qualityData">{{item.libelle}}</li>
                 </ul>
             </div>
             <div class="button-footer">
-                <button clear [style.color]="themeColor">
+                <button clear [style.color]="themeColor" (click)="showQualityModal()">
                     <ion-icon name="create"></ion-icon>
                     <div>Modifier</div>
                 </button>
             </div>
         </ion-card>
 
+        <ion-row></ion-row>
+
         <!-- Languages Card-->
-        <div style="display: flex">
-            <ion-list-header style="width: 100%">
+        <div style="display: flex; background-size: cover;"
+             [style.backgroundImage]="languageStyle.backgroundImage">
+            <ion-list-header style="width: 100%" [style.color]="languageStyle.fontColor"
+                             [style.fontWeight]="languageStyle.fontWeight">
                 Langues
             </ion-list-header>
-            <button clear small style="position: relative; top: 5px" (click)="showLanguageCard()">
-                <ion-icon [name]="languageIconName"></ion-icon>
+            <button  outline small style="position: relative; top: 0" (click)="showLanguageCard()"
+                     [style.color]="languageStyle.buttonColor"
+                     [style.borderColor] = "languageStyle.fontColor">
+                <ion-icon [name]="languageIconName"></ion-icon> Détails
             </button>
         </div>
         <ion-card [hidden] = "!showLanguage">
@@ -117,25 +121,32 @@
             </div>
             <div>
                 <ul>
-                    <li>Français : Courant</li>
-                    <li>Anglais : Débutant</li>
+                    <li *ngFor="#item of offer.languageData">
+                        <span style="font-weight: bold">{{item.libelle}}</span> : {{item.level}}
+                    </li>
                 </ul>
             </div>
             <div class="button-footer">
-                <button clear [style.color]="themeColor">
+                <button clear [style.color]="themeColor" (click)="showLanguageModal()">
                     <ion-icon name="create"></ion-icon>
                     <div>Modifier</div>
                 </button>
             </div>
         </ion-card>
 
+        <ion-row></ion-row>
+
         <!-- Calendar Card-->
-        <div style="display: flex">
-            <ion-list-header style="width: 100%">
+        <div style="display: flex; background-size: cover;"
+             [style.backgroundImage]="calendarStyle.backgroundImage">
+            <ion-list-header style="width: 100%" [style.color]="calendarStyle.fontColor"
+                             [style.fontWeight]="calendarStyle.fontWeight">
                 Agenda
             </ion-list-header>
-            <button clear small style="position: relative; top: 5px" (click)="showCalendarCard()">
-                <ion-icon [name]="calendarIconName"></ion-icon>
+            <button  outline small style="position: relative; top: 0" (click)="showCalendarCard()"
+                     [style.color]="calendarStyle.buttonColor"
+                     [style.borderColor] = "calendarStyle.fontColor">
+                <ion-icon [name]="calendarIconName"></ion-icon>Détails
             </button>
         </div>
         <ion-card [hidden] = "!showCalendar">
@@ -144,21 +155,21 @@
                 <div class="card-title" style="color: #757575">Agenda</div>
             </div>
             <div>
-                <ul>
-                    <li>Créneau de 30/05/2016
-                        <ul>
-                            <li>De 8:00 à 18:00</li>
-                        </ul>
-                    </li>
-                    <li>Créneau de 31/05/2016
-                        <ul>
-                            <li>De 8:00 à 18:00</li>
-                        </ul>
-                    </li>
-                </ul>
+                <table id="t01">
+                    <tr>
+                        <th [style.backgroundColor]="inversedThemeColor">Créneau</th>
+                        <th [style.backgroundColor]="inversedThemeColor">De</th>
+                        <th [style.backgroundColor]="inversedThemeColor">À</th>
+                    </tr>
+                    <tr *ngFor="#item of offer.calendarData">
+                        <td>{{toDateString(item.date)}}</td>
+                        <td>{{toHourString(item.startHour)}}</td>
+                        <td>{{toHourString(item.endHour)}}</td>
+                    </tr>
+                </table>
             </div>
             <div class="button-footer">
-                <button clear [style.color]="themeColor">
+                <button clear [style.color]="themeColor" (click)="showCalendarModal()">
                     <ion-icon name="create"></ion-icon>
                     <div>Modifier</div>
                 </button>
@@ -168,9 +179,11 @@
 
     <ion-row>
         <ion-col text-center>
-            <button [style.backgroundColor]="themeColor" (click)="launchSearch()">
-                <ion-icon name="search"></ion-icon>
-                Lancer la recherche
+            <button [style.backgroundColor]="themeColor" (click)="validateModification()"
+                    [hidden] = "!modified.isJob || !modified.isCalendar ||
+                    !modified.isLanguage || !modified.isQuality ">
+                <ion-icon name="checkmark-circle"></ion-icon>
+                Valider les modifications
             </button>
         </ion-col>
     </ion-row>

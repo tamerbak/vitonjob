@@ -24,11 +24,12 @@
     </ion-row>
 
     <ion-list>
-        <ion-card *ngFor="#item of slots">
-            <ion-card-header style="padding-right: 0;padding-left: 0;padding-bottom: 0;">
+        <ion-card *ngFor="#item of slots"
+                  style="background-image: url('img/slot.png');background-size: cover;">
+            <ion-card-header style="padding-right: 0;padding-left: 0; padding-bottom: 0;">
                 <ion-row>
                     <ion-col>
-                        Créneau de {{item.date.toLocaleDateString("fr-FR")}}
+                        Créneau de {{toDateString(item.date, '')}}
                     </ion-col>
 
                     <ion-col style="text-align: right;">
@@ -42,13 +43,13 @@
                 </ion-row>
             </ion-card-header>
 
-            <ion-item>
+            <ion-item style="background-color: transparent;">
                 <ion-icon name="calendar" item-left large></ion-icon>
-                <h2>Le {{item.date.toLocaleDateString("fr-FR", dateOptions)}}</h2>
-                <p>De {{item.startHour}} à {{item.endHour}}</p>
+                <h2>Le {{toDateString(item.date, dateOptions)}}</h2>
+                <p style="color: black;">De {{toHourString(item.startHour)}} à {{toHourString(item.endHour)}}</p>
             </ion-item>
 
-            <ion-item>
+            <ion-item style="background-color: transparent;">
                 <ion-label>Ajouter à l'agenda</ion-label>
                 <ion-toggle checked="false"></ion-toggle>
             </ion-item>
