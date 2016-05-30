@@ -102,7 +102,7 @@ export class ModalCalendarPage {
             date => {
                 console.log("Got date: ", date);
                 firstPartDate = {
-                    date: date.getMilliseconds(),
+                    date: date.getTime(),
                     startHour: date.getHours() * 60 + date.getMinutes(),//date.toLocaleString('fr-FR', this.timeOptions),
                     endHour: 0};
                 DatePicker.show({
@@ -115,7 +115,7 @@ export class ModalCalendarPage {
                         //TODO: Control date value before adding theme.
                         this.slots.push({
                             'class' : 'com.vitonjob.callouts.auth.model.CalendarData',
-                            date: firstPartDate.date.getMilliseconds(),
+                            date: firstPartDate.date,
                             startHour: firstPartDate.startHour,
                             endHour: date.getHours() * 60 + date.getMinutes()})
                     },

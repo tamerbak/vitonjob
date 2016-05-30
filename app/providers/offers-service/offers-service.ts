@@ -151,11 +151,28 @@ export class OffersService {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
+        // Testing if a user hasn't chose a quality :
+        if (offerData.qualityData.length == 0){
+            offerData.qualityData.push({
+                "class": "com.vitonjob.callouts.auth.model.QualityData",
+                idQuality: 0,
+                libelle: ""
+            });
+        }
+        // Testing if a user hasn't chose a language :
+        if (offerData.languageData.length == 0){
+            offerData.languageData.push({
+                "class": "com.vitonjob.callouts.auth.model.LanguageData",
+                idLanguage: 0,
+                level: "",
+                libelle: ""
+            });
+        }
         offerData.class = 'com.vitonjob.callouts.auth.model.OfferData';
         offerData.idOffer = 0;
         offerData.jobyerId = 0;
         offerData.entrepriseId = 0;
-        debugger;
+
         switch (projectTarget) {
             case 'employer' :
                 offerData.entrepriseId = offerData.identity;

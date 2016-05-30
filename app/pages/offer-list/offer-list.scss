@@ -12,4 +12,13 @@
     bottom: 44px;
     left: 0;
   }
+
+  ion-spinner {
+    width: 14px;
+    height: 14px;
+  }
+  ion-spinner circle {
+    stroke: white;
+  }
+
 }
