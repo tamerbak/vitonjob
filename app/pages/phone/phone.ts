@@ -119,14 +119,14 @@ export class PhonePage {
 			if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
 				console.log(data);
 				loading.dismiss();
-				this.globalService.showAlertValidation("Serveur non disponible ou problème de connexion.");
+				this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
 				return;
 			}
 			//case of authentication failure : incorrect password 
 			if (data.id == 0 && data.status == "passwordError") {
 				console.log("Password error");
 				loading.dismiss();
-				this.globalService.showAlertValidation("Votre mot de passe est incorrect");
+				this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe est incorrect");
 				return;
 			}
 			
@@ -168,8 +168,6 @@ export class PhonePage {
 				currentUser: data});
 				} else {
 				this.nav.rootNav.setRoot(HomePage);
-				//this.nav.push(InfoUserPage, {currentUser: data});
-				
 			}
 		});
 	}
@@ -227,6 +225,11 @@ export class PhonePage {
 			//On teste si le tél existe dans la base
 			var tel = "+" + this.index + this.phone;
 			this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data);
+					this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+					return;
+				}
 				if (!data || data.data.length == 0) {
 					//el.setFocus();
 					this.showEmailField = true;
