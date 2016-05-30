@@ -415,6 +415,7 @@ export class OffersService {
         var sql = 'select pk_user_langue as \"idLanguage\", libelle as libelle, \'junior\' as level from user_langue';
         console.log(sql);
         return new Promise(resolve => {
+
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
@@ -426,7 +427,7 @@ export class OffersService {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
-                    debugger;
+
                     this.listLanguages = data.data;
                     resolve(this.listLanguages);
                 });
@@ -480,6 +481,7 @@ export class OffersService {
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
+
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);

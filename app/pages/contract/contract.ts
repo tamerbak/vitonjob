@@ -1,14 +1,13 @@
-import {Storage, SqlStorage} from 'ionic-angular';
-import {Page, NavController, NavParams, Loading,ActionSheet,Alert} from 'ionic-angular';
+import {Page, NavController, NavParams, ActionSheet, Alert, Modal} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
-import {ContractService} from '../../providers/contract-service/contract-service';
-import {SmsService} from "../../providers/sms-service/sms-service";
 import {UserService} from "../../providers/user-service/user-service";
 import {CivilityPage} from '../civility/civility';
 import {JobAddressPage} from '../job-address/job-address';
 import {PersonalAddressPage} from '../personal-address/personal-address';
 import {YousignPage} from '../yousign/yousign';
+import {isUndefined} from "ionic-angular/util";
+import {ModalOffersPage} from "../modal-offers/modal-offers";
 
 
 /**
@@ -17,10 +16,10 @@ import {YousignPage} from '../yousign/yousign';
  * @module Contract
  */
 @Page({
-  templateUrl: 'build/pages/contract/contract.html',
+    templateUrl: 'build/pages/contract/contract.html',
 })
 export class ContractPage {
-    
+
     projectTarget:string;
     isEmployer:boolean;
     themeColor:string;
@@ -34,21 +33,67 @@ export class ContractPage {
     contractTitle:string;
     dataObject:any;
     contractData:any;
-    
-    
-    constructor(public gc: GlobalConfigs, 
-                public nav: NavController, 
+    currentOffer:any;
+
+
+    constructor(public gc: GlobalConfigs,
+                public nav: NavController,
                 private navParams:NavParams,
                 private userService:UserService ) {
-        
+
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
-        
+
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
-        
-        // Set local variables and messages
-        //get the currentEmployer
+
+
+        this.themeColor = config.themeColor;
+        this.contractTitle = "Contrat de Mission";
+        this.isEmployer = (this.projectTarget=='employer');
+
+        this.jobyer = navParams.get('jobyer');
+        this.jobyerFirstName = this.jobyer.prenom;
+        this.jobyerLastName = this.jobyer.nom;
+
+        // initialize contract data
+        this.contractData = {
+            num:"",
+            interim:"",
+            missionStartDate: "",
+            missionEndDate:"",
+            trialPeriod: 5,
+            termStartDate: "",
+            termEndDate: "",
+            motif: "",
+            justification: "",
+            qualification: "",
+            characteristics:"",
+            workTimeHours: 0,
+            workTimeVariable: 0,
+            workStartHour: "00:00",
+            workEndHour:"00:00",
+            workHourVariable:"",
+            postRisks:"",
+            medicalSurv:"",
+            epi:"",
+            baseSalary:0,
+            MonthlyAverageDuration: "0",
+            salaryNHours: "00,00€ B/H",
+            salarySH35: "+00%",
+            salarySH43: "+00%",
+            restRight: "00%",
+            interimAddress:"0",
+            customer: "0",
+            primes: "",
+            headOffice : "",
+            missionContent : "",
+            category: "",
+            sector : "",
+        };
+
+
+        // get the currentEmployer
         userService.getCurrentEmployer().then(results =>{
             var currentEmployer = JSON.parse(results);
             if(currentEmployer){
@@ -58,60 +103,33 @@ export class ContractPage {
                 this.employerFullName = civility + " " + this.employer.nom + " " + this.employer.prenom;
             }
             console.log(currentEmployer);
+            //  check if there is a current offer
+            if(navParams.get("currentOffer") && !isUndefined(navParams.get("currentOffer"))){
+                this.currentOffer = navParams.get("currentOffer");
+                this.initContract();
+            } else {
+                let m = new Modal(ModalOffersPage);
+                m.onDismiss(data => {
+                    this.currentOffer = data;
+                    this.initContract();
+                });
+            }
         });
-        
-        this.themeColor = config.themeColor;
-        this.contractTitle = "Contrat de Mission";
-        this.isEmployer = (this.projectTarget=='employer');
 
-        this.jobyer = navParams.get('jobyer');
-        this.jobyerFirstName = this.jobyer.prenom;
-        this.jobyerLastName = this.jobyer.nom;
-        
-        //to verify
-        this.contractData = {
-            num:"VB0902005",
-            interim:"Test1",
-            missionStartDate: "01/02/2009",
-            missionEndDate:"30/04/2009",
-            trialPeriod: 5,
-            termStartDate: "20/04/2009",
-            termEndDate: "10/05/2009",
-            motif: "Remplacement Maladie",
-            justification: "Mme MARTIN Monique",
-            qualification: "Magasinier qualifie",
-            characteristics:"Gestion du stock pièces",
-            workTimeHours: 30,
-            workTimeVariable: 35,
-            workStartHour: "08:00",
-            workEndHour:"17:00",
-            workHourVariable:"???",
-            postRisks:"non",
-            medicalSurv:"non",
-            epi:"chaussures de sécurité",
-            baseSalary:15,
-            MonthlyAverageDuration: "35h",
-            salaryNHours: "15,00€ B/H",
-            salarySH35: "+25%",
-            salarySH43: "+50%",
-            restRight: "50%",
-            interimAddress:"ASMIS 77 RUE DEBAUSSAUX 80000 AMIENS",
-            customer: "ASMIS",
-            primes: "néant",
-            headOffice : "31 rue du Moulin 31320 CASTANET TOLOSAN",
-            missionContent : "d opérateur déneigement et dégivrage – coefficient 185",
-            category: "ouvrier",
-            sector : "exploitation",
-        };
+
     }
-    
+
+    initContract(){
+        console.log(this.currentOffer);
+    }
+
     goToYousignPage() {
         this.nav.push(YousignPage,{
             jobyer:this.jobyer,
             contractData:this.contractData
         });
     }
-    
+
     /**
      * @author daoudi amine
      * @description show the menu to edit employer's informations
@@ -148,19 +166,19 @@ export class ContractPage {
                 }
             ]
         });
-        
+
         this.nav.present(actionSheet);
     };
-    
+
     /**
      * @author daoudi amine
      * @param item name of the param
-     * @title description of the param 
+     * @title description of the param
      * @description change a contractData parametre
      */
     changeContractData(item,title) {
-        
-        
+
+
         let prompt = Alert.create({
             title: title,
             message: "Veuillez saisir la nouvelle valeur",
@@ -184,8 +202,8 @@ export class ContractPage {
                 }
             ]
         });
-        
+
         this.nav.present(prompt);
     };
-    
+
 }
