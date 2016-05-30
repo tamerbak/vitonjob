@@ -19,7 +19,9 @@ import {isUndefined} from "ionic-angular/util";
 })
 export class OfferListPage {
 
-    offersList = [];
+    offerList = [];
+    offerService: OffersService;
+    projectTarget: string;
 
     constructor(public nav:NavController,
                 public gc:GlobalConfigs,
@@ -46,26 +48,26 @@ export class OfferListPage {
         // jQuery code for dragging components
         // console.log($( "#draggable" ).draggable());
 
-        offersService.loadOffersList().then(data =>{
-
-            let rawData = JSON.parse((data));
-            console.log(rawData.entreprises);
-            if(rawData && rawData.entreprises && rawData.entreprises[0].offers){
-                this.offersList = rawData.entreprises[0].offers;
-                for(var i = 0 ; i < rawData.entreprises[0].offers.length ; i++){
-                    let o = rawData.entreprises[0].offers[i];
-                    o.correspondantsCount = 0;
-                    if( isUndefined(o) || !o|| !o.pricticesJob || o.pricticesJob.length == 0){
-                        continue;
-                    }
-                    offersService.getCorrespondingOffers(o, this.projectTarget).then(data =>{
-                        console.log('TEST  '+data);
-                       o.correspondantsCount = data.length;
-                    });
+        this.offerService = offersService;
+        this.offerService.loadOfferList(this.projectTarget).then(data => {
+            this.offerList = data;
+            for (var i = 0; i < this.offerList.length; i++) {
+                let offer = this.offerList[i];
+                offer.correspondantsCount = -1;
+                if (isUndefined(offer) || !offer || !offer.jobData) {
+                    continue;
                 }
+                this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
+                    console.log('getCorrespondingOffers result : ' + data);
+                    offer.correspondantsCount = data.length;
+                    // Sort offers corresponding to their search results :
+                    this.offerList.sort((a, b) => {
+                        return b.correspondantsCount - a.correspondantsCount;
+                    })
+                });
             }
-        });
 
+        });
     }
 
     // Testing a web service call

@@ -9,6 +9,7 @@ import {PaymentPage} from "../payment/payment";
 import {CivilityPage} from '../civility/civility';
 import {JobAddressPage} from '../job-address/job-address';
 import {PersonalAddressPage} from '../personal-address/personal-address';
+import {MissionListPage} from '../mission-list/mission-list';
 
 
 /**
@@ -67,6 +68,10 @@ export class YousignPage {
         this.nav.push(PaymentPage);
     }
     
+    goToMissionsList() {
+        this.nav.push(MissionListPage);
+    }
+    
     /**
      * @author daoudi amine
      * @description call yousign service and send sms to the jobyer
@@ -119,13 +124,26 @@ export class YousignPage {
             var jobyerPhoneNumber = this.jobyer.tel;
             
             // Send sms to jobyer
-            this.smsService.sendSms(jobyerPhoneNumber, yousignJobyerLink).then((dataSms) => {
-                console.log("The message was sent successfully");
-            }).catch(function(err) {
-                console.log(err);
-            });
+            // this.smsService.sendSms(jobyerPhoneNumber, yousignJobyerLink).then((dataSms) => {
+            //     console.log("The message was sent successfully");
+            // }).catch(function(err) {
+            //     console.log(err);
+            // });
             
-            
+            //save contract in Database
+            this.contractService.getJobyerId(this.jobyer,this.projectTarget).then(
+                (jobyerData) => {
+                   this.contractService.saveContract(this.contractData,jobyerData.data[0].pk_user_jobyer,this.employer.entreprises[0].entrepriseId,this.projectTarget).then(
+                    (data) => {
+                        console.log(data);
+                    },
+                    (err) => {
+                        console.log(err);
+                    })
+                },
+                (err) => {
+                    console.log(err);
+                })
         }).catch(function(err) {
             console.log(err);
         });

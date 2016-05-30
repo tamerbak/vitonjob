@@ -3,6 +3,7 @@ import {Injectable} from 'angular2/core';
 import {Http, Headers} from 'angular2/http';
 import 'rxjs/add/operator/map';
 import {Configs} from '../../configurations/configs';
+import {isUndefined} from "ionic-angular/util";
 
 /**
  * @author jakjoud abdeslam
@@ -23,6 +24,8 @@ export class OffersService {
     offerJob:any;
     offerLangs:any;
     offerQuelities:any;
+    offerList:any;
+    addedOffer:any;
 
     constructor(public http:Http) {
         this.count = 0;
@@ -62,6 +65,38 @@ export class OffersService {
         });
     }
 
+
+    /**
+     * @Author TEL
+     * @Description Loading offer list according to user type
+     */
+    loadOfferList(projectTarget:string) {
+
+        /*Returning a promise*/
+        return new Promise(resolve => {
+            // Loading user
+            this.loadCurrentUser()
+                .then(data => {
+                    switch (projectTarget) {
+                        case 'employer' :
+                            let employerData = JSON.parse((data)).employer;
+                            console.log(employerData.entreprises);
+                            if (employerData && employerData.entreprises && employerData.entreprises[0].offers) {
+                                this.offerList = employerData.entreprises[0].offers;
+                            }
+                            break;
+                        case 'jobyer' :
+                            let jobyerData = JSON.parse((data)).jobyer;
+                            if (jobyerData && jobyerData.offers) {
+                                this.offerList = jobyerData.offers;
+                            }
+                            break;
+                    }
+                    resolve(this.offerList);
+                });
+        });
+    }
+
     /**
      * @Author : TEL
      * @Description : Sending the offer to the local dataBase
@@ -73,48 +108,135 @@ export class OffersService {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
         let offers:any;
-        let user = this.db.get('currentUser').then(data => {
-            if (projectTarget === 'employer') {
-                let rawData = JSON.parse((data));
-                console.log(rawData.entreprises);
-                if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
-                    offers = rawData.entreprises[0].offers;
-                    debugger;
+        let result:any;
+        return this.db.get('currentUser').then(data => {
+            if (data) {
+                data = JSON.parse((data));
+                if (projectTarget === 'employer') {
+                    let rawData = data.employer;
+                    //console.log(rawData.entreprises);
+                    if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
+                        //adding userId for remote storing
+                        offerData.identity = rawData.entreprises[0].id;
+                        offers = rawData.entreprises[0].offers;
+                        offers.push(offerData);
+                        // Save new offer list in SqlStorage :
+                        this.db.set('currentUser', JSON.stringify(data));
+                    }
+                } else { // jobyer
+                    let rawData = data.jobyer;
+                    if (rawData && rawData.offers) {
+                        //adding userId for remote storing
+                        offerData.identity = rawData.jobyerId;
+                        offers = rawData.offers;
+                        offers.push(offerData);
+                        // Save new offer list in SqlStorage :
+                        this.db.set('currentUser', JSON.stringify(data));
+                    }
                 }
-            } else { // jobyer
-                let rawData = JSON.parse((data));
-                debugger;
             }
+        });
 
-        })
     };
 
 
     /**
-     * @Author : TEL
-     * @Description : Sending the offer to the remote dataBase
-     * @param offerData : offer data
+     * @Author TEL
+     * @Description Sending the offer to the remote dataBase
      * @param projectTarget : project target (jobyer/employer)
-     *
+     * @param offerData
+     * @caution ALWAYS CALLED AFTER setOfferInLocal()!
      */
     setOfferInRemote(offerData:any, projectTarget:string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
-        var data = {
-            "class": 'com.vitonjob.Offre',
-            "entreprise": id,
-            "titre": titre,
-            "remuneration": remuneration,
-            "job": job,
-            "langues": langues,
-            "indispensables": indispensables,
-            "disponibilites": disponibilites
+        // Testing if a user hasn't chose a quality :
+        if (offerData.qualityData.length == 0){
+            offerData.qualityData.push({
+                "class": "com.vitonjob.callouts.auth.model.QualityData",
+                idQuality: 0,
+                libelle: ""
+            });
+        }
+        // Testing if a user hasn't chose a language :
+        if (offerData.languageData.length == 0){
+            offerData.languageData.push({
+                "class": "com.vitonjob.callouts.auth.model.LanguageData",
+                idLanguage: 0,
+                level: "",
+                libelle: ""
+            });
+        }
+        offerData.class = 'com.vitonjob.callouts.auth.model.OfferData';
+        offerData.idOffer = 0;
+        offerData.jobyerId = 0;
+        offerData.entrepriseId = 0;
+
+        switch (projectTarget) {
+            case 'employer' :
+                offerData.entrepriseId = offerData.identity;
+                break;
+            case 'jobyer':
+                offerData.jobyerId = offerData.idendity;
+                break;
+        }
+        //remove identity key/value from offerData object
+
+        delete offerData['identity'];
+        delete offerData.jobData['idLevel'];
+
+        // store in remote database
+        let stringData = JSON.stringify(offerData);
+        stringData = btoa(stringData);
+
+        let payload = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            id: 133,
+            args: [{
+                'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                label: 'creation offre',
+                value: stringData
+            },
+                {
+                    'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                    label: 'type utilisateur',
+                    value: (projectTarget === 'employer') ? btoa('employeur') : btoa('jobyer')
+                }]
         };
+
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'application/json');
+            this.http.post(this.configuration.calloutURL, JSON.stringify(payload), {headers: headers})
+
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    this.addedOffer = data;
+                    console.log(this.addedOffer);
+                    resolve(this.addedOffer);
+                });
+        });
+
+        /*stringData = JSON.stringify(data);
+
+         let payload = {
+         method : 'POST',
+         url : 'http://vps259989.ovh.net:8080/vitonjobv1/api/callout',
+         headers : {
+         'Content-Type' : 'application/json'
+         },
+         data : stringData
+         };*/
 
     }
 
     /**
+     * @modification TEL 26052016
      * @description Get the corresponding candidates of a specific offer
      * @param offer the reference offer
      * @param projectTarget the project target configuration (jobyer/employer)
@@ -124,12 +246,12 @@ export class OffersService {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
-        //  Get job title and reference offer
-        var job = offer.pricticesJob[0].job;
-        var metier = offer.pricticesJob[0].metier;
-        var offerId = offer.offerId;
+        //  Get job and offer reference
+        let job = offer.jobData.job;
+        let sector = offer.jobData.sector;
+        let offerId = offer.idOffer;
 
-        var searchQuery = {
+        let searchQuery = {
             class: 'com.vitonjob.callouts.recherche.SearchQuery',
             job: job,
             metier: '',
@@ -137,14 +259,14 @@ export class OffersService {
             nom: '',
             entreprise: '',
             date: '',
-            table: projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
+            table: (projectTarget === 'jobyer') ? 'user_offre_entreprise' : 'user_offre_jobyer',
             idOffre: offerId
         };
         console.log(searchQuery);
         //  Prepare payload
-        var query = JSON.stringify(searchQuery);
+        let query = JSON.stringify(searchQuery);
 
-        var payload = {
+        let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
             id: 127,
             args: [
@@ -155,7 +277,6 @@ export class OffersService {
                 }
             ]
         };
-
 
         // don't have the data yet
         return new Promise(resolve => {
@@ -180,7 +301,7 @@ export class OffersService {
      * @description     Returning the persisted offers list from the local data base
      * @return {any}    A promise of getting serialized data from SQLite phone database
      */
-    loadOffersList() {
+    loadCurrentUser() {
         return this.db.get('currentUser');
     }
 
@@ -291,7 +412,7 @@ export class OffersService {
     loadLanguages(projectTarget:string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
-        var sql = 'select pk_user_langue as id, libelle as libelle, 2 as idlevel, \'junior\' as level from user_langue';
+        var sql = 'select pk_user_langue as \"idLanguage\", libelle as libelle, \'junior\' as level from user_langue';
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -305,6 +426,7 @@ export class OffersService {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
+                    debugger;
                     this.listLanguages = data.data;
                     resolve(this.listLanguages);
                 });
@@ -318,7 +440,7 @@ export class OffersService {
     loadQualities(projectTarget:string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
-        var sql = 'select pk_user_indispensable as id, libelle as libelle from user_indispensable';
+        var sql = 'select pk_user_indispensable as \"idQuality\", libelle as libelle from user_indispensable';
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,

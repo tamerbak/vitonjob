@@ -13,7 +13,7 @@
   <!-- Validate Offer -->
   <ion-row >
     <ion-col text-center>
-      <button [style.backgroundColor]="themeColor"
+      <button [style.backgroundColor]="themeColor" (click)="addOffer()"
               [disabled] = "!(validated.isJob && validated.isCalendar)" >
         <ion-icon name="add-circle" is-active="false"></ion-icon>
         Ajouter l'offre

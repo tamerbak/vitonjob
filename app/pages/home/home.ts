@@ -73,6 +73,25 @@ export class HomePage {
 				this.isConnected = false;
 			}
 		});
+
+
+	}
+
+	/**
+	 * @description Launching semantic search from voice recognition
+	 */
+	launchVoiceRecognition(){
+		let recognition = new SpeechRecognition();
+		recognition.lang = 'fr';
+		recognition.onresult = function(event) {
+
+			if (event.results.length > 0) {
+				this.scQuery = event.results[0][0].transcript;
+				this.doSemanticSearch();
+
+			}
+		}.bind(this);
+		recognition.start();
 	}
 
 	onFocus() {

@@ -16,7 +16,25 @@ import {OffersService} from "../../providers/offers-service/offers-service";
 })
 export class ModalLanguagePage {
 
-  languages: Array<{id:number, libelle: string, idlevel : number, level: string}>;
+  /**
+   * @Description : Initializing qualities list
+   */
+  initializeLanguageList(params:NavParams) {
+    let languages = params.get('languages');
+    if (languages && languages.length > 0){
+      this.languages = languages;
+    } else {
+      this.languages = [];
+    }
+  }
+
+  languages: Array<{
+    'class': "com.vitonjob.callouts.auth.model.LanguageData",
+    idLanguage:number,
+    libelle: string,
+    idlevel : number, 
+    level: string
+  }>;
 
   constructor(public nav: NavController,
               gc: GlobalConfigs,
@@ -36,17 +54,6 @@ export class ModalLanguagePage {
     this.viewCtrl = viewCtrl;
     this.offerService = os;
     this.initializeLanguageList(params)
-  }
-
-  /**
-   * @Description : Initializing qualities list
-   */
-  initializeLanguageList(params:NavParams) {
-    let languages = params.get('languages');
-    if (languages && languages.length > 0)
-      this.languages = languages;
-    else
-      this.languages = [];
   }
 
   /**

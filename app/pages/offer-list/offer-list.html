@@ -18,17 +18,19 @@
 </ion-navbar>
 
 <ion-content padding class="offer">
-
     <ion-card [hidden]="!listMode">
         <ion-card-header style = "text-align: center;">
             Ma liste des offres :
         </ion-card-header>
 
-        <ion-list>
-            <button *ngFor="#item of offersList" ion-item (click)="goToDetailOffer(item)">
+        <ion-list text-wrap>
+            <button *ngFor="#item of offerList " ion-item (click)="goToDetailOffer(item)">
                 <ion-icon name="eye" item-left></ion-icon>
                 {{item.title}}
-                <ion-badge [style.backgroundColor]="themeColor" item-right>{{item.correspondantsCount}}</ion-badge>
+                <ion-badge [style.backgroundColor]="themeColor" item-right>
+                    <ion-spinner name="crescent" [hidden]="(item.correspondantsCount >= 0)"></ion-spinner>
+                    {{(item.correspondantsCount < 0) ? '' : item.correspondantsCount}}
+                </ion-badge>
             </button>
         </ion-list>
     </ion-card>
