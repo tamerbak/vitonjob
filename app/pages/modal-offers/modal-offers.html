@@ -1,0 +1,8 @@
+<ion-content padding class="modal-offers">
+  <ion-list text-wrap>
+    <button *ngFor="#item of offerList " ion-item (click)="chooseOffer(item)">
+      <ion-icon name="eye" item-left></ion-icon>
+      {{item.title}}
+    </button>
+  </ion-list>
+</ion-content>

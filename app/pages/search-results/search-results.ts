@@ -13,6 +13,7 @@ import {isUndefined} from "ionic-angular/util";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {OfferAddPage} from "../offer-add/offer-add";
 import {timeout} from "rxjs/operator/timeout";
+import {InfoUserPage} from "../info-user/info-user";
 
 
 /**
@@ -68,11 +69,12 @@ export class SearchResultsPage {
 
         //  Retrieving last search
         searchService.retrieveLastSearch().then(results =>{
-            var jsonResults = JSON.parse(results);
+
+            let jsonResults = JSON.parse(results);
             if(jsonResults){
                 this.searchResults = jsonResults;
                 this.resultsCount = this.searchResults.length;
-                for(var i = 0 ; i < this.searchResults.length ; i++){
+                for(let i = 0 ; i < this.searchResults.length ; i++){
                     let r = this.searchResults[i];
                     r.matching = Number(r.matching).toFixed(2);
                 }
@@ -88,22 +90,27 @@ export class SearchResultsPage {
 
         //get the connexion object and define if the there is a user connected
         userService.getConnexionObject().then(results =>{
-            var connexion = JSON.parse(results);
-            if(connexion && connexion.etat){
-                this.isUserAuthenticated = true;
-            }else{
-                this.isUserAuthenticated = false;
+            if(results && !isUndefined(results)){
+                let connexion = JSON.parse(results);
+                if(connexion && connexion.etat){
+                    this.isUserAuthenticated = true;
+                }else{
+                    this.isUserAuthenticated = false;
+                }
+                console.log(connexion);
             }
-            console.log(connexion);
         });
 
         //get the currentEmployer
         userService.getCurrentEmployer().then(results =>{
-            var currentEmployer = JSON.parse(results);
-            if(currentEmployer){
-                this.employer = currentEmployer;
+            if(results && !isUndefined(results)){
+                let currentEmployer = JSON.parse(results);
+                if(currentEmployer){
+                    this.employer = currentEmployer;
+                }
+                console.log(currentEmployer);
             }
-            console.log(currentEmployer);
+
         });
 
     }
@@ -158,7 +165,6 @@ export class SearchResultsPage {
             ]
         });
         this.nav.present(actionSheet);
-        ;
     }
 
     contract(item){
@@ -218,10 +224,11 @@ export class SearchResultsPage {
 
         if(this.isUserAuthenticated){
 
-            var currentEmployer = this.employer;
+            let currentEmployer = this.employer.employer;
+            console.log(currentEmployer);
 
             //verification of employer informations
-            var redirectToStep1 = (currentEmployer && currentEmployer.entreprises[0]) ?
+            let redirectToStep1 = (currentEmployer && currentEmployer.entreprises[0]) ?
             (currentEmployer.titre == "") ||
             (currentEmployer.prenom == "") ||
             (currentEmployer.nom == "") ||
@@ -229,17 +236,17 @@ export class SearchResultsPage {
             (currentEmployer.entreprises[0].siret == "") ||
             (currentEmployer.entreprises[0].naf == "") : true;
 
-            var redirectToStep2 = (currentEmployer && currentEmployer.entreprises[0]) ?
+            let redirectToStep2 = (currentEmployer && currentEmployer.entreprises[0]) ?
             (typeof (currentEmployer.entreprises[0].adresses) == "undefined") ||
             (typeof (currentEmployer.entreprises[0].adresses[0]) == "undefined") : true;
 
-            var redirectToStep3 = (currentEmployer && currentEmployer.entreprises[0]) ?
+            let redirectToStep3 = (currentEmployer && currentEmployer.entreprises[0]) ?
             (typeof (currentEmployer.entreprises[0].adresses) == "undefined") ||
             (typeof (currentEmployer.entreprises[0].adresses[1]) == "undefined") : true;
 
-            var isDataValid = ((!redirectToStep1) && (!redirectToStep2) && (!redirectToStep3));
+            let isDataValid = ((!redirectToStep1) && (!redirectToStep2) && (!redirectToStep3));
 
-            var steps = {
+            let steps = {
                 "state": false,
                 "step1": redirectToStep1,
                 "step2": redirectToStep2,
@@ -259,7 +266,7 @@ export class SearchResultsPage {
                 steps.state = true;
                 storage.set('STEPS', steps);
 
-                if (redirectToStep1){
+                /*if (redirectToStep1){
                     this.nav.push(CivilityPage, {jobyer: jobyer});
                 }
                 else if (redirectToStep2){
@@ -267,7 +274,9 @@ export class SearchResultsPage {
                 }
                 else if (redirectToStep3){
                     this.nav.push(JobAddressPage, {jobyer: jobyer});
-                }
+                }*/
+                this.nav.push(InfoUserPage);
+                //this.nav.rootNav.setRoot(InfoUserPage);
             }
 
         }
@@ -300,9 +309,7 @@ export class SearchResultsPage {
     createCriteria(){
         if(!this.searchResults || isUndefined(this.searchResults) || this.searchResults.length == 0)
             return;
-
-
-
+        
         this.offerProposition = true;
 
         /*
@@ -318,7 +325,7 @@ export class SearchResultsPage {
             idmetier : 0,
             libellemetier : 0
         };
-
+        
         this.offersService.getOffersJob(idOffer,table).then(data =>{
             if(data && data.length>0)
                 this.proposedJob = data[0];
@@ -328,7 +335,7 @@ export class SearchResultsPage {
 
         //  To manage resources and calls we will group offers ids
         let listOffersId = [];
-        for(var i = 0 ; i < this.searchResults.length ; i++){
+        for(let i = 0 ; i < this.searchResults.length ; i++){
             let o = this.searchResults[i];
             listOffersId.push(o.idOffre);
 
@@ -336,12 +343,10 @@ export class SearchResultsPage {
 
         //  Now let us get the list of languages and qualities
         this.offersService.getOffersLanguages(listOffersId, table).then(data =>{
-
             this.proposedLanguages = data;
         });
 
         this.offersService.getOffersQualities(listOffersId, table).then(data =>{
-
             this.proposedQualities = data;
         });
     }
