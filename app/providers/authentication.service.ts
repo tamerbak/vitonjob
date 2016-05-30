@@ -2,6 +2,7 @@ import {Injectable} from 'angular2/core';
 import {Http, Headers, RequestOptions} from 'angular2/http';
 import {Storage, SqlStorage} from 'ionic-angular';
 import {Configs} from '../configurations/configs';
+import {GlobalConfigs} from '../configurations/globalConfigs';
 
 /**
 	* @author Amal ROCHD
@@ -13,10 +14,16 @@ import {Configs} from '../configurations/configs';
 export class AuthenticationService {
 	db : any;
 	configuration;
+	projectTarget;
 	
-	constructor(http: Http) {
+	constructor(http: Http,gc: GlobalConfigs) {
 		this.http = http;
 		this.db = new Storage(SqlStorage);
+		
+		// Get target to determine configs
+		this.projectTarget = gc.getProjectTarget();
+		this.configuration = Configs.setConfigs(this.projectTarget);
+		
 	}
 	
 	/**
@@ -328,6 +335,42 @@ export class AuthenticationService {
 			pays = subpays.substring(0, endpaysIndex);
 		}
 		return pays;
+	}
+	
+	uploadScan(scanUri, userId, field, action){
+		var role = (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget)
+		var scanData = {
+			"class":'com.vitonjob.callouts.files.DataToken',
+			"table":'user_'+ role,
+			"field": field,
+			"id": userId,
+			"operation": action,
+			"encodedFile": (scanUri)? scanUri.split(';base64,')[1] : ''
+		};
+		scanData = JSON.stringify(scanData);
+		var encodedData = btoa(scanData);
+		
+		var body = {
+        'class': 'fr.protogen.masterdata.model.CCallout',
+        'id': 97,
+        'args': [{
+          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Upload fichier',
+          value: encodedData
+        }]
+      };
+      var stringData = JSON.stringify(body);
+	
+		//  send request
+		return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'application/json');
+			this.http.post(this.configuration.calloutURL, stringData, {headers:headers})
+			.subscribe(data => {
+	            this.data = data;
+	            resolve(this.data);
+			});
+		});
 	}
 	
 	setObj(key, obj){

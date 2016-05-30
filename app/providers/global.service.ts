@@ -19,7 +19,7 @@ export class GlobalService {
 	showAlertValidation(title, msg){
 		let alert = Alert.create({
 			title: title,
-			subTitle: msg,
+			message: msg,
 			buttons: ['OK']
 		});
 		this.nav.present(alert);
