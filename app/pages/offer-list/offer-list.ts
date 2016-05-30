@@ -50,11 +50,10 @@ export class OfferListPage {
 
         this.offerService = offersService;
         this.offerService.loadOfferList(this.projectTarget).then(data => {
-            debugger;
             this.offerList = data;
             for (var i = 0; i < this.offerList.length; i++) {
                 let offer = this.offerList[i];
-                offer.correspondantsCount = 0;
+                offer.correspondantsCount = -1;
                 if (isUndefined(offer) || !offer || !offer.jobData) {
                     continue;
                 }
