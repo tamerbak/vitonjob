@@ -48,10 +48,35 @@ export class JobAddressPage {
 		//get current employer data from params passed by phone/mail connection
 		this.params = params;
 		this.currentUser = this.params.data.currentUser;
-		//geolocalisation alert
-		this.displayRequestAlert();
+		//in case of user has already signed up
+		this.initJobAddressForm();
 	}
 	
+	/**
+		* @description initiate the job address form with data of the logged user
+	*/
+	initJobAddressForm(){
+		this.storage.get("currentUser").then((value) => {
+			//if user has already signed up, fill the address field with his data
+			if(value){
+				this.currentUser = JSON.parse(value);
+				if(this.isEmployer){
+					this.searchData = this.currentUser.employer.entreprises[0].workAdress.fullAdress;
+				}else{
+					this.searchData = this.currentUser.jobyer.workAdress.fullAdress;
+				}
+			}
+			//if there is not a logged user or there is no address saced in the user data
+			if(!value || !this.searchData){
+				//geolocalisation alert
+				this.displayRequestAlert();
+			}
+		});
+	}
+	
+	/**
+		* @description display the first request alert for geolocation
+	*/
 	displayRequestAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
@@ -67,6 +92,7 @@ export class JobAddressPage {
 					text: 'Oui',
 					handler: () => {
 						console.log('Yes clicked');	
+						//display the second geolocation alert
 						this.displayGeolocationAlert();
 					}
 				}
@@ -75,6 +101,9 @@ export class JobAddressPage {
 		this.nav.present(confirm);
 	}
 	
+	/**
+		* @description display the second request alert for geolocation
+	*/
 	displayGeolocationAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
@@ -90,6 +119,7 @@ export class JobAddressPage {
 					text: 'Oui',
 					handler: () => {
 						console.log('Yes clicked');
+						//gelocate the user
 						this.geolocate();
 					}
 				}
@@ -98,6 +128,9 @@ export class JobAddressPage {
 		this.nav.present(confirm);
 	}
 	
+	/**
+		* @description geolocate current user
+	*/
 	geolocate(){
 		Geolocation.getCurrentPosition(
 		{
@@ -111,6 +144,9 @@ export class JobAddressPage {
 		});
 	}
 	
+	/**
+		* @description get formatted address from gps coordinates
+	*/
 	getAddressFromGeolocation(position){
 		let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 		new google.maps.Geocoder().geocode({'location':latLng}, (results, status) =>{
@@ -118,8 +154,10 @@ export class JobAddressPage {
 				console.log(results[0].formatted_address);
 				//display geolocated address in the searchbar
 				this.searchData = results[0].formatted_address;
+				//display geolocated address below the input
 				this.geolocAddress = results[0].formatted_address;
 				this.geolocResult = results[0];
+				//to set focus on the search bar, otherwise the geolocated address will not be displyed
 				const searchInput = this.elementRef.nativeElement.querySelector('input');
 				setTimeout(() => {
 					//delay required or ionic styling gets finicky
@@ -145,10 +183,10 @@ export class JobAddressPage {
 		// put personal address in session
 		var address = '';
 		if(this.geolocResult == null){
-			this.storage.set('adr_address', this.selectedPlace);
+			this.storage.set('adr_address', JSON.stringify(this.selectedPlace));
 			address = this.selectedPlace.adr_address;
 		}else{
-			this.storage.set('adr_address', this.geolocAddress);
+			this.storage.set('adr_address', JSON.stringify(this.geolocAddress));
 		}
 		if(this.isEmployer){
 			var entreprise = this.currentUser.employer.entreprises[0];  
@@ -165,7 +203,7 @@ export class JobAddressPage {
 					//entreprise.siegeAdress.id = x;
 					entreprise.workAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
 					this.currentUser.employer.entreprises[0] = entreprise;
-					this.storage.set('currentUser', this.currentUser);
+					this.storage.set('currentUser', JSON.stringify(this.currentUser));
 					//redirecting to offer list page
 					this.nav.push(OfferListPage);
 				}
@@ -183,7 +221,7 @@ export class JobAddressPage {
 					//id address not send by server
 					//this.currentUser.jobyer.adress.id = x;
 					this.currentUser.jobyer.workAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
-					this.storage.set('currentUser', this.currentUser);
+					this.storage.set('currentUser', JSON.stringify(this.currentUser));
 					//redirecting to offer list page
 					this.nav.push(OfferListPage);
 				}

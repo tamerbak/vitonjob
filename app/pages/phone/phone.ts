@@ -167,6 +167,8 @@ export class PhonePage {
 				currentUser: data});
 				} else {
 				this.nav.rootNav.setRoot(HomePage);
+				//this.nav.push(InfoUserPage, {
+				//currentUser: data});
 			}
 		});
 	}
@@ -193,6 +195,10 @@ export class PhonePage {
 			return;
 		}
 	}
+	
+	/**
+		* @description validate phone data field and call the function that search for it in the server
+	*/
 	watchPhone(e, el) {
 		if (this.phone) {
 			this.phone = this.phone.replace("-", "").replace(".", "").replace("+", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "").replace(",", "").replace("#", "").replace("*", "").replace(";", "").replace("N", "");
@@ -211,6 +217,9 @@ export class PhonePage {
 		}
 	}
 	
+	/**
+		* @description show error msg if phone is not valid
+	*/
 	showPhoneError(){
 		if(this.phone)
 			return (this.phone.length != 9);
@@ -280,6 +289,9 @@ export class PhonePage {
 			return false
 	}
 	
+	/**
+		* @description show error msg if password is not valid
+	*/
 	showPassword1Error(){
 		if(this.password1 && this.showEmailField)
 			return this.password1.length < 6;
