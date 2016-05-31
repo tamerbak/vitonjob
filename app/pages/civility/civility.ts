@@ -8,6 +8,7 @@ import {AuthenticationService} from "../../providers/authentication.service";
 import {MaskDirective} from '../../directives/mask.directive';
 import {Storage, SqlStorage} from 'ionic-angular';
 import {GlobalService} from "../../providers/global.service";
+import {Camera} from 'ionic-native';
 
 /**
 	* @author Amal ROCHD
@@ -31,9 +32,11 @@ export class CivilityPage {
 	nationality;
 	nationalities = [];
 	currentUser;
-	companyname;
-	siret;
-	ape;
+	companyname: string;
+	siret: string;
+	ape:string;
+	scanUri: string;
+	scanTitle: string;
 	
 	/**
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page
@@ -54,10 +57,18 @@ export class CivilityPage {
 		this.tabs=tabs;
 		this.params = params;
 		this.currentUser = this.params.data.currentUser;
+		
 		//load nationality list
-		this.loadListService.loadNationalities(this.projectTarget).then((data) => {
-			this.nationalities = data.data;
-		});
+		if(!this.isEmployer){
+			this.loadListService.loadNationalities(this.projectTarget).then((data) => {
+				this.nationalities = data.data;
+				//initialize nationality with (9 = francais)
+				this.nationality = 9;
+				this.scanTitle = " de votre CNI";
+			});
+		}else{
+			this.scanTitle = " de votre extrait k-bis";
+		}
 	}
 	/**
 		* @description update civility information for employer and jobyer
@@ -71,20 +82,26 @@ export class CivilityPage {
 			// update employer
 			this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget)
 			.then((data) => {
-				// data saved
-				console.log("response update civility : " + data.status);
-				this.currentUser.titre = this.title;
-				this.currentUser.nom = this.lastname;
-				this.currentUser.prenom = this.firstname;
-				this.currentUser.employer.entreprises[0].nom = this.companyname;
-				this.currentUser.employer.entreprises[0].siret = this.siret;
-				this.currentUser.employer.entreprises[0].naf = this.ape;
-				// PUT IN SESSION
-				this.storage.set('currentUser', this.currentUser);
-			}
-			).catch( error => {
-				this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
-				reject(error);
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+					}else{
+					// data saved
+					console.log("response update civility : " + data.status);
+					this.currentUser.titre = this.title;
+					this.currentUser.nom = this.lastname;
+					this.currentUser.prenom = this.firstname;
+					this.currentUser.employer.entreprises[0].nom = this.companyname;
+					this.currentUser.employer.entreprises[0].siret = this.siret;
+					this.currentUser.employer.entreprises[0].naf = this.ape;
+					//upload scan
+					this.updateScan(employerId);
+					// PUT IN SESSION
+					this.storage.set('currentUser', this.currentUser);
+					//redirecting to personal address tab
+					this.tabs.select(1);
+				}
 			});
 			}else{
 			//get the role id
@@ -92,26 +109,47 @@ export class CivilityPage {
 			// update jobyer
 			this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni, this.nationality, jobyerId, this.birthdate, this.birthplace, this.projectTarget)
 			.then((data) => {
-				// data saved
-				console.log("response update civility : " + data.status);
-				this.currentUser.titre = this.title;
-				this.currentUser.nom = this.lastname;
-				this.currentUser.prenom = this.firstname;
-				this.currentUser.jobyer.cni = this.cni;
-				this.currentUser.jobyer.numSS = this.numSS;
-				this.currentUser.jobyer.natId = this.nationality;
-				this.currentUser.jobyer.dateNaissance = this.birthdate;
-				this.currentUser.jobyer.lieuNaissance = this.birthplace;
-				// PUT IN SESSION
-				this.storage.set('currentUser', this.currentUser);
-			}
-			).catch( error => {
-				this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
-				reject(error);
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+					}else{
+					// data saved
+					console.log("response update civility : " + data.status);
+					this.currentUser.titre = this.title;
+					this.currentUser.nom = this.lastname;
+					this.currentUser.prenom = this.firstname;
+					this.currentUser.jobyer.cni = this.cni;
+					this.currentUser.jobyer.numSS = this.numSS;
+					this.currentUser.jobyer.natId = this.nationality;
+					this.currentUser.jobyer.dateNaissance = this.birthdate;
+					this.currentUser.jobyer.lieuNaissance = this.birthplace;
+					//upload scan
+					this.updateScan(jobyerId);
+					// PUT IN SESSION
+					this.storage.set('currentUser', this.currentUser);
+					//redirecting to personal address tab
+					this.tabs.select(1);
+				}
 			});
 		}
-		//redirecting to personal address tab
-		this.tabs.select(1);
+		
+	}
+	
+	updateScan(userId){
+		if (this.scanUri) {
+			this.authService.uploadScan(this.scanUri, userId, 'scan', 'upload')
+			.then((data) => {
+				if(!data || data.status == "failure"){
+					console.log("Scan upload failed !");
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde du scan");
+				}
+				else{
+					console.log("Scan uploaded !");
+					//this.currentUser.employer.scan = this.scanUri;
+				}
+			});
+		}
 	}
 	
 	/**
@@ -218,5 +256,34 @@ export class CivilityPage {
 		if(this.numSS && this.numSS.length < 21){
 			return true;
 		}
+	}
+	
+	onChangeUpload(e){
+		var file = e.srcElement.files[0];
+		var myReader = new FileReader();
+		myReader.onloadend = (e) =>{
+			this.scanUri = myReader.result;
+		}
+		myReader.readAsDataURL(file);
+	}
+	
+	takePicture(){
+		Camera.getPicture({
+			destinationType: Camera.DestinationType.DATA_URL,
+			targetWidth: 1000,
+			targetHeight: 1000
+			}).then((imageData) => {
+			// imageData is a base64 encoded string
+			this.scanUri = "data:image/jpeg;base64," + imageData;
+			}, (err) => {
+			console.log(err);
+		});
+	}
+	
+	onChangeNationality(){
+		if(this.nationality == 9)
+		this.scanTitle=" de votre CNI";
+		else
+		this.scanTitle=" de votre autorisation de travail";
 	}
 }

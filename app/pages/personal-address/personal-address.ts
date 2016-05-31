@@ -143,33 +143,37 @@ export class PersonalAddressPage {
 		// update personal address
 		this.authService.updateEmployerPersonalAddress(roleId, address, this.projectTarget)
 		.then((data) => {
-			if(this.isEmployer){
-				var entreprises = this.currentEmployer.entreprises;  
-				var eid = entreprises[0].entrepriseId;
-				var addresses = entreprises.adresses;
-				if (!addresses)
-				addresses = [];
-				addresses.push(
-				{
-					"addressId": data.id,
-					"siegeSocial": "false",
-					"adresseTravail": "true",
-					"fullAdress": this.selectedPlace.formatted_address
+			if (!data || data.status == "failure") {
+				console.log(data.error);
+				this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+				return;
+			}else{
+				if(this.isEmployer){
+					var entreprises = this.currentEmployer.entreprises;  
+					var eid = entreprises[0].entrepriseId;
+					var addresses = entreprises.adresses;
+					if (!addresses)
+					addresses = [];
+					addresses.push(
+					{
+						"addressId": data.id,
+						"siegeSocial": "false",
+						"adresseTravail": "true",
+						"fullAdress": this.selectedPlace.formatted_address
+					}
+					);
+					entreprises.adresses = addresses;
+					this.currentEmployer.entreprises = entreprises;
+					}else{
+					this.currentEmployer.adressePersonelle = {
+						"addressId": data.id,
+						"fullAddress": this.selectedPlace.formatted_address
+					};
 				}
-				);
-				entreprises.adresses = addresses;
-				this.currentEmployer.entreprises = entreprises;
-				}else{
-				this.currentEmployer.adressePersonelle = {
-					"addressId": data.id,
-					"fullAddress": this.selectedPlace.formatted_address
-				};
+				this.authService.setObj('currentUser', this.currentEmployer);
+				//redirecting to job address tab
+				this.tabs.select(2);
 			}
-			this.authService.setObj('currentUser', this.currentEmployer);
-			}).catch( error => {
-			reject(error);
 		});
-		//redirecting to job address tab
-		this.tabs.select(2);
 	}
 }	

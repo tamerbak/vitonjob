@@ -61,23 +61,48 @@
 		<ion-input type="text" [(ngModel)]="cni" (keypress)="watchCNI($event)" maxlength="12" ></ion-input>
 	</ion-item>
 	<div *ngIf="showCNIError()" 
-            class="error-box">* Saisissez les 12 chiffres du CNI</div>
+	class="error-box">* Saisissez les 12 chiffres du CNI</div>
 	
     <ion-item [hidden]="isEmployer">
         <ion-label floating>N° SS</ion-label>
 		<ion-input type="text" [(ngModel)]="numSS" (keypress)="watchNumSS($event)" maxlength="21"></ion-input>
 	</ion-item>
 	<div *ngIf="showNSSError()" 
-            class="error-box">* Saisissez les 21 chiffres du n° SS</div>
+	class="error-box">* Saisissez les 21 chiffres du n° SS</div>
 	
     <ion-item [hidden]="isEmployer">
         <ion-label floating>Nationalité</ion-label>
-        <ion-select [(ngModel)]="nationality" >
+        <ion-select [(ngModel)]="nationality" (change)="onChangeNationality($event)">
             <ion-option *ngFor="#n of nationalities" value="{{n.pk_user_nationalite}}">{{n.libelle}}</ion-option>
 		</ion-select>
 	</ion-item>
 	
-    <ion-row>
+	<ion-row>
+		<ion-col text-center>
+			<button block onclick="$('#myFileInput').click();" [style.backgroundColor]="themeColor" class="button-picture">
+				<ion-icon name="download"></ion-icon>
+				Charger un scan {{scanTitle}}
+			</button>
+		</ion-col>
+	</ion-row>
+	<input id="myFileInput" type="file" (change)="onChangeUpload($event)" style="visibility:hidden; display: none;"/>
+	
+	<ion-row>
+		<ion-col text-center>
+			<button block (click)="takePicture()" [style.backgroundColor]="themeColor" class="button-picture">
+				<ion-icon name="md-camera"></ion-icon>
+				Prendre une photo {{scanTitle}}
+			</button>
+		</ion-col>
+	</ion-row>
+	
+	<ion-card [hidden]="!scanUri">
+		<ion-card-content>
+			<img [src]="scanUri"/>
+		</ion-card-content>
+	</ion-card>
+	
+	<ion-row>
 		<ion-col width-10></ion-col>
 		<ion-col text-center>
 			<button block (click)="updateCivility()" [style.backgroundColor]="themeColor" [disabled]="isUpdateDisabled()" type="submit">
