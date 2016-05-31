@@ -23,7 +23,6 @@ export class AuthenticationService {
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
 		this.configuration = Configs.setConfigs(this.projectTarget);
-		
 	}
 	
 	/**
@@ -93,15 +92,9 @@ export class AuthenticationService {
 	
 	/**
 		* @description update jobyer information
-		* @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, projectTarget
+		* @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
 	*/
-	updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, projectTarget){
-		//  Init project parameters
-		this.configuration = Configs.setConfigs(projectTarget);
-		
-		//split the birth date into a table to store day, month and year
-		//var fromStringDate = birthdate.split("/");
-		//var toStringDate = fromStringDate[2].toString() + "-" + (fromStringDate[1]).toString() + "-" + fromStringDate[0].toString();
+	updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace){
 		var sql = "";
 		//building the sql request 
 		if (nationalityId){
@@ -142,12 +135,9 @@ export class AuthenticationService {
 	
 	/**
 		* @description update employer and jobyer civility information
-		* @param title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, projectTarget
+		* @param title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId
 	*/
-	updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, projectTarget: string){
-		//  Init project parameters
-		this.configuration = Configs.setConfigs(projectTarget);
-		
+	updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId){
 		var sql = "update user_employeur set ";
 		sql = sql + " titre='" + title + "', ";
 		sql = sql + " nom='" + lastname + "', prenom='" + firstname + "' where pk_user_employeur=" + roleId + ";";
@@ -171,19 +161,24 @@ export class AuthenticationService {
 	
 	/**
 		* @description update employer and jobyer personal address
-		* @param roleId, address, projectTarget
+		* @param roleId, address
 	*/
-	updateEmployerPersonalAddress(roleId, address, projectTarget){
+	updateUserPersonalAddress(id, address, geolocAddress){
 		//formating the address
-		//street
-		var street = this.getStreetFromGoogleAddress(address);
-		//  zip code
-		var cp = this.getZipCodeFromGoogleAddress(address);
-		//  city
-		var ville = this.getCityFromGoogleAddress(address);
-		//  country
-		var pays = this.getCountryFromGoogleAddress(address)
-		
+		var street = "";
+		var cp = "";
+		var ville = "";
+		var pays = "";
+		if(address){
+			street = this.getStreetFromGoogleAddress(address);
+			cp = this.getZipCodeFromGoogleAddress(address);
+			ville = this.getCityFromGoogleAddress(address);
+			pays = this.getCountryFromGoogleAddress(address);
+		}else{
+			street = this.getStreetFromGeolocAddress(geolocAddress);
+			ville = this.getCityFromGeolocAddress(geolocAddress);
+			pays = this.getCountryFromGeolocAddress(geolocAddress);
+		}
 		//  Now we need to save the address
 		var addressData = {
 			'class': 'com.vitonjob.localisation.AdressToken',
@@ -191,8 +186,8 @@ export class AuthenticationService {
 			'cp': cp,
 			'ville': ville,
 			'pays': pays,
-			'role': (projectTarget == 'employer' ? 'employeur' : projectTarget),
-			'id': roleId,
+			'role': (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget),
+			'id': id,
 			'type': 'personnelle'
 		};
 		addressData = JSON.stringify(addressData);
@@ -207,9 +202,6 @@ export class AuthenticationService {
 			}]
 		};
 		var stringData = JSON.stringify(data);
-		
-		//  Init project parameters
-		this.configuration = Configs.setConfigs(projectTarget);
 		return new Promise(resolve => {
 			let headers = new Headers();
 			headers.append("Content-Type", 'application/json');
@@ -223,18 +215,24 @@ export class AuthenticationService {
 	
 	/**
 		* @description update employer and jobyer job address
-		* @param id  : entreprise id for employer role and role id for jobyer role, address, projectTarget
+		* @param id  : entreprise id for employer role and role id for jobyer role, address
 	*/
-	updateEmployerJobAddress(id, address, projectTarget){
+	updateUserJobAddress(id, address, geolocAddress){
 		//formating the address
-		//street
-		var street = this.getStreetFromGoogleAddress(address);
-		//  zip code
-		var cp = this.getZipCodeFromGoogleAddress(address);
-		//  city
-		var ville = this.getCityFromGoogleAddress(address);
-		//  country
-		var pays = this.getCountryFromGoogleAddress(address)
+		var street = "";
+		var cp = "";
+		var ville = "";
+		var pays = "";
+		if(address){
+			street = this.getStreetFromGoogleAddress(address);
+			cp = this.getZipCodeFromGoogleAddress(address);
+			ville = this.getCityFromGoogleAddress(address);
+			pays = this.getCountryFromGoogleAddress(address);
+		}else{
+			street = this.getStreetFromGeolocAddress(geolocAddress);
+			ville = this.getCityFromGeolocAddress(geolocAddress);
+			pays = this.getCountryFromGeolocAddress(geolocAddress);
+		}
 		
 		//  Now we need to save the address
 		var addressData = {
@@ -243,7 +241,7 @@ export class AuthenticationService {
 			'cp': cp,
 			'ville': ville,
 			'pays': pays,
-			'role': (projectTarget == 'employer' ? 'employeur' : projectTarget),
+			'role': (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget),
 			'id': id,
 			'type': 'travaille'
 		};
@@ -260,8 +258,6 @@ export class AuthenticationService {
 		};
 		var stringData = JSON.stringify(data);
 		
-		//  Init project parameters
-		this.configuration = Configs.setConfigs(projectTarget);
 		return new Promise(resolve => {
 			let headers = new Headers();
 			headers.append("Content-Type", 'application/json');
@@ -289,6 +285,14 @@ export class AuthenticationService {
 		return street;
 	}
 	
+	getStreetFromGeolocAddress(result){
+		if(result.address_components[0].types[0] == "route"){
+			return result.address_components[0].long_name;	
+		}else{
+			return "";
+		}
+	}
+	
 	/**
 		* @description function to get the zip code from an address returned by the google places service
 		* @param address
@@ -304,7 +308,7 @@ export class AuthenticationService {
 		}
 		return cp;
 	}
-	
+
 	/**
 		* @description function to get the city name from an address returned by the google places service
 		* @param address
@@ -321,6 +325,14 @@ export class AuthenticationService {
 		return ville;
 	}
 	
+	getCityFromGeolocAddress(result){
+		if(result.address_components[3].types[0] == "locality"){
+			return result.address_components[3].long_name;	
+		}else{
+			return "";
+		}
+	}
+	
 	/**
 		* @description function to get the country name from an address returned by the google places service
 		* @param address
@@ -335,6 +347,14 @@ export class AuthenticationService {
 			pays = subpays.substring(0, endpaysIndex);
 		}
 		return pays;
+	}
+	
+	getCountryFromGeolocAddress(result){
+		if(result.address_components[6].types[0] == "country"){
+			return result.address_components[6].long_name;	
+		}else{
+			return "";
+		}
 	}
 	
 	uploadScan(scanUri, userId, field, action){

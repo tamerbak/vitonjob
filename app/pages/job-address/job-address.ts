@@ -5,6 +5,9 @@ import {GooglePlaces} from '../../components/google-places/google-places';
 import {AuthenticationService} from "../../providers/authentication.service";
 import {OfferListPage} from "../offer-list/offer-list";
 import {Geolocation} from 'ionic-native';
+import {Storage, SqlStorage} from 'ionic-angular';
+import {enableProdMode, ElementRef, Renderer} from 'angular2/core'; 
+enableProdMode();
 
 /**
 	* @author Amal ROCHD
@@ -19,12 +22,19 @@ import {Geolocation} from 'ionic-native';
 export class JobAddressPage {
 	searchData : string;
 	geolocAddress;
+	geolocResult;
+	
 	/**
 		* @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
 	*/
-	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, tabs:Tabs, public nav: NavController) {
-		this.searchData = ""; 
+	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, tabs:Tabs, public nav: NavController, public elementRef: ElementRef, public renderer: Renderer) {
+		//manually entered address
+		this.searchData = "";
+		//formatted geolocated address
 		this.geolocAddress = "";
+		//geolocated result
+		this.geolocResult = null;
+		
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -34,9 +44,10 @@ export class JobAddressPage {
 		this.themeColor = config.themeColor;
 		this.isEmployer = (this.projectTarget == 'employer');
 		this.tabs=tabs;
+		this.storage = new Storage(SqlStorage);
 		//get current employer data from params passed by phone/mail connection
 		this.params = params;
-		this.currentEmployer = this.params.data.currentEmployer;
+		this.currentUser = this.params.data.currentUser;
 		//geolocalisation alert
 		this.displayRequestAlert();
 	}
@@ -108,75 +119,75 @@ export class JobAddressPage {
 				//display geolocated address in the searchbar
 				this.searchData = results[0].formatted_address;
 				this.geolocAddress = results[0].formatted_address;
-				//this.selectedPlace = results[0];
+				this.geolocResult = results[0];
+				const searchInput = this.elementRef.nativeElement.querySelector('input');
+				setTimeout(() => {
+					//delay required or ionic styling gets finicky
+					this.renderer.invokeElementMethod(searchInput, 'focus', []);
+				}, 0);
 			}
 		});
 	}
+	
 	/**
 		* @description function to get the selected result in the google place autocomplete
 	*/
 	showResults(place) {
 		this.selectedPlace = place;
 		this.geolocAddress = "";
+		this.geolocResult = null;
 	}
 	
 	/**
 		* @description function that callsthe service to update job address for employers and jobyers
 	*/
-	 updateJobAddress(){
-		if(!this.selectedPlace){
-			//temporarely, erase after saving the geolocating address
-			this.nav.push(OfferListPage);
-			return;
-		}
-		// put job address in session
-		var address = this.selectedPlace.adr_address;
-		this.authService.setObj('adr_address', this.selectedPlace);
-		var id;
-		if(this.isEmployer){
-			var entreprises = this.currentEmployer.entreprises;  
-			id = entreprises[0].entrepriseId;
+	updateJobAddress(){
+		// put personal address in session
+		var address = '';
+		if(this.geolocResult == null){
+			this.storage.set('adr_address', this.selectedPlace);
+			address = this.selectedPlace.adr_address;
 		}else{
-			id = this.currentEmployer.jobyerId;
+			this.storage.set('adr_address', this.geolocAddress);
 		}
-		// update job address
-		this.authService.updateEmployerJobAddress(id, address, this.projectTarget)
-		.then((data) => {
-			if(this.isEmployer){
-				var adresseTravail = {};
-				if (this.selectedPlace){
-					adresseTravail = {fullAddress: this.selectedPlace.formatted_address};
+		if(this.isEmployer){
+			var entreprise = this.currentUser.employer.entreprises[0];  
+			var eid = entreprise.id;
+			// update job address
+			this.authService.updateUserJobAddress(eid, address, this.geolocResult)
+			.then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+				}else{
+					//id address not send by server
+					//entreprise.siegeAdress.id = x;
+					entreprise.workAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
+					this.currentUser.employer.entreprises[0] = entreprise;
+					this.storage.set('currentUser', this.currentUser);
+					//redirecting to offer list page
+					this.nav.push(OfferListPage);
 				}
-				else{
-					adresseTravail = {fullAddress: ""};
+			});
+		}else{
+			var roleId = this.currentUser.jobyer.id;
+			// update job address
+			this.authService.updateUserJobAddress(roleId, address, this.geolocResult)
+			.then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+				}else{
+					//id address not send by server
+					//this.currentUser.jobyer.adress.id = x;
+					this.currentUser.jobyer.workAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
+					this.storage.set('currentUser', this.currentUser);
+					//redirecting to offer list page
+					this.nav.push(OfferListPage);
 				}
-				this.currentEmployer.adresseTravail = adresseTravail;
-				this.authService.setObj('employeur', this.currentEmployer);
-				
-				var addresses = entreprises.adresses;
-				if (!addresses)
-				addresses = [];
-				addresses.push(
-				{
-					"addressId": data.id,
-					"siegeSocial": "true",
-					"adresseTravail": "false",
-					"fullAdress": this.selectedPlace.formatted_address
-				}
-				);
-				entreprises.adresses = addresses;
-				this.currentEmployer.entreprises = entreprises;
-			}else{
-				this.currentEmployer.adresseDepTravail = {
-					"addressId": data.id,
-					"fullAddress": this.selectedPlace.formatted_address
-				};
-			}
-			this.authService.setObj('currentUser', this.currentEmployer);
-			}).catch( error => {
-			reject(error);
-		});
-		//redirecting to offer list page
-		this.nav.push(OfferListPage);
+			});
+		}
 	}
-}	
+}

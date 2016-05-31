@@ -4,6 +4,7 @@ import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {GooglePlaces} from '../../components/google-places/google-places';
 import {AuthenticationService} from "../../providers/authentication.service";
 import {Geolocation} from 'ionic-native';
+import {Storage, SqlStorage} from 'ionic-angular';
 import {enableProdMode, ElementRef, Renderer} from 'angular2/core'; 
 enableProdMode();
 
@@ -20,12 +21,18 @@ enableProdMode();
 export class PersonalAddressPage {
 	searchData : string;
 	geolocAddress;
+	geolocResult;
 	/**
-		* @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
+		* @description While constructing the view, we get the currentUser passed as parameter from the connection page
 	*/
 	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, tabs:Tabs, public nav: NavController, public elementRef: ElementRef, public renderer: Renderer) {
+		//manually entered address
 		this.searchData = "";
+		//formatted geolocated address
 		this.geolocAddress = "";
+		//geolocated result
+		this.geolocResult = null;
+		
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -35,9 +42,10 @@ export class PersonalAddressPage {
 		this.themeColor = config.themeColor;
 		this.isEmployer = (this.projectTarget == 'employer');
 		this.tabs=tabs;
+		this.storage = new Storage(SqlStorage);
 		//get current employer data from params passed by phone/mail connection
 		this.params = params;
-		this.currentEmployer = this.params.data.currentEmployer;
+		this.currentUser = this.params.data.currentUser;
 		//geolocalisation alert
 		this.displayRequestAlert();
 	}
@@ -109,11 +117,11 @@ export class PersonalAddressPage {
 				//display geolocated address in the searchbar
 				this.searchData = results[0].formatted_address;
 				this.geolocAddress = results[0].formatted_address;
-				//this.selectedPlace = results[0];
+				this.geolocResult = results[0];
 				const searchInput = this.elementRef.nativeElement.querySelector('input');
 				setTimeout(() => {
-				  //delay required or ionic styling gets finicky
-				  this.renderer.invokeElementMethod(searchInput, 'focus', []);
+					//delay required or ionic styling gets finicky
+					this.renderer.invokeElementMethod(searchInput, 'focus', []);
 				}, 0);
 			}
 		});
@@ -125,55 +133,59 @@ export class PersonalAddressPage {
 	showResults(place) {
 		this.selectedPlace = place;
 		this.geolocAddress = "";
+		this.geolocResult = null;
 	}
 	
 	/**
 		* @description function that calls the service to update personal address for employers and jobyers
 	*/
 	updatePersonalAddress(){
-		if(!this.selectedPlace){
-			//temporarely, erase after saving the geolocating address
-			this.tabs.select(2);
-			return;
-		}
 		// put personal address in session
-		var address = this.selectedPlace.adr_address;
-		this.authService.setObj('adr_address', this.selectedPlace);
-		var roleId = (this.isEmployer ? this.currentEmployer.employerId : this.currentEmployer.jobyerId);
-		// update personal address
-		this.authService.updateEmployerPersonalAddress(roleId, address, this.projectTarget)
-		.then((data) => {
-			if (!data || data.status == "failure") {
-				console.log(data.error);
-				this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
-				return;
-			}else{
-				if(this.isEmployer){
-					var entreprises = this.currentEmployer.entreprises;  
-					var eid = entreprises[0].entrepriseId;
-					var addresses = entreprises.adresses;
-					if (!addresses)
-					addresses = [];
-					addresses.push(
-					{
-						"addressId": data.id,
-						"siegeSocial": "false",
-						"adresseTravail": "true",
-						"fullAdress": this.selectedPlace.formatted_address
-					}
-					);
-					entreprises.adresses = addresses;
-					this.currentEmployer.entreprises = entreprises;
-					}else{
-					this.currentEmployer.adressePersonelle = {
-						"addressId": data.id,
-						"fullAddress": this.selectedPlace.formatted_address
-					};
+		var address = '';
+		if(this.geolocResult == null){
+			this.storage.set('adr_address', this.selectedPlace);
+			address = this.selectedPlace.adr_address;
+		}else{
+			this.storage.set('adr_address', this.geolocAddress);
+		}
+		if(this.isEmployer){
+			var entreprise = this.currentUser.employer.entreprises[0];  
+			var eid = entreprise.id;
+			// update personal address
+			this.authService.updateUserPersonalAddress(eid, address, this.geolocResult)
+			.then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+				}else{
+					//id address not send by server
+					//entreprise.siegeAdress.id = x;
+					entreprise.siegeAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
+					this.currentUser.employer.entreprises[0] = entreprise;
+					this.storage.set('currentUser', this.currentUser);
+					//redirecting to job address tab
+					this.tabs.select(2);
 				}
-				this.authService.setObj('currentUser', this.currentEmployer);
-				//redirecting to job address tab
-				this.tabs.select(2);
-			}
-		});
+			});
+		}else{
+			var roleId = this.currentUser.jobyer.id;
+			// update personal address
+			this.authService.updateUserPersonalAddress(roleId, address, this.geolocResult)
+			.then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+				}else{
+					//id address not send by server
+					//this.currentUser.jobyer.adress.id = x;
+					this.currentUser.jobyer.personnalAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
+					this.storage.set('currentUser', this.currentUser);
+					//redirecting to job address tab
+					this.tabs.select(2);
+				}
+			});
+		}
 	}
-}	
+}
