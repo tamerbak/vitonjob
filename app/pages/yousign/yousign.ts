@@ -47,7 +47,7 @@ export class YousignPage {
         
         // Set local variables and messages
         //get the currentEmployer & call youssign service
-        userService.getCurrentEmployer().then(results =>{
+        userService.getCurrentUser().then(results =>{
             var currentEmployer = JSON.parse(results);
             if(currentEmployer){
                 this.employer = currentEmployer;
