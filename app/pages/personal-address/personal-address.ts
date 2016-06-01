@@ -22,6 +22,7 @@ export class PersonalAddressPage {
 	searchData : string;
 	geolocAddress;
 	geolocResult;
+	
 	/**
 		* @description While constructing the view, we get the currentUser passed as parameter from the connection page
 	*/
@@ -46,10 +47,35 @@ export class PersonalAddressPage {
 		//get current employer data from params passed by phone/mail connection
 		this.params = params;
 		this.currentUser = this.params.data.currentUser;
-		//geolocalisation alert
-		this.displayRequestAlert();
+		//in case of user has already signed up
+		this.initPersonalAddressForm();
 	}
 	
+	/**
+		* @description initiate the personal address form with data of the logged user
+	*/
+	initPersonalAddressForm(){
+		this.storage.get("currentUser").then((value) => {
+			//if user has already signed up, fill the address field with his data
+			if(value){
+				this.currentUser = JSON.parse(value);
+				if(this.isEmployer){
+					this.searchData = this.currentUser.employer.entreprises[0].siegeAdress.fullAdress;
+				}else{
+					this.searchData = this.currentUser.jobyer.personnalAdress.fullAdress;
+				}
+			}
+			//if there is not a logged user or there is no address saved in the user data
+			if(!value || !this.searchData){
+				//geolocalisation alert
+				this.displayRequestAlert();
+			}
+		});
+	}
+	
+	/**
+		* @description display the first request alert for geolocation
+	*/
 	displayRequestAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
@@ -73,6 +99,9 @@ export class PersonalAddressPage {
 		this.nav.present(confirm);
 	}
 	
+	/**
+		* @description display the second request alert for geolocation
+	*/
 	displayGeolocationAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
@@ -96,6 +125,9 @@ export class PersonalAddressPage {
 		this.nav.present(confirm);
 	}
 	
+	/**
+		* @description geolocate current user
+	*/
 	geolocate(){
 		Geolocation.getCurrentPosition(
 		{
@@ -109,6 +141,9 @@ export class PersonalAddressPage {
 		});
 	}
 	
+	/**
+		* @description get formatted address from gps coordinates
+	*/
 	getAddressFromGeolocation(position){
 		let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 		new google.maps.Geocoder().geocode({'location':latLng}, (results, status) =>{
@@ -116,8 +151,10 @@ export class PersonalAddressPage {
 				console.log(results[0].formatted_address);
 				//display geolocated address in the searchbar
 				this.searchData = results[0].formatted_address;
+				//display geolocated address below the input
 				this.geolocAddress = results[0].formatted_address;
 				this.geolocResult = results[0];
+				//to set focus on the search bar, otherwise the geolocated address will not be displyed
 				const searchInput = this.elementRef.nativeElement.querySelector('input');
 				setTimeout(() => {
 					//delay required or ionic styling gets finicky
@@ -143,10 +180,10 @@ export class PersonalAddressPage {
 		// put personal address in session
 		var address = '';
 		if(this.geolocResult == null){
-			this.storage.set('adr_address', this.selectedPlace);
+			this.storage.set('adr_address', JSON.stringify(this.selectedPlace));
 			address = this.selectedPlace.adr_address;
 		}else{
-			this.storage.set('adr_address', this.geolocAddress);
+			this.storage.set('adr_address', JSON.stringify(this.geolocAddress));
 		}
 		if(this.isEmployer){
 			var entreprise = this.currentUser.employer.entreprises[0];  
@@ -163,7 +200,7 @@ export class PersonalAddressPage {
 					//entreprise.siegeAdress.id = x;
 					entreprise.siegeAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
 					this.currentUser.employer.entreprises[0] = entreprise;
-					this.storage.set('currentUser', this.currentUser);
+					this.storage.set('currentUser', JSON.stringify(this.currentUser));
 					//redirecting to job address tab
 					this.tabs.select(2);
 				}
@@ -181,7 +218,7 @@ export class PersonalAddressPage {
 					//id address not send by server
 					//this.currentUser.jobyer.adress.id = x;
 					this.currentUser.jobyer.personnalAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
-					this.storage.set('currentUser', this.currentUser);
+					this.storage.set('currentUser', JSON.stringify(this.currentUser));
 					//redirecting to job address tab
 					this.tabs.select(2);
 				}

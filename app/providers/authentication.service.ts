@@ -285,6 +285,10 @@ export class AuthenticationService {
 		return street;
 	}
 	
+	/**
+		* @description function to get the street name from an address returned by geolocation
+		* @param result
+	*/
 	getStreetFromGeolocAddress(result){
 		if(result.address_components[0].types[0] == "route"){
 			return result.address_components[0].long_name;	
@@ -325,6 +329,10 @@ export class AuthenticationService {
 		return ville;
 	}
 	
+	/**
+		* @description function to get the city name from an address returned by geolocation
+		* @param result
+	*/
 	getCityFromGeolocAddress(result){
 		if(result.address_components[3].types[0] == "locality"){
 			return result.address_components[3].long_name;	
@@ -349,6 +357,10 @@ export class AuthenticationService {
 		return pays;
 	}
 	
+	/**
+		* @description function to get the country name from an address returned by geolocation
+		* @param result
+	*/
 	getCountryFromGeolocAddress(result){
 		if(result.address_components[6].types[0] == "country"){
 			return result.address_components[6].long_name;	
@@ -357,6 +369,10 @@ export class AuthenticationService {
 		}
 	}
 	
+	/**
+		* @description function for uploading the scan to the server, in the forme of base 64 string 
+		* @param scanUri, userId, field, action
+	*/
 	uploadScan(scanUri, userId, field, action){
 		var role = (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget)
 		var scanData = {

@@ -37,6 +37,10 @@ export class LoadListService {
 	    });
 	}
 	
+	/**
+		* @description load a list of nationalities
+		* @return JSON results
+	*/
 	loadNationalities(projectTarget) {
 		//  Init project parameters
 		this.configuration = Configs.setConfigs(projectTarget);

@@ -5,7 +5,6 @@ import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SqlStorageService} from "../../providers/sql-storage.service";
 import {PersonalAddress} from "../personal-address/personal-address";
 import {AuthenticationService} from "../../providers/authentication.service";
-import {MaskDirective} from '../../directives/mask.directive';
 import {Storage, SqlStorage} from 'ionic-angular';
 import {GlobalService} from "../../providers/global.service";
 import {Camera} from 'ionic-native';
@@ -17,7 +16,6 @@ import {Camera} from 'ionic-native';
 */
 @Page({
 	templateUrl: 'build/pages/civility/civility.html',
-	directives: [MaskDirective],
 	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService]
 })
 export class CivilityPage {
@@ -39,7 +37,7 @@ export class CivilityPage {
 	scanTitle: string;
 	
 	/**
-		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page
+		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
 	*/
 	constructor(public nav: NavController, private authService: AuthenticationService,
 	public gc: GlobalConfigs, private loadListService: LoadListService, private sqlStorageService: SqlStorageService, tabs:Tabs, params: NavParams, private globalService: GlobalService) {
@@ -69,6 +67,33 @@ export class CivilityPage {
 		}else{
 			this.scanTitle = " de votre extrait k-bis";
 		}
+		//in case of user has already signed up
+		this.initCivilityForm();
+	}
+	
+	/**
+		* @description initiate the civility form with the data of the logged user
+	*/
+	initCivilityForm(){
+		this.storage.get("currentUser").then((value) => {
+			if(value){
+				this.currentUser = JSON.parse(value);
+				this.title = this.currentUser.titre;
+				this.lastname = this.currentUser.nom;
+				this.firstname = this.currentUser.prenom;
+				if(this.isEmployer){
+					this.companyname = this.currentUser.employer.entreprises[0].nom;
+					this.siret = this.currentUser.employer.entreprises[0].siret;
+					this.ape = this.currentUser.employer.entreprises[0].naf;
+				}else{
+					this.birthdate = this.currentUser.jobyer.dateNaissance;
+					this.birthplace = this.currentUser.jobyer.lieuNaissance;
+					this.cni = this.currentUser.jobyer.cni;
+					this.numSS = this.currentUser.jobyer.numSS;
+					this.nationality = this.currentUser.jobyer.natId;
+				}
+			}
+		});
 	}
 	/**
 		* @description update civility information for employer and jobyer
@@ -98,7 +123,7 @@ export class CivilityPage {
 					//upload scan
 					this.updateScan(employerId);
 					// PUT IN SESSION
-					this.storage.set('currentUser', this.currentUser);
+					this.storage.set('currentUser', JSON.stringify(this.currentUser));
 					//redirecting to personal address tab
 					this.tabs.select(1);
 				}
@@ -127,7 +152,7 @@ export class CivilityPage {
 					//upload scan
 					this.updateScan(jobyerId);
 					// PUT IN SESSION
-					this.storage.set('currentUser', this.currentUser);
+					this.storage.set('currentUser', JSON.stringify(this.currentUser));
 					//redirecting to personal address tab
 					this.tabs.select(1);
 				}
@@ -136,6 +161,9 @@ export class CivilityPage {
 		
 	}
 	
+	/**
+		* @description upload scan and attach ot to the current user
+	*/
 	updateScan(userId){
 		if (this.scanUri) {
 			this.authService.uploadScan(this.scanUri, userId, 'scan', 'upload')
@@ -160,10 +188,13 @@ export class CivilityPage {
 			return (!this.title || !this.firstname || !this.lastname || !this.cni || this.cni.length < 12 || !this.numSS || this.numSS.length < 21 || !this.nationality || !this.birthplace || !this.birthdate)
 		}
 		else{
-			return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || !this.ape)
+			return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5)
 		}	
 	}
 	
+	/**
+		* @description watch and validate the "num de sécurité social" field
+	*/
 	watchNumSS(e){
 		if (e.keyCode < 48 || e.keyCode > 57){
 			e.preventDefault();
@@ -192,6 +223,9 @@ export class CivilityPage {
 		}
 	}
 	
+	/**
+		* @description watch and validate the cni field
+	*/
 	watchCNI(e){
 		if (e.keyCode < 48 || e.keyCode > 57){
 			e.preventDefault();
@@ -199,6 +233,9 @@ export class CivilityPage {
 		}
 	}
 	
+	/**
+		* @description watch and validate the siret field
+	*/
 	watchSIRET(e){
 		if (e.keyCode < 48 || e.keyCode > 57){
 			e.preventDefault();
@@ -218,6 +255,9 @@ export class CivilityPage {
 		}
 	}
 	
+	/**
+		* @description watch and validate the ape or naf field
+	*/
 	watchAPE(e){
 		//if first characte is string, prevent
 		if(!this.ape){
@@ -240,24 +280,36 @@ export class CivilityPage {
 		}
 	}
 	
+	/**
+		* @description change the ape data to uppercase
+	*/
 	changeToUppercase(){
 		if(this.ape){
 			this.ape = this.ape.toUpperCase();
 		}
 	}
 	
+	/**
+		* @description show error msg for cni field
+	*/
 	showCNIError(){
 		if(this.cni && this.cni.length < 12){
 			return true;
 		}
 	}
 	
+	/**
+		* @description show error msg for num ss field
+	*/
 	showNSSError(){
 		if(this.numSS && this.numSS.length < 21){
 			return true;
 		}
 	}
 	
+	/**
+		* @description read the file to upload and convert it to base64
+	*/
 	onChangeUpload(e){
 		var file = e.srcElement.files[0];
 		var myReader = new FileReader();
@@ -267,6 +319,9 @@ export class CivilityPage {
 		myReader.readAsDataURL(file);
 	}
 	
+	/**
+		* @description trigged when the user take a picture of the scan, the image taken is base64
+	*/
 	takePicture(){
 		Camera.getPicture({
 			destinationType: Camera.DestinationType.DATA_URL,
@@ -280,6 +335,9 @@ export class CivilityPage {
 		});
 	}
 	
+	/**
+		* @description change the title of the scan buttton according to the selected nationality
+	*/
 	onChangeNationality(){
 		if(this.nationality == 9)
 		this.scanTitle=" de votre CNI";
