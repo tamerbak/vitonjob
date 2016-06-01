@@ -8,6 +8,7 @@ import {PersonalAddressPage} from '../personal-address/personal-address';
 import {YousignPage} from '../yousign/yousign';
 import {isUndefined} from "ionic-angular/util";
 import {ModalOffersPage} from "../modal-offers/modal-offers";
+import {ContractService} from "../../providers/contract-service/contract-service";
 
 
 /**
@@ -17,6 +18,7 @@ import {ModalOffersPage} from "../modal-offers/modal-offers";
  */
 @Page({
     templateUrl: 'build/pages/contract/contract.html',
+    providers:[UserService][ContractService]
 })
 export class ContractPage {
 
@@ -37,11 +39,13 @@ export class ContractPage {
     currentOffer:any;
     workAdress:string;
     jobyerBirthDate:string;
+    hqAdress:string;
 
     constructor(public gc: GlobalConfigs,
                 public nav: NavController,
                 private navParams:NavParams,
-                private userService:UserService ) {
+                private userService:UserService,
+                private contractService : ContractService) {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -57,10 +61,20 @@ export class ContractPage {
         this.jobyer = navParams.get('jobyer');
         this.jobyerFirstName = this.jobyer.prenom;
         this.jobyerLastName = this.jobyer.nom;
-
-        console.log('JOBYER : '+JSON.stringify(this.jobyer));
         let bd = new Date(this.jobyer.dateNaissance);
         this.jobyerBirthDate = bd.getDay()+'/'+bd.getMonth()+'/'+bd.getFullYear();
+        this.jobyer.id = 0;
+        this.jobyer.numSS = '';
+        this.jobyer.nationaliteLibelle = '';
+
+        this.contractService.getJobyerComplementData(this.jobyer, this.projectTarget).then((data)=>{
+            if(data && !isUndefined(data)){
+                let datum = data[0];
+                this.jobyer.id = datum.id;
+                this.jobyer.numSS = datum.numss;
+                this.jobyer.nationaliteLibelle = datum.nationalite;
+            }
+        });
 
         // initialize contract data
         this.contractData = {
@@ -77,6 +91,7 @@ export class ContractPage {
             characteristics:"",
             workTimeHours: 0,
             workTimeVariable: 0,
+            usualWorkTimeHours : "8H00/17H00 variables",
             workStartHour: "00:00",
             workEndHour:"00:00",
             workHourVariable:"",
@@ -89,13 +104,14 @@ export class ContractPage {
             salarySH35: "+00%",
             salarySH43: "+00%",
             restRight: "00%",
-            interimAddress:"0",
-            customer: "0",
+            interimAddress:"",
+            customer: "",
             primes: "",
             headOffice : "",
             missionContent : "",
             category: "",
             sector : "",
+            companyName : ''
         };
 
 
@@ -107,6 +123,7 @@ export class ContractPage {
                 this.employer = this.currentUser.employer;
                 this.companyName = this.employer.entreprises[0].nom;
                 this.workAdress=this.employer.entreprises[0].workAdress.fullAdress;
+                this.hqAdress=this.employer.entreprises[0].siegeAdress.fullAdress;
                 let civility = this.currentUser.titre;
                 this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
                 
@@ -167,7 +184,7 @@ export class ContractPage {
     initContract(){
         this.contractData = {
             num:"",
-            interim:"",
+            interim:"Groupe 3S",
             missionStartDate: this.getStartDate(),
             missionEndDate:this.getEndDate(),
             trialPeriod: 5,
@@ -179,6 +196,7 @@ export class ContractPage {
             characteristics:"",
             workTimeHours: this.calculateOfferHours(),
             workTimeVariable: 0,
+            usualWorkTimeHours : "8H00/17H00 variables",
             workStartHour: "00:00",
             workEndHour:"00:00",
             workHourVariable:"",
@@ -191,13 +209,16 @@ export class ContractPage {
             salarySH35: "+00%",
             salarySH43: "+00%",
             restRight: "00%",
-            interimAddress:"0",
-            customer: "0",
+            interimAddress:"",
+            customer: "",
             primes: "",
-            headOffice : "",
+            headOffice : this.hqAdress,
             missionContent : "",
             category: this.currentOffer.jobData.job,
-            sector : this.currentOffer.jobData.sector
+            sector : this.currentOffer.jobData.sector,
+            companyName : this.companyName,
+            workAdress : this.workAdress,
+            jobyerBirthDate : this.jobyerBirthDate
         };
     }
 

@@ -18,11 +18,11 @@
         </ion-list-header>
 
         <ion-item>
-            Contrat N° {{contractData.num}}
+            <ion-label>Contrat N°</ion-label><ion-input type="text" [(ngModel)]="contractData.num"></ion-input>
         </ion-item>
 
         <ion-item>
-            Intérimaire : {{contractData.interim}}
+            <ion-label>Intérimaire</ion-label><ion-input type="text" [(ngModel)]="contractData.interim"></ion-input>
         </ion-item>
 
     </ion-list>
@@ -33,13 +33,13 @@
             CONTRAT DE MISSION
         </ion-list-header>
         <ion-item>
-            Société utilisatrice : {{companyName}}
+            <ion-label>Société utilisatrice</ion-label> <ion-input type="text" [(ngModel)]="companyName"></ion-input>
         </ion-item>
         <ion-item>
-            Contact : {{employerFullName}}
+            <ion-label>Contact</ion-label><ion-input type="text" [(ngModel)]="employerFullName"></ion-input>
         </ion-item>
         <ion-item>
-            Lieu de la mission : {{workAdress}}
+            <ion-label>Lieu de la mission</ion-label><ion-input type="text" [(ngModel)]="workAdress"></ion-input>
         </ion-item>
     </ion-list>
 
@@ -49,27 +49,27 @@
         </ion-list-header>
 
             <ion-item>
-                Nom : {{jobyer.nom}}
+                <ion-label>Nom</ion-label><ion-input type="text" [(ngModel)]="jobyer.nom"></ion-input>
             </ion-item>
 
             <ion-item>
-                Prénoms : {{jobyer.prenom}}
+                <ion-label>Prénom</ion-label><ion-input type="text" [(ngModel)]="jobyer.prenom"></ion-input>
             </ion-item>
 
             <ion-item>
-                N° SS : {{jobyer.numSS}}
+                <ion-label>N° SS</ion-label><ion-input type="text" [(ngModel)]="jobyer.numSS"></ion-input>
             </ion-item>
 
             <ion-item>
-                Né(e) le : {{jobyerBirthDate}}
+                <ion-label>Date de naissance</ion-label><ion-input type="text" [(ngModel)]="jobyerBirthDate"></ion-input>
             </ion-item>
 
             <ion-item>
-                Lieu de naissance : {{jobyer.lieuNaissance}}
+                <ion-label>Lieu de naissance</ion-label><ion-input type="text" [(ngModel)]="jobyer.lieuNaissance"></ion-input>
             </ion-item>
 
             <ion-item>
-                Nationalité : {{jobyerNationalite}}
+                <ion-label>Nationalité</ion-label><ion-input type="text" [(ngModel)]="jobyer.nationaliteLibelle"></ion-input>
             </ion-item>
 
     </ion-list>
@@ -81,25 +81,25 @@
         </ion-list-header>
 
             <ion-item>
-                Date début de la mission : {{contractData.missionStartDate}}
+                <ion-label>Début de mission</ion-label><ion-input type="text" [(ngModel)]="contractData.missionStartDate"></ion-input>
             </ion-item>
             <ion-item>
-                Date fin de la mission : {{contractData.missionEndDate}}
+                <ion-label>Fin de mission</ion-label><ion-input type="text" [(ngModel)]="contractData.missionEndDate"></ion-input>
             </ion-item>
             <ion-item>
-                Période d'essai : {{contractData.trialPeriod}} jour(s) travaillé(s)
+                <ion-label>P. essai (J) </ion-label><ion-input type="text" [(ngModel)]="contractData.trialPeriod"></ion-input>
             </ion-item>
             <ion-item>
-                Le terme de la mission peut être avancé ou reporté entre le {{contractData.termStartDate}}
+                <ion-label>Début report </ion-label><ion-input type="text" [(ngModel)]="contractData.termStartDate"></ion-input>
             </ion-item>
             <ion-item>
-                Le terme de la mission peut être avancé ou reporté entre le {{contractData.termEndDate}}
+                <ion-label>Fin report</ion-label><ion-input type="text" [(ngModel)]="contractData.termEndDate"></ion-input>
             </ion-item>
             <ion-item>
-                Motif du recours : {{contractData.motif}} 
+                <ion-label>Motif de recours</ion-label><ion-input type="text" [(ngModel)]="contractData.motif"></ion-input>
             </ion-item>
             <ion-item>
-                Justification précise du recours : {{contractData.justification}}
+                <ion-label>Justification de recours</ion-label><ion-input type="text" [(ngModel)]="contractData.justification"></ion-input>
             </ion-item>
 
     </ion-list>
@@ -110,29 +110,29 @@
         </ion-list-header>
 
             <ion-item>
-                Qualification : {{contractData.qualification}}
+                <ion-label>Qualification</ion-label><ion-input type="text" [(ngModel)]="contractData.qualification"></ion-input>
             </ion-item>
             <ion-item>
-                Caractéristiques du poste : {{contractData.characteristics}}
+                <ion-label>Caractéristiques du poste</ion-label><ion-input type="text" [(ngModel)]="contractData.characteristics"></ion-input>
             </ion-item>
             <ion-item>
-                Temps de travail : {{contractData.workTimeHours}}H hebdo. Variables
-            </ion-item>
-
-            <ion-item>
-                Horaires habituels de travail : 8H00/17H00 variables
+                <ion-label>Temps de travail (H)</ion-label><ion-input type="text" [(ngModel)]="contractData.workTimeHours"></ion-input>
             </ion-item>
 
             <ion-item>
-                Poste à risques : {{contractData.postRisks}}
+                <ion-label>Horaires habituels de travail</ion-label><ion-input type="text" [(ngModel)]="contractData.usualWorkTimeHours"></ion-input>
             </ion-item>
 
             <ion-item>
-                Surveillance médicale spéciale : {{contractData.medicalSurv}}
+                <ion-label>Risques</ion-label><ion-input type="text" [(ngModel)]="contractData.postRisks"></ion-input>
             </ion-item>
 
             <ion-item>
-                EPI : {{contractData.epi}}
+                <ion-label>Surveillance médicale</ion-label><ion-input type="text" [(ngModel)]="contractData.medicalSurv"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>EPI</ion-label><ion-input type="text" [(ngModel)]="contractData.epi"></ion-input>
             </ion-item>
 
     </ion-list>
@@ -145,12 +145,12 @@
 
         
             <ion-item>
-                Salaire de base : {{contractData.baseSalary}}
+                <ion-label>Salaire de base</ion-label><ion-input type="text" [(ngModel)]="contractData.baseSalary"></ion-input>
             </ion-item>
 
         
             <ion-item>
-                Durée collective moyenne mensuelle du travail {{contractData.MonthlyAverageDuration}}H Hebdomadaires
+                <ion-label>Durée collective moyenne</ion-label><ion-input type="text" [(ngModel)]="contractData.MonthlyAverageDuration"></ion-input>
             </ion-item>
 
 
@@ -163,19 +163,22 @@
         </ion-list-header>
 
             <ion-item>
-                Heures normales : {{contractData.salaryNHours}}
+                <ion-label>Heures normales</ion-label><ion-input type="text" [(ngModel)]="contractData.salaryNHours"></ion-input>
+
             </ion-item>
 
             <ion-item>
-                HS au-dela de 35H {{contractData.salarySH35}}
+                <ion-label>HS au-dela de 35H</ion-label><ion-input type="text" [(ngModel)]="contractData.salarySH35"></ion-input>
             </ion-item>
 
             <ion-item>
-                HS au-dela de 43H {{contractData.salarySH43}}
+                <ion-label>HS au-dela de 43H</ion-label><ion-input type="text" [(ngModel)]="contractData.salarySH43"></ion-input>
+
             </ion-item>
 
             <ion-item>
-                Droit au repos compensateur>41H {{contractData.restRight}}<
+                <ion-label>Droit au repos compensateur</ion-label><ion-input type="text" [(ngModel)]="contractData.restRight"></ion-input>
+
             </ion-item>
 
     </ion-list>
@@ -186,10 +189,10 @@
         </ion-list-header>
 
             <ion-item>
-                Gestion intérim : {{contractData.interimAddress}}<
+                <ion-label>Gestion intérim</ion-label><ion-input type="text" [(ngModel)]="contractData.interimAddress"></ion-input>
             </ion-item>
             <ion-item>
-                Client : {{contractData.customer}}
+                <ion-label>Client</ion-label><ion-input type="text" [(ngModel)]="contractData.customer"></ion-input>
             </ion-item>
 
     </ion-list>
@@ -200,19 +203,19 @@
         </ion-list-header>
 
             <ion-item>
-                Primes diverses : {{contractData.primes}}
+                <ion-label>Primes</ion-label><ion-input type="text" [(ngModel)]="contractData.primes"></ion-input>
             </ion-item>
             <ion-item>
-                Siège social : {{contractData.headOffice}}
+                <ion-label>Siège social</ion-label><ion-input type="text" [(ngModel)]="contractData.headOffice"></ion-input>
             </ion-item>
             <ion-item>
-                Contenu de la mission : {{contractData.missionContent}}
+                <ion-label>Contenu de la mission</ion-label><ion-input type="text" [(ngModel)]="contractData.missionContent"></ion-input>
             </ion-item>
             <ion-item>
-                Categorie : {{contractData.category}}
+                <ion-label>Catégorie</ion-label><ion-input type="text" [(ngModel)]="contractData.category"></ion-input>
             </ion-item>
             <ion-item>
-                Filière : {{contractData.sector}}
+                <ion-label>Filière</ion-label><ion-input type="text" [(ngModel)]="contractData.sector"></ion-input>
             </ion-item>
 
     </ion-list>
