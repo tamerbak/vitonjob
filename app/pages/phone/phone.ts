@@ -103,14 +103,14 @@ export class PhonePage {
 		//this.nav.push(HomePage);
 		var indPhone = this.index + this.phone;
 		let loading = Loading.create({
-      content: ` 
-                <div>
-                    <img src='img/loading.gif' />
-                </div>
-                `,
-      spinner : 'hide'
-    });
-    this.nav.present(loading);
+			content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+			spinner : 'hide'
+		});
+		this.nav.present(loading);
 		//call the service of autentication
 		this.authService.authenticate(this.email, indPhone, this.password1, this.projectTarget)
 		.then(data => {
@@ -222,7 +222,7 @@ export class PhonePage {
 	*/
 	showPhoneError(){
 		if(this.phone)
-			return (this.phone.length != 9);
+		return (this.phone.length != 9);
 	}
 	
 	/**
@@ -284,9 +284,9 @@ export class PhonePage {
 	*/
 	showEmailError() {
 		if(this.email)
-			return !(this.validationDataService.checkEmail(this.email));
+		return !(this.validationDataService.checkEmail(this.email));
 		else
-			return false
+		return false
 	}
 	
 	/**
@@ -294,7 +294,7 @@ export class PhonePage {
 	*/
 	showPassword1Error(){
 		if(this.password1 && this.showEmailField)
-			return this.password1.length < 6;
+		return this.password1.length < 6;
 	}
 	
 	/**
@@ -302,10 +302,10 @@ export class PhonePage {
 	*/
 	showPassword2Error(){
 		if(this.password2)
-			return this.password2 != this.password1;
+		return this.password2 != this.password1;
 	}
 	
-
+	
 	
 	/**
 		* @description return to the home page
