@@ -1,8 +1,9 @@
-import {NavController, Page, IonicApp, NavParams, Tabs, Alert} from 'ionic-angular';
+import {NavController, Page, IonicApp, NavParams, Tabs, Alert, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {GooglePlaces} from '../../components/google-places/google-places';
 import {AuthenticationService} from "../../providers/authentication.service";
+import {GlobalService} from "../../providers/global.service";
 import {Geolocation} from 'ionic-native';
 import {Storage, SqlStorage} from 'ionic-angular';
 import {enableProdMode, ElementRef, Renderer} from 'angular2/core'; 
@@ -16,7 +17,7 @@ enableProdMode();
 @Page({
 	directives: [GooglePlaces],
 	templateUrl: 'build/pages/personal-address/personal-address.html',
-	providers: [AuthenticationService]
+	providers: [AuthenticationService, GlobalService]
 })
 export class PersonalAddressPage {
 	searchData : string;
@@ -26,7 +27,7 @@ export class PersonalAddressPage {
 	/**
 		* @description While constructing the view, we get the currentUser passed as parameter from the connection page
 	*/
-	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, tabs:Tabs, public nav: NavController, public elementRef: ElementRef, public renderer: Renderer) {
+	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, tabs:Tabs, public nav: NavController, public elementRef: ElementRef, public renderer: Renderer, private globalService: GlobalService) {
 		//manually entered address
 		this.searchData = "";
 		//formatted geolocated address
@@ -61,7 +62,7 @@ export class PersonalAddressPage {
 				this.currentUser = JSON.parse(value);
 				if(this.isEmployer){
 					this.searchData = this.currentUser.employer.entreprises[0].siegeAdress.fullAdress;
-				}else{
+					}else{
 					this.searchData = this.currentUser.jobyer.personnalAdress.fullAdress;
 				}
 			}
@@ -129,6 +130,15 @@ export class PersonalAddressPage {
 		* @description geolocate current user
 	*/
 	geolocate(){
+		let loading = Loading.create({
+			content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+			spinner : 'hide'
+		});
+		this.nav.present(loading);
 		Geolocation.getCurrentPosition(
 		{
 			enableHighAccuracy:true, 
@@ -137,6 +147,7 @@ export class PersonalAddressPage {
 		}
 		).then(position => {
 			console.log(position);
+			loading.dismiss();
 			this.getAddressFromGeolocation(position);
 		});
 	}
@@ -177,52 +188,90 @@ export class PersonalAddressPage {
 		* @description function that calls the service to update personal address for employers and jobyers
 	*/
 	updatePersonalAddress(){
-		// put personal address in session
-		var address = '';
-		if(this.geolocResult == null){
-			this.storage.set('adr_address', JSON.stringify(this.selectedPlace));
-			address = this.selectedPlace.adr_address;
-		}else{
-			this.storage.set('adr_address', JSON.stringify(this.geolocAddress));
-		}
+		let loading = Loading.create({
+			content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+			spinner : 'hide'
+		});
+		this.nav.present(loading).then(() => {
+			var address = '';
+			//verify if the adress was modified
+			if(!this.isAddressModified()){
+				loading.dismiss();
+				//redirecting to job address tab
+				this.tabs.select(2);
+				return;
+			}
+			//if address is manually entered
+			if(this.searchData && !this.selectedPlace && !this.geolocResult){
+				loading.dismiss();
+				this.globalService.showAlertValidation("VitOnJob", "Cette adresse n'est pas reconnaissable. Vous serez notifié après sa validation par notre équipe.");
+				//redirecting to job address tab
+				this.tabs.select(2);
+				return;
+			}
+			// put personal address in session
+			if(this.geolocResult == null){
+				this.storage.set('adr_address', JSON.stringify(this.selectedPlace));
+				address = this.selectedPlace.adr_address;
+				}else{
+				this.storage.set('adr_address', JSON.stringify(this.geolocAddress));
+			}
+			if(this.isEmployer){
+				var entreprise = this.currentUser.employer.entreprises[0];  
+				var eid = "" + entreprise.id + "";
+				// update personal address
+				this.authService.updateUserPersonalAddress(eid, address, this.geolocResult)
+				.then((data) => {
+					if (!data || data.status == "failure") {
+						console.log(data.error);
+						loading.dismiss();
+						this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+						return;
+						}else{
+						//id address not send by server
+						//entreprise.siegeAdress.id = x;
+						entreprise.siegeAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
+						this.currentUser.employer.entreprises[0] = entreprise;
+						this.storage.set('currentUser', JSON.stringify(this.currentUser));
+						//redirecting to job address tab
+						loading.dismiss();
+						this.tabs.select(2);
+					}
+				});
+				}else{
+				var roleId = "" + this.currentUser.jobyer.id + "";
+				// update personal address
+				this.authService.updateUserPersonalAddress(roleId, address, this.geolocResult)
+				.then((data) => {
+					if (!data || data.status == "failure") {
+						console.log(data.error);
+						loading.dismiss();
+						this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+						return;
+						}else{
+						//id address not send by server
+						//this.currentUser.jobyer.adress.id = x;
+						this.currentUser.jobyer.personnalAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
+						this.storage.set('currentUser', JSON.stringify(this.currentUser));
+						loading.dismiss();
+						//redirecting to job address tab
+						this.tabs.select(2);
+						
+					}
+				});
+			}
+		});
+	}
+	
+	isAddressModified(){
 		if(this.isEmployer){
-			var entreprise = this.currentUser.employer.entreprises[0];  
-			var eid = entreprise.id;
-			// update personal address
-			this.authService.updateUserPersonalAddress(eid, address, this.geolocResult)
-			.then((data) => {
-				if (!data || data.status == "failure") {
-					console.log(data.error);
-					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
-					return;
-				}else{
-					//id address not send by server
-					//entreprise.siegeAdress.id = x;
-					entreprise.siegeAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
-					this.currentUser.employer.entreprises[0] = entreprise;
-					this.storage.set('currentUser', JSON.stringify(this.currentUser));
-					//redirecting to job address tab
-					this.tabs.select(2);
-				}
-			});
-		}else{
-			var roleId = this.currentUser.jobyer.id;
-			// update personal address
-			this.authService.updateUserPersonalAddress(roleId, address, this.geolocResult)
-			.then((data) => {
-				if (!data || data.status == "failure") {
-					console.log(data.error);
-					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
-					return;
-				}else{
-					//id address not send by server
-					//this.currentUser.jobyer.adress.id = x;
-					this.currentUser.jobyer.personnalAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
-					this.storage.set('currentUser', JSON.stringify(this.currentUser));
-					//redirecting to job address tab
-					this.tabs.select(2);
-				}
-			});
+			return this.searchData != this.currentUser.employer.entreprises[0].siegeAdress.fullAdress;
+			}else{
+			return this.searchData != this.currentUser.jobyer.personnalAdress.fullAdress;
 		}
 	}
-}
+}		

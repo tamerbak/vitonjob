@@ -1,4 +1,4 @@
-import {Page, Alert, NavController, NavParams, Tabs} from 'ionic-angular';
+import {Page, Alert, NavController, NavParams, Tabs, Loading} from 'ionic-angular';
 import {LoadListService} from "../../providers/load-list.service";
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
@@ -64,7 +64,7 @@ export class CivilityPage {
 				this.nationality = 9;
 				this.scanTitle = " de votre CNI";
 			});
-		}else{
+			}else{
 			this.scanTitle = " de votre extrait k-bis";
 		}
 		//in case of user has already signed up
@@ -85,7 +85,7 @@ export class CivilityPage {
 					this.companyname = this.currentUser.employer.entreprises[0].nom;
 					this.siret = this.currentUser.employer.entreprises[0].siret;
 					this.ape = this.currentUser.employer.entreprises[0].naf;
-				}else{
+					}else{
 					this.birthdate = this.currentUser.jobyer.dateNaissance;
 					this.birthplace = this.currentUser.jobyer.lieuNaissance;
 					this.cni = this.currentUser.jobyer.cni;
@@ -99,6 +99,15 @@ export class CivilityPage {
 		* @description update civility information for employer and jobyer
 	*/
 	updateCivility(){
+		let loading = Loading.create({
+			content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+			spinner : 'hide'
+		});
+		this.nav.present(loading);
 		if(this.isEmployer){
 			//get the role id
 			var employerId = this.currentUser.employer.id;
@@ -109,6 +118,7 @@ export class CivilityPage {
 			.then((data) => {
 				if (!data || data.status == "failure") {
 					console.log(data.error);
+					loading.dismiss();
 					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
 					return;
 					}else{
@@ -124,6 +134,7 @@ export class CivilityPage {
 					this.updateScan(employerId);
 					// PUT IN SESSION
 					this.storage.set('currentUser', JSON.stringify(this.currentUser));
+					loading.dismiss();
 					//redirecting to personal address tab
 					this.tabs.select(1);
 				}
@@ -136,6 +147,7 @@ export class CivilityPage {
 			.then((data) => {
 				if (!data || data.status == "failure") {
 					console.log(data.error);
+					loading.dismiss();
 					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
 					return;
 					}else{
@@ -153,6 +165,7 @@ export class CivilityPage {
 					this.updateScan(jobyerId);
 					// PUT IN SESSION
 					this.storage.set('currentUser', JSON.stringify(this.currentUser));
+					loading.dismiss();
 					//redirecting to personal address tab
 					this.tabs.select(1);
 				}
