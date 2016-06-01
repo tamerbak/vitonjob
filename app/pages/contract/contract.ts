@@ -26,7 +26,8 @@ export class ContractPage {
 
     employer:any;
     jobyer:any;
-    society:string;
+    companyName:string;
+    currentUser:any;
     employerFullName:string;
     jobyerFirstName:string;
     jobyerLastName:string;
@@ -34,7 +35,8 @@ export class ContractPage {
     dataObject:any;
     contractData:any;
     currentOffer:any;
-
+    workAdress:string;
+    jobyerBirthDate:string;
 
     constructor(public gc: GlobalConfigs,
                 public nav: NavController,
@@ -56,12 +58,16 @@ export class ContractPage {
         this.jobyerFirstName = this.jobyer.prenom;
         this.jobyerLastName = this.jobyer.nom;
 
+        console.log('JOBYER : '+JSON.stringify(this.jobyer));
+        let bd = new Date(this.jobyer.dateNaissance);
+        this.jobyerBirthDate = bd.getDay()+'/'+bd.getMonth()+'/'+bd.getFullYear();
+
         // initialize contract data
         this.contractData = {
             num:"",
-            interim:"",
-            missionStartDate: "",
-            missionEndDate:"",
+            interim:"Groupe 3S",
+            missionStartDate: this.getStartDate(),
+            missionEndDate:this.getEndDate(),
             trialPeriod: 5,
             termStartDate: "",
             termEndDate: "",
@@ -94,33 +100,116 @@ export class ContractPage {
 
 
         // get the currentEmployer
-        userService.getCurrentEmployer().then(results =>{
-            var currentEmployer = JSON.parse(results);
-            if(currentEmployer){
-                this.employer = currentEmployer;
-                this.society = this.employer.entreprises[0].name;
-                var civility = this.employer.titre;
-                this.employerFullName = civility + " " + this.employer.nom + " " + this.employer.prenom;
+        userService.getCurrentUser().then(results =>{
+            this.currentUser = JSON.parse(results);
+
+            if(this.currentUser){
+                this.employer = this.currentUser.employer;
+                this.companyName = this.employer.entreprises[0].nom;
+                this.workAdress=this.employer.entreprises[0].workAdress.fullAdress;
+                let civility = this.currentUser.titre;
+                this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
+                
             }
-            console.log(currentEmployer);
+
             //  check if there is a current offer
             if(navParams.get("currentOffer") && !isUndefined(navParams.get("currentOffer"))){
                 this.currentOffer = navParams.get("currentOffer");
                 this.initContract();
-            } else {
-                let m = new Modal(ModalOffersPage);
-                m.onDismiss(data => {
-                    this.currentOffer = data;
-                    this.initContract();
-                });
             }
         });
 
 
     }
 
+    getStartDate(){
+        let d = new Date();
+        let sd =  d.getDay()+'/'+d.getMonth()+'/'+d.getFullYear();
+        if(!this.currentOffer || isUndefined(this.currentOffer))
+            return sd;
+        if(!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0)
+            return sd;
+        let minDate = this.currentOffer.calendarData[0].date;
+        for(let i = 1 ; i<this.currentOffer.calendarData.length ; i++)
+            if(this.currentOffer.calendarData[i].date < minDate)
+                minDate = this.currentOffer.calendarData[i].date;
+        d=new Date(minDate);
+        sd =  d.getDay()+'/'+d.getMonth()+'/'+d.getFullYear();
+        return sd;
+    }
+
+    getEndDate(){
+        let d = new Date();
+        let sd =  d.getDay()+'/'+d.getMonth()+'/'+d.getFullYear();
+        if(!this.currentOffer || isUndefined(this.currentOffer))
+            return sd;
+        if(!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0)
+            return sd;
+        let maxDate = this.currentOffer.calendarData[0].date;
+
+        for(let i = 1 ; i<this.currentOffer.calendarData.length ; i++)
+            if(this.currentOffer.calendarData[i].date > maxDate)
+                maxDate = this.currentOffer.calendarData[i].date;
+        d=new Date(maxDate);
+        sd =  d.getDay()+'/'+d.getMonth()+'/'+d.getFullYear();
+        return sd;
+    }
+
+    selectOffer(){
+        let m = new Modal(ModalOffersPage);
+        m.onDismiss(data => {
+            this.currentOffer = data;
+            this.initContract();
+        });
+        this.nav.present(m);
+    }
+
     initContract(){
-        console.log(this.currentOffer);
+        this.contractData = {
+            num:"",
+            interim:"",
+            missionStartDate: this.getStartDate(),
+            missionEndDate:this.getEndDate(),
+            trialPeriod: 5,
+            termStartDate: "",
+            termEndDate: "",
+            motif: "",
+            justification: "",
+            qualification: this.currentOffer.title,
+            characteristics:"",
+            workTimeHours: this.calculateOfferHours(),
+            workTimeVariable: 0,
+            workStartHour: "00:00",
+            workEndHour:"00:00",
+            workHourVariable:"",
+            postRisks:"",
+            medicalSurv:"",
+            epi:"",
+            baseSalary: (this.currentOffer.jobData.remuneration).toFixed(2),
+            MonthlyAverageDuration: "0",
+            salaryNHours: (this.currentOffer.jobData.remuneration).toFixed(2)+" € B/H",
+            salarySH35: "+00%",
+            salarySH43: "+00%",
+            restRight: "00%",
+            interimAddress:"0",
+            customer: "0",
+            primes: "",
+            headOffice : "",
+            missionContent : "",
+            category: this.currentOffer.jobData.job,
+            sector : this.currentOffer.jobData.sector
+        };
+    }
+
+    calculateOfferHours(){
+        if(!this.currentOffer || isUndefined(this.currentOffer))
+            return 0;
+        let h = 0;
+        for(let i = 0 ; i < this.currentOffer.calendarData.length ; i++){
+            let calendarEntry = this.currentOffer.calendarData[i];
+            h = h + Math.abs(calendarEntry.endHour - calendarEntry.startHour)/60;
+        }
+        return h.toFixed(0);
     }
 
     goToYousignPage() {
@@ -168,42 +257,6 @@ export class ContractPage {
         });
 
         this.nav.present(actionSheet);
-    };
-
-    /**
-     * @author daoudi amine
-     * @param item name of the param
-     * @title description of the param
-     * @description change a contractData parametre
-     */
-    changeContractData(item,title) {
-
-
-        let prompt = Alert.create({
-            title: title,
-            message: "Veuillez saisir la nouvelle valeur",
-            inputs: [
-                {
-                    name: 'value',
-                },
-            ],
-            buttons: [
-                {
-                    text: 'Annuler',
-                    handler: data => {
-                        console.log('Cancel clicked');
-                    }
-                },
-                {
-                    text: 'OK',
-                    handler: data => {
-                        this.contractData[item] = data.value;
-                    }
-                }
-            ]
-        });
-
-        this.nav.present(prompt);
     };
 
 }

@@ -2,8 +2,7 @@ import {Page, NavController, ViewController} from 'ionic-angular';
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {SearchService} from "../../providers/search-service/search-service";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
-import {isUndefined} from "ionic-angular/util";
-import {Configs} from "../../configurations/configs";
+import {OfferAddPage} from "../offer-add/offer-add";
 
 /**
  * @author Abdeslam Jakjoud
@@ -12,11 +11,14 @@ import {Configs} from "../../configurations/configs";
  */
 @Page({
   templateUrl: 'build/pages/modal-offers/modal-offers.html',
+  providers: [SearchService, GlobalConfigs, OffersService]
 })
 export class ModalOffersPage {
   projectTarget : any;
   offerList : any = [];
   offerService : any;
+  voidOffers : boolean = false;
+
   constructor(private viewCtrl: ViewController,
               public nav:NavController,
               public gc:GlobalConfigs,
@@ -27,14 +29,11 @@ export class ModalOffersPage {
     // Get target to determine configs
     this.projectTarget = gc.getProjectTarget();
 
-    // get config of selected target
-    let config = Configs.setConfigs(this.projectTarget);
-
     // Load offers
     this.offerService = offerService;
     this.offerService.loadOfferList(this.projectTarget).then(data => {
-      debugger;
       this.offerList = data;
+      this.voidOffers = this.offerList.length == 0;
     });
   }
 
@@ -44,5 +43,12 @@ export class ModalOffersPage {
    */
   chooseOffer(offer){
     this.viewCtrl.dismiss(offer);
+  }
+
+  /**
+   * @description There are no available offers redirect user to add a new offer
+   */
+  goToNewOffer() {
+    this.nav.push(OfferAddPage);
   }
 }

@@ -102,7 +102,7 @@ export class SearchResultsPage {
         });
 
         //get the currentEmployer
-        userService.getCurrentEmployer().then(results =>{
+        userService.getCurrentUser().then(results =>{
             if(results && !isUndefined(results)){
                 let currentEmployer = JSON.parse(results);
                 if(currentEmployer){
@@ -149,12 +149,6 @@ export class SearchResultsPage {
 
                     }
                 },{
-                    text: 'Contrat',
-                    icon: 'md-document',
-                    handler: () => {
-                        this.recruitJobyer(item);
-                    }
-                },{
                     text: 'Annuler',
                     role: 'cancel',
                     icon: 'md-close',
@@ -194,16 +188,6 @@ export class SearchResultsPage {
             this.cardView = true;
             this.mapView = false;
         } else {                //  Map view
-            /*let latLng = new google.maps.LatLng(-34.9290, 138.6010);
-
-            let mapOptions = {
-                center: latLng,
-                zoom: 15,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            }
-
-            this.map = new google.maps.Map(document.getElementById("map"), mapOptions);*/
-
             this.listView = false;
             this.cardView = false;
             this.mapView = true;
@@ -220,65 +204,31 @@ export class SearchResultsPage {
         //init local database
         let storage = new Storage(SqlStorage);
 
-        console.log(jobyer);
-
         if(this.isUserAuthenticated){
 
             let currentEmployer = this.employer.employer;
             console.log(currentEmployer);
 
             //verification of employer informations
-            let redirectToStep1 = (currentEmployer && currentEmployer.entreprises[0]) ?
+            let redirectToCivility = (currentEmployer && currentEmployer.entreprises[0]) ?
             (currentEmployer.titre == "") ||
             (currentEmployer.prenom == "") ||
             (currentEmployer.nom == "") ||
             (currentEmployer.entreprises[0].name == "") ||
             (currentEmployer.entreprises[0].siret == "") ||
-            (currentEmployer.entreprises[0].naf == "") : true;
+            (currentEmployer.entreprises[0].naf == "") ||
+            (currentEmployer.entreprises[0].siegeAdress.id == 0) ||
+            (currentEmployer.entreprises[0].workAdress.id == 0): true;
 
-            let redirectToStep2 = (currentEmployer && currentEmployer.entreprises[0]) ?
-            (typeof (currentEmployer.entreprises[0].adresses) == "undefined") ||
-            (typeof (currentEmployer.entreprises[0].adresses[0]) == "undefined") : true;
-
-            let redirectToStep3 = (currentEmployer && currentEmployer.entreprises[0]) ?
-            (typeof (currentEmployer.entreprises[0].adresses) == "undefined") ||
-            (typeof (currentEmployer.entreprises[0].adresses[1]) == "undefined") : true;
-
-            let isDataValid = ((!redirectToStep1) && (!redirectToStep2) && (!redirectToStep3));
-
-            let steps = {
-                "state": false,
-                "step1": redirectToStep1,
-                "step2": redirectToStep2,
-                "step3": redirectToStep3
-            };
+            let isDataValid = !redirectToCivility;
 
             if (isDataValid) {
-                steps.state = false;
-                storage.set('STEPS', steps);
-
                 //navigate to contract page
                 this.nav.push(ContractPage, {jobyer: jobyer});
-            }
-            else
-            {
+            } else {
                 //redirect employer to fill the missing informations
-                steps.state = true;
-                storage.set('STEPS', steps);
-
-                /*if (redirectToStep1){
-                    this.nav.push(CivilityPage, {jobyer: jobyer});
-                }
-                else if (redirectToStep2){
-                    this.nav.push(PersonalAddressPage, {jobyer: jobyer});
-                }
-                else if (redirectToStep3){
-                    this.nav.push(JobAddressPage, {jobyer: jobyer});
-                }*/
-                this.nav.push(InfoUserPage);
-                //this.nav.rootNav.setRoot(InfoUserPage);
+                this.nav.push(InfoUserPage, {currentUser: this.employer});
             }
-
         }
         else
         {
