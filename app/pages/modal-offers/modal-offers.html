@@ -1,5 +1,14 @@
 <ion-content padding class="modal-offers">
-  <ion-list text-wrap>
+  <ion-card *ngIf="voidOffers">
+    <ion-card-content>
+      <button button block (click)="goToNewOffer()">
+        <ion-icon name="add-circle" style="font-size: xx-large;"></ion-icon>
+        Nouvelle offre
+      </button>
+    </ion-card-content>
+  </ion-card>
+  <ion-list text-wrap *ngIf="!voidOffers">
+    <ion-list-header>Offres disponibles</ion-list-header>
     <button *ngFor="let item of offerList " ion-item (click)="chooseOffer(item)">
       <ion-icon name="eye" item-left></ion-icon>
       {{item.title}}

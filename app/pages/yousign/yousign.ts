@@ -27,6 +27,7 @@ export class YousignPage {
     themeColor:string;
     
     employer:any;
+    currentUser:any;
     jobyer:any;
     yousignTitle:string;
     dataObject:any;
@@ -47,8 +48,11 @@ export class YousignPage {
         
         // Set local variables and messages
         //get the currentEmployer & call youssign service
-        userService.getCurrentEmployer().then(results =>{
-            var currentEmployer = JSON.parse(results);
+        
+        userService.getCurrentUser().then(results =>{
+            this.currentUser = JSON.parse(results);
+            let currentEmployer = this.currentUser.employer;
+            
             if(currentEmployer){
                 this.employer = currentEmployer;
                 this.callYousign();
@@ -87,7 +91,7 @@ export class YousignPage {
         });
         this.nav.present(loading);
         
-        this.contractService.callYousign(this.employer, this.jobyer,this.contractData, this.projectTarget).then((data) => {
+        this.contractService.callYousign(this.currentUser, this.employer, this.jobyer,this.contractData, this.projectTarget).then((data) => {
             loading.dismiss();
             
             if (data == null || data.length == 0) {
@@ -95,8 +99,8 @@ export class YousignPage {
                 return;
             }
             
-            var dataValue = data[0]['value'];
-            var yousignData = JSON.parse(dataValue);
+            let dataValue = data[0]['value'];
+            let yousignData = JSON.parse(dataValue);
             console.log(yousignData);
             
             //change jobyer 'contacted' status
@@ -104,10 +108,10 @@ export class YousignPage {
             this.jobyer.date_invit = new Date();
             
             //get the link yousign of the contract for the employer
-            var yousignEmployerLink = yousignData.iFrameURLs[0].iFrameURL;
+            let yousignEmployerLink = yousignData.iFrameURLs[0].iFrameURL;
             
             //Create to Iframe to show the contract in the NavPage
-            var iframe = document.createElement('iframe');
+            let iframe = document.createElement('iframe');
             iframe.frameBorder = "0";
             iframe.width = "100%";
             iframe.height = "100%";
@@ -120,8 +124,8 @@ export class YousignPage {
             document.getElementById("iframPlaceHolder").appendChild(iframe);
 
             // get the yousign link of the contract and the phoneNumber of the jobyer
-            var yousignJobyerLink = yousignData.iFrameURLs[1].iFrameURL;
-            var jobyerPhoneNumber = this.jobyer.tel;
+            let yousignJobyerLink = yousignData.iFrameURLs[1].iFrameURL;
+            let jobyerPhoneNumber = this.jobyer.tel;
             
             // Send sms to jobyer
             // this.smsService.sendSms(jobyerPhoneNumber, yousignJobyerLink).then((dataSms) => {

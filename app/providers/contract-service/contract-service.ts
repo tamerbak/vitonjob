@@ -22,25 +22,49 @@ export class ContractService {
     
     //to remove after correction Jobyer object in api service
     getJobyerId(jobyer:any,projectTarget:string){
-		//  Init project parameters
-		this.configuration = Configs.setConfigs(projectTarget);
+        //  Init project parameters
+        this.configuration = Configs.setConfigs(projectTarget);
         var dt = new Date();
         var sql = "select pk_user_jobyer from user_jobyer where fk_user_account in (select pk_user_account from user_account where email='"+ jobyer.email +"' or telephone='"+ jobyer.tel +"') limit 1";
-                  
-        console.log(sql);
-                  
 
-	    return new Promise(resolve => {
-	      let headers = new Headers();
-	      headers.append("Content-Type", 'text/plain');
-	      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
-	          .map(res => res.json())
-	          .subscribe(data => {
-	            this.data = data;
-	            resolve(this.data);
-	          });
-	    });
-	}
+        console.log(sql);
+
+
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });
+    }
+
+    getJobyerComplementData(jobyer:any,projectTarget:string){
+        //  Init project parameters
+        this.configuration = Configs.setConfigs(projectTarget);
+        var dt = new Date();
+        var sql = "select user_jobyer.pk_user_jobyer as id, user_jobyer.numero_securite_sociale as numss, user_pays.nom as nationalite from user_jobyer, user_pays " +
+            " where user_jobyer.fk_user_pays=user_pays.pk_user_pays " +
+            " and fk_user_account in (select pk_user_account from user_account where email='"+ jobyer.email +"' or telephone='"+ jobyer.tel +"') limit 1";
+
+        console.log(sql);
+
+
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    console.log('retrieved data : '+JSON.stringify(data));
+                    this.data = data.data;
+                    resolve(this.data);
+                });
+        });
+    }
     
     /**
      * @description get employer Entreprise contracts
@@ -136,23 +160,22 @@ export class ContractService {
      * @param jobyer
      * @return JSON results in form of youSign Object
     */
-    callYousign(employer:any, jobyer:any,contract:any,projectTarget:string){
+    callYousign(user : any, employer:any, jobyer:any,contract:any,projectTarget:string){
         
         //get configuration
         this.configuration = Configs.setConfigs(projectTarget);
-        
         var jsonData = {
             "titre" : employer.titre,
             "prenom":  employer.prenom,
             "nom":  employer.nom,
-            "entreprise" : employer.entreprises[0] == null ? "":employer.entreprises[0].name,
-            "adresseEntreprise" : employer.entreprises[0] == null || employer.entreprises[0].adresses[0] == null ? "":employer.entreprises[0].adresses[0].fullAdress,
+            "entreprise" : contract.companyName,
+            "adresseEntreprise" : contract.workAdress,
             "jobyerPrenom" : jobyer.prenom,
             "jobyerNom" : jobyer.nom,
             "nss" : jobyer.numSS,
-            "dateNaissance" : jobyer.dateNaissance,
+            "dateNaissance" : contract.jobyerBirthDate,
             "lieuNaissance" : jobyer.lieuNaissance, 
-            "nationalite" : jobyer.nationalite, 
+            "nationalite" : jobyer.nationaliteLibelle,
             "adresseDomicile" : jobyer.address,
             "dateDebutMission" : contract.missionStartDate,
             "dateFinMission" : contract.missionEndDate,
@@ -197,18 +220,16 @@ export class ContractService {
         var dataSign =JSON.stringify(
         {
             'class': 'com.vitonjob.yousign.callouts.YousignConfig',
-            'employerFirstName': employer.prenom,
-            'employerLastName':employer.nom,
-            'employerEmail': employer.email,
-            'employerPhone': employer.tel,
+            'employerFirstName': user.prenom,
+            'employerLastName':user.nom,
+            'employerEmail': user.email,
+            'employerPhone': user.tel,
             'jobyerFirstName': jobyer.prenom,
             'jobyerLastName': jobyer.nom,
             'jobyerEmail': jobyer.email,
             'jobyerPhone': jobyer.tel,
             'data': btoa(unescape(encodeURIComponent(JSON.stringify(jsonData))))
         });
-
-      
 
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
@@ -232,6 +253,7 @@ export class ContractService {
             this.http.post('http://ns389914.ovh.net:8080/vitonjobv1/api/callout', JSON.stringify(payload), {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
+                    debugger;
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;

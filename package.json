@@ -46,7 +46,8 @@
       "platform": "ios",
       "version": "",
       "locator": "ios"
-    }
+    },
+    "android"
   ],
   "name": "VitOnJob",
   "description": "VitOnJob: Vite on job et vis ton job!"

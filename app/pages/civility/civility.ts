@@ -1,4 +1,4 @@
-import {Page, Alert, NavController, NavParams, Tabs} from 'ionic-angular';
+import {Page, Alert, NavController, NavParams, Tabs, Loading} from 'ionic-angular';
 import {LoadListService} from "../../providers/load-list.service";
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
@@ -8,6 +8,7 @@ import {AuthenticationService} from "../../providers/authentication.service";
 import {Storage, SqlStorage} from 'ionic-angular';
 import {GlobalService} from "../../providers/global.service";
 import {Camera} from 'ionic-native';
+import {NgZone} from 'angular2/core';
 
 /**
 	* @author Amal ROCHD
@@ -40,7 +41,7 @@ export class CivilityPage {
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
 	*/
 	constructor(public nav: NavController, private authService: AuthenticationService,
-	public gc: GlobalConfigs, private loadListService: LoadListService, private sqlStorageService: SqlStorageService, tabs:Tabs, params: NavParams, private globalService: GlobalService) {
+	public gc: GlobalConfigs, private loadListService: LoadListService, private sqlStorageService: SqlStorageService, tabs:Tabs, params: NavParams, private globalService: GlobalService, private zone: NgZone) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -64,7 +65,7 @@ export class CivilityPage {
 				this.nationality = 9;
 				this.scanTitle = " de votre CNI";
 			});
-		}else{
+			}else{
 			this.scanTitle = " de votre extrait k-bis";
 		}
 		//in case of user has already signed up
@@ -85,7 +86,7 @@ export class CivilityPage {
 					this.companyname = this.currentUser.employer.entreprises[0].nom;
 					this.siret = this.currentUser.employer.entreprises[0].siret;
 					this.ape = this.currentUser.employer.entreprises[0].naf;
-				}else{
+					}else{
 					this.birthdate = this.currentUser.jobyer.dateNaissance;
 					this.birthplace = this.currentUser.jobyer.lieuNaissance;
 					this.cni = this.currentUser.jobyer.cni;
@@ -99,6 +100,15 @@ export class CivilityPage {
 		* @description update civility information for employer and jobyer
 	*/
 	updateCivility(){
+		let loading = Loading.create({
+			content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+			spinner : 'hide'
+		});
+		this.nav.present(loading);
 		if(this.isEmployer){
 			//get the role id
 			var employerId = this.currentUser.employer.id;
@@ -109,6 +119,7 @@ export class CivilityPage {
 			.then((data) => {
 				if (!data || data.status == "failure") {
 					console.log(data.error);
+					loading.dismiss();
 					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
 					return;
 					}else{
@@ -124,6 +135,7 @@ export class CivilityPage {
 					this.updateScan(employerId);
 					// PUT IN SESSION
 					this.storage.set('currentUser', JSON.stringify(this.currentUser));
+					loading.dismiss();
 					//redirecting to personal address tab
 					this.tabs.select(1);
 				}
@@ -136,6 +148,7 @@ export class CivilityPage {
 			.then((data) => {
 				if (!data || data.status == "failure") {
 					console.log(data.error);
+					loading.dismiss();
 					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
 					return;
 					}else{
@@ -153,6 +166,7 @@ export class CivilityPage {
 					this.updateScan(jobyerId);
 					// PUT IN SESSION
 					this.storage.set('currentUser', JSON.stringify(this.currentUser));
+					loading.dismiss();
 					//redirecting to personal address tab
 					this.tabs.select(1);
 				}
@@ -328,8 +342,10 @@ export class CivilityPage {
 			targetWidth: 1000,
 			targetHeight: 1000
 			}).then((imageData) => {
-			// imageData is a base64 encoded string
-			this.scanUri = "data:image/jpeg;base64," + imageData;
+				this.zone.run(()=>{
+					// imageData is a base64 encoded string
+					this.scanUri = "data:image/jpeg;base64," + imageData;
+				});
 			}, (err) => {
 			console.log(err);
 		});

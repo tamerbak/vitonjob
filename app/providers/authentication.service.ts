@@ -163,7 +163,7 @@ export class AuthenticationService {
 		* @description update employer and jobyer personal address
 		* @param roleId, address
 	*/
-	updateUserPersonalAddress(id, address, geolocAddress){
+	updateUserPersonalAddress(id: string, address, geolocAddress){
 		//formating the address
 		var street = "";
 		var cp = "";
@@ -194,7 +194,7 @@ export class AuthenticationService {
 		var encodedAddress = btoa(addressData);
 		var data = {
 			'class': 'fr.protogen.masterdata.model.CCallout',
-			'id': 29,
+			'id': 138,
 			'args': [{
 				'class': 'fr.protogen.masterdata.model.CCalloutArguments',
 				label: 'Adresse',
@@ -217,7 +217,7 @@ export class AuthenticationService {
 		* @description update employer and jobyer job address
 		* @param id  : entreprise id for employer role and role id for jobyer role, address
 	*/
-	updateUserJobAddress(id, address, geolocAddress){
+	updateUserJobAddress(id: string, address, geolocAddress){
 		//formating the address
 		var street = "";
 		var cp = "";
@@ -249,7 +249,7 @@ export class AuthenticationService {
 		var encodedAddress = btoa(addressData);
 		var data = {
 			'class': 'fr.protogen.masterdata.model.CCallout',
-			'id': 29,
+			'id': 138,
 			'args': [{
 				'class': 'fr.protogen.masterdata.model.CCalloutArguments',
 				label: 'Adresse',

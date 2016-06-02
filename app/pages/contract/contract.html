@@ -1,202 +1,107 @@
 <ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-  <ion-title>{{contractTitle}}</ion-title>
-  <ion-buttons end>
-    <button (click)="showMenuToEditContract()">
-      <ion-icon name="create"></ion-icon>
-    </button>
-  </ion-buttons>
+    <ion-title>{{contractTitle}}</ion-title>
+    <ion-buttons end>
+        <button (click)="showMenuToEditContract()">
+            <ion-icon name="create"></ion-icon>
+        </button>
+        <button (click)="selectOffer()">
+            <ion-icon name="md-bookmark"></ion-icon>
+        </button>
+    </ion-buttons>
 </ion-navbar>
 
 <ion-content class="contract">
-    
+
     <ion-list>
         <ion-list-header>
             INFORMATIONS GENERALES
         </ion-list-header>
 
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Contrat {{contractData.num}}</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('num','N° du contrat')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Intérimaire {{contractData.interim}}</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('interim','Intérimaire')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
+        <ion-item>
+            <ion-label>Contrat N°</ion-label><ion-input type="text" [(ngModel)]="contractData.num"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label>Intérimaire</ion-label><ion-input type="text" [(ngModel)]="contractData.interim"></ion-input>
+        </ion-item>
+
     </ion-list>
-    
-    
+
+
     <ion-list>
         <ion-list-header>
             CONTRAT DE MISSION
         </ion-list-header>
-
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Société utilisatrice : {{society}}</h2>
-                </ion-item>
-                
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Contact : {{employerFullName}}</h2>
-                </ion-item>
-                
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Lieu de la mission : {{lieu}}</h2>
-                </ion-item>
-            </ion-item-sliding>
+        <ion-item>
+            <ion-label>Société utilisatrice</ion-label> <ion-input type="text" [(ngModel)]="companyName"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label>Contact</ion-label><ion-input type="text" [(ngModel)]="employerFullName"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label>Lieu de la mission</ion-label><ion-input type="text" [(ngModel)]="workAdress"></ion-input>
+        </ion-item>
     </ion-list>
-    
+
     <ion-list>
         <ion-list-header>
             SALARIE INTERIMAIRE
         </ion-list-header>
 
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Nom : {{jobyerLastName}}</h2>
-                </ion-item>
-                
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Prénoms : {{jobyerFirstName}}</h2>
-                </ion-item>
-                
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>N° SS : {{jobyer.nss}}</h2>
-                </ion-item>
-                
-            </ion-item-sliding>
-            
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Né(e) le : {{lieuNaissance}}</h2>
-                </ion-item>
-                
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Lieu de naissance : {{jobyer.nationalite}}</h2>
-                </ion-item>
-                
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Nationalité : {{jobyer.nationalite}}</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData()">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
+            <ion-item>
+                <ion-label>Nom</ion-label><ion-input type="text" [(ngModel)]="jobyer.nom"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Prénom</ion-label><ion-input type="text" [(ngModel)]="jobyer.prenom"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>N° SS</ion-label><ion-input type="text" [(ngModel)]="jobyer.numSS"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Date de naissance</ion-label><ion-input type="text" [(ngModel)]="jobyerBirthDate"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Lieu de naissance</ion-label><ion-input type="text" [(ngModel)]="jobyer.lieuNaissance"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Nationalité</ion-label><ion-input type="text" [(ngModel)]="jobyer.nationaliteLibelle"></ion-input>
+            </ion-item>
+
     </ion-list>
-    
-    
+
+
     <ion-list>
         <ion-list-header>
             MISSION
         </ion-list-header>
 
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Date début de la mission : {{contractData.missionStartDate}}</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('missionStartDate','Date début de la mission')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Date fin de la mission :{{contractData.missionEndDate}}</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('missionEndDate','Date fin de la mission')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Période d'essai : {{contractData.trialPeriod}} jour(s) travaillé(s)</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('trialPeriod','Période d\'essai')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Le terme de la mission peut être avancé ou reporté entre le {{contractData.termStartDate}}</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('termStartDate','Date début du terme de la mission')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Le terme de la mission peut être avancé ou reporté entre le {{contractData.termEndDate}}</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('termEndDate','Date fin du terme de la mission')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Motif du recours : {{contractData.motif}} </h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('motif','Motif du recours')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Justification précise du recours : {{contractData.justification}}</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('justification','Justification du recours')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
+            <ion-item>
+                <ion-label>Début de mission</ion-label><ion-input type="text" [(ngModel)]="contractData.missionStartDate"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Fin de mission</ion-label><ion-input type="text" [(ngModel)]="contractData.missionEndDate"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>P. essai (J) </ion-label><ion-input type="text" [(ngModel)]="contractData.trialPeriod"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Début report </ion-label><ion-input type="text" [(ngModel)]="contractData.termStartDate"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Fin report</ion-label><ion-input type="text" [(ngModel)]="contractData.termEndDate"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Motif de recours</ion-label><ion-input type="text" [(ngModel)]="contractData.motif"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Justification de recours</ion-label><ion-input type="text" [(ngModel)]="contractData.justification"></ion-input>
+            </ion-item>
+
     </ion-list>
 
     <ion-list>
@@ -204,263 +109,115 @@
             POSTE DE TRAVAIL ET ORGANISATION DU TEMPS DE TRAVAIL
         </ion-list-header>
 
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Qualification : {{contractData.qualification}}</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('qualification','Qualification')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Caractéristiques du poste : {{contractData.characteristics}}</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('characteristics','Caractéristiques du poste')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Temps de travail : {{contractData.workTimeHours}}H hebdo. Variables</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('workTimeHours','Temps de travail')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Horaires habituels de travail : 8H00/17H00 variables</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('workTimeVariable','Horaires habituels de travail')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Poste à risques : {{contractData.postRisks}}</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('postRisks','Poste à risques')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Surveillance médicale spéciale : {{contractData.medicalSurv}}</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('medicalSurv','Surveillance médicale spéciale')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>EPI : {{contractData.epi}}</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('epi','EPI')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
+            <ion-item>
+                <ion-label>Qualification</ion-label><ion-input type="text" [(ngModel)]="contractData.qualification"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Caractéristiques du poste</ion-label><ion-input type="text" [(ngModel)]="contractData.characteristics"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Temps de travail (H)</ion-label><ion-input type="text" [(ngModel)]="contractData.workTimeHours"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Horaires habituels de travail</ion-label><ion-input type="text" [(ngModel)]="contractData.usualWorkTimeHours"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Risques</ion-label><ion-input type="text" [(ngModel)]="contractData.postRisks"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Surveillance médicale</ion-label><ion-input type="text" [(ngModel)]="contractData.medicalSurv"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>EPI</ion-label><ion-input type="text" [(ngModel)]="contractData.epi"></ion-input>
+            </ion-item>
+
     </ion-list>
-    
-    
+
+
     <ion-list>
         <ion-list-header>
             SALAIRE DE REFERENCE-DUREE DU TRAVAIL
         </ion-list-header>
 
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Salaire de base : {{contractData.baseSalary}}</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('baseSalary','Salaire de base')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <ion-item>
-                    <h2>Durée collective moyenne mensuelle du travail {{contractData.MonthlyAverageDuration}}H Hebdomadaires</h2>
-                </ion-item>
-                <ion-item-options>
-                    <button primary (click)="changeContractData('MonthlyAverageDuration','Durée collective moyenne mensuelle du travail')">
-                        <ion-icon name="create"></ion-icon>
-                        Modifier
-                    </button>
-                </ion-item-options>
-            </ion-item-sliding>
-            
-            
+        
+            <ion-item>
+                <ion-label>Salaire de base</ion-label><ion-input type="text" [(ngModel)]="contractData.baseSalary"></ion-input>
+            </ion-item>
+
+        
+            <ion-item>
+                <ion-label>Durée collective moyenne</ion-label><ion-input type="text" [(ngModel)]="contractData.MonthlyAverageDuration"></ion-input>
+            </ion-item>
+
+
+
     </ion-list>
-    
+
     <ion-list>
         <ion-list-header>
             REMENURATION
         </ion-list-header>
 
-        <ion-item-sliding>
             <ion-item>
-                <h2>Heures normales : {{contractData.salaryNHours}}</h2>
+                <ion-label>Heures normales</ion-label><ion-input type="text" [(ngModel)]="contractData.salaryNHours"></ion-input>
+
             </ion-item>
-            <ion-item-options>
-                <button primary (click)="changeContractData('salaryNHours','Heures normales')">
-                    <ion-icon name="create"></ion-icon>
-                    Modifier
-                </button>
-            </ion-item-options>
-        </ion-item-sliding>
-        <ion-item-sliding>
+
             <ion-item>
-                <h2>HS au-dela de 35H {{contractData.salarySH35}}</h2>
+                <ion-label>HS au-dela de 35H</ion-label><ion-input type="text" [(ngModel)]="contractData.salarySH35"></ion-input>
             </ion-item>
-            <ion-item-options>
-                <button primary (click)="changeContractData('salarySH35','HS au-dela de 35H')">
-                    <ion-icon name="create"></ion-icon>
-                    Modifier
-                </button>
-            </ion-item-options>
-        </ion-item-sliding>
-        <ion-item-sliding>
+
             <ion-item>
-                <h2>HS au-dela de 43H {{contractData.salarySH43}}</h2>
+                <ion-label>HS au-dela de 43H</ion-label><ion-input type="text" [(ngModel)]="contractData.salarySH43"></ion-input>
+
             </ion-item>
-            <ion-item-options>
-                <button primary (click)="changeContractData('salarySH43','HS au-dela de 43H')">
-                    <ion-icon name="create"></ion-icon>
-                    Modifier
-                </button>
-            </ion-item-options>
-        </ion-item-sliding>
-        <ion-item-sliding>
+
             <ion-item>
-                <h2>Droit au repos compensateur>41H {{contractData.restRight}}<</h2>
+                <ion-label>Droit au repos compensateur</ion-label><ion-input type="text" [(ngModel)]="contractData.restRight"></ion-input>
+
             </ion-item>
-            <ion-item-options>
-                <button primary (click)="changeContractData('restRight','Droit au repos')">
-                    <ion-icon name="create"></ion-icon>
-                    Modifier
-                </button>
-            </ion-item-options>
-        </ion-item-sliding>
-            
-            
+
     </ion-list>
-    
+
     <ion-list>
         <ion-list-header>
             MEDECINE DU TRAVAIL
         </ion-list-header>
 
-        <ion-item-sliding>
             <ion-item>
-                <h2>Gestion intérim : {{contractData.interimAddress}}<</h2>
+                <ion-label>Gestion intérim</ion-label><ion-input type="text" [(ngModel)]="contractData.interimAddress"></ion-input>
             </ion-item>
-            <ion-item-options>
-                <button primary (click)="changeContractData('interimAddress','Gestion intérim')">
-                    <ion-icon name="create"></ion-icon>
-                    Modifier
-                </button>
-            </ion-item-options>
-        </ion-item-sliding>
-        <ion-item-sliding>
             <ion-item>
-                <h2>Client : {{contractData.customer}}</h2>
+                <ion-label>Client</ion-label><ion-input type="text" [(ngModel)]="contractData.customer"></ion-input>
             </ion-item>
-            <ion-item-options>
-                <button primary (click)="changeContractData('customer','Client')">
-                    <ion-icon name="create"></ion-icon>
-                    Modifier
-                </button>
-            </ion-item-options>
-        </ion-item-sliding>    
+
     </ion-list>
-    
+
     <ion-list>
         <ion-list-header>
             INFORMATIONS COMPLEMENTAIRES
         </ion-list-header>
 
-        <ion-item-sliding>
             <ion-item>
-                <h2>Primes diverses : {{contractData.primes}}</h2>
+                <ion-label>Primes</ion-label><ion-input type="text" [(ngModel)]="contractData.primes"></ion-input>
             </ion-item>
-            <ion-item-options>
-                <button primary (click)="changeContractData('primes','Primes diverses')">
-                    <ion-icon name="create"></ion-icon>
-                    Modifier
-                </button>
-            </ion-item-options>
-        </ion-item-sliding>
-        <ion-item-sliding>
             <ion-item>
-                <h2>Siège social : {{contractData.headOffice}}</h2>
+                <ion-label>Siège social</ion-label><ion-input type="text" [(ngModel)]="contractData.headOffice"></ion-input>
             </ion-item>
-            <ion-item-options>
-                <button primary (click)="changeContractData('headOffice','Siège social')">
-                    <ion-icon name="create"></ion-icon>
-                    Modifier
-                </button>
-            </ion-item-options>
-        </ion-item-sliding>
-        <ion-item-sliding>
             <ion-item>
-                <h2>Contenu de la mission : {{contractData.missionContent}}</h2>
+                <ion-label>Contenu de la mission</ion-label><ion-input type="text" [(ngModel)]="contractData.missionContent"></ion-input>
             </ion-item>
-            <ion-item-options>
-                <button primary (click)="changeContractData('missionContent','Contenu de la mission')">
-                    <ion-icon name="create"></ion-icon>
-                    Modifier
-                </button>
-            </ion-item-options>
-        </ion-item-sliding>
-        <ion-item-sliding>
             <ion-item>
-                <h2>Categorie : {{contractData.category}}</h2>
+                <ion-label>Catégorie</ion-label><ion-input type="text" [(ngModel)]="contractData.category"></ion-input>
             </ion-item>
-            <ion-item-options>
-                <button primary (click)="changeContractData('category','Categorie')">
-                    <ion-icon name="create"></ion-icon>
-                    Modifier
-                </button>
-            </ion-item-options>
-        </ion-item-sliding>
-        <ion-item-sliding>
             <ion-item>
-                <h2>Filière : {{contractData.sector}}</h2>
+                <ion-label>Filière</ion-label><ion-input type="text" [(ngModel)]="contractData.sector"></ion-input>
             </ion-item>
-            <ion-item-options>
-                <button primary (click)="changeContractData('sector','Filière')">
-                    <ion-icon name="create"></ion-icon>
-                    Modifier
-                </button>
-            </ion-item-options>
-        </ion-item-sliding>
+
     </ion-list>
 </ion-content>
 <ion-toolbar position="bottom">

@@ -28,7 +28,7 @@ export class UserService {
      * @description get the current connected employer
      * @return promise
      */
-    getCurrentEmployer() {
+    getCurrentUser() {
         return this.db.get('currentUser');
     }
 
