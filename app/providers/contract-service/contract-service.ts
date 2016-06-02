@@ -231,9 +231,6 @@ export class ContractService {
             'data': btoa(unescape(encodeURIComponent(JSON.stringify(jsonData))))
         });
 
-        debugger;
-        console.log(dataSign);
-
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
             'id': 93,

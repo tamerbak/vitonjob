@@ -28,7 +28,8 @@
     "cordova-plugin-geolocation",
     "cordova-plugin-datepicker",
     "cordova-plugin-network-information",
-    "cordova-plugin-crosswalk-webview"
+    "cordova-plugin-crosswalk-webview",
+    "cordova-plugin-camera"
   ],
   "cordovaPlatforms": [
     "ios",
