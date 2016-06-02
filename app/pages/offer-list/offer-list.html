@@ -24,7 +24,7 @@
         </ion-card-header>
 
         <ion-list text-wrap>
-            <button *ngFor="#item of offerList " ion-item (click)="goToDetailOffer(item)">
+            <button *ngFor="let item of offerList " ion-item (click)="goToDetailOffer(item)">
                 <ion-icon name="eye" item-left></ion-icon>
                 {{item.title}}
                 <ion-badge [style.backgroundColor]="themeColor" item-right>

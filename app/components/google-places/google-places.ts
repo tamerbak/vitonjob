@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, ViewChild} from 'angular2/core';
+import {Component, Input, Output, EventEmitter, ViewChild} from '@angular/core';
 import {IONIC_DIRECTIVES, Searchbar } from 'ionic-angular';
 
 /**

@@ -1,6 +1,6 @@
-import {Injectable} from 'angular2/core';
+import {Injectable} from '@angular/core';
 import {Configs} from '../../configurations/configs';
-import {Http, Headers} from 'angular2/http';
+import {Http, Headers} from '@angular/http';
 import {Helpers} from '../../providers/helpers.service.ts';
 
 

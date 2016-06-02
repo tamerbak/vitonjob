@@ -7,15 +7,18 @@
     </ion-toolbar>
     <ion-content>
         <ion-list>
-            <button menuClose ion-item *ngFor="#p of loggedOutPages" (click)="openPage(p)">
+            <button menuClose ion-item *ngFor="let p of loggedOutPages" (click)="openPage(p)">
                 <ion-icon name="{{p.icon}}" icon-top></ion-icon>
                 &nbsp;&nbsp;{{p.title}}
                 <ion-badge [style.backgroundColor]="themeColor" *ngIf="p.isBadged">231</ion-badge>
             </button>
-			<button menuClose ion-item *ngFor="#p of pages" (click)="openPage(p)">
+			<button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
                 <ion-icon name="{{p.icon}}" icon-top></ion-icon>
                 &nbsp;&nbsp;{{p.title}}
-                <ion-badge [style.backgroundColor]="themeColor" *ngIf="p.isBadged">231</ion-badge>
+                <ion-badge [style.backgroundColor]="themeColor" *ngIf="p.isBadged">
+                    <ion-spinner name="crescent" [hidden]="!isCalculating"></ion-spinner>
+                    {{(isCalculating)? '' : offerCount}}
+                </ion-badge>
             </button>
         </ion-list>
     </ion-content>
@@ -35,15 +38,21 @@
     </ion-toolbar>
     <ion-content>
         <ion-list>
-            <button menuClose ion-item *ngFor="#p of pages" (click)="openPage(p)">
+            <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
                 <ion-icon name="{{p.icon}}" icon-top></ion-icon>
                 &nbsp;&nbsp;{{p.title}}
-                <ion-badge [style.backgroundColor]="themeColor" *ngIf="p.isBadged">231</ion-badge>
+                <ion-badge [style.backgroundColor]="themeColor" *ngIf="p.isBadged">
+                    <ion-spinner name="crescent" [hidden]="!isCalculating"></ion-spinner>
+                    {{(isCalculating)? '' : offerCount}}
+                </ion-badge>
             </button>
-            <button menuClose ion-item *ngFor="#p of loggedInPages" (click)="openPage(p)">
+            <button menuClose ion-item *ngFor="let p of loggedInPages" (click)="openPage(p)">
                 <ion-icon name="{{p.icon}}" icon-top></ion-icon>
                 &nbsp;&nbsp;{{p.title}}
-                <ion-badge [style.backgroundColor]="themeColor" *ngIf="p.isBadged">231</ion-badge>
+                <ion-badge [style.backgroundColor]="themeColor" *ngIf="p.isBadged">
+                    <ion-spinner name="crescent" [hidden]="!isCalculating"></ion-spinner>
+                    {{(isCalculating)? '' : offerCount.toString()}}
+                </ion-badge>
             </button>
         </ion-list>
     </ion-content>
@@ -64,7 +73,7 @@
             </ion-icon>
         </div>
         <ion-list>
-            <button menuClose ion-item *ngFor="#p of pages" (click)="openPage(p)">
+            <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
                 <ion-icon name="{{p.icon}}" icon-top></ion-icon>
                 &nbsp;&nbsp;{{p.title}}
                 test

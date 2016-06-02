@@ -15,7 +15,7 @@
         <ion-col width-10></ion-col>
     </ion-row>
     <ion-list>
-        <ion-item-sliding *ngFor="#item of missionsList">
+        <ion-item-sliding *ngFor="let item of missionsList">
             <button ion-item class="large-btn" (click)="goToMissionDetailsPage(item)" >
                     <ion-row>
                         Contrat {{item.index}} &nbsp; <span [style.color]="themeColor">  {{item.contratId}} </span>

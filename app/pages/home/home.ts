@@ -1,4 +1,4 @@
-import {Page, IonicApp, IonicApp, NavParams, NavController, Loading, Modal} from 'ionic-angular';
+import {Page, IonicApp, NavParams, NavController, Loading, Modal} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
@@ -10,6 +10,7 @@ import {NetworkService} from "../../providers/network-service/network-service";
 import {InfoUserPage} from "../info-user/info-user";
 import {Storage, SqlStorage} from 'ionic-angular';
 import {Events} from 'ionic-angular';
+import {Keyboard} from "ionic-native/dist/index";
 
 
 @Page({
@@ -30,6 +31,8 @@ export class HomePage {
 	private scQuery : string;
 	private popinCrietria : boolean = false;
 	private isConnected : boolean;
+	private recording:boolean;
+	private recognition:any;
 
 
 	static get parameters() {
@@ -42,12 +45,12 @@ export class HomePage {
 				private navParams: NavParams,
 				private searchService: SearchService,
 				public networkService: NetworkService,
-				public events: Events) {
+				public events: Events, private kb:Keyboard) {
 
 		// Get target to determine configs
 		this.projectTarget = globalConfig.getProjectTarget();
 		this.storage = new Storage(SqlStorage);
-
+		this.keyboard = kb;
 		// get config of selected target
 		let config = Configs.setConfigs(this.projectTarget);
 
@@ -58,7 +61,7 @@ export class HomePage {
 		this.highlightSentence = config.highlightSentence;
 		this.isEmployer = this.projectTarget == 'employer';
 		this.searchPlaceHolder = "Veuillez saisir votre recherche...";
-
+		this.recording = false;
 		this.nav = nav;
 		// If we navigated to this page, we will have an item available as a nav param
 		this.selectedItem = navParams.get('item');
@@ -81,17 +84,35 @@ export class HomePage {
 	 * @description Launching semantic search from voice recognition
 	 */
 	launchVoiceRecognition(){
-		let recognition = new SpeechRecognition();
-		recognition.lang = 'fr';
-		recognition.onresult = function(event) {
 
+		this.recognition = new SpeechRecognition();
+		this.recording = true;
+		this.recognition.lang = 'fr';
+		this.recognition.onresult = function(event) {
+
+			this.recording = false;
 			if (event.results.length > 0) {
 				this.scQuery = event.results[0][0].transcript;
 				this.doSemanticSearch();
-
 			}
 		}.bind(this);
-		recognition.start();
+
+		this.recognition.start();
+	}
+
+	stopRecognition(){
+		
+		this.recognition.stop();
+		this.recording = false;
+		this.recognition.onend = function (event) {
+			this.recording = false;
+		}.bind(this);
+		this.recognition.onerror = function (event) {
+			this.recording = false;
+		}.bind(this);
+		this.recognition.onnomatch = function (event) {
+			this.recording = false;
+		}.bind(this);
 	}
 
 	onFocus() {

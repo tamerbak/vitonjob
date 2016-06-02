@@ -2,7 +2,7 @@
  * Created by tim on 06/05/2016.
  */
 
-import {Injectable} from 'angular2/core';
+import {Injectable} from '@angular/core';
 
 @Injectable()
 export class GlobalConfigs {

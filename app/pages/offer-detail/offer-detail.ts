@@ -1,4 +1,4 @@
-import {Page, NavController, NavParams, Loading, Modal} from 'ionic-angular';
+import {Page, NavController, NavParams, Loading, Modal, Alert} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {SearchResultsPage} from "../../pages/search-results/search-results";
@@ -9,6 +9,7 @@ import {ModalJobPage} from "../modal-job/modal-job";
 import {ModalQualityPage} from "../modal-quality/modal-quality";
 import {ModalLanguagePage} from "../modal-language/modal-language";
 import {ModalCalendarPage} from "../modal-calendar/modal-calendar";
+import {OfferListPage} from "../offer-list/offer-list";
 
 /*
  Generated class for the OfferDetailPage page.
@@ -23,6 +24,7 @@ import {ModalCalendarPage} from "../modal-calendar/modal-calendar";
 export class OfferDetailPage {
     offer:any;
     dateOptions:DatePickerOptions;
+    offerService: OffersService;
 
     constructor(public nav:NavController, gc:GlobalConfigs, params:NavParams,
                 public offersService:OffersService, public searchService:SearchService) {
@@ -38,6 +40,7 @@ export class OfferDetailPage {
         this.inversedThemeColor = config.inversedThemeColor;
         this.isEmployer = (this.projectTarget === 'employer');
 
+        this.offerService = offersService;
         // Get Offer passed in NavParams
         this.offer = params.get('selectedOffer');
         this.showJob = false;
@@ -56,29 +59,30 @@ export class OfferDetailPage {
             isCalendar: false
         };
 
+        let image = 'img/job.png';
         this.jobStyle = {
-            backgroundImage: "url('img/job.png')",
+            backgroundImage: {'background-image': "url('img/job.png')"},
             fontColor: "white",
             buttonColor: "white",//transparent
             fontWeight: "bolder"
         };
 
         this.qualityStyle = {
-            backgroundImage: "url('img/quality.png')",
+            backgroundImage: {'background-image': "url('img/quality.png')"},
             fontColor: "white",
             buttonColor: "white",//transparent
             fontWeight: "bolder"
         };
 
         this.languageStyle = {
-            backgroundImage: "url('img/language.png')",
+            backgroundImage: {'background-image': "url('img/language.png')"},
             fontColor: "white",
             buttonColor: "white",//transparent
             fontWeight: "bolder"
         };
 
         this.calendarStyle = {
-            backgroundImage: "url('img/calendar.png')",
+            backgroundImage: {'background-image': "url('img/calendar.png')"},
             fontColor: "white",
             buttonColor: "white",//transparent
             fontWeight: "bolder"
@@ -125,7 +129,7 @@ export class OfferDetailPage {
             spinner: 'hide'
         });
         this.nav.present(loading);
-        this.offersService.getCorrespondingOffers(this.offer, this.projectTarget).then(data => {
+        this.offerService.getCorrespondingOffers(this.offer, this.projectTarget).then(data => {
             console.log(data);
             this.searchService.persistLastSearch(data);
             loading.dismiss();
@@ -142,17 +146,17 @@ export class OfferDetailPage {
         if (this.showJob) {
             this.jobIconName = 'remove';
             this.jobStyle = {
-                backgroundImage: "",
-                fontColor: "",
-                buttonColor: "",
-                fontWeight: ""
+                backgroundImage: {'background-image': ""},
+                fontColor: this.themeColor,
+                buttonColor: this.themeColor,
+                fontWeight: "normal"
             };
         }
 
         else {
             this.jobIconName = 'add';
             this.jobStyle = {
-                backgroundImage: "url('img/job.png')",
+                backgroundImage: {'background-image': "url('img/job.png')"},
                 fontColor: "white",
                 buttonColor: "white",//transparent
                 fontWeight: "bolder"
@@ -169,15 +173,15 @@ export class OfferDetailPage {
         if (this.showQuality) {
             this.qualityIconName = 'remove';
             this.qualityStyle = {
-                backgroundImage: "",
-                fontColor: "",
-                buttonColor: "",
-                fontWeight: ""
+                backgroundImage: {'background-image': ""},
+                fontColor: this.themeColor,
+                buttonColor: this.themeColor,
+                fontWeight: "normal"
             };
         } else {
             this.qualityIconName = 'add';
             this.qualityStyle = {
-                backgroundImage: "url('img/quality.png')",
+                backgroundImage: {'background-image': "url('img/quality.png')"},
                 fontColor: "white",
                 buttonColor: "white",//transparent
                 fontWeight: "bolder"
@@ -193,15 +197,15 @@ export class OfferDetailPage {
         if (this.showLanguage) {
             this.languageIconName = 'remove';
             this.languageStyle = {
-                backgroundImage: "",
-                fontColor: "",
-                buttonColor: "",//transparent
-                fontWeight: ""
+                backgroundImage: {'background-image': ""},
+                fontColor: this.themeColor,
+                buttonColor: this.themeColor,
+                fontWeight: "normal"
             };
         } else {
             this.languageIconName = 'add';
             this.languageStyle = {
-                backgroundImage: "url('img/language.png')",
+                backgroundImage: {'background-image': "url('img/language.png')"},
                 fontColor: "white",
                 buttonColor: "white",
                 fontWeight: "bolder"
@@ -217,16 +221,16 @@ export class OfferDetailPage {
         if (this.showCalendar) {
             this.calendarIconName = 'remove';
             this.calendarStyle = {
-                backgroundImage: "",
-                fontColor: "",
-                buttonColor: "",
-                fontWeight: ""
+                backgroundImage: {'background-image': ""},
+                fontColor: this.themeColor,
+                buttonColor: this.themeColor,
+                fontWeight: "normal"
             };
         }
         else {
             this.calendarIconName = 'add';
             this.calendarStyle = {
-                backgroundImage: "url('img/calendar.png')",
+                backgroundImage: {'background-image': "url('img/calendar.png')"},
                 fontColor: "white",
                 buttonColor: "white",
                 fontWeight: "bolder"
@@ -299,5 +303,44 @@ export class OfferDetailPage {
      */
     validateModification() {
         
+    }
+
+    /**
+     * Copy current offer
+     */
+    copyOffer() {
+        let confirm = Alert.create({
+            title: "Copie d'offre",
+            message: "Voulez-vous ajouter une nouvelle offre à partir de celle-ci?",
+            buttons: [
+                {
+                    text: 'Non',
+                    handler: () => {
+                        console.log('Disagree clicked');
+                    }
+                },
+                {
+                    text: 'Oui',
+                    handler: () => {
+                        console.log('Agree clicked');
+                        let offer = this.offer;
+                        offer.title = this.offer.title + " (Copie)";
+                        this.offerService.setOfferInLocal(offer, this.projectTarget)
+                            .then(()=> {
+                                console.log('••• Adding offer : local storing success!');
+                                debugger;
+                                this.offerService.setOfferInRemote(offer, this.projectTarget)
+                                    .then(data => {
+                                        console.log('••• Adding offer : remote storing success!');
+                                        debugger;
+                                        this.nav.setRoot(OfferListPage);
+                                    })
+
+                            });
+                    }
+                }
+            ]
+        });
+        this.nav.present(confirm);
     }
 }

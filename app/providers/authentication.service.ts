@@ -1,5 +1,5 @@
-import {Injectable} from 'angular2/core';
-import {Http, Headers, RequestOptions} from 'angular2/http';
+import {Injectable} from '@angular/core';
+import {Http, Headers, RequestOptions} from '@angular/http';
 import {Storage, SqlStorage} from 'ionic-angular';
 import {Configs} from '../configurations/configs';
 import {GlobalConfigs} from '../configurations/globalConfigs';

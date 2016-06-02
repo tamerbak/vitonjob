@@ -1,6 +1,6 @@
-import {Injectable} from 'angular2/core';
+import {Injectable} from '@angular/core';
 import {Platform} from 'ionic-angular';
-import {Http, Headers} from 'angular2/http';
+import {Http, Headers} from '@angular/http';
 
 
 /**

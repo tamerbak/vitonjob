@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-define(["require", "exports", 'ionic-angular', 'angular2/core', 'angular2/http', '../../configurations/configs', 'rxjs/add/operator/map'], function (require, exports, ionic_angular_1, core_1, http_1, configs_1) {
+define(["require", "exports", 'ionic-angular', '@angular/core', '@angular/http', '../../configurations/configs', 'rxjs/add/operator/map'], function (require, exports, ionic_angular_1, core_1, http_1, configs_1) {
     "use strict";
     /**
      * @author jakjoud abdeslam

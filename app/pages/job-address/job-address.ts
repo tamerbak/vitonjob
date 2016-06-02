@@ -6,7 +6,7 @@ import {AuthenticationService} from "../../providers/authentication.service";
 import {OfferListPage} from "../offer-list/offer-list";
 import {Geolocation} from 'ionic-native';
 import {Storage, SqlStorage} from 'ionic-angular';
-import {enableProdMode, ElementRef, Renderer} from 'angular2/core'; 
+import {enableProdMode, ElementRef, Renderer} from '@angular/core'; 
 enableProdMode();
 
 /**
