@@ -140,13 +140,13 @@ export class SearchResultsPage {
                     text: 'Envoyer SMS',
                     icon: 'md-mail',
                     handler: () => {
-
+						this.sendSMS(item);
                     }
                 },{
                     text: 'Appeller',
                     icon: 'md-call',
                     handler: () => {
-
+						this.dialNumber(item);
                     }
                 },{
                     text: 'Annuler',
@@ -364,4 +364,30 @@ export class SearchResultsPage {
         //  Offer is ready show page
         this.nav.push(OfferAddPage);
     }
+	
+	/**
+     * @description dial number of jobyer/employer
+     */
+	dialNumber(item){
+		console.log("dial number : " + item.tel);
+		window.location = 'tel:'+ item.tel;
+	}
+	
+	/**
+     * @description send sms to jobyer/employer
+     */
+	sendSMS(item){
+		console.log("sending SMS to : " + item.tel);
+		var number = item.tel;
+		var options = {
+          replaceLineBreaks: false, // true to replace \n by a new line, false by default
+          android: {
+              intent: 'INTENT'  // send SMS with the native android SMS messaging
+            }
+        };
+		var success = function () { console.log('Message sent successfully'); };
+		var error = function (e) { console.log('Message Failed:' + e); };
+
+		sms.send(number, "", options, success, error);	
+	}
 }

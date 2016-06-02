@@ -8,6 +8,7 @@ import {AuthenticationService} from "../../providers/authentication.service";
 import {Storage, SqlStorage} from 'ionic-angular';
 import {GlobalService} from "../../providers/global.service";
 import {Camera} from 'ionic-native';
+import {NgZone} from 'angular2/core';
 
 /**
 	* @author Amal ROCHD
@@ -40,7 +41,7 @@ export class CivilityPage {
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
 	*/
 	constructor(public nav: NavController, private authService: AuthenticationService,
-	public gc: GlobalConfigs, private loadListService: LoadListService, private sqlStorageService: SqlStorageService, tabs:Tabs, params: NavParams, private globalService: GlobalService) {
+	public gc: GlobalConfigs, private loadListService: LoadListService, private sqlStorageService: SqlStorageService, tabs:Tabs, params: NavParams, private globalService: GlobalService, private zone: NgZone) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -341,8 +342,10 @@ export class CivilityPage {
 			targetWidth: 1000,
 			targetHeight: 1000
 			}).then((imageData) => {
-			// imageData is a base64 encoded string
-			this.scanUri = "data:image/jpeg;base64," + imageData;
+				this.zone.run(()=>{
+					// imageData is a base64 encoded string
+					this.scanUri = "data:image/jpeg;base64," + imageData;
+				});
 			}, (err) => {
 			console.log(err);
 		});
