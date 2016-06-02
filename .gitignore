@@ -7,3 +7,4 @@ plugins/
 workspace.xml
 tasks.xml
 .DS_Store
+npm-debug.log
