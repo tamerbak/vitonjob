@@ -1,11 +1,19 @@
 {
   "dependencies": {
-    "angular2": "2.0.0-beta.15",
+    "@angular/common": "^2.0.0-rc.1",
+    "@angular/compiler": "^2.0.0-rc.1",
+    "@angular/core": "^2.0.0-rc.1",
+    "@angular/http": "^2.0.0-rc.1",
+    "@angular/platform-browser": "^2.0.0-rc.1",
+    "@angular/platform-browser-dynamic": "^2.0.0-rc.1",
+    "@angular/router": "^2.0.0-rc.1",
     "es6-shim": "^0.35.0",
-    "ionic-angular": "2.0.0-beta.6",
-    "ionic-native": "^1.1.0",
-    "ionicons": "3.0.0-alpha.3",
-    "rxjs": "5.0.0-beta.2"
+    "ionic-angular": "2.0.0-beta.7",
+    "ionic-native": "1.2.4",
+    "ionicons": "3.0.0",
+    "reflect-metadata": "^0.1.3",
+    "rxjs": "5.0.0-beta.6",
+    "zone.js": "^0.6.12"
   },
   "devDependencies": {
     "del": "2.2.0",
@@ -15,7 +23,7 @@
     "ionic-gulp-fonts-copy": "^1.0.0",
     "ionic-gulp-html-copy": "^1.0.0",
     "ionic-gulp-sass-build": "^1.0.0",
-    "ionic-gulp-scripts-copy": "^1.0.1",
+    "ionic-gulp-scripts-copy": "^2.0.0",
     "run-sequence": "1.1.5"
   },
   "cordovaPlugins": [
@@ -28,7 +36,8 @@
     "cordova-plugin-geolocation",
     "cordova-plugin-datepicker",
     "cordova-plugin-network-information",
-    "cordova-plugin-crosswalk-webview",
+    "cordova-plugin-tts",
+    "org.apache.cordova.speech.speechrecognition",
     "cordova-plugin-camera"
   ],
   "cordovaPlatforms": [
@@ -40,6 +49,6 @@
     },
     "android"
   ],
-  "name": "vitonjob",
-  "description": "vitonjob: An Ionic project"
+  "name": "VitOnJob",
+  "description": "VitOnJob: Vite on job et vis ton job!"
 }

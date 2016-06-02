@@ -1,7 +1,7 @@
 import {Page, NavController, ActionSheet, Platform, Slides,Alert} from 'ionic-angular';
 import {Storage, SqlStorage, LocalStorage} from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
-import {ViewChild} from 'angular2/core'
+import {ViewChild} from '@angular/core'
 import {SearchService} from "../../providers/search-service/search-service";
 import {UserService} from "../../providers/user-service/user-service";
 import {ContractPage} from '../contract/contract';

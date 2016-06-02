@@ -1,6 +1,6 @@
-import { Injectable } from 'angular2/core';
-//import { DOM } from 'angular2/src/platform/dom/dom_adapter';
-import {BrowserDomAdapter} from 'angular2/platform/browser';
+import { Injectable } from '@angular/core';
+//import { DOM } from '@angular/src/platform/dom/dom_adapter';
+import {BrowserDomAdapter} from '@angular/platform-browser/src/browser/browser_adapter';
 
 /**
 	* @author Amal ROCHD

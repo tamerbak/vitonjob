@@ -1,4 +1,4 @@
-import {App, Platform, IonicApp, MenuController} from 'ionic-angular';
+import {App, Platform, IonicApp, MenuController, Nav} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {HomePage} from './pages/home/home';
 import {LoginsPage} from './pages/logins/logins';
@@ -13,7 +13,7 @@ import {SmsService} from "./providers/sms-service/sms-service";
 import {MissionService} from "./providers/mission-service/mission-service";
 import {Helpers} from './providers/helpers.service.ts';
 import {NetworkService} from "./providers/network-service/network-service";
-import {ChangeDetectorRef} from 'angular2/src/core/change_detection/change_detector_ref';
+import {ChangeDetectorRef} from '@angular/core/src/change_detection/change_detector_ref';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 import {OfferAddPage} from "./pages/offer-add/offer-add";
@@ -22,13 +22,19 @@ import {ProfilePage} from "./pages/profile/profile";
 import {Storage, SqlStorage} from 'ionic-angular';
 import {Events} from 'ionic-angular';
 import {ContractPage} from "./pages/contract/contract";
+import {isUndefined} from "ionic-angular/util";
+import {OffersService} from "./providers/offers-service/offers-service";
+import {ViewChild} from "@angular/core";
 
 @App({
   templateUrl: 'build/menu.html',
-  config: {backButtonText: 'Retour'}, // http://ionicframework.com/docs/v2/api/config/Config/
-  providers : [GlobalConfigs, SearchService,UserService,ContractService,SmsService,MissionService,NetworkService,Helpers]
+  config: {backButtonText : "Retour"}, // http://ionicframework.com/docs/v2/api/config/Config/
+  providers : [GlobalConfigs, SearchService,UserService,ContractService,SmsService,
+	  MissionService,NetworkService,Helpers, OffersService]
 })
 export class MyApp {
+
+	@ViewChild(Nav) nav: Nav;
 	rootPage: any = HomePage;
 	public pages: Array<{title: string, component: any, icon: string, isBadged: boolean}>;
 	
@@ -47,7 +53,8 @@ export class MyApp {
 	private missionService:MissionService,
 	private networkService:NetworkService,
 	private changeDetRef: ChangeDetectorRef, 
-	public events: Events) {
+	public events: Events, offerService: OffersService) {
+
 		this.app = app;
 		this.platform = platform;
 		this.menu = menu;
@@ -90,6 +97,36 @@ export class MyApp {
 		missionService.setMissions();
 		
 		this.listenToLoginEvents();
+
+		this.offerCount = 0;
+		this.isCalculating = true;
+
+		// Calculating the number of joyer corresponding to our offers :
+		/*this.storage.get('connexion').then(con =>{
+			if (con){
+				con = JSON.parse(con);
+				if (con.etat){ /* => User connected 
+					offerService.loadOfferList(this.projectTarget).then(data => {
+						let offerList = data;
+						for (var i = 0; i < offerList.length; i++) {
+							let offer = offerList[i];
+							if (isUndefined(offer) || !offer || !offer.jobData) {
+								continue;
+							}
+							offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
+								console.log('getCorrespondingOffers result : ' + data);
+								this.offerCount += data.length;
+								//if (i == offerList.length - 1)
+									this.isCalculating = false;
+							});
+						}
+
+					});
+				} else this.isCalculating = false;
+			} else this.isCalculating = false
+		});*/
+
+
 	}
 	
 	initializeApp() {
@@ -143,7 +180,7 @@ export class MyApp {
 	}
 	
 	openPage(page) {
-		let nav = this.app.getComponent('nav');
+		//let nav = this.app.getComponent('nav');
 		this.menu.close();
 		
 		if(page.title == 'Déconnexion' ){
@@ -152,11 +189,11 @@ export class MyApp {
 		}
 		
 		if(page.title == 'Gestion des missions' ){
-			nav.push(page.component);
+			this.nav.push(page.component);
 		}
 		else
 		{
-			nav.setRoot(page.component);
+			this.nav.setRoot(page.component);
 		}
 	}
 }

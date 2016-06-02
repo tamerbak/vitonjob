@@ -5,17 +5,71 @@
   Ionic pages and navigation.
 -->
 <ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-  <button menuToggle>
-    <ion-icon name="menu"></ion-icon>
-  </button>
-  <ion-title>Profil</ion-title>
+    <button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Profil</ion-title>
 </ion-navbar>
 
 <ion-content padding class="profile">
 
-  <button fab fab-top fab-left class="img-button" >
-      <img [src]="userImageURL">
-  </button>
+    <button fab fab-top fab-right [style.backgroundColor]="themeColor"
+            style="color: yellow" >
+        <ion-icon name="star"></ion-icon>
+    </button>
 
-  
+    <button fab fab-top fab-right [style.backgroundColor]="themeColor"
+            style="right:78px;" >
+        <ion-icon name="analytics"></ion-icon>
+    </button>
+
+    <button fab fab-top fab-right [style.backgroundColor]="themeColor"
+            style="right:139px;" >
+        <ion-icon name="finger-print"></ion-icon>
+    </button>
+
+    <button fab fab-top fab-left class="img-button">
+        <img [src]="userImageURL">
+    </button>
+
+    <ion-card style="margin-top: 110px">
+        <ion-item-divider light>Civilité</ion-item-divider>
+        <ion-card-content>
+            <p>Titre : Mr</p>
+            <p>Nom : EL BAKKALI</p>
+            <p>Prénom : Tamer</p>
+        </ion-card-content>
+        <div class="button-footer">
+            <button clear [style.color]="themeColor">
+                <ion-icon name="create"></ion-icon>
+                <div>Modifier</div>
+            </button>
+        </div>
+    </ion-card>
+
+    <ion-card style="margin-bottom: 0;">
+        <ion-item-divider light>Adresses</ion-item-divider>
+    </ion-card>
+
+    <div id="map"></div>
+    <ion-card class="adv-map" style="margin-top: 0;">
+        <ion-item text-wrap>
+            <ion-icon subtle large item-left name='pin' style="color: #14baa6"></ion-icon>
+            <h5>Adresse personnelle</h5>
+            <p>44 Rue de Info, 75010 Paris, France</p>
+        </ion-item>
+        <ion-item text-wrap>
+            <ion-icon subtle large item-left name='pin' style="color: #757575"></ion-icon>
+            <h5>A. départ au travail</h5>
+            <p>1 Avenue Faux, 75010 Paris, France 1 Avenue Faux, 75010 Paris, France </p>
+        </ion-item>
+        <div class="button-footer">
+            <button clear [style.color]="themeColor">
+                <ion-icon name="create"></ion-icon>
+                <div>Modifier</div>
+            </button>
+        </div>
+    </ion-card>
+
+
 </ion-content>

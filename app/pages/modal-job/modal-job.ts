@@ -1,5 +1,5 @@
 import {Page, NavController, ViewController, Modal, NavParams} from 'ionic-angular';
-import {FormBuilder, Validators} from "angular2/common";
+import {FormBuilder, Validators} from "@angular/common";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {ModalSelectionPage} from "../modal-selection/modal-selection";

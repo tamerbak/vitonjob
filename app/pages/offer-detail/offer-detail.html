@@ -7,7 +7,7 @@
 <ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
     <ion-title>Détail</ion-title>
     <ion-buttons end>
-        <button>
+        <button (click)="copyOffer()">
             <ion-icon name="copy"></ion-icon>
         </button>
         <button>
@@ -28,7 +28,7 @@
 
         <!--Job-->
         <div style="display: flex; background-size: cover;"
-             [style.backgroundImage]="jobStyle.backgroundImage">
+             [ngStyle]="jobStyle.backgroundImage">
             <ion-list-header style="width: 100%;"
                              [style.color]="jobStyle.fontColor"
                              [style.fontWeight]="jobStyle.fontWeight">
@@ -66,9 +66,51 @@
 
         <ion-row></ion-row>
 
+        <!-- Calendar Card-->
+        <div style="display: flex; background-size: cover;"
+             [ngStyle]="calendarStyle.backgroundImage">
+            <ion-list-header style="width: 100%" [style.color]="calendarStyle.fontColor"
+                             [style.fontWeight]="calendarStyle.fontWeight">
+                Disponibilité
+            </ion-list-header>
+            <button  outline small style="position: relative; top: 0" (click)="showCalendarCard()"
+                     [style.color]="calendarStyle.buttonColor"
+                     [style.borderColor] = "calendarStyle.fontColor">
+                <ion-icon [name]="calendarIconName"></ion-icon>Détails
+            </button>
+        </div>
+        <ion-card [hidden] = "!showCalendar">
+            <div class="img-header">
+                <img src="img/calendar.png"/>
+                <div class="card-title">Disponibilité</div>
+            </div>
+            <div>
+                <table id="t01">
+                    <tr>
+                        <th [style.backgroundColor]="inversedThemeColor">Créneau</th>
+                        <th [style.backgroundColor]="inversedThemeColor">De</th>
+                        <th [style.backgroundColor]="inversedThemeColor">À</th>
+                    </tr>
+                    <tr *ngFor="let item of offer.calendarData">
+                        <td>{{toDateString(item.date)}}</td>
+                        <td>{{toHourString(item.startHour)}}</td>
+                        <td>{{toHourString(item.endHour)}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="button-footer">
+                <button clear [style.color]="themeColor" (click)="showCalendarModal()">
+                    <ion-icon name="create"></ion-icon>
+                    <div>Modifier</div>
+                </button>
+            </div>
+        </ion-card>
+
+        <ion-row></ion-row>
+
         <!-- Qualities Card-->
         <div style="display: flex; background-size: cover;"
-             [style.backgroundImage]="qualityStyle.backgroundImage">
+             [ngStyle]="qualityStyle.backgroundImage">
             <ion-list-header style="width: 100%" [style.color]="qualityStyle.fontColor"
                              [style.fontWeight]="qualityStyle.fontWeight">
                 Qualités
@@ -88,7 +130,7 @@
             </div>
             <div>
                 <ul>
-                    <li *ngFor="#item of offer.qualityData">{{item.libelle}}</li>
+                    <li *ngFor="let item of offer.qualityData">{{item.libelle}}</li>
                 </ul>
             </div>
             <div class="button-footer">
@@ -103,7 +145,7 @@
 
         <!-- Languages Card-->
         <div style="display: flex; background-size: cover;"
-             [style.backgroundImage]="languageStyle.backgroundImage">
+             [ngStyle]="languageStyle.backgroundImage">
             <ion-list-header style="width: 100%" [style.color]="languageStyle.fontColor"
                              [style.fontWeight]="languageStyle.fontWeight">
                 Langues
@@ -121,55 +163,13 @@
             </div>
             <div>
                 <ul>
-                    <li *ngFor="#item of offer.languageData">
+                    <li *ngFor="let item of offer.languageData">
                         <span style="font-weight: bold">{{item.libelle}}</span> : {{item.level}}
                     </li>
                 </ul>
             </div>
             <div class="button-footer">
                 <button clear [style.color]="themeColor" (click)="showLanguageModal()">
-                    <ion-icon name="create"></ion-icon>
-                    <div>Modifier</div>
-                </button>
-            </div>
-        </ion-card>
-
-        <ion-row></ion-row>
-
-        <!-- Calendar Card-->
-        <div style="display: flex; background-size: cover;"
-             [style.backgroundImage]="calendarStyle.backgroundImage">
-            <ion-list-header style="width: 100%" [style.color]="calendarStyle.fontColor"
-                             [style.fontWeight]="calendarStyle.fontWeight">
-                Agenda
-            </ion-list-header>
-            <button  outline small style="position: relative; top: 0" (click)="showCalendarCard()"
-                     [style.color]="calendarStyle.buttonColor"
-                     [style.borderColor] = "calendarStyle.fontColor">
-                <ion-icon [name]="calendarIconName"></ion-icon>Détails
-            </button>
-        </div>
-        <ion-card [hidden] = "!showCalendar">
-            <div class="img-header">
-                <img src="img/calendar.png"/>
-                <div class="card-title" style="color: #757575">Agenda</div>
-            </div>
-            <div>
-                <table id="t01">
-                    <tr>
-                        <th [style.backgroundColor]="inversedThemeColor">Créneau</th>
-                        <th [style.backgroundColor]="inversedThemeColor">De</th>
-                        <th [style.backgroundColor]="inversedThemeColor">À</th>
-                    </tr>
-                    <tr *ngFor="#item of offer.calendarData">
-                        <td>{{toDateString(item.date)}}</td>
-                        <td>{{toHourString(item.startHour)}}</td>
-                        <td>{{toHourString(item.endHour)}}</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="button-footer">
-                <button clear [style.color]="themeColor" (click)="showCalendarModal()">
                     <ion-icon name="create"></ion-icon>
                     <div>Modifier</div>
                 </button>

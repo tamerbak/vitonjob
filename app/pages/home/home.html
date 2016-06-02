@@ -9,7 +9,15 @@
 
 <ion-content class="home">
     <div class="networkAlert">{{networkService.getNetworkStat()}}</div>
-    
+
+    <button fab fab-bottom fab-center [style.backgroundColor]="themeColor"
+            (click)="launchVoiceRecognition()" [hidden]="(keyboard)? keyboard.isOpen():false">
+        <ion-icon name="mic" [hidden]="recording"></ion-icon>
+    </button>
+    <button fab fab-bottom fab-center (click)="stopRecognition()"
+            [style.backgroundColor]="themeColor" [hidden] = "!recording">
+        <ion-spinner name="dots"></ion-spinner>
+    </button>
     <ion-row>&nbsp;</ion-row>
     <ion-row>
         <ion-col width-20></ion-col>
@@ -26,17 +34,14 @@
                        [(ngModel)]="scQuery"></ion-input>
 
         </ion-item>
-        <button primary (click)="launchVoiceRecognition()" class="voice-btn">
-            <ion-icon name="md-microphone"></ion-icon>
-        </button>
     </ion-row>
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center> <h6 primary> {{highlightSentence}} </h6></ion-col>
         <ion-col width-10></ion-col>
     </ion-row>
-    <ion-row>&nbsp;</ion-row>
-    <ion-row>&nbsp;</ion-row>
+    <!--ion-row>&nbsp;</ion-row>
+    <ion-row>&nbsp;</ion-row-->
     <!--ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
@@ -61,7 +66,7 @@
 
     <div class="draggable ui-widget-content">
         <ion-list>
-            <ion-list-header>Recherche</ion-list-header>
+            <ion-list-header><ion-icon  name="move"></ion-icon>Recherche</ion-list-header>
             <ion-item>
                 <button list-item secondary block (click)="showCriteriaModal()" >
                     <ion-icon name="md-search"></ion-icon>Par critères
@@ -75,5 +80,16 @@
         </ion-list>
 
     </div>
+
+
+    <!--div id="drag">
+        <div class="pion">
+            <div class="bottom"></div>
+            <div class="center"></div>
+            <div class="top"><!--button style="width:50px; height: 50px;">test</button></div>
+        </div>
+        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="../../../www/scripts/drag.js"></script>
+    </div-->
 
 </ion-content>

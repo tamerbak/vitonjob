@@ -88,7 +88,7 @@ this.nav = nav;
         this.visibleOffer = true;
 
         this.offerToBeAdded = {
-            jobData: "", calendarData: "", qualityData: "", languageData: "",
+            jobData: "", calendarData: [], qualityData: [], languageData: [],
             visible: this.visibleOffer, title: "", status: "open"
         };
 

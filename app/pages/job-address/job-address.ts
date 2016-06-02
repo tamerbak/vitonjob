@@ -7,7 +7,7 @@ import {OfferListPage} from "../offer-list/offer-list";
 import {GlobalService} from "../../providers/global.service";
 import {Geolocation} from 'ionic-native';
 import {Storage, SqlStorage} from 'ionic-angular';
-import {enableProdMode, ElementRef, Renderer} from 'angular2/core'; 
+import {enableProdMode, ElementRef, Renderer} from '@angular/core'; 
 enableProdMode();
 
 /**

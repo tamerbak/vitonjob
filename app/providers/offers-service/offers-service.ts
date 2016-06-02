@@ -1,6 +1,6 @@
 import {Storage, SqlStorage} from 'ionic-angular';
-import {Injectable} from 'angular2/core';
-import {Http, Headers} from 'angular2/http';
+import {Injectable} from '@angular/core';
+import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {Configs} from '../../configurations/configs';
 import {isUndefined} from "ionic-angular/util";
@@ -233,6 +233,38 @@ export class OffersService {
          data : stringData
          };*/
 
+    }
+
+    /**
+     *
+     * @param offerData delete Offer from local
+     * @param projectTarget
+     */
+    deleteOfferFromLocal(offerData:any, projectTarget:string) {
+        switch (projectTarget) {
+            case 'employer' :
+
+                break;
+            case 'jobyer':
+
+                break;
+        }
+    }
+
+    /**
+     * @description Delete offer from remote
+     * @param offerData
+     * @param projectTarget
+     */
+    deleteOfferFromRemote(offerData:any, projectTarget: string) {
+        switch (projectTarget) {
+            case 'employer' :
+
+                break;
+            case 'jobyer':
+
+                break;
+        }
     }
 
     /**

@@ -9,7 +9,7 @@
   </ion-card>
   <ion-list text-wrap *ngIf="!voidOffers">
     <ion-list-header>Offres disponibles</ion-list-header>
-    <button *ngFor="#item of offerList " ion-item (click)="chooseOffer(item)">
+    <button *ngFor="let item of offerList " ion-item (click)="chooseOffer(item)">
       <ion-icon name="eye" item-left></ion-icon>
       {{item.title}}
     </button>

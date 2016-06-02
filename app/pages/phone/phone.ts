@@ -9,7 +9,7 @@ import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
 import {InfoUserPage} from "../info-user/info-user";
 import {Storage, SqlStorage} from 'ionic-angular';
-import {enableProdMode} from 'angular2/core'; 
+import {enableProdMode} from '@angular/core'; 
 enableProdMode();
 
 /**

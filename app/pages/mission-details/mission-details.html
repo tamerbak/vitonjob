@@ -9,7 +9,7 @@
 </ion-navbar>
 
 <ion-content padding class="mission-details">
-    <ion-card *ngFor="#day of mission.days">
+    <ion-card *ngFor="let day of mission.days">
         <ion-card-header>
             Jour {{day.index}}: {{day.date}}  
         </ion-card-header>

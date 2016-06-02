@@ -3,12 +3,12 @@
 
   <ion-list class="criteria-list">
     <ion-list-header>
-      <button *ngFor="#f of filters" (click)="toogleFilter(f)"
+      <button *ngFor="let f of filters" (click)="toogleFilter(f)"
               style="font-size: small;" [ngClass]="{'button-secondary': f.activated==true}" >
         <ion-icon name="{{f.icon}}"></ion-icon>
       </button>
     </ion-list-header>
-    <ion-item *ngFor="#f of filters" [ngClass]="{'hide': f.activated==false }" >
+    <ion-item *ngFor="let f of filters" [ngClass]="{'hide': f.activated==false }" >
       <ion-input placeholder="{{f.placeHolder}}" clearInput [(ngModel)]="f.value" ></ion-input>
     </ion-item>
 

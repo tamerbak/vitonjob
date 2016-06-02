@@ -15,7 +15,7 @@
 
 <ion-content padding class="search-results">
   <ion-list *ngIf="listView">
-    <ion-item-sliding *ngFor="#item of searchResults">
+    <ion-item-sliding *ngFor="let item of searchResults">
       <button ion-item class="large-btn" (click)="itemSelected(item)" >
         <ion-avatar item-left>
           <img src="img/{{avatar}}.png">
@@ -37,7 +37,7 @@
     <ion-card-content>Vitonjob n'a retrouvé aucune offre correspondante à votre recherche</ion-card-content>
   </ion-card>
   <ion-slides #cardSlider [options]="cardsOptions" (didChange)="onSlideChanged()" *ngIf="cardView">
-    <ion-slide *ngFor="#item of searchResults">
+    <ion-slide *ngFor="let item of searchResults">
       <ion-card>
         <ion-card-header>Vitonjob a retrouvé {{resultsCount}} offre(s)</ion-card-header>
       </ion-card>
@@ -87,14 +87,14 @@
         <span>{{proposedJob.libellejob}}</span>
       </ion-item>
       <ion-list-header>Langues</ion-list-header>
-      <ion-item *ngFor="#l of proposedLanguages">
+      <ion-item *ngFor="let l of proposedLanguages">
         <span>{{l.libelle}}</span>
         <button item-right secondary (click)="deleteLanguage(l)" >
           <ion-icon name="md-trash" ></ion-icon>
         </button>
       </ion-item>
       <ion-list-header>Indispensables</ion-list-header>
-      <ion-item *ngFor="#q of proposedQualities">
+      <ion-item *ngFor="let q of proposedQualities">
         <span>{{q.libelle}}</span>
         <button item-right secondary (click)="deleteQuality(l)">
           <ion-icon name="md-trash"></ion-icon>
