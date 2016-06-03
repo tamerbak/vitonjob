@@ -1,4 +1,4 @@
-<ion-navbar *navbar>
+<ion-navbar navbar>
   <div class="view-toggle">
     <button (click)="changeViewMode(1)" style="font-size: small;" [ngClass]="{'button-secondary': listView}" >
       <ion-icon name="md-list"></ion-icon>
@@ -8,6 +8,9 @@
     </button>
     <button (click)="changeViewMode(3)" style="font-size: small;" [ngClass]="{'button-secondary': mapView}" >
       <ion-icon name="md-map"></ion-icon>
+    </button>
+    <button (click)="toggleProposition()" style="font-size: small;" *ngIf="offerProposition" >
+      <ion-icon name="md-create"></ion-icon>
     </button>
   </div>
 
@@ -34,12 +37,12 @@
     </ion-item-sliding>
   </ion-list>
   <ion-card *ngIf="resultsCount == 0 ">
-    <ion-card-content>Vitonjob n'a retrouvé aucune offre correspondante à votre recherche</ion-card-content>
+    <ion-card-content>Vitonjob n'a trouvé aucune offre correspondante à votre recherche</ion-card-content>
   </ion-card>
   <ion-slides #cardSlider [options]="cardsOptions" (didChange)="onSlideChanged()" *ngIf="cardView">
     <ion-slide *ngFor="let item of searchResults">
       <ion-card>
-        <ion-card-header>Vitonjob a retrouvé {{resultsCount}} offre(s)</ion-card-header>
+        <ion-card-header>Vitonjob a trouvé {{resultsCount}} offre(s)</ion-card-header>
       </ion-card>
 
       <ion-card>
@@ -58,7 +61,7 @@
           </ion-row>
           <ion-row>
             <ion-col width-10>
-              <button secondary (click)="recruitJobyer(item)" >Recruter</button>
+              <button secondary (click)="recruitJobyer(item)" >RecContratruter</button>
             </ion-col>
             <ion-col width-50></ion-col>
             <ion-col  width-40>
@@ -79,32 +82,5 @@
 
   </div>
 
-  <div class="draggable large-draggable ui-widget-content" *ngIf="offerProposition">
-    <h2>Proposition</h2>
-    <ion-list style="height:240px; overflow:scroll;">
-      <ion-list-header>Job</ion-list-header>
-      <ion-item>
-        <span>{{proposedJob.libellejob}}</span>
-      </ion-item>
-      <ion-list-header>Langues</ion-list-header>
-      <ion-item *ngFor="let l of proposedLanguages">
-        <span>{{l.libelle}}</span>
-        <button item-right secondary (click)="deleteLanguage(l)" >
-          <ion-icon name="md-trash" ></ion-icon>
-        </button>
-      </ion-item>
-      <ion-list-header>Indispensables</ion-list-header>
-      <ion-item *ngFor="let q of proposedQualities">
-        <span>{{q.libelle}}</span>
-        <button item-right secondary (click)="deleteQuality(l)">
-          <ion-icon name="md-trash"></ion-icon>
-        </button>
-      </ion-item>
-      <button list-item block secondary (click)="saveProposition()">
-        Enregistrer
-      </button>
-    </ion-list>
-
-  </div>
 
 </ion-content>

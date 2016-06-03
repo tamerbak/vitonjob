@@ -1,4 +1,4 @@
-import {Page, NavController, ActionSheet, Platform, Slides,Alert} from 'ionic-angular';
+import {Page, NavController, NavParams, ActionSheet, Platform, Slides,Alert, Modal} from 'ionic-angular';
 import {Storage, SqlStorage, LocalStorage} from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {ViewChild} from '@angular/core'
@@ -14,6 +14,7 @@ import {OffersService} from "../../providers/offers-service/offers-service";
 import {OfferAddPage} from "../offer-add/offer-add";
 import {timeout} from "rxjs/operator/timeout";
 import {InfoUserPage} from "../info-user/info-user";
+import {ModalOfferPropositionPage} from "../modal-offer-proposition/modal-offer-proposition";
 
 
 /**
@@ -58,6 +59,7 @@ export class SearchResultsPage {
      */
     constructor(public globalConfig: GlobalConfigs,
                 public nav: NavController,
+                public navParams : NavParams,
                 private searchService: SearchService,
                 private userService:UserService,
                 private offersService : OffersService,
@@ -140,13 +142,13 @@ export class SearchResultsPage {
                     text: 'Envoyer SMS',
                     icon: 'md-mail',
                     handler: () => {
-						this.sendSMS(item);
+                        this.sendSMS(item);
                     }
                 },{
                     text: 'Appeller',
                     icon: 'md-call',
                     handler: () => {
-						this.dialNumber(item);
+                        this.dialNumber(item);
                     }
                 },{
                     text: 'Annuler',
@@ -259,7 +261,7 @@ export class SearchResultsPage {
     createCriteria(){
         if(!this.searchResults || isUndefined(this.searchResults) || this.searchResults.length == 0)
             return;
-        
+
         this.offerProposition = true;
 
         /*
@@ -275,7 +277,7 @@ export class SearchResultsPage {
             idmetier : 0,
             libellemetier : 0
         };
-        
+
         this.offersService.getOffersJob(idOffer,table).then(data =>{
             if(data && data.length>0)
                 this.proposedJob = data[0];
@@ -322,72 +324,44 @@ export class SearchResultsPage {
     }
 
     /**
-     * @description saves the job proposition in the local storage of the phone
-     */
-    saveProposition(){
-        //  Initialize local storage
-        let local = new Storage(LocalStorage);
-
-        //  Persist the proposed job
-        let jobData = {
-            sector : this.proposedJob.libellemetier,
-            job : this.proposedJob.libellejob,
-            idSector : this.proposedJob.idmetier,
-            idJob : this.proposedJob.id,
-            level : "junior",
-            remuneration : 0,
-            validated : false
-        };
-        local.set('jobData', JSON.stringify(jobData));
-
-        //  Persist languages
-        let languageData = [];
-        for(let i = 0 ; i < this.proposedLanguages.length ; i++){
-            let l = this.proposedLanguages[i];
-            languageData.push({
-                id : l.id,
-                libelle : l.libelle,
-                idlevel : 2,
-                level : "junior"
-            });
-        }
-        local.set('languages', JSON.stringify(languageData));
-
-        //  Persist qualities
-        let qualitiesData = [];
-        for(let i = 0 ; i < this.proposedQualities.length ; i++){
-            let q = this.proposedQualities[i];
-            qualitiesData.push(q);
-        }
-        local.set('qualities', JSON.stringify(qualitiesData));
-
-        //  Offer is ready show page
-        this.nav.push(OfferAddPage);
-    }
-	
-	/**
      * @description dial number of jobyer/employer
      */
-	dialNumber(item){
-		console.log("dial number : " + item.tel);
-		window.location = 'tel:'+ item.tel;
-	}
-	
-	/**
+    dialNumber(item){
+        console.log("dial number : " + item.tel);
+        window.location = 'tel:'+ item.tel;
+    }
+
+    /**
      * @description send sms to jobyer/employer
      */
-	sendSMS(item){
-		console.log("sending SMS to : " + item.tel);
-		var number = item.tel;
-		var options = {
-          replaceLineBreaks: false, // true to replace \n by a new line, false by default
-          android: {
-              intent: 'INTENT'  // send SMS with the native android SMS messaging
+    sendSMS(item){
+        console.log("sending SMS to : " + item.tel);
+        var number = item.tel;
+        var options = {
+            replaceLineBreaks: false, // true to replace \n by a new line, false by default
+            android: {
+                intent: 'INTENT'  // send SMS with the native android SMS messaging
             }
         };
-		var success = function () { console.log('Message sent successfully'); };
-		var error = function (e) { console.log('Message Failed:' + e); };
+        var success = function () { console.log('Message sent successfully'); };
+        var error = function (e) { console.log('Message Failed:' + e); };
 
-		sms.send(number, "", options, success, error);	
-	}
+        sms.send(number, "", options, success, error);
+    }
+
+    toggleProposition(){
+        let proposition = {
+            proposedJob : this.proposedJob,
+            proposedLanguages : this.proposedLanguages,
+            proposedQualities : this.proposedQualities
+        };
+
+        let propositionModal = Modal.create(ModalOfferPropositionPage, proposition);
+        propositionModal.onDismiss(ret =>{
+            if(ret.status == true){
+                this.nav.push(OfferAddPage);
+            }
+        });
+        this.nav.present(propositionModal);
+    }
 }

@@ -1,0 +1,31 @@
+
+<ion-content padding class="modal-offer-proposition">
+  <h2>Proposition</h2>
+  <ion-list >
+    <ion-list-header>Job</ion-list-header>
+    <ion-item>
+      <span>{{proposedJob.libellejob}}</span>
+    </ion-item>
+    <ion-list-header>Langues</ion-list-header>
+    <ion-item *ngFor="let l of proposedLanguages">
+      <span>{{l.libelle}}</span>
+      <button item-right secondary (click)="deleteLanguage(l)" >
+        <ion-icon name="md-trash" ></ion-icon>
+      </button>
+    </ion-item>
+    <ion-list-header>Indispensables</ion-list-header>
+    <ion-item *ngFor="let q of proposedQualities">
+      <span>{{q.libelle}}</span>
+      <button item-right secondary (click)="deleteQuality(l)">
+        <ion-icon name="md-trash"></ion-icon>
+      </button>
+    </ion-item>
+
+  </ion-list>
+  <button block secondary (click)="saveProposition()">
+    Enregistrer
+  </button>
+  <button block primary (click)="cancel()">
+    Annuler
+  </button>
+</ion-content>
