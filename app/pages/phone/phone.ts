@@ -189,21 +189,17 @@ export class PhonePage {
 	/**
 		* @description validate phone data field and call the function that search for it in the server
 	*/
-	watchPhone(e, el) {
+	watchPhone(e) {
+		//190 is the keyCode of dot"."
 		if(e.keyCode == 190){
 			e.preventDefault();
+			return;
 		}
 		if (this.phone) {
-			//todo : unreacheable : attribute maxlengthof input equals 9
-			if (this.phone.length == 10) {
-				if (this.phone.substring(0, 1) == '0') {
-					this.phone = this.phone.substring(1, 10);
-					} else {
-					this.phone = this.phone.substring(0, 9);
-				}
-			}
-			if (this.phone.length == 9) {
-				this.isRegistration(el);
+			if (this.phone.length == 8) {
+				//get the 9th entered character
+				var lastChar = String.fromCharCode(e.keyCode)
+				this.isRegistration(lastChar);
 			}
 		}
 	}
@@ -219,10 +215,10 @@ export class PhonePage {
 	/**
 		* @description function called when the phone input is valid to decide if the form is for inscription or authentication
 	*/
-	isRegistration(el) {
-		if (this.isPhoneValid()) {
+	isRegistration(lastChar) {
+		if (this.isPhoneValid(lastChar)) {
 			//On teste si le tél existe dans la base
-			var tel = "+" + this.index + this.phone;
+			var tel = "+" + this.index + this.phone + '' + lastChar;
 			this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data) => {
 				if (!data || data.status == "failure") {
 					console.log(data);
@@ -230,23 +226,18 @@ export class PhonePage {
 					return;
 				}
 				if (!data || data.data.length == 0) {
-					//el.setFocus();
 					this.showEmailField = true;
-					//$scope.email = "";
 					this.email = "";
 					this.libelleButton = "S'inscrire";
 					} else {
-					//$scope.email = data.data[0]["email"];
 					this.email = data.data[0]["email"];
 					this.libelleButton = "Se connecter";
 					this.showEmailField = false;
 				}
-			})
+			});
 			} else {
 			//ça sera toujours une connexion
-			//el.setFocus();
 			this.showEmailField = true;
-			//$scope.email = "";
 			this.libelleButton = "S'inscrire";
 			this.email = "";
 		}
@@ -255,13 +246,14 @@ export class PhonePage {
 	/**
 		* @description validate the phone format
 	*/
-	isPhoneValid() {
-		if (this.phone != undefined) {
+	isPhoneValid(lastChar) {
+		if (this.phone) {
+			var tel = this.phone + '' + lastChar;
 			var phone_REGEXP = /^0/;
-			var isMatchRegex = phone_REGEXP.test(this.phone);
-			console.log("isMatchRegex = " + isMatchRegex);
-			if (Number(this.phone.length) >= 9 && !isMatchRegex) {
-				console.log('test phone');
+			//check if the phone number start with a zero
+			var isMatchRegex = phone_REGEXP.test(tel);
+			if (Number(tel.length) == 9 && !isMatchRegex) {
+				console.log('phone number is valid');
 				return true;
 			}
 			else
