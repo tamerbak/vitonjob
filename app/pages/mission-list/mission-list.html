@@ -5,25 +5,22 @@
   Ionic pages and navigation.
 -->
 <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" *navbar>
-  <ion-title>{{missionListTitle}}</ion-title>
+  <button menuToggle>
+		<ion-icon name="menu"></ion-icon>
+	</button>
+	<ion-title>{{missionListTitle}}</ion-title>
 </ion-navbar>
 
-<ion-content padding class="mission-list">
+<ion-content padding>
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center> <h6 [style.color]="themeColor"> Liste des contrats signés </h6></ion-col>
         <ion-col width-10></ion-col>
     </ion-row>
-    <ion-list>
-        <ion-item-sliding *ngFor="let item of missionsList">
-            <button ion-item class="large-btn" (click)="goToMissionDetailsPage(item)" >
-                    <ion-row>
-                        Contrat {{item.index}} &nbsp; <span [style.color]="themeColor">  {{item.contratId}} </span>
-                    </ion-row>
-                    <ion-row>
-                        {{item.stat}}
-                    </ion-row>
-            </button>
-        </ion-item-sliding>
+    <ion-list text-wrap>
+        <ion-item *ngFor="let item of contractList" (click)="goToMissionDetailsPage(item)" >
+			<h2>Contrat n° {{item.numero}} signé le {{item.date_signature | dateConverter:'short'}}</h2>
+			<h3 [style.color]="themeColor">{{item.prenom}} {{item.nom}}</h3>
+        </ion-item>
     </ion-list>
 </ion-content>

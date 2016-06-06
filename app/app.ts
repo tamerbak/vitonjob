@@ -94,7 +94,7 @@ export class MyApp {
 		this.themeColor = config.themeColor;
 		
 		//fake call of setMissions from mission-service to fill local db with missions data for test
-		missionService.setMissions();
+		//missionService.setMissions();
 		
 		this.listenToLoginEvents();
 
