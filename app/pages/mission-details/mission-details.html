@@ -8,49 +8,60 @@
   <ion-title>{{missionDetailsTitle}}</ion-title>
 </ion-navbar>
 
-<ion-content padding class="mission-details">
-    <ion-card *ngFor="let day of mission.days">
-        <ion-card-header>
-            Jour {{day.index}}: {{day.date}}  
+<ion-content padding>
+    <ion-card *ngFor="let day of missionHours, let i=index">
+		<ion-card-header (click)="onCardClick(i)">
+            Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}  
         </ion-card-header>
         
-        <ion-list>
-            <ion-item-sliding>
-                <button ion-item class="large-btn" (click)="updateTime(day.time[0].start,mission.index,day.index,true,true)" >
-                    <ion-row>
-                        <ion-col>
-                            Heure de début:
-                        </ion-col>
-                        <ion-col>
-                            {{day.time[0].start}}
-                        </ion-col>
-                    </ion-row>
-                </button>
-            </ion-item-sliding>
-            <ion-item-sliding>
-                <button ion-item class="large-btn" (click)="updateTime(day.time[0].end,mission.index,day.index,true,false)" >
-                    <ion-row>
-                        <ion-col>
-                            Heure de fin:
-                        </ion-col>
-                        <ion-col>
-                            {{day.time[0].end}}
-                        </ion-col>
-                    </ion-row>
-                </button>
-            </ion-item-sliding>
-        </ion-list>
-    </ion-card>
-  
+        <ion-card-content>
+			<ion-list>
+			  <ion-item>
+				<ion-label fixed>H. de début</ion-label>
+				<ion-input value="{{day.heure_debut | timeConverter:'minute'}}" disabled="true"></ion-input>
+			  </ion-item>
+			  <ion-list *ngFor="let startPause of startPauses[i], let j=index">
+			  <ion-item>
+				<h2 (click)="onPauseClick(i, j)">Pause {{j + 1}}</h2>
+			  </ion-item>  
+			  <ion-item>
+				<ion-label fixed>Début de pause</ion-label>
+				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="startPauses[i][j]" (change)="checkPauseHour(i, j, true)"></ion-datetime>
+			  </ion-item>
+			  <ion-item>
+				<ion-label fixed>Fin de pause</ion-label>
+				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="endPauses[i][j]" (change)="checkPauseHour(i, j, false)"></ion-datetime>
+			  </ion-item>
+			  </ion-list>
+			  <ion-item>
+				<ion-label fixed>H. de fin</ion-label>
+				<ion-input value="{{day.heure_fin | timeConverter:'minute'}}" disabled="true"></ion-input>
+			  </ion-item>
+			</ion-list>
+		</ion-card-content>
+	</ion-card>	
+	<ion-row>
+		<ion-col text-center>
+			<button block (click)="validatePauses()" [style.backgroundColor]="themeColor">
+				<ion-icon name="send"></ion-icon>
+				Valider et notifier le Jobyer
+			</button>
+		</ion-col>
+	</ion-row>
+	<ion-row>
+		<ion-col text-center>
+			<button block (click)="resetForm()" [style.backgroundColor]="themeColor">
+				<ion-icon name="refresh"></ion-icon>
+				Rénitialiser
+			</button>
+		</ion-col>
+	</ion-row>
+	<ion-row>
+		<ion-col text-center>
+			<button block (click)="goBack()" [style.backgroundColor]="themeColor">
+				<ion-icon name="undo"></ion-icon>
+				Quitter
+			</button>
+		</ion-col>
+	</ion-row>
 </ion-content>
-<ion-toolbar position="bottom">
-    <ion-row>
-        <ion-col width-10></ion-col>
-        <ion-col text-center>
-            <button [style.backgroundColor]="themeColor" (click)="goToHomePage()">
-                Quitter
-            </button>
-        </ion-col>
-        <ion-col width-10></ion-col>
-    </ion-row>
-</ion-toolbar>

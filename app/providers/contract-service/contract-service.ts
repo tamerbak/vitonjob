@@ -74,11 +74,10 @@ export class ContractService {
     getContracts(emplyerEntrpriseId:number,projectTarget:string){
 		//  Init project parameters
 		this.configuration = Configs.setConfigs(projectTarget);
-        var sql = "SELECT pk_user_contrat,* FROM user_contrat where fk_user_entreprise ='"+emplyerEntrpriseId+"'";
-                  
-        console.log(sql);
-                  
+        var sql = "SELECT c.pk_user_contrat,c.*, j.nom, j.prenom FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='"+emplyerEntrpriseId+"'";
 
+		console.log(sql);
+                  
 	    return new Promise(resolve => {
 	      let headers = new Headers();
 	      headers.append("Content-Type", 'text/plain');

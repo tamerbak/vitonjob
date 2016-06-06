@@ -1,10 +1,10 @@
+# Specifies files to intentionally ignore when using Git
+# http://git-scm.com/docs/gitignore
+
 node_modules/
 www/build/
 platforms/
 plugins/
-.idea
-.iws
-workspace.xml
-tasks.xml
+*.swp
 .DS_Store
-npm-debug.log
+Thumbs.db

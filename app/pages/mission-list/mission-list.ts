@@ -1,9 +1,12 @@
 import {Page, NavController} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
-import {MissionService} from '../../providers/mission-service/mission-service';
+import {ContractService} from '../../providers/contract-service/contract-service';
 import {DatePicker} from 'ionic-native';
 import {MissionDetailsPage} from '../mission-details/mission-details';
+import {Storage, SqlStorage} from 'ionic-angular';
+import {DateConverter} from '../../pipes/date-converter/date-converter';
+
 
 /*
   Generated class for the MissionListPage page.
@@ -13,6 +16,7 @@ import {MissionDetailsPage} from '../mission-details/mission-details';
 */
 @Page({
   templateUrl: 'build/pages/mission-list/mission-list.html',
+  pipes: [DateConverter]
 })
 export class MissionListPage {
     projectTarget:string;
@@ -22,13 +26,13 @@ export class MissionListPage {
     employer:any;
     jobyer:any;
     society:string;
-    missionsList:any;
+    contractList:any;
     missionListTitle:string;
     
     
     constructor(public gc: GlobalConfigs, 
                 public nav: NavController, 
-                private missionService:MissionService) {
+                private contractService:ContractService) {
         
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -38,23 +42,26 @@ export class MissionListPage {
         
         // Set local variables and messages
         this.themeColor = config.themeColor;
-        this.missionListTitle = "Gestion des missions";
+        this.missionListTitle = "Suivi des missions";
         this.isEmployer = (this.projectTarget=='employer');
-        //get missions
-        
-        missionService.getMissions().then(results =>{
-            var jsonData = JSON.parse(results);
-            //var jsonData = results;
-            if(jsonData){
-                this.missionsList = jsonData;
-            }
-        });
-        
-        
+		this.storage = new Storage(SqlStorage);
+		
+        //get contracts
+        this.storage.get("currentUser").then((value) => {
+			if(value){
+				this.currentUser = JSON.parse(value);
+				var entrepriseId = this.currentUser.employer.entreprises[0].id;
+				this.contractService.getContracts(entrepriseId, this.projectTarget).then(data => {
+					if(data.data){
+						this.contractList = data.data;
+					}
+				});	
+			}
+		});
     }
     
-    goToMissionDetailsPage(mission){
-        this.nav.push(MissionDetailsPage,{mission:mission});
+    goToMissionDetailsPage(contract){
+        this.nav.push(MissionDetailsPage,{contract:contract});
     }
     
     showI(){
