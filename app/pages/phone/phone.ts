@@ -187,22 +187,13 @@ export class PhonePage {
 	}
 	
 	/**
-		* @description function called on change of the phone input to validate it
-	*/
-	checkForString(e){
-		if (e.keyCode < 48 || e.keyCode > 57){
-			e.preventDefault();
-			return;
-		}
-	}
-	
-	/**
 		* @description validate phone data field and call the function that search for it in the server
 	*/
 	watchPhone(e, el) {
+		if(e.keyCode == 190){
+			e.preventDefault();
+		}
 		if (this.phone) {
-			this.phone = this.phone.replace("-", "").replace(".", "").replace("+", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "").replace(",", "").replace("#", "").replace("*", "").replace(";", "").replace("N", "");
-			
 			//todo : unreacheable : attribute maxlengthof input equals 9
 			if (this.phone.length == 10) {
 				if (this.phone.substring(0, 1) == '0') {
@@ -222,7 +213,7 @@ export class PhonePage {
 	*/
 	showPhoneError(){
 		if(this.phone)
-		return (this.phone.length != 9);
+			return (this.phone.length != 9);
 	}
 	
 	/**

@@ -28,7 +28,7 @@
 		</ion-col>
 		<ion-col>
 			<ion-item>
-				<ion-input type="text" [(ngModel)]="phone" (keypress)="checkForString($event)" (keyup)="watchPhone($event, focusable)" maxlength="9"></ion-input>
+				<ion-input type="number" [(ngModel)]="phone" (keydown)="watchPhone($event, focusable)" maxlength="9"></ion-input>
 			</ion-item>
 		</ion-col>
 	</ion-row>
