@@ -107,7 +107,7 @@ reste que 3 pour passer à la version officielle.
 
 Pour faire cette migration Il faut adapter la version courante (Beta 7) en suivant les règles suivantes :
 
-1. Remplacer toutes les instances de `@Page` par `@Component` :
+1- Remplacer toutes les instances de `@Page` par `@Component` :
 
 ```
 import {Page} from 'ionic-angular';
@@ -124,7 +124,7 @@ import {Component} from '@angular/core';
 
 })
 ```
-2. Dans le fichier app.ts, remplacer `@App` par `@Component`, ajouter la fonction `ionicBootstrap()` et déplacer
+2- Dans le fichier app.ts, remplacer `@App` par `@Component`, ajouter la fonction `ionicBootstrap()` et déplacer
 les paramètres `config` et `providers` dans cette nouvelle fonction :
 
 ```
@@ -134,9 +134,9 @@ import {App, Platform} from 'ionic-angular';
   templateUrl: 'build/app.html',
   providers: [GlobalConfigs, UserService],
   config: {
-    backButtonText: 'Retour'
+    backButtonText: ''
 }
-export class Hunter {
+export class Vitonjob {
 
 }
 ```
@@ -148,11 +148,11 @@ import {ionicBootstrap, Platform} from 'ionic-angular';
 @Component({
   templateUrl: 'build/app.html',
 })
-export class Hunter {
+export class Vitonjob {
 
 }
 
 ionicBootstrap(Hunter, [GlobalConfigs, UserService], {
-  backButtonText: 'Retour'
+  backButtonText: ''
 });
 ```
