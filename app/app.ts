@@ -1,4 +1,5 @@
-import {App, Platform, IonicApp, MenuController, Nav} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {ionicBootstrap, Platform, App, MenuController, Nav} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {HomePage} from './pages/home/home';
 import {LoginsPage} from './pages/logins/logins';
@@ -26,11 +27,8 @@ import {isUndefined} from "ionic-angular/util";
 import {OffersService} from "./providers/offers-service/offers-service";
 import {ViewChild} from "@angular/core";
 
-@App({
+@Component({
   templateUrl: 'build/menu.html',
-  config: {backButtonText : "Retour"}, // http://ionicframework.com/docs/v2/api/config/Config/
-  providers : [GlobalConfigs, SearchService,UserService,ContractService,SmsService,
-	  MissionService,NetworkService,Helpers, OffersService]
 })
 export class MyApp {
 
@@ -47,7 +45,7 @@ export class MyApp {
 	themeColor: string;
 	
 	constructor(private platform: Platform,
-	private app: IonicApp,
+	private app: App,
 	private menu: MenuController,
 	private gc: GlobalConfigs,
 	private missionService:MissionService,
@@ -198,3 +196,11 @@ export class MyApp {
 	}
 }
 
+// Pass the main app component as the first argument
+// Pass any providers for your app in the second argument
+// Set any config for your app as the third argument:
+// http://ionicframework.com/docs/v2/api/config/Config/
+
+ionicBootstrap(MyApp, [GlobalConfigs, SearchService,UserService,ContractService,SmsService, MissionService,NetworkService,Helpers, OffersService], {
+	backButtonText : "Retour"
+});

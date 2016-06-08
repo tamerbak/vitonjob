@@ -1,4 +1,5 @@
-import {Page, Alert, NavController, Events, Loading} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {Alert, NavController, Events, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -17,7 +18,7 @@ enableProdMode();
 	* @description authentication by phone view
 	* @module Authentication
 */
-@Page({
+@Component({
 	templateUrl: 'build/pages/phone/phone.html',
 	providers: [AuthenticationService, LoadListService, DataProviderService, GlobalService, ValidationDataService]
 })
@@ -126,7 +127,12 @@ export class PhonePage {
 			if (data.id == 0 && data.status == "passwordError") {
 				console.log("Password error");
 				loading.dismiss();
-				this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe est incorrect");
+				if(!this.showEmailField){
+					this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe est incorrect.");
+					}else{
+					console.log("used email error");
+					this.globalService.showAlertValidation("VitOnJob", "Cette adresse email a été déjà utilisé. Veuillez choisir une autre.");
+				}
 				return;
 			}
 			
@@ -182,7 +188,7 @@ export class PhonePage {
 			return (!this.index || !this.phone || this.showPhoneError() || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError())
 			} else {
 			//connection
-			return (!this.index || !this.phone || !this.password1)
+			return (!this.index || !this.phone || this.showPhoneError() || !this.password1 || this.showPassword1Error())
 		}
 	}
 	
@@ -190,6 +196,10 @@ export class PhonePage {
 		* @description validate phone data field and call the function that search for it in the server
 	*/
 	watchPhone(e) {
+		//8 is the keyCode of back
+		if(e.keyCode == 8){
+			return;
+		}
 		//190 is the keyCode of dot"."
 		if(e.keyCode == 190){
 			e.preventDefault();
@@ -199,7 +209,12 @@ export class PhonePage {
 			if (this.phone.length == 8) {
 				//get the 9th entered character
 				var lastChar = String.fromCharCode(e.keyCode)
-				this.isRegistration(lastChar);
+				var tempPhone = this.phone + lastChar;
+				this.isRegistration(tempPhone);
+			}
+			if(this.phone.length > 8){
+				e.preventDefault();
+				return;
 			}
 		}
 	}
@@ -209,16 +224,16 @@ export class PhonePage {
 	*/
 	showPhoneError(){
 		if(this.phone)
-			return (this.phone.length != 9);
+		return (this.phone.length != 9);
 	}
 	
 	/**
 		* @description function called when the phone input is valid to decide if the form is for inscription or authentication
 	*/
-	isRegistration(lastChar) {
-		if (this.isPhoneValid(lastChar)) {
+	isRegistration(phone) {
+		if (this.isPhoneValid(phone)) {
 			//On teste si le tél existe dans la base
-			var tel = "+" + this.index + this.phone + '' + lastChar;
+			var tel = "+" + this.index + phone;
 			this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data) => {
 				if (!data || data.status == "failure") {
 					console.log(data);
@@ -246,9 +261,8 @@ export class PhonePage {
 	/**
 		* @description validate the phone format
 	*/
-	isPhoneValid(lastChar) {
+	isPhoneValid(tel) {
 		if (this.phone) {
-			var tel = this.phone + '' + lastChar;
 			var phone_REGEXP = /^0/;
 			//check if the phone number start with a zero
 			var isMatchRegex = phone_REGEXP.test(tel);
@@ -276,7 +290,7 @@ export class PhonePage {
 		* @description show error msg if password is not valid
 	*/
 	showPassword1Error(){
-		if(this.password1 && this.showEmailField)
+		if(this.password1)
 		return this.password1.length < 6;
 	}
 	
@@ -296,4 +310,39 @@ export class PhonePage {
 	goBack() {
 		this.nav.rootNav.setRoot(HomePage)
 	}
+	
+	/*passwordForgotten(){
+		if(!this.phone || !this.isPhoneValid(this.phone)){
+			this.globalService.showAlertValidation("VitOnJob", "Veuillez saisir un numéro de téléphone valide.");
+			return;
+		}
+		let loading = Loading.create({
+			content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+			spinner : 'hide'
+		});
+		this.nav.present(loading);
+		var tel = "+" + this.index + this.phone;
+		this.authService.setNewPassword(tel).then((data) => {
+			if (data && data.status.includes("no account found")) {
+				console.log(data);
+				loading.dismiss();
+				this.globalService.showAlertValidation("VitOnJob", "Aucun compte ne correspond à ce numéro de téléphone.");
+				return;
+			}
+			if (!data || data.status == "failure") {
+				console.log(data);
+				loading.dismiss();
+				this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+				return;
+			}
+			if (!data || data.status == "OK") {
+				loading.dismiss();
+				this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Veuillez consulter votre boite email pour le récupérer.");
+			}
+		});
+	}*/
 }

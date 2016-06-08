@@ -7,7 +7,7 @@
     <button menuToggle>
 		<ion-icon name="menu"></ion-icon>
 	</button>
-    <ion-title>Saisie de la civilité</ion-title>
+    <ion-title>{{titlePage}}</ion-title>
 </ion-navbar>
 
 <ion-content padding>
@@ -72,7 +72,7 @@
 	
     <ion-item [hidden]="isEmployer">
         <ion-label floating>Nationalité</ion-label>
-        <ion-select [(ngModel)]="nationality" (change)="onChangeNationality($event)">
+        <ion-select [(ngModel)]="nationality" (ionChange)="onChangeNationality($event)">
             <ion-option *ngFor="let n of nationalities" value="{{n.pk_user_nationalite}}">{{n.libelle}}</ion-option>
 		</ion-select>
 	</ion-item>

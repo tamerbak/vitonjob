@@ -174,7 +174,7 @@ export class AuthenticationService {
 			cp = this.getZipCodeFromGoogleAddress(address);
 			ville = this.getCityFromGoogleAddress(address);
 			pays = this.getCountryFromGoogleAddress(address);
-		}else{
+			}else{
 			street = this.getStreetFromGeolocAddress(geolocAddress);
 			ville = this.getCityFromGeolocAddress(geolocAddress);
 			pays = this.getCountryFromGeolocAddress(geolocAddress);
@@ -228,7 +228,7 @@ export class AuthenticationService {
 			cp = this.getZipCodeFromGoogleAddress(address);
 			ville = this.getCityFromGoogleAddress(address);
 			pays = this.getCountryFromGoogleAddress(address);
-		}else{
+			}else{
 			street = this.getStreetFromGeolocAddress(geolocAddress);
 			ville = this.getCityFromGeolocAddress(geolocAddress);
 			pays = this.getCountryFromGeolocAddress(geolocAddress);
@@ -292,7 +292,7 @@ export class AuthenticationService {
 	getStreetFromGeolocAddress(result){
 		if(result.address_components[0].types[0] == "route"){
 			return result.address_components[0].long_name;	
-		}else{
+			}else{
 			return "";
 		}
 	}
@@ -312,7 +312,7 @@ export class AuthenticationService {
 		}
 		return cp;
 	}
-
+	
 	/**
 		* @description function to get the city name from an address returned by the google places service
 		* @param address
@@ -336,7 +336,7 @@ export class AuthenticationService {
 	getCityFromGeolocAddress(result){
 		if(result.address_components[3].types[0] == "locality"){
 			return result.address_components[3].long_name;	
-		}else{
+			}else{
 			return "";
 		}
 	}
@@ -364,7 +364,7 @@ export class AuthenticationService {
 	getCountryFromGeolocAddress(result){
 		if(result.address_components[6].types[0] == "country"){
 			return result.address_components[6].long_name;	
-		}else{
+			}else{
 			return "";
 		}
 	}
@@ -387,16 +387,16 @@ export class AuthenticationService {
 		var encodedData = btoa(scanData);
 		
 		var body = {
-        'class': 'fr.protogen.masterdata.model.CCallout',
-        'id': 97,
-        'args': [{
-          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
-          label: 'Upload fichier',
-          value: encodedData
-        }]
-      };
-      var stringData = JSON.stringify(body);
-	
+			'class': 'fr.protogen.masterdata.model.CCallout',
+			'id': 97,
+			'args': [{
+				'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+				label: 'Upload fichier',
+				value: encodedData
+			}]
+		};
+		var stringData = JSON.stringify(body);
+		
 		//  send request
 		return new Promise(resolve => {
 			let headers = new Headers();
@@ -405,6 +405,30 @@ export class AuthenticationService {
 			.subscribe(data => {
 	            this.data = data;
 	            resolve(this.data);
+			});
+		});
+	}
+	
+	setNewPassword(phone){
+		let encodedArg = btoa(phone);
+		
+		let payload = {
+			'class': 'fr.protogen.masterdata.model.CCallout',
+			id: 148,
+			args: [{
+				'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+				label: 'Contact to create',
+				value: encodedArg
+			}]
+		};
+		return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'application/json');
+			this.http.post(this.configuration.calloutURL, JSON.stringify(payload), {headers: headers})
+			.map(res => res.json())
+			.subscribe(data => {
+				this.status = data;
+				resolve(this.status);
 			});
 		});
 	}

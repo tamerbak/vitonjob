@@ -1,4 +1,5 @@
-import {NavController, Page, IonicApp, NavParams, Tabs, Alert, Loading} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {Alert, NavController, NavParams, Tabs, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {GooglePlaces} from '../../components/google-places/google-places';
@@ -15,7 +16,7 @@ enableProdMode();
 	* @description update job address for employers and jobyers
 	* @module Authentication
 */
-@Page({
+@Component({
 	directives: [GooglePlaces],
 	templateUrl: 'build/pages/job-address/job-address.html',
 	providers: [AuthenticationService, GlobalService]
@@ -24,6 +25,7 @@ export class JobAddressPage {
 	searchData : string;
 	geolocAddress;
 	geolocResult;
+	titlePage: string;
 	
 	/**
 		* @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
@@ -44,6 +46,7 @@ export class JobAddressPage {
 		// Set local variables and messages
 		this.themeColor = config.themeColor;
 		this.isEmployer = (this.projectTarget == 'employer');
+		this.titlePage = this.isEmployer ? "Adresse mission" : "Adresse de départ au travail";
 		this.tabs=tabs;
 		this.storage = new Storage(SqlStorage);
 		//get current employer data from params passed by phone/mail connection
@@ -81,7 +84,7 @@ export class JobAddressPage {
 	displayRequestAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Localisation: êtes-vous dans votre lieu de départ au travail??",
+			message: "Localisation: êtes-vous dans votre" + (this.isEmployer ? " lieu de mission" : " lieu de départ au travail") +"?",
 			buttons: [
 				{
 					text: 'Non',
@@ -108,7 +111,7 @@ export class JobAddressPage {
 	displayGeolocationAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider votre adresse de départ au travail.",
+			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider votre" + (this.isEmployer ? " adresse de mission." : " adresse de départ au travail."),
 			buttons: [
 				{
 					text: 'Non',

@@ -1,4 +1,5 @@
-import {Page, IonicApp, NavParams, NavController, Loading, Modal} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {App, NavParams, NavController, Loading, Modal} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
@@ -13,7 +14,7 @@ import {Events} from 'ionic-angular';
 import {Keyboard} from "ionic-native/dist/index";
 
 
-@Page({
+@Component({
 	templateUrl: 'build/pages/home/home.html',
 	providers: [GlobalConfigs]
 })
@@ -36,11 +37,11 @@ export class HomePage {
 
 
 	static get parameters() {
-		return [[GlobalConfigs], [IonicApp], [NavController], [NavParams], [SearchService],[NetworkService], [Events]];
+		return [[GlobalConfigs], [App], [NavController], [NavParams], [SearchService],[NetworkService], [Events]];
 	}
 
 	constructor(public globalConfig: GlobalConfigs,
-				private app: IonicApp,
+				private app: App,
 				private nav: NavController,
 				private navParams: NavParams,
 				private searchService: SearchService,
@@ -134,6 +135,7 @@ export class HomePage {
 			this.events.publish('user:logout');
 		}else{
 			this.nav.push(LoginsPage);
+			//this.nav.push(InfoUserPage);
 		}
 	}
 

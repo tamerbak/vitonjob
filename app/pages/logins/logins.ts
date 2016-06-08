@@ -1,11 +1,13 @@
-import {NavController, Page, IonicApp, NavParams} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {NavController, NavParams} from 'ionic-angular';
+import {App} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {PhonePage} from '../phone/phone';
 import {MailPage} from '../mail/mail';
 
 
-@Page({
+@Component({
   templateUrl: 'build/pages/logins/logins.html',
   providers: [GlobalConfigs]
 })
@@ -21,7 +23,7 @@ export class LoginsPage {
   mailTabTitle: string;
 
   constructor(public nav: NavController,
-              app: IonicApp,
+              app: App,
               navParams: NavParams,
               gc:GlobalConfigs) {
     // set the root pages for each tab

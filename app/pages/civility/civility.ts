@@ -1,4 +1,5 @@
-import {Page, Alert, NavController, NavParams, Tabs, Loading} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {Alert, NavController, NavParams, Tabs, Loading} from 'ionic-angular';
 import {LoadListService} from "../../providers/load-list.service";
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
@@ -15,7 +16,7 @@ import {NgZone} from '@angular/core';
 	* @description update civility information
 	* @module Authentication
 */
-@Page({
+@Component({
 	templateUrl: 'build/pages/civility/civility.html',
 	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService]
 })
@@ -36,6 +37,9 @@ export class CivilityPage {
 	ape:string;
 	scanUri: string;
 	scanTitle: string;
+	titlePage: string;
+	//isAPEValid = true;
+	//isSIRETValid = true;
 	
 	/**
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
@@ -56,6 +60,7 @@ export class CivilityPage {
 		this.tabs=tabs;
 		this.params = params;
 		this.currentUser = this.params.data.currentUser;
+		this.titlePage = this.isEmployer ? "Fiche de l'entreprise" : "Page civilité";
 		
 		//load nationality list
 		if(!this.isEmployer){
@@ -202,7 +207,7 @@ export class CivilityPage {
 			return (!this.title || !this.firstname || !this.lastname || !this.cni || this.cni.length < 12 || !this.numSS || this.numSS.length < 21 || !this.nationality || !this.birthplace || !this.birthdate)
 		}
 		else{
-			return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5)
+			return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || !this.isSIRETValid || !this.ape || !this.isAPEValid)
 		}	
 	}
 	
@@ -294,6 +299,32 @@ export class CivilityPage {
 		}
 	}
 	
+	isNumeric(n)  
+	{  
+		var numbers = /^[0-9]+$/;  
+		if(n.match(numbers))  
+		{  
+			return true;  
+		}  
+		else  
+		{  
+			return false;  
+		}  
+	} 
+	
+	isLetter(s)  
+	{  
+		var letters = /^[A-Za-z]+$/;  
+		if(s.match(letters))  
+		{  
+			return true;  
+		}  
+		else  
+		{  
+			return false;  
+		}  
+	}
+	
 	/**
 		* @description change the ape data to uppercase
 	*/
@@ -325,7 +356,7 @@ export class CivilityPage {
 		* @description read the file to upload and convert it to base64
 	*/
 	onChangeUpload(e){
-		var file = e.srcElement.files[0];
+		var file = e.target.files[0];
 		var myReader = new FileReader();
 		myReader.onloadend = (e) =>{
 			this.scanUri = myReader.result;
@@ -342,10 +373,10 @@ export class CivilityPage {
 			targetWidth: 1000,
 			targetHeight: 1000
 			}).then((imageData) => {
-				this.zone.run(()=>{
-					// imageData is a base64 encoded string
-					this.scanUri = "data:image/jpeg;base64," + imageData;
-				});
+			this.zone.run(()=>{
+				// imageData is a base64 encoded string
+				this.scanUri = "data:image/jpeg;base64," + imageData;
+			});
 			}, (err) => {
 			console.log(err);
 		});
