@@ -25,7 +25,7 @@ export class MissionService {
 	
 	listMissionHours(contract){
 		//  Init project parameters
-		var sql = "SELECT pk_user_heure_mission as id, jour_debut, jour_fin, heure_debut, heure_fin FROM user_heure_mission where fk_user_contrat = '"+contract.pk_user_contrat+"'";
+		var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, p.debut as pause_debut, p.fin as pause_fin FROM user_heure_mission as h, user_pause as p where fk_user_contrat = '"+contract.pk_user_contrat+"' and p.fk_user_heure_mission = h.pk_user_heure_mission";
 		
 		console.log(sql);
 		

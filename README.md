@@ -102,9 +102,10 @@ $ cordova plugin add cordova-sms-plugin
 
 ## Environnement
 
-Le projet est compatible avec Ionic la version Beta 8.
+Le projet est compatible avec Ionic la version Beta 8 (non officielle), qui contient 37 sujet d'amélioration. Il ne
+reste que 3 pour passer à la version officielle.
 
-Pour faire cette migration il faut adapter la version courante (Beta 7) en suivant les règles suivantes :
+Pour faire cette migration Il faut adapter la version courante (Beta 7) en suivant les règles suivantes :
 
 1- Remplacer toutes les instances de `@Page` par `@Component` :
 
@@ -151,9 +152,7 @@ export class Vitonjob {
 
 }
 
-ionicBootstrap(Vitonjob, [GlobalConfigs, UserService], {
+ionicBootstrap(Hunter, [GlobalConfigs, UserService], {
   backButtonText: ''
 });
 ```
-
-La liste complète des changements est sur ce lien :  https://github.com/driftyco/ionic/blob/2.0/CHANGELOG.md

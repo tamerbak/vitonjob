@@ -1,4 +1,5 @@
-import {Alert, NavController} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {Alert, NavController, NavParams, Events, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -8,7 +9,6 @@ import {GlobalService} from "../../providers/global.service";
 import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
 import {InfoUserPage} from "../info-user/info-user";
-import {Component} from "@angular/core";
 import {Storage, SqlStorage} from 'ionic-angular';
 
 
@@ -281,4 +281,4 @@ export class MailPage {
 	goBack() {
 		this.nav.pop(HomePage);
 	}
-}	
+}

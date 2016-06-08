@@ -1,4 +1,5 @@
-import {NavController, App, NavParams, Tabs, Alert, Loading} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {Alert, NavController, NavParams, Tabs, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {GooglePlaces} from '../../components/google-places/google-places';
@@ -7,8 +8,8 @@ import {OfferListPage} from "../offer-list/offer-list";
 import {GlobalService} from "../../providers/global.service";
 import {Geolocation} from 'ionic-native';
 import {Storage, SqlStorage} from 'ionic-angular';
-import {enableProdMode, ElementRef, Renderer, Component} from '@angular/core'; 
-enableProdMode();
+import {HomePage} from "../home/home";
+import {ElementRef, Renderer} from '@angular/core'; 
 
 /**
 	* @author Amal ROCHD
@@ -24,11 +25,12 @@ export class JobAddressPage {
 	searchData : string;
 	geolocAddress;
 	geolocResult;
+	titlePage: string;
 	
 	/**
 		* @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
 	*/
-	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, tabs:Tabs, public nav: NavController, public elementRef: ElementRef, public renderer: Renderer, private globalService: GlobalService) {
+	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, tabs:Tabs, public nav: NavController, public elementRef: ElementRef, public renderer: Renderer, private globalService: GlobalService){
 		//manually entered address
 		this.searchData = "";
 		//formatted geolocated address
@@ -44,6 +46,7 @@ export class JobAddressPage {
 		// Set local variables and messages
 		this.themeColor = config.themeColor;
 		this.isEmployer = (this.projectTarget == 'employer');
+		this.titlePage = this.isEmployer ? "Adresse mission" : "Adresse de départ au travail";
 		this.tabs=tabs;
 		this.storage = new Storage(SqlStorage);
 		//get current employer data from params passed by phone/mail connection
@@ -81,7 +84,7 @@ export class JobAddressPage {
 	displayRequestAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Localisation: êtes-vous dans votre lieu de départ au travail??",
+			message: "Localisation: êtes-vous dans votre" + (this.isEmployer ? " lieu de mission" : " lieu de départ au travail") +"?",
 			buttons: [
 				{
 					text: 'Non',
@@ -108,7 +111,7 @@ export class JobAddressPage {
 	displayGeolocationAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider votre adresse de départ au travail.",
+			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider votre" + (this.isEmployer ? " adresse de mission." : " adresse de départ au travail."),
 			buttons: [
 				{
 					text: 'Non',
@@ -206,7 +209,7 @@ export class JobAddressPage {
 			if(!this.isAddressModified()){
 				loading.dismiss();
 				//redirecting to offer list page
-				this.nav.push(OfferListPage);
+				this.nav.parent.parent.push(OfferListPage);
 				return;
 			}
 			//if address is manually entered
@@ -214,7 +217,7 @@ export class JobAddressPage {
 				loading.dismiss();
 				this.globalService.showAlertValidation("VitOnJob", "Cette adresse n'est pas reconnaissable. Vous serez notifié après sa validation par notre équipe.");
 				//redirecting to offer list
-				this.nav.push(OfferListPage);
+				this.nav.parent.parent.push(OfferListPage);
 				return;
 			}
 			if(this.geolocResult == null){
@@ -242,7 +245,7 @@ export class JobAddressPage {
 						this.storage.set('currentUser', JSON.stringify(this.currentUser));
 						loading.dismiss();
 						//redirecting to offer list page
-						this.nav.push(OfferListPage);
+						this.nav.parent.parent.push(OfferListPage);
 					}
 				});
 				}else{
@@ -262,7 +265,7 @@ export class JobAddressPage {
 						this.storage.set('currentUser', JSON.stringify(this.currentUser));
 						loading.dismiss();
 						//redirecting to offer list page
-						this.nav.push(OfferListPage);
+						this.nav.parent.parent.push(OfferListPage);
 					}
 				});
 			}
@@ -276,4 +279,4 @@ export class JobAddressPage {
 			return this.searchData != this.currentUser.jobyer.workAdress.fullAdress;
 		}
 	}
-}					
+}

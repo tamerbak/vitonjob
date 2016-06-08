@@ -1,9 +1,10 @@
-import {NavController, App, NavParams} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {NavController, NavParams} from 'ionic-angular';
+import {App} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {PhonePage} from '../phone/phone';
 import {MailPage} from '../mail/mail';
-import {Component} from "@angular/core";
 
 
 @Component({

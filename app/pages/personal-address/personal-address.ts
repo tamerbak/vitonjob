@@ -1,4 +1,5 @@
-import {NavController, App, NavParams, Tabs, Alert, Loading} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {NavController, NavParams, Tabs, Alert, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {GooglePlaces} from '../../components/google-places/google-places';
@@ -6,7 +7,7 @@ import {AuthenticationService} from "../../providers/authentication.service";
 import {GlobalService} from "../../providers/global.service";
 import {Geolocation} from 'ionic-native';
 import {Storage, SqlStorage} from 'ionic-angular';
-import {enableProdMode, ElementRef, Renderer, Component} from '@angular/core';
+import {enableProdMode, ElementRef, Renderer} from '@angular/core'; 
 enableProdMode();
 
 /**
@@ -23,6 +24,7 @@ export class PersonalAddressPage {
 	searchData : string;
 	geolocAddress;
 	geolocResult;
+	titlePage: string;
 	
 	/**
 		* @description While constructing the view, we get the currentUser passed as parameter from the connection page
@@ -43,6 +45,7 @@ export class PersonalAddressPage {
 		// Set local variables and messages
 		this.themeColor = config.themeColor;
 		this.isEmployer = (this.projectTarget == 'employer');
+		this.titlePage = this.isEmployer ? "Adresse siège" : "Adresse personnelle";
 		this.tabs=tabs;
 		this.storage = new Storage(SqlStorage);
 		//get current employer data from params passed by phone/mail connection
@@ -80,7 +83,7 @@ export class PersonalAddressPage {
 	displayRequestAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Localisation: êtes-vous dans votre domicile?",
+			message: "Localisation: êtes-vous dans votre" + (this.isEmployer ? " siège social" : "  domicile") + "?",
 			buttons: [
 				{
 					text: 'Non',
@@ -106,7 +109,7 @@ export class PersonalAddressPage {
 	displayGeolocationAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider votre adresse personnelle.",
+			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider votre adresse" + (this.isEmployer ? " de siège." : " personnelle."),
 			buttons: [
 				{
 					text: 'Non',

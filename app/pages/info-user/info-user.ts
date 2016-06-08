@@ -1,8 +1,10 @@
-import {NavController, App, NavParams} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {NavController, NavParams} from 'ionic-angular';
+import {Configs} from '../../configurations/configs';
+import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {CivilityPage} from '../civility/civility';
 import {PersonalAddressPage} from '../personal-address/personal-address';
 import {JobAddressPage} from '../job-address/job-address';
-import {Component} from "@angular/core";
 
 /**
 	* @author Amal ROCHD
@@ -19,12 +21,12 @@ export class InfoUserPage {
 	civilityTabTitle : string;
 	pAddressTabTitle: string;
 	jAddressTabTitle: string;
+	projectTarget;
 	
 	/**
 		* @description While constructing the tabs, we bind each tab to its page
 	*/
-	constructor(public nav: NavController,
-	app: App,
+	constructor(public nav: NavController, public gc: GlobalConfigs,
 	navParams: NavParams) {
 		// set the root pages for each tab
 		this.civilityRoot = CivilityPage;
@@ -35,8 +37,15 @@ export class InfoUserPage {
 		this.navParams = navParams;
 		this.dataParams = this.navParams.data; 
 		
-		this.civilityTabTitle = "Civilité";
-		this.pAddressTabTitle = "A. personnelle";
-		this.jAddressTabTitle = "A. départ au travail";	
+		// Set global configs
+		this.projectTarget = gc.getProjectTarget();
+		// get config of selected target
+		let config = Configs.setConfigs(this.projectTarget);
+		// Set local variables and messages
+		this.isEmployer = (this.projectTarget == 'employer');
+		
+		this.civilityTabTitle = this.isEmployer ? "Fiche entreprise" : "Civilité";
+		this.pAddressTabTitle = this.isEmployer ? "A. siège" : "A. personnelle";
+		this.jAddressTabTitle = this.isEmployer ? "A. mission" : "A. départ au travail";	
 	}
 }
