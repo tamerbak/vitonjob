@@ -197,13 +197,13 @@ export class PhonePage {
 	*/
 	watchPhone(e) {
 		if (this.phone) {
-			if (this.phone.length == 9) {
+			if (e.target.value.length == 9) {
 				//get the 9th entered character
-				this.isRegistration(this.phone);
+				this.isRegistration(e.target.value);
 				return;
 			}
-			if(this.phone.length > 9){
-				this.phone = this.phone.substring(0, 9);
+			if(e.target.value.length > 9){
+				e.target.value = e.target.value.substring(0, 9);
 				return;
 			}
 		}
