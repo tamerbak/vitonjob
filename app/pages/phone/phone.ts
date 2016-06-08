@@ -196,24 +196,14 @@ export class PhonePage {
 		* @description validate phone data field and call the function that search for it in the server
 	*/
 	watchPhone(e) {
-		//8 is the keyCode of back
-		if(e.keyCode == 8){
-			return;
-		}
-		//190 is the keyCode of dot"."
-		if(e.keyCode == 190){
-			e.preventDefault();
-			return;
-		}
 		if (this.phone) {
-			if (this.phone.length == 8) {
+			if (this.phone.length == 9) {
 				//get the 9th entered character
-				var lastChar = String.fromCharCode(e.keyCode)
-				var tempPhone = this.phone + lastChar;
-				this.isRegistration(tempPhone);
+				this.isRegistration(this.phone);
+				return;
 			}
-			if(this.phone.length > 8){
-				e.preventDefault();
+			if(this.phone.length > 9){
+				this.phone = this.phone.substring(0, 9);
 				return;
 			}
 		}
