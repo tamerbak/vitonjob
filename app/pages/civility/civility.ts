@@ -207,7 +207,8 @@ export class CivilityPage {
 			return (!this.title || !this.firstname || !this.lastname || !this.cni || this.cni.length < 12 || !this.numSS || this.numSS.length < 21 || !this.nationality || !this.birthplace || !this.birthdate)
 		}
 		else{
-			return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || !this.isSIRETValid || !this.ape || !this.isAPEValid)
+			return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5)
+			
 		}	
 	}
 	
