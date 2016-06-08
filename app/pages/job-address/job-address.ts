@@ -279,4 +279,4 @@ export class JobAddressPage {
 			return this.searchData != this.currentUser.jobyer.workAdress.fullAdress;
 		}
 	}
-}					
+}

@@ -1,8 +1,9 @@
-import {Page, NavController, Modal, ViewController, NavParams, Alert} from 'ionic-angular';
+import { NavController, Modal, ViewController, NavParams, Alert} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalSelectionPage} from "../modal-selection/modal-selection";
 import {OffersService} from "../../providers/offers-service/offers-service";
+import {Component} from "@angular/core";
 
 /*
  Generated class for the ModalQualityPage page.
@@ -10,7 +11,7 @@ import {OffersService} from "../../providers/offers-service/offers-service";
  See http://ionicframework.com/docs/v2/components/#navigation for more info on
  Ionic pages and navigation.
  */
-@Page({
+@Component({
     templateUrl: 'build/pages/modal-quality/modal-quality.html',
     providers: [OffersService]
 })

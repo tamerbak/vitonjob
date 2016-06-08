@@ -1,5 +1,5 @@
 import {Storage, SqlStorage} from 'ionic-angular';
-import {Page, NavController, NavParams, Loading,ActionSheet,Alert} from 'ionic-angular';
+import { NavController, NavParams, Loading,ActionSheet,Alert} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {ContractService} from '../../providers/contract-service/contract-service';
@@ -10,6 +10,7 @@ import {CivilityPage} from '../civility/civility';
 import {JobAddressPage} from '../job-address/job-address';
 import {PersonalAddressPage} from '../personal-address/personal-address';
 import {MissionListPage} from '../mission-list/mission-list';
+import {Component} from "@angular/core";
 
 
 /**
@@ -17,7 +18,7 @@ import {MissionListPage} from '../mission-list/mission-list';
  * @description Generate contract informations and call yousign service
  * @module Contract
  */
-@Page({
+@Component({
   templateUrl: 'build/pages/yousign/yousign.html',
 })
 export class YousignPage {

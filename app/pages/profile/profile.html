@@ -14,30 +14,47 @@
 <ion-content padding class="profile">
 
     <button fab fab-top fab-right [style.backgroundColor]="themeColor"
-            style="color: yellow" >
-        <ion-icon name="star"></ion-icon>
+            (click)="goToSettings()">
+        <ion-icon name="settings"></ion-icon>
     </button>
 
     <button fab fab-top fab-right [style.backgroundColor]="themeColor"
-            style="right:78px;" >
+            style="right:78px;">
         <ion-icon name="analytics"></ion-icon>
     </button>
 
     <button fab fab-top fab-right [style.backgroundColor]="themeColor"
-            style="right:139px;" >
-        <ion-icon name="finger-print"></ion-icon>
+            style="right:139px; color: yellow;" (click)="setStarPicker()">
+        <ion-icon name="star"></ion-icon>
     </button>
 
-    <button fab fab-top fab-left class="img-button">
+    <button fab fab-top fab-left class="img-button" (click)="showPictureModel()"
+            [style.backgroundColor]="thirdThemeColor">
         <img [src]="userImageURL">
     </button>
+
+    <!-- CIVILITY-->
 
     <ion-card style="margin-top: 110px">
         <ion-item-divider light>Civilité</ion-item-divider>
         <ion-card-content>
-            <p>Titre : Mr</p>
-            <p>Nom : EL BAKKALI</p>
-            <p>Prénom : Tamer</p>
+            <ion-item text-wrap>
+                <h5>{{userData.titre}} {{userData.nom}} {{userData.prenom}}</h5>
+                <p *ngIf="!isEmployer">{{userData.nationalite}}, {{(userData==='M.') ? 'né' : 'née'}} à
+                    {{userData.jobyer.lieuNaissance}} le {{userData.jobyer.dateNaissance}}</p>
+                <ul *ngIf="!isEmployer" style="font-size: 1.3rem;">
+                    <li>CNI: {{userData.jobyer.cni}}</li>
+                    <li>Numéro SS: {{userData.jobyer.numSS}}</li>
+                </ul>
+            </ion-item>
+            <ion-item test-wrap *ngIf="isEmployer">
+                <h5>{{userData.employer.entreprises[0].nom}}</h5>
+                <p></p>
+                <ul style="font-size: 1.3rem;">
+                    <li>SIRET: {{userData.employer.entreprises[0].siret}}</li>
+                    <li>NAF: {{userData.employer.entreprises[0].naf}}</li>
+                </ul>
+            </ion-item>
         </ion-card-content>
         <div class="button-footer">
             <button clear [style.color]="themeColor">
@@ -55,20 +72,26 @@
     <ion-card class="adv-map" style="margin-top: 0;">
         <ion-item text-wrap>
             <ion-icon subtle large item-left name='pin' style="color: #14baa6"></ion-icon>
-            <h5>Adresse personnelle</h5>
-            <p>44 Rue de Info, 75010 Paris, France</p>
+            <h5 *ngIf="!isEmployer">Adresse personnelle</h5>
+            <h5 *ngIf="isEmployer">Adresse du siège</h5>
+            <p *ngIf="!isEmployer">{{userData.jobyer.siegeAdress.fullAdress}}</p>
+            <p *ngIf="isEmployer">{{userData.employer.entreprises[0].siegeAdress.fullAdress}}</p>
+            <button clear item-right><ion-icon name="create"></ion-icon></button>
         </ion-item>
         <ion-item text-wrap>
             <ion-icon subtle large item-left name='pin' style="color: #757575"></ion-icon>
-            <h5>A. départ au travail</h5>
-            <p>1 Avenue Faux, 75010 Paris, France 1 Avenue Faux, 75010 Paris, France </p>
+            <h5 *ngIf="!isEmployer">A. départ au travail</h5>
+            <h5 *ngIf="isEmployer">Adresse de la mission</h5>
+            <p *ngIf="!isEmployer">{{userData.jobyer.workAdress.fullAdress}}</p>
+            <p *ngIf="isEmployer">{{userData.employer.entreprises[0].workAdress.fullAdress}}</p>
+            <button clear item-right><ion-icon name="create"></ion-icon></button>
         </ion-item>
-        <div class="button-footer">
+        <!--div class="button-footer">
             <button clear [style.color]="themeColor">
                 <ion-icon name="create"></ion-icon>
                 <div>Modifier</div>
             </button>
-        </div>
+        </div-->
     </ion-card>
 
 

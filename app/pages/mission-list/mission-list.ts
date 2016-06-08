@@ -11,7 +11,6 @@ import {DateConverter} from '../../pipes/date-converter/date-converter';
 
 /*
   Generated class for the MissionListPage page.
-
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 */

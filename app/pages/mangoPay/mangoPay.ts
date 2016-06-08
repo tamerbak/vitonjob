@@ -1,9 +1,10 @@
-import {Page, NavController} from 'ionic-angular';
+import {NavController} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {OfferPage} from "../offer/offer";
+import {Component} from "@angular/core";
 
-@Page({
+@Component({
   templateUrl: 'build/pages/mangoPay/mangoPay.html',
 })
 export class MangoPayPage {

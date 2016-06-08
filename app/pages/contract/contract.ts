@@ -1,4 +1,4 @@
-import {Page, NavController, NavParams, ActionSheet, Alert, Modal} from 'ionic-angular';
+import { NavController, NavParams, ActionSheet, Alert, Modal} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {UserService} from "../../providers/user-service/user-service";
@@ -9,6 +9,7 @@ import {YousignPage} from '../yousign/yousign';
 import {isUndefined} from "ionic-angular/util";
 import {ModalOffersPage} from "../modal-offers/modal-offers";
 import {ContractService} from "../../providers/contract-service/contract-service";
+import {Component} from "@angular/core";
 
 
 /**
@@ -16,7 +17,7 @@ import {ContractService} from "../../providers/contract-service/contract-service
  * @description Generate contract informations and call yousign service
  * @module Contract
  */
-@Page({
+@Component({
     templateUrl: 'build/pages/contract/contract.html',
     providers:[UserService][ContractService]
 })

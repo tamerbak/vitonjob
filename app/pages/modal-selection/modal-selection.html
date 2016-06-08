@@ -15,7 +15,7 @@
 
 <ion-content padding class="modal-selection">
   <ion-searchbar [(ngModel)]="searchQuery"
-                 (input)="getItems($event)"
+                 (ionInput)="getItems($event)"
                  [placeholder]="searchPlaceholder"
                  [cancelButtonText]="cancelButtonText"></ion-searchbar>
   <ion-list text-wrap>

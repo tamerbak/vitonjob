@@ -68,7 +68,7 @@
 		<ion-input type="text" [(ngModel)]="numSS" (keypress)="watchNumSS($event)" maxlength="21"></ion-input>
 	</ion-item>
 	<div *ngIf="showNSSError()" 
-	class="error-box">* Saisissez les 21 chiffres du n° SS</div>
+	class="error-box">* Saisissez les 15 chiffres du n° SS</div>
 	
     <ion-item [hidden]="isEmployer">
         <ion-label floating>Nationalité</ion-label>

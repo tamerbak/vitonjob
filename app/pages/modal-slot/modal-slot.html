@@ -1,0 +1,58 @@
+<!--
+  Generated template for the ModalSlotPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
+  <ion-title>Sélection d'un créneau</ion-title>
+</ion-navbar>
+
+<ion-content padding class="modal-slot">
+  <ion-list>
+
+    <!--ion-item>
+      <ion-label floating>Date</ion-label>
+      <ion-input type="text" [(ngModel)] = "showedSlot.date"
+                 (focus)="launchDateTimePicker('date')"></ion-input>
+    </ion-item-->
+
+    <ion-item text-wrap>
+      <ion-label>Date</ion-label>
+      <ion-datetime id="idt" displayFormat="DD, MMMM YYYY" [(ngModel)]="showedSlot.date"
+                    min="{{showedSlot.date}}" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
+    </ion-item>
+
+    <!--ion-item>
+      <ion-label floating>Heure de début</ion-label>
+      <ion-input type="text" [(ngModel)] = "showedSlot.startHour"
+                 (focus)="launchDateTimePicker('time', 'start')"></ion-input>
+    </ion-item-->
+    <ion-item text-wrap>
+      <ion-label>Heure de Début</ion-label>
+      <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.startHour"
+                    minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
+    </ion-item>
+
+    <!--ion-item>
+      <ion-label floating>Heure de fin</ion-label>
+      <ion-input type="text" [(ngModel)] = "showedSlot.endHour"
+                 (focus)="launchDateTimePicker('time', 'end')"></ion-input>
+    </ion-item-->
+    <ion-item text-wrap>
+      <ion-label>Heure de fin</ion-label>
+      <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.endHour"
+                    minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
+    </ion-item>
+  </ion-list>
+
+  <ion-row>
+    <ion-col text-center>
+      <button [hidden]="false"
+              [style.backgroundColor]="themeColor" (click)="validateModal()">
+        Valider
+        <ion-icon name="checkmark-circle"></ion-icon>
+      </button>
+    </ion-col>
+  </ion-row>
+</ion-content>

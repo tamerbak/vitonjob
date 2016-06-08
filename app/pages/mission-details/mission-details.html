@@ -26,11 +26,11 @@
 			  </ion-item>  
 			  <ion-item>
 				<ion-label fixed>Début de pause</ion-label>
-				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="startPauses[i][j]" (change)="checkPauseHour(i, j, true)"></ion-datetime>
+				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="startPauses[i][j]" (ionChange)="checkPauseHour(i, j, true)"></ion-datetime>
 			  </ion-item>
 			  <ion-item>
 				<ion-label fixed>Fin de pause</ion-label>
-				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="endPauses[i][j]" (change)="checkPauseHour(i, j, false)"></ion-datetime>
+				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="endPauses[i][j]" (ionChange)="checkPauseHour(i, j, false)"></ion-datetime>
 			  </ion-item>
 			  </ion-list>
 			  <ion-item>
@@ -42,7 +42,7 @@
 	</ion-card>	
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="validatePauses()" [style.backgroundColor]="themeColor">
+			<button block (click)="validatePauses()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission">
 				<ion-icon name="send"></ion-icon>
 				Valider et notifier le Jobyer
 			</button>
@@ -50,7 +50,7 @@
 	</ion-row>
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="resetForm()" [style.backgroundColor]="themeColor">
+			<button block (click)="resetForm()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission">
 				<ion-icon name="refresh"></ion-icon>
 				Rénitialiser
 			</button>

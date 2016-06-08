@@ -10,10 +10,6 @@
 <ion-content class="home">
     <div class="networkAlert">{{networkService.getNetworkStat()}}</div>
 
-    <button fab fab-bottom fab-center [style.backgroundColor]="themeColor"
-            (click)="launchVoiceRecognition()" [hidden]="(keyboard)? keyboard.isOpen():false">
-        <ion-icon name="mic" [hidden]="recording"></ion-icon>
-    </button>
     <button fab fab-bottom fab-center (click)="stopRecognition()"
             [style.backgroundColor]="themeColor" [hidden] = "!recording">
         <ion-spinner name="dots"></ion-spinner>
@@ -64,7 +60,13 @@
         <ion-col width-10></ion-col>
     </ion-row>
 
-    <div class="draggable ui-widget-content">
+    <button fab fab-bottom fab-center [style.backgroundColor]="themeColor"
+            (click)="launchVoiceRecognition()" [hidden]="(keyboard)? keyboard.isOpen():false">
+        <ion-icon name="mic" [hidden]="recording"></ion-icon>
+    </button>
+
+
+    <!--div class="draggable ui-widget-content">
         <ion-list>
             <ion-list-header><ion-icon  name="move"></ion-icon>Recherche</ion-list-header>
             <ion-item>
@@ -79,7 +81,7 @@
             </ion-item>
         </ion-list>
 
-    </div>
+    </div-->
 
 
     <!--div id="drag">

@@ -1,8 +1,10 @@
-import {Page, NavController, ViewController, Alert} from 'ionic-angular';
+import {NavController, ViewController, Alert, Modal} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {DatePicker} from "ionic-native/dist/index";
 import {DatePickerOptions} from "ionic-native/dist/plugins/datepicker";
+import {ModalSlotPage} from "../modal-slot/modal-slot";
+import {Component} from "@angular/core";
 
 /*
  Generated class for the ModalCalendarPage page.
@@ -10,22 +12,22 @@ import {DatePickerOptions} from "ionic-native/dist/plugins/datepicker";
  See http://ionicframework.com/docs/v2/components/#navigation for more info on
  Ionic pages and navigation.
  */
-@Page({
+@Component({
     templateUrl: 'build/pages/modal-calendar/modal-calendar.html',
 })
 export class ModalCalendarPage {
 
     slots:Array<{
-        'class' : "com.vitonjob.callouts.auth.model.CalendarData",
-        idCalendar : number,
-        type : string,
+        'class':"com.vitonjob.callouts.auth.model.CalendarData",
+        idCalendar:number,
+        type:string,
         date:number,
         startHour:number,
         endHour:number
     }>;
 
-    dateOptions: DatePickerOptions;
-    timeOptions: DatePickerOptions;
+    dateOptions:DatePickerOptions;
+    timeOptions:DatePickerOptions;
 
     constructor(public nav:NavController, gc:GlobalConfigs, viewCtrl:ViewController) {
         // Set global configs
@@ -41,14 +43,7 @@ export class ModalCalendarPage {
         this.calendarTheme = config.calendarTheme;
         this.nav = nav;
 
-        this.slots = [{
-            'class' : "com.vitonjob.callouts.auth.model.CalendarData",
-            idCalendar : 0,
-            date: Date.now(),
-            startHour: 630,
-            endHour: 1260,
-            type : "regular"
-        }];
+        this.slots = [];
         this.dateOptions = {
             weekday: "long", year: "numeric", month: "long",
             day: "numeric"//, hour: "2-digit", minute: "2-digit"
@@ -90,40 +85,20 @@ export class ModalCalendarPage {
      * Theme_DeviceDefault_Dialog_Alert : 9,
      * Theme_DeviceDefault_Light_Dialog_Alert : 10
      */
-    showDatePicker(type:string) {
-
-        let firstPartDate: any;
-
-        DatePicker.show({
-            date: new Date(),
-            mode: type,
-            minuteInterval: 15, androidTheme: this.calendarTheme, is24Hour:true
-        }).then(
-            date => {
-                console.log("Got date: ", date);
-                firstPartDate = {
-                    date: date.getTime(),
-                    startHour: date.getHours() * 60 + date.getMinutes(),//date.toLocaleString('fr-FR', this.timeOptions),
-                    endHour: 0};
-                DatePicker.show({
-                    date: new Date(),
-                    mode: 'time',
-                    minuteInterval: 15, androidTheme: this.calendarTheme, is24Hour:true
-                }).then(
-                    (date) => {
-                        console.log("Got date: ", date);
-                        //TODO: Control date value before adding theme.
-                        this.slots.push({
-                            'class' : 'com.vitonjob.callouts.auth.model.CalendarData',
-                            date: firstPartDate.date,
-                            startHour: firstPartDate.startHour,
-                            endHour: date.getHours() * 60 + date.getMinutes()})
-                    },
-                    err => console.log("Error occurred while getting date:", err)
-                );
-            },
-            err => console.log("Error occurred while getting date:", err)
-        );
+    showSlotModal() {
+        let slotModel = Modal.create(ModalSlotPage);
+        slotModel.onDismiss(slotData => {
+            //TODO: Control date value before adding theme.
+            if (slotData) {
+                this.slots.push({
+                    'class': 'com.vitonjob.callouts.auth.model.CalendarData',
+                    date: slotData.date,
+                    startHour: slotData.startHour,
+                    endHour: slotData.endHour
+                });
+            }
+        });
+        this.nav.present(slotModel);
     }
 
     /**
@@ -131,7 +106,7 @@ export class ModalCalendarPage {
      * @Description : Removing a slot from list
      * @param item to be removed
      */
-    removeSlot(item){
+    removeSlot(item) {
         //debugger;
 
         let confirm = Alert.create({
@@ -148,11 +123,12 @@ export class ModalCalendarPage {
                     text: 'Oui',
                     handler: () => {
                         console.log('Agree clicked');
-                        this.slots.splice(this.slots.indexOf(item),1);
+                        this.slots.splice(this.slots.indexOf(item), 1);
                     }
                 }
             ]
         });
+
         this.nav.present(confirm);
     }
 
@@ -161,7 +137,7 @@ export class ModalCalendarPage {
      * @param date : a timestamp date
      * @param options Date options
      */
-    toDateString(date:number, options: any) {
+    toDateString(date:number, options:any) {
         return new Date(date).toLocaleDateString('fr-FR', options);
     }
 

@@ -281,4 +281,4 @@ export class MailPage {
 	goBack() {
 		this.nav.pop(HomePage);
 	}
-}	
+}

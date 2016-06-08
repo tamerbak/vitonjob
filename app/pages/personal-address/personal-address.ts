@@ -277,4 +277,4 @@ export class PersonalAddressPage {
 			return this.searchData != this.currentUser.jobyer.personnalAdress.fullAdress;
 		}
 	}
-}		
+}

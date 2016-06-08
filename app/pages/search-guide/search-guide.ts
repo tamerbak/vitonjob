@@ -1,10 +1,11 @@
-import {NavController, Page, ViewController, Loading} from 'ionic-angular';
+import {NavController, ViewController, Loading} from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
 import {SearchResultsPage} from "../search-results/search-results";
+import {Component} from "@angular/core";
 
 
-@Page({
+@Component({
   templateUrl: 'build/pages/search-guide/search-guide.html',
 })
 export class SearchGuidePage {

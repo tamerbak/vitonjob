@@ -1,4 +1,4 @@
-import {Page, NavController, NavParams, Loading, Modal, Alert} from 'ionic-angular';
+import {NavController, NavParams, Loading, Modal, Alert} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {SearchResultsPage} from "../../pages/search-results/search-results";
@@ -10,6 +10,7 @@ import {ModalQualityPage} from "../modal-quality/modal-quality";
 import {ModalLanguagePage} from "../modal-language/modal-language";
 import {ModalCalendarPage} from "../modal-calendar/modal-calendar";
 import {OfferListPage} from "../offer-list/offer-list";
+import {Component} from "@angular/core";
 
 /*
  Generated class for the OfferDetailPage page.
@@ -17,7 +18,7 @@ import {OfferListPage} from "../offer-list/offer-list";
  See http://ionicframework.com/docs/v2/components/#navigation for more info on
  Ionic pages and navigation.
  */
-@Page({
+@Component({
     templateUrl: 'build/pages/offer-detail/offer-detail.html',
     providers: [GlobalConfigs, OffersService, SearchService]
 })
