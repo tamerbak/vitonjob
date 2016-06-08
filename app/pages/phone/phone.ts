@@ -38,6 +38,7 @@ export class PhonePage {
 	password1: string;
 	password2: string;
 	temp: any;
+	isPhoneNumValid = true;
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
@@ -185,10 +186,10 @@ export class PhonePage {
 	isAuthDisabled() {
 		if (this.showEmailField == true) {
 			//inscription
-			return (!this.index || !this.phone || this.showPhoneError() || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError())
+			return (!this.index || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError())
 			} else {
 			//connection
-			return (!this.index || !this.phone || this.showPhoneError() || !this.password1 || this.showPassword1Error())
+			return (!this.index || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error())
 		}
 	}
 	
@@ -197,14 +198,19 @@ export class PhonePage {
 	*/
 	watchPhone(e) {
 		if (this.phone) {
-			if (e.target.value.length == 9) {
-				//get the 9th entered character
-				this.isRegistration(e.target.value);
-				return;
+			this.isPhoneNumValid = false;
+			if (e.target.value.substring(0,1) == '0') {
+				e.target.value = e.target.value.substring(1, e.target.value.length);
+			}
+			if (e.target.value.includes('.')) {
+				e.target.value = e.target.value.replace('.', '');
 			}
 			if(e.target.value.length > 9){
 				e.target.value = e.target.value.substring(0, 9);
-				return;
+			}
+			if (e.target.value.length == 9) {
+				this.isRegistration(e.target.value);
+				this.isPhoneNumValid = true;
 			}
 		}
 	}
@@ -213,8 +219,8 @@ export class PhonePage {
 		* @description show error msg if phone is not valid
 	*/
 	showPhoneError(){
-		if(this.phone)
-		return (this.phone.length != 9);
+		return !this.isPhoneNumValid;
+		
 	}
 	
 	/**
@@ -303,36 +309,36 @@ export class PhonePage {
 	
 	/*passwordForgotten(){
 		if(!this.phone || !this.isPhoneValid(this.phone)){
-			this.globalService.showAlertValidation("VitOnJob", "Veuillez saisir un numéro de téléphone valide.");
-			return;
+		this.globalService.showAlertValidation("VitOnJob", "Veuillez saisir un numéro de téléphone valide.");
+		return;
 		}
 		let loading = Loading.create({
-			content: ` 
-			<div>
-			<img src='img/loading.gif' />
-			</div>
-			`,
-			spinner : 'hide'
+		content: ` 
+		<div>
+		<img src='img/loading.gif' />
+		</div>
+		`,
+		spinner : 'hide'
 		});
 		this.nav.present(loading);
 		var tel = "+" + this.index + this.phone;
 		this.authService.setNewPassword(tel).then((data) => {
-			if (data && data.status.includes("no account found")) {
-				console.log(data);
-				loading.dismiss();
-				this.globalService.showAlertValidation("VitOnJob", "Aucun compte ne correspond à ce numéro de téléphone.");
-				return;
-			}
-			if (!data || data.status == "failure") {
-				console.log(data);
-				loading.dismiss();
-				this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
-				return;
-			}
-			if (!data || data.status == "OK") {
-				loading.dismiss();
-				this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Veuillez consulter votre boite email pour le récupérer.");
-			}
+		if (data && data.status.includes("no account found")) {
+		console.log(data);
+		loading.dismiss();
+		this.globalService.showAlertValidation("VitOnJob", "Aucun compte ne correspond à ce numéro de téléphone.");
+		return;
+		}
+		if (!data || data.status == "failure") {
+		console.log(data);
+		loading.dismiss();
+		this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+		return;
+		}
+		if (!data || data.status == "OK") {
+		loading.dismiss();
+		this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Veuillez consulter votre boite email pour le récupérer.");
+		}
 		});
 	}*/
 }
