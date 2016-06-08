@@ -38,7 +38,7 @@ export class CivilityPage {
 	scanUri: string;
 	scanTitle: string;
 	titlePage: string;
-	//isAPEValid = true;
+	isAPEValid = true;
 	//isSIRETValid = true;
 	
 	/**
@@ -207,7 +207,7 @@ export class CivilityPage {
 			return (!this.title || !this.firstname || !this.lastname || !this.cni || this.cni.length < 12 || !this.numSS || this.numSS.length < 21 || !this.nationality || !this.birthplace || !this.birthdate)
 		}
 		else{
-			return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5)
+			return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5 || !this.isAPEValid)
 			
 		}	
 	}
@@ -257,47 +257,60 @@ export class CivilityPage {
 		* @description watch and validate the siret field
 	*/
 	watchSIRET(e){
-		if (e.keyCode < 48 || e.keyCode > 57){
+		if (e.keyCode == 8){
 			e.preventDefault();
 			return;
 		}
-		if(!this.siret){
-			return;
+		var s = e.target.value;
+		for(var i = 0; i < s.length; i++){
+			if(i == 3 || i == 7 || i == 11){
+				if(s[i] != ' '){
+					s = s.replace(s[i], ' ');
+				}
+				continue;
+			}
+			if(!this.isNumeric(s[i])){
+				s = s.replace(s[i], '');
+			}
 		}
-		if(this.siret.length == 3){
-			this.siret = this.siret + " ";
+		if(s.length == 3){
+			s = s + " ";
 		}
-		if(this.siret.length == 7){
-			this.siret = this.siret + " ";
+		if(s.length == 7){
+			s = s + " ";
 		}
-		if(this.siret.length == 11){
-			this.siret = this.siret + " ";
+		if(s.length == 11){
+			s = s + " ";
 		}
+		e.target.value = s;
 	}
 	
 	/**
 		* @description watch and validate the ape or naf field
 	*/
 	watchAPE(e){
-		//if first characte is string, prevent
-		if(!this.ape){
-			if (e.keyCode < 48 || e.keyCode > 57){
-				e.preventDefault();
+		//var s = this.ape;
+		var s = e.target.value;
+		//this is not woring on android, because of the predective text
+		/*s = s.substring(0, 5);
+			for(var i = 0; i < s.length; i++){
+			if(i < 4 && !this.isNumeric(s[i])){
+			s = s.replace(s[i], '');
+			continue;
 			}
-			return;
+			if(i == 4 && !this.isLetter(s[i])){
+			s = s.replace(s[i], '');
+			continue;
+			}
+		}*/
+		//check if ape valid
+		if(this.isNumeric(s.substring(0, 4)) && this.isLetter(s.substring(4, 5)) && s.length == 5){
+			e.target.value = this.changeToUppercase(s);
+			this.isAPEValid = true;
+		}else{
+			this.isAPEValid = false;
 		}
-		if(this.ape.length < 4){
-			if (e.keyCode < 48 || e.keyCode > 57){
-				e.preventDefault();
-				return;
-			}	
-		}
-		if(this.ape.length == 4){
-			if (e.keyCode >= 48 && e.keyCode <= 57){
-				e.preventDefault();
-				return;
-			}	
-		}
+		
 	}
 	
 	isNumeric(n)  
@@ -329,10 +342,8 @@ export class CivilityPage {
 	/**
 		* @description change the ape data to uppercase
 	*/
-	changeToUppercase(){
-		if(this.ape){
-			this.ape = this.ape.toUpperCase();
-		}
+	changeToUppercase(s){
+		return s.toUpperCase();
 	}
 	
 	/**
