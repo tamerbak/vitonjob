@@ -37,4 +37,9 @@
   .button-footer {
     text-align: right;
   }
+
+  .button.picker-opt.picker-opt-default.picker-opt-selected {
+    font-size: 2em !important;
+    color: #14aab6 !important;
+  }
 }

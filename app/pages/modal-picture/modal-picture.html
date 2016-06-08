@@ -1,0 +1,29 @@
+<!--
+  Generated template for the ModalPicturePage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+  <ion-title>Avatars</ion-title>
+  <ion-buttons end>
+    <button (click)="closeModal()">
+      <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+    </button>
+  </ion-buttons>
+</ion-navbar>
+
+<ion-content padding class="modal-picture">
+
+  <ion-grid text-center>
+    <ion-row wrap>
+      <ion-col *ngFor="let item of avatars">
+        <button fab class="img-button" style="position: inherit; width: 100px;height: 100px"
+                [style.backgroundColor]="thirdThemeColor" (click)="validateModal(item)">
+          <img [src]="item.url">
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

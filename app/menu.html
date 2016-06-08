@@ -58,7 +58,7 @@
     </ion-content>
 </ion-menu>
 
-<ion-menu [content]="menuContent" id="leftOnMenu">
+<ion-menu [content]="menuContent" id="rightOnMenu" side="right">
     <!--ion-toolbar >
         <ion-title>Menu</ion-title>
     </ion-toolbar-->
@@ -73,12 +73,13 @@
             </ion-icon>
         </div>
         <ion-list>
-            <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
-                <ion-icon name="{{p.icon}}" icon-top></ion-icon>
-                &nbsp;&nbsp;{{p.title}}
-                test
+            <button menuClose ion-item>
+                &nbsp;&nbsp;Recherche guidée
             </button>
-            <ion-badge  >231</ion-badge>
+
+            <button menuClose ion-item>
+                &nbsp;&nbsp;Recherche par critères
+            </button>
         </ion-list>
     </ion-content>
 </ion-menu>

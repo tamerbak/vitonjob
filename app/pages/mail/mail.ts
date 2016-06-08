@@ -1,4 +1,4 @@
-import {Page, Alert, NavController, Events, Loading} from 'ionic-angular';
+import {Alert, NavController} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -8,6 +8,7 @@ import {GlobalService} from "../../providers/global.service";
 import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
 import {InfoUserPage} from "../info-user/info-user";
+import {Component} from "@angular/core";
 import {Storage, SqlStorage} from 'ionic-angular';
 
 
@@ -16,7 +17,7 @@ import {Storage, SqlStorage} from 'ionic-angular';
 	* @description authentication by mail view
 	* @module Authentication
 */
-@Page({
+@Component({
 	templateUrl: 'build/pages/mail/mail.html',
 	providers: [AuthenticationService, LoadListService, DataProviderService, GlobalService, ValidationDataService]
 })

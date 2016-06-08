@@ -1,7 +1,7 @@
-import {Page, NavController, NavParams, ActionSheet, Platform, Slides,Alert, Modal} from 'ionic-angular';
+import {NavController, ActionSheet, Platform, Slides,Alert} from 'ionic-angular';
 import {Storage, SqlStorage, LocalStorage} from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
-import {ViewChild} from '@angular/core'
+import {ViewChild, Component} from '@angular/core'
 import {SearchService} from "../../providers/search-service/search-service";
 import {UserService} from "../../providers/user-service/user-service";
 import {ContractPage} from '../contract/contract';
@@ -22,7 +22,7 @@ import {ModalOfferPropositionPage} from "../modal-offer-proposition/modal-offer-
  * @description search results view
  * @module Search
  */
-@Page({
+@Component({
     templateUrl: 'build/pages/search-results/search-results.html',
     providers : [OffersService]
 })

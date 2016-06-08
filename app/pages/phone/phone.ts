@@ -1,4 +1,4 @@
-import {Page, Alert, NavController, Events, Loading} from 'ionic-angular';
+import { Alert, NavController, Events, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -9,7 +9,7 @@ import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
 import {InfoUserPage} from "../info-user/info-user";
 import {Storage, SqlStorage} from 'ionic-angular';
-import {enableProdMode} from '@angular/core'; 
+import {enableProdMode, Component} from '@angular/core'; 
 enableProdMode();
 
 /**
@@ -17,7 +17,7 @@ enableProdMode();
 	* @description authentication by phone view
 	* @module Authentication
 */
-@Page({
+@Component({
 	templateUrl: 'build/pages/phone/phone.html',
 	providers: [AuthenticationService, LoadListService, DataProviderService, GlobalService, ValidationDataService]
 })
@@ -153,7 +153,7 @@ export class PhonePage {
 			
 			this.storage.set('connexion', JSON.stringify(connexion));
 			this.storage.set('currentUser', JSON.stringify(data));
-			this.events.publish('user:login');
+			this.events.publish('user:login',data);
 			
 			//user is connected, then change the name of connexion btn to deconnection
 			this.gc.setCnxBtnName("Déconnexion");

@@ -1,4 +1,4 @@
-import {Page, NavController, Toast, Modal, LocalStorage, Storage} from 'ionic-angular';
+import { NavController, Toast, Modal, LocalStorage, Storage} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalJobPage} from "../modal-job/modal-job";
@@ -8,6 +8,7 @@ import {ModalCalendarPage} from "../modal-calendar/modal-calendar";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {OfferListPage} from "../offer-list/offer-list";
 import {isUndefined} from "ionic-angular/util";
+import {Component} from "@angular/core";
 
 /*
  Generated class for the OfferAddPage page.
@@ -15,7 +16,7 @@ import {isUndefined} from "ionic-angular/util";
  See http://ionicframework.com/docs/v2/components/#navigation for more info on
  Ionic pages and navigation.
  */
-@Page({
+@Component({
     templateUrl: 'build/pages/offer-add/offer-add.html',
     providers: [GlobalConfigs, OffersService]
 })

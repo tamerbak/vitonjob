@@ -1,14 +1,15 @@
-import {NavController, Page, ViewController, Loading, Slides} from 'ionic-angular';
+import {NavController, ViewController, Loading, Slides} from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
 import {SearchResultsPage} from "../search-results/search-results";
+import {Component} from "@angular/core";
 
 /**
  * @author abdeslam jakjoud
  * @descirption Modal page exposing search criteria
  * @module Search
  */
-@Page({
+@Component({
   templateUrl: 'build/pages/search-criteria/search-criteria.html',
   providers: [GlobalConfigs]
 })

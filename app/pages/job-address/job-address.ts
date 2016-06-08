@@ -1,4 +1,4 @@
-import {NavController, Page, IonicApp, NavParams, Tabs, Alert, Loading} from 'ionic-angular';
+import {NavController, App, NavParams, Tabs, Alert, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {GooglePlaces} from '../../components/google-places/google-places';
@@ -7,7 +7,7 @@ import {OfferListPage} from "../offer-list/offer-list";
 import {GlobalService} from "../../providers/global.service";
 import {Geolocation} from 'ionic-native';
 import {Storage, SqlStorage} from 'ionic-angular';
-import {enableProdMode, ElementRef, Renderer} from '@angular/core'; 
+import {enableProdMode, ElementRef, Renderer, Component} from '@angular/core'; 
 enableProdMode();
 
 /**
@@ -15,7 +15,7 @@ enableProdMode();
 	* @description update job address for employers and jobyers
 	* @module Authentication
 */
-@Page({
+@Component({
 	directives: [GooglePlaces],
 	templateUrl: 'build/pages/job-address/job-address.html',
 	providers: [AuthenticationService, GlobalService]

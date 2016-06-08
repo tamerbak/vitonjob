@@ -1,4 +1,4 @@
-import {Page, NavController} from 'ionic-angular';
+import {NavController} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {ContractService} from '../../providers/contract-service/contract-service';
@@ -6,7 +6,7 @@ import {DatePicker} from 'ionic-native';
 import {MissionDetailsPage} from '../mission-details/mission-details';
 import {Storage, SqlStorage} from 'ionic-angular';
 import {DateConverter} from '../../pipes/date-converter/date-converter';
-
+import {Component} from "@angular/core";
 
 /*
   Generated class for the MissionListPage page.
@@ -14,7 +14,7 @@ import {DateConverter} from '../../pipes/date-converter/date-converter';
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 */
-@Page({
+@Component({
   templateUrl: 'build/pages/mission-list/mission-list.html',
   pipes: [DateConverter]
 })

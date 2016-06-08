@@ -1,9 +1,11 @@
-import {Page, NavController,NavParams, ActionSheet, Loading} from 'ionic-angular';
+import {NavController,NavParams} from 'ionic-angular';
+import {NavController,NavParams, ActionSheet, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {MissionService} from '../../providers/mission-service/mission-service';
 import {DatePicker} from 'ionic-native';
 import {HomePage} from '../home/home';
+import {Component} from "@angular/core";
 import {DateConverter} from '../../pipes/date-converter/date-converter';
 import {TimeConverter} from '../../pipes/time-converter/time-converter';
 import {GlobalService} from "../../providers/global.service";
@@ -14,7 +16,7 @@ import {GlobalService} from "../../providers/global.service";
 	See http://ionicframework.com/docs/v2/components/#navigation for more info on
 	Ionic pages and navigation.
 */
-@Page({
+@Component({
 	templateUrl: 'build/pages/mission-details/mission-details.html',
 	pipes: [DateConverter, TimeConverter],
 	providers: [GlobalService]

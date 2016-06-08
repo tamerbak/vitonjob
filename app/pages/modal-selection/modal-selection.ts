@@ -1,6 +1,7 @@
-import {Page, NavController, NavParams, ViewController, Alert, Toast} from 'ionic-angular';
+import { NavController, NavParams, ViewController, Alert, Toast} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
+import {Component} from "@angular/core";
 
 /*
  Generated class for the ModalSelectionPage page.
@@ -8,7 +9,7 @@ import {Configs} from "../../configurations/configs";
  See http://ionicframework.com/docs/v2/components/#navigation for more info on
  Ionic pages and navigation.
  */
-@Page({
+@Component({
     templateUrl: 'build/pages/modal-selection/modal-selection.html',
 })
 export class ModalSelectionPage {
@@ -37,7 +38,7 @@ export class ModalSelectionPage {
         this.params = params;
         this.initializeItems(params.get('items'));
         this.searchQuery = "";
-        this.searchPlaceholder = 'Saisissez votre ' + params.get('type');
+        this.searchPlaceholder = 'Recherchez votre ' + params.get('type');
         this.cancelButtonText = 'Annuler';
 
     }

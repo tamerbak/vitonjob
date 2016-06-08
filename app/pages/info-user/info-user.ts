@@ -1,14 +1,15 @@
-import {NavController, Page, IonicApp, NavParams} from 'ionic-angular';
+import {NavController, App, NavParams} from 'ionic-angular';
 import {CivilityPage} from '../civility/civility';
 import {PersonalAddressPage} from '../personal-address/personal-address';
 import {JobAddressPage} from '../job-address/job-address';
+import {Component} from "@angular/core";
 
 /**
 	* @author Amal ROCHD
 	* @description tabs of user information entry : civility, personal address and job address
 	* @module Authentication
 */
-@Page({
+@Component({
 	templateUrl: 'build/pages/info-user/info-user.html'
 })
 export class InfoUserPage {
@@ -23,7 +24,7 @@ export class InfoUserPage {
 		* @description While constructing the tabs, we bind each tab to its page
 	*/
 	constructor(public nav: NavController,
-	app: IonicApp,
+	app: App,
 	navParams: NavParams) {
 		// set the root pages for each tab
 		this.civilityRoot = CivilityPage;

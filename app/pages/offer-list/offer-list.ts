@@ -1,4 +1,4 @@
-import {Page, NavController} from 'ionic-angular';
+import {NavController} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SearchService} from "../../providers/search-service/search-service";
 import {Configs} from "../../configurations/configs";
@@ -6,6 +6,7 @@ import {OfferAddPage} from "../offer-add/offer-add";
 import {OfferDetailPage} from "../offer-detail/offer-detail";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {isUndefined} from "ionic-angular/util";
+import {Component} from "@angular/core";
 
 /*
  Generated class for the OfferListPage page.
@@ -13,7 +14,7 @@ import {isUndefined} from "ionic-angular/util";
  See http://ionicframework.com/docs/v2/components/#navigation for more info on
  Ionic pages and navigation.
  */
-@Page({
+@Component({
     templateUrl: 'build/pages/offer-list/offer-list.html',
     providers: [SearchService, GlobalConfigs, OffersService]
 })

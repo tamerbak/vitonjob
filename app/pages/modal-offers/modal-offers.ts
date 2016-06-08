@@ -1,15 +1,16 @@
-import {Page, NavController, ViewController} from 'ionic-angular';
+import {NavController, ViewController} from 'ionic-angular';
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {SearchService} from "../../providers/search-service/search-service";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {OfferAddPage} from "../offer-add/offer-add";
+import {Component} from "@angular/core";
 
 /**
  * @author Abdeslam Jakjoud
  * @description modal popup showing offers list
  * @module Contract signature
  */
-@Page({
+@Component({
   templateUrl: 'build/pages/modal-offers/modal-offers.html',
   providers: [SearchService, GlobalConfigs, OffersService]
 })

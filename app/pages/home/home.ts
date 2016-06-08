@@ -1,4 +1,4 @@
-import {Page, IonicApp, NavParams, NavController, Loading, Modal} from 'ionic-angular';
+import {App, NavParams, NavController, Loading, Modal, MenuController, Keyboard} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
@@ -10,10 +10,10 @@ import {NetworkService} from "../../providers/network-service/network-service";
 import {InfoUserPage} from "../info-user/info-user";
 import {Storage, SqlStorage} from 'ionic-angular';
 import {Events} from 'ionic-angular';
-import {Keyboard} from "ionic-native/dist/index";
+import {Component} from "@angular/core";
 
 
-@Page({
+@Component({
 	templateUrl: 'build/pages/home/home.html',
 	providers: [GlobalConfigs]
 })
@@ -33,19 +33,21 @@ export class HomePage {
 	private isConnected : boolean;
 	private recording:boolean;
 	private recognition:any;
+	private menu:any;
 
 
 	static get parameters() {
-		return [[GlobalConfigs], [IonicApp], [NavController], [NavParams], [SearchService],[NetworkService], [Events]];
+		return [[GlobalConfigs], [App], [NavController], [NavParams], [SearchService],
+			[NetworkService], [Events], [Keyboard], [MenuController]];
 	}
 
 	constructor(public globalConfig: GlobalConfigs,
-				private app: IonicApp,
+				private app: App,
 				private nav: NavController,
 				private navParams: NavParams,
 				private searchService: SearchService,
 				public networkService: NetworkService,
-				public events: Events, private kb:Keyboard) {
+				public events: Events, private kb:Keyboard, menu: MenuController) {
 
 		// Get target to determine configs
 		this.projectTarget = globalConfig.getProjectTarget();
@@ -53,6 +55,8 @@ export class HomePage {
 		this.keyboard = kb;
 		// get config of selected target
 		let config = Configs.setConfigs(this.projectTarget);
+		//debugger;
+		//menu.enable(true, 'rightOnMenu');
 
 		//Initialize controller variables :
 		this.projectName = config.projectName;
