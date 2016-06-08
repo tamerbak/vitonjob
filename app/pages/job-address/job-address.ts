@@ -8,8 +8,8 @@ import {OfferListPage} from "../offer-list/offer-list";
 import {GlobalService} from "../../providers/global.service";
 import {Geolocation} from 'ionic-native';
 import {Storage, SqlStorage} from 'ionic-angular';
-import {enableProdMode, ElementRef, Renderer} from '@angular/core'; 
-enableProdMode();
+import {HomePage} from "../home/home";
+import {ElementRef, Renderer} from '@angular/core'; 
 
 /**
 	* @author Amal ROCHD
@@ -209,7 +209,7 @@ export class JobAddressPage {
 			if(!this.isAddressModified()){
 				loading.dismiss();
 				//redirecting to offer list page
-				this.nav.push(OfferListPage);
+				this.nav.parent.parent.push(OfferListPage);
 				return;
 			}
 			//if address is manually entered
@@ -217,7 +217,7 @@ export class JobAddressPage {
 				loading.dismiss();
 				this.globalService.showAlertValidation("VitOnJob", "Cette adresse n'est pas reconnaissable. Vous serez notifié après sa validation par notre équipe.");
 				//redirecting to offer list
-				this.nav.push(OfferListPage);
+				this.nav.parent.parent.push(OfferListPage);
 				return;
 			}
 			if(this.geolocResult == null){
@@ -245,7 +245,7 @@ export class JobAddressPage {
 						this.storage.set('currentUser', JSON.stringify(this.currentUser));
 						loading.dismiss();
 						//redirecting to offer list page
-						this.nav.push(OfferListPage);
+						this.nav.parent.parent.push(OfferListPage);
 					}
 				});
 				}else{
@@ -265,7 +265,7 @@ export class JobAddressPage {
 						this.storage.set('currentUser', JSON.stringify(this.currentUser));
 						loading.dismiss();
 						//redirecting to offer list page
-						this.nav.push(OfferListPage);
+						this.nav.parent.parent.push(OfferListPage);
 					}
 				});
 			}
