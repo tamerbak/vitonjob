@@ -32,7 +32,7 @@
 			</ion-item>
 		</ion-col>
 	</ion-row>
-	<div [hidden]="!showPhoneError()" 
+	<div [hidden]="isPhoneNumValid" 
             class="error-box">* Saisissez les 9 chiffres sans le 0</div>
 	
 	<ion-label [hidden]="!showEmailField" stacked>Votre email</ion-label>
