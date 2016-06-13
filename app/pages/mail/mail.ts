@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Alert, NavController, NavParams, Events, Loading} from 'ionic-angular';
+import {Alert, NavController, Events, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -10,7 +10,6 @@ import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
 import {InfoUserPage} from "../info-user/info-user";
 import {Storage, SqlStorage} from 'ionic-angular';
-
 
 /**
 	* @author Amal ROCHD
@@ -26,7 +25,6 @@ export class MailPage {
 	isEmployer: boolean;
 	mailTitle: string;
 	themeColor: string;
-	public people: any;
 	public phone;
 	public index;
 	public pays = [];
@@ -35,6 +33,8 @@ export class MailPage {
 	libelleButton: string;
 	password1: string;
 	password2: string;
+	storage:any;
+	isPhoneNumValid = true;
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
@@ -82,14 +82,11 @@ export class MailPage {
 			text: 'Ok',
 			handler: data => {
 				console.log('Radio data:', data);
-				this.testRadioOpen = false;
-				this.testRadioResult = data;
 				this.index = data;
 			}
 		});
 		
 		this.nav.present(alert).then(() => {
-			this.testRadioOpen = true;
 		});
 	}
 	
@@ -113,6 +110,7 @@ export class MailPage {
 			//case of authentication failure : server unavailable or connection probleme 
 			if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
 				console.log(data);
+				loading.dismiss();
 				this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
 				return;
 			}
@@ -120,7 +118,12 @@ export class MailPage {
 			if (data.id == 0 && data.status == "passwordError") {
 				console.log("Password error");
 				loading.dismiss();
-				this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe est incorrect");
+				if(!this.showPhoneField){
+				this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe est incorrect.");
+					}else{
+					console.log("used phone error");
+					this.globalService.showAlertValidation("VitOnJob", "Ce numéro de téléphone a été déjà utilisé. Veuillez choisir un autre.");
+				}
 				return;
 			}
 			
@@ -146,7 +149,7 @@ export class MailPage {
 			
 			this.storage.set('connexion', JSON.stringify(connexion));
 			this.storage.set('currentUser', JSON.stringify(data));
-			this.events.publish('user:login');
+			this.events.publish('user:login', data);
 			
 			//user is connected, then change the name of connexion btn to deconnection
 			this.gc.setCnxBtnName("Déconnexion");
@@ -172,43 +175,50 @@ export class MailPage {
 	isAuthDisabled() {
 		if (this.showPhoneField == true) {
 			//inscription
-			return (!this.index || !this.phone || this.showPhoneError() || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError())
+			return (!this.index || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError())
 			} else {
 			//connection
-			return (!this.index || !this.email || !this.password1)
-		}
-	}
-	
-	/**
-		* @description function called on change of the phone input to validate it
-	*/
-	checkForString(e){
-		if (e.keyCode < 48 || e.keyCode > 57){
-			e.preventDefault();
-			return;
+			return (!this.index || !this.email || this.showEmailError() || !this.password1 || this.showPassword1Error())
 		}
 	}
 	
 	/**
 		* @description function called on change of the email input to validate it
 	*/
-	watchEmail(e, el) {
+	watchEmail(e) {
 		if(this.validationDataService.checkEmail(this.email)){
-				this.isRegistration(el);
+				this.isRegistration();
 			}
 	}
 	
 	/**
 		* @description show error msg if phone is not valid
 	*/
+	watchPhone(e) {
+		if (this.phone) {
+			this.isPhoneNumValid = false;
+			if (e.target.value.substring(0,1) == '0') {
+				e.target.value = e.target.value.substring(1, e.target.value.length);
+			}
+			if (e.target.value.includes('.')) {
+				e.target.value = e.target.value.replace('.', '');
+			}
+			if(e.target.value.length > 9){
+				e.target.value = e.target.value.substring(0, 9);
+			}
+			if (e.target.value.length == 9) {
+				this.isPhoneNumValid = true;
+			}
+		}
+	}
+	
 	showPhoneError(){
-		if(this.phone)
-		return (this.phone.length != 9);
+		return !this.isPhoneNumValid;
 	}
 	/**
 		* @description function called when the email input is valid to decide if the form is for inscription or authentication
 	*/
-	isRegistration(el) {
+	isRegistration() {
 		//verify if the email exist in the database
 		this.dataProviderService.getUserByMail(this.email, this.projectTarget).then((data) => {
 			if (!data || data.status == "failure") {
@@ -233,13 +243,13 @@ export class MailPage {
 	/**
 		* @description validate the phone format
 	*/
-	isPhoneValid() {
-		if (this.phone != undefined) {
+	isPhoneValid(tel) {
+		if (this.phone) {
 			var phone_REGEXP = /^0/;
-			var isMatchRegex = phone_REGEXP.test(this.phone);
-			console.log("isMatchRegex = " + isMatchRegex);
-			if (Number(this.phone.length) >= 9 && !isMatchRegex) {
-				console.log('test phone');
+			//check if the phone number start with a zero
+			var isMatchRegex = phone_REGEXP.test(tel);
+			if (Number(tel.length) == 9 && !isMatchRegex) {
+				console.log('phone number is valid');
 				return true;
 			}
 			else
@@ -262,7 +272,7 @@ export class MailPage {
 		* @description show error msg if password is not valid
 	*/
 	showPassword1Error(){
-		if(this.password1 && this.showEmailField)
+		if(this.password1)
 		return this.password1.length < 6;
 	}
 	
@@ -279,6 +289,6 @@ export class MailPage {
 		* @description return to the home page
 	*/
 	goBack() {
-		this.nav.pop(HomePage);
+		this.nav.rootNav.setRoot(HomePage)
 	}
 }

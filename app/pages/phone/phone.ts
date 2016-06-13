@@ -28,7 +28,6 @@ export class PhonePage {
 	isEmployer: boolean;
 	phoneTitle: string;
 	themeColor:string;
-	public people: any;
 	public phone;
 	public index;
 	public pays = [];
@@ -37,7 +36,6 @@ export class PhonePage {
 	libelleButton: string;
 	password1: string;
 	password2: string;
-	temp: any;
 	isPhoneNumValid = true;
 	
 	/**
@@ -86,14 +84,11 @@ export class PhonePage {
 			text: 'Ok',
 			handler: data => {
 				console.log('Radio data:', data);
-				this.testRadioOpen = false;
-				this.testRadioResult = data;
 				this.index = data;
 			}
 		});
 		
 		this.nav.present(alert).then(() => {
-			this.testRadioOpen = true;
 		});
 	}
 	
@@ -101,8 +96,6 @@ export class PhonePage {
 		* @description function called to authenticate a user
 	*/
 	authenticate() {
-		//this.gc.setCnxBtnName("Déconnexion");
-		//this.nav.push(HomePage);
 		var indPhone = this.index + this.phone;
 		let loading = Loading.create({
 			content: ` 
@@ -144,7 +137,6 @@ export class PhonePage {
 				'etat': true,
 				'libelle': 'Se déconnecter',
 				'employeID' : (this.projectTarget == 'jobyer' ? data.jobyerId : data.employerId)
-				//'employeID' : data.jobyerId
 			};
 			
 			//load device token to current account
