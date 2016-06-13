@@ -1,5 +1,4 @@
-import {Component} from '@angular/core';
-import {ionicBootstrap, Platform, App, MenuController, Nav} from 'ionic-angular';
+import {Platform, MenuController, Nav, ionicBootstrap, App} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {HomePage} from './pages/home/home';
 import {LoginsPage} from './pages/logins/logins';
@@ -25,75 +24,76 @@ import {Events} from 'ionic-angular';
 import {ContractPage} from "./pages/contract/contract";
 import {isUndefined} from "ionic-angular/util";
 import {OffersService} from "./providers/offers-service/offers-service";
-import {ViewChild} from "@angular/core";
+import {ViewChild, Component} from "@angular/core";
 
 @Component({
-  templateUrl: 'build/menu.html',
+	templateUrl: 'build/menu.html'
 })
-export class MyApp {
+export class Vitonjob {
 
-	@ViewChild(Nav) nav: Nav;
-	rootPage: any = HomePage;
-	public pages: Array<{title: string, component: any, icon: string, isBadged: boolean}>;
-	
-	projectTarget : any;
-	isEmployer : boolean;
-	bgMenuURL : string;
-	userImageURL: string;
-	userName: string;
+	@ViewChild(Nav) nav:Nav;
+	rootPage:any = HomePage;
+	public pages:Array<{title:string, component:any, icon:string, isBadged:boolean}>;
+
+	projectTarget:any;
+	isEmployer:boolean;
+	bgMenuURL:string;
+	userImageURL:string;
+	userName:string;
 	userMail:string;
-	themeColor: string;
-	
-	constructor(private platform: Platform,
-	private app: App,
-	private menu: MenuController,
-	private gc: GlobalConfigs,
-	private missionService:MissionService,
-	private networkService:NetworkService,
-	private changeDetRef: ChangeDetectorRef, 
-	public events: Events, offerService: OffersService) {
+	themeColor:string;
+	config:any;
+
+	constructor(private platform:Platform,
+				private app:App,
+				private menu:MenuController,
+				private gc:GlobalConfigs,
+				private missionService:MissionService,
+				private networkService:NetworkService,
+				private changeDetRef:ChangeDetectorRef,
+				public events:Events, offerService:OffersService) {
 
 		this.app = app;
 		this.platform = platform;
 		this.menu = menu;
 		this.storage = new Storage(SqlStorage);
-		
+
 		this.initializeApp();
-		
+
 		this.pages = [
-			{ title: "Lancer une recherche", component: HomePage, icon: "search", isBadged: false }
+			{title: "Lancer une recherche", component: HomePage, icon: "search", isBadged: false}
 		];
 		this.loggedInPages = [
-			{ title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false },
-			{ title: "Mes offres", component: OfferListPage, icon: "list", isBadged: true },
-			{ title: "Gestion des missions", component: MissionListPage, icon: "list", isBadged: false },
-			{ title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false }
+			{title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false},
+			{title: "Mes offres", component: OfferListPage, icon: "list", isBadged: true},
+			{title: "Gestion des missions", component: MissionListPage, icon: "list", isBadged: false},
+			{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
 		];
 		this.loggedOutPages = [
-			{ title: "Se connecter", component: LoginsPage, icon: "log-in", isBadged: false }
+			{title: "Se connecter", component: LoginsPage, icon: "log-in", isBadged: false}
 		];
-		
-		
-		this.rootPage = HomePage;//ProfilePage;//OfferDetailPage;//OfferAddPage;//
-		
+
+
+		this.rootPage = HomePage;//ProfilePage;//OfferAddPage;//HomePage;//OfferDetailPage;//
+
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
-		
+
 		// get config of selected target
-		let config = Configs.setConfigs(this.projectTarget);
-		
+		this.config = Configs.setConfigs(this.projectTarget);
+
 		//local menu variables
 		this.isEmployer = (this.projectTarget == 'employer');
-		this.bgMenuURL = config.bgMenuURL;
-		this.userImageURL = config.userImageURL;
-		this.userName = "Nom d'utilisateur";
-		this.userMail = "mail@compte.com";
-		this.themeColor = config.themeColor;
-		
+		this.bgMenuURL = this.config.bgMenuURL;
+		this.userImageURL = this.config.userImageURL;
+		this.userName = this.isEmployer ? 'Employeur' : 'Jobyer';
+		this.userMail = "";
+		this.themeColor = this.config.themeColor;
+
 		//fake call of setMissions from mission-service to fill local db with missions data for test
 		//missionService.setMissions();
-		
+
 		this.listenToLoginEvents();
 
 		this.offerCount = 0;
@@ -101,106 +101,113 @@ export class MyApp {
 
 		// Calculating the number of joyer corresponding to our offers :
 		/*this.storage.get('connexion').then(con =>{
-			if (con){
-				con = JSON.parse(con);
-				if (con.etat){ /* => User connected 
-					offerService.loadOfferList(this.projectTarget).then(data => {
-						let offerList = data;
-						for (var i = 0; i < offerList.length; i++) {
-							let offer = offerList[i];
-							if (isUndefined(offer) || !offer || !offer.jobData) {
-								continue;
-							}
-							offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
-								console.log('getCorrespondingOffers result : ' + data);
-								this.offerCount += data.length;
-								//if (i == offerList.length - 1)
-									this.isCalculating = false;
-							});
-						}
+		 if (con){
+		 con = JSON.parse(con);
+		 if (con.etat){ /* => User connected
+		 offerService.loadOfferList(this.projectTarget).then(data => {
+		 let offerList = data;
+		 for (var i = 0; i < offerList.length; i++) {
+		 let offer = offerList[i];
+		 if (isUndefined(offer) || !offer || !offer.jobData) {
+		 continue;
+		 }
+		 offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
+		 console.log('getCorrespondingOffers result : ' + data);
+		 this.offerCount += data.length;
+		 //if (i == offerList.length - 1)
+		 this.isCalculating = false;
+		 });
+		 }
 
-					});
-				} else this.isCalculating = false;
-			} else this.isCalculating = false
-		});*/
+		 });
+		 } else this.isCalculating = false;
+		 } else this.isCalculating = false
+		 });*/
 
 
 	}
-	
+
 	initializeApp() {
 		this.platform.ready().then(() => {
 			// Okay, so the platform is ready and our plugins are available.
 			// Here you can do any higher level native things you might need.
 			// target:string = "employer"; //Jobyer
-			
+
 			this.networkService.updateNetworkStat();
-			
+
 			var offline = Observable.fromEvent(document, "offline");
 			var online = Observable.fromEvent(document, "online");
-			
-			
-			
+
+
 			offline.subscribe(() => {
 				this.networkService.setNetworkStat("Vous n'êtes pas connecté.");
 				this.changeDetRef.detectChanges();
 			});
-			
-			online.subscribe(()=>{
+
+			online.subscribe(()=> {
 				this.networkService.setNetworkStat("");
 				this.changeDetRef.detectChanges();
 			});
-			
+
 			StatusBar.styleDefault();
 		});
 	}
-	
+
 	listenToLoginEvents() {
 		//verify if the user is already connected
 		this.storage.get("currentUser").then((value) => {
-			if(value){
+			if (value) {
 				this.enableMenu(true);
-			}else{
+			} else {
 				this.enableMenu(false);
 			}
 		});
-		this.events.subscribe('user:login', () => {
+		this.events.subscribe('user:login', (data) => {
 			this.enableMenu(true);
+			this.userName = data[0].titre +' '+data[0].nom +' '+data[0].prenom;
+			this.userMail = data[0].email;
 		});
-		
+
 		this.events.subscribe('user:logout', () => {
 			this.enableMenu(false);
 		});
+
+		this.events.subscribe('picture-change', (newURL)=> {
+			this.userImageURL = newURL;
+		});
 	}
-	
+
 	enableMenu(loggedIn) {
 		this.menu.enable(loggedIn, "loggedInMenu");
 		this.menu.enable(!loggedIn, "loggedOutMenu");
 	}
-	
+
 	openPage(page) {
 		//let nav = this.app.getComponent('nav');
 		this.menu.close();
-		
-		if(page.title == 'Déconnexion' ){
+
+		if (page.title == 'Déconnexion') {
 			this.storage.set("currentUser", null);
 			this.events.publish('user:logout');
 		}
-		
-		if(page.title == 'Gestion des missions' ){
+
+		if (page.title == 'Gestion des missions') {
 			this.nav.push(page.component);
 		}
-		else
-		{
+		else {
 			this.nav.setRoot(page.component);
 		}
 	}
 }
 
-// Pass the main app component as the first argument
-// Pass any providers for your app in the second argument
-// Set any config for your app as the third argument:
-// http://ionicframework.com/docs/v2/api/config/Config/
-
-ionicBootstrap(MyApp, [GlobalConfigs, SearchService,UserService,ContractService,SmsService, MissionService,NetworkService,Helpers, OffersService], {
-	backButtonText : "Retour"
+ionicBootstrap(Vitonjob, [GlobalConfigs, SearchService, UserService, ContractService, SmsService,
+	MissionService, NetworkService, Helpers, OffersService], {
+	backButtonText: "",
+	monthNames: ['Janvier', 'F\u00e9vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao\u00fbt', 'Septembre', 'Octobre', 'Novembre', 'D\u00e9cembre'],
+	monthShortNames: ['Jan', 'F\u00e9v', 'Mar', 'Avr', 'Jui', 'Juil', 'Ao\u00fb', 'Sept', 'Oct', 'Nov', 'D\u00e9c'],
+	dayNames: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
+	dayShortNames: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
 });
+
+
+
