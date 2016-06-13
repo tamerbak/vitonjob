@@ -7,6 +7,10 @@ import {SettingsPage} from "../settings/settings";
 import {ModalPicturePage} from "../modal-picture/modal-picture";
 import {UserService} from "../../providers/user-service/user-service";
 import {AddressService} from "../../providers/address-service/address-service";
+import {Storage, SqlStorage} from 'ionic-angular';
+import {DateConverter} from '../../pipes/date-converter/date-converter';
+import {InfoUserPage} from "../info-user/info-user"
+import {PersonalAddressPage} from "../personal-address/personal-address";
 
 /*
  Generated class for the ProfilePage page.
@@ -18,7 +22,8 @@ declare var google:any;
 
 @Component({
     templateUrl: 'build/pages/profile/profile.html',
-    providers: [GlobalConfigs, UserService, AddressService]
+    providers: [GlobalConfigs, UserService, AddressService],
+	pipes: [DateConverter],
 })
 export class ProfilePage implements OnInit {
     themeColor:string;
@@ -37,7 +42,8 @@ export class ProfilePage implements OnInit {
                 userService:UserService, addrService:AddressService) {
 
         this.projectTarget = gc.getProjectTarget();
-
+		this.storage = new Storage(SqlStorage);
+		
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
 
@@ -71,7 +77,7 @@ export class ProfilePage implements OnInit {
                 lieuNaissance: "",
                 natId: "",
                 workAdress: {fullAdress: ""},
-                siegeAdress: {fullAdress: ""}
+                personnalAdress: {fullAdress: ""}
             },
             employer: {
                 entreprises: [
@@ -88,15 +94,10 @@ export class ProfilePage implements OnInit {
 
     }
 
-    onPageLoaded() {
-        //console.log('page loaded');
-        //this.loadMap();
-    }
-
-    ngOnInit() {
+    onPageWillEnter() {
         console.log('••• On Init');
         //Get User information
-        this.userService.getCurrentUser().then(data => {
+        this.storage.get("currentUser").then(data => {
             if (data) {
                 this.userData = JSON.parse(data);
                 this.loadMap(this.userData);
@@ -116,7 +117,7 @@ export class ProfilePage implements OnInit {
             mainAddress = data.employer.entreprises[0].siegeAdress.fullAdress;
             secondaryAddress = data.employer.entreprises[0].workAdress.fullAdress;
         } else {
-            mainAddress = data.jobyer.siegeAdress.fullAdress;
+            mainAddress = data.jobyer.personnalAdress.fullAdress;
             secondaryAddress = data.jobyer.workAdress.fullAdress;
         }
 
@@ -260,5 +261,17 @@ export class ProfilePage implements OnInit {
         this.nav.present(pictureModel);
 
     }
+	
+	goToInfoUserTabs(){
+		this.nav.push(InfoUserPage, {currentUser: this.userData, fromPage: "profil"});	
+	}
+	
+	goToPersonalAddressTab(){
+		this.nav.push(InfoUserPage, {currentUser: this.userData, fromPage: "profil", selectedTab: 1});	
+	}
 
+	goToJobAddressTab(){
+		this.nav.push(InfoUserPage, {currentUser: this.userData, fromPage: "profil", selectedTab: 2});	
+	}
+	
 }

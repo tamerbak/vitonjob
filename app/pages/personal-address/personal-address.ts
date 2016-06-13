@@ -25,6 +25,7 @@ export class PersonalAddressPage {
 	geolocAddress;
 	geolocResult;
 	titlePage: string;
+	fromPage: string;
 	
 	/**
 		* @description While constructing the view, we get the currentUser passed as parameter from the connection page
@@ -51,6 +52,8 @@ export class PersonalAddressPage {
 		//get current employer data from params passed by phone/mail connection
 		this.params = params;
 		this.currentUser = this.params.data.currentUser;
+		this.fromPage = this.params.data.fromPage;
+		
 		//in case of user has already signed up
 		this.initPersonalAddressForm();
 	}
@@ -212,16 +215,24 @@ export class PersonalAddressPage {
 			//verify if the adress was modified
 			if(!this.isAddressModified()){
 				loading.dismiss();
-				//redirecting to job address tab
-				this.tabs.select(2);
+				if(this.fromPage == "profil"){
+					this.nav.pop();
+				}else{
+					//redirecting to job address tab
+					this.tabs.select(2);
+				}
 				return;
 			}
 			//if address is manually entered
 			if(this.searchData && !this.selectedPlace && !this.geolocResult){
 				loading.dismiss();
 				this.globalService.showAlertValidation("VitOnJob", "Cette adresse n'est pas reconnaissable. Vous serez notifié après sa validation par notre équipe.");
-				//redirecting to job address tab
-				this.tabs.select(2);
+				if(this.fromPage == "profil"){
+					this.nav.pop();
+				}else{
+					//redirecting to job address tab
+					this.tabs.select(2);
+				}
 				return;
 			}
 			// put personal address in session
@@ -250,7 +261,12 @@ export class PersonalAddressPage {
 						this.storage.set('currentUser', JSON.stringify(this.currentUser));
 						//redirecting to job address tab
 						loading.dismiss();
-						this.tabs.select(2);
+						if(this.fromPage == "profil"){
+							this.nav.pop();
+						}else{
+							//redirecting to job address tab
+							this.tabs.select(2);
+						}
 					}
 				});
 				}else{
@@ -269,9 +285,12 @@ export class PersonalAddressPage {
 						this.currentUser.jobyer.personnalAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
 						this.storage.set('currentUser', JSON.stringify(this.currentUser));
 						loading.dismiss();
-						//redirecting to job address tab
-						this.tabs.select(2);
-						
+						if(this.fromPage == "profil"){
+							this.nav.pop();
+						}else{
+							//redirecting to job address tab
+							this.tabs.select(2);
+						}
 					}
 				});
 			}

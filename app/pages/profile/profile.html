@@ -41,7 +41,7 @@
             <ion-item text-wrap>
                 <h5>{{userData.titre}} {{userData.nom}} {{userData.prenom}}</h5>
                 <p *ngIf="!isEmployer">{{userData.nationalite}}, {{(userData==='M.') ? 'né' : 'née'}} à
-                    {{userData.jobyer.lieuNaissance}} le {{userData.jobyer.dateNaissance}}</p>
+                    {{userData.jobyer.lieuNaissance}} le {{userData.jobyer.dateNaissance | dateConverter:'short'}}</p>
                 <ul *ngIf="!isEmployer" style="font-size: 1.3rem;">
                     <li>CNI: {{userData.jobyer.cni}}</li>
                     <li>Numéro SS: {{userData.jobyer.numSS}}</li>
@@ -57,7 +57,7 @@
             </ion-item>
         </ion-card-content>
         <div class="button-footer">
-            <button clear [style.color]="themeColor">
+            <button clear [style.color]="themeColor" (click)="goToInfoUserTabs()">
                 <ion-icon name="create"></ion-icon>
                 <div>Modifier</div>
             </button>
@@ -74,9 +74,9 @@
             <ion-icon subtle large item-left name='pin' style="color: #14baa6"></ion-icon>
             <h5 *ngIf="!isEmployer">Adresse personnelle</h5>
             <h5 *ngIf="isEmployer">Adresse du siège</h5>
-            <p *ngIf="!isEmployer">{{userData.jobyer.siegeAdress.fullAdress}}</p>
+            <p *ngIf="!isEmployer">{{userData.jobyer.personnalAdress.fullAdress}}</p>
             <p *ngIf="isEmployer">{{userData.employer.entreprises[0].siegeAdress.fullAdress}}</p>
-            <button clear item-right><ion-icon name="create"></ion-icon></button>
+            <button clear item-right (click)="goToPersonalAddressTab()"><ion-icon name="create"></ion-icon></button>
         </ion-item>
         <ion-item text-wrap>
             <ion-icon subtle large item-left name='pin' style="color: #757575"></ion-icon>
@@ -84,7 +84,7 @@
             <h5 *ngIf="isEmployer">Adresse de la mission</h5>
             <p *ngIf="!isEmployer">{{userData.jobyer.workAdress.fullAdress}}</p>
             <p *ngIf="isEmployer">{{userData.employer.entreprises[0].workAdress.fullAdress}}</p>
-            <button clear item-right><ion-icon name="create"></ion-icon></button>
+		<button clear item-right (click)="goToJobAddressTab()"><ion-icon name="create"></ion-icon></button>
         </ion-item>
         <!--div class="button-footer">
             <button clear [style.color]="themeColor">

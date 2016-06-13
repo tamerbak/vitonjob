@@ -21,7 +21,8 @@ export class InfoUserPage {
 	civilityTabTitle : string;
 	pAddressTabTitle: string;
 	jAddressTabTitle: string;
-	projectTarget;
+	projectTarget: string;
+	selectedTab: int;
 	
 	/**
 		* @description While constructing the tabs, we bind each tab to its page
@@ -36,6 +37,7 @@ export class InfoUserPage {
 		this.nav = nav;
 		this.navParams = navParams;
 		this.dataParams = this.navParams.data; 
+		this.selectedTab = this.dataParams.selectedTab;
 		
 		// Set global configs
 		this.projectTarget = gc.getProjectTarget();
