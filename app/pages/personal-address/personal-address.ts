@@ -121,7 +121,9 @@ export class PersonalAddressPage {
 					text: 'Oui',
 					handler: () => {
 						console.log('Yes clicked');
-						this.geolocate();
+						confirm.dismiss().then(() => {
+							this.geolocate();
+						})
 					}
 				}
 			]
@@ -152,7 +154,13 @@ export class PersonalAddressPage {
 			console.log(position);
 			loading.dismiss();
 			this.getAddressFromGeolocation(position);
-		});
+		},
+		error => {
+			console.log(error);
+			loading.dismiss();
+			this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");	
+		}
+		);
 	}
 	
 	/**

@@ -27,12 +27,12 @@
 				<ion-input type="number" [(ngModel)]="index"></ion-input>
 			</ion-item>
 		</ion-col>
-		<ion-col width-10>
-			<button (click)="doRadioAlert()" class="disable-hover button button-clear button-outline"><ion-icon name="ios-arrow-down"></ion-icon></button>
+		<ion-col width-20>
+			<button (click)="doRadioAlert()" class="button button-clear button-outline"><ion-icon name="ios-arrow-down"></ion-icon></button>
 		</ion-col>
 		<ion-col>
 			<ion-item>
-				<ion-input type="text" [(ngModel)]="phone" maxlength="9" (keypress)="checkForString($event)" ></ion-input>
+				<ion-input type="number" [(ngModel)]="phone" maxlength="9" (keyup)="watchPhone($event)" ></ion-input>
 			</ion-item>
 		</ion-col>
 	</ion-row>

@@ -1,4 +1,4 @@
-import {NavController, ViewController, Alert, Modal} from 'ionic-angular';
+import {NavController, ViewController, Alert, Modal, NavParams} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {DatePicker} from "ionic-native/dist/index";
@@ -29,7 +29,7 @@ export class ModalCalendarPage {
     dateOptions:DatePickerOptions;
     timeOptions:DatePickerOptions;
 
-    constructor(public nav:NavController, gc:GlobalConfigs, viewCtrl:ViewController) {
+    constructor(public nav:NavController, gc:GlobalConfigs, viewCtrl:ViewController, private navParams: NavParams) {
         // Set global configs
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -42,8 +42,11 @@ export class ModalCalendarPage {
         this.viewCtrl = viewCtrl;
         this.calendarTheme = config.calendarTheme;
         this.nav = nav;
-
-        this.slots = [];
+		this.navParams = navParams;
+        this.slots = this.navParams.get("slots");
+		if(!this.slots){
+			this.slots = [];
+		}
         this.dateOptions = {
             weekday: "long", year: "numeric", month: "long",
             day: "numeric"//, hour: "2-digit", minute: "2-digit"

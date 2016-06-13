@@ -59,7 +59,6 @@ export class SearchResultsPage {
      */
     constructor(public globalConfig: GlobalConfigs,
                 public nav: NavController,
-                public navParams : NavParams,
                 private searchService: SearchService,
                 private userService:UserService,
                 private offersService : OffersService,
