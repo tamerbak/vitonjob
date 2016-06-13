@@ -44,6 +44,9 @@ export class ModalCalendarPage {
         this.nav = nav;
 		this.navParams = navParams;
         this.slots = this.navParams.get("slots");
+		if(!this.slots){
+			this.slots = [];
+		}
         this.dateOptions = {
             weekday: "long", year: "numeric", month: "long",
             day: "numeric"//, hour: "2-digit", minute: "2-digit"
