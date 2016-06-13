@@ -588,5 +588,25 @@ export class OffersService {
                 });
         });
     }
+	
+	updateOfferStatut(offerId, statut, projectTarget){
+		//  Init project parameters
+        this.configuration = Configs.setConfigs(projectTarget);
+
+        //  Constructing the query
+        var table = projectTarget == "jobyer" ? 'user_offre_entreprise' : 'user_offre_jobyer';
+        var sql = "update " + table + " set publiee = '" + statut + "' where pk_" + table + " = '" + offerId + "';";
+		
+	    return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'text/plain');
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			.map(res => res.json())
+			.subscribe(
+			data => resolve(data),
+			err => console.log(err)
+			)
+		});
+	}
 }
 
