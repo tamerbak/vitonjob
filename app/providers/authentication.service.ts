@@ -414,7 +414,7 @@ export class AuthenticationService {
 		
 		let payload = {
 			'class': 'fr.protogen.masterdata.model.CCallout',
-			id: 148,
+			id: 147,
 			args: [{
 				'class': 'fr.protogen.masterdata.model.CCalloutArguments',
 				label: 'Contact to create',
@@ -433,6 +433,22 @@ export class AuthenticationService {
 		});
 	}
 	
+	getPassword(tel){
+		var sql = "select mot_de_passe as valeur from user_account where telephone = '" + tel + "';";
+		
+	    return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'text/plain');
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			.map(res => res.json())
+			.subscribe(data => {
+	            this.data = data;
+	            console.log(this.data);
+	            resolve(this.data);
+			});
+		})
+	}
+		
 	updatePasswd(passwd, id){
 		var sql = "update user_account set mot_de_passe = '" + passwd + "' where pk_user_account = '" + id + "';";
 		

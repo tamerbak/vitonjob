@@ -10,6 +10,7 @@ import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
 import {InfoUserPage} from "../info-user/info-user";
 import {Storage, SqlStorage} from 'ionic-angular';
+import {SMS} from 'ionic-native';
 import {enableProdMode} from '@angular/core'; 
 enableProdMode();
 
@@ -299,39 +300,86 @@ export class PhonePage {
 		this.nav.rootNav.setRoot(HomePage)
 	}
 	
-	/*passwordForgotten(){
-		if(!this.phone || !this.isPhoneValid(this.phone)){
-		this.globalService.showAlertValidation("VitOnJob", "Veuillez saisir un numéro de téléphone valide.");
-		return;
-		}
+	passwordForgotten(){
 		let loading = Loading.create({
-		content: ` 
-		<div>
-		<img src='img/loading.gif' />
-		</div>
-		`,
-		spinner : 'hide'
+			content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+			spinner : 'hide'
 		});
 		this.nav.present(loading);
 		var tel = "+" + this.index + this.phone;
 		this.authService.setNewPassword(tel).then((data) => {
-		if (data && data.status.includes("no account found")) {
-		console.log(data);
-		loading.dismiss();
-		this.globalService.showAlertValidation("VitOnJob", "Aucun compte ne correspond à ce numéro de téléphone.");
-		return;
-		}
-		if (!data || data.status == "failure") {
-		console.log(data);
-		loading.dismiss();
-		this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
-		return;
-		}
-		if (!data || data.status == "OK") {
-		loading.dismiss();
-		this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Veuillez consulter votre boite email pour le récupérer.");
-		}
+			if (data && data.status.includes("no account found")) {
+				console.log(data);
+				loading.dismiss();
+				this.globalService.showAlertValidation("VitOnJob", "Aucun compte ne correspond à ce numéro de téléphone.");
+				return;
+			}
+			if (!data || data.status == "failure") {
+				console.log(data);
+				loading.dismiss();
+				this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+				return;
+			}
+			if (data && data.status == "OK") {
+				this.authService.getPassword(tel).then((res) => {
+					if (!res || res.status == "failure") {
+						console.log(res);
+						loading.dismiss();
+						this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+						return;
+					}						
+					console.log('Sending SMS');
+					var message = "Votre nouveau mot de passe est: " + res.data[0].valeur;
+					this.sendSMS(tel, message);
+					loading.dismiss();
+					this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par SMS.");
+				});
+			}
 		});
-	}*/
+	}
+	
+	sendSMS(number, message){
+		var options = {
+			replaceLineBreaks: true,
+			android: {
+				intent: ''
+			}
+		};
+		SMS.send(number, message, options);
+	}
+	
+	displayPasswordAlert(){
+		if(!this.phone || !this.isPhoneValid(this.phone)){
+			this.globalService.showAlertValidation("VitOnJob", "Veuillez saisir un numéro de téléphone valide.");
+			return;
+		}
+		if(this.phone && this.isPhoneValid(this.phone) && this.showEmailField){
+			this.globalService.showAlertValidation("VitOnJob", "Aucun compte ne correspond à ce numéro de téléphone.");
+			return;
+		}
+		let confirm = Alert.create({
+			title: "VitOnJob",
+			message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez vous continuer?",
+			buttons: [
+				{
+					text: 'Non',
+					handler: () => {
+						console.log('No clicked');
+					}
+				},
+				{
+					text: 'Oui',
+					handler: () => {
+						console.log('Yes clicked');	
+						this.passwordForgotten();
+					}
+				}
+			]
+		});
+		this.nav.present(confirm);
+	}
 }
-

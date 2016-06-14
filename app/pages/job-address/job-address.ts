@@ -86,7 +86,7 @@ export class JobAddressPage {
 	displayRequestAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Localisation: êtes-vous dans votre" + (this.isEmployer ? " lieu de mission" : " lieu de départ au travail") +"?",
+			message: "Géolocalisation : êtes-vous connecté depuis votre" + (this.isEmployer ? " lieu de mission" : " lieu de départ au travail") +"?",
 			buttons: [
 				{
 					text: 'Non',
@@ -113,7 +113,7 @@ export class JobAddressPage {
 	displayGeolocationAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider votre" + (this.isEmployer ? " adresse de mission." : " adresse de départ au travail."),
+			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider l'" + (this.isEmployer ? " adresse de mission." : " adresse de départ au travail."),
 			buttons: [
 				{
 					text: 'Non',

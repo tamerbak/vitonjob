@@ -86,7 +86,7 @@ export class PersonalAddressPage {
 	displayRequestAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Localisation: êtes-vous dans votre" + (this.isEmployer ? " siège social" : "  domicile") + "?",
+			message: "Géolocalisation : êtes-vous connecté depuis votre" + (this.isEmployer ? " siège social" : " domicile") + "?",
 			buttons: [
 				{
 					text: 'Non',
@@ -112,7 +112,7 @@ export class PersonalAddressPage {
 	displayGeolocationAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider votre adresse" + (this.isEmployer ? " de siège." : " personnelle."),
+			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider" + (this.isEmployer ? " l'adresse de votre siège social." : " votre adresse personnelle."),
 			buttons: [
 				{
 					text: 'Non',
