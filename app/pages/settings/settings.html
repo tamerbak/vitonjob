@@ -5,21 +5,32 @@
   Ionic pages and navigation.
 -->
 <ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-    <ion-title>Options</ion-title>
+    <ion-title>Changer le mot de passe</ion-title>
 </ion-navbar>
 
 <ion-content padding class="settings">
-    <ion-content>
-        <ion-item-group>
-
-            <ion-item-divider light>Compte</ion-item-divider>
-            <ion-item>eMail</ion-item>
-            <ion-item>Mot de passe</ion-item>
-
-            <ion-item-divider light>Notifications</ion-item-divider>
-            <ion-item>Locale</ion-item>
-            <ion-item>Distante</ion-item>
-
-        </ion-item-group>
-    </ion-content>
+    <ion-item>
+		<ion-label floating>Nouveau mot de passe</ion-label>
+		<ion-input type="password" [(ngModel)]="password1"></ion-input>
+	</ion-item>
+	<div [hidden]="!showPassword1Error()" 
+            class="error-box">* Taille minimale: 6 caractères</div>
+	
+	<ion-item>
+		<ion-label floating>Confirmation du mot de passe</ion-label>
+		<ion-input type="password" [(ngModel)]="password2"></ion-input>
+	</ion-item>
+	<div [hidden]="!showPassword2Error()" 
+            class="error-box">* Les deux mots de passe doivent être identiques!</div>
+	
+	<ion-row>
+		<ion-col width-10></ion-col>
+		<ion-col text-center>
+			<button block (click)="modifyPasswd()" [style.backgroundColor]="themeColor" [disabled]="isBtnDisabled()">
+				<ion-icon name="key"></ion-icon>
+				Valider
+			</button>
+		</ion-col>
+		<ion-col width-10></ion-col>
+	</ion-row>
 </ion-content>
