@@ -16,17 +16,7 @@
     <button fab fab-top fab-right [style.backgroundColor]="themeColor"
             (click)="goToSettings()">
         <ion-icon name="settings"></ion-icon>
-    </button>
-
-    <button fab fab-top fab-right [style.backgroundColor]="themeColor"
-            style="right:78px;">
-        <ion-icon name="analytics"></ion-icon>
-    </button>
-
-    <button fab fab-top fab-right [style.backgroundColor]="themeColor"
-            style="right:139px; color: yellow;" (click)="setStarPicker()">
-        <ion-icon name="star"></ion-icon>
-    </button>
+			</button>
 
     <button fab fab-top fab-left class="img-button" (click)="showPictureModel()"
             [style.backgroundColor]="thirdThemeColor">
@@ -36,7 +26,7 @@
     <!-- CIVILITY-->
 
     <ion-card style="margin-top: 110px">
-        <ion-item-divider light>Civilité</ion-item-divider>
+        <ion-item-divider light>{{isEmployer ? 'Fiche entreprise' : 'Civilité'}}</ion-item-divider>
         <ion-card-content>
             <ion-item text-wrap>
                 <h5>{{userData.titre}} {{userData.nom}} {{userData.prenom}}</h5>
@@ -52,7 +42,7 @@
                 <p></p>
                 <ul style="font-size: 1.3rem;">
                     <li>SIRET: {{userData.employer.entreprises[0].siret}}</li>
-                    <li>NAF: {{userData.employer.entreprises[0].naf}}</li>
+                    <li>NAF: {{userData.employer.entreprises[0].naf.toUpperCase()}}</li>
                 </ul>
             </ion-item>
         </ion-card-content>
@@ -93,6 +83,4 @@
             </button>
         </div-->
     </ion-card>
-
-
 </ion-content>
