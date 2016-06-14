@@ -36,19 +36,19 @@
         <ion-col text-center> <h6 primary> {{highlightSentence}} </h6></ion-col>
         <ion-col width-10></ion-col>
     </ion-row>
-    <!--ion-row>&nbsp;</ion-row>
-    <ion-row>&nbsp;</ion-row-->
-    <!--ion-row>
+    <ion-row>&nbsp;</ion-row>
+    <ion-row>&nbsp;</ion-row>
+    <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <!-- if jobyer set button-secondary style, else button-primary is activated (default style)>
+            <!-- if jobyer set button-secondary style, else button-primary is activated (default style)-->
             <button [ngClass]="{'button-secondary': isEmployer==false}" (click)="doSemanticSearch()">
                 <ion-icon name="search"></ion-icon>
             Lancer la recherche
             </button>
         </ion-col>
         <ion-col width-10></ion-col>
-    </ion-row-->
+    </ion-row>
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
@@ -65,7 +65,13 @@
         <ion-icon name="mic" [hidden]="recording"></ion-icon>
     </button>
 
+    <button secondary ngClass="left-bottom-btn" (click)="showCriteriaModal()" >
+        <ion-icon name="md-search"></ion-icon>
+    </button>
 
+    <button primary ngClass="right-bottom-btn" (click)="showGuideModal()">
+        <ion-icon name="md-search"></ion-icon>
+    </button>
     <!--div class="draggable ui-widget-content">
         <ion-list>
             <ion-list-header><ion-icon  name="move"></ion-icon>Recherche</ion-list-header>
