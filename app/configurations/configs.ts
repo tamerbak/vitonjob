@@ -33,8 +33,8 @@ class EmployerConfigs implements AbstractConfigs {
     userImageURL = 'img/employer.png';
     bgMenuURL:string = 'img/bg_employer.png';
     highlightSentence:string = 'Trouvez vos jobyers immédiatement disponibles!';
-    calloutURL:string = 'http://ns389914.ovh.net/vitonjobv1/api/business';
-    sqlURL:string = 'http://ns389914.ovh.net/vitonjobv1/api/sql';
+    calloutURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
+    sqlURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql';
     calendarTheme:number = 4;
     avatars = [
         {
@@ -69,8 +69,8 @@ class JobyerConfigs implements AbstractConfigs {
     userImageURL = 'img/jobyer.png';
     bgMenuURL:string = 'img/bg_jobyer.png';
     highlightSentence:string = "Des milliers d'offres à proximité!";
-    calloutURL:string = 'http://ns389914.ovh.net/vitonjobv1/api/business';
-    sqlURL:string = 'http://ns389914.ovh.net/vitonjobv1/api/sql';
+    calloutURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
+    sqlURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql';
     calendarTheme:number = 5;
     avatars = [
         {
@@ -96,11 +96,11 @@ class JobyerConfigs implements AbstractConfigs {
 
 
 export class Configs {
-    public static calloutURL:string = 'http://ns389914.ovh.net/vitonjobv1/api/business';
-    public static sqlURL:string = 'http://ns389914.ovh.net/vitonjobv1/api/sql';
-    public static yousignURL:string = 'http://ns389914.ovh.net:8080/vitonjobv1/api/business';
-    public static smsURL:string = 'http://ns389914.ovh.net/vitonjobv1/api/sms';
-    public static emailURL:string = 'http://ns389914.ovh.net/vitonjobv1/api/email';
+    public static calloutURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
+    public static sqlURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql';
+    public static yousignURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
+    public static smsURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sms';
+    public static emailURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/email';
 
     public static setConfigs(type:string):AbstractConfigs {
         if (type === "employer") {
