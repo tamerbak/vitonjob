@@ -433,6 +433,22 @@ export class AuthenticationService {
 		});
 	}
 	
+	updatePasswd(passwd, id){
+		var sql = "update user_account set mot_de_passe = '" + passwd + "' where pk_user_account = '" + id + "';";
+		
+	    return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'text/plain');
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			.map(res => res.json())
+			.subscribe(data => {
+	            this.data = data;
+	            console.log(this.data);
+	            resolve(this.data);
+			});
+		})
+	}
+	
 	setObj(key, obj){
 		this.db.set(key, JSON.stringify(obj));
 	}
