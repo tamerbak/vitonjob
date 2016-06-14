@@ -251,8 +251,12 @@ export class OfferDetailPage {
             this.modified.isJob = data.validated;
             //this.steps.isCalendar = this.validated.isJob;
             //this.localOffer.set('jobData', JSON.stringify(data));
-            if (this.modified.isJob)
+            if (this.modified.isJob){
                 this.offer.jobData = data;
+                this.offer.title = this.offer.jobData.job+' '+((this.offer.jobData.level != 'junior')?'Expérimenté':'Débutant');
+                this.offerService.updateOfferJob(this.offer, this.projectTarget);
+            }
+
         })
     }
 
