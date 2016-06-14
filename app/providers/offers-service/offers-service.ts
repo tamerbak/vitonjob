@@ -588,7 +588,11 @@ export class OffersService {
                 });
         });
     }
-	
+
+    /*
+     *  To comment
+     */
+
 	updateOfferStatut(offerId, statut, projectTarget){
 		//  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
@@ -724,6 +728,94 @@ export class OffersService {
     updateOfferEntrepriseTitle(offer){
         let sql = "update user_offre_entreprise set titre='"+offer.title+"' where pk_user_offre_entreprise="+offer.idOffer;
 
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    console.log(JSON.stringify(data));
+
+                    resolve(data);
+                });
+        });
+    }
+
+    updateOfferQualities(offer, projectTarget){
+        let table = projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise';
+        this.deleteQualities(offer, table);
+        this.attachQualities(offer, table);
+        this.db.get('currentUser').then(data => {
+            if (data) {
+                data = JSON.parse((data));
+                if (projectTarget === 'employer') {
+                    let rawData = data.employer;
+                    //console.log(rawData.entreprises);
+                    if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
+                        //adding userId for remote storing
+                        for(let i = 0 ; i < data.employer.entreprises[0].offers.length ; i++){
+                            if(data.employer.entreprises[0].offers[i].idOffer == offer.idOffer){
+                                data.employer.entreprises[0].offers[i] = offer;
+                                break;
+                            }
+                        }
+
+                        // Save new offer list in SqlStorage :
+                        this.db.set('currentUser', JSON.stringify(data));
+                    }
+                } else { // jobyer
+                    let rawData = data.jobyer;
+                    if (rawData && rawData.offers) {
+
+                        for(let i = 0; i < data.jobyer.offers.length ; i++){
+                            if(data.jobyer.offers[i].idOffer == offer.idOffer){
+                                data.jobyer.offers[i] = offer;
+                                break;
+                            }
+                        }
+
+                        // Save new offer list in SqlStorage :
+                        this.db.set('currentUser', JSON.stringify(data));
+                    }
+                }
+            }
+        });
+    }
+
+    deleteQualities(offer, table){
+        let sql = "delete from user_pratique_indispensable where fk_"+table+"="+offer.idOffer;
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    console.log(JSON.stringify(data));
+
+                    resolve(data);
+                });
+        });
+    }
+
+    attachQualities(offer, table){
+        for(let i = 0 ; i < offer.qualityData.length ; i++){
+            let q = offer.qualityData[i];
+            this.attacheQuality(offer.idOffer, table, q.idQuality);
+        }
+    }
+
+    attacheQuality(idOffer, table, idQuality){
+        let sql = "insert into user_pratique_indispensable (fk_"+table+", fk_user_indispensable) values ("+idOffer+", "+idQuality+")";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
