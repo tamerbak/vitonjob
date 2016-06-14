@@ -232,7 +232,7 @@ export class ContractService {
 
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 93,
+            'id': 150,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -249,7 +249,7 @@ export class ContractService {
             let headers = new Headers();
             headers.append("Content-Type", 'application/json');
             
-            this.http.post('http://ns389914.ovh.net:8080/vitonjobv1/api/callout', JSON.stringify(payload), {headers:headers})
+            this.http.post(Configs.yousignURL, JSON.stringify(payload), {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
                     debugger;
