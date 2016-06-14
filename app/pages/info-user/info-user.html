@@ -1,4 +1,4 @@
-<ion-tabs *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+<ion-tabs *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" [selectedIndex]="selectedTab">
 
     <ion-tab [root]="civilityRoot" [rootParams]="dataParams" tabTitle="{{civilityTabTitle}}" tabIcon="clipboard"></ion-tab>
 

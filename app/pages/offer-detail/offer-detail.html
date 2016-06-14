@@ -10,8 +10,8 @@
         <button (click)="copyOffer()">
             <ion-icon name="copy"></ion-icon>
         </button>
-        <button>
-            <ion-icon name="eye-off"></ion-icon>
+        <button (click)="changePrivacy()">
+            <ion-icon [name]="offer.visible ? 'eye' : 'eye-off'"></ion-icon>
         </button>
         <button (click)="launchSearch()">
             <ion-icon name="search"></ion-icon>

@@ -35,10 +35,12 @@ export class MissionDetailsPage {
     missionTimeIsStart:boolean;
 	//records of user_heure_mission of a contract
 	missionHours = [];
+	initialMissionHours = [];
 	//two dimensional array of pauses of mission days
-	startPauses = [['']]
-	endPauses = [['']]
-	
+	startPauses = [['']];
+	endPauses = [['']];
+	isNewMission: boolean;
+
     constructor(public gc: GlobalConfigs, 
 	public nav: NavController,
 	public navParams:NavParams, 
@@ -59,23 +61,45 @@ export class MissionDetailsPage {
         var contract = navParams.get('contract');
 		this.missionService.listMissionHours(contract).then((data) => {
 			if(data.data){
-				this.missionHours = data.data;
+				this.initialMissionHours = data.data;
 				//initiate pauses array
-				this.renitializePauseArray();
+				this.constructMissionHoursArray(this.initialMissionHours);
 			}
 		});
 	}
 	
-	renitializePauseArray(){
-		var i = 0;
-		for(var s in this.missionHours){
-			this.startPauses[i] = [];
-			this.endPauses[i] = [];
-			i++;
-		}	
+	constructMissionHoursArray(initialMissionArray){
+		//index of pause :a mission can have many pauses
+		var ids = [];
+		for(var i = 0; i < initialMissionArray.length; i++){
+			var m = initialMissionArray[i];
+			//if the mission is not yet pushed
+			if(!ids.includes(m.id)){
+				//push the mission
+				this.missionHours.push(m);
+				//push the id mission to not stock the same mission many time
+				ids.push(m.id);
+				//push the pauses
+				this.startPauses[i] = [];
+				this.endPauses[i] = [];
+				this.startPauses[i][0] = this.convertToFormattedHour(m.pause_debut);
+				this.endPauses[i][0] = this.convertToFormattedHour(m.pause_fin);
+			}else{
+				//if the mission is already pushed, just push its pause
+				var idExistMission = ids.indexOf(m.id);
+				var j = this.startPauses[idExistMission].length;
+				this.startPauses[idExistMission][j] = this.convertToFormattedHour(m.pause_debut);
+				this.endPauses[idExistMission][j] = this.convertToFormattedHour(m.pause_fin);
+			}
+		}
+		//verify if the mission has already pauses
+		this.isNewMission = (this.startPauses.length == 0);
 	}
 	
 	onCardClick(dayIndex){
+		if(!this.isNewMission){
+			return;
+		}
 		//open action sheet menu
 		let actionSheet = ActionSheet.create({
 			title: 'Actions',
@@ -102,6 +126,9 @@ export class MissionDetailsPage {
 	}
 	
 	onPauseClick(dayIndex, pauseIndex){
+		if(!this.isNewMission){
+			return;
+		}
 		//open action sheet menu
 		let actionSheet = ActionSheet.create({
 			title: 'Actions',
@@ -204,11 +231,17 @@ export class MissionDetailsPage {
 	}
 	
 	resetForm(){
-		this.renitializePauseArray();
+		this.constructMissionHoursArray(this.initialMissionArray);
 	}
 	
 	goBack(){
 		this.nav.pop();	
+	}
+	
+	convertToFormattedHour(value){
+		var hours = Math.floor(value / 60);
+		var minutes = value % 60;
+		return ((hours < 10 ? ('0' + hours) : hours) + ':' + (minutes < 10 ? ('0' + minutes) : minutes));	
 	}
     /**
 		* @author daoudi amine

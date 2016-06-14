@@ -26,6 +26,7 @@ export class JobAddressPage {
 	geolocAddress;
 	geolocResult;
 	titlePage: string;
+	fromPage: string;
 	
 	/**
 		* @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
@@ -52,6 +53,7 @@ export class JobAddressPage {
 		//get current employer data from params passed by phone/mail connection
 		this.params = params;
 		this.currentUser = this.params.data.currentUser;
+		this.fromPage = this.params.data.fromPage;
 		//in case of user has already signed up
 		this.initJobAddressForm();
 	}
@@ -216,16 +218,24 @@ export class JobAddressPage {
 			//verify if the adress was modified
 			if(!this.isAddressModified()){
 				loading.dismiss();
-				//redirecting to offer list page
-				this.nav.parent.parent.push(OfferListPage);
+				if(this.fromPage == "profil"){
+						this.nav.pop();
+				}else{
+					//redirecting to offer list page
+					this.nav.parent.parent.push(OfferListPage);
+				}
 				return;
 			}
 			//if address is manually entered
 			if(this.searchData && !this.selectedPlace && !this.geolocResult){
 				loading.dismiss();
 				this.globalService.showAlertValidation("VitOnJob", "Cette adresse n'est pas reconnaissable. Vous serez notifié après sa validation par notre équipe.");
-				//redirecting to offer list
-				this.nav.parent.parent.push(OfferListPage);
+				if(this.fromPage == "profil"){
+						this.nav.pop();
+				}else{
+					//redirecting to offer list page
+					this.nav.parent.parent.push(OfferListPage);
+				}
 				return;
 			}
 			if(this.geolocResult == null){
@@ -252,8 +262,12 @@ export class JobAddressPage {
 						this.currentUser.employer.entreprises[0] = entreprise;
 						this.storage.set('currentUser', JSON.stringify(this.currentUser));
 						loading.dismiss();
-						//redirecting to offer list page
-						this.nav.parent.parent.push(OfferListPage);
+						if(this.fromPage == "profil"){
+							this.nav.pop();
+						}else{
+							//redirecting to offer list page
+							this.nav.parent.parent.push(OfferListPage);
+						}						
 					}
 				});
 				}else{
@@ -272,8 +286,12 @@ export class JobAddressPage {
 						this.currentUser.jobyer.workAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
 						this.storage.set('currentUser', JSON.stringify(this.currentUser));
 						loading.dismiss();
-						//redirecting to offer list page
-						this.nav.parent.parent.push(OfferListPage);
+						if(this.fromPage == "profil"){
+							this.nav.pop();
+						}else{
+							//redirecting to offer list page
+							this.nav.parent.parent.push(OfferListPage);
+						}
 					}
 				});
 			}

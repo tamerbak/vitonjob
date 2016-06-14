@@ -40,6 +40,7 @@ export class CivilityPage {
 	titlePage: string;
 	isAPEValid = true;
 	//isSIRETValid = true;
+	fromPage: string;
 	
 	/**
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
@@ -60,6 +61,7 @@ export class CivilityPage {
 		this.tabs=tabs;
 		this.params = params;
 		this.currentUser = this.params.data.currentUser;
+		this.fromPage = this.params.data.fromPage;
 		this.titlePage = this.isEmployer ? "Fiche de l'entreprise" : "Page civilité";
 		
 		//load nationality list
@@ -92,7 +94,7 @@ export class CivilityPage {
 					this.siret = this.currentUser.employer.entreprises[0].siret;
 					this.ape = this.currentUser.employer.entreprises[0].naf;
 					}else{
-					this.birthdate = this.currentUser.jobyer.dateNaissance;
+					this.birthdate = new Date(this.currentUser.jobyer.dateNaissance).toISOString();
 					this.birthplace = this.currentUser.jobyer.lieuNaissance;
 					this.cni = this.currentUser.jobyer.cni;
 					this.numSS = this.currentUser.jobyer.numSS;
@@ -141,15 +143,19 @@ export class CivilityPage {
 					// PUT IN SESSION
 					this.storage.set('currentUser', JSON.stringify(this.currentUser));
 					loading.dismiss();
-					//redirecting to personal address tab
-					this.tabs.select(1);
+					if(this.fromPage == "profil"){
+						this.nav.pop();
+					}else{
+						//redirecting to personal address tab
+						this.tabs.select(1);
+					}
 				}
 			});
 			}else{
 			//get the role id
 			var jobyerId = this.currentUser.jobyer.id;
 			// update jobyer
-			this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni, this.nationality, jobyerId, this.birthdate, this.birthplace, this.projectTarget)
+			this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni, this.nationality, jobyerId, this.birthdate, this.birthplace)
 			.then((data) => {
 				if (!data || data.status == "failure") {
 					console.log(data.error);
@@ -172,8 +178,12 @@ export class CivilityPage {
 					// PUT IN SESSION
 					this.storage.set('currentUser', JSON.stringify(this.currentUser));
 					loading.dismiss();
-					//redirecting to personal address tab
-					this.tabs.select(1);
+					if(this.fromPage == "profil"){
+						this.nav.pop();
+					}else{
+						//redirecting to personal address tab
+						this.tabs.select(1);
+					}
 				}
 			});
 		}

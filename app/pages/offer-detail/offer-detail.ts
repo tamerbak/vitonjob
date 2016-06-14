@@ -344,4 +344,13 @@ export class OfferDetailPage {
         });
         this.nav.present(confirm);
     }
+	
+	changePrivacy(){
+		var statut = this.offer.visible ? 'Non' : 'Oui';
+		this.offerService.updateOfferStatut(this.offer.idOffer, statut, this.projectTarget).then(()=> {
+			console.log('offer status changed successfuly');
+			this.offer.visible = (statut == 'Non' ? false : true);
+			this.offerService.setOfferInLocal(this.offer, this.projectTarget);
+		});
+	}
 }
