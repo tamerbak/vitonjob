@@ -134,7 +134,7 @@ export class SearchResultsPage {
      * @param item the selected Employer/Jobyer
      */
     itemSelected(item){
-        let actionSheet = ActionSheet.create({
+        /*let actionSheet = ActionSheet.create({
             title: 'Options',
             buttons: [
                 {
@@ -159,7 +159,8 @@ export class SearchResultsPage {
                 }
             ]
         });
-        this.nav.present(actionSheet);
+        this.nav.present(actionSheet);*/
+        this.recruitJobyer(item);
     }
 
     contract(item){

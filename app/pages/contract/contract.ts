@@ -63,7 +63,7 @@ export class ContractPage {
         this.jobyerFirstName = this.jobyer.prenom;
         this.jobyerLastName = this.jobyer.nom;
         let bd = new Date(this.jobyer.dateNaissance);
-        this.jobyerBirthDate = bd.getDay()+'/'+bd.getMonth()+'/'+bd.getFullYear();
+        this.jobyerBirthDate = bd.getDate()+'/'+(bd.getMonth()+1)+'/'+bd.getFullYear();
         this.jobyer.id = 0;
         this.jobyer.numSS = '';
         this.jobyer.nationaliteLibelle = '';
@@ -142,7 +142,7 @@ export class ContractPage {
 
     getStartDate(){
         let d = new Date();
-        let sd =  d.getDay()+'/'+d.getMonth()+'/'+d.getFullYear();
+        let sd =  d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
         if(!this.currentOffer || isUndefined(this.currentOffer))
             return sd;
         if(!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0)
@@ -152,13 +152,13 @@ export class ContractPage {
             if(this.currentOffer.calendarData[i].date < minDate)
                 minDate = this.currentOffer.calendarData[i].date;
         d=new Date(minDate);
-        sd =  d.getDay()+'/'+d.getMonth()+'/'+d.getFullYear();
+        sd =  d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
         return sd;
     }
 
     getEndDate(){
         let d = new Date();
-        let sd =  d.getDay()+'/'+d.getMonth()+'/'+d.getFullYear();
+        let sd =  d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
         if(!this.currentOffer || isUndefined(this.currentOffer))
             return sd;
         if(!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0)
@@ -169,7 +169,7 @@ export class ContractPage {
             if(this.currentOffer.calendarData[i].date > maxDate)
                 maxDate = this.currentOffer.calendarData[i].date;
         d=new Date(maxDate);
-        sd =  d.getDay()+'/'+d.getMonth()+'/'+d.getFullYear();
+        sd =  d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
         return sd;
     }
 

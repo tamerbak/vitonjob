@@ -232,7 +232,7 @@ export class ContractService {
 
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 93,
+            'id': 91,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
