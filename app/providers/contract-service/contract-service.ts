@@ -118,10 +118,10 @@ export class ContractService {
                   " fk_user_jobyer"+
                   ")"+
                   " VALUES ("
-                  +"'"+ this.helpers.dateStrToSqlTimestamp(contract.missionStartDate) +"',"
-                  +"'"+ this.helpers.dateStrToSqlTimestamp(contract.missionEndDate) +"',"
-                  +"'"+ this.helpers.dateStrToSqlTimestamp(contract.termStartDate) +"',"
-                  +"'"+ this.helpers.dateStrToSqlTimestamp(contract.termEndDate) +"',"
+                  +""+ this.helpers.dateStrToSqlTimestamp(contract.missionStartDate) +","
+                  +""+ this.helpers.dateStrToSqlTimestamp(contract.missionEndDate) +","
+                  +""+ this.helpers.dateStrToSqlTimestamp(contract.termStartDate) +","
+                  +""+ this.helpers.dateStrToSqlTimestamp(contract.termEndDate) +","
                   +"'"+ this.helpers.dateToSqlTimestamp(new Date())+"',"
                   +"'"+ this.helpers.timeStrToMinutes(contract.workStartHour) +"',"
                   +"'"+ this.helpers.timeStrToMinutes(contract.workEndHour) +"',"
@@ -262,5 +262,45 @@ export class ContractService {
         });
   }
 
+    generateMission(idContract, offer){
+        let calendar = offer.calendarData;
+        if(calendar && calendar.length>0){
+            for(let i = 0 ; i < calendar.length ; i++){
+                let c = calendar[i];
+                this.generateMissionHour(idContract, c);
+            }
+        }
+    }
+
+    generateMissionHour(idContract, c){
+        let d = new Date(c.date);
+        let sql = "insert into user_heure_mission " +
+            "(fk_user_contrat, " +
+            "jour_debut, " +
+            "jour_fin, " +
+            "heure_debut, " +
+            "heure_fin, " +
+            "validation_jobyer, " +
+            "validation_employeur) " +
+            "values " +
+            "("+idContract+", " +
+            "'"+this.helpers.dateToSqlTimestamp(d)+"', "+
+            "'"+this.helpers.dateToSqlTimestamp(d)+"', " +
+            ""+c.startHour+", " +
+            ""+c.endHour+"," +
+            "'NON', " +
+            "'NON')";
+        console.log(sql);
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    console.log(JSON.stringify(data));
+                    resolve(data);
+                });
+        });
+    }
 }
 

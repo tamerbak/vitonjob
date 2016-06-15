@@ -237,7 +237,8 @@ export class ContractPage {
     goToYousignPage() {
         this.nav.push(YousignPage,{
             jobyer:this.jobyer,
-            contractData:this.contractData
+            contractData:this.contractData,
+            currentOffer:this.currentOffer
         });
     }
 
