@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {isUndefined} from "ionic-angular/util";
 
 /**
 	* @author amine daoudi
@@ -16,6 +17,9 @@ export class Helpers {
 		* @param dateStr 'dd/MM/yyyy'
 	*/
     dateStrToSqlTimestamp(dateStr:string){
+        if(!dateStr || dateStr.length==0 || dateStr.split('/').length == 0 || isUndefined(dateStr) || dateStr == 'undefined'){
+            return 'null';
+        }
         var dateParts = dateStr.split('/');
         var day = dateParts[0];
         var month = dateParts[1];
@@ -28,7 +32,7 @@ export class Helpers {
             ('00' + date.getUTCHours()).slice(-2) + ':' + 
             ('00' + date.getUTCMinutes()).slice(-2) + ':' + 
             ('00' + date.getUTCSeconds()).slice(-2);
-        return sqlTimestamp;
+        return "'"+sqlTimestamp+"'";
     }
     
     
@@ -52,6 +56,9 @@ export class Helpers {
 		* @param timeStr 'hh:mm'
 	*/
     timeStrToMinutes(timeStr:string){
+        if(!timeStr || timeStr.length == 0 || timeStr.split(':').length == 0 || isUndefined(timeStr) || timeStr == 'undefined'){
+            return 0;
+        }
         var timeParts = timeStr.split(':');
         var hours = parseInt(timeParts[0]);
         var minutes = parseInt(timeParts[1]);
