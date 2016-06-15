@@ -312,11 +312,31 @@ export class OfferDetailPage {
     }
 
     /**
-     * @description Validate all modififcations
+     * @description Delete offer
      * 
      */
-    validateModification() {
-        
+    deleteOffer() {
+        let confirm = Alert.create({
+            title: "Supprimer l'offre",
+            message: "Etes vous sûr de vouloir supprimer cette offre ?",
+            buttons: [
+                {
+                    text: 'Non',
+                    handler: () => {
+                        console.log('Disagree clicked');
+                    }
+                },
+                {
+                    text: 'Oui',
+                    handler: () => {
+                        console.log('Agree clicked');
+                        this.offerService.deleteOffer(this.offer, this.projectTarget);
+                        this.nav.setRoot(OfferListPage);
+                    }
+                }
+            ]
+        });
+        this.nav.present(confirm);
     }
 
     /**
