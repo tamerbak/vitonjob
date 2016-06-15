@@ -40,7 +40,7 @@ export class PaymentPage {
 
     // Set local variables and messages
     this.isEmployer = (this.projectTarget=='employer');
-    this.mangoPayTabTitle = "MangoPay";
+    this.mangoPayTabTitle = "Empreinte de la carte bancaire";
     this.slimPayTabTitle = "SlimPay";
   }
 }
