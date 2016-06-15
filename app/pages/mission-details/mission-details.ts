@@ -165,7 +165,7 @@ export class MissionDetailsPage {
 	}
 	
 	validatePauses(){
-		let loading = Loading.create({
+		/*let loading = Loading.create({
 			content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -186,7 +186,8 @@ export class MissionDetailsPage {
 				loading.dismiss();
 				this.nav.pop();
 			}					
-		});
+		});*/
+		
 	}
     
 	checkPauseHour(i, j, isStartPause){
@@ -195,7 +196,7 @@ export class MissionDetailsPage {
 			var startPause = this.missionService.convertHoursToMinutes(this.startPauses[i][j]);
 			if(this.missionHours[i].heure_debut >= startPause){
 				this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure à l'heure de début du travail");
-				this.startPauses[i][j] = '';
+				this.startPauses[i][j] = "08:00";
 				return;
 			}
 			//start pause should be less than end mission
@@ -215,7 +216,7 @@ export class MissionDetailsPage {
 			//end pause should be less than end mission
 			if(this.missionHours[i].heure_fin <= endPause){
 				this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieur à l'heure de fin de travail");
-				this.endPauses[i].splice(j, 1);
+				this.endPauses[i][j] = '';
 				return;
 			}
 		}
