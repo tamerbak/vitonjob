@@ -1,6 +1,5 @@
 <!--
   Generated template for the MissionDetailsPage page.
-
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 -->
@@ -9,11 +8,15 @@
 </ion-navbar>
 
 <ion-content padding>
+	<ion-row [hidden]="(missionHours && missionHours.length != 0)">
+        <ion-col width-10></ion-col>
+        <ion-col text-center> <h6 [style.color]="themeColor"> Aucun jour de mission n'est encore défini pour ce contrat </h6></ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
     <ion-card *ngFor="let day of missionHours, let i=index">
-		<ion-card-header (click)="onCardClick(i)">
-            Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}
+		<ion-card-header (click)="onCardClick(i)" class="cardHeader">
+            Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}  
         </ion-card-header>
-        
         <ion-card-content>
 			<ion-list>
 			  <ion-item>

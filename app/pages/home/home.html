@@ -14,13 +14,13 @@
             [style.backgroundColor]="themeColor" [hidden] = "!recording">
         <ion-spinner name="dots"></ion-spinner>
     </button>
-    <ion-row>&nbsp;</ion-row>
+	<ion-row>&nbsp;</ion-row>
+    
     <ion-row>
         <ion-col width-20></ion-col>
         <ion-col text-center><img [src]="imageURL"/></ion-col>
         <ion-col width-20></ion-col>
     </ion-row>
-    <ion-row>&nbsp;</ion-row>
     <ion-row>
         <ion-item>
 
@@ -36,8 +36,6 @@
         <ion-col text-center> <h6 primary> {{highlightSentence}} </h6></ion-col>
         <ion-col width-10></ion-col>
     </ion-row>
-    <ion-row>&nbsp;</ion-row>
-    <ion-row>&nbsp;</ion-row>
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
@@ -60,7 +58,8 @@
         <ion-col width-10></ion-col>
     </ion-row>
 
-    <button fab fab-bottom fab-center [style.backgroundColor]="themeColor"
+    <ion-row>
+    <button fab fab-center class="bottomButton" [style.backgroundColor]="themeColor"
             (click)="launchVoiceRecognition()" [hidden]="(keyboard)? keyboard.isOpen():false">
         <ion-icon name="mic" [hidden]="recording"></ion-icon>
     </button>
@@ -72,7 +71,8 @@
     <button primary ngClass="right-bottom-btn" (click)="showGuideModal()">
         <ion-icon name="reorder"></ion-icon>
     </button>
-
+</ion-row>
+	
     <!--div class="draggable ui-widget-content">
         <ion-list>
             <ion-list-header><ion-icon  name="move"></ion-icon>Recherche</ion-list-header>
