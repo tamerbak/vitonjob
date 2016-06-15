@@ -203,8 +203,15 @@ export class SearchResultsPage {
      */
     recruitJobyer(jobyer){
 
+        let alert = Alert.create({
+            title: 'Prochainement',
+            subTitle: "Restez à l'écoute de la prochaine mise à jour de l'application qui vous permettra de signer des contrats",
+            buttons: ['OK']
+        });
+        this.nav.present(alert);
+
         //init local database
-        let storage = new Storage(SqlStorage);
+        /*let storage = new Storage(SqlStorage);
 
         if(this.isUserAuthenticated){
 
@@ -251,7 +258,7 @@ export class SearchResultsPage {
                 ]
             });
             this.nav.present(alert);
-        }
+        }*/
 
     }
 
