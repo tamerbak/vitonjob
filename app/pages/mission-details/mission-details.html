@@ -11,7 +11,7 @@
 <ion-content padding>
     <ion-card *ngFor="let day of missionHours, let i=index">
 		<ion-card-header (click)="onCardClick(i)">
-            Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}  
+            Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}
         </ion-card-header>
         
         <ion-card-content>
