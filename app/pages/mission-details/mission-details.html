@@ -45,7 +45,7 @@
 	</ion-card>	
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="validatePauses()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission">
+			<button block (click)="validatePauses()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission || (missionHours && missionHours.length == 0)">
 				<ion-icon name="send"></ion-icon>
 				Valider et notifier le Jobyer
 			</button>
@@ -53,7 +53,7 @@
 	</ion-row>
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="resetForm()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission">
+			<button block (click)="resetForm()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission || (missionHours && missionHours.length == 0)">
 				<ion-icon name="refresh"></ion-icon>
 				Rénitialiser
 			</button>
