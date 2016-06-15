@@ -60,11 +60,12 @@ export class MissionDetailsPage {
         //get missions
         var contract = navParams.get('contract');
 		this.missionService.listMissionHours(contract).then((data) => {
-			if(data.data){
-				this.initialMissionHours = data.data;
+
+				this.initialMissionHours = data;
+				console.log(JSON.stringify(data));
 				//initiate pauses array
 				this.constructMissionHoursArray(this.initialMissionHours);
-			}
+			
 		});
 	}
 	

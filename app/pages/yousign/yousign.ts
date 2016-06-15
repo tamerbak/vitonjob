@@ -11,6 +11,7 @@ import {JobAddressPage} from '../job-address/job-address';
 import {PersonalAddressPage} from '../personal-address/personal-address';
 import {MissionListPage} from '../mission-list/mission-list';
 import {Component} from "@angular/core";
+import {isUndefined} from "ionic-angular/util";
 
 
 /**
@@ -33,6 +34,8 @@ export class YousignPage {
     yousignTitle:string;
     dataObject:any;
     contractData:any;
+
+    currentOffer : any = null;
     
     constructor(public gc: GlobalConfigs, 
                 public nav: NavController, 
@@ -66,7 +69,9 @@ export class YousignPage {
         this.isEmployer = (this.projectTarget=='employer');
         this.jobyer = navParams.get('jobyer');
         this.contractData = navParams.get('contractData');
-
+        if(navParams.get("currentOffer") && !isUndefined(navParams.get("currentOffer"))){
+            this.currentOffer = navParams.get("currentOffer");
+        }
     }
     
     goToPayment() {
@@ -94,7 +99,8 @@ export class YousignPage {
         
         this.contractService.callYousign(this.currentUser, this.employer, this.jobyer,this.contractData, this.projectTarget).then((data) => {
             loading.dismiss();
-            
+            debugger;
+            console.log(JSON.stringify(this.employer));
             if (data == null || data.length == 0) {
                 console.log("Yousign result is null");
                 return;
@@ -138,9 +144,16 @@ export class YousignPage {
             //save contract in Database
             this.contractService.getJobyerId(this.jobyer,this.projectTarget).then(
                 (jobyerData) => {
-                   this.contractService.saveContract(this.contractData,jobyerData.data[0].pk_user_jobyer,this.employer.entreprises[0].entrepriseId,this.projectTarget).then(
+                   this.contractService.saveContract(this.contractData,jobyerData.data[0].pk_user_jobyer,this.employer.entreprises[0].id,this.projectTarget).then(
                     (data) => {
-                        console.log(data);
+                        if(this.currentOffer && this.currentOffer != null){
+                            let idContract = 0;
+                            if(data && data.data && data.data.length>0)
+                                idContract = data.data[0].pk_user_contrat;
+                            this.contractService.generateMission(idContract, this.currentOffer)
+                        }
+
+
                     },
                     (err) => {
                         console.log(err);
