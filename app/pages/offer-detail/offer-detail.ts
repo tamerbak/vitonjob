@@ -269,8 +269,11 @@ export class OfferDetailPage {
         this.nav.present(modal);
         modal.onDismiss(data => {
             this.modified.isQuality = (data.length) ? data.length > 0 : false;
-            if (this.modified.isQuality)
+            if (this.modified.isQuality){
                 this.offer.qualityData = data;
+                this.offerService.updateOfferQualities(this.offer, this.projectTarget);
+            }
+
         })
     }
 
@@ -283,8 +286,11 @@ export class OfferDetailPage {
         this.nav.present(modal);
         modal.onDismiss(data => {
             this.modified.isLanguage = (data.length) ? data.length > 0 : false;
-            if (this.modified.isLanguage)
+            if (this.modified.isLanguage){
                 this.offer.languageData = data;
+                this.offerService.updateOfferLanguages(this.offer, this.projectTarget);
+            }
+
         })
     }
 
@@ -297,17 +303,40 @@ export class OfferDetailPage {
         this.nav.present(modal);
         modal.onDismiss(data => {
             this.modified.isCalendar = (data.length) ? data.length > 0 : false;
-            if (this.modified.isCalendar)
+            if (this.modified.isCalendar){
                 this.offer.calendarData = data;
+                this.offerService.updateOfferCalendar(this.offer, this.projectTarget);
+            }
+
         })
     }
 
     /**
-     * @description Validate all modififcations
+     * @description Delete offer
      * 
      */
-    validateModification() {
-        
+    deleteOffer() {
+        let confirm = Alert.create({
+            title: "Supprimer l'offre",
+            message: "Etes vous sûr de vouloir supprimer cette offre ?",
+            buttons: [
+                {
+                    text: 'Non',
+                    handler: () => {
+                        console.log('Disagree clicked');
+                    }
+                },
+                {
+                    text: 'Oui',
+                    handler: () => {
+                        console.log('Agree clicked');
+                        this.offerService.deleteOffer(this.offer, this.projectTarget);
+                        this.nav.setRoot(OfferListPage);
+                    }
+                }
+            ]
+        });
+        this.nav.present(confirm);
     }
 
     /**

@@ -179,12 +179,12 @@
 
     <ion-row>
         <ion-col text-center>
-            <button [style.backgroundColor]="themeColor" (click)="validateModification()"
-                    [hidden] = "!modified.isJob || !modified.isCalendar ||
-                    !modified.isLanguage || !modified.isQuality ">
-                <ion-icon name="checkmark-circle"></ion-icon>
-                Valider les modifications
+            <button danger (click)="deleteOffer()">
+                <ion-icon name="trash"></ion-icon>
+                Supprimer
             </button>
         </ion-col>
     </ion-row>
+
+
 </ion-content>

@@ -1,4 +1,4 @@
-import { NavController, Toast, Modal, LocalStorage, Storage} from 'ionic-angular';
+import { NavController, Toast, Modal, LocalStorage, Storage, Loading} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalJobPage} from "../modal-job/modal-job";
@@ -238,6 +238,15 @@ this.nav = nav;
      */
     addOffer() {
         this.initLocalStorageOffer();
+        let loading = Loading.create({
+            content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+            spinner : 'hide'
+        });
+        this.nav.present(loading);
         this.offerService.setOfferInLocal(this.offerToBeAdded, this.projectTarget)
             .then(()=> {
                 console.log('••• Adding offer : local storing success!');
@@ -247,6 +256,7 @@ this.nav = nav;
                         console.log('••• Adding offer : remote storing success!');
                         debugger;
                         this.localOffer.clear();
+                        loading.dismiss();
                         this.nav.setRoot(OfferListPage);
                     })
 
