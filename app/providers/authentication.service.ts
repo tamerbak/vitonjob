@@ -409,12 +409,12 @@ export class AuthenticationService {
 		});
 	}
 	
-	setNewPassword(phone){
-		let encodedArg = btoa(phone);
+	setNewPassword(phoneOrEmail){
+		let encodedArg = btoa(phoneOrEmail);
 		
 		let payload = {
 			'class': 'fr.protogen.masterdata.model.CCallout',
-			id: 147,
+			id: 152,
 			args: [{
 				'class': 'fr.protogen.masterdata.model.CCalloutArguments',
 				label: 'Contact to create',

@@ -312,32 +312,17 @@ export class PhonePage {
 		this.nav.present(loading);
 		var tel = "+" + this.index + this.phone;
 		this.authService.setNewPassword(tel).then((data) => {
-			if (data && data.status.includes("no account found")) {
-				console.log(data);
-				loading.dismiss();
-				this.globalService.showAlertValidation("VitOnJob", "Aucun compte ne correspond à ce numéro de téléphone.");
-				return;
-			}
-			if (!data || data.status == "failure") {
-				console.log(data);
+			if (!data) {
 				loading.dismiss();
 				this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
 				return;
 			}
-			if (data && data.status == "OK") {
-				this.authService.getPassword(tel).then((res) => {
-					if (!res || res.status == "failure") {
-						console.log(res);
-						loading.dismiss();
-						this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
-						return;
-					}						
-					console.log('Sending SMS');
-					var message = "Votre nouveau mot de passe est: " + res.data[0].valeur;
-					this.sendSMS(tel, message);
-					loading.dismiss();
-					this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par SMS.");
-				});
+			if (data && data.password.length != 0) {
+				console.log('Sending SMS');
+				var message = "Votre nouveau mot de passe est: " + data.password;
+				this.sendSMS(tel, message);
+				loading.dismiss();
+				this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par SMS.");
 			}
 		});
 	}
