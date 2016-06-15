@@ -930,5 +930,175 @@ export class OffersService {
                 });
         });
     }
+
+    /*
+     *  Update offer calendar
+     */
+    updateOfferCalendar(offer, projectTarget){
+        let table = projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise';
+        this.deleteCalendar(offer, table);
+        this.attacheCalendar(offer, table);
+
+        this.db.get('currentUser').then(data => {
+            if (data) {
+                data = JSON.parse((data));
+                if (projectTarget === 'employer') {
+                    let rawData = data.employer;
+                    //console.log(rawData.entreprises);
+                    if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
+                        //adding userId for remote storing
+                        for(let i = 0 ; i < data.employer.entreprises[0].offers.length ; i++){
+                            if(data.employer.entreprises[0].offers[i].idOffer == offer.idOffer){
+                                data.employer.entreprises[0].offers[i] = offer;
+                                break;
+                            }
+                        }
+
+                        // Save new offer list in SqlStorage :
+                        this.db.set('currentUser', JSON.stringify(data));
+                    }
+                } else { // jobyer
+                    let rawData = data.jobyer;
+                    if (rawData && rawData.offers) {
+
+                        for(let i = 0; i < data.jobyer.offers.length ; i++){
+                            if(data.jobyer.offers[i].idOffer == offer.idOffer){
+                                data.jobyer.offers[i] = offer;
+                                break;
+                            }
+                        }
+
+                        // Save new offer list in SqlStorage :
+                        this.db.set('currentUser', JSON.stringify(data));
+                    }
+                }
+            }
+        });
+    }
+
+    deleteCalendar(offer, table){
+        let sql = "delete from user_disponibilites_des_offres where fk_"+table+"="+offer.idOffer;
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    console.log(JSON.stringify(data));
+
+                    resolve(data);
+                });
+        });
+    }
+
+    attacheCalendar(offer, table){
+        for(let i = 0 ; i < offer.calendarData.length ; i++){
+            let l = offer.calendarData[i];
+            this.attacheDay(offer.idOffer, table, l);
+        }
+    }
+
+    attacheDay(idOffer, table, day){
+        let d = new Date(day.date);
+        debugger;
+        let sdate = this.sqlfy(d);
+        let sql = "insert into user_disponibilites_des_offres (fk_"+table+", jour, heure_debut, heure_fin) values ("+idOffer+", '"+sdate+"', "+day.startHour+", "+day.endHour+")";
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    console.log(JSON.stringify(data));
+
+                    resolve(data);
+                });
+        });
+    }
+
+    /**
+     * Delete offer
+     * @param offer to be deleted
+     */
+    deleteOffer(offer, projectTarget){
+
+        this.db.get('currentUser').then(data => {
+            if (data) {
+                data = JSON.parse((data));
+                if (projectTarget === 'employer') {
+                    let rawData = data.employer;
+                    //console.log(rawData.entreprises);
+                    if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
+                        //adding userId for remote storing
+                        let index = -1;
+                        for(let i = 0 ; i < data.employer.entreprises[0].offers.length ; i++){
+                            if(data.employer.entreprises[0].offers[i].idOffer == offer.idOffer){
+                                index = i;
+                                break;
+                            }
+                        }
+                        if(index>=0){
+                            data.employer.entreprises[0].offers.splice(index,1);
+                        }
+
+                        // Save new offer list in SqlStorage :
+                        this.db.set('currentUser', JSON.stringify(data));
+                    }
+                } else { // jobyer
+                    let rawData = data.jobyer;
+                    if (rawData && rawData.offers) {
+
+                        let index = -1;
+                        for(let i = 0; i < data.jobyer.offers.length ; i++){
+                            if(data.jobyer.offers[i].idOffer == offer.idOffer){
+                                index = i;
+                                break;
+                            }
+                        }
+                        if(index>=0){
+                            data.employer.entreprises[0].offers.splice(index,1);
+                        }
+
+                        // Save new offer list in SqlStorage :
+                        this.db.set('currentUser', JSON.stringify(data));
+                    }
+                }
+            }
+        });
+
+
+        let table = projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise';
+        let sql = "update "+table+" set dirty='Y' where pk_"+table+"="+offer.idOffer;
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    console.log(JSON.stringify(data));
+
+                    resolve(data);
+                });
+        });
+    }
+
+    sqlfy(d){
+        return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" 00:00:00+00";
+    }
 }
 
