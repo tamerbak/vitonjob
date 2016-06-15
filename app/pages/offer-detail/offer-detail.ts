@@ -269,8 +269,11 @@ export class OfferDetailPage {
         this.nav.present(modal);
         modal.onDismiss(data => {
             this.modified.isQuality = (data.length) ? data.length > 0 : false;
-            if (this.modified.isQuality)
+            if (this.modified.isQuality){
                 this.offer.qualityData = data;
+                this.offerService.updateOfferQualities(this.offer, this.projectTarget);
+            }
+
         })
     }
 
@@ -283,8 +286,11 @@ export class OfferDetailPage {
         this.nav.present(modal);
         modal.onDismiss(data => {
             this.modified.isLanguage = (data.length) ? data.length > 0 : false;
-            if (this.modified.isLanguage)
+            if (this.modified.isLanguage){
                 this.offer.languageData = data;
+                this.offerService.updateOfferLanguages(this.offer, this.projectTarget);
+            }
+
         })
     }
 
