@@ -51,7 +51,7 @@ export class DataProviderService {
 		this.configuration = Configs.setConfigs(role);
 
 		role = (role === 'employer') ? 'employeur' : role;
-		var sql = "select pk_user_account, email from user_account where email = '"+mail+"' and " +
+		var sql = "select pk_user_account, email, telephone from user_account where email = '"+mail+"' and " +
 			"role = '" + role +"'";
 
 	    // don't have the data yet

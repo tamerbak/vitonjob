@@ -10,7 +10,7 @@ import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
 import {InfoUserPage} from "../info-user/info-user";
 import {Storage, SqlStorage} from 'ionic-angular';
-
+import {SMS} from 'ionic-native';
 /**
 	* @author Amal ROCHD
 	* @description authentication by mail view
@@ -35,6 +35,7 @@ export class MailPage {
 	password2: string;
 	storage:any;
 	isPhoneNumValid = true;
+	retrievedPhone: string;
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
@@ -234,6 +235,7 @@ export class MailPage {
 				} else {
 				//$scope.email = data.data[0]["email"];
 				this.email = data.data[0]["email"];
+				this.retrievedPhone = data.data[0]["telephone"];
 				this.libelleButton = "Se connecter";
 				this.showPhoneField = false;
 			}
@@ -290,5 +292,72 @@ export class MailPage {
 	*/
 	goBack() {
 		this.nav.rootNav.setRoot(HomePage)
+	}
+	
+	passwordForgotten(){
+		let loading = Loading.create({
+			content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+			spinner : 'hide'
+		});
+		this.nav.present(loading);
+		this.authService.setNewPassword(this.email).then((data) => {
+			if (!data) {
+				loading.dismiss();
+				this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+				return;
+			}
+			if (data && data.password.length != 0) {
+				console.log('Sending SMS');
+				var message = "Votre nouveau mot de passe est: " + data.password;
+				this.sendSMS(this.retrievedPhone, message);
+				loading.dismiss();
+				this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par SMS.");
+			}
+		});
+	}
+	
+	sendSMS(number, message){
+		var options = {
+			replaceLineBreaks: true,
+			android: {
+				intent: ''
+			}
+		};
+		SMS.send(number, message, options);
+	}
+	
+	displayPasswordAlert(){
+		if(!this.email || this.showEmailError() ){
+			this.globalService.showAlertValidation("VitOnJob", "Veuillez saisir une adresse email valide.");
+			return;
+		}
+		if(this.email && !this.showEmailError() && this.showPhoneField){
+			this.globalService.showAlertValidation("VitOnJob", "Aucun compte ne correspond à cet adresse email.");
+			return;
+		}
+		let confirm = Alert.create({
+			title: "VitOnJob",
+			message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez vous continuer?",
+			buttons: [
+				{
+					text: 'Non',
+					handler: () => {
+						console.log('No clicked');
+					}
+				},
+				{
+					text: 'Oui',
+					handler: () => {
+						console.log('Yes clicked');	
+						this.passwordForgotten();
+					}
+				}
+			]
+		});
+		this.nav.present(confirm);
 	}
 }
