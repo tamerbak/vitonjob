@@ -39,7 +39,7 @@ export class MissionDetailsPage {
 	//two dimensional array of pauses of mission days
 	startPauses = [['']];
 	endPauses = [['']];
-	isNewMission: boolean;
+	isNewMission = true;
 
     constructor(public gc: GlobalConfigs, 
 	public nav: NavController,
@@ -93,7 +93,7 @@ export class MissionDetailsPage {
 			}
 		}
 		//verify if the mission has already pauses
-		this.isNewMission = (this.startPauses.length == 0);
+		//this.isNewMission = (this.startPauses.length == 0);
 	}
 	
 	onCardClick(dayIndex){
