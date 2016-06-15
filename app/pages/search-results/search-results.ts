@@ -1,4 +1,4 @@
-import {NavController, ActionSheet, Platform, Slides,Alert} from 'ionic-angular';
+import {NavController, ActionSheet, Platform, Slides,Alert, Modal} from 'ionic-angular';
 import {Storage, SqlStorage, LocalStorage} from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {ViewChild, Component} from '@angular/core'
@@ -134,7 +134,7 @@ export class SearchResultsPage {
      * @param item the selected Employer/Jobyer
      */
     itemSelected(item){
-        /*let actionSheet = ActionSheet.create({
+        let actionSheet = ActionSheet.create({
             title: 'Options',
             buttons: [
                 {
@@ -159,8 +159,8 @@ export class SearchResultsPage {
                 }
             ]
         });
-        this.nav.present(actionSheet);*/
-        this.recruitJobyer(item);
+        this.nav.present(actionSheet);
+
     }
 
     contract(item){
