@@ -303,8 +303,11 @@ export class OfferDetailPage {
         this.nav.present(modal);
         modal.onDismiss(data => {
             this.modified.isCalendar = (data.length) ? data.length > 0 : false;
-            if (this.modified.isCalendar)
+            if (this.modified.isCalendar){
                 this.offer.calendarData = data;
+                this.offerService.updateOfferCalendar(this.offer, this.projectTarget);
+            }
+
         })
     }
 
