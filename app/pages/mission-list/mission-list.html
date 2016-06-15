@@ -12,7 +12,7 @@
 </ion-navbar>
 
 <ion-content padding>
-    <ion-row>
+    <!--ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center> <h6 [style.color]="themeColor"> Liste des contrats signés </h6></ion-col>
         <ion-col width-10></ion-col>
@@ -22,5 +22,11 @@
 			<h2>Contrat n° {{item.numero}} signé le {{item.date_signature | dateConverter:'short'}}</h2>
 			<h3 [style.color]="themeColor">{{item.prenom}} {{item.nom}}</h3>
         </ion-item>
-    </ion-list>
+    </ion-list-->
+    <ion-card>
+        <ion-card-header>Prochainement</ion-card-header>
+        <ion-card-content>
+            Restez à l'écoute de la prochaine mise à jour de l'application qui vous permettra de signer des contrats
+        </ion-card-content>
+    </ion-card>
 </ion-content>
