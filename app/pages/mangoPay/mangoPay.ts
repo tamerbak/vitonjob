@@ -65,8 +65,8 @@ export class MangoPayPage {
                 this.nav.setRoot(MissionListPage);
             } else {
                 let alert = Alert.create({
-                    title: "Erreur de validation",
-                    subTitle: "Les informations saisies ne sont pas valides, veuillez vérifier",
+                    title: "Erreur de validation de la carte",
+                    subTitle: "Veuillez saisir les informations d'une carte valide",
                     buttons: ['OK']
                 });
                 this.nav.present(alert);

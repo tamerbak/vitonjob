@@ -135,11 +135,11 @@ export class YousignPage {
             let jobyerPhoneNumber = this.jobyer.tel;
             
             // Send sms to jobyer
-            // this.smsService.sendSms(jobyerPhoneNumber, yousignJobyerLink).then((dataSms) => {
-            //     console.log("The message was sent successfully");
-            // }).catch(function(err) {
-            //     console.log(err);
-            // });
+            this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée : '+yousignJobyerLink).then((dataSms) => {
+                 console.log("The message was sent successfully");
+            }).catch(function(err) {
+                 console.log(err);
+            });
             
             //save contract in Database
             this.contractService.getJobyerId(this.jobyer,this.projectTarget).then(
