@@ -1,4 +1,4 @@
-import {NavController, Loading, Alert} from 'ionic-angular';
+import {NavController, Loading, Alert, Storage, SqlStorage} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {Component} from "@angular/core";
@@ -21,6 +21,10 @@ export class MangoPayPage {
     cardCvv:string;
 
     service : PaylineServices;
+    storage : Storage;
+
+    existingWallet : boolean = false;
+    walletMsg : string = '';
 
     constructor(public nav: NavController,
                 gc: GlobalConfigs,
@@ -34,12 +38,23 @@ export class MangoPayPage {
         let config = Configs.setConfigs(this.projectTarget);
 
         this.service = service;
-
+        this.storage = new Storage(SqlStorage);
         // Set local variables and messages
         this.isEmployer = (this.projectTarget=='employer');
         this.mangoPayTitle = "Prise d'empreinte";
         this.themeColor = config.themeColor;
         this.nav = nav;
+        this.storage.get("currentUser").then(data => {
+            let user = JSON.parse(data);
+            this.service.checkWallet(user).then(walletId => {
+                if(walletId && walletId != 'null' && walletId.length>0){
+                    this.existingWallet = true;
+                    let cnum = walletId.substring(walletId.length - 4);
+                    this.walletMsg = "Si vous désirez utiliser la même carte bancaire que vous avez renseigné au préalable (XXXXXXXXXXXX"+cnum+") vous pouvez passer cette étape.";
+                }
+            });
+        });
+
     }
 
     openWallet(){
@@ -57,22 +72,29 @@ export class MangoPayPage {
 			`,
             spinner : 'hide'
         });
+        debugger;
         this.nav.present(loading);
-        this.service.empreinteCarte(card).then(data=>{
-            debugger;
-            loading.dismiss();
-            if(data.code == '02500'){
-                this.nav.setRoot(MissionListPage);
-            } else {
-                let alert = Alert.create({
-                    title: "Erreur de validation de la carte",
-                    subTitle: "Veuillez saisir les informations d'une carte valide",
-                    buttons: ['OK']
-                });
-                this.nav.present(alert);
-            }
+        this.storage.get("currentUser").then(data => {
+            let user = JSON.parse(data);
+            this.service.empreinteCarte(card, user).then(data=> {
+                loading.dismiss();
+                debugger;
+                if (data.code == '02500') {
+                    this.nav.setRoot(MissionListPage);
+                } else {
+                    let alert = Alert.create({
+                        title: "Erreur de validation de la carte",
+                        subTitle: "Veuillez saisir les informations d'une carte valide",
+                        buttons: ['OK']
+                    });
+                    this.nav.present(alert);
+                }
 
+            });
         });
     }
 
+    gotomissions(){
+        this.nav.setRoot(MissionListPage);
+    }
 }
