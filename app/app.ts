@@ -1,4 +1,4 @@
-import {Platform, MenuController, Nav, ionicBootstrap, App} from 'ionic-angular';
+import {Platform, MenuController, Nav, ionicBootstrap, App, Modal} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {HomePage} from './pages/home/home';
 import {LoginsPage} from './pages/logins/logins';
@@ -26,6 +26,8 @@ import {isUndefined} from "ionic-angular/util";
 import {OffersService} from "./providers/offers-service/offers-service";
 import {ViewChild, Component} from "@angular/core";
 import {Push} from 'ionic-native'
+import {SearchCriteriaPage} from "./pages/search-criteria/search-criteria";
+import {SearchGuidePage} from "./pages/search-guide/search-guide";
 
 @Component({
 	templateUrl: 'build/menu.html'
@@ -221,6 +223,24 @@ export class Vitonjob {
 		else {
 			this.nav.setRoot(page.component);
 		}
+	}
+
+	/**
+	 * @description this method allows to render the multicriteria modal component
+	 */
+	showCriteriaModal(){
+		let m = new Modal(SearchCriteriaPage);
+		this.menu.close();
+		this.nav.present(m);
+	}
+
+	/**
+	 * @description this method allows to render the guided search modal component
+	 */
+	showGuideModal(){
+		let m = new Modal(SearchGuidePage);
+		this.menu.close();
+		this.nav.present(m);
 	}
 }
 
