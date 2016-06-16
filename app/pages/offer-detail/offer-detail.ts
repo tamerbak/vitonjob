@@ -11,6 +11,7 @@ import {ModalLanguagePage} from "../modal-language/modal-language";
 import {ModalCalendarPage} from "../modal-calendar/modal-calendar";
 import {OfferListPage} from "../offer-list/offer-list";
 import {Component} from "@angular/core";
+import {OfferQuotePage} from "../offer-quote/offer-quote";
 
 /*
  Generated class for the OfferDetailPage page.
@@ -138,6 +139,10 @@ export class OfferDetailPage {
         });
     }
 
+    showQuote(){
+        let modal = Modal.create(OfferQuotePage, {currentOffer: this.offer});
+        this.nav.present(modal);
+    }
 
     /**
      * Show job card
@@ -257,7 +262,7 @@ export class OfferDetailPage {
                 this.offerService.updateOfferJob(this.offer, this.projectTarget);
             }
 
-        })
+        });
     }
 
     /**

@@ -1,0 +1,95 @@
+<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
+    <ion-title>Devis estimatif</ion-title>
+    <ion-buttons end>
+        <button (click)="closeModal()">
+            <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+        </button>
+    </ion-buttons>
+</ion-navbar>
+
+<ion-content padding class="offer-quote">
+    <ion-card>
+        <ion-card-content>
+            Le présent devis est à titre estimatif et sera révisé en fonction des conventions collectives applicables et de la nature des heures de travail.
+
+        </ion-card-content>
+    </ion-card>
+    <ion-grid>
+        <ion-row>
+            <ion-col width-40><strong>Rubrique</strong></ion-col>
+            <ion-col width-20><strong>Taux</strong></ion-col>
+            <ion-col width-20><strong>Nb Heures</strong></ion-col>
+            <ion-col width-20><strong>Montant</strong></ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col width-40>
+                Montant estimé à payer
+            </ion-col>
+            <ion-col width-20>
+                {{rate | number:'1.2-2'}}
+            </ion-col>
+            <ion-col width-20>
+                {{nbHours | number:'1.2-2'}}
+            </ion-col>
+            <ion-col width-20>
+                {{estimatedPayment | number:'1.2-2'}}
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col width-40>
+                Frais de mission
+            </ion-col>
+            <ion-col width-20>
+                {{missionCosts | number:'1.2-2'}}
+            </ion-col>
+            <ion-col width-20>
+
+            </ion-col>
+            <ion-col width-20>
+                {{missionCosts | number:'1.2-2'}}
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col width-40>
+                Total HT
+            </ion-col>
+            <ion-col width-20>
+
+            </ion-col>
+            <ion-col width-20>
+
+            </ion-col>
+            <ion-col width-20>
+                {{TFAmount | number:'1.2-2'}}
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col width-40>
+                TVA {{taxRate}}
+            </ion-col>
+            <ion-col width-20>
+
+            </ion-col>
+            <ion-col width-20>
+
+            </ion-col>
+            <ion-col width-20>
+                {{TaxAmount | number:'1.2-2'}}
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col width-40>
+                Total TTC
+            </ion-col>
+            <ion-col width-20>
+
+            </ion-col>
+            <ion-col width-20>
+
+            </ion-col>
+            <ion-col width-20>
+                {{TotalAmount | number:'1.2-2'}}
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>
