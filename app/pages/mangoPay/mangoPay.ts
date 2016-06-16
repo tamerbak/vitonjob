@@ -1,4 +1,4 @@
-import {NavController} from 'ionic-angular';
+import {NavController, Loading, Alert} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {Component} from "@angular/core";
@@ -49,9 +49,29 @@ export class MangoPayPage {
             expireDate : this.cardExpirationDate,
             cvx : this.cardCvv
         };
-        debugger;
+        let loading = Loading.create({
+            content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+            spinner : 'hide'
+        });
+        this.nav.present(loading);
         this.service.empreinteCarte(card).then(data=>{
-            this.nav.setRoot(MissionListPage);
+            debugger;
+            loading.dismiss();
+            if(data.code == '02500'){
+                this.nav.setRoot(MissionListPage);
+            } else {
+                let alert = Alert.create({
+                    title: "Erreur de validation",
+                    subTitle: "Les informations saisies ne sont pas valides, veuillez vérifier",
+                    buttons: ['OK']
+                });
+                this.nav.present(alert);
+            }
+
         });
     }
 

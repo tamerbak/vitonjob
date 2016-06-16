@@ -15,7 +15,6 @@ export class PaylineServices {
 
     empreinteCarte(card){
         this.storage.get("currentUser").then(data =>{
-            debugger;
             let user = JSON.parse(data);
             let bean = {
                 "class" : "com.vitonjob.payline.PaylineConfig",
@@ -39,11 +38,11 @@ export class PaylineServices {
             let encodedArg = btoa(JSON.stringify(bean));
             var payload = {
                 'class': 'fr.protogen.masterdata.model.CCallout',
-                'id': 153,
+                'id': 154,
                 'args': [
                     {
                         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
-                        label: 'Signature electronique',
+                        label: 'Empreinte carte',
                         value: encodedArg
                     }
                 ]
