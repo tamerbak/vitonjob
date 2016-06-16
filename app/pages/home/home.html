@@ -5,6 +5,9 @@
     <ion-title>
         {{projectName}}
     </ion-title>
+    <button menuToggle="right" right>
+        <ion-icon name="more"></ion-icon>
+    </button>
 </ion-navbar>
 
 <ion-content class="home">
@@ -64,13 +67,13 @@
         <ion-icon name="mic" [hidden]="recording"></ion-icon>
     </button>
 
-    <button secondary ngClass="left-bottom-btn" (click)="showCriteriaModal()" >
+    <!--button secondary ngClass="left-bottom-btn" (click)="showCriteriaModal()" >
         <ion-icon name="search"></ion-icon>
     </button>
 
     <button primary ngClass="right-bottom-btn" (click)="showGuideModal()">
         <ion-icon name="reorder"></ion-icon>
-    </button>
+    </button-->
 </ion-row>
 	
     <!--div class="draggable ui-widget-content">

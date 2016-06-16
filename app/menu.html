@@ -58,7 +58,7 @@
     </ion-content>
 </ion-menu>
 
-<!--
+
 <ion-menu [content]="menuContent" id="rightOnMenu" side="right">
     <ion-content>
         <img [src]="bgMenuURL" style="width: 100%;">
@@ -71,16 +71,16 @@
             </ion-icon>
         </div>
         <ion-list>
-            <button menuClose ion-item>
+            <button menuClose ion-item (click)="showGuideModal()">
                 &nbsp;&nbsp;Recherche guidée
             </button>
 
-            <button menuClose ion-item>
+            <button menuClose ion-item (click)="showCriteriaModal()">
                 &nbsp;&nbsp;Recherche par critères
             </button>
         </ion-list>
     </ion-content>
-</ion-menu>-->
+</ion-menu>
 
 <ion-nav id="nav" [root]="rootPage" #menuContent swipeBackEnabled="false">
 </ion-nav>
