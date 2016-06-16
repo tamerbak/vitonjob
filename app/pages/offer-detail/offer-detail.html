@@ -16,6 +16,9 @@
         <button (click)="launchSearch()">
             <ion-icon name="search"></ion-icon>
         </button>
+        <button (click)="showQuote()" *ngIf="isEmployer">
+            <ion-icon name="cash"></ion-icon>
+        </button>
     </ion-buttons>
 </ion-navbar>
 

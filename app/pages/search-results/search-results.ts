@@ -44,6 +44,7 @@ export class SearchResultsPage {
     resultsCount : number = 0;
     isUserAuthenticated : boolean;
     employer:any;
+    isEmployer : boolean;
 
     //  Attributes for offer creation proposition
     proposedJob : any;
@@ -67,6 +68,7 @@ export class SearchResultsPage {
         this.projectTarget = globalConfig.getProjectTarget();
         this.avatar = this.projectTarget != 'jobyer' ? 'jobyer_avatar':'employer_avatar';
         this.platform = platform;
+        this.isEmployer = this.projectTarget == 'employer'
 
         //  Retrieving last search
         searchService.retrieveLastSearch().then(results =>{
