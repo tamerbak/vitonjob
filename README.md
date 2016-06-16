@@ -100,6 +100,20 @@ $ cordova plugin add cordova-plugin-camera
 $ cordova plugin add cordova-sms-plugin
 ```
 
+##Notification Push
+````
+1- installer les composantes : 
+	$ ionic add ionic-platform-web-client
+	$ ionic plugin add phonegap-plugin-push --variable SENDER_ID="GCM_PROJECT_NUMBER"
+	avec GCM_PROJECT_NUMBER = "693415120998". Ce numéro est généré lors de l'activation du projet sur Google Developers Console.
+
+2- exécuter la commande ci dessous pour identifier l'application chez ionic: 
+	$ ionic io init	
+
+3- désactiver la fonctionnalité limité push : 
+	$ ionic config set dev_push false
+````
+
 ## Environnement
 
 Le projet est compatible avec Ionic la version Beta 8.
