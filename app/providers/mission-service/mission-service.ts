@@ -80,6 +80,22 @@ export class MissionService {
 		});
 	}
 	
+	signSchedule(contractId){
+		var sql = "update user_contrat set approuve = 'Oui' where pk_user_contrat = '" + contractId + "'; ";
+		console.log(sql);
+		
+	    return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'text/plain');
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			.map(res => res.json())
+			.subscribe(data => {
+	            this.data = data;
+	            resolve(this.data);
+			});
+		});
+	}
+	
 	convertHoursToMinutes(hour){
 		var hourArray = hour.split(':');
 		return 	hourArray[0] * 60 + parseInt(hourArray[1]);

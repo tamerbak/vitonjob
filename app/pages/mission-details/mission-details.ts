@@ -79,7 +79,7 @@ export class MissionDetailsPage {
 		for(var i = 0; i < initialMissionArray.length; i++){
 			var m = initialMissionArray[i];
 			//if the mission is not yet pushed
-			if(!ids.includes(m.id)){
+			if(ids.indexOf(m.id) == -1){
 				//push the mission
 				this.missionHours.push(m);
 				//push the id mission to not stock the same mission many time
@@ -246,6 +246,32 @@ export class MissionDetailsPage {
 			this.endPauses[i][j] = '';
 			return;
 		}
+	}
+	
+	signSchedule(){
+		let loading = Loading.create({
+			content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+			spinner : 'hide'
+		});
+		this.nav.present(loading).then(()=> {		
+			this.missionService.signSchedule(this.contract.pk_user_contrat).then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					loading.dismiss();
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+				}else{
+					// data saved
+					console.log("schedule signed : " + data.status);
+				}					
+			});
+			loading.dismiss();
+			this.nav.pop();
+		});
 	}
 	
 	resetForm(){

@@ -69,6 +69,14 @@
 	</ion-row>
 	<ion-row>
 		<ion-col text-center>
+			<button block (click)="signSchedule()" [style.backgroundColor]="themeColor" [hidden]="isNewMission || !isEmployer || contract.approuve == 'Oui'">
+				<ion-icon name="ribbon"></ion-icon>
+				Signer les horaires
+			</button>
+		</ion-col>
+	</ion-row>
+	<ion-row>
+		<ion-col text-center>
 			<button block (click)="goBack()" [style.backgroundColor]="themeColor">
 				<ion-icon name="undo"></ion-icon>
 				Quitter
