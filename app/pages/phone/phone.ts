@@ -193,7 +193,7 @@ export class PhonePage {
 			if (e.target.value.substring(0,1) == '0') {
 				e.target.value = e.target.value.substring(1, e.target.value.length);
 			}
-			if (e.target.value.includes('.')) {
+			if (e.target.value.indexOf('.') != -1) {
 				e.target.value = e.target.value.replace('.', '');
 			}
 			if(e.target.value.length > 9){

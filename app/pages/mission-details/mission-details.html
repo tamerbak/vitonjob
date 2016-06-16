@@ -15,7 +15,8 @@
     </ion-row>
     <ion-card *ngFor="let day of missionHours, let i=index">
 		<ion-card-header (click)="onCardClick(i)" class="cardHeader">
-            Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}  
+            Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}
+			<ion-icon name="add-circle" [hidden]="!isNewMission || !isEmployer" class="iconRight"></ion-icon>
         </ion-card-header>
         <ion-card-content>
 			<ion-list>
@@ -23,17 +24,24 @@
 				<ion-label fixed>H. de début</ion-label>
 				<ion-input value="{{day.heure_debut | timeConverter:'minute'}}" disabled="true"></ion-input>
 			  </ion-item>
-			  <ion-list *ngFor="let startPause of startPauses[i], let j=index">
-			  <ion-item>
-				<h2 (click)="onPauseClick(i, j)">Pause {{j + 1}}</h2>
+			  <ion-list *ngFor="let startPause of startPauses[i], let j=index" class="marginTopList">
+			  <ion-item (click)="onPauseClick(i, j)">
+			  <ion-row>
+			  <ion-col width-90>
+				<h2>Pause {{j + 1}}</h2>
+				</ion-col>
+				<ion-col width-10>
+				<ion-icon name="trash" [hidden]="!isNewMission || !isEmployer" class="iconRight"></ion-icon>
+				</ion-col>
+				</ion-row>
 			  </ion-item>  
 			  <ion-item>
 				<ion-label fixed>Début de pause</ion-label>
-				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="startPauses[i][j]" (ionChange)="checkPauseHour(i, j, true)" [disabled]="!isNewMission"></ion-datetime>
+				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="startPauses[i][j]" (ionChange)="checkPauseHour(i, j, true)" [disabled]="!isNewMission || !isEmployer"></ion-datetime>
 			  </ion-item>
 			  <ion-item>
 				<ion-label fixed>Fin de pause</ion-label>
-				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="endPauses[i][j]" (ionChange)="checkPauseHour(i, j, false)" [disabled]="!isNewMission"></ion-datetime>
+				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="endPauses[i][j]" (ionChange)="checkPauseHour(i, j, false)" [disabled]="!isNewMission || !isEmployer"></ion-datetime>
 			  </ion-item>
 			  </ion-list>
 			  <ion-item>
@@ -45,7 +53,7 @@
 	</ion-card>	
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="validatePauses()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission || (missionHours && missionHours.length == 0)">
+			<button block (click)="validatePauses()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission || (missionHours && missionHours.length == 0) || !isEmployer">
 				<ion-icon name="send"></ion-icon>
 				Valider et notifier le Jobyer
 			</button>
@@ -53,9 +61,17 @@
 	</ion-row>
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="resetForm()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission || (missionHours && missionHours.length == 0)">
+			<button block (click)="resetForm()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission || (missionHours && missionHours.length == 0) || !isEmployer">
 				<ion-icon name="refresh"></ion-icon>
 				Rénitialiser
+			</button>
+		</ion-col>
+	</ion-row>
+	<ion-row>
+		<ion-col text-center>
+			<button block (click)="signSchedule()" [style.backgroundColor]="themeColor" [hidden]="isNewMission || !isEmployer || contract.approuve == 'Oui'">
+				<ion-icon name="ribbon"></ion-icon>
+				Signer les horaires
 			</button>
 		</ion-col>
 	</ion-row>

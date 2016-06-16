@@ -41,19 +41,47 @@ export class MissionService {
 		});
 	}
 	
-	addPauses(missionHours, startPauses, endPauses){
+	addPauses(missionHours, startPauses, endPauses, contractId){
 		//  Init project parameters
-		var valuesString = "";
-		for(var i = 0; i < missionHours.length; i++){
-			for(var j = 0; j < startPauses[i].length; j++){
-				//convert startpausehour and endpausehour to minutes
-				var startMinute = this.convertHoursToMinutes(startPauses[i][j]);
-				var endMinute = this.convertHoursToMinutes(endPauses[i][j]);
-				valuesString = valuesString + "(" + missionHours[i].id + ", " + startMinute + ", " + endMinute + "),"
-			}
-		}
-		var sql = "insert into user_pause (fk_user_heure_mission, debut, fin) values " + valuesString.slice(0, -1);
+		var sql = "update user_contrat set vu = 'Oui' where pk_user_contrat = '" + contractId + "'; ";
 		
+		var pauseArrayEmpty;
+		for(var i = 0; i < startPauses.length; i++){
+			if(startPauses[i].length != 0){
+				pauseArrayEmpty = false;
+			}else{
+				pauseArrayEmpty = true;
+			}	
+		}
+		if(!pauseArrayEmpty){
+			var valuesString = "";
+			for(var i = 0; i < missionHours.length; i++){
+				for(var j = 0; j < startPauses[i].length; j++){
+					//convert startpausehour and endpausehour to minutes
+					var startMinute = this.convertHoursToMinutes(startPauses[i][j]);
+					var endMinute = this.convertHoursToMinutes(endPauses[i][j]);
+					valuesString = valuesString + "(" + missionHours[i].id + ", " + startMinute + ", " + endMinute + "),";
+				}
+			}
+			sql = sql + " insert into user_pause (fk_user_heure_mission, debut, fin) values " + valuesString.slice(0, -1) + "; ";
+		}
+		
+		console.log(sql);
+		
+	    return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'text/plain');
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			.map(res => res.json())
+			.subscribe(data => {
+	            this.data = data;
+	            resolve(this.data);
+			});
+		});
+	}
+	
+	signSchedule(contractId){
+		var sql = "update user_contrat set approuve = 'Oui' where pk_user_contrat = '" + contractId + "'; ";
 		console.log(sql);
 		
 	    return new Promise(resolve => {
