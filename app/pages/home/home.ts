@@ -72,7 +72,6 @@ export class HomePage implements OnChanges{
         this.search = searchService;
         //verify if the user is already connected
         this.storage.get("currentUser").then((value) => {
-            console.log(value);
             if(value){
                 this.cnxBtnName = "Déconnexion";
                 this.isConnected = true;

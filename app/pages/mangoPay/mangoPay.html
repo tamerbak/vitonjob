@@ -6,7 +6,17 @@
 </ion-navbar>
 
 <ion-content padding class="mangoPay">
-    
+    <ion-card *ngIf="existingWallet">
+        <ion-card-content>
+            {{walletMsg}}
+        </ion-card-content>
+        <ion-card-footer>
+            <button block primary (click)="gotomissions()">
+                Passer
+            </button>
+        </ion-card-footer>
+    </ion-card>
+
     <ion-row>
         <ion-item>
             <ion-label floating>Numéro de carte de crédit</ion-label>
