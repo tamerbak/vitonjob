@@ -61,6 +61,8 @@ export class MissionDetailsPage {
         this.isEmployer = (this.projectTarget=='employer');
         //get missions
         this.contract = navParams.get('contract');
+		//verify if the mission has already pauses
+		this.isNewMission = this.contract.vu == 'Oui' ? false : true;
 		this.missionService.listMissionHours(this.contract).then((data) => {
 			if(data.data){
 				this.initialMissionHours = data.data;
@@ -87,8 +89,6 @@ export class MissionDetailsPage {
 				this.endPauses[i] = [];
 				if(m.pause_debut != "null"){
 					this.startPauses[i][0] = this.convertToFormattedHour(m.pause_debut);
-					//verify if the mission has already pauses
-					this.isNewMission = false;
 				}
 				if(m.pause_fin != "null"){
 					this.endPauses[i][0] = this.convertToFormattedHour(m.pause_fin);
@@ -104,7 +104,7 @@ export class MissionDetailsPage {
 	}
 	
 	onCardClick(dayIndex){
-		if(!this.isNewMission){
+		if(!this.isNewMission || !this.isEmployer){
 			return;
 		}
 		//open action sheet menu
@@ -133,7 +133,7 @@ export class MissionDetailsPage {
 	}
 	
 	onPauseClick(dayIndex, pauseIndex){
-		if(!this.isNewMission){
+		if(!this.isNewMission || !this.isEmployer){
 			return;
 		}
 		//open action sheet menu
@@ -180,17 +180,8 @@ export class MissionDetailsPage {
 			`,
 			spinner : 'hide'
 		});
-		this.nav.present(loading).then(()=> {
-		var pauseArrayEmpty;
-		for(var i = 0; i < this.startPauses.length; i++){
-			if(this.startPauses[i].length != 0){
-				pauseArrayEmpty = false;
-			}else{
-				pauseArrayEmpty = true;
-			}	
-		}
-		if(!pauseArrayEmpty){
-			this.missionService.addPauses(this.missionHours, this.startPauses, this.endPauses).then((data) => {
+		this.nav.present(loading).then(()=> {		
+			this.missionService.addPauses(this.missionHours, this.startPauses, this.endPauses, this.contract.pk_user_contrat).then((data) => {
 				if (!data || data.status == "failure") {
 					console.log(data.error);
 					loading.dismiss();
@@ -201,10 +192,9 @@ export class MissionDetailsPage {
 					console.log("pauses saved successfully : " + data.status);
 				}					
 			});
-		}
-		loading.dismiss();
-		this.sendPushNotification();
-		this.nav.pop();
+			loading.dismiss();
+			this.sendPushNotification();
+			this.nav.pop();
 		});
 	}
 	

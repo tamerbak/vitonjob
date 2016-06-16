@@ -19,7 +19,9 @@
     <ion-list text-wrap>
         <ion-item *ngFor="let item of contractList" (click)="goToMissionDetailsPage(item)" >
 			<h2>Contrat n° {{item.numero}} signé le {{item.date_signature | dateConverter:'short'}}</h2>
-			<h3 [style.color]="themeColor">{{item.prenom}} {{item.nom}}</h3>
+			<h3 [style.color]="themeColor" [hidden]="!isEmployer">{{item.prenom}} {{item.nom}}</h3>
+			<h3 [style.color]="themeColor" [hidden]="isEmployer">{{item.nom}}</h3>
+			<ion-icon name="checkmark" item-right [hidden]="item.vu == 'Non'"></ion-icon>
         </ion-item>
     </ion-list>
 	<!--<ion-card>

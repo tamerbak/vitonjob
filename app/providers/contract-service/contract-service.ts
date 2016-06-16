@@ -71,10 +71,14 @@ export class ContractService {
      * @param employerEntrepriseId
      * @return JSON results in form of created contract Id
     */
-    getContracts(emplyerEntrpriseId:number,projectTarget:string){
+    getContracts(id:number,projectTarget:string){
 		//  Init project parameters
 		this.configuration = Configs.setConfigs(projectTarget);
-        var sql = "SELECT c.pk_user_contrat,c.*, j.nom, j.prenom FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='"+emplyerEntrpriseId+"'";
+		if(projectTarget == 'employer'){
+			var sql = "SELECT c.pk_user_contrat,c.*, j.nom, j.prenom FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='"+id+"'";
+		}else{
+			var sql = "SELECT c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='"+id+"'";
+		}
 
 		console.log(sql);
                   

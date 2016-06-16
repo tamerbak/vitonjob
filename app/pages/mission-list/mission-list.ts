@@ -29,7 +29,6 @@ export class MissionListPage {
     contractList:any;
     missionListTitle:string;
     
-    
     constructor(public gc: GlobalConfigs, 
                 public nav: NavController, 
                 private contractService:ContractService) {
@@ -45,13 +44,21 @@ export class MissionListPage {
         this.missionListTitle = "Suivi des missions";
         this.isEmployer = (this.projectTarget=='employer');
 		this.storage = new Storage(SqlStorage);
-		
-        //get contracts
+	}
+	
+	onPageWillEnter() {
+        console.log('••• On Init');
+		//get contracts
         this.storage.get("currentUser").then((value) => {
 			if(value){
 				this.currentUser = JSON.parse(value);
-				var entrepriseId = this.currentUser.employer.entreprises[0].id;
-				this.contractService.getContracts(entrepriseId, this.projectTarget).then(data => {
+				var id;
+				if(this.isEmployer){
+					id = this.currentUser.employer.entreprises[0].id;
+				}else{
+					id = this.currentUser.jobyer.id;
+				}
+				this.contractService.getContracts(id, this.projectTarget).then(data => {
 					if(data.data){
 						this.contractList = data.data;
 					}
