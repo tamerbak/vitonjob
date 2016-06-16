@@ -15,7 +15,8 @@ import {DateConverter} from '../../pipes/date-converter/date-converter';
 */
 @Component({
   templateUrl: 'build/pages/mission-list/mission-list.html',
-  pipes: [DateConverter]
+  pipes: [DateConverter],
+  providers: [ContractService]
 })
 export class MissionListPage {
     projectTarget:string;

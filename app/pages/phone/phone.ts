@@ -142,15 +142,13 @@ export class PhonePage {
 			
 			//load device token to current account
 			var token;
-			this.authService.getObj('deviceToken').then(val => {
-				token = val;
-			});
-			var accountId = data.id;
-			if (token) {
+			this.storage.get("deviceToken").then(token => {
+				if (token) {
 				console.log("insertion du token : " + token);
 				this.authService.insertToken(token, accountId, this.projectTarget);
 			}
-			
+			});
+			var accountId = data.id;
 			this.storage.set('connexion', JSON.stringify(connexion));
 			this.storage.set('currentUser', JSON.stringify(data));
 			this.events.publish('user:login', data);
@@ -297,7 +295,7 @@ export class PhonePage {
 		* @description return to the home page
 	*/
 	goBack() {
-		this.nav.rootNav.setRoot(HomePage)
+		this.nav.rootNav.setRoot(HomePage);
 	}
 	
 	passwordForgotten(){

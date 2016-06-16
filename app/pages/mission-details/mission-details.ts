@@ -1,8 +1,8 @@
-import {NavController,NavParams} from 'ionic-angular';
 import {NavController,NavParams, ActionSheet, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {MissionService} from '../../providers/mission-service/mission-service';
+import {PushNotificationService} from '../../providers/push-notification-service/push-notification-service';
 import {DatePicker} from 'ionic-native';
 import {HomePage} from '../home/home';
 import {Component} from "@angular/core";
@@ -19,7 +19,7 @@ import {GlobalService} from "../../providers/global.service";
 @Component({
 	templateUrl: 'build/pages/mission-details/mission-details.html',
 	pipes: [DateConverter, TimeConverter],
-	providers: [GlobalService]
+	providers: [GlobalService, PushNotificationService]
 })
 export class MissionDetailsPage {
     projectTarget:string;
@@ -40,12 +40,14 @@ export class MissionDetailsPage {
 	startPauses = [['']];
 	endPauses = [['']];
 	isNewMission = true;
-
+	contract;
+	
     constructor(public gc: GlobalConfigs, 
 	public nav: NavController,
 	public navParams:NavParams, 
 	private missionService:MissionService, 
-	private globalService: GlobalService) {
+	private globalService: GlobalService,
+	private pushNotificationService: PushNotificationService) {
         
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -58,8 +60,8 @@ export class MissionDetailsPage {
         this.missionDetailsTitle = "Gestion de la mission";
         this.isEmployer = (this.projectTarget=='employer');
         //get missions
-        var contract = navParams.get('contract');
-		this.missionService.listMissionHours(contract).then((data) => {
+        this.contract = navParams.get('contract');
+		this.missionService.listMissionHours(this.contract).then((data) => {
 			if(data.data){
 				this.initialMissionHours = data.data;
 				//initiate pauses array
@@ -170,7 +172,7 @@ export class MissionDetailsPage {
 	}
 	
 	validatePauses(){
-		/*let loading = Loading.create({
+		let loading = Loading.create({
 			content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -178,21 +180,41 @@ export class MissionDetailsPage {
 			`,
 			spinner : 'hide'
 		});
-		this.nav.present(loading);
-		this.missionService.addPauses(this.missionHours, this.startPauses, this.endPauses).then((data) => {
-			if (!data || data.status == "failure") {
-				console.log(data.error);
-				loading.dismiss();
-				this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
-				return;
-				}else{
-				// data saved
-				console.log("pauses saved successfully : " + data.status);
-				loading.dismiss();
-				this.nav.pop();
-			}					
-		});*/
-		
+		this.nav.present(loading).then(()=> {
+		var pauseArrayEmpty;
+		for(var i = 0; i < this.startPauses.length; i++){
+			if(this.startPauses[i].length != 0){
+				pauseArrayEmpty = false;
+			}else{
+				pauseArrayEmpty = true;
+			}	
+		}
+		if(!pauseArrayEmpty){
+			this.missionService.addPauses(this.missionHours, this.startPauses, this.endPauses).then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					loading.dismiss();
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+					}else{
+					// data saved
+					console.log("pauses saved successfully : " + data.status);
+				}					
+			});
+		}
+		loading.dismiss();
+		this.sendPushNotification();
+		this.nav.pop();
+		});
+	}
+	
+	sendPushNotification(){
+		this.pushNotificationService.getTokenByJobyerId(this.contract.fk_user_jobyer).then(token => {			
+			var message = "Horaire du contrat n°" + this.contract.numero + " validé";
+			this.pushNotificationService.sendPushNotification(token, message).then(data => {
+				this.globalService.showAlertValidation("VitOnJob", "Notification envoyée.");
+			});
+		});	
 	}
     
 	checkPauseHour(i, j, isStartPause){
