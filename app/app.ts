@@ -25,6 +25,7 @@ import {ContractPage} from "./pages/contract/contract";
 import {isUndefined} from "ionic-angular/util";
 import {OffersService} from "./providers/offers-service/offers-service";
 import {ViewChild, Component} from "@angular/core";
+import {Push} from 'ionic-native'
 
 @Component({
 	templateUrl: 'build/menu.html'
@@ -150,6 +151,29 @@ export class Vitonjob {
 			});
 
 			StatusBar.styleDefault();
+			
+			//for push notication
+			var push = Push.init({
+				android: {
+				  senderID: "693415120998"
+				},
+				ios: {
+				  alert: "true",
+				  badge: true,
+				  sound: 'false'
+				},
+				windows: {}
+			  });
+			  push.on('registration', (data) => {
+				console.log(data.registrationId);
+				this.storage.set('deviceToken', data.registrationId);
+			  });
+			  push.on('notification', (data) => {
+				console.log(data);
+			  });
+			  push.on('error', (e) => {
+				console.log(e.message);
+			  });
 		});
 	}
 
