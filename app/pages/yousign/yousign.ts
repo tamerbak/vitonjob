@@ -145,18 +145,24 @@ export class YousignPage {
                  console.log(err);
             });*/
             // send notification to jobyer
-            this.pushNotificationService.getTokenByJobyerId(this.jobyer.id).then(token => {
-                var message = "Une demande de signature de contrat vous a été adressée : " + yousignJobyerLink;
-                console.log('message notification : '+message);
-                this.pushNotificationService.sendPushNotification(token, message).then(data => {
-                    console.log('Notification sent : '+JSON.stringify(data));
-                });
+            console.log('jobyer id : '+this.jobyer.id);
+            this.pushNotificationService.getTokenByJobyer(this.jobyer.id).then(token => {
+                if(token.data && token.data.length>0){
+                    let tk = token.data[0].device_token;
+                    var message = "Une demande de signature de contrat vous a été adressée";
+                    console.log('message notification : '+message);
+                    console.log('token : '+tk);
+                    this.pushNotificationService.sendPushNotification(tk, message).then(data => {
+                        console.log('Notification sent : '+JSON.stringify(data));
+                    });
+                }
+
             });
 
             //save contract in Database
             this.contractService.getJobyerId(this.jobyer,this.projectTarget).then(
                 (jobyerData) => {
-                   this.contractService.saveContract(this.contractData,jobyerData.data[0].pk_user_jobyer,this.employer.entreprises[0].id,this.projectTarget).then(
+                   this.contractService.saveContract(this.contractData,jobyerData.data[0].pk_user_jobyer,this.employer.entreprises[0].id,this.projectTarget, yousignJobyerLink).then(
                     (data) => {
                         if(this.currentOffer && this.currentOffer != null){
                             let idContract = 0;
