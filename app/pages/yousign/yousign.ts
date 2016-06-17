@@ -12,6 +12,7 @@ import {PersonalAddressPage} from '../personal-address/personal-address';
 import {MissionListPage} from '../mission-list/mission-list';
 import {Component} from "@angular/core";
 import {isUndefined} from "ionic-angular/util";
+import {PushNotificationService} from "../../providers/push-notification-service/push-notification-service";
 
 
 /**
@@ -21,6 +22,7 @@ import {isUndefined} from "ionic-angular/util";
  */
 @Component({
   templateUrl: 'build/pages/yousign/yousign.html',
+    providers : [PushNotificationService]
 })
 export class YousignPage {
     
@@ -36,13 +38,15 @@ export class YousignPage {
     contractData:any;
 
     currentOffer : any = null;
+    pushNotificationService:PushNotificationService;
     
     constructor(public gc: GlobalConfigs, 
                 public nav: NavController, 
                 private navParams:NavParams,
                 private contractService:ContractService,
                 private userService:UserService,
-                private smsService:SmsService ) {
+                private smsService:SmsService,
+                pushNotificationService : PushNotificationService ) {
         
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -52,7 +56,7 @@ export class YousignPage {
         
         // Set local variables and messages
         //get the currentEmployer & call youssign service
-        
+        this.pushNotificationService = pushNotificationService;
         userService.getCurrentUser().then(results =>{
             this.currentUser = JSON.parse(results);
             let currentEmployer = this.currentUser.employer;
@@ -135,16 +139,30 @@ export class YousignPage {
             let jobyerPhoneNumber = this.jobyer.tel;
             
             // Send sms to jobyer
-            // this.smsService.sendSms(jobyerPhoneNumber, yousignJobyerLink).then((dataSms) => {
-            //     console.log("The message was sent successfully");
-            // }).catch(function(err) {
-            //     console.log(err);
-            // });
-            
+            /*this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée : '+yousignJobyerLink).then((dataSms) => {
+                 console.log("The message was sent successfully");
+            }).catch(function(err) {
+                 console.log(err);
+            });*/
+            // send notification to jobyer
+            console.log('jobyer id : '+this.jobyer.id);
+            this.pushNotificationService.getTokenByJobyer(this.jobyer.id).then(token => {
+                if(token.data && token.data.length>0){
+                    let tk = token.data[0].device_token;
+                    var message = "Une demande de signature de contrat vous a été adressée";
+                    console.log('message notification : '+message);
+                    console.log('token : '+tk);
+                    this.pushNotificationService.sendPushNotification(tk, message).then(data => {
+                        console.log('Notification sent : '+JSON.stringify(data));
+                    });
+                }
+
+            });
+
             //save contract in Database
             this.contractService.getJobyerId(this.jobyer,this.projectTarget).then(
                 (jobyerData) => {
-                   this.contractService.saveContract(this.contractData,jobyerData.data[0].pk_user_jobyer,this.employer.entreprises[0].id,this.projectTarget).then(
+                   this.contractService.saveContract(this.contractData,jobyerData.data[0].pk_user_jobyer,this.employer.entreprises[0].id,this.projectTarget, yousignJobyerLink).then(
                     (data) => {
                         if(this.currentOffer && this.currentOffer != null){
                             let idContract = 0;

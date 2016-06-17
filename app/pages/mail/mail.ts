@@ -106,7 +106,8 @@ export class MailPage {
 		});
 		this.nav.present(loading);
 		//call the service of autentication
-		this.authService.authenticate(this.email, indPhone, this.password1, this.projectTarget)
+		let pwd = md5(this.password1);
+		this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget)
 		.then(data => {
 			//case of authentication failure : server unavailable or connection probleme 
 			if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
@@ -201,7 +202,7 @@ export class MailPage {
 			if (e.target.value.substring(0,1) == '0') {
 				e.target.value = e.target.value.substring(1, e.target.value.length);
 			}
-			if (e.target.value.includes('.')) {
+			if (e.target.value.indexOf('.') != -1) {
 				e.target.value = e.target.value.replace('.', '');
 			}
 			if(e.target.value.length > 9){
@@ -311,6 +312,7 @@ export class MailPage {
 				return;
 			}
 			if (data && data.password.length != 0) {
+				this.authService.updatePasswordByMail(this.email, md5(data.password));
 				console.log('Sending SMS');
 				var message = "Votre nouveau mot de passe est: " + data.password;
 				this.sendSMS(this.retrievedPhone, message);
@@ -360,4 +362,5 @@ export class MailPage {
 		});
 		this.nav.present(confirm);
 	}
+
 }

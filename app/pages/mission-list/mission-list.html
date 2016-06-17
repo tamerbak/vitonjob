@@ -1,6 +1,5 @@
 <!--
   Generated template for the MissionListPage page.
-
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 -->
@@ -9,6 +8,9 @@
 		<ion-icon name="menu"></ion-icon>
 	</button>
 	<ion-title>{{missionListTitle}}</ion-title>
+    <button menuToggle="right" right>
+        <ion-icon name="more"></ion-icon>
+    </button>
 </ion-navbar>
 
 <ion-content padding>
@@ -20,8 +22,16 @@
     <ion-list text-wrap>
         <ion-item *ngFor="let item of contractList" (click)="goToMissionDetailsPage(item)" >
 			<h2>Contrat n° {{item.numero}} signé le {{item.date_signature | dateConverter:'short'}}</h2>
-			<h3 [style.color]="themeColor">{{item.prenom}} {{item.nom}}</h3>
+			<h3 [style.color]="themeColor" [hidden]="!isEmployer">{{item.prenom}} {{item.nom}}</h3>
+			<h3 [style.color]="themeColor" [hidden]="isEmployer">{{item.nom}}</h3>
+			<ion-icon name="checkmark" item-right [hidden]="item.vu == 'Non'"></ion-icon>
+			<ion-icon name="ribbon" item-right [hidden]="item.approuve == 'Non'"></ion-icon>
         </ion-item>
     </ion-list>
-
+	<!--<ion-card>
+        <ion-card-header>Prochainement</ion-card-header>
+        <ion-card-content>
+            Restez à l'écoute de la prochaine mise à jour de l'application qui vous permettra de signer des contrats
+        </ion-card-content>
+    </ion-card>-->
 </ion-content>

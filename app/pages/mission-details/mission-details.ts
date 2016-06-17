@@ -1,8 +1,8 @@
-import {NavController,NavParams} from 'ionic-angular';
 import {NavController,NavParams, ActionSheet, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {MissionService} from '../../providers/mission-service/mission-service';
+import {PushNotificationService} from '../../providers/push-notification-service/push-notification-service';
 import {DatePicker} from 'ionic-native';
 import {HomePage} from '../home/home';
 import {Component} from "@angular/core";
@@ -19,7 +19,7 @@ import {GlobalService} from "../../providers/global.service";
 @Component({
 	templateUrl: 'build/pages/mission-details/mission-details.html',
 	pipes: [DateConverter, TimeConverter],
-	providers: [GlobalService]
+	providers: [GlobalService, PushNotificationService]
 })
 export class MissionDetailsPage {
     projectTarget:string;
@@ -39,13 +39,15 @@ export class MissionDetailsPage {
 	//two dimensional array of pauses of mission days
 	startPauses = [['']];
 	endPauses = [['']];
-	isNewMission: boolean;
-
+	isNewMission = true;
+	contract;
+	
     constructor(public gc: GlobalConfigs, 
 	public nav: NavController,
 	public navParams:NavParams, 
 	private missionService:MissionService, 
-	private globalService: GlobalService) {
+	private globalService: GlobalService,
+	private pushNotificationService: PushNotificationService) {
         
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -58,24 +60,26 @@ export class MissionDetailsPage {
         this.missionDetailsTitle = "Gestion de la mission";
         this.isEmployer = (this.projectTarget=='employer');
         //get missions
-        var contract = navParams.get('contract');
-		this.missionService.listMissionHours(contract).then((data) => {
-
-				this.initialMissionHours = data;
-				console.log(JSON.stringify(data));
+        this.contract = navParams.get('contract');
+		//verify if the mission has already pauses
+		this.isNewMission = this.contract.vu == 'Oui' ? false : true;
+		this.missionService.listMissionHours(this.contract).then((data) => {
+			if(data.data){
+				this.initialMissionHours = data.data;
 				//initiate pauses array
 				this.constructMissionHoursArray(this.initialMissionHours);
-			
+			}
 		});
 	}
 	
 	constructMissionHoursArray(initialMissionArray){
 		//index of pause :a mission can have many pauses
 		var ids = [];
+		this.missionHours = [];
 		for(var i = 0; i < initialMissionArray.length; i++){
 			var m = initialMissionArray[i];
 			//if the mission is not yet pushed
-			if(!ids.includes(m.id)){
+			if(ids.indexOf(m.id) == -1){
 				//push the mission
 				this.missionHours.push(m);
 				//push the id mission to not stock the same mission many time
@@ -83,8 +87,12 @@ export class MissionDetailsPage {
 				//push the pauses
 				this.startPauses[i] = [];
 				this.endPauses[i] = [];
-				this.startPauses[i][0] = this.convertToFormattedHour(m.pause_debut);
-				this.endPauses[i][0] = this.convertToFormattedHour(m.pause_fin);
+				if(m.pause_debut != "null"){
+					this.startPauses[i][0] = this.convertToFormattedHour(m.pause_debut);
+				}
+				if(m.pause_fin != "null"){
+					this.endPauses[i][0] = this.convertToFormattedHour(m.pause_fin);
+				}
 			}else{
 				//if the mission is already pushed, just push its pause
 				var idExistMission = ids.indexOf(m.id);
@@ -93,12 +101,10 @@ export class MissionDetailsPage {
 				this.endPauses[idExistMission][j] = this.convertToFormattedHour(m.pause_fin);
 			}
 		}
-		//verify if the mission has already pauses
-		this.isNewMission = (this.startPauses.length == 0);
 	}
 	
 	onCardClick(dayIndex){
-		if(!this.isNewMission){
+		if(!this.isNewMission || !this.isEmployer){
 			return;
 		}
 		//open action sheet menu
@@ -127,7 +133,7 @@ export class MissionDetailsPage {
 	}
 	
 	onPauseClick(dayIndex, pauseIndex){
-		if(!this.isNewMission){
+		if(!this.isNewMission || !this.isEmployer){
 			return;
 		}
 		//open action sheet menu
@@ -174,20 +180,31 @@ export class MissionDetailsPage {
 			`,
 			spinner : 'hide'
 		});
-		this.nav.present(loading);
-		this.missionService.addPauses(this.missionHours, this.startPauses, this.endPauses).then((data) => {
-			if (!data || data.status == "failure") {
-				console.log(data.error);
-				loading.dismiss();
-				this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
-				return;
-				}else{
-				// data saved
-				console.log("pauses saved successfully : " + data.status);
-				loading.dismiss();
-				this.nav.pop();
-			}					
+		this.nav.present(loading).then(()=> {		
+			this.missionService.addPauses(this.missionHours, this.startPauses, this.endPauses, this.contract.pk_user_contrat).then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					loading.dismiss();
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+					}else{
+					// data saved
+					console.log("pauses saved successfully : " + data.status);
+				}					
+			});
+			loading.dismiss();
+			this.sendPushNotification();
+			this.nav.pop();
 		});
+	}
+	
+	sendPushNotification(){
+		this.pushNotificationService.getTokenByJobyerId(this.contract.fk_user_jobyer).then(token => {			
+			var message = "Horaire du contrat n°" + this.contract.numero + " validé";
+			this.pushNotificationService.sendPushNotification(token, message).then(data => {
+				this.globalService.showAlertValidation("VitOnJob", "Notification envoyée.");
+			});
+		});	
 	}
     
 	checkPauseHour(i, j, isStartPause){
@@ -196,7 +213,7 @@ export class MissionDetailsPage {
 			var startPause = this.missionService.convertHoursToMinutes(this.startPauses[i][j]);
 			if(this.missionHours[i].heure_debut >= startPause){
 				this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure à l'heure de début du travail");
-				this.startPauses[i][j] = '';
+				this.startPauses[i][j] = "";
 				return;
 			}
 			//start pause should be less than end mission
@@ -216,7 +233,7 @@ export class MissionDetailsPage {
 			//end pause should be less than end mission
 			if(this.missionHours[i].heure_fin <= endPause){
 				this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieur à l'heure de fin de travail");
-				this.endPauses[i].splice(j, 1);
+				this.endPauses[i][j] = '';
 				return;
 			}
 		}
@@ -231,8 +248,34 @@ export class MissionDetailsPage {
 		}
 	}
 	
+	signSchedule(){
+		let loading = Loading.create({
+			content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+			spinner : 'hide'
+		});
+		this.nav.present(loading).then(()=> {		
+			this.missionService.signSchedule(this.contract.pk_user_contrat).then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					loading.dismiss();
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+				}else{
+					// data saved
+					console.log("schedule signed : " + data.status);
+				}					
+			});
+			loading.dismiss();
+			this.nav.pop();
+		});
+	}
+	
 	resetForm(){
-		this.constructMissionHoursArray(this.initialMissionArray);
+		this.constructMissionHoursArray(this.initialMissionHours);
 	}
 	
 	goBack(){

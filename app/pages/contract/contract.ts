@@ -131,6 +131,7 @@ export class ContractPage {
             }
 
             //  check if there is a current offer
+            debugger;
             if(navParams.get("currentOffer") && !isUndefined(navParams.get("currentOffer"))){
                 this.currentOffer = navParams.get("currentOffer");
                 this.initContract();

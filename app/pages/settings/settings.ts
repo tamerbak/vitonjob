@@ -45,7 +45,8 @@ export class SettingsPage {
 		this.storage.get("currentUser").then((value) => {
 			if(value){
 				this.currentUser = JSON.parse(value);
-				this.authService.updatePasswd(this.password1, this.currentUser.id)
+				let pwd = md5(this.password1);
+				this.authService.updatePasswd(pwd, this.currentUser.id)
 				.then(data => {
 					console.log(data);
 					//case of authentication failure : server unavailable or connection probleme 

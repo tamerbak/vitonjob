@@ -108,7 +108,8 @@ export class PhonePage {
 		});
 		this.nav.present(loading);
 		//call the service of autentication
-		this.authService.authenticate(this.email, indPhone, this.password1, this.projectTarget)
+		let pwd = md5(this.password1);
+		this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget)
 		.then(data => {
 			console.log(data);
 			//case of authentication failure : server unavailable or connection probleme 
@@ -142,15 +143,13 @@ export class PhonePage {
 			
 			//load device token to current account
 			var token;
-			this.authService.getObj('deviceToken').then(val => {
-				token = val;
-			});
-			var accountId = data.id;
-			if (token) {
+			this.storage.get("deviceToken").then(token => {
+				if (token) {
 				console.log("insertion du token : " + token);
 				this.authService.insertToken(token, accountId, this.projectTarget);
 			}
-			
+			});
+			var accountId = data.id;
 			this.storage.set('connexion', JSON.stringify(connexion));
 			this.storage.set('currentUser', JSON.stringify(data));
 			this.events.publish('user:login', data);
@@ -195,7 +194,7 @@ export class PhonePage {
 			if (e.target.value.substring(0,1) == '0') {
 				e.target.value = e.target.value.substring(1, e.target.value.length);
 			}
-			if (e.target.value.includes('.')) {
+			if (e.target.value.indexOf('.') != -1) {
 				e.target.value = e.target.value.replace('.', '');
 			}
 			if(e.target.value.length > 9){
@@ -297,7 +296,7 @@ export class PhonePage {
 		* @description return to the home page
 	*/
 	goBack() {
-		this.nav.rootNav.setRoot(HomePage)
+		this.nav.rootNav.setRoot(HomePage);
 	}
 	
 	passwordForgotten(){
@@ -318,6 +317,7 @@ export class PhonePage {
 				return;
 			}
 			if (data && data.password.length != 0) {
+				this.authService.updatePasswordByPhone(tel, md5(data.password));
 				console.log('Sending SMS');
 				var message = "Votre nouveau mot de passe est: " + data.password;
 				this.sendSMS(tel, message);

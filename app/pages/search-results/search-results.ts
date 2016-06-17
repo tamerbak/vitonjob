@@ -1,4 +1,4 @@
-import {NavController, ActionSheet, Platform, Slides,Alert, Modal} from 'ionic-angular';
+import {NavController, ActionSheet, Platform, Slides, Alert, Modal, NavParams} from 'ionic-angular';
 import {Storage, SqlStorage, LocalStorage} from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {ViewChild, Component} from '@angular/core'
@@ -44,6 +44,7 @@ export class SearchResultsPage {
     resultsCount : number = 0;
     isUserAuthenticated : boolean;
     employer:any;
+    isEmployer : boolean;
 
     //  Attributes for offer creation proposition
     proposedJob : any;
@@ -51,6 +52,7 @@ export class SearchResultsPage {
     proposedQualities : any = [];
     offerProposition : boolean = false;
     offersService : any;
+    navParams : NavParams;
 
     /**
      * @description While constructing the view we get the last results of the search from the user
@@ -59,6 +61,7 @@ export class SearchResultsPage {
      */
     constructor(public globalConfig: GlobalConfigs,
                 public nav: NavController,
+                navParams : NavParams,
                 private searchService: SearchService,
                 private userService:UserService,
                 private offersService : OffersService,
@@ -67,6 +70,9 @@ export class SearchResultsPage {
         this.projectTarget = globalConfig.getProjectTarget();
         this.avatar = this.projectTarget != 'jobyer' ? 'jobyer_avatar':'employer_avatar';
         this.platform = platform;
+        this.isEmployer = this.projectTarget == 'employer'
+        this.navParams = navParams;
+
 
         //  Retrieving last search
         searchService.retrieveLastSearch().then(results =>{
@@ -134,7 +140,7 @@ export class SearchResultsPage {
      * @param item the selected Employer/Jobyer
      */
     itemSelected(item){
-        /*let actionSheet = ActionSheet.create({
+        let actionSheet = ActionSheet.create({
             title: 'Options',
             buttons: [
                 {
@@ -159,8 +165,7 @@ export class SearchResultsPage {
                 }
             ]
         });
-        this.nav.present(actionSheet);*/
-        this.recruitJobyer(item);
+        this.nav.present(actionSheet);
 
     }
 
@@ -228,7 +233,15 @@ export class SearchResultsPage {
 
             if (isDataValid) {
                 //navigate to contract page
-                this.nav.push(ContractPage, {jobyer: jobyer});
+                debugger;
+                let o = this.navParams.get('currentOffer');
+                if(o && !isUndefined(o)){
+                    this.nav.push(ContractPage, {jobyer: jobyer, currentOffer : o});
+                }else{
+                    this.nav.push(ContractPage, {jobyer: jobyer});
+                }
+
+
             } else {
                 //redirect employer to fill the missing informations
                 this.nav.push(InfoUserPage, {currentUser: this.employer});
