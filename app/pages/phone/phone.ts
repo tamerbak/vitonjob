@@ -108,7 +108,8 @@ export class PhonePage {
 		});
 		this.nav.present(loading);
 		//call the service of autentication
-		this.authService.authenticate(this.email, indPhone, this.password1, this.projectTarget)
+		let pwd = md5(this.password1);
+		this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget)
 		.then(data => {
 			console.log(data);
 			//case of authentication failure : server unavailable or connection probleme 
@@ -316,6 +317,7 @@ export class PhonePage {
 				return;
 			}
 			if (data && data.password.length != 0) {
+				this.authService.updatePasswordByPhone(tel, md5(data.password));
 				console.log('Sending SMS');
 				var message = "Votre nouveau mot de passe est: " + data.password;
 				this.sendSMS(tel, message);

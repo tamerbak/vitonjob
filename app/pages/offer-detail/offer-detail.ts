@@ -135,7 +135,7 @@ export class OfferDetailPage {
             console.log(data);
             this.searchService.persistLastSearch(data);
             loading.dismiss();
-            this.nav.push(SearchResultsPage);
+            this.nav.push(SearchResultsPage, {currentOffer : this.offer});
         });
     }
 

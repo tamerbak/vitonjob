@@ -84,7 +84,7 @@ export class MangoPayPage {
                 } else {
                     let alert = Alert.create({
                         title: "Erreur de validation de la carte",
-                        subTitle: "Veuillez saisir les informations d'une carte valide",
+                        subTitle: "le numéro de carte bancaire doit comporter 16 chiffres et doit être valide",
                         buttons: ['OK']
                     });
                     this.nav.present(alert);

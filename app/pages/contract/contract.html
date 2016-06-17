@@ -1,11 +1,8 @@
 <ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
     <ion-title>{{contractTitle}}</ion-title>
     <ion-buttons end>
-        <button (click)="showMenuToEditContract()">
-            <ion-icon name="create"></ion-icon>
-        </button>
         <button (click)="selectOffer()">
-            <ion-icon name="md-bookmark"></ion-icon>
+            <ion-icon name="checkbox-outline"></ion-icon>
         </button>
     </ion-buttons>
 </ion-navbar>
