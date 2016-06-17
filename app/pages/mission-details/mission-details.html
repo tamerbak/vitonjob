@@ -14,13 +14,14 @@
         <ion-col width-10></ion-col>
     </ion-row>
     <ion-card [hidden]="isEmployer ||contract.signature_jobyer == 'Oui' || (!missionHours || missionHours.length == 0)">
-		<ion-card-header  text-wrap>
-            Pour signer votre contrat, cliquez sur le lien si dessous:
-        </ion-card-header>
 		<ion-row>
+			<ion-col text-center>
 			<ion-item>
-			<a href="{{contract.lien_jobyer}}">Signe contrat</a>
+			<button block (click)="launchContractPage()" [style.backgroundColor]="themeColor">
+				<ion-icon name="create"></ion-icon>
+				Signer votre contrat</button>
 			</ion-item>
+			</ion-col>
 		</ion-row>
 		<ion-row>
 			<ion-item>
