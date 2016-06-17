@@ -1,4 +1,4 @@
-import {NavController,NavParams, ActionSheet, Loading} from 'ionic-angular';
+import {NavController,NavParams, ActionSheet, Loading, Platform} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {MissionService} from '../../providers/mission-service/mission-service';
@@ -43,13 +43,14 @@ export class MissionDetailsPage {
 	contract;
 	contractSigned = false;
 	
-    constructor(public gc: GlobalConfigs, 
+    constructor(private platform:Platform,
+	public gc: GlobalConfigs, 
 	public nav: NavController,
 	public navParams:NavParams, 
 	private missionService:MissionService, 
 	private globalService: GlobalService,
 	private pushNotificationService: PushNotificationService) {
-        
+        this.platform = platform;
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
         
@@ -314,6 +315,12 @@ export class MissionDetailsPage {
 			this.nav.pop();
 		});
 	}
+	
+	launchContractPage() {
+        this.platform.ready().then(() => {
+            cordova.InAppBrowser.open(this.contract.lien_jobyer, "_system", "location=true");
+        });
+    }
     /**
 		* @author daoudi amine
 		* @param currentTime string the current time value of the item 
