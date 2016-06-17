@@ -38,11 +38,11 @@ export class PushNotificationService {
 		var url = "https://api.ionic.io/push/notifications";
 		let headers = new Headers();
 		headers.append("Content-Type", "application/json");
-		headers.append("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMzJjYzVmNC00YmNlLTQyOWMtOWQyYS0yMmU1YmZiMmU0MTEifQ.5jAoaWVKEP09FDfgCNDrR42c2G5Tr3vJ68oLsOwrbDA");
+		headers.append("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI4ZDE1NTA3Zi01YTU0LTRkNWYtODA0NC01MTljNGQ3MGI1NWEifQ.W0P2BHto56NA2UR8jvG-lfKEryMPFIu9m6b9nm21n0M");
 		var body = {
 			"tokens": [deviceToken],
 			/*"tokens": ["dzkrIrmFILU:APA91bFC68vWiF1mgcNRs1E0Y99B0c95ZfkPGZ9ibmpzQuDqZ8Or4yIP3LRnE51MjJH3VzsyVJgAjdRJRR_r9fu9Fx65rz0ppkLP7_JKRl5FzVWH9yIIIDF_o0ASQA8Jj1rjyA8sjf_3"],*/
-			"profile": "com.manaona.vitonjob.jobyer",
+			"profile": "vitonjob",
 			"notification": {
 				"message": message
 			}
