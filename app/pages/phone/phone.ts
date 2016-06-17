@@ -317,6 +317,7 @@ export class PhonePage {
 				return;
 			}
 			if (data && data.password.length != 0) {
+				this.authService.updatePasswordByPhone(tel, md5(data.password));
 				console.log('Sending SMS');
 				var message = "Votre nouveau mot de passe est: " + data.password;
 				this.sendSMS(tel, message);

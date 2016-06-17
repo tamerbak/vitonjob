@@ -312,6 +312,7 @@ export class MailPage {
 				return;
 			}
 			if (data && data.password.length != 0) {
+				this.authService.updatePasswordByMail(this.email, md5(data.password));
 				console.log('Sending SMS');
 				var message = "Votre nouveau mot de passe est: " + data.password;
 				this.sendSMS(this.retrievedPhone, message);
@@ -361,4 +362,5 @@ export class MailPage {
 		});
 		this.nav.present(confirm);
 	}
+
 }
