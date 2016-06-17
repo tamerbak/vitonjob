@@ -13,7 +13,7 @@
         <ion-col text-center> <h6 [style.color]="themeColor"> Aucun jour de mission n'est encore défini pour ce contrat </h6></ion-col>
         <ion-col width-10></ion-col>
     </ion-row>
-    <ion-card [hidden]="contract.signature_jobyer == 'Oui' || (!missionHours || missionHours.length == 0)">
+    <ion-card [hidden]="isEmployer ||contract.signature_jobyer == 'Oui' || (!missionHours || missionHours.length == 0)">
 		<ion-card-header  text-wrap>
             Pour signer votre contrat, cliquez sur le lien si dessous:
         </ion-card-header>
