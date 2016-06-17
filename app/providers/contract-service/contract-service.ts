@@ -101,7 +101,7 @@ export class ContractService {
      * @param employerEntrepriseId
      * @return JSON results in form of created contract Id
     */
-    saveContract(contract:any,jobyerId:Number,employerEntrepriseId:Number,projectTarget:string){
+    saveContract(contract:any,jobyerId:Number,employerEntrepriseId:Number,projectTarget:string, yousignJobyerLink){
 		//  Init project parameters
 		this.configuration = Configs.setConfigs(projectTarget);
         var dt = new Date();
@@ -119,7 +119,10 @@ export class ContractService {
                   " tarif_heure,"+
                   " nombre_heures,"+
                   " fk_user_entreprise,"+
-                  " fk_user_jobyer"+
+                  " fk_user_jobyer," +
+                  " lien_jobyer," +
+                  " signature_employeur," +
+                  " signature_jobyer" +
                   ")"+
                   " VALUES ("
                   +""+ this.helpers.dateStrToSqlTimestamp(contract.missionStartDate) +","
@@ -135,7 +138,10 @@ export class ContractService {
                   +"'"+ contract.baseSalary +"',"
                   +"'"+ contract.workTimeHours +"',"
                   +"'"+ employerEntrepriseId +"',"
-                  +"'"+ jobyerId +"'"
+                  +"'"+ jobyerId +"',"
+                  +"'"+yousignJobyerLink+"',"
+                  +"'OUI',"
+                  +"'NON'"
                   +")"
                   +" RETURNING pk_user_contrat";
                   

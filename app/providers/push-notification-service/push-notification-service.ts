@@ -33,7 +33,23 @@ export class PushNotificationService {
 			});
 		})
 	}
-	
+
+	getTokenByJobyer(jobyerId){
+		var sql = "select a.device_token from user_account as a, user_jobyer as j where a.pk_user_account = j.fk_user_account and j.pk_user_jobyer = '" + jobyerId + "';";
+
+		return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'text/plain');
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+				.map(res => res.json())
+				.subscribe(data => {
+					this.data = data;
+					console.log(this.data);
+					resolve(this.data);
+				});
+		});
+	}
+
 	sendPushNotification(deviceToken, message){
 		var url = "https://api.ionic.io/push/notifications";
 		let headers = new Headers();
@@ -41,15 +57,18 @@ export class PushNotificationService {
 		headers.append("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI4ZDE1NTA3Zi01YTU0LTRkNWYtODA0NC01MTljNGQ3MGI1NWEifQ.W0P2BHto56NA2UR8jvG-lfKEryMPFIu9m6b9nm21n0M");
 		var body = {
 			"tokens": [deviceToken],
-			/*"tokens": ["dzkrIrmFILU:APA91bFC68vWiF1mgcNRs1E0Y99B0c95ZfkPGZ9ibmpzQuDqZ8Or4yIP3LRnE51MjJH3VzsyVJgAjdRJRR_r9fu9Fx65rz0ppkLP7_JKRl5FzVWH9yIIIDF_o0ASQA8Jj1rjyA8sjf_3"],*/
+			//"tokens": ["dzkrIrmFILU:APA91bFC68vWiF1mgcNRs1E0Y99B0c95ZfkPGZ9ibmpzQuDqZ8Or4yIP3LRnE51MjJH3VzsyVJgAjdRJRR_r9fu9Fx65rz0ppkLP7_JKRl5FzVWH9yIIIDF_o0ASQA8Jj1rjyA8sjf_3"],
+			//"tokens": ["dzkrIrmFILU:APA91bFC68vWiF1mgcNRs1E0Y99B0c95ZfkPGZ9ibmpzQuDqZ8Or4yIP3LRnE51MjJH3VzsyVJgAjdRJRR_r9fu9Fx65rz0ppkLP7_JKRl5FzVWH9yIIIDF_o0ASQA8Jj1rjyA8sjf_3"],
 			"profile": "vitonjob",
 			"notification": {
 				"message": message
 			}
 		};
+		console.log('notification body : '+JSON.stringify(body));
 		return new Promise(resolve => {
 			this.http.post(url, JSON.stringify(body), {headers : headers}).map(res => res.json())
 			.subscribe(data => {
+				console.log('notification body : '+JSON.stringify(data));
 	            this.data = data;
 	            console.log("push notification sent", data);
 	            resolve(this.data);
