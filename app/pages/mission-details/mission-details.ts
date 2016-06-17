@@ -201,9 +201,9 @@ export class MissionDetailsPage {
 	}
 	
 	sendPushNotification(){
-		this.pushNotificationService.getTokenByJobyerId(this.contract.fk_user_jobyer).then(token => {			
+		this.pushNotificationService.getTokenByJobyer(this.contract.fk_user_jobyer).then(token => {			
 			var message = "Horaire du contrat n°" + this.contract.numero + " validé";
-			this.pushNotificationService.sendPushNotification(token, message).then(data => {
+			this.pushNotificationService.sendPushNotification(token, message, this.contract).then(data => {
 				this.globalService.showAlertValidation("VitOnJob", "Notification envoyée.");
 			});
 		});	
