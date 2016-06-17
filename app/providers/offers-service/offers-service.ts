@@ -188,6 +188,7 @@ export class OffersService {
 
         // store in remote database
         let stringData = JSON.stringify(offerData);
+        console.log('Adding offer payload : '+stringData)
         stringData = btoa(stringData);
 
         let payload = {
@@ -217,7 +218,7 @@ export class OffersService {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.addedOffer = data;
-                    console.log(this.addedOffer);
+                    console.log(JSON.stringify(this.addedOffer));
                     resolve(this.addedOffer);
                 });
         });
