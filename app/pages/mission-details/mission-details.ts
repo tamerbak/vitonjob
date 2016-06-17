@@ -309,10 +309,10 @@ export class MissionDetailsPage {
 				}else{
 					// data saved
 					console.log("contract signed : " + data.status);
+					this.contract.signature_jobyer = 'Oui';
 				}					
 			});
 			loading.dismiss();
-			this.nav.pop();
 		});
 	}
 	
