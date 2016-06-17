@@ -41,6 +41,7 @@ export class MissionDetailsPage {
 	endPauses = [['']];
 	isNewMission = true;
 	contract;
+	contractSigned = false;
 	
     constructor(public gc: GlobalConfigs, 
 	public nav: NavController,
@@ -192,10 +193,10 @@ export class MissionDetailsPage {
 					console.log("pauses saved successfully : " + data.status);
 				}					
 			});
-			loading.dismiss();
+		loading.dismiss();
 			this.sendPushNotification();
 			this.nav.pop();
-		});
+	});
 	}
 	
 	sendPushNotification(){
@@ -286,6 +287,32 @@ export class MissionDetailsPage {
 		var hours = Math.floor(value / 60);
 		var minutes = value % 60;
 		return ((hours < 10 ? ('0' + hours) : hours) + ':' + (minutes < 10 ? ('0' + minutes) : minutes));	
+	}
+	
+	watchSignedToggle(e){
+		let loading = Loading.create({
+			content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+			spinner : 'hide'
+		});
+		this.nav.present(loading).then(()=> {		
+			this.missionService.signContract(this.contract.pk_user_contrat).then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					loading.dismiss();
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+				}else{
+					// data saved
+					console.log("contract signed : " + data.status);
+				}					
+			});
+			loading.dismiss();
+			this.nav.pop();
+		});
 	}
     /**
 		* @author daoudi amine
