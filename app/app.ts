@@ -1,4 +1,4 @@
-import {Platform, MenuController, Nav, ionicBootstrap, App, Modal} from 'ionic-angular';
+import {Platform, MenuController, Nav, ionicBootstrap, App, Modal, Toast} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {HomePage} from './pages/home/home';
 import {LoginsPage} from './pages/logins/logins';
@@ -145,15 +145,25 @@ export class Vitonjob {
 			var online = Observable.fromEvent(document, "online");
 
 
-			offline.subscribe(() => {
-				this.networkService.setNetworkStat("Vous n'êtes pas connecté.");
-				this.changeDetRef.detectChanges();
-			});
+            offline.subscribe(() => {
+                let toast = Toast.create({
+                    message: "Vous n'êtes pas connectés à Internet",
+                    duration: 3000
+                });
+                this.nav.present(toast);
+                this.changeDetRef.detectChanges();
+            });
 
-			online.subscribe(()=> {
-				this.networkService.setNetworkStat("");
-				this.changeDetRef.detectChanges();
-			});
+            online.subscribe(()=> {
+                let toast = Toast.create({
+                    message: "La connection à Internet a été restaurée",
+                    duration: 3000
+                });
+                this.nav.present(toast);
+
+                this.networkService.setNetworkStat("");
+                this.changeDetRef.detectChanges();
+            });
 
 			StatusBar.styleDefault();
 			
