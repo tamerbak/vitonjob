@@ -1,4 +1,4 @@
-import {NavController,NavParams, ActionSheet, Loading} from 'ionic-angular';
+import {NavController,NavParams, ActionSheet, Loading, Platform} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {MissionService} from '../../providers/mission-service/mission-service';
@@ -41,14 +41,16 @@ export class MissionDetailsPage {
 	endPauses = [['']];
 	isNewMission = true;
 	contract;
+	contractSigned = false;
 	
-    constructor(public gc: GlobalConfigs, 
+    constructor(private platform:Platform,
+	public gc: GlobalConfigs, 
 	public nav: NavController,
 	public navParams:NavParams, 
 	private missionService:MissionService, 
 	private globalService: GlobalService,
 	private pushNotificationService: PushNotificationService) {
-        
+        this.platform = platform;
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
         
@@ -192,16 +194,16 @@ export class MissionDetailsPage {
 					console.log("pauses saved successfully : " + data.status);
 				}					
 			});
-			loading.dismiss();
+		loading.dismiss();
 			this.sendPushNotification();
 			this.nav.pop();
-		});
+	});
 	}
 	
 	sendPushNotification(){
-		this.pushNotificationService.getTokenByJobyerId(this.contract.fk_user_jobyer).then(token => {			
+		this.pushNotificationService.getTokenByJobyer(this.contract.fk_user_jobyer).then(token => {			
 			var message = "Horaire du contrat n°" + this.contract.numero + " validé";
-			this.pushNotificationService.sendPushNotification(token, message).then(data => {
+			this.pushNotificationService.sendPushNotification(token, message, this.contract).then(data => {
 				this.globalService.showAlertValidation("VitOnJob", "Notification envoyée.");
 			});
 		});	
@@ -287,6 +289,38 @@ export class MissionDetailsPage {
 		var minutes = value % 60;
 		return ((hours < 10 ? ('0' + hours) : hours) + ':' + (minutes < 10 ? ('0' + minutes) : minutes));	
 	}
+	
+	watchSignedToggle(e){
+		let loading = Loading.create({
+			content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+			spinner : 'hide'
+		});
+		this.nav.present(loading).then(()=> {		
+			this.missionService.signContract(this.contract.pk_user_contrat).then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					loading.dismiss();
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+				}else{
+					// data saved
+					console.log("contract signed : " + data.status);
+					this.contract.signature_jobyer = 'Oui';
+				}					
+			});
+			loading.dismiss();
+		});
+	}
+	
+	launchContractPage() {
+        this.platform.ready().then(() => {
+            cordova.InAppBrowser.open(this.contract.lien_jobyer, "_system", "location=true");
+        });
+    }
     /**
 		* @author daoudi amine
 		* @param currentTime string the current time value of the item 

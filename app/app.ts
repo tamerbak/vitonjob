@@ -28,6 +28,8 @@ import {ViewChild, Component} from "@angular/core";
 import {Push} from 'ionic-native'
 import {SearchCriteriaPage} from "./pages/search-criteria/search-criteria";
 import {SearchGuidePage} from "./pages/search-guide/search-guide";
+import {MissionDetailsPage} from './pages/mission-details/mission-details';
+import {NgZone} from '@angular/core';
 
 @Component({
 	templateUrl: 'build/menu.html'
@@ -54,7 +56,8 @@ export class Vitonjob {
 				private missionService:MissionService,
 				private networkService:NetworkService,
 				private changeDetRef:ChangeDetectorRef,
-				public events:Events, offerService:OffersService) {
+				public events:Events, offerService:OffersService,
+				private zone: NgZone) {
 
 		this.app = app;
 		this.platform = platform;
@@ -182,6 +185,11 @@ export class Vitonjob {
 			  });
 			  push.on('notification', (data) => {
 				console.log(data);
+				if(data.additionalData.data.objectNotif == "ScheduleValidated"){
+					this.zone.run(()=>{
+						this.nav.push(MissionDetailsPage,{contract:JSON.parse(data.additionalData.data.contract)});
+					});
+				}
 			  });
 			  push.on('error', (e) => {
 				console.log(e.message);

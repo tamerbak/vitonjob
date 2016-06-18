@@ -38,7 +38,13 @@
     "cordova-plugin-network-information",
     "cordova-plugin-tts",
     "org.apache.cordova.speech.speechrecognition",
-    "cordova-plugin-camera"
+    "cordova-plugin-camera",
+	{
+      "variables": {
+        "SENDER_ID": "693415120998"
+      },
+      "locator": "phonegap-plugin-push"
+    }
   ],
   "cordovaPlatforms": [
     "ios",
