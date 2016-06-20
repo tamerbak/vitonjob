@@ -76,7 +76,7 @@ export class JobAddressPage {
 			//if(!value || !this.searchData){
 			if(this.fromPage != "profil"){
 				//geolocalisation alert
-				this.displayRequestAlert();
+				this.displayGeolocationAlert();
 			}
 		});
 	}
@@ -84,7 +84,7 @@ export class JobAddressPage {
 	/**
 		* @description display the first request alert for geolocation
 	*/
-	displayRequestAlert(){
+	/*displayRequestAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
 			message: "Géolocalisation : êtes-vous connecté depuis votre" + (this.isEmployer ? " lieu de mission" : " lieu de départ au travail") +"?",
@@ -106,7 +106,7 @@ export class JobAddressPage {
 			]
 		});
 		this.nav.present(confirm);
-	}
+	}*/
 	
 	/**
 		* @description display the second request alert for geolocation
@@ -114,7 +114,7 @@ export class JobAddressPage {
 	displayGeolocationAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider l'" + (this.isEmployer ? " adresse de mission." : " adresse de départ au travail."),
+			message: "Géolocalisation : êtes-vous connecté depuis votre" + (this.isEmployer ? " lieu de mission" : " lieu de départ au travail") +"?\n" + "Si vous acceptez d'être localisé, vous n'aurez qu'à valider l'" + (this.isEmployer ? " adresse de mission." : " adresse de départ au travail."),
 			buttons: [
 				{
 					text: 'Non',
