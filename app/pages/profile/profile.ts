@@ -9,8 +9,10 @@ import {UserService} from "../../providers/user-service/user-service";
 import {AddressService} from "../../providers/address-service/address-service";
 import {Storage, SqlStorage} from 'ionic-angular';
 import {DateConverter} from '../../pipes/date-converter/date-converter';
-import {InfoUserPage} from "../info-user/info-user"
+//import {InfoUserPage} from "../info-user/info-user"
+import {CivilityPage} from "../civility/civility";
 import {PersonalAddressPage} from "../personal-address/personal-address";
+import {JobAddressPage} from "../job-address/job-address";
 
 /*
  Generated class for the ProfilePage page.
@@ -263,15 +265,15 @@ export class ProfilePage implements OnInit {
     }
 	
 	goToInfoUserTabs(){
-		this.nav.push(InfoUserPage, {currentUser: this.userData, fromPage: "profil"});	
+		this.nav.push(CivilityPage, {currentUser: this.userData, fromPage: "profil"});	
 	}
 	
 	goToPersonalAddressTab(){
-		this.nav.push(InfoUserPage, {currentUser: this.userData, fromPage: "profil", selectedTab: 1});	
+		this.nav.push(PersonalAddressPage, {currentUser: this.userData, fromPage: "profil", selectedTab: 1});	
 	}
 
 	goToJobAddressTab(){
-		this.nav.push(InfoUserPage, {currentUser: this.userData, fromPage: "profil", selectedTab: 2});	
+		this.nav.push(JobAddressPage, {currentUser: this.userData, fromPage: "profil", selectedTab: 2});	
 	}
 	
 }

@@ -8,10 +8,10 @@ import {DataProviderService} from "../../providers/data-provider.service";
 import {GlobalService} from "../../providers/global.service";
 import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
-import {InfoUserPage} from "../info-user/info-user";
+//import {InfoUserPage} from "../info-user/info-user";
+import {CivilityPage} from "../civility/civility";
 import {Storage, SqlStorage} from 'ionic-angular';
 import {SMS} from 'ionic-native';
-import {NgZone} from '@angular/core';
 import {enableProdMode} from '@angular/core'; 
 enableProdMode();
 
@@ -44,7 +44,7 @@ export class PhonePage {
 		* @description While constructing the view, we load the list of countries to display their codes
 	*/
 	constructor(public nav: NavController,
-	public gc: GlobalConfigs, private authService: AuthenticationService, private loadListService: LoadListService, private dataProviderService: DataProviderService, private globalService: GlobalService, private validationDataService: ValidationDataService, public events: Events, private zone: NgZone) {
+	public gc: GlobalConfigs, private authService: AuthenticationService, private loadListService: LoadListService, private dataProviderService: DataProviderService, private globalService: GlobalService, private validationDataService: ValidationDataService, public events: Events) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -163,9 +163,8 @@ export class PhonePage {
 			var isNewUser = data.newAccount;
 			if (isNewUser) {
 				this.globalService.showAlertValidation("VitOnJob", "Bienvenue dans votre espace VitOnJob!");
-				this.zone.run(()=>{
-					this.nav.push(InfoUserPage, {currentUser: data});
-				});
+				this.nav.push(CivilityPage, {
+				currentUser: data});
 				} else {
 				this.nav.rootNav.setRoot(HomePage);
 				//this.nav.push(InfoUserPage, {

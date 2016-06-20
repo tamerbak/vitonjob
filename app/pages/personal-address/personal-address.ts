@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController, NavParams, Tabs, Alert, Loading} from 'ionic-angular';
+import {NavController, NavParams, Alert, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {GooglePlaces} from '../../components/google-places/google-places';
@@ -7,6 +7,7 @@ import {AuthenticationService} from "../../providers/authentication.service";
 import {GlobalService} from "../../providers/global.service";
 import {Geolocation} from 'ionic-native';
 import {Storage, SqlStorage} from 'ionic-angular';
+import {JobAddressPage} from "../job-address/job-address";
 import {enableProdMode, ElementRef, Renderer} from '@angular/core'; 
 enableProdMode();
 
@@ -30,7 +31,7 @@ export class PersonalAddressPage {
 	/**
 		* @description While constructing the view, we get the currentUser passed as parameter from the connection page
 	*/
-	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, tabs:Tabs, public nav: NavController, public elementRef: ElementRef, public renderer: Renderer, private globalService: GlobalService) {
+	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, public nav: NavController, public elementRef: ElementRef, public renderer: Renderer, private globalService: GlobalService) {
 		//manually entered address
 		this.searchData = "";
 		//formatted geolocated address
@@ -47,7 +48,7 @@ export class PersonalAddressPage {
 		this.themeColor = config.themeColor;
 		this.isEmployer = (this.projectTarget == 'employer');
 		this.titlePage = this.isEmployer ? "Adresse siège" : "Adresse personnelle";
-		this.tabs=tabs;
+		//this.tabs=tabs;
 		this.storage = new Storage(SqlStorage);
 		//get current employer data from params passed by phone/mail connection
 		this.params = params;
@@ -73,7 +74,8 @@ export class PersonalAddressPage {
 				}
 			}
 			//if there is not a logged user or there is no address saved in the user data
-			if(!value || !this.searchData){
+			//if(!value || !this.searchData ){
+			if(this.fromPage != "profil"){
 				//geolocalisation alert
 				this.displayRequestAlert();
 			}
@@ -98,7 +100,9 @@ export class PersonalAddressPage {
 					text: 'Oui',
 					handler: () => {
 						console.log('Yes clicked');	
-						this.displayGeolocationAlert();
+						confirm.dismiss().then(() => {
+							this.displayGeolocationAlert();
+						});
 					}
 				}
 			]
@@ -219,7 +223,8 @@ export class PersonalAddressPage {
 					this.nav.pop();
 				}else{
 					//redirecting to job address tab
-					this.tabs.select(2);
+					//this.tabs.select(2);
+					this.nav.push(JobAddressPage);
 				}
 				return;
 			}
@@ -231,7 +236,8 @@ export class PersonalAddressPage {
 					this.nav.pop();
 				}else{
 					//redirecting to job address tab
-					this.tabs.select(2);
+					//this.tabs.select(2);
+					this.nav.push(JobAddressPage);
 				}
 				return;
 			}
@@ -265,7 +271,8 @@ export class PersonalAddressPage {
 							this.nav.pop();
 						}else{
 							//redirecting to job address tab
-							this.tabs.select(2);
+							//this.tabs.select(2);
+							this.nav.push(JobAddressPage);
 						}
 					}
 				});
@@ -289,7 +296,8 @@ export class PersonalAddressPage {
 							this.nav.pop();
 						}else{
 							//redirecting to job address tab
-							this.tabs.select(2);
+							//this.tabs.select(2);
+							this.nav.push(JobAddressPage);
 						}
 					}
 				});
