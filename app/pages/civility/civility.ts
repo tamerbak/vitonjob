@@ -235,7 +235,7 @@ export class CivilityPage {
 		if(!this.numSS){
 			return;
 		}
-		if(this.numSS.length == 1){
+		/*if(this.numSS.length == 1){
 			this.numSS = this.numSS + " ";
 		}
 		if(this.numSS.length == 4){
@@ -252,7 +252,7 @@ export class CivilityPage {
 		}
 		if(this.numSS.length == 18){
 			this.numSS = this.numSS + " ";
-		}
+		}*/
 	}
 	
 	/**
@@ -371,7 +371,7 @@ export class CivilityPage {
 		* @description show error msg for num ss field
 	*/
 	showNSSError(){
-		if(this.numSS && this.numSS.length < 21){
+		if(this.numSS && this.numSS.length < 15){
 			return true;
 		}
 	}
