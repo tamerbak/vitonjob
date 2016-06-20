@@ -1,7 +1,7 @@
 import {NavController, App, NavParams} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
-import {MangoPayPage} from '../mangoPay/mangoPay';
+import {WalletCreatePage} from '../wallet-create/wallet-create';
 import {SlimPayPage} from '../slimPay/slimPay';
 import {Component} from "@angular/core";
 
@@ -26,7 +26,7 @@ export class PaymentPage {
               navParams: NavParams,
               gc:GlobalConfigs) {
     // set the root pages for each tab
-    this.mangoPayRoot = MangoPayPage;
+    this.mangoPayRoot = WalletCreatePage;
     this.slimPayRoot = SlimPayPage;
     this.nav = nav;
     

@@ -6,10 +6,10 @@ import {PaylineServices} from "../../providers/payline-services/payline-services
 import {MissionListPage} from "../mission-list/mission-list";
 
 @Component({
-    templateUrl: 'build/pages/mangoPay/mangoPay.html',
+    templateUrl: 'build/pages/wallet-create/wallet-create.html',
     providers : [PaylineServices]
 })
-export class MangoPayPage {
+export class WalletCreatePage {
 
     projectTarget: string;
     isEmployer: boolean;
