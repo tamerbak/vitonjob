@@ -8,6 +8,7 @@ import {SearchCriteriaPage} from "../search-criteria/search-criteria";
 import {SearchGuidePage} from "../search-guide/search-guide";
 import {NetworkService} from "../../providers/network-service/network-service";
 import {InfoUserPage} from "../info-user/info-user";
+import {PhonePage} from "../phone/phone";
 import {Storage, SqlStorage} from 'ionic-angular';
 import {Events} from 'ionic-angular';
 import {Component, OnChanges} from "@angular/core";
@@ -137,7 +138,8 @@ export class HomePage implements OnChanges{
             this.isConnected = false;
             this.events.publish('user:logout');
         }else{
-            this.nav.push(LoginsPage);
+            //this.nav.push(LoginsPage);
+			this.nav.push(PhonePage);
         }
     }
 
