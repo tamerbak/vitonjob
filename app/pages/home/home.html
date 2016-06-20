@@ -60,21 +60,28 @@
         </ion-col>
         <ion-col width-10></ion-col>
     </ion-row>
-
+    <ion-row>&nbsp;</ion-row>
     <ion-row>
-    <button fab fab-center class="bottomButton" [style.backgroundColor]="themeColor"
-            (click)="launchVoiceRecognition()" [hidden]="(keyboard)? keyboard.isOpen():false">
-        <ion-icon name="mic" [hidden]="recording"></ion-icon>
-    </button>
+        <ion-col width-20></ion-col>
+        <ion-col text-center>Version : 1.0.4</ion-col>
+        <ion-col width-20></ion-col>
+    </ion-row>
+    <ion-row>&nbsp;</ion-row>
+    <ion-row>
+        <button fab fab-center class="bottomButton" [style.backgroundColor]="themeColor"
+                (click)="launchVoiceRecognition()" [hidden]="(keyboard)? keyboard.isOpen():false">
+            <ion-icon name="mic" [hidden]="recording"></ion-icon>
+        </button>
 
-    <!--button secondary ngClass="left-bottom-btn" (click)="showCriteriaModal()" >
-        <ion-icon name="search"></ion-icon>
-    </button>
+        <!--button secondary ngClass="left-bottom-btn" (click)="showCriteriaModal()" >
+            <ion-icon name="search"></ion-icon>
+        </button>
 
-    <button primary ngClass="right-bottom-btn" (click)="showGuideModal()">
-        <ion-icon name="reorder"></ion-icon>
-    </button-->
-</ion-row>
+        <button primary ngClass="right-bottom-btn" (click)="showGuideModal()">
+            <ion-icon name="reorder"></ion-icon>
+        </button-->
+    </ion-row>
+
 	
     <!--div class="draggable ui-widget-content">
         <ion-list>
