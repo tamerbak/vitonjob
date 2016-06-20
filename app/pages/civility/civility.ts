@@ -216,7 +216,7 @@ export class CivilityPage {
 	*/
 	isUpdateDisabled(){
 		if(!this.isEmployer){
-			return (!this.title || !this.firstname || !this.lastname || !this.cni || this.cni.length < 12 || !this.numSS || this.numSS.length < 21 || !this.nationality || !this.birthplace || !this.birthdate)
+			return (!this.title || !this.firstname || !this.lastname || !this.cni || this.cni.length < 12 || !this.numSS || this.numSS.length != 15 || !this.nationality || !this.birthplace || !this.birthdate)
 		}
 		else{
 			return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5 || !this.isAPEValid)
@@ -235,7 +235,7 @@ export class CivilityPage {
 		if(!this.numSS){
 			return;
 		}
-		if(this.numSS.length == 1){
+		/*if(this.numSS.length == 1){
 			this.numSS = this.numSS + " ";
 		}
 		if(this.numSS.length == 4){
@@ -252,7 +252,7 @@ export class CivilityPage {
 		}
 		if(this.numSS.length == 18){
 			this.numSS = this.numSS + " ";
-		}
+		}*/
 	}
 	
 	/**
@@ -371,7 +371,7 @@ export class CivilityPage {
 		* @description show error msg for num ss field
 	*/
 	showNSSError(){
-		if(this.numSS && this.numSS.length < 21){
+		if(this.numSS && this.numSS.length != 15){
 			return true;
 		}
 	}
