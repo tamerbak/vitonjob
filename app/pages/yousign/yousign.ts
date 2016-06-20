@@ -146,18 +146,7 @@ export class YousignPage {
             });*/
             // send notification to jobyer
             console.log('jobyer id : '+this.jobyer.id);
-            this.pushNotificationService.getTokenByJobyer(this.jobyer.id).then(token => {
-                if(token.data && token.data.length>0){
-                    let tk = token.data[0].device_token;
-                    var message = "Une demande de signature de contrat vous a été adressée";
-                    console.log('message notification : '+message);
-                    console.log('token : '+tk);
-                    this.pushNotificationService.sendPushNotification(tk, message).then(data => {
-                        console.log('Notification sent : '+JSON.stringify(data));
-                    });
-                }
 
-            });
 
             //save contract in Database
             this.contractService.getJobyerId(this.jobyer,this.projectTarget).then(
@@ -168,7 +157,22 @@ export class YousignPage {
                             let idContract = 0;
                             if(data && data.data && data.data.length>0)
                                 idContract = data.data[0].pk_user_contrat;
-                            this.contractService.generateMission(idContract, this.currentOffer)
+                            let contract = {
+                                pk_user_contrat : idContract
+                            };
+                            this.pushNotificationService.getTokenByJobyer(this.jobyer.id).then(token => {
+                                if(token.data && token.data.length>0){
+                                    let tk = token;
+                                    var message = "Une demande de signature de contrat vous a été adressée";
+                                    console.log('message notification : '+message);
+                                    console.log('token : '+tk);
+                                    this.pushNotificationService.sendPushNotification(tk, message, contract).then(data => {
+                                        console.log('Notification sent : '+JSON.stringify(data));
+                                    });
+                                }
+
+                            });
+                            this.contractService.generateMission(idContract, this.currentOffer);
                         }
 
 
