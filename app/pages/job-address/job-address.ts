@@ -141,15 +141,15 @@ export class JobAddressPage {
 		* @description geolocate current user
 	*/
 	geolocate(){
-		let loading = Loading.create({
+		/*let loading = Loading.create({
 			content: ` 
 			<div>
 			<img src='img/loading.gif' />
 			</div>
 			`,
 			spinner : 'hide'
-		});
-		this.nav.present(loading);
+		});*/
+		//this.nav.present(loading);
 		Geolocation.getCurrentPosition(
 		{
 			enableHighAccuracy:true, 
@@ -158,12 +158,12 @@ export class JobAddressPage {
 		}
 		).then(position => {
 			console.log(position);
-			loading.dismiss();
+			//loading.dismiss();
 			this.getAddressFromGeolocation(position);
 		},
 		error => {
 			console.log(error);
-			loading.dismiss();
+			//loading.dismiss();
 			this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");	
 		}
 		);
@@ -223,7 +223,7 @@ export class JobAddressPage {
 						this.nav.pop();
 				}else{
 					//redirecting to offer list page
-					this.nav.parent.parent.push(OfferListPage);
+					this.nav.push(OfferListPage);
 				}
 				return;
 			}
@@ -235,7 +235,7 @@ export class JobAddressPage {
 						this.nav.pop();
 				}else{
 					//redirecting to offer list page
-					this.nav.parent.parent.push(OfferListPage);
+					this.nav.push(OfferListPage);
 				}
 				return;
 			}
@@ -267,7 +267,7 @@ export class JobAddressPage {
 							this.nav.pop();
 						}else{
 							//redirecting to offer list page
-							this.nav.parent.parent.push(OfferListPage);
+							this.nav.push(OfferListPage);
 						}						
 					}
 				});
@@ -291,7 +291,7 @@ export class JobAddressPage {
 							this.nav.pop();
 						}else{
 							//redirecting to offer list page
-							this.nav.parent.parent.push(OfferListPage);
+							this.nav.push(OfferListPage);
 						}
 					}
 				});

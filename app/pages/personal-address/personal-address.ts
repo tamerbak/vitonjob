@@ -224,7 +224,7 @@ export class PersonalAddressPage {
 				}else{
 					//redirecting to job address tab
 					//this.tabs.select(2);
-					this.nav.push(JobAddressPage);
+					this.nav.rootNav.setRoot(JobAddressPage);
 				}
 				return;
 			}
@@ -237,7 +237,7 @@ export class PersonalAddressPage {
 				}else{
 					//redirecting to job address tab
 					//this.tabs.select(2);
-					this.nav.push(JobAddressPage);
+					this.nav.rootNav.setRoot(JobAddressPage);
 				}
 				return;
 			}
@@ -272,7 +272,7 @@ export class PersonalAddressPage {
 						}else{
 							//redirecting to job address tab
 							//this.tabs.select(2);
-							this.nav.push(JobAddressPage);
+							this.nav.rootNav.setRoot(JobAddressPage);
 						}
 					}
 				});
@@ -297,7 +297,7 @@ export class PersonalAddressPage {
 						}else{
 							//redirecting to job address tab
 							//this.tabs.select(2);
-							this.nav.push(JobAddressPage);
+							this.nav.rootNav.setRoot(JobAddressPage);
 						}
 					}
 				});
