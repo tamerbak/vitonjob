@@ -163,7 +163,7 @@ export class PhonePage {
 			var isNewUser = data.newAccount;
 			if (isNewUser) {
 				this.globalService.showAlertValidation("VitOnJob", "Bienvenue dans votre espace VitOnJob!");
-				this.nav.push(CivilityPage, {
+				this.nav.setRoot(CivilityPage, {
 				currentUser: data});
 				} else {
 				this.nav.rootNav.setRoot(HomePage);
