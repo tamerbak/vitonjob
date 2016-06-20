@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Alert, NavController, NavParams, Tabs, Loading} from 'ionic-angular';
+import {Alert, NavController, NavParams, Loading} from 'ionic-angular';
 import {LoadListService} from "../../providers/load-list.service";
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
@@ -21,7 +21,7 @@ import {NgZone} from '@angular/core';
 	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService]
 })
 export class CivilityPage {
-	tabs:Tabs;
+	//tabs:Tabs;
 	title: string;
 	lastname: string;
 	firstname: string;
@@ -46,7 +46,7 @@ export class CivilityPage {
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
 	*/
 	constructor(public nav: NavController, private authService: AuthenticationService,
-	public gc: GlobalConfigs, private loadListService: LoadListService, private sqlStorageService: SqlStorageService, tabs:Tabs, params: NavParams, private globalService: GlobalService, private zone: NgZone) {
+	public gc: GlobalConfigs, private loadListService: LoadListService, private sqlStorageService: SqlStorageService, params: NavParams, private globalService: GlobalService, private zone: NgZone) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -58,7 +58,7 @@ export class CivilityPage {
 		// Set local variables and messages
 		this.themeColor = config.themeColor;
 		this.isEmployer = (this.projectTarget == 'employer');
-		this.tabs=tabs;
+		//this.tabs=tabs;
 		this.params = params;
 		this.currentUser = this.params.data.currentUser;
 		this.fromPage = this.params.data.fromPage;
@@ -84,7 +84,7 @@ export class CivilityPage {
 	*/
 	initCivilityForm(){
 		this.storage.get("currentUser").then((value) => {
-			if(value){
+			if(value && value != "null"){
 				this.currentUser = JSON.parse(value);
 				this.title = this.currentUser.titre;
 				this.lastname = this.currentUser.nom;
@@ -147,7 +147,8 @@ export class CivilityPage {
 						this.nav.pop();
 					}else{
 						//redirecting to personal address tab
-						this.tabs.select(1);
+						//this.tabs.select(1);
+						this.nav.push(PersonalAddressPage);
 					}
 				}
 			});
@@ -182,7 +183,8 @@ export class CivilityPage {
 						this.nav.pop();
 					}else{
 						//redirecting to personal address tab
-						this.tabs.select(1);
+						//this.tabs.select(1);
+						this.nav.push(PersonalAddressPage);
 					}
 				}
 			});

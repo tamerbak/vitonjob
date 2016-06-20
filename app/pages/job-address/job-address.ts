@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Alert, NavController, NavParams, Tabs, Loading} from 'ionic-angular';
+import {Alert, NavController, NavParams, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {GooglePlaces} from '../../components/google-places/google-places';
@@ -31,7 +31,7 @@ export class JobAddressPage {
 	/**
 		* @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
 	*/
-	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, tabs:Tabs, public nav: NavController, public elementRef: ElementRef, public renderer: Renderer, private globalService: GlobalService){
+	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, public nav: NavController, public elementRef: ElementRef, public renderer: Renderer, private globalService: GlobalService){
 		//manually entered address
 		this.searchData = "";
 		//formatted geolocated address
@@ -48,7 +48,7 @@ export class JobAddressPage {
 		this.themeColor = config.themeColor;
 		this.isEmployer = (this.projectTarget == 'employer');
 		this.titlePage = this.isEmployer ? "Adresse mission" : "Adresse de départ au travail";
-		this.tabs=tabs;
+		//this.tabs=tabs;
 		this.storage = new Storage(SqlStorage);
 		//get current employer data from params passed by phone/mail connection
 		this.params = params;
@@ -73,7 +73,8 @@ export class JobAddressPage {
 				}
 			}
 			//if there is not a logged user or there is no address saced in the user data
-			if(!value || !this.searchData){
+			//if(!value || !this.searchData){
+			if(this.fromPage != "profil"){
 				//geolocalisation alert
 				this.displayRequestAlert();
 			}
