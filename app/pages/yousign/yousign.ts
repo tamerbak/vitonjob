@@ -13,6 +13,7 @@ import {MissionListPage} from '../mission-list/mission-list';
 import {Component} from "@angular/core";
 import {isUndefined} from "ionic-angular/util";
 import {PushNotificationService} from "../../providers/push-notification-service/push-notification-service";
+import {WalletCreatePage} from "../wallet-create/wallet-create";
 
 
 /**
@@ -79,7 +80,7 @@ export class YousignPage {
     }
     
     goToPayment() {
-        this.nav.push(PaymentPage);
+        this.nav.push(WalletCreatePage);
     }
     
     goToMissionsList() {
