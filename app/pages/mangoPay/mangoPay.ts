@@ -19,6 +19,7 @@ export class MangoPayPage {
     cardNumber:string;
     cardExpirationDate:number;
     cardCvv:string;
+    cardType : string = "CB";
 
     service : PaylineServices;
     storage : Storage;
@@ -60,7 +61,7 @@ export class MangoPayPage {
     openWallet(){
         let card = {
             cardNumber : this.cardNumber,
-            cardType : 'CB',
+            cardType : this.cardType,
             expireDate : this.cardExpirationDate,
             cvx : this.cardCvv
         };
