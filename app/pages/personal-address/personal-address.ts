@@ -229,9 +229,9 @@ export class PersonalAddressPage {
 				return;
 			}
 			//if address is manually entered
-			if(this.searchData && !this.selectedPlace && !this.geolocResult){
+			if(this.searchData && (!this.selectedPlace || !this.selectedPlace.adr_address) && !this.geolocResult){
 				loading.dismiss();
-				this.globalService.showAlertValidation("VitOnJob", "Cette adresse n'est pas reconnaissable. Vous serez notifié après sa validation par notre équipe.");
+				//this.globalService.showAlertValidation("VitOnJob", "Cette adresse n'est pas reconnaissable. Vous serez notifié après sa validation par notre équipe.");
 				if(this.fromPage == "profil"){
 					this.nav.pop();
 				}else{
