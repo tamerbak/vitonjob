@@ -23,6 +23,7 @@ import {Component} from "@angular/core";
 })
 export class ContractPage {
 
+    numContrat :string = '';
     projectTarget:string;
     isEmployer:boolean;
     themeColor:string;
@@ -115,6 +116,15 @@ export class ContractPage {
             companyName : ''
         };
 
+        this.contractService.getNumContract().then(data =>{
+            debugger;
+           if(data && data.length>0){
+               this.numContrat = this.formatNumContrat(data[0].numct);
+               this.contractData.num = this.numContrat;
+           }
+
+        });
+
 
         // get the currentEmployer
         userService.getCurrentUser().then(results =>{
@@ -139,6 +149,18 @@ export class ContractPage {
         });
 
 
+    }
+
+    formatNumContrat(num){
+        let snum = num+"";
+        let zeros = 10-snum.length;
+        if(zeros < 0)
+           return snum;
+
+        for(let i = 0 ; i < zeros ; i++)
+            snum = "0"+snum;
+
+        return snum;
     }
 
     getStartDate(){
@@ -185,7 +207,7 @@ export class ContractPage {
 
     initContract(){
         this.contractData = {
-            num:"",
+            num:this.numContrat,
             interim:"Groupe 3S",
             missionStartDate: this.getStartDate(),
             missionEndDate:this.getEndDate(),
