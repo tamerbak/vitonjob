@@ -39,7 +39,7 @@ export class CivilityPage {
 	scanTitle: string;
 	titlePage: string;
 	isAPEValid = true;
-	//isSIRETValid = true;
+	isSIRETValid = true;
 	fromPage: string;
 	
 	/**
@@ -89,12 +89,12 @@ export class CivilityPage {
 				this.title = this.currentUser.titre;
 				this.lastname = this.currentUser.nom;
 				this.firstname = this.currentUser.prenom;
-				if(this.isEmployer){
+				if(this.isEmployer && this.currentUser.employer.entreprises.length != 0){
 					this.companyname = this.currentUser.employer.entreprises[0].nom;
 					this.siret = this.currentUser.employer.entreprises[0].siret;
 					this.ape = this.currentUser.employer.entreprises[0].naf;
 					}else{
-					this.birthdate = new Date(this.currentUser.jobyer.dateNaissance).toISOString();
+					this.birthdate = this.currentUser.jobyer.dateNaissance ? new Date(this.currentUser.jobyer.dateNaissance).toISOString() : "";
 					this.birthplace = this.currentUser.jobyer.lieuNaissance;
 					this.cni = this.currentUser.jobyer.cni;
 					this.numSS = this.currentUser.jobyer.numSS;
@@ -172,6 +172,7 @@ export class CivilityPage {
 					this.currentUser.jobyer.cni = this.cni;
 					this.currentUser.jobyer.numSS = this.numSS;
 					this.currentUser.jobyer.natId = this.nationality;
+					//this.currentUser.jobyer.natLibelle = this.nationality;
 					this.currentUser.jobyer.dateNaissance = this.birthdate;
 					this.currentUser.jobyer.lieuNaissance = this.birthplace;
 					//upload scan
@@ -228,6 +229,11 @@ export class CivilityPage {
 		* @description watch and validate the "num de sécurité social" field
 	*/
 	watchNumSS(e){
+		var s = e.target.value;
+		if(s.length >  14){
+			e.preventDefault();
+			return;	
+		}
 		if (e.keyCode < 48 || e.keyCode > 57){
 			e.preventDefault();
 			return;
@@ -259,6 +265,11 @@ export class CivilityPage {
 		* @description watch and validate the cni field
 	*/
 	watchCNI(e){
+		var s = e.target.value;
+		if(s.length >  11){
+			e.preventDefault();
+			return;	
+		}
 		if (e.keyCode < 48 || e.keyCode > 57){
 			e.preventDefault();
 			return;
@@ -269,11 +280,14 @@ export class CivilityPage {
 		* @description watch and validate the siret field
 	*/
 	watchSIRET(e){
+		var s = e.target.value;
+		if(s.length != 17){
+			this.isSIRETValid = false;
+		}
 		if (e.keyCode == 8){
 			e.preventDefault();
 			return;
 		}
-		var s = e.target.value;
 		for(var i = 0; i < s.length; i++){
 			if(i == 3 || i == 7 || i == 11){
 				if(s[i] != ' '){
@@ -295,6 +309,10 @@ export class CivilityPage {
 			s = s + " ";
 		}
 		e.target.value = s;
+		
+		if(s.length == 17){
+			this.isSIRETValid = true;
+		}
 	}
 	
 	/**
@@ -409,7 +427,7 @@ export class CivilityPage {
 	/**
 		* @description change the title of the scan buttton according to the selected nationality
 	*/
-	onChangeNationality(){
+	onChangeNationality(e){
 		if(this.nationality == 9)
 		this.scanTitle=" de votre CNI";
 		else

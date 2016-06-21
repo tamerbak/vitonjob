@@ -105,7 +105,6 @@ export class ProfilePage implements OnInit {
                 this.loadMap(this.userData);
             }
         });
-
     }
 
     /**
@@ -123,60 +122,60 @@ export class ProfilePage implements OnInit {
             secondaryAddress = data.jobyer.workAdress.fullAdress;
         }
 
-
-        this.addrService.getLatLng(mainAddress).then(gData => {
-            if (gData && gData.results && gData.results.length > 0) {
-                let latLng1 = new google.maps.LatLng(gData.results[0].geometry.location.lat,
-                    gData.results[0].geometry.location.lng);
-                let mapOptions = {
-                    //center: latLng1,
-                    //zoom: 5,
-                    draggable: false,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP
-                };
-                //debugger;
-                this.addrService.getLatLng(secondaryAddress).then(gData => {
-                    if (gData && gData.results && gData.results.length > 0) {
-                        let latLng2 = new google.maps.LatLng(gData.results[0].geometry.location.lat,
-                            gData.results[0].geometry.location.lng);
-                        this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-                        //new google.maps.LatLng(48.8762300, 2.3617500);
-                        let addresses = [latLng1, latLng2];
-                        let bounds = new google.maps.LatLngBounds();
-                        this.addMarkers(addresses, bounds);
-                    } else {
-                        let addresses = [latLng1];
-                        let bounds = new google.maps.LatLngBounds();
-                        this.addMarkers(addresses, bounds);
-                    }
-                });
-            } else {
-                //let latLng1 = new google.maps.LatLng(48.8785618, 2.3603689);
-                this.addrService.getLatLng(secondaryAddress).then(gData => {
-                    if (gData && gData.results && gData.results.length > 0) {
-                        let latLng2 = new google.maps.LatLng(gData.results[0].geometry.location.lat,
-                            gData.results[0].geometry.location.lng);
-                        let mapOptions = {
-                            draggable: false,
-                            mapTypeId: google.maps.MapTypeId.ROADMAP
-                        };
-                        this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-                        //new google.maps.LatLng(48.8762300, 2.3617500);
-                        let addresses = [latLng2];
-                        let bounds = new google.maps.LatLngBounds();
-                        this.addMarkers(addresses, bounds);
-                    } else {
-                        // No addresses
-                        let mapOptions = {
-                            draggable: false,
-                            mapTypeId: google.maps.MapTypeId.ROADMAP
-                        };
-                        this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-                    }
-                });
-            }
-        });
-
+		if(mainAddress){
+			this.addrService.getLatLng(mainAddress).then(gData => {
+				if (gData && gData.results && gData.results.length > 0) {
+					let latLng1 = new google.maps.LatLng(gData.results[0].geometry.location.lat,
+						gData.results[0].geometry.location.lng);
+					let mapOptions = {
+						//center: latLng1,
+						//zoom: 5,
+						draggable: false,
+						mapTypeId: google.maps.MapTypeId.ROADMAP
+					};
+					//debugger;
+					this.addrService.getLatLng(secondaryAddress).then(gData => {
+						if (gData && gData.results && gData.results.length > 0) {
+							let latLng2 = new google.maps.LatLng(gData.results[0].geometry.location.lat,
+								gData.results[0].geometry.location.lng);
+							this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+							//new google.maps.LatLng(48.8762300, 2.3617500);
+							let addresses = [latLng1, latLng2];
+							let bounds = new google.maps.LatLngBounds();
+							this.addMarkers(addresses, bounds);
+						} else {
+							let addresses = [latLng1];
+							let bounds = new google.maps.LatLngBounds();
+							this.addMarkers(addresses, bounds);
+						}
+					});
+				} else {
+					//let latLng1 = new google.maps.LatLng(48.8785618, 2.3603689);
+					this.addrService.getLatLng(secondaryAddress).then(gData => {
+						if (gData && gData.results && gData.results.length > 0) {
+							let latLng2 = new google.maps.LatLng(gData.results[0].geometry.location.lat,
+								gData.results[0].geometry.location.lng);
+							let mapOptions = {
+								draggable: false,
+								mapTypeId: google.maps.MapTypeId.ROADMAP
+							};
+							this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+							//new google.maps.LatLng(48.8762300, 2.3617500);
+							let addresses = [latLng2];
+							let bounds = new google.maps.LatLngBounds();
+							this.addMarkers(addresses, bounds);
+						} else {
+							// No addresses
+							let mapOptions = {
+								draggable: false,
+								mapTypeId: google.maps.MapTypeId.ROADMAP
+							};
+							this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+						}
+					});
+				}
+			});
+		}
 
     }
 
