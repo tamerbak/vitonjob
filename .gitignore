@@ -2,6 +2,8 @@ node_modules/
 www/build/
 platforms/
 plugins/
+resources/android
+resources/ios
 .idea
 .iws
 workspace.xml
