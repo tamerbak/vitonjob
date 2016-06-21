@@ -86,13 +86,13 @@
 	
 	<ion-row>
 		<ion-col text-center>
-			<button block onclick="$('#myFileInput').click();" [style.backgroundColor]="themeColor" class="button-picture">
+			<button block (click)="file.click();" [style.backgroundColor]="themeColor" class="button-picture">
 				<ion-icon name="download"></ion-icon>
 				Charger un scan {{scanTitle}}
 			</button>
 		</ion-col>
 	</ion-row>
-	<input id="myFileInput" type="file" (change)="onChangeUpload($event)" style="visibility:hidden; display: none;"/>
+	<input #file type="file" (change)="onChangeUpload($event)" style="visibility:hidden; display: none;"/>
 	
 	<ion-row>
 		<ion-col text-center>
