@@ -534,4 +534,47 @@ export class AuthenticationService {
 				});
 		})
 	}
+	
+	sendPasswordBySMS(tel, passwd){
+		tel = tel.replace('+', '00');
+		let url = "http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoisms";
+		let payload = "<fr.protogen.connector.model.SmsModel>"
+		+ 	"<telephone>"+tel+"</telephone>"
+		+ 	"<text>Votre mot de passe est: " + passwd +".</text>"
+		+ "</fr.protogen.connector.model.SmsModel>";
+
+		return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'text/xml');
+			this.http.post(url, payload, {headers:headers})
+				.subscribe(data => {
+					this.data = data;
+					console.log(this.data);
+					resolve(this.data);
+			});
+		})
+	}
+	sendPasswordByEmail(email, passwd){
+		let url = "http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoimail";
+		let payload = "<fr.protogen.connector.model.MailModel>"
+		+ "<sendTo>"+email+"</sendTo>"
+		+ 	"<title>Mot de passe réinitialisé</title>"
+		+ 	"<content>"
+		+ 		"Suite à votre requête nous avons procédé à une rénitialisation de votre mot de passe."
+		+ 		" Votre nouveau mot de passe est : "+passwd
+		+ 	"</content>"
+		+ 	"<status></status>"
+		+ "</fr.protogen.connector.model.MailModel>";
+
+		return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'text/xml');
+			this.http.post(url, payload, {headers:headers})
+				.subscribe(data => {
+					this.data = data;
+					console.log(this.data);
+					resolve(this.data);
+			});
+		})
+	}
 }

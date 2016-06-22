@@ -8,8 +8,7 @@ import {GlobalService} from "../../providers/global.service";
 import {Geolocation} from 'ionic-native';
 import {Storage, SqlStorage} from 'ionic-angular';
 import {JobAddressPage} from "../job-address/job-address";
-import {enableProdMode, ElementRef, Renderer} from '@angular/core'; 
-enableProdMode();
+import {ElementRef, Renderer} from '@angular/core'; 
 
 /**
 	* @author Amal ROCHD
@@ -31,7 +30,14 @@ export class PersonalAddressPage {
 	/**
 		* @description While constructing the view, we get the currentUser passed as parameter from the connection page
 	*/
-	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, public nav: NavController, public elementRef: ElementRef, public renderer: Renderer, private globalService: GlobalService) {
+	constructor(private authService: AuthenticationService, 
+				params: NavParams, 
+				public gc: GlobalConfigs, 
+				nav: NavController, 
+				public elementRef: ElementRef, 
+				public renderer: Renderer, 
+				private globalService: GlobalService) {
+				this.nav = nav;
 		//manually entered address
 		this.searchData = "";
 		//formatted geolocated address
@@ -54,7 +60,9 @@ export class PersonalAddressPage {
 		this.params = params;
 		this.currentUser = this.params.data.currentUser;
 		this.fromPage = this.params.data.fromPage;
-		
+	}
+	
+	ionViewDidEnter(){
 		//in case of user has already signed up
 		this.initPersonalAddressForm();
 	}
@@ -74,10 +82,10 @@ export class PersonalAddressPage {
 				}
 			}
 			//if there is not a logged user or there is no address saved in the user data
-			//if(!value || !this.searchData ){
-			if(this.fromPage != "profil"){
+			if(!value || !this.searchData ){
+			//if(this.fromPage != "profil"){
 				//geolocalisation alert
-				this.displayGeolocationAlert();
+				this.displayRequestAlert();
 			}
 		});
 	}
@@ -85,7 +93,7 @@ export class PersonalAddressPage {
 	/**
 		* @description display the first request alert for geolocation
 	*/
-	/*displayRequestAlert(){
+	displayRequestAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
 			message: "Géolocalisation : êtes-vous connecté depuis votre" + (this.isEmployer ? " siège social" : " domicile") + "?",
@@ -108,7 +116,7 @@ export class PersonalAddressPage {
 			]
 		});
 		this.nav.present(confirm);
-	}*/
+	}
 	
 	/**
 		* @description display the second request alert for geolocation
@@ -116,7 +124,7 @@ export class PersonalAddressPage {
 	displayGeolocationAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Géolocalisation : êtes-vous connecté depuis votre" + (this.isEmployer ? " siège social" : " domicile") + "?\n" + "Si vous acceptez d'être localisé, vous n'aurez qu'à valider" + (this.isEmployer ? " l'adresse de votre siège social." : " votre adresse personnelle."),
+			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider" + (this.isEmployer ? " l'adresse de votre siège social." : " votre adresse personnelle."),
 			buttons: [
 				{
 					text: 'Non',
@@ -130,7 +138,8 @@ export class PersonalAddressPage {
 						console.log('Yes clicked');
 						confirm.dismiss().then(() => {
 							this.geolocate();
-						})
+						});
+						return false;
 					}
 				}
 			]
@@ -165,9 +174,15 @@ export class PersonalAddressPage {
 		error => {
 			console.log(error);
 			loading.dismiss();
-			this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");	
-		}
-		);
+			new Promise(function(resolve, reject) {
+              setTimeout(() => resolve(), 500);
+            }).then(res => {
+                this.nav.present(
+					this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement")
+				 )
+              });
+			return false;  
+		});
 	}
 	
 	/**
@@ -224,20 +239,20 @@ export class PersonalAddressPage {
 				}else{
 					//redirecting to job address tab
 					//this.tabs.select(2);
-					this.nav.rootNav.setRoot(JobAddressPage);
+					this.nav.push(JobAddressPage);
 				}
 				return;
 			}
 			//if address is manually entered
 			if(this.searchData && (!this.selectedPlace || !this.selectedPlace.adr_address) && !this.geolocResult){
 				loading.dismiss();
-				//this.globalService.showAlertValidation("VitOnJob", "Cette adresse n'est pas reconnaissable. Vous serez notifié après sa validation par notre équipe.");
+				this.globalService.showAlertValidation("VitOnJob", "Cette adresse n'est pas reconnaissable. Vous serez notifié après sa validation par notre équipe.");
 				if(this.fromPage == "profil"){
 					this.nav.pop();
 				}else{
 					//redirecting to job address tab
 					//this.tabs.select(2);
-					this.nav.rootNav.setRoot(JobAddressPage);
+					this.nav.push(JobAddressPage);
 				}
 				return;
 			}
@@ -272,7 +287,7 @@ export class PersonalAddressPage {
 						}else{
 							//redirecting to job address tab
 							//this.tabs.select(2);
-							this.nav.rootNav.setRoot(JobAddressPage);
+							this.nav.push(JobAddressPage);
 						}
 					}
 				});
@@ -297,7 +312,7 @@ export class PersonalAddressPage {
 						}else{
 							//redirecting to job address tab
 							//this.tabs.select(2);
-							this.nav.rootNav.setRoot(JobAddressPage);
+							this.nav.push(JobAddressPage);
 						}
 					}
 				});

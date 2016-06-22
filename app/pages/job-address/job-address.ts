@@ -54,10 +54,12 @@ export class JobAddressPage {
 		this.params = params;
 		this.currentUser = this.params.data.currentUser;
 		this.fromPage = this.params.data.fromPage;
+	}
+	
+	ionViewDidEnter(){
 		//in case of user has already signed up
 		this.initJobAddressForm();
 	}
-	
 	/**
 		* @description initiate the job address form with data of the logged user
 	*/
@@ -73,10 +75,10 @@ export class JobAddressPage {
 				}
 			}
 			//if there is not a logged user or there is no address saced in the user data
-			//if(!value || !this.searchData){
-			if(this.fromPage != "profil"){
+			if(!value || !this.searchData){
+			//if(this.fromPage != "profil"){
 				//geolocalisation alert
-				this.displayGeolocationAlert();
+				this.displayRequestAlert();
 			}
 		});
 	}
@@ -84,7 +86,7 @@ export class JobAddressPage {
 	/**
 		* @description display the first request alert for geolocation
 	*/
-	/*displayRequestAlert(){
+	displayRequestAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
 			message: "Géolocalisation : êtes-vous connecté depuis votre" + (this.isEmployer ? " lieu de mission" : " lieu de départ au travail") +"?",
@@ -106,7 +108,7 @@ export class JobAddressPage {
 			]
 		});
 		this.nav.present(confirm);
-	}*/
+	}
 	
 	/**
 		* @description display the second request alert for geolocation
@@ -141,15 +143,15 @@ export class JobAddressPage {
 		* @description geolocate current user
 	*/
 	geolocate(){
-		/*let loading = Loading.create({
+		let loading = Loading.create({
 			content: ` 
 			<div>
 			<img src='img/loading.gif' />
 			</div>
 			`,
 			spinner : 'hide'
-		});*/
-		//this.nav.present(loading);
+		});
+		this.nav.present(loading);
 		Geolocation.getCurrentPosition(
 		{
 			enableHighAccuracy:true, 
@@ -158,12 +160,12 @@ export class JobAddressPage {
 		}
 		).then(position => {
 			console.log(position);
-			//loading.dismiss();
+			loading.dismiss();
 			this.getAddressFromGeolocation(position);
 		},
 		error => {
 			console.log(error);
-			//loading.dismiss();
+			loading.dismiss();
 			this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");	
 		}
 		);
@@ -223,19 +225,19 @@ export class JobAddressPage {
 						this.nav.pop();
 				}else{
 					//redirecting to offer list page
-					this.nav.push(OfferListPage);
+					this.nav.setRoot(OfferListPage);
 				}
 				return;
 			}
 			//if address is manually entered
 			if(this.searchData && (!this.selectedPlace || !this.selectedPlace.adr_address) && !this.geolocResult){
 				loading.dismiss();
-				//this.globalService.showAlertValidation("VitOnJob", "Cette adresse n'est pas reconnaissable. Vous serez notifié après sa validation par notre équipe.");
+				this.globalService.showAlertValidation("VitOnJob", "Cette adresse n'est pas reconnaissable. Vous serez notifié après sa validation par notre équipe.");
 				if(this.fromPage == "profil"){
 						this.nav.pop();
 				}else{
 					//redirecting to offer list page
-					this.nav.push(OfferListPage);
+					this.nav.setRoot(OfferListPage);
 				}
 				return;
 			}
@@ -267,7 +269,7 @@ export class JobAddressPage {
 							this.nav.pop();
 						}else{
 							//redirecting to offer list page
-							this.nav.push(OfferListPage);
+							this.nav.setRoot(OfferListPage);
 						}						
 					}
 				});
@@ -291,7 +293,7 @@ export class JobAddressPage {
 							this.nav.pop();
 						}else{
 							//redirecting to offer list page
-							this.nav.push(OfferListPage);
+							this.nav.setRoot(OfferListPage);
 						}
 					}
 				});
