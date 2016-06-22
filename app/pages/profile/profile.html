@@ -32,20 +32,20 @@
         <ion-item-divider light>{{isEmployer ? 'Fiche entreprise' : 'Civilité'}}</ion-item-divider>
         <ion-card-content>
             <ion-item text-wrap>
-                <h5>{{userData.titre}} {{userData.nom}} {{userData.prenom}}</h5>
-                <p *ngIf="!isEmployer">{{userData.nationalite}}, {{(userData==='M.') ? 'né' : 'née'}} à
+                <h5>{{userData.titre ? userData.titre : ''}} {{userData.nom ? userData.nom : ''}} {{userData.prenom ? userData.prenom : ''}}</h5>
+                <p *ngIf="!isEmployer && userData.jobyer.lieuNaissance"><!--{{userData.jobyer.natLibelle}},--> {{(userData.titre==='M.') ? 'né' : 'née'}} à
                     {{userData.jobyer.lieuNaissance}} le {{userData.jobyer.dateNaissance | dateConverter:'short'}}</p>
-                <ul *ngIf="!isEmployer" style="font-size: 1.3rem;">
+                <ul *ngIf="!isEmployer && userData.jobyer.cni" style="font-size: 1.3rem;">
                     <li>CNI: {{userData.jobyer.cni}}</li>
                     <li>Numéro SS: {{userData.jobyer.numSS}}</li>
                 </ul>
             </ion-item>
-            <ion-item test-wrap *ngIf="isEmployer">
+            <ion-item test-wrap *ngIf="isEmployer && userData.employer.entreprises.length != 0 ">
                 <h5>{{userData.employer.entreprises[0].nom}}</h5>
                 <p></p>
                 <ul style="font-size: 1.3rem;">
                     <li>SIRET: {{userData.employer.entreprises[0].siret}}</li>
-                    <li>NAF: {{userData.employer.entreprises[0].naf.toUpperCase()}}</li>
+                    <li>NAF: {{userData.employer.entreprises[0].naf ? userData.employer.entreprises[0].naf.toUpperCase() : ''}}</li>
                 </ul>
             </ion-item>
         </ion-card-content>
@@ -68,7 +68,7 @@
             <h5 *ngIf="!isEmployer">Adresse personnelle</h5>
             <h5 *ngIf="isEmployer">Adresse du siège</h5>
             <p *ngIf="!isEmployer">{{userData.jobyer.personnalAdress.fullAdress}}</p>
-            <p *ngIf="isEmployer">{{userData.employer.entreprises[0].siegeAdress.fullAdress}}</p>
+            <p *ngIf="isEmployer && userData.employer.entreprises.length != 0">{{userData.employer.entreprises[0].siegeAdress.fullAdress}}</p>
             <button clear item-right (click)="goToPersonalAddressTab()"><ion-icon name="create"></ion-icon></button>
         </ion-item>
         <ion-item text-wrap>
@@ -76,7 +76,7 @@
             <h5 *ngIf="!isEmployer">A. départ au travail</h5>
             <h5 *ngIf="isEmployer">Adresse de la mission</h5>
             <p *ngIf="!isEmployer">{{userData.jobyer.workAdress.fullAdress}}</p>
-            <p *ngIf="isEmployer">{{userData.employer.entreprises[0].workAdress.fullAdress}}</p>
+            <p *ngIf="isEmployer  && userData.employer.entreprises.length != 0">{{userData.employer.entreprises[0].workAdress.fullAdress}}</p>
 		<button clear item-right (click)="goToJobAddressTab()"><ion-icon name="create"></ion-icon></button>
         </ion-item>
         <!--div class="button-footer">

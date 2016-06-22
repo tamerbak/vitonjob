@@ -39,11 +39,13 @@
     "cordova-plugin-tts",
     "org.apache.cordova.speech.speechrecognition",
     "cordova-plugin-camera",
-	{
+    "cordova-sms-plugin",
+    {
       "variables": {
         "SENDER_ID": "693415120998"
       },
-      "locator": "phonegap-plugin-push"
+      "locator": "phonegap-plugin-push",
+      "id": "phonegap-plugin-push"
     }
   ],
   "cordovaPlatforms": [

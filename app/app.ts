@@ -1,7 +1,8 @@
 import {Platform, MenuController, Nav, ionicBootstrap, App, Modal, Toast} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {HomePage} from './pages/home/home';
-import {LoginsPage} from './pages/logins/logins';
+//import {LoginsPage} from './pages/logins/logins';
+import {PhonePage} from './pages/phone/phone';
 import {MissionListPage} from './pages/mission-list/mission-list';
 import {Configs} from './configurations/configs';
 import {GlobalConfigs} from './configurations/globalConfigs';
@@ -30,6 +31,7 @@ import {SearchCriteriaPage} from "./pages/search-criteria/search-criteria";
 import {SearchGuidePage} from "./pages/search-guide/search-guide";
 import {MissionDetailsPage} from './pages/mission-details/mission-details';
 import {NgZone} from '@angular/core';
+//import {ParametersPage} from "./pages/parameters/parameters";
 
 @Component({
 	templateUrl: 'build/menu.html'
@@ -73,10 +75,11 @@ export class Vitonjob {
 			{title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false},
 			{title: "Mes offres", component: OfferListPage, icon: "list", isBadged: true},
 			{title: "Gestion des missions", component: MissionListPage, icon: "list", isBadged: false},
+			//{title: "Paramètres", component: ParametersPage, icon: "cog", isBadged: false},
 			{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
 		];
 		this.loggedOutPages = [
-			{title: "Se connecter", component: LoginsPage, icon: "log-in", isBadged: false}
+			{title: "Se connecter", component: PhonePage, icon: "log-in", isBadged: false}
 		];
 
 

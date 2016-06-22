@@ -42,6 +42,8 @@
         <ion-label floating>SIRET: 999 999 999 99999</ion-label>
         <ion-input type="tel" [(ngModel)]="siret" (keyup)="watchSIRET($event)" maxlength="17"></ion-input>
 	</ion-item>
+	<div [hidden]="isSIRETValid" 
+	class="error-box">* Saisissez les 14 chiffres du SIRET</div>
 	
 	<ion-item [hidden]="!isEmployer">
         <ion-label floating>NAF: 9999A</ion-label>
@@ -63,7 +65,7 @@
 	
     <ion-item [hidden]="isEmployer">
         <ion-label floating>CNI</ion-label>
-		<ion-input type="text" [(ngModel)]="cni" (keypress)="watchCNI($event)" maxlength="12" ></ion-input>
+		<ion-input type="number" [(ngModel)]="cni" (keypress)="watchCNI($event)" maxlength="12" ></ion-input>
 	</ion-item>
 	<div *ngIf="showCNIError()" 
 	class="error-box">* Saisissez les 12 chiffres du CNI</div>
@@ -84,13 +86,13 @@
 	
 	<ion-row>
 		<ion-col text-center>
-			<button block onclick="$('#myFileInput').click();" [style.backgroundColor]="themeColor" class="button-picture">
+			<button block (click)="file.click();" [style.backgroundColor]="themeColor" class="button-picture">
 				<ion-icon name="download"></ion-icon>
 				Charger un scan {{scanTitle}}
 			</button>
 		</ion-col>
 	</ion-row>
-	<input id="myFileInput" type="file" (change)="onChangeUpload($event)" style="visibility:hidden; display: none;"/>
+	<input #file type="file" (change)="onChangeUpload($event)" style="visibility:hidden; display: none;"/>
 	
 	<ion-row>
 		<ion-col text-center>
