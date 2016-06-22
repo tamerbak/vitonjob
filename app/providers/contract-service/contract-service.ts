@@ -175,9 +175,24 @@ export class ContractService {
 	          });
 	    });
 	}
-    
-    
-    
+
+
+    setOffer(idContract, idOffer){
+        let sql = "update user_contrat set fk_user_offre_entreprise = "+idOffer+" where pk_user_contrat="+idContract;
+        console.log(sql);
+
+
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });
+    }
     
     /**
      * @description call yousign service

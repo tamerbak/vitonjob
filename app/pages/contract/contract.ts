@@ -116,14 +116,14 @@ export class ContractPage {
             companyName : ''
         };
 
-        this.contractService.getNumContract().then(data =>{
+        /*this.contractService.getNumContract().then(data =>{
             debugger;
            if(data && data.length>0){
                this.numContrat = this.formatNumContrat(data[0].numct);
                this.contractData.num = this.numContrat;
            }
 
-        });
+        });*/
 
 
         // get the currentEmployer
@@ -258,11 +258,19 @@ export class ContractPage {
     }
 
     goToYousignPage() {
-        this.nav.push(YousignPage,{
-            jobyer:this.jobyer,
-            contractData:this.contractData,
-            currentOffer:this.currentOffer
+        this.contractService.getNumContract().then(data =>{
+            
+            if(data && data.length>0){
+                this.numContrat = this.formatNumContrat(data[0].numct);
+                this.contractData.num = this.numContrat;
+            }
+            this.nav.push(YousignPage,{
+                jobyer:this.jobyer,
+                contractData:this.contractData,
+                currentOffer:this.currentOffer
+            });
         });
+
     }
 
     /**
