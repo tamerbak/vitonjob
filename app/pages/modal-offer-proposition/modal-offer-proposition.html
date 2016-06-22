@@ -16,7 +16,7 @@
     <ion-list-header>Indispensables</ion-list-header>
     <ion-item *ngFor="let q of proposedQualities">
       <span>{{q.libelle}}</span>
-      <button item-right secondary (click)="deleteQuality(l)">
+      <button item-right secondary (click)="deleteQuality(q)">
         <ion-icon name="md-trash"></ion-icon>
       </button>
     </ion-item>
