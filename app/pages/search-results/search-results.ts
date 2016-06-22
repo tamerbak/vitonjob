@@ -150,7 +150,7 @@ export class SearchResultsPage {
                         this.sendSMS(item);
                     }
                 },{
-                    text: 'Appeller',
+                    text: 'Appeler',
                     icon: 'md-call',
                     handler: () => {
                         this.dialNumber(item);
