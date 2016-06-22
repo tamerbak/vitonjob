@@ -255,6 +255,7 @@ export class ContractService {
             "filiere" : contract.sector,
             "HeureDebutMission" : contract.workStartHour,
             "HeureFinMission" : contract.workEndHour,
+            "num"  : contract.num
         };
 
         var dataSign =JSON.stringify(
