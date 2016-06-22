@@ -161,6 +161,7 @@ export class YousignPage {
                             let contract = {
                                 pk_user_contrat : idContract
                             };
+                            this.contractService.setOffer(idContract, this.currentOffer.idOffer);
                             this.pushNotificationService.getTokenByJobyer(this.jobyer.id).then(token => {
                                 if(token.data && token.data.length>0){
                                     let tk = token;

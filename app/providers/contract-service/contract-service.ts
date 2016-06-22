@@ -18,7 +18,20 @@ export class ContractService {
     constructor(public http: Http,private helpers:Helpers) {
 
     }
-    
+
+    getNumContract(){
+        let sql = "select nextval('sequence_num_contrat') as numct";
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data.data;
+                    resolve(this.data);
+                });
+        });
+    }
     
     //to remove after correction Jobyer object in api service
     getJobyerId(jobyer:any,projectTarget:string){
@@ -122,7 +135,9 @@ export class ContractService {
                   " fk_user_jobyer," +
                   " lien_jobyer," +
                   " signature_employeur," +
-                  " signature_jobyer" +
+                  " signature_jobyer," +
+                  " taux_indemnite_fin_de_mission," +
+                  " taux_conges_payes" +
                   ")"+
                   " VALUES ("
                   +""+ this.helpers.dateStrToSqlTimestamp(contract.missionStartDate) +","
@@ -141,8 +156,9 @@ export class ContractService {
                   +"'"+ jobyerId +"',"
                   +"'"+yousignJobyerLink+"',"
                   +"'OUI',"
-                  +"'NON'"
-                  +")"
+                  +"'NON',"
+                  +"10,"
+                  +"10)"
                   +" RETURNING pk_user_contrat";
                   
         console.log(sql);
@@ -159,9 +175,24 @@ export class ContractService {
 	          });
 	    });
 	}
-    
-    
-    
+
+
+    setOffer(idContract, idOffer){
+        let sql = "update user_contrat set fk_user_offre_entreprise = "+idOffer+" where pk_user_contrat="+idContract;
+        console.log(sql);
+
+
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });
+    }
     
     /**
      * @description call yousign service
@@ -224,6 +255,7 @@ export class ContractService {
             "filiere" : contract.sector,
             "HeureDebutMission" : contract.workStartHour,
             "HeureFinMission" : contract.workEndHour,
+            "num"  : contract.num
         };
 
         var dataSign =JSON.stringify(
