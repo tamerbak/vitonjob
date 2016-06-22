@@ -63,7 +63,9 @@ export class CivilityPage {
 		this.currentUser = this.params.data.currentUser;
 		this.fromPage = this.params.data.fromPage;
 		this.titlePage = this.isEmployer ? "Fiche de l'entreprise" : "Page civilité";
-		
+	}
+	
+	ionViewDidEnter(){
 		//load nationality list
 		if(!this.isEmployer){
 			this.loadListService.loadNationalities(this.projectTarget).then((data) => {
