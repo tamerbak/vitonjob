@@ -300,7 +300,7 @@ export class PhonePage {
 		this.nav.rootNav.setRoot(HomePage);
 	}
 	
-	passwordForgotten(){
+	passwordForgotten(canal, email){
 		let loading = Loading.create({
 			content: ` 
 			<div>
@@ -318,14 +318,45 @@ export class PhonePage {
 				return;
 			}
 			if (data && data.password.length != 0) {
-				this.authService.updatePasswordByPhone(tel, md5(data.password));
-				console.log('Sending SMS');
-				var message = "Votre nouveau mot de passe est: " + data.password;
-				this.sendSMS(tel, message);
-				loading.dismiss();
-				this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par SMS.");
+				let newPasswd = data.password;
+				if(canal == 'sms'){
+					this.authService.updatePasswordByPhone(tel, md5(newPasswd)).then((data) => {
+						if (!data) {
+							loading.dismiss();
+							this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+							return;
+						}
+						this.authService.sendPasswordBySMS(tel, newPasswd).then((data) => {
+							if (!data || data.status != 200) {
+								loading.dismiss();
+								this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+								return;
+							}
+							loading.dismiss();
+							this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par SMS.");
+						});
+					});
+				}
+				else{
+					this.authService.updatePasswordByMail(email, md5(newPasswd)).then((data) => {
+						if (!data) {
+							loading.dismiss();
+							this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+							return;
+						}
+						this.authService.sendPasswordByEmail(email, newPasswd).then((data) => {
+							if (!data || data.status != 200) {
+								loading.dismiss();
+								this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+								return;
+							}
+							loading.dismiss();
+							this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par email.");
+						});
+					});
+				}
 			}
-		});
+		})
 	}
 	
 	sendSMS(number, message){
@@ -349,19 +380,20 @@ export class PhonePage {
 		}
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez vous continuer?",
+			message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez vous le recevoir par SMS ou par email?",
 			buttons: [
 				{
-					text: 'Non',
+					text: 'SMS',
 					handler: () => {
-						console.log('No clicked');
+						console.log('SMS selected');	
+						this.passwordForgotten("sms");
 					}
 				},
 				{
-					text: 'Oui',
+					text: 'Email',
 					handler: () => {
-						console.log('Yes clicked');	
-						this.passwordForgotten();
+						console.log('Email selected');	
+						this.passwordForgotten("email", this.email);
 					}
 				}
 			]
