@@ -1,3 +1,10 @@
 .phone {
+  background-size: cover;
+  ion-item {
+    background: transparent;
+  }
 
+  button .button-outline .button-clear {
+    color: black;
+  }
 }

@@ -39,6 +39,7 @@ export class PhonePage {
 	password1: string;
 	password2: string;
 	isPhoneNumValid = true;
+	backgroundImage:any;
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
@@ -59,6 +60,7 @@ export class PhonePage {
 		this.phoneTitle = "Téléphone";
 		this.index = 33;
 		this.libelleButton = "Se connecter";
+		this.backgroundImage = config.backgroundImage
 		
 		//load countries list
 		this.loadListService.loadCountries(this.projectTarget).then((data) => {

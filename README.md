@@ -96,9 +96,9 @@ $ ionic plugin add cordova-plugin-geolocation
 $ cordova plugin add cordova-plugin-tts
 $ cordova plugin add https://github.com/macdonst/SpeechRecognitionPlugin
 $ ionic plugin add cordova-plugin-camera
-$ cordova plugin add cordova-plugin-camera
-$ cordova plugin add cordova-sms-plugin
-$ cordova plugin add cordova-plugin-inappbrowser
+$ ionic plugin add cordova-sms-plugin
+$ ionic plugin add cordova-plugin-inappbrowser
+$ ionic plugin add cordova-plugin-app-version
 ```
 
 ##Notification Push

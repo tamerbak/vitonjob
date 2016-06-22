@@ -2,15 +2,17 @@
     <button menuToggle>
         <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>
+    <ion-title style="padding: 0;">
         {{projectName}}
     </ion-title>
-    <button menuToggle="right" right>
-        <ion-icon name="more"></ion-icon>
-    </button>
+    <ion-buttons end>
+        <button (click)="showSearchPopover($event)">
+            <ion-icon name="more"></ion-icon>
+        </button>
+    </ion-buttons>
 </ion-navbar>
 
-<ion-content class="home">
+<ion-content class="home" [ngStyle]="backgroundImage">
     <div class="networkAlert">{{networkService.getNetworkStat()}}</div>
 
     <button fab fab-bottom fab-center (click)="stopRecognition()"
@@ -18,42 +20,45 @@
         <ion-spinner name="dots"></ion-spinner>
     </button>
 	<ion-row>&nbsp;</ion-row>
-    
+    <ion-row>&nbsp;</ion-row>
     <ion-row>
         <ion-col width-20></ion-col>
         <ion-col text-center><img [src]="imageURL"/></ion-col>
         <ion-col width-20></ion-col>
     </ion-row>
     <ion-row>
-        <ion-item>
+            <ion-item class="itemSearch">
 
-            <ion-label floating class="withoutOverflow">{{searchPlaceHolder}}</ion-label>
-            <ion-input type="text" (focus)="onFocus($event)"
-                       (blur)="onBlur($event)" (keyup)="checkForEnterKey($event)"
-                       [(ngModel)]="scQuery"></ion-input>
+                <ion-label floating class="withoutOverflow">{{searchPlaceHolder}}</ion-label>
+                <ion-input type="text" (focus)="onFocus($event)"
+                           (blur)="onBlur($event)" (keyup)="checkForEnterKey($event)"
+                           [(ngModel)]="scQuery"></ion-input>
+                <button clear item-right (click)="doSemanticSearch()">
+                    <ion-icon name="search" class="searchIcon"></ion-icon>
+                </button>
 
-        </ion-item>
+            </ion-item>
     </ion-row>
     <ion-row>
         <ion-col width-10></ion-col>
-        <ion-col text-center> <h6 primary> {{highlightSentence}} </h6></ion-col>
+        <ion-col text-center> <h6 primary class="searchHighlight"> {{highlightSentence}} </h6></ion-col>
         <ion-col width-10></ion-col>
     </ion-row>
-    <ion-row>
+    <!--ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <!-- if jobyer set button-secondary style, else button-primary is activated (default style)-->
+            <!-- if jobyer set button-secondary style, else button-primary is activated (default style)>
             <button [ngClass]="{'button-secondary': isEmployer==false}" (click)="doSemanticSearch()">
                 <ion-icon name="search"></ion-icon>
             Lancer la recherche
             </button>
         </ion-col>
         <ion-col width-10></ion-col>
-    </ion-row>
+    </ion-row-->
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <button class="deconnexionButton" [style.backgroundColor]="themeColor" (click)="openLoginsPage()">
+            <button class="deconnexionButton" outline  (click)="openLoginsPage()" [hidden]="cnxBtnName === 'Déconnexion'">
                 <ion-icon name="log-in" class="buttonLeftOnly"></ion-icon>
                 {{cnxBtnName}}
             </button>
@@ -61,11 +66,6 @@
         <ion-col width-10></ion-col>
     </ion-row>
     <ion-row>&nbsp;</ion-row>
-    <ion-row>
-        <ion-col width-20></ion-col>
-        <ion-col text-center>Version : 1.0.4</ion-col>
-        <ion-col width-20></ion-col>
-    </ion-row>
     <ion-row>&nbsp;</ion-row>
     <ion-row>
         <button fab fab-center class="bottomButton" [style.backgroundColor]="themeColor"

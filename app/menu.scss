@@ -1,21 +1,30 @@
-.about-header {
-  /*background-color: #434954;
-  padding: 16px;*/
-  width: 100%;
-  min-height: 40px;
-  text-align: center;
-}
+.menu {
 
-//$toolbar-ios-title-text-align: left;
+  //background-image: url("../../img/bg_menu_employer.png");
+  background-size: cover;
 
-ion-title {
-  padding: 0 0 0 !important;
-}
+  .menuButton {
+    background-color: transparent;
+  }
+  .about-header {
+    /*background-color: #434954;
+    padding: 16px;*/
+    width: 100%;
+    min-height: 40px;
+    text-align: center;
+  }
 
-ion-spinner {
-  width: 14px;
-  height: 14px;
-}
-ion-spinner circle {
-  stroke: white;
+  //$toolbar-ios-title-text-align: left;
+
+  ion-title {
+    padding: 0 0 0 !important;
+  }
+
+  ion-spinner {
+    width: 14px;
+    height: 14px;
+  }
+  ion-spinner circle {
+    stroke: white;
+  }
 }

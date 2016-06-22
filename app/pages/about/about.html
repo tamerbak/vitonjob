@@ -1,0 +1,47 @@
+<!--
+  Generated template for the AboutPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+  <ion-title>A propos</ion-title>
+</ion-navbar>
+
+<ion-content class="about">
+    <div class="about-header">
+      <img [src]="logo">
+    </div>
+    <div padding class="about-info">
+      <h4 class="title">{{projectName}}<span class="junior"> </span></h4>
+
+      <ion-list no-lines style="margin-bottom: 0px;">
+        <ion-item>
+          <ion-icon name="calendar" item-left></ion-icon>
+          <ion-label>Lancement</ion-label>
+          <ion-label text-right>{{releaseDate}}</ion-label>
+          <!--ion-datetime displayFormat="DD MMM YYYY" [(ngModel)]="releaseDate" disabled></ion-datetime-->
+        </ion-item>
+
+        <ion-item>
+          <ion-icon ios="logo-apple" md="logo-android" item-left></ion-icon>
+          <ion-label>Version (build)</ion-label>
+          <ion-label text-right>{{versionNumber}}</ion-label>
+        </ion-item>
+
+        <!--ion-item>
+          <ion-icon name="pin" item-left></ion-icon>
+          <ion-label>Local</ion-label>
+          <ion-label text-right>Paris</ion-label>
+        </ion-item-->
+      </ion-list>
+
+      <p class="text">
+        VitOnJob Employeur <span style="font-size: 1.2rem;color: #14baa6;"></span> est une application permettant,
+        en quelques clics, d’être « Vite On Job ». Elle répond aux besoins d’employeurs qui souhaitent recruter
+        rapidement et de ceux qui veulent vite un emploi. Le service assure l’ensemble de l'embauche, de la recherche
+        géolocalisée à la paie, formalités comprises.
+      </p>
+      <p>Enfin une contribution positive et ludique à la résolution d’une problématique majeure de notre société!</p>
+    </div>
+  </ion-content>

@@ -39,6 +39,7 @@ export class ProfilePage implements OnInit {
     userData:any;
     userService:any;
     addrService:any;
+    backgroundImage: any;
 
     constructor(public nav:NavController, public gc:GlobalConfigs,
                 userService:UserService, addrService:AddressService) {
@@ -66,6 +67,7 @@ export class ProfilePage implements OnInit {
         this.inversedThemeColor = config.inversedThemeColor;
         this.isEmployer = (this.projectTarget === 'employer');
         this.userImageURL = config.userImageURL;
+        this.backgroundImage = config.backgroundImage;
         this.swipEvent = '';
         this.userData = {
             titre: "Ajouter mon nom et prénom",

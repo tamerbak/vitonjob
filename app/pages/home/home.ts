@@ -1,4 +1,4 @@
-import {App, NavParams, NavController, Loading, Modal, MenuController, Keyboard} from 'ionic-angular';
+import {App, NavParams, NavController, Loading, Modal, MenuController, Keyboard, Popover} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
@@ -12,6 +12,7 @@ import {PhonePage} from "../phone/phone";
 import {Storage, SqlStorage} from 'ionic-angular';
 import {Events} from 'ionic-angular';
 import {Component, OnChanges} from "@angular/core";
+import {PopoverSearchPage} from "../popover-search/popover-search";
 
 
 @Component({
@@ -35,6 +36,7 @@ export class HomePage implements OnChanges{
     private recording:boolean;
     private recognition:any;
     private menu:any;
+    private backgroundImage:string;
 
 
     static get parameters() {
@@ -63,6 +65,7 @@ export class HomePage implements OnChanges{
         this.projectName = config.projectName;
         this.themeColor = config.themeColor;
         this.imageURL = config.imageURL;
+        this.backgroundImage = config.backgroundImage;
         this.highlightSentence = config.highlightSentence;
         this.isEmployer = this.projectTarget == 'employer';
         this.searchPlaceHolder = "Veuillez saisir votre recherche...";
@@ -211,6 +214,19 @@ export class HomePage implements OnChanges{
 
     ngOnChanges() {
         debugger;
+    }
+
+    /**
+     * @author TEL
+     * Popover menu for search options
+     * @param ev
+     */
+    showSearchPopover(ev) {
+            let popover = Popover.create(PopoverSearchPage);
+            this.nav.present(popover, {
+                ev: ev
+            })
+
     }
 
 }

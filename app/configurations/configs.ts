@@ -10,6 +10,9 @@ interface AbstractConfigs {
     inversedThemeColor:string;
     imageURL:string;
     highlightSentence:string;
+    backgroundImage:any;
+    menuBackgroundImage:any;
+    fontColor:any;
     bgMenuURL:string;
     calloutURL:string;
     sqlURL:string;
@@ -32,10 +35,13 @@ class EmployerConfigs implements AbstractConfigs {
     // User employer image
     userImageURL = 'img/employer.png';
     bgMenuURL:string = 'img/bg_employer.png';
+    menuBackgroundImage = {'background-image': "url('img/bg_menu_employer.png')"};
     highlightSentence:string = 'Trouvez vos jobyers immédiatement disponibles!';
     calloutURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
     sqlURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql';
     calendarTheme:number = 4;
+    backgroundImage = {'background-image': "url('img/bg_employer.png')"};
+    fontColor = "white";
     avatars = [
         {
             url: 'img/employer.png'
@@ -65,8 +71,11 @@ class JobyerConfigs implements AbstractConfigs {
     inversedThemeColor:string = '#757575';
     // VitOnJob Jobyer image
     imageURL:string = "img/logo_jobyer.png";
+    fontColor:string = '#757575';
     // User employer image
     userImageURL = 'img/jobyer.png';
+    menuBackgroundImage = {'background-image': "url('img/bg_menu_jobyer.png')"};
+    backgroundImage = {'background-image': "url('img/bg_jobyer.png')"};
     bgMenuURL:string = 'img/bg_jobyer.png';
     highlightSentence:string = "Des milliers d'offres à proximité!";
     calloutURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
@@ -112,3 +121,4 @@ export class Configs {
         return null;
     }
 }
+

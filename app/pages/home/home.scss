@@ -1,13 +1,26 @@
 .home {
 
+  background-size: cover;
+
+  .itemSearch {
+    background-color: transparent;
+    //color: #757575;
+  }
+
+  .searchHighlight {
+    color: black;
+  }
+  
   .withoutOverflow {
     overflow: visible !important;
     font-size: small;
+    color: #757575;
   }
 
   .searchIcon {
     font-size: xx-large;
     line-height: 2 !important;
+    color: #757575;
   }
 
   .draggable {
@@ -128,8 +141,13 @@
     display: none;
   }
   
-  bottomButton{
+  .bottomButton{
 	position: fixed;
-    bottom: -5px;
+    bottom: 0;
+    background-color: transparent !important;
+    border-width : 2px;
+    //color: #757575;
+    //border-color: white;
+    border-style: solid;
   }
 }

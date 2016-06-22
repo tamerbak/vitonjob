@@ -1,0 +1,21 @@
+<!--
+  Generated template for the PopoverSearchPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-navbar *navbar>
+  <ion-title>popover-search</ion-title>
+</ion-navbar>
+
+<ion-content class="popover-search">
+  <ion-item text-wrap (click)="showGuideModal()" class = "popItem">
+    <h3>Recherche guidée</h3>
+    <p>Je cherche un ... disponible le ... pour une mission (...)</p>
+  </ion-item>
+  <ion-item text-wrap (click)="showCriteriaModal()">
+    <h3>Recherche par critères</h3>
+    <p>Secteur: ...</p>
+    <p>Job: ... (...)</p>
+  </ion-item>
+</ion-content>

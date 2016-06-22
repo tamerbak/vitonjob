@@ -17,7 +17,7 @@
     </ion-buttons>
 </ion-navbar>
 
-<ion-content padding class="offer">
+<ion-content padding class="offer" [ngStyle]="backgroundImage">
     <ion-card [hidden]="!listMode">
         <ion-card-header style = "text-align: center;">
             Ma liste des offres :

@@ -31,6 +31,8 @@ import {SearchCriteriaPage} from "./pages/search-criteria/search-criteria";
 import {SearchGuidePage} from "./pages/search-guide/search-guide";
 import {MissionDetailsPage} from './pages/mission-details/mission-details';
 import {NgZone} from '@angular/core';
+import {SettingsPage} from "./pages/settings/settings";
+import {AboutPage} from "./pages/about/about";
 //import {ParametersPage} from "./pages/parameters/parameters";
 
 @Component({
@@ -49,6 +51,7 @@ export class Vitonjob {
 	userName:string;
 	userMail:string;
 	themeColor:string;
+	menuBackgroundImage:any;
 	config:any;
 
 	constructor(private platform:Platform,
@@ -73,13 +76,15 @@ export class Vitonjob {
 		];
 		this.loggedInPages = [
 			{title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false},
-			{title: "Mes offres", component: OfferListPage, icon: "list", isBadged: true},
-			{title: "Gestion des missions", component: MissionListPage, icon: "list", isBadged: false},
-			//{title: "Paramètres", component: ParametersPage, icon: "cog", isBadged: false},
-			{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
+			{title: "Mes offres", component: OfferListPage, icon: "megaphone", isBadged: true},
+			{title: "Mes missions", component: MissionListPage, icon: "paper", isBadged: false},
+			{title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false},
+			{title:"A propos", component: AboutPage, icon:"help-circle", isBadges: false}
+			//{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
 		];
 		this.loggedOutPages = [
-			{title: "Se connecter", component: PhonePage, icon: "log-in", isBadged: false}
+			{title: "Se connecter", component: PhonePage, icon: "log-in", isBadged: false},
+			{title:"A propos", component: AboutPage, icon:"help-circle", isBadges: false}
 		];
 
 
@@ -99,6 +104,7 @@ export class Vitonjob {
 		this.userName = this.isEmployer ? 'Employeur' : 'Jobyer';
 		this.userMail = "";
 		this.themeColor = this.config.themeColor;
+		this.menuBackgroundImage = this.config.menuBackgroundImage;
 
 		//fake call of setMissions from mission-service to fill local db with missions data for test
 		//missionService.setMissions();
@@ -238,7 +244,7 @@ export class Vitonjob {
 			this.events.publish('user:logout');
 		}
 
-		if (page.title == 'Gestion des missions') {
+		if ((page.title === 'A propos') || (page.title === 'Mes options')) {
 			this.nav.push(page.component);
 		}
 		else {

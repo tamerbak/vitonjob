@@ -23,6 +23,7 @@ export class OfferListPage {
     offerList = [];
     offerService: OffersService;
     projectTarget: string;
+    backgroundImage: any;
 
     constructor(public nav:NavController,
                 public gc:GlobalConfigs,
@@ -43,6 +44,7 @@ export class OfferListPage {
         this.listMode = true;
         this.okButtonName = "add";
         this.isEmployer = (this.projectTarget === 'employer');
+        this.backgroundImage = config.backgroundImage;
         //this.cancelButtonName = "";
         //this.loadPeople();
 
