@@ -36,6 +36,7 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
+  <div style="min-height: 50px">&nbsp;</div>
   <ion-card *ngIf="resultsCount == 0 ">
     <ion-card-content>Vitonjob n'a trouvé aucune offre correspondante à votre recherche</ion-card-content>
   </ion-card>
@@ -82,5 +83,17 @@
 
   </div>
 
+  <div *ngIf="offerProposition" class="offer-proposition-div">
+    <ion-grid>
+      <ion-row>
+        <ion-col width-70>Vous pouvez utiliser ces critères de recherche pour créer une nouvelle offre</ion-col>
+        <ion-col width-20>
+          <button block (click)="toggleProposition()" style="font-size: small;" >
+            Créer
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 
 </ion-content>

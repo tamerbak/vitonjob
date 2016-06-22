@@ -54,6 +54,9 @@ export class SearchResultsPage {
     offersService : any;
     navParams : NavParams;
 
+    toast : Toast;
+    showingToast : boolean = false;
+
     /**
      * @description While constructing the view we get the last results of the search from the user
      * @param nav Navigation controller of the application
@@ -70,7 +73,7 @@ export class SearchResultsPage {
         this.projectTarget = globalConfig.getProjectTarget();
         this.avatar = this.projectTarget != 'jobyer' ? 'jobyer_avatar':'employer_avatar';
         this.platform = platform;
-        this.isEmployer = this.projectTarget == 'employer'
+        this.isEmployer = this.projectTarget == 'employer';
         this.navParams = navParams;
 
 
@@ -317,17 +320,20 @@ export class SearchResultsPage {
             this.proposedQualities = data;
         });
 
-        let toast = Toast.create({
+        this.toast = Toast.create({
             message: 'Vous pouvez utiliser ces critères de recherche pour créer une nouvelle offre',
             showCloseButton: true,
             closeButtonText: 'Créer'
         });
 
-        toast.onDismiss(() => {
-            this.toggleProposition();
+        this.toast.onDismiss(() => {
+            if(this.showingToast)
+                this.toggleProposition();
+            this.showingToast = false;
         });
 
-        this.nav.present(toast);
+        //this.nav.present(this.toast);
+        this.showingToast = true;
     }
 
     /**
