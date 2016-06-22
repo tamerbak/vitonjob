@@ -94,6 +94,14 @@
 	</ion-row>
 	<ion-row>
 		<ion-col text-center>
+			<button block (click)="validateWork()" [style.backgroundColor]="themeColor" [hidden]="!isEmployer" >
+				<ion-icon name="ribbon"></ion-icon>
+				Fin de mission
+			</button>
+		</ion-col>
+	</ion-row>
+	<ion-row>
+		<ion-col text-center>
 			<button block (click)="goBack()" [style.backgroundColor]="themeColor">
 				<ion-icon name="undo"></ion-icon>
 				Quitter

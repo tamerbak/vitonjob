@@ -259,6 +259,7 @@ export class MissionDetailsPage {
 			`,
 			spinner : 'hide'
 		});
+
 		this.nav.present(loading).then(()=> {		
 			this.missionService.signSchedule(this.contract.pk_user_contrat).then((data) => {
 				if (!data || data.status == "failure") {
@@ -275,7 +276,22 @@ export class MissionDetailsPage {
 			this.nav.pop();
 		});
 	}
-	
+
+	validateWork(){
+		let loading = Loading.create({
+			content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+			spinner : 'hide'
+		});
+		this.nav.present(loading);
+		this.missionService.validateWork(this.contract.pk_user_contract).then(data =>{
+			loading.dismiss();
+		});
+	}
+
 	resetForm(){
 		this.constructMissionHoursArray(this.initialMissionHours);
 	}

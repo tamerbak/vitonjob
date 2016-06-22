@@ -1,4 +1,4 @@
-import {NavController, ActionSheet, Platform, Slides, Alert, Modal, NavParams} from 'ionic-angular';
+import {NavController, ActionSheet, Platform, Slides, Alert, Modal, NavParams, Toast} from 'ionic-angular';
 import {Storage, SqlStorage, LocalStorage} from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {ViewChild, Component} from '@angular/core'
@@ -150,7 +150,7 @@ export class SearchResultsPage {
                         this.sendSMS(item);
                     }
                 },{
-                    text: 'Appeller',
+                    text: 'Appeler',
                     icon: 'md-call',
                     handler: () => {
                         this.dialNumber(item);
@@ -316,6 +316,18 @@ export class SearchResultsPage {
         this.offersService.getOffersQualities(listOffersId, table).then(data =>{
             this.proposedQualities = data;
         });
+
+        let toast = Toast.create({
+            message: 'Vous pouvez utiliser ces critères de recherche pour créer une nouvelle offre',
+            showCloseButton: true,
+            closeButtonText: 'Créer'
+        });
+
+        toast.onDismiss(() => {
+            this.toggleProposition();
+        });
+
+        this.nav.present(toast);
     }
 
     /**
