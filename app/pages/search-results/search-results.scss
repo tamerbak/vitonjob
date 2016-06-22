@@ -42,3 +42,13 @@
 .action-sheet-button > .button-inner > ion-icon{
   margin-right:10px;
 }
+
+.offer-proposition-div{
+  position: fixed;
+  width: 100%;
+  bottom: 0px;
+  right:0px;
+  background-color: #f0f0f0;
+  opacity: 0.95;
+  z-index : 1;
+}
