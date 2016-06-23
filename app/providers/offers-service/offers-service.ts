@@ -148,6 +148,9 @@ export class OffersService {
      * @caution ALWAYS CALLED AFTER setOfferInLocal()!
      */
     setOfferInRemote(offerData:any, projectTarget:string) {
+        
+
+
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
@@ -188,8 +191,9 @@ export class OffersService {
 
         // store in remote database
         let stringData = JSON.stringify(offerData);
-        console.log('Adding offer payload : '+stringData)
-        stringData = btoa(stringData);
+        console.log('Adding offer payload : '+stringData);
+        
+        let encoded = btoa(stringData);
 
         let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
@@ -197,7 +201,7 @@ export class OffersService {
             args: [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'creation offre',
-                value: stringData
+                value: encoded
             },
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -211,28 +215,19 @@ export class OffersService {
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
             let headers = new Headers();
+            
+            console.log('offer payload : '+JSON.stringify(payload));
             headers.append("Content-Type", 'application/json');
-            this.http.post(this.configuration.calloutURL, JSON.stringify(payload), {headers: headers})
+            this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
 
                 .subscribe(data => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.addedOffer = data;
-                    console.log(JSON.stringify(this.addedOffer));
+                    console.log('ADDED OFFER IN SERVER : ' + JSON.stringify(this.addedOffer));
                     resolve(this.addedOffer);
                 });
         });
-
-        /*stringData = JSON.stringify(data);
-
-         let payload = {
-         method : 'POST',
-         url : 'http://vps259989.ovh.net:8080/vitonjobv1/api/callout',
-         headers : {
-         'Content-Type' : 'application/json'
-         },
-         data : stringData
-         };*/
 
     }
 
@@ -601,7 +596,7 @@ export class OffersService {
         //  Constructing the query
         var table = projectTarget == "jobyer" ? 'user_offre_entreprise' : 'user_offre_jobyer';
         var sql = "update " + table + " set publiee = '" + statut + "' where pk_" + table + " = '" + offerId + "';";
-		
+
 	    return new Promise(resolve => {
 			let headers = new Headers();
 			headers.append("Content-Type", 'text/plain');
@@ -1006,7 +1001,7 @@ export class OffersService {
 
     attacheDay(idOffer, table, day){
         let d = new Date(day.date);
-        debugger;
+        
         let sdate = this.sqlfy(d);
         let sql = "insert into user_disponibilites_des_offres (fk_"+table+", jour, heure_debut, heure_fin) values ("+idOffer+", '"+sdate+"', "+day.startHour+", "+day.endHour+")";
         return new Promise(resolve => {
