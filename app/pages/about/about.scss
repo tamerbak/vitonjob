@@ -50,9 +50,18 @@
   .junior {
     font-size: small;
     color: #14baa6;
+    text-align: right;
   }
 
-  .text {
+  #justify p {
+    //max-width: 100%;
     text-align: justify;
   }
+
+  #justify p:after {
+    //content: "";
+    //display: inline-block;
+    //width: 100%;
+  }
+
 }

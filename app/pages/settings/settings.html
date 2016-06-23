@@ -14,13 +14,16 @@
         <ion-list-header>
             Compte
         </ion-list-header>
-        <ion-item>
+        <ion-item style="text-decoration: line-through;">
+            <ion-icon name="call" item-left></ion-icon>
             Modifer votre téléphone
         </ion-item>
-        <ion-item>
+        <ion-item style="text-decoration: line-through;">
+            <ion-icon name="mail" item-left></ion-icon>
             Modifer votre e-mail
         </ion-item>
         <ion-item (click)="goToSettingPassword()">
+            <ion-icon name="key" item-left></ion-icon>
             Modifer votre mot de passe
         </ion-item>
 
@@ -28,6 +31,7 @@
             Déconnexion
         </ion-list-header>
         <ion-item (click)="logOut()">
+            <ion-icon name="log-out" item-left></ion-icon>
             Se déconnecter
         </ion-item>
     </ion-list>
