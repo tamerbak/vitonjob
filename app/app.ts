@@ -53,6 +53,7 @@ export class Vitonjob {
 	themeColor:string;
 	menuBackgroundImage:any;
 	config:any;
+	storage : Storage;
 
 	constructor(private platform:Platform,
 				private app:App,

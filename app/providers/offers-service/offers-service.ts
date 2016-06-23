@@ -296,7 +296,7 @@ export class OffersService {
 
         let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            id: 129,
+            id: 159,
             args: [
                 {
                     class: 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -496,6 +496,7 @@ export class OffersService {
      * @return the promise of job propositions
      */
     getOffersJob(idOffer:number, offerTable:string) {
+        debugger;
         var sql = "select job.pk_user_job as id, job.libelle as libellejob, metier.pk_user_metier as idmetier, metier.libelle as libellemetier " +
             "from user_job job, user_metier metier where job.fk_user_metier = metier.pk_user_metier and " +
             "job.pk_user_job in (select fk_user_job from user_pratique_job where fk_" + offerTable + " = " + idOffer + ")";
