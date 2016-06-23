@@ -1,14 +1,15 @@
 <ion-navbar navbar>
   <div class="view-toggle">
+    <button (click)="changeViewMode(3)" style="font-size: small;" [ngClass]="{'button-secondary': mapView}" >
+      <ion-icon name="md-map"></ion-icon>
+    </button>
     <button (click)="changeViewMode(1)" style="font-size: small;" [ngClass]="{'button-secondary': listView}" >
       <ion-icon name="md-list"></ion-icon>
     </button>
     <button (click)="changeViewMode(2)" style="font-size: small;" [ngClass]="{'button-secondary': cardView}" >
       <ion-icon name="md-albums"></ion-icon>
     </button>
-    <button (click)="changeViewMode(3)" style="font-size: small;" [ngClass]="{'button-secondary': mapView}" >
-      <ion-icon name="md-map"></ion-icon>
-    </button>
+
     <!--button (click)="toggleProposition()" style="font-size: small;" *ngIf="offerProposition" >
       <ion-icon name="md-create"></ion-icon>
     </button-->
@@ -17,6 +18,10 @@
 </ion-navbar>
 
 <ion-content padding class="search-results">
+
+  <div id="map" style="width:100%;height:100%;" *ngIf="mapView">
+  </div>
+
   <ion-list *ngIf="listView">
     <ion-item-sliding *ngFor="let item of searchResults">
       <button ion-item class="large-btn" (click)="itemSelected(item)" >
@@ -79,9 +84,7 @@
     </ion-slide>
   </ion-slides>
 
-  <div id="map" *ngIf="mapView">
 
-  </div>
 
   <div *ngIf="offerProposition" class="offer-proposition-div">
     <ion-grid>

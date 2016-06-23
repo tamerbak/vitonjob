@@ -1,7 +1,7 @@
 import {NavController, ActionSheet, Platform, Slides, Alert, Modal, NavParams, Toast} from 'ionic-angular';
 import {Storage, SqlStorage, LocalStorage} from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
-import {ViewChild, Component} from '@angular/core'
+import {ViewChild, Component, OnInit} from '@angular/core'
 import {SearchService} from "../../providers/search-service/search-service";
 import {UserService} from "../../providers/user-service/user-service";
 import {ContractPage} from '../contract/contract';
@@ -22,17 +22,19 @@ import {ModalOfferPropositionPage} from "../modal-offer-proposition/modal-offer-
  * @description search results view
  * @module Search
  */
+declare var google:any;
+
 @Component({
     templateUrl: 'build/pages/search-results/search-results.html',
     providers : [OffersService]
 })
-export class SearchResultsPage {
+export class SearchResultsPage implements OnInit {
     @ViewChild('cardSlider') slider: Slides;
 
     searchResults : any;
-    listView : boolean = true;
+    listView : boolean = false;
     cardView : boolean = false;
-    mapView : boolean = false;
+    mapView : boolean = true;
     platform : Platform;
     map : any;
     cardsOptions= {
@@ -56,6 +58,8 @@ export class SearchResultsPage {
 
     toast : Toast;
     showingToast : boolean = false;
+
+
 
     /**
      * @description While constructing the view we get the last results of the search from the user
@@ -111,8 +115,14 @@ export class SearchResultsPage {
             }
         });
 
+
+
+    }
+    ngOnInit() {
+        
         //get the currentEmployer
-        userService.getCurrentUser().then(results =>{
+        this.userService.getCurrentUser().then(results =>{
+
             if(results && !isUndefined(results)){
                 let currentEmployer = JSON.parse(results);
                 if(currentEmployer){
@@ -120,7 +130,74 @@ export class SearchResultsPage {
                 }
                 console.log(currentEmployer);
             }
+            this.loadMap();
+        });
 
+    }
+
+    loadMap() {
+        
+        let latLng = new google.maps.LatLng(48.855168, 2.344813);
+
+        let mapOptions = {
+            center: latLng,
+            zoom:15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        let mapElement = document.getElementById("map");
+        this.map = new google.maps.Map(mapElement, mapOptions);
+
+        let addresses = [];
+        let contentTable = [];
+        for(let i = 0 ; i < this.searchResults.length ; i++){
+            let r = this.searchResults[i];
+            if(r.latitude=='0.0' && r.longitude=='0.0')
+                continue;
+            let latlng = new google.maps.LatLng(r.latitude, r.longitude);
+            addresses.push(latlng);
+            contentTable.push("<h4>"+r.titre+" "+r.prenom+" "+r.nom+ "</h4>" +
+                "<ul>" +
+                "<li>Tél : <a href='tel:" +r.tel+"'>"+r.tel+"</a></li>"+
+                "<li>Email : <a href='mailto:" +r.email+"'>" +r.email+"</a></li>"+
+                "</ul>");
+        }
+        let bounds = new google.maps.LatLngBounds();
+        this.addMarkers(addresses, bounds, contentTable);
+        /*let address = new google.maps.LatLng(this.opportunity.lat, this.opportunity.lng);
+        let bounds = new google.maps.LatLngBounds();
+        let marker = new google.maps.Marker({
+            map: this.map,
+            animation: google.maps.Animation.DROP,
+            position: address
+        });
+        bounds.extend(marker.position);*/
+    }
+
+    addMarkers(addresses:any, bounds:any, contentTable : any) {
+
+        for (let i = 0; i < addresses.length; i++) {
+            let marker = new google.maps.Marker({
+                map: this.map,
+                animation: google.maps.Animation.DROP,
+                position: addresses[i]
+            });
+            bounds.extend(marker.position);
+            this.addInfoWindow(marker,contentTable[i]);
+        }
+
+        this.map.fitBounds(bounds);
+
+    }
+
+    addInfoWindow(marker, content){
+
+        let infoWindow = new google.maps.InfoWindow({
+            content: content
+        });
+
+        google.maps.event.addListener(marker, 'click', function(){
+            infoWindow.open(this.map, marker);
         });
 
     }
@@ -236,7 +313,7 @@ export class SearchResultsPage {
 
             if (isDataValid) {
                 //navigate to contract page
-                debugger;
+                
                 let o = this.navParams.get('currentOffer');
                 if(o && !isUndefined(o)){
                     this.nav.push(ContractPage, {jobyer: jobyer, currentOffer : o});
@@ -277,6 +354,7 @@ export class SearchResultsPage {
      * @description Create a draggable widget to propose criteria for creating an offer from search results
      */
     createCriteria(){
+        debugger;
         if(!this.searchResults || isUndefined(this.searchResults) || this.searchResults.length == 0)
             return;
 
@@ -383,6 +461,7 @@ export class SearchResultsPage {
     }
 
     toggleProposition(){
+        debugger;
         let proposition = {
             proposedJob : this.proposedJob,
             proposedLanguages : this.proposedLanguages,
