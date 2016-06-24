@@ -159,7 +159,7 @@ export class JobAddressPage {
 			</div>
 			`,
 			spinner : 'hide',
-			duration : 5000
+			duration : 7000
 		});
 		this.nav.present(loading);
 		let options = {timeout: 5000, enableHighAccuracy: true, maximumAge: 0}; 
@@ -172,8 +172,8 @@ export class JobAddressPage {
 			.catch((error) => {
 				console.log(error);
 				loading.dismiss();
-				this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");				
-			})		
+				this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");
+			});
 	}
 	
 	/**
@@ -221,7 +221,8 @@ export class JobAddressPage {
 			<img src='img/loading.gif' />
 			</div>
 			`,
-			spinner : 'hide'
+			spinner : 'hide',
+			duration : 15000
 		});
 		this.nav.present(loading).then(() => {
 			// put personal address in session
