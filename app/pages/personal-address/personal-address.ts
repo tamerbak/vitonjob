@@ -25,8 +25,7 @@ export class PersonalAddressPage {
 	geolocAddress;
 	geolocResult;
 	titlePage: string;
-	fromPage: string;
-	
+	fromPage: string;	
 	/**
 		* @description While constructing the view, we get the currentUser passed as parameter from the connection page
 	*/
@@ -159,7 +158,7 @@ export class PersonalAddressPage {
 			</div>
 			`,
 			spinner : 'hide',
-			duration : 5000
+		duration : 7000
 		});
 		this.nav.present(loading);
 		let options = {timeout: 5000, enableHighAccuracy: true, maximumAge: 0}; 
@@ -173,7 +172,7 @@ export class PersonalAddressPage {
 				console.log(error);
 				loading.dismiss();
 				this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");				
-			})
+			});
 	}
 	
 	/**
@@ -221,7 +220,8 @@ export class PersonalAddressPage {
 			<img src='img/loading.gif' />
 			</div>
 			`,
-			spinner : 'hide'
+			spinner : 'hide',
+			duration : 15000
 		});
 		this.nav.present(loading).then(() => {
 			var address = '';
