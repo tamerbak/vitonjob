@@ -39,7 +39,7 @@ export class MissionListPage {
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
         
-        // Set local variables and messages
+        // Set store variables and messages
         this.themeColor = config.themeColor;
         this.missionListTitle = "Suivi des missions";
         this.isEmployer = (this.projectTarget=='employer');
