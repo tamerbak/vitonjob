@@ -46,7 +46,7 @@ export class InfoUserPage {
 		// Set local variables and messages
 		this.isEmployer = (this.projectTarget == 'employer');
 		
-		this.civilityTabTitle = this.isEmployer ? "Fiche entreprise" : "Civilité";
+		this.civilityTabTitle = this.isEmployer ? "Fiche entreprise" : "Profil";
 		this.pAddressTabTitle = this.isEmployer ? "A. siège" : "A. personnelle";
 		this.jAddressTabTitle = this.isEmployer ? "A. mission" : "A. départ au travail";	
 	}
