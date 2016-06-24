@@ -19,7 +19,7 @@
 
 <ion-content padding class="search-results">
 
-  <div id="map" style="width:100%;height:300px;" *ngIf="mapView">
+  <div id="map" style="width:100%;height:100%;" *ngIf="mapView">
   </div>
 
   <ion-list *ngIf="listView">
@@ -67,7 +67,7 @@
           </ion-row>
           <ion-row>
             <ion-col width-10>
-              <button secondary (click)="recruitJobyer(item)" *ngIf="isEmployer" >RecContratruter</button>
+              <button secondary (click)="recruitJobyer(item)" *ngIf="isEmployer" >Recruter</button>
             </ion-col>
             <ion-col width-50></ion-col>
             <ion-col  width-40>

@@ -160,18 +160,12 @@ export class SearchResultsPage implements OnInit {
                 "<ul>" +
                 "<li>Tél : <a href='tel:" +r.tel+"'>"+r.tel+"</a></li>"+
                 "<li>Email : <a href='mailto:" +r.email+"'>" +r.email+"</a></li>"+
-                "</ul>");
+                "</ul>" +
+                '<button secondary="" class="button button-default button-secondary" ><span class="button-inner">Recruter</span></button>');
         }
         let bounds = new google.maps.LatLngBounds();
         this.addMarkers(addresses, bounds, contentTable);
-        /*let address = new google.maps.LatLng(this.opportunity.lat, this.opportunity.lng);
-        let bounds = new google.maps.LatLngBounds();
-        let marker = new google.maps.Marker({
-            map: this.map,
-            animation: google.maps.Animation.DROP,
-            position: address
-        });
-        bounds.extend(marker.position);*/
+
     }
 
     addMarkers(addresses:any, bounds:any, contentTable : any) {
@@ -282,7 +276,12 @@ export class SearchResultsPage implements OnInit {
         }
     }
 
-
+    recruiteFromMap(index){
+        debugger;
+        let jobyer = this.searchResults[index];
+        this.recruitJobyer(jobyer);
+    }
+    
     /**
      * @description verify informations of Employer/Jobyer and redirect to recruitement contract
      * @param item the selected Employer/Jobyer
