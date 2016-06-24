@@ -63,9 +63,6 @@ export class CivilityPage {
 		this.currentUser = this.params.data.currentUser;
 		this.fromPage = this.params.data.fromPage;
 		this.titlePage = this.isEmployer ? "Fiche de l'entreprise" : "Page civilité";
-	}
-	
-	ionViewDidEnter(){
 		//load nationality list
 		if(!this.isEmployer){
 			this.loadListService.loadNationalities(this.projectTarget).then((data) => {
@@ -77,6 +74,9 @@ export class CivilityPage {
 			}else{
 			this.scanTitle = " de votre extrait k-bis";
 		}
+	}
+	
+	ionViewDidEnter(){
 		//in case of user has already signed up
 		this.initCivilityForm();
 	}

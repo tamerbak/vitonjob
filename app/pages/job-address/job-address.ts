@@ -1,15 +1,15 @@
 import {Component} from '@angular/core';
-import {Alert, NavController, NavParams, Loading} from 'ionic-angular';
+import {NavController, NavParams, Alert, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {GooglePlaces} from '../../components/google-places/google-places';
 import {AuthenticationService} from "../../providers/authentication.service";
-import {OfferListPage} from "../offer-list/offer-list";
 import {GlobalService} from "../../providers/global.service";
 import {Geolocation} from 'ionic-native';
 import {Storage, SqlStorage} from 'ionic-angular';
-import {HomePage} from "../home/home";
 import {ElementRef, Renderer} from '@angular/core'; 
+import {HomePage} from "../home/home";
+import {OfferListPage} from "../offer-list/offer-list";
 
 /**
 	* @author Amal ROCHD
@@ -31,7 +31,14 @@ export class JobAddressPage {
 	/**
 		* @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
 	*/
-	constructor(private authService: AuthenticationService, params: NavParams, public gc: GlobalConfigs, public nav: NavController, public elementRef: ElementRef, public renderer: Renderer, private globalService: GlobalService){
+	constructor(private authService: AuthenticationService, 
+				params: NavParams, 
+				public gc: GlobalConfigs, 
+				nav: NavController, 
+				public elementRef: ElementRef, 
+				public renderer: Renderer, 
+				private globalService: GlobalService){
+		this.nav = nav;
 		//manually entered address
 		this.searchData = "";
 		//formatted geolocated address
@@ -101,8 +108,9 @@ export class JobAddressPage {
 					text: 'Oui',
 					handler: () => {
 						console.log('Yes clicked');	
-						//display the second geolocation alert
-						this.displayGeolocationAlert();
+						confirm.dismiss().then(() => {
+							this.displayGeolocationAlert();
+						})
 					}
 				}
 			]
@@ -131,7 +139,8 @@ export class JobAddressPage {
 						//gelocate the user
 						confirm.dismiss().then(() => {
 							this.geolocate();
-						})
+						});
+						return false;
 					}
 				}
 			]
@@ -149,26 +158,22 @@ export class JobAddressPage {
 			<img src='img/loading.gif' />
 			</div>
 			`,
-			spinner : 'hide'
+			spinner : 'hide',
+			duration : 5000
 		});
 		this.nav.present(loading);
-		Geolocation.getCurrentPosition(
-		{
-			enableHighAccuracy:true, 
-			timeout:5000, 
-			maximumAge:0
-		}
-		).then(position => {
-			console.log(position);
-			loading.dismiss();
-			this.getAddressFromGeolocation(position);
-		},
-		error => {
-			console.log(error);
-			loading.dismiss();
-			this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");	
-		}
-		);
+		let options = {timeout: 5000, enableHighAccuracy: true, maximumAge: 0}; 
+		Geolocation.getCurrentPosition(options)
+			.then((position) => {
+				console.log(position);
+				this.getAddressFromGeolocation(position);
+				loading.dismiss();
+			})
+			.catch((error) => {
+				console.log(error);
+				loading.dismiss();
+				this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");				
+			})		
 	}
 	
 	/**
@@ -190,6 +195,9 @@ export class JobAddressPage {
 					//delay required or ionic styling gets finicky
 					this.renderer.invokeElementMethod(searchInput, 'focus', []);
 				}, 0);
+			}else{
+				console.log(status);
+				this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");				
 			}
 		});
 	}
