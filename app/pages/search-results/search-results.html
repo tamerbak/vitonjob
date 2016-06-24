@@ -19,8 +19,9 @@
 
 <ion-content padding class="search-results">
 
-  <div id="map" style="width:100%;height:100%;" *ngIf="mapView">
+  <div id="map" style="width:100%;height:100%;" >
   </div>
+
 
   <ion-list *ngIf="listView">
     <ion-item-sliding *ngFor="let item of searchResults">
@@ -41,7 +42,6 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
-  <div style="min-height: 50px">&nbsp;</div>
   <ion-card *ngIf="resultsCount == 0 ">
     <ion-card-content>Vitonjob n'a trouvé aucune offre correspondante à votre recherche</ion-card-content>
   </ion-card>
@@ -52,10 +52,14 @@
       </ion-card>
 
       <ion-card>
-        <ion-card-header class="candidate-card-header">
-          <span>{{searchResults.indexOf(item) + 1 }} / {{resultsCount}}</span>
-          <span >{{item.titre}} {{item.prenom}} {{item.nom}}</span>
-          <ion-badge item-right secondary="">{{item.matching}} %</ion-badge>
+        <ion-card-header class="candidate-card-header" style="padding:5px">
+          <ion-grid style="padding:0px">
+            <ion-row>
+              <ion-col width-15>{{searchResults.indexOf(item) + 1 }} / {{resultsCount}}</ion-col>
+              <ion-col width-70>{{item.titre}} {{item.prenom}} {{item.nom}}</ion-col>
+              <ion-col width-15><ion-badge secondary="" style="margin:-5px">{{item.matching}} %</ion-badge></ion-col>
+            </ion-row>
+          </ion-grid>
         </ion-card-header>
         <ion-card-content class="candidate-card-content">
           <h2>{{item.titreoffre}}</h2>
