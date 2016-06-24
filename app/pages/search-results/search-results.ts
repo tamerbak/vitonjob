@@ -265,14 +265,17 @@ export class SearchResultsPage implements OnInit {
             this.listView = true;
             this.cardView = false;
             this.mapView = false;
+            document.getElementById("map").style.display = 'none';
         } else if (mode == 2){  //  Cards view
             this.listView = false;
             this.cardView = true;
             this.mapView = false;
+            document.getElementById("map").style.display = 'none';
         } else {                //  Map view
             this.listView = false;
             this.cardView = false;
             this.mapView = true;
+            document.getElementById("map").style.display = 'block';
         }
     }
 
