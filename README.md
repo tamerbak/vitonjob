@@ -99,6 +99,7 @@ $ ionic plugin add cordova-plugin-camera
 $ ionic plugin add cordova-sms-plugin
 $ ionic plugin add cordova-plugin-inappbrowser
 $ ionic plugin add cordova-plugin-app-version
+$ ionic plugin add cordova-plugin-googlemaps --variable API_KEY_FOR_ANDROID="AIzaSyA8uYwoQcLR4D72jRErKXIalRZ_F1koHRg" --variable API_KEY_FOR_IOS="AIzaSyA8uYwoQcLR4D72jRErKXIalRZ_F1koHRg"
 ```
 
 ##Notification Push
