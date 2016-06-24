@@ -36,8 +36,8 @@ export class PersonalAddressPage {
 				nav: NavController, 
 				public elementRef: ElementRef, 
 				public renderer: Renderer, 
-				private globalService: GlobalService) {
-				this.nav = nav;
+				private globalService: GlobalService){
+		this.nav = nav;
 		//manually entered address
 		this.searchData = "";
 		//formatted geolocated address
@@ -136,6 +136,7 @@ export class PersonalAddressPage {
 					text: 'Oui',
 					handler: () => {
 						console.log('Yes clicked');
+						//gelocate the user
 						confirm.dismiss().then(() => {
 							this.geolocate();
 						});
@@ -157,32 +158,22 @@ export class PersonalAddressPage {
 			<img src='img/loading.gif' />
 			</div>
 			`,
-			spinner : 'hide'
+			spinner : 'hide',
+			duration : 5000
 		});
 		this.nav.present(loading);
-		Geolocation.getCurrentPosition(
-		{
-			enableHighAccuracy:true, 
-			timeout:5000, 
-			maximumAge:0
-		}
-		).then(position => {
-			console.log(position);
-			loading.dismiss();
-			this.getAddressFromGeolocation(position);
-		},
-		error => {
-			console.log(error);
-			loading.dismiss();
-			new Promise(function(resolve, reject) {
-              setTimeout(() => resolve(), 500);
-            }).then(res => {
-                this.nav.present(
-					this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement")
-				 )
-              });
-			return false;  
-		});
+		let options = {timeout: 5000, enableHighAccuracy: true, maximumAge: 0}; 
+		Geolocation.getCurrentPosition(options)
+			.then((position) => {
+				console.log(position);
+				this.getAddressFromGeolocation(position);
+				loading.dismiss();
+			})
+			.catch((error) => {
+				console.log(error);
+				loading.dismiss();
+				this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");				
+			})
 	}
 	
 	/**
@@ -204,6 +195,9 @@ export class PersonalAddressPage {
 					//delay required or ionic styling gets finicky
 					this.renderer.invokeElementMethod(searchInput, 'focus', []);
 				}, 0);
+			}else{
+				console.log(status);
+				this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");				
 			}
 		});
 	}
