@@ -30,7 +30,7 @@
 
     <ion-card style="margin-top: 110px">
         <ion-item-divider light>{{isEmployer ? 'Fiche entreprise' : 'Civilité'}}</ion-item-divider>
-        <ion-card-content>
+        <ion-card-content [hidden]="!userData.titre">
             <ion-item text-wrap>
                 <h5>{{userData.titre ? userData.titre : ''}} {{userData.nom ? userData.nom : ''}} {{userData.prenom ? userData.prenom : ''}}</h5>
                 <p *ngIf="!isEmployer && userData.jobyer.lieuNaissance"><!--{{userData.jobyer.natLibelle}},--> {{(userData.titre==='M.') ? 'né' : 'née'}} à
@@ -61,7 +61,7 @@
         <ion-item-divider light>Adresses</ion-item-divider>
     </ion-card>
 
-    <div id="map"></div>
+    <div id="map" [hidden]="isMapHidden()"></div>
     <ion-card class="adv-map" style="margin-top: 0;">
         <ion-item text-wrap>
             <ion-icon subtle large item-left name='pin' style="color: #14baa6"></ion-icon>

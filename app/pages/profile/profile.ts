@@ -277,4 +277,24 @@ export class ProfilePage implements OnInit {
 		this.nav.push(JobAddressPage, {currentUser: this.userData, fromPage: "profil", selectedTab: 2});	
 	}
 	
+	isMapHidden(){
+		if(this.isEmployer){
+			if(this.userData.employer.entreprises.length == 0){
+				return true;
+			}else{
+				if(!this.userData.employer.entreprises[0].siegeAdress.fullAdress &&
+					!this.userData.employer.entreprises[0].workAdress.fullAdress){
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}else{
+			if(!this.userData.jobyer.personnalAdress.fullAdress && !this.userData.jobyer.workAdress.fullAdress){
+				return true;	
+			}else{
+				return false;
+			}
+		}
+	}
 }
