@@ -3,6 +3,7 @@ import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
 import {SearchResultsPage} from "../search-results/search-results";
 import {Component} from "@angular/core";
+import {Configs} from "../../configurations/configs";
 
 
 @Component({
@@ -16,13 +17,16 @@ export class SearchGuidePage {
   level : string;
   availabilityLabel : string;
   availability : any;
+  themeColor: any;
+
   constructor(private viewCtrl: ViewController,
               public globalConfig: GlobalConfigs,
               private searchService: SearchService,
               private nav: NavController) {
     this.viewCtrl = viewCtrl;
     this.projectTarget = globalConfig.getProjectTarget();
-    this.projectTarget = globalConfig.getProjectTarget();
+    let config = Configs.setConfigs(this.projectTarget);
+    this.themeColor = config.themeColor;
     if(this.projectTarget == 'jobyer')
       this.prepareLabelsJobyer();
     else
@@ -30,15 +34,15 @@ export class SearchGuidePage {
   }
 
   prepareLabelsJobyer(){
-    this.jobLabel = "Je cherche de l'emploi comme ";
-    this.levelLabel = "Mon niveau est ";
-    this.availabilityLabel = "Disponibles à parir du ";
+    this.jobLabel = "Je cherche de l'emploi ";
+    this.levelLabel = "mon niveau est ";
+    this.availabilityLabel = "je suis disponible à partir ";
   }
 
   prepareLabelsEmployer(){
-    this.jobLabel = "Je cherche candidats pour ";
-    this.levelLabel = "Le niveau requis est ";
-    this.availabilityLabel = "Disponibles à parir du ";
+    this.jobLabel = "Je cherche des candidats ";
+    this.levelLabel = "le niveau requis est ";
+    this.availabilityLabel = "disponibles à partir ";
   }
 
   validateSearch(){

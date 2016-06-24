@@ -58,7 +58,7 @@
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <button class="deconnexionButton" outline  (click)="openLoginsPage()" [hidden]="cnxBtnName === 'Déconnexion'">
+            <button class="deconnexionButton" [style.backgroundColor]="themeColor"  (click)="openLoginsPage()" [hidden]="cnxBtnName === 'Déconnexion'" dark>
                 <ion-icon name="log-in" class="buttonLeftOnly"></ion-icon>
                 {{cnxBtnName}}
             </button>

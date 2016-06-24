@@ -1,9 +1,42 @@
-<ion-content class="search-guide">
-  <ion-row><span class="guided-search-span">{{jobLabel}}</span><ion-input class="guided-search-input" type="text" placeholder="Compétence, métier, ..." [(ngModel)]="job"></ion-input></ion-row>
-  <ion-row><span class="guided-search-span">{{levelLabel}}</span><ion-input class="guided-search-input" type="text" placeholder="Débutant ou Expert" [(ngModel)]="level"></ion-input></ion-row>
-  <ion-row><span class="guided-search-span">{{availabilityLabel}}</span><ion-input class="guided-search-input" type="text" placeholder="JJ/MM/AAAA" [(ngModel)]="availability"></ion-input></ion-row>
-  <ion-toolbar class="bottom-toolbar" position="bottom">
+<ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+  <ion-title style="padding-left: 0">Recherche guidée</ion-title>
+  <ion-buttons end>
+    <button (click)="close()">
+      <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+    </button>
+  </ion-buttons>
+</ion-navbar>
+
+<ion-content padding class="search-guide">
+  <ion-row>
+    <span class="guided-search-span">{{jobLabel}}</span>
+  </ion-row>
+  <ion-row>
+    <span class="guided-search-span">comme</span> &nbsp;
+    <ion-input class="guided-search-input" type="text" placeholder="job..." [(ngModel)]="job"></ion-input>
+  </ion-row>
+  <ion-row>
+    <span class="guided-search-span">{{levelLabel}}</span>&nbsp;
+  </ion-row>
+  <ion-row>
+    <ion-input class="guided-search-input" type="text" placeholder="débutant ou expert" [(ngModel)]="level"></ion-input>
+  </ion-row>
+  <ion-row>
+    <span class="guided-search-span">{{availabilityLabel}}</span>&nbsp;
+  </ion-row>
+  <ion-row>
+    <span class="guided-search-span">du</span>&nbsp;
+    <ion-input class="guided-search-input" type="text" placeholder="JJ/MM/AAAA" [(ngModel)]="availability"></ion-input>
+  </ion-row>
+  <button fab fab-bottom fab-center [style.backgroundColor]="themeColor" (click)="validateSearch()">
+    <ion-icon name="search"></ion-icon>
+  </button>
+  <!--ion-toolbar class="bottom-toolbar" position="bottom">
     <button (click)="validateSearch()" secondary block>Valider</button>
-    <button (click)="close()" dark block>Annuler</button>
-  </ion-toolbar>
+    <!--button (click)="close()" dark block>Annuler</button>
+  </ion-toolbar-->
 </ion-content>
+
+<!--ion-content>
+
+</ion-content-->

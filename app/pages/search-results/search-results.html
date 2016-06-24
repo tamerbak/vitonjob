@@ -1,4 +1,4 @@
-<ion-navbar navbar>
+<ion-navbar navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
   <div class="view-toggle">
     <button (click)="changeViewMode(3)" style="font-size: small;" [ngClass]="{'button-secondary': mapView}" >
       <ion-icon name="md-map"></ion-icon>
