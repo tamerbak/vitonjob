@@ -94,7 +94,7 @@
 	</ion-row>
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="validateWork()" [style.backgroundColor]="themeColor" [hidden]="!isEmployer" >
+			<button block (click)="validateWork()" [style.backgroundColor]="themeColor" [hidden]="!isEmployer || !invoiceReady" >
 				<ion-icon name="ribbon"></ion-icon>
 				Fin de mission
 			</button>
