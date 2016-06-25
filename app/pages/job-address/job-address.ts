@@ -124,7 +124,7 @@ export class JobAddressPage {
 	displayGeolocationAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Géolocalisation : êtes-vous connecté depuis votre" + (this.isEmployer ? " lieu de mission" : " lieu de départ au travail") +"?\n" + "Si vous acceptez d'être localisé, vous n'aurez qu'à valider l'" + (this.isEmployer ? " adresse de mission." : " adresse de départ au travail."),
+			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider l'" + (this.isEmployer ? "adresse de mission." : "adresse de départ au travail."),
 			buttons: [
 				{
 					text: 'Non',
@@ -312,9 +312,9 @@ export class JobAddressPage {
 	
 	isAddressModified(){
 		if(this.isEmployer){
-			return this.searchData != this.currentUser.employer.entreprises[0].workAdress.fullAdress;
+			return (this.searchData != this.currentUser.employer.entreprises[0].workAdress.fullAdress) || (this.selectedPlace != this.currentUser.employer.entreprises[0].workAdress.fullAdress);
 			}else{
-			return this.searchData != this.currentUser.jobyer.workAdress.fullAdress;
+			return (this.searchData != this.currentUser.jobyer.workAdress.fullAdress) || (this.selectedPlace != this.currentUser.jobyer.workAdress.fullAdress);
 		}
 	}
 }

@@ -316,9 +316,9 @@ export class PersonalAddressPage {
 	
 	isAddressModified(){
 		if(this.isEmployer){
-			return this.searchData != this.currentUser.employer.entreprises[0].siegeAdress.fullAdress;
+			return (this.searchData != this.currentUser.employer.entreprises[0].siegeAdress.fullAdress) || (this.selectedPlace != this.currentUser.employer.entreprises[0].siegeAdress.fullAdress);
 			}else{
-			return this.searchData != this.currentUser.jobyer.personnalAdress.fullAdress;
+			return (this.searchData != this.currentUser.jobyer.personnalAdress.fullAdress) || (this.selectedPlace != this.currentUser.jobyer.personnalAdress.fullAdress);
 		}
 	}
 }
