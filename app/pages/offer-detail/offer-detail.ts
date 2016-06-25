@@ -1,4 +1,4 @@
-import {NavController, NavParams, Loading, Modal, Alert} from 'ionic-angular';
+import {NavController, NavParams, Loading, Modal, Alert, Popover} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {SearchResultsPage} from "../../pages/search-results/search-results";
@@ -12,6 +12,7 @@ import {ModalCalendarPage} from "../modal-calendar/modal-calendar";
 import {OfferListPage} from "../offer-list/offer-list";
 import {Component} from "@angular/core";
 import {OfferQuotePage} from "../offer-quote/offer-quote";
+import {PopoverOfferDetailPage} from "../popover-offer-detail/popover-offer-detail";
 
 /*
  Generated class for the OfferDetailPage page.
@@ -40,6 +41,7 @@ export class OfferDetailPage {
         // Set local variables
         this.themeColor = config.themeColor;
         this.inversedThemeColor = config.inversedThemeColor;
+        this.backgroundImage = config.backgroundImage;
         this.isEmployer = (this.projectTarget === 'employer');
 
         this.offerService = offersService;
@@ -391,4 +393,42 @@ export class OfferDetailPage {
 			this.offerService.setOfferInLocal(this.offer, this.projectTarget);
 		});
 	}
+
+    /**
+     * @author TEL
+     * Popover menu for offer detail options
+     * @param ev
+     */
+    showPopover(ev) {
+        let popover = Popover.create(PopoverOfferDetailPage, {visibility:this.offer.visible});
+        this.nav.present(popover, {
+            ev: ev
+        });
+
+        popover.onDismiss( data => {
+            switch (data.option) {
+                case 1:
+                    // Launch copy function
+                    this.copyOffer();
+                    break;
+                case 2:
+                    // Launch visibility option
+                    this.changePrivacy();
+                    break;
+                case 3:
+                    // launch search option
+                    this.launchSearch();
+                    break;
+                case 4:
+                    // launch devise option
+                    this.showQuote();
+                    break;
+                case 5:
+                    // launch delete option
+                    this.deleteOffer();
+                    break;
+            }
+        })
+
+    }
 }

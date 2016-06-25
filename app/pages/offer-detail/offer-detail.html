@@ -7,22 +7,13 @@
 <ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
     <ion-title>Détail</ion-title>
     <ion-buttons end>
-        <button (click)="copyOffer()">
-            <ion-icon name="copy"></ion-icon>
-        </button>
-        <button (click)="changePrivacy()">
-            <ion-icon [name]="offer.visible ? 'eye' : 'eye-off'"></ion-icon>
-        </button>
-        <button (click)="launchSearch()">
-            <ion-icon name="search"></ion-icon>
-        </button>
-        <button (click)="showQuote()" *ngIf="isEmployer">
-            <ion-icon name="cash"></ion-icon>
+        <button (click)="showPopover($event)">
+            <ion-icon name="more"></ion-icon>
         </button>
     </ion-buttons>
 </ion-navbar>
 
-<ion-content padding class="offer-detail">
+<ion-content padding class="offer-detail" >
 
     <!--Offer title-->
     <h5 style="text-align: center;">{{offer.title}}</h5>
@@ -67,7 +58,7 @@
             </div>
         </ion-card>
 
-        <ion-row></ion-row>
+        <ion-row>&nbsp;</ion-row>
 
         <!-- Calendar Card-->
         <div style="display: flex; background-size: cover;"
@@ -109,7 +100,7 @@
             </div>
         </ion-card>
 
-        <ion-row></ion-row>
+        <ion-row>&nbsp;</ion-row>
 
         <!-- Qualities Card-->
         <div style="display: flex; background-size: cover;"
@@ -144,7 +135,7 @@
             </div>
         </ion-card>
 
-        <ion-row></ion-row>
+        <ion-row>&nbsp;</ion-row>
 
         <!-- Languages Card-->
         <div style="display: flex; background-size: cover;"
@@ -180,14 +171,14 @@
         </ion-card>
     </ion-list>
 
-    <ion-row>
+    <!--ion-row>
         <ion-col text-center>
             <button danger (click)="deleteOffer()">
                 <ion-icon name="trash"></ion-icon>
                 Supprimer
             </button>
         </ion-col>
-    </ion-row>
+    </ion-row-->
 
 
 </ion-content>
