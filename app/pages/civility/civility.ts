@@ -402,9 +402,11 @@ export class CivilityPage {
 	onChangeUpload(e){
 		var file = e.target.files[0];
 		var myReader = new FileReader();
-		myReader.onloadend = (e) =>{
-			this.scanUri = myReader.result;
-		}
+		this.zone.run(()=>{
+			myReader.onloadend = (e) =>{
+				this.scanUri = myReader.result;
+			}
+		});
 		myReader.readAsDataURL(file);
 	}
 	

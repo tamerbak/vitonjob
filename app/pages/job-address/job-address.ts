@@ -240,16 +240,33 @@ export class JobAddressPage {
 			}
 			//if address is manually entered
 			if(this.searchData && (!this.selectedPlace || !this.selectedPlace.adr_address) && !this.geolocResult){
-				loading.dismiss();
-				this.globalService.showAlertValidation("VitOnJob", "Cette adresse n'est pas reconnaissable. Vous serez notifié après sa validation par notre équipe.");
-				if(this.fromPage == "profil"){
-						this.nav.pop();
-				}else{
-					//redirecting to offer list page
-					this.nav.setRoot(OfferListPage);
-				}
+				var manualAdr = document.getElementsByClassName('searchbar-input')[0].value;
+				loading.dismiss().then(() => {
+					let alert = Alert.create({
+						title: "VitOnJob",
+						message: "Cette adresse n'est pas reconnaissable. Vous serez notifié après sa validation par notre équipe.",
+						buttons: [
+							{
+								text: 'OK',
+								handler: () => {
+									alert.dismiss().then(() => {
+										if(this.fromPage == "profil"){
+											this.nav.pop();
+										}else{
+											//redirecting to job address tab
+											//this.tabs.select(2);
+											this.nav.setRoot(OfferListPage);
+										}
+									});
+								}
+							}
+						]
+					});
+					this.nav.present(alert);
+				});
 				return;
 			}
+			
 			if(this.geolocResult == null){
 				this.storage.set('adr_address', JSON.stringify(this.selectedPlace));
 				address = this.selectedPlace.adr_address;
