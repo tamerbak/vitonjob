@@ -76,10 +76,10 @@
             </ion-col>
             <ion-col width-50></ion-col>
             <ion-col  width-40>
-              <button secondary>
+              <button secondary (click)="dialNumber(item)">
                 <ion-icon name="md-mail"></ion-icon>
               </button>
-              <button secondary>
+              <button secondary (click)="sendSMS(item)">
                 <ion-icon name="md-call"></ion-icon>
               </button>
             </ion-col >
