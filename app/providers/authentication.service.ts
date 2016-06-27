@@ -187,22 +187,34 @@ export class AuthenticationService {
 		* @description update employer and jobyer personal address
 		* @param roleId, address
 	*/
-	updateUserPersonalAddress(id: string, address, geolocAddress){
+	decorticateAddress(address, geolocAddress){
 		//formating the address
 		var street = "";
 		var cp = "";
 		var ville = "";
 		var pays = "";
+		var adrArray = [];
 		if(address){
 			street = this.getStreetFromGoogleAddress(address);
+			adrArray.push(street);
 			cp = this.getZipCodeFromGoogleAddress(address);
+			adrArray.push(cp);
 			ville = this.getCityFromGoogleAddress(address);
+			adrArray.push(ville);
 			pays = this.getCountryFromGoogleAddress(address);
-			}else{
+			adrArray.push(pays);
+		}else{
 			street = this.getStreetFromGeolocAddress(geolocAddress);
+			adrArray.push(street);
 			ville = this.getCityFromGeolocAddress(geolocAddress);
+			adrArray.push(ville);
 			pays = this.getCountryFromGeolocAddress(geolocAddress);
+			adrArray.push(pays);
 		}
+		return adrArray;
+	}
+	
+	updateUserPersonalAddress(id: string, street, cp, ville, pays){
 		//  Now we need to save the address
 		var addressData = {
 			'class': 'com.vitonjob.localisation.AdressToken',
@@ -241,23 +253,7 @@ export class AuthenticationService {
 		* @description update employer and jobyer job address
 		* @param id  : entreprise id for employer role and role id for jobyer role, address
 	*/
-	updateUserJobAddress(id: string, address, geolocAddress){
-		//formating the address
-		var street = "";
-		var cp = "";
-		var ville = "";
-		var pays = "";
-		if(address){
-			street = this.getStreetFromGoogleAddress(address);
-			cp = this.getZipCodeFromGoogleAddress(address);
-			ville = this.getCityFromGoogleAddress(address);
-			pays = this.getCountryFromGoogleAddress(address);
-			}else{
-			street = this.getStreetFromGeolocAddress(geolocAddress);
-			ville = this.getCityFromGeolocAddress(geolocAddress);
-			pays = this.getCountryFromGeolocAddress(geolocAddress);
-		}
-		
+	updateUserJobAddress(id: string, street, cp, ville, pays){
 		//  Now we need to save the address
 		var addressData = {
 			'class': 'com.vitonjob.localisation.AdressToken',
@@ -288,6 +284,36 @@ export class AuthenticationService {
 			this.http.post(this.configuration.calloutURL, stringData, {headers:headers})
 			.subscribe(data => {
 	            this.data = data;
+	            resolve(this.data);
+			});
+		});
+	}
+	
+	getAddressByUser(id){
+		var payload = {
+		  'class' : 'fr.protogen.masterdata.model.CCallout',
+		  id : 165,
+		  args : [
+			{
+			  class : 'fr.protogen.masterdata.model.CCalloutArguments',
+			  label : 'Requete de recherche',
+			  value : btoa(id)
+			},
+			{
+			  class : 'fr.protogen.masterdata.model.CCalloutArguments',
+			  label : 'ID Offre',
+			  value : btoa(this.projectTarget == 'employer' ? 'employeur' : this.projectTarget)
+			}
+		  ]
+		}
+		var stringData = JSON.stringify(payload);
+
+		return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'application/json');
+			this.http.post(this.configuration.calloutURL, stringData, {headers:headers})
+			.subscribe(data => {
+	            this.data = JSON.parse(data._body);
 	            resolve(this.data);
 			});
 		});
