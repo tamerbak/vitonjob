@@ -31,6 +31,7 @@ export class PersonalAddressPage {
 	city: string;
 	country: string;
 	isGooglePlaceHidden = true;
+	generalLoading;
 	
 	/**
 		* @description While constructing the view, we get the currentUser passed as parameter from the connection page
@@ -86,7 +87,7 @@ export class PersonalAddressPage {
 					this.city = this.currentUser.employer.entreprises[0].siegeAdress.city;
 					this.country = this.currentUser.employer.entreprises[0].siegeAdress.country;
 					//for old users, retrieve address components from server bd and stocke them in local db
-					if(!this.country){
+					if(!this.country && this.searchData){
 						this.authService.getAddressByUser(this.currentUser.employer.entreprises[0].id).then((data) =>{
 							this.street = data[0].street;
 							this.zipCode = data[0].zipCode;
@@ -100,7 +101,7 @@ export class PersonalAddressPage {
 					this.zipCode = this.currentUser.jobyer.personnalAdress.zipCode;
 					this.city = this.currentUser.jobyer.personnalAdress.city;
 					this.country = this.currentUser.jobyer.personnalAdress.country;
-					if(!this.country){
+					if(!this.country && this.searchData){
 						this.authService.getAddressByUser(this.currentUser.jobyer.id).then((data) =>{
 							this.street = data[0].street;
 							this.zipCode = data[0].zipCode;
@@ -181,26 +182,25 @@ export class PersonalAddressPage {
 		* @description geolocate current user
 	*/
 	geolocate(){
-		let loading = Loading.create({
+		this.generalLoading = Loading.create({
 			content: ` 
 			<div>
 			<img src='img/loading.gif' />
 			</div>
 			`,
 			spinner : 'hide',
-		duration : 15000
+			duration : 10000
 		});
-		this.nav.present(loading);
+		this.nav.present(this.generalLoading);
 		let options = {timeout: 5000, enableHighAccuracy: true, maximumAge: 0}; 
 		Geolocation.getCurrentPosition(options)
 			.then((position) => {
 				console.log(position);
 				this.getAddressFromGeolocation(position);
-				loading.dismiss();
 			})
 			.catch((error) => {
 				console.log(error);
-				loading.dismiss();
+				this.generalLoading.dismiss();
 				this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");				
 			});
 	}
@@ -220,14 +220,17 @@ export class PersonalAddressPage {
 					//display geolocated address below the input
 					this.geolocAddress = results[0].formatted_address;
 					//display address components in appropriate inputs
-					var adrArray = this.authService.decorticateAddress(null, this.geolocResult);
+					var adrArray = this.authService.decorticateGeolocAddress(this.geolocResult);
 					this.street = adrArray[0];
-					this.city = adrArray[1];
-					this.country = adrArray[2];
+					this.zipCode = adrArray[1];
+					this.city = adrArray[2];
+					this.country = adrArray[3];
 					this.isGooglePlaceHidden = true;
 				});	
+				this.generalLoading.dismiss();
 			}else{
 				console.log(status);
+				this.generalLoading.dismiss();
 				this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");				
 			}
 		});
@@ -241,7 +244,7 @@ export class PersonalAddressPage {
 		this.geolocAddress = "";
 		this.geolocResult = null;
 		//display address components in appropriate inputs
-		var adrArray = this.authService.decorticateAddress(this.selectedPlace.adr_address);
+		var adrArray = this.authService.decorticateAddress(this.selectedPlace.name, this.selectedPlace.adr_address);
 		this.zone.run(()=>{
 			this.street = adrArray[0];
 			this.zipCode = adrArray[1];
@@ -279,7 +282,7 @@ export class PersonalAddressPage {
 						return;
 					}else{
 						//id address not send by server
-						entreprise.siegeAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
+						entreprise.siegeAdress.fullAdress = this.street + ", " + this.zipCode + ", " + this.city + ", " + this.country;
 						entreprise.siegeAdress.street = this.street;
 						entreprise.siegeAdress.zipCode = this.zipCode;
 						entreprise.siegeAdress.city = this.city;
@@ -309,7 +312,7 @@ export class PersonalAddressPage {
 						return;
 					}else{
 						//id address not send by server
-						this.currentUser.jobyer.personnalAdress.fullAdress = (this.geolocResult == null ? this.selectedPlace.formatted_address : this.geolocAddress);
+						this.currentUser.jobyer.personnalAdress.fullAdress = this.street + ", " + this.zipCode + ", " + this.city + ", " + this.country;;
 						this.currentUser.jobyer.personnalAdress.street = this.street;
 						this.currentUser.jobyer.personnalAdress.zipCode = this.zipCode;
 						this.currentUser.jobyer.personnalAdress.city = this.city;

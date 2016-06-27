@@ -187,7 +187,7 @@ export class AuthenticationService {
 		* @description update employer and jobyer personal address
 		* @param roleId, address
 	*/
-	decorticateAddress(address, geolocAddress){
+	decorticateAddress(name, address){
 		//formating the address
 		var street = "";
 		var cp = "";
@@ -195,7 +195,7 @@ export class AuthenticationService {
 		var pays = "";
 		var adrArray = [];
 		if(address){
-			street = this.getStreetFromGoogleAddress(address);
+			street = name + ", " + this.getStreetFromGoogleAddress(address);
 			adrArray.push(street);
 			cp = this.getZipCodeFromGoogleAddress(address);
 			adrArray.push(cp);
@@ -203,14 +203,40 @@ export class AuthenticationService {
 			adrArray.push(ville);
 			pays = this.getCountryFromGoogleAddress(address);
 			adrArray.push(pays);
-		}else{
-			street = this.getStreetFromGeolocAddress(geolocAddress);
-			adrArray.push(street);
-			ville = this.getCityFromGeolocAddress(geolocAddress);
-			adrArray.push(ville);
-			pays = this.getCountryFromGeolocAddress(geolocAddress);
-			adrArray.push(pays);
+			return adrArray;
 		}
+	}
+	
+	decorticateGeolocAddress(geolocAddress){
+		var adrArray = ['', '', '', ''];
+		var street = "";
+		for(var i = 0; i < geolocAddress.address_components.length; i++){
+			if(geolocAddress.address_components[i].types[0] == "street_number"){
+				street = street + geolocAddress.address_components[i].long_name + " ";
+				continue;
+			}
+			if(geolocAddress.address_components[i].types[0] == "route"){
+				street = street + geolocAddress.address_components[i].long_name + " ";
+				continue;
+			}
+			if(geolocAddress.address_components[i].types[0] == "street_address"){
+				street = street + geolocAddress.address_components[i].long_name + " ";
+				continue;
+			}
+			if(geolocAddress.address_components[i].types[0] == "postal_code"){
+				adrArray.splice(1, 1, geolocAddress.address_components[i].long_name);	
+				continue;
+			}
+			if(geolocAddress.address_components[i].types[0] == "locality"){
+				adrArray.splice(2, 1, geolocAddress.address_components[i].long_name);	
+				continue;
+			}
+			if(geolocAddress.address_components[i].types[0] == "country"){
+				adrArray.splice(3, 1, geolocAddress.address_components[i].long_name);	
+				continue;
+			}
+		}
+		adrArray.splice(0, 1, street);
 		return adrArray;
 	}
 	
@@ -418,6 +444,7 @@ export class AuthenticationService {
 			return "";
 		}
 	}
+	
 	
 	/**
 		* @description function for uploading the scan to the server, in the forme of base 64 string 

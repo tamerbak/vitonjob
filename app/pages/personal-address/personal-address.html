@@ -8,7 +8,6 @@
 		<ion-icon name="menu"></ion-icon>
 	</button>
     <ion-title>{{titlePage}}</ion-title>
-	`
 </ion-navbar>
 
 <ion-content padding>
@@ -30,11 +29,11 @@
     
 	<ion-item>
         <ion-label floating>Rue</ion-label>
-        <ion-input type="text" [(ngModel)]="street"></ion-input>
+        <ion-textarea type="text" [(ngModel)]="street"></ion-textarea>
 	</ion-item>
 	<ion-item>
         <ion-label floating>Code postal</ion-label>
-        <ion-input type="number" [(ngModel)]="zipCode"></ion-input>
+        <ion-input type="text" [(ngModel)]="zipCode"></ion-input>
 	</ion-item>
 	<ion-item>
         <ion-label floating>Ville</ion-label>
