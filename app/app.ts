@@ -1,4 +1,4 @@
-import {Platform, MenuController, Nav, ionicBootstrap, App, Modal, Toast} from 'ionic-angular';
+import {Platform, MenuController, Nav, ionicBootstrap, App, Modal, Toast, LocalStorage} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {HomePage} from './pages/home/home';
 //import {LoginsPage} from './pages/logins/logins';
@@ -54,6 +54,7 @@ export class Vitonjob {
 	menuBackgroundImage:any;
 	config:any;
 	storage : Storage;
+	local : Storage;
 
 	constructor(private platform:Platform,
 				private app:App,
@@ -69,6 +70,7 @@ export class Vitonjob {
 		this.platform = platform;
 		this.menu = menu;
 		this.storage = new Storage(SqlStorage);
+		this.local = new Storage(LocalStorage);
 
 		this.initializeApp();
 
@@ -115,31 +117,6 @@ export class Vitonjob {
 		this.offerCount = 0;
 		this.isCalculating = true;
 
-		// Calculating the number of joyer corresponding to our offers :
-		/*this.storage.get('connexion').then(con =>{
-		 if (con){
-		 con = JSON.parse(con);
-		 if (con.etat){ /* => User connected
-		 offerService.loadOfferList(this.projectTarget).then(data => {
-		 let offerList = data;
-		 for (var i = 0; i < offerList.length; i++) {
-		 let offer = offerList[i];
-		 if (isUndefined(offer) || !offer || !offer.jobData) {
-		 continue;
-		 }
-		 offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
-		 console.log('getCorrespondingOffers result : ' + data);
-		 this.offerCount += data.length;
-		 //if (i == offerList.length - 1)
-		 this.isCalculating = false;
-		 });
-		 }
-
-		 });
-		 } else this.isCalculating = false;
-		 } else this.isCalculating = false
-		 });*/
-
 
 	}
 
@@ -149,6 +126,13 @@ export class Vitonjob {
 			// Here you can do any higher level native things you might need.
 			// target:string = "employer"; //Jobyer
 
+			//	We will initialize the new offer
+			this.local.remove('jobData');
+			this.local.remove('languages');
+			this.local.remove('qualities');
+			this.local.remove('slots');
+
+			//	Initialize network control
 			this.networkService.updateNetworkStat();
 
 			var offline = Observable.fromEvent(document, "offline");
