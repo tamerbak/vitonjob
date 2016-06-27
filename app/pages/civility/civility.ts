@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Alert, NavController, NavParams, Loading} from 'ionic-angular';
+import {Alert, NavController, NavParams, Loading, Events} from 'ionic-angular';
 import {LoadListService} from "../../providers/load-list.service";
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
@@ -45,8 +45,15 @@ export class CivilityPage {
 	/**
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
 	*/
-	constructor(public nav: NavController, private authService: AuthenticationService,
-	public gc: GlobalConfigs, private loadListService: LoadListService, private sqlStorageService: SqlStorageService, params: NavParams, private globalService: GlobalService, private zone: NgZone) {
+	constructor(public nav: NavController, 
+				private authService: AuthenticationService,
+				public gc: GlobalConfigs, 
+				private loadListService: LoadListService, 
+				private sqlStorageService: SqlStorageService, 
+				params: NavParams, 
+				private globalService: GlobalService, 
+				private zone: NgZone, 
+				public events: Events) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -144,6 +151,7 @@ export class CivilityPage {
 					this.updateScan(employerId);
 					// PUT IN SESSION
 					this.storage.set('currentUser', JSON.stringify(this.currentUser));
+					this.events.publish('user:civility', this.currentUser);
 					loading.dismiss();
 					if(this.fromPage == "profil"){
 						this.nav.pop();
@@ -181,6 +189,7 @@ export class CivilityPage {
 					this.updateScan(jobyerId);
 					// PUT IN SESSION
 					this.storage.set('currentUser', JSON.stringify(this.currentUser));
+					this.events.publish('user:civility', this.currentUser);
 					loading.dismiss();
 					if(this.fromPage == "profil"){
 						this.nav.pop();

@@ -211,7 +211,9 @@ export class Vitonjob {
 		});
 		this.events.subscribe('user:login', (data) => {
 			this.enableMenu(true);
-			this.userName = data[0].titre +' '+data[0].nom +' '+data[0].prenom;
+			if(data[0].titre){
+				this.userName = data[0].titre +' '+data[0].nom +' '+data[0].prenom;
+			}
 			this.userMail = data[0].email;
 		});
 
@@ -222,6 +224,13 @@ export class Vitonjob {
 		this.events.subscribe('picture-change', (newURL)=> {
 			this.userImageURL = newURL;
 		});
+		
+		this.events.subscribe('user:civility', (data) => {
+			this.enableMenu(true);
+			this.userName = data[0].titre +' '+data[0].nom +' '+data[0].prenom;
+			this.userMail = data[0].email;
+		});
+
 	}
 
 	enableMenu(loggedIn) {

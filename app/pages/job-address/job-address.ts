@@ -243,7 +243,7 @@ export class JobAddressPage {
 		this.geolocAddress = "";
 		this.geolocResult = null;
 		//display address components in appropriate inputs
-		var adrArray = this.authService.decorticateAddress(this.selectedPlace.adr_address);
+		var adrArray = this.authService.decorticateAddress(this.selectedPlace.name, this.selectedPlace.adr_address);
 		this.zone.run(()=>{
 			this.street = adrArray[0];
 			this.zipCode = adrArray[1];
@@ -280,7 +280,7 @@ export class JobAddressPage {
 						return;
 					}else{
 						//id address not send by server
-						entreprise.workAdress.fullAdress = this.street + ", " + this.zipCode + ", " + this.city + ", " + this.country;
+						entreprise.workAdress.fullAdress = this.street + ", " + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
 						entreprise.workAdress.street = this.street;
 						entreprise.workAdress.zipCode = this.zipCode;
 						entreprise.workAdress.city = this.city;
@@ -308,7 +308,7 @@ export class JobAddressPage {
 						return;
 					}else{
 						//id address not send by server
-						this.currentUser.jobyer.workAdress.fullAdress = this.street + ", " + this.zipCode + ", " + this.city + ", " + this.country;
+						this.currentUser.jobyer.workAdress.fullAdress = this.street + ", " + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
 						this.currentUser.jobyer.workAdress.street = this.street;
 						this.currentUser.jobyer.workAdress.zipCode = this.zipCode;
 						this.currentUser.jobyer.workAdress.city = this.city;

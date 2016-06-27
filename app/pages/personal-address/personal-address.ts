@@ -282,7 +282,7 @@ export class PersonalAddressPage {
 						return;
 					}else{
 						//id address not send by server
-						entreprise.siegeAdress.fullAdress = this.street + ", " + this.zipCode + ", " + this.city + ", " + this.country;
+						entreprise.siegeAdress.fullAdress = this.street + ", " + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
 						entreprise.siegeAdress.street = this.street;
 						entreprise.siegeAdress.zipCode = this.zipCode;
 						entreprise.siegeAdress.city = this.city;
@@ -312,7 +312,7 @@ export class PersonalAddressPage {
 						return;
 					}else{
 						//id address not send by server
-						this.currentUser.jobyer.personnalAdress.fullAdress = this.street + ", " + this.zipCode + ", " + this.city + ", " + this.country;;
+						this.currentUser.jobyer.personnalAdress.fullAdress = this.street + ", " + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
 						this.currentUser.jobyer.personnalAdress.street = this.street;
 						this.currentUser.jobyer.personnalAdress.zipCode = this.zipCode;
 						this.currentUser.jobyer.personnalAdress.city = this.city;

@@ -45,7 +45,13 @@ export class PhonePage {
 		* @description While constructing the view, we load the list of countries to display their codes
 	*/
 	constructor(public nav: NavController,
-	public gc: GlobalConfigs, private authService: AuthenticationService, private loadListService: LoadListService, private dataProviderService: DataProviderService, private globalService: GlobalService, private validationDataService: ValidationDataService, public events: Events) {
+				public gc: GlobalConfigs, 
+				private authService: AuthenticationService, 
+				private loadListService: LoadListService, 
+				private dataProviderService: DataProviderService, 
+				private globalService: GlobalService, 
+				private validationDataService: ValidationDataService, 
+				public events: Events) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
