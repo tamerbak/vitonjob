@@ -13,7 +13,6 @@
 </ion-navbar>
 
 <ion-content class="home" [ngStyle]="backgroundImage">
-    <div class="networkAlert">{{networkService.getNetworkStat()}}</div>
 
     <button fab fab-bottom fab-center (click)="stopRecognition()"
             [style.backgroundColor]="themeColor" [hidden] = "!recording">
@@ -68,10 +67,10 @@
     <ion-row>&nbsp;</ion-row>
     <ion-row>&nbsp;</ion-row>
     <ion-row>
-        <button fab fab-center class="bottomButton" [style.backgroundColor]="themeColor"
+        <!--button fab fab-center class="bottomButton" [style.backgroundColor]="themeColor"
                 (click)="launchVoiceRecognition()" [hidden]="(keyboard)? keyboard.isOpen():false">
             <ion-icon name="mic" [hidden]="recording"></ion-icon>
-        </button>
+        </button-->
 
         <!--button secondary ngClass="left-bottom-btn" (click)="showCriteriaModal()" >
             <ion-icon name="search"></ion-icon>
