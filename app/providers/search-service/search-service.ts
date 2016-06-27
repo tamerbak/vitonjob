@@ -33,7 +33,7 @@ export class SearchService {
 
     var payload = {
       'class' : 'fr.protogen.masterdata.model.CCallout',
-      id : 160,
+      id : 164,
       args : [
         {
           class : 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -53,6 +53,7 @@ export class SearchService {
       ]
     };
 
+    console.log(JSON.stringify(payload));
 
     // don't have the data yet
     return new Promise(resolve => {
