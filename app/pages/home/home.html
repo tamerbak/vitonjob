@@ -13,7 +13,6 @@
 </ion-navbar>
 
 <ion-content class="home" [ngStyle]="backgroundImage">
-    <div class="networkAlert">{{networkService.getNetworkStat()}}</div>
 
     <button fab fab-bottom fab-center (click)="stopRecognition()"
             [style.backgroundColor]="themeColor" [hidden] = "!recording">

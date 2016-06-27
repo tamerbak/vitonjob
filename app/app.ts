@@ -133,7 +133,14 @@ export class Vitonjob {
 			this.local.remove('slots');
 
 			//	Initialize network control
-			this.networkService.updateNetworkStat();
+			if(navigator.connection.type == Connection.NONE){
+				let toast = Toast.create({
+					message: "Vous n'êtes pas connectés à Internet",
+					showCloseButton : true,
+					closeButtonText : 'Fermer'
+				});
+				this.nav.present(toast);
+			}
 
 			var offline = Observable.fromEvent(document, "offline");
 			var online = Observable.fromEvent(document, "online");
@@ -142,7 +149,8 @@ export class Vitonjob {
             offline.subscribe(() => {
                 let toast = Toast.create({
                     message: "Vous n'êtes pas connectés à Internet",
-                    duration: 3000
+					showCloseButton : true,
+					closeButtonText : 'Fermer'
                 });
                 this.nav.present(toast);
                 this.changeDetRef.detectChanges();
@@ -151,7 +159,8 @@ export class Vitonjob {
             online.subscribe(()=> {
                 let toast = Toast.create({
                     message: "La connection à Internet a été restaurée",
-                    duration: 3000
+					showCloseButton : true,
+					closeButtonText : 'Fermer'
                 });
                 this.nav.present(toast);
 

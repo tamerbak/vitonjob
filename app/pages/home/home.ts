@@ -52,6 +52,7 @@ export class HomePage implements OnChanges{
                 public networkService: NetworkService,
                 public events: Events, private kb:Keyboard, menu: MenuController) {
 
+
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
         this.storage = new Storage(SqlStorage);
@@ -76,6 +77,7 @@ export class HomePage implements OnChanges{
         this.search = searchService;
         //verify if the user is already connected
         this.storage.get("currentUser").then((value) => {
+
             if(value){
                 this.cnxBtnName = "Déconnexion";
                 this.isConnected = true;
