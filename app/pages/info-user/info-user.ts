@@ -48,6 +48,6 @@ export class InfoUserPage {
 		
 		this.civilityTabTitle = this.isEmployer ? "Fiche entreprise" : "Profil";
 		this.pAddressTabTitle = this.isEmployer ? "A. siège" : "A. personnelle";
-		this.jAddressTabTitle = this.isEmployer ? "A. mission" : "A. départ au travail";	
+		this.jAddressTabTitle = this.isEmployer ? "A. lieu de travail" : "A. départ au travail";	
 	}
 }

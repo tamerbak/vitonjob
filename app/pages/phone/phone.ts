@@ -40,6 +40,7 @@ export class PhonePage {
 	password2: string;
 	isPhoneNumValid = true;
 	backgroundImage:any;
+	emailExist = false;
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
@@ -186,7 +187,7 @@ export class PhonePage {
 	isAuthDisabled() {
 		if (this.showEmailField == true) {
 			//inscription
-			return (!this.index || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError())
+			return (!this.index || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError() || this.emailExist)
 			} else {
 			//connection
 			return (!this.index || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error())
@@ -298,7 +299,21 @@ export class PhonePage {
 		return this.password2 != this.password1;
 	}
 	
-	
+	isEmailExist(e){
+		//verify if the email exist in the database
+		this.dataProviderService.getUserByMail(this.email, this.projectTarget).then((data) => {
+			if (!data || data.status == "failure") {
+				console.log(data);
+				this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+				return;
+			}
+			if (data && data.data.length != 0) {
+				this.emailExist = true;
+			}else{
+				this.emailExist = false;
+			}
+		});
+	}
 	
 	/**
 		* @description return to the home page
