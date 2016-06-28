@@ -93,14 +93,15 @@ export class ModalSlotPage {
      * @Description : Validating slot modal
      */
     validateModal() {
-        debugger;
+        let date = new Date(this.showedSlot.date);
         this.slot = {
-            date: new Date(this.showedSlot.date),
+            date: date.getTime(),
             startHour: parseInt(this.showedSlot.startHour.split(':')[0]) * 60 +
             parseInt(this.showedSlot.startHour.split(':')[1]),
             endHour: parseInt(this.showedSlot.endHour.split(':')[0]) * 60 +
             parseInt(this.showedSlot.endHour.split(':')[1]),
         };
+        debugger;
         this.viewCtrl.dismiss(this.slot);
     }
 

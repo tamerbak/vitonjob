@@ -110,6 +110,7 @@ export class OffersService {
         let offers:any;
         let result:any;
         return this.db.get('currentUser').then(data => {
+            debugger;
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -125,9 +126,10 @@ export class OffersService {
                     }
                 } else { // jobyer
                     let rawData = data.jobyer;
+                    if(rawData)
+                        offerData.identity = rawData.id;
                     if (rawData && rawData.offers) {
                         //adding userId for remote storing
-                        offerData.identity = rawData.jobyerId;
                         offers = rawData.offers;
                         offers.push(offerData);
                         // Save new offer list in SqlStorage :
@@ -181,7 +183,7 @@ export class OffersService {
                 offerData.entrepriseId = offerData.identity;
                 break;
             case 'jobyer':
-                offerData.jobyerId = offerData.idendity;
+                offerData.jobyerId = offerData.identity;
                 break;
         }
         //remove identity key/value from offerData object
@@ -189,6 +191,7 @@ export class OffersService {
         delete offerData['identity'];
         delete offerData.jobData['idLevel'];
 
+        debugger;
         // store in remote database
         let stringData = JSON.stringify(offerData);
         console.log('Adding offer payload : '+stringData);

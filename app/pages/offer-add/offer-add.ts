@@ -56,7 +56,7 @@ export class OfferAddPage {
         //Initializing PAGE:
         this.initializePage(config);
         this.offerService = os;
-this.nav = nav;
+        this.nav = nav;
 
     }
 
