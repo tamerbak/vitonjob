@@ -35,8 +35,10 @@ import {SettingsPage} from "./pages/settings/settings";
 import {AboutPage} from "./pages/about/about";
 //import {ParametersPage} from "./pages/parameters/parameters";
 
+declare var cordova;
+
 @Component({
-	templateUrl: 'build/menu.html'
+    templateUrl: 'build/menu.html'
 })
 export class Vitonjob {
 
@@ -44,87 +46,88 @@ export class Vitonjob {
 	rootPage:any = HomePage;
 	public pages:Array<{title:string, component:any, icon:string, isBadged:boolean}>;
 
-	projectTarget:any;
-	isEmployer:boolean;
-	bgMenuURL:string;
-	userImageURL:string;
-	userName:string;
-	userMail:string;
-	themeColor:string;
-	menuBackgroundImage:any;
-	config:any;
-	storage : Storage;
-	local : Storage;
+    projectTarget:any;
+    isEmployer:boolean;
+    bgMenuURL:string;
+    userImageURL:string;
+    userName:string;
+    userMail:string;
+    themeColor:string;
+    menuBackgroundImage:any;
+    config:any;
+    storage:Storage;
+    local : Storage;
+    tokens:any;
 
-	constructor(private platform:Platform,
-				private app:App,
-				private menu:MenuController,
-				private gc:GlobalConfigs,
-				private missionService:MissionService,
-				private networkService:NetworkService,
-				private changeDetRef:ChangeDetectorRef,
-				public events:Events, offerService:OffersService,
-				private zone: NgZone) {
+    constructor(private platform:Platform,
+                private app:App,
+                private menu:MenuController,
+                private gc:GlobalConfigs,
+                private missionService:MissionService,
+                private networkService:NetworkService,
+                private changeDetRef:ChangeDetectorRef,
+                public events:Events, offerService:OffersService,
+                private zone:NgZone) {
 
 		this.app = app;
 		this.platform = platform;
 		this.menu = menu;
 		this.storage = new Storage(SqlStorage);
 		this.local = new Storage(LocalStorage);
+        // Set global configs
+        // Get target to determine configs
+        this.projectTarget = gc.getProjectTarget();
 
-		this.initializeApp();
+        // get config of selected target
+        this.config = Configs.setConfigs(this.projectTarget);
+        this.tokens = this.config.tokenInstabug;
 
-		this.pages = [
-			{title: "Lancer une recherche", component: HomePage, icon: "search", isBadged: false}
-		];
-		this.loggedInPages = [
-			{title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false},
-			{title: "Mes offres", component: OfferListPage, icon: "megaphone", isBadged: true},
-			{title: "Mes missions", component: MissionListPage, icon: "paper", isBadged: false},
-			{title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false},
-			{title:"A propos", component: AboutPage, icon:"help-circle", isBadges: false}
-			//{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
-		];
-		this.loggedOutPages = [
-			{title: "Se connecter", component: PhonePage, icon: "log-in", isBadged: false},
-			{title:"A propos", component: AboutPage, icon:"help-circle", isBadges: false}
-		];
+        this.initializeApp(gc);
 
-
-		this.rootPage = HomePage;//ProfilePage;//OfferAddPage;//HomePage;//OfferDetailPage;//
-
-		// Set global configs
-		// Get target to determine configs
-		this.projectTarget = gc.getProjectTarget();
-
-		// get config of selected target
-		this.config = Configs.setConfigs(this.projectTarget);
-
-		//local menu variables
-		this.isEmployer = (this.projectTarget == 'employer');
-		this.bgMenuURL = this.config.bgMenuURL;
-		this.userImageURL = this.config.userImageURL;
-		this.userName = this.isEmployer ? 'Employeur' : 'Jobyer';
-		this.userMail = "";
-		this.themeColor = this.config.themeColor;
-		this.menuBackgroundImage = this.config.menuBackgroundImage;
-
-		//fake call of setMissions from mission-service to fill local db with missions data for test
-		//missionService.setMissions();
-
-		this.listenToLoginEvents();
-
-		this.offerCount = 0;
-		this.isCalculating = true;
+        this.pages = [
+            {title: "Lancer une recherche", component: HomePage, icon: "search", isBadged: false}
+        ];
+        this.loggedInPages = [
+            {title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false},
+            {title: "Mes offres", component: OfferListPage, icon: "megaphone", isBadged: true},
+            {title: "Mes missions", component: MissionListPage, icon: "paper", isBadged: false},
+            {title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false},
+            {title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false}
+            //{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
+        ];
+        this.loggedOutPages = [
+            {title: "Se connecter", component: PhonePage, icon: "log-in", isBadged: false},
+            {title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false}
+        ];
 
 
-	}
+        this.rootPage = HomePage;//ProfilePage;//OfferAddPage;//HomePage;//OfferDetailPage;//
 
-	initializeApp() {
-		this.platform.ready().then(() => {
-			// Okay, so the platform is ready and our plugins are available.
-			// Here you can do any higher level native things you might need.
-			// target:string = "employer"; //Jobyer
+        //local menu variables
+        this.isEmployer = (this.projectTarget == 'employer');
+        this.bgMenuURL = this.config.bgMenuURL;
+        this.userImageURL = this.config.userImageURL;
+        this.userName = this.isEmployer ? 'Employeur' : 'Jobyer';
+        this.userMail = "";
+        this.themeColor = this.config.themeColor;
+        this.menuBackgroundImage = this.config.menuBackgroundImage;
+
+        //fake call of setMissions from mission-service to fill local db with missions data for test
+        //missionService.setMissions();
+
+        this.listenToLoginEvents();
+
+        this.offerCount = 0;
+        this.isCalculating = true;
+
+
+    }
+
+    initializeApp(gc:any) {
+        this.platform.ready().then(() => {
+            // Okay, so the platform is ready and our plugins are available.
+            // Here you can do any higher level native things you might need.
+            // target:string = "employer"; //Jobyer
 
 			//	We will initialize the new offer
 			this.local.remove('jobData');
@@ -141,9 +144,40 @@ export class Vitonjob {
 				});
 				this.nav.present(toast);
 			}
+            // Instabug integration 
+            if ((<any>window).cordova) {
+                
+                gc.setInstabug(cordova.plugins.instabug);
+                cordova.plugins.instabug.activate(
+                    {
+                        android: this.tokens.android,
+                        ios: this.tokens.ios
+                    },
+                    'button',
+                    {
+                        commentRequired: true,
+                        emailRequired: true,
+                        shakingThresholdAndroid: '1.5',
+                        shakingThresholdIPhone: '1.5',
+                        shakingThresholdIPad: '0.6',
+                        enableIntroDialog: false,
+                        floatingButtonOffset: '200',
+                        setLocale: 'french',
+                        colorTheme: 'light'
+                    },
+                    function () {
+                        console.log('Instabug initialized.');
+                    },
+                    function (error) {
+                        console.log('Instabug could not be initialized - ' + error);
+                    }
+                );
+            }
 
-			var offline = Observable.fromEvent(document, "offline");
-			var online = Observable.fromEvent(document, "online");
+            this.networkService.updateNetworkStat();
+
+            var offline = Observable.fromEvent(document, "offline");
+            var online = Observable.fromEvent(document, "online");
 
 
             offline.subscribe(() => {
@@ -168,37 +202,37 @@ export class Vitonjob {
                 this.changeDetRef.detectChanges();
             });
 
-			StatusBar.styleDefault();
-			
-			//for push notication
-			var push = Push.init({
-				android: {
-				  senderID: "693415120998"
-				},
-				ios: {
-				  alert: "true",
-				  badge: true,
-				  sound: 'false'
-				},
-				windows: {}
-			  });
-			  push.on('registration', (data) => {
-				console.log(data.registrationId);
-				this.storage.set('deviceToken', data.registrationId);
-			  });
-			  push.on('notification', (data) => {
-				console.log(data);
-				if(data.additionalData.data.objectNotif == "ScheduleValidated"){
-					this.zone.run(()=>{
-						this.nav.push(MissionDetailsPage,{contract:JSON.parse(data.additionalData.data.contract)});
-					});
-				}
-			  });
-			  push.on('error', (e) => {
-				console.log(e.message);
-			  });
-		});
-	}
+            StatusBar.styleDefault();
+
+            //for push notication
+            var push = Push.init({
+                android: {
+                    senderID: "693415120998"
+                },
+                ios: {
+                    alert: "true",
+                    badge: true,
+                    sound: 'false'
+                },
+                windows: {}
+            });
+            push.on('registration', (data) => {
+                console.log(data.registrationId);
+                this.storage.set('deviceToken', data.registrationId);
+            });
+            push.on('notification', (data) => {
+                console.log(data);
+                if (data.additionalData.data.objectNotif == "ScheduleValidated") {
+                    this.zone.run(()=> {
+                        this.nav.push(MissionDetailsPage, {contract: JSON.parse(data.additionalData.data.contract)});
+                    });
+                }
+            });
+            push.on('error', (e) => {
+                console.log(e.message);
+            });
+        });
+    }
 
 	listenToLoginEvents() {
 		//verify if the user is already connected
@@ -217,9 +251,9 @@ export class Vitonjob {
 			this.userMail = data[0].email;
 		});
 
-		this.events.subscribe('user:logout', () => {
-			this.enableMenu(false);
-		});
+        this.events.subscribe('user:logout', () => {
+            this.enableMenu(false);
+        });
 
 		this.events.subscribe('picture-change', (newURL)=> {
 			this.userImageURL = newURL;
@@ -233,54 +267,54 @@ export class Vitonjob {
 
 	}
 
-	enableMenu(loggedIn) {
-		this.menu.enable(loggedIn, "loggedInMenu");
-		this.menu.enable(!loggedIn, "loggedOutMenu");
-	}
+    enableMenu(loggedIn) {
+        this.menu.enable(loggedIn, "loggedInMenu");
+        this.menu.enable(!loggedIn, "loggedOutMenu");
+    }
 
-	openPage(page) {
-		//let nav = this.app.getComponent('nav');
-		this.menu.close();
+    openPage(page) {
+        //let nav = this.app.getComponent('nav');
+        this.menu.close();
 
-		if (page.title == 'Déconnexion') {
-			this.storage.set("currentUser", null);
-			this.events.publish('user:logout');
-		}
+        if (page.title == 'Déconnexion') {
+            this.storage.set("currentUser", null);
+            this.events.publish('user:logout');
+        }
 
-		if ((page.title === 'A propos') || (page.title === 'Mes options')) {
-			this.nav.push(page.component);
-		}
-		else {
-			this.nav.setRoot(page.component);
-		}
-	}
+        if ((page.title === 'A propos') || (page.title === 'Mes options')) {
+            this.nav.push(page.component);
+        }
+        else {
+            this.nav.setRoot(page.component);
+        }
+    }
 
-	/**
-	 * @description this method allows to render the multicriteria modal component
-	 */
-	showCriteriaModal(){
-		let m = new Modal(SearchCriteriaPage);
-		this.menu.close();
-		this.nav.present(m);
-	}
+    /**
+     * @description this method allows to render the multicriteria modal component
+     */
+    showCriteriaModal() {
+        let m = new Modal(SearchCriteriaPage);
+        this.menu.close();
+        this.nav.present(m);
+    }
 
-	/**
-	 * @description this method allows to render the guided search modal component
-	 */
-	showGuideModal(){
-		let m = new Modal(SearchGuidePage);
-		this.menu.close();
-		this.nav.present(m);
-	}
+    /**
+     * @description this method allows to render the guided search modal component
+     */
+    showGuideModal() {
+        let m = new Modal(SearchGuidePage);
+        this.menu.close();
+        this.nav.present(m);
+    }
 }
 
 ionicBootstrap(Vitonjob, [GlobalConfigs, SearchService, UserService, ContractService, SmsService,
-	MissionService, NetworkService, Helpers, OffersService], {
-	backButtonText: "",
-	monthNames: ['Janvier', 'F\u00e9vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao\u00fbt', 'Septembre', 'Octobre', 'Novembre', 'D\u00e9cembre'],
-	monthShortNames: ['Jan', 'F\u00e9v', 'Mar', 'Avr', 'Jui', 'Juil', 'Ao\u00fb', 'Sept', 'Oct', 'Nov', 'D\u00e9c'],
-	dayNames: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
-	dayShortNames: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+    MissionService, NetworkService, Helpers, OffersService], {
+    backButtonText: "",
+    monthNames: ['Janvier', 'F\u00e9vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao\u00fbt', 'Septembre', 'Octobre', 'Novembre', 'D\u00e9cembre'],
+    monthShortNames: ['Jan', 'F\u00e9v', 'Mar', 'Avr', 'Jui', 'Juil', 'Ao\u00fb', 'Sept', 'Oct', 'Nov', 'D\u00e9c'],
+    dayNames: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
+    dayShortNames: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
 });
 
 
