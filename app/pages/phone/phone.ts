@@ -45,7 +45,13 @@ export class PhonePage {
 		* @description While constructing the view, we load the list of countries to display their codes
 	*/
 	constructor(public nav: NavController,
-	public gc: GlobalConfigs, private authService: AuthenticationService, private loadListService: LoadListService, private dataProviderService: DataProviderService, private globalService: GlobalService, private validationDataService: ValidationDataService, public events: Events) {
+				public gc: GlobalConfigs, 
+				private authService: AuthenticationService, 
+				private loadListService: LoadListService, 
+				private dataProviderService: DataProviderService, 
+				private globalService: GlobalService, 
+				private validationDataService: ValidationDataService, 
+				public events: Events) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -164,7 +170,6 @@ export class PhonePage {
 			//if user is connected for the first time, redirect him to the page 'civility', else redirect him to the home page
 			var isNewUser = data.newAccount;
 			if (isNewUser) {
-				this.globalService.showAlertValidation("VitOnJob", "Bienvenue dans votre espace VitOnJob!");
 				this.nav.setRoot(CivilityPage, {
 				currentUser: data});
 				} else {

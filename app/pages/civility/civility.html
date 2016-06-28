@@ -84,7 +84,7 @@
 	
 	<ion-row>
 		<ion-col text-center>
-		    <button class="file-upload button-picture">
+		    <button class="file-upload button-picture" [style.backgroundColor]="themeColor">
 			    <input type="file" class="file-input" (change)="onChangeUpload($event)">
 				<ion-icon name="download" style="padding-right: .4em;"></ion-icon>
 				 Charger un scan {{scanTitle}}

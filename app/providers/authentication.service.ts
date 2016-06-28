@@ -187,22 +187,60 @@ export class AuthenticationService {
 		* @description update employer and jobyer personal address
 		* @param roleId, address
 	*/
-	updateUserPersonalAddress(id: string, address, geolocAddress){
+	decorticateAddress(name, address){
 		//formating the address
 		var street = "";
 		var cp = "";
 		var ville = "";
 		var pays = "";
+		var adrArray = [];
 		if(address){
-			street = this.getStreetFromGoogleAddress(address);
+			street = name + ", " + this.getStreetFromGoogleAddress(address);
+			adrArray.push(street);
 			cp = this.getZipCodeFromGoogleAddress(address);
+			adrArray.push(cp);
 			ville = this.getCityFromGoogleAddress(address);
+			adrArray.push(ville);
 			pays = this.getCountryFromGoogleAddress(address);
-			}else{
-			street = this.getStreetFromGeolocAddress(geolocAddress);
-			ville = this.getCityFromGeolocAddress(geolocAddress);
-			pays = this.getCountryFromGeolocAddress(geolocAddress);
+			adrArray.push(pays);
+			return adrArray;
 		}
+	}
+	
+	decorticateGeolocAddress(geolocAddress){
+		var adrArray = ['', '', '', ''];
+		var street = "";
+		for(var i = 0; i < geolocAddress.address_components.length; i++){
+			if(geolocAddress.address_components[i].types[0] == "street_number"){
+				street = street + geolocAddress.address_components[i].long_name + " ";
+				continue;
+			}
+			if(geolocAddress.address_components[i].types[0] == "route"){
+				street = street + geolocAddress.address_components[i].long_name + " ";
+				continue;
+			}
+			if(geolocAddress.address_components[i].types[0] == "street_address"){
+				street = street + geolocAddress.address_components[i].long_name + " ";
+				continue;
+			}
+			if(geolocAddress.address_components[i].types[0] == "postal_code"){
+				adrArray.splice(1, 1, geolocAddress.address_components[i].long_name);	
+				continue;
+			}
+			if(geolocAddress.address_components[i].types[0] == "locality"){
+				adrArray.splice(2, 1, geolocAddress.address_components[i].long_name);	
+				continue;
+			}
+			if(geolocAddress.address_components[i].types[0] == "country"){
+				adrArray.splice(3, 1, geolocAddress.address_components[i].long_name);	
+				continue;
+			}
+		}
+		adrArray.splice(0, 1, street);
+		return adrArray;
+	}
+	
+	updateUserPersonalAddress(id: string, street, cp, ville, pays){
 		//  Now we need to save the address
 		var addressData = {
 			'class': 'com.vitonjob.localisation.AdressToken',
@@ -241,23 +279,7 @@ export class AuthenticationService {
 		* @description update employer and jobyer job address
 		* @param id  : entreprise id for employer role and role id for jobyer role, address
 	*/
-	updateUserJobAddress(id: string, address, geolocAddress){
-		//formating the address
-		var street = "";
-		var cp = "";
-		var ville = "";
-		var pays = "";
-		if(address){
-			street = this.getStreetFromGoogleAddress(address);
-			cp = this.getZipCodeFromGoogleAddress(address);
-			ville = this.getCityFromGoogleAddress(address);
-			pays = this.getCountryFromGoogleAddress(address);
-			}else{
-			street = this.getStreetFromGeolocAddress(geolocAddress);
-			ville = this.getCityFromGeolocAddress(geolocAddress);
-			pays = this.getCountryFromGeolocAddress(geolocAddress);
-		}
-		
+	updateUserJobAddress(id: string, street, cp, ville, pays){
 		//  Now we need to save the address
 		var addressData = {
 			'class': 'com.vitonjob.localisation.AdressToken',
@@ -288,6 +310,36 @@ export class AuthenticationService {
 			this.http.post(this.configuration.calloutURL, stringData, {headers:headers})
 			.subscribe(data => {
 	            this.data = data;
+	            resolve(this.data);
+			});
+		});
+	}
+	
+	getAddressByUser(id){
+		var payload = {
+		  'class' : 'fr.protogen.masterdata.model.CCallout',
+		  id : 165,
+		  args : [
+			{
+			  class : 'fr.protogen.masterdata.model.CCalloutArguments',
+			  label : 'Requete de recherche',
+			  value : btoa(id)
+			},
+			{
+			  class : 'fr.protogen.masterdata.model.CCalloutArguments',
+			  label : 'ID Offre',
+			  value : btoa(this.projectTarget == 'employer' ? 'employeur' : this.projectTarget)
+			}
+		  ]
+		}
+		var stringData = JSON.stringify(payload);
+
+		return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'application/json');
+			this.http.post(this.configuration.calloutURL, stringData, {headers:headers})
+			.subscribe(data => {
+	            this.data = JSON.parse(data._body);
 	            resolve(this.data);
 			});
 		});
@@ -392,6 +444,7 @@ export class AuthenticationService {
 			return "";
 		}
 	}
+	
 	
 	/**
 		* @description function for uploading the scan to the server, in the forme of base 64 string 
