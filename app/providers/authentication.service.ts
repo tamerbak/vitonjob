@@ -107,7 +107,7 @@ export class AuthenticationService {
 			this.http.post(url, JSON.stringify(body), {headers : headers}).map(res => res.json())
 			.subscribe(data => {
 	            this.data = data;
-	            console.log("hanawan hasilawan", data);
+	            console.log("push success", data);
 	            resolve(this.data);
 			},
 			err => console.log(err));
@@ -195,7 +195,10 @@ export class AuthenticationService {
 		var pays = "";
 		var adrArray = [];
 		if(address){
+		if(name.trim() != this.getStreetFromGoogleAddress(address).trim().replace("&#39;", "'"))
 			street = name + ", " + this.getStreetFromGoogleAddress(address);
+		else
+			street = this.getStreetFromGoogleAddress(address);
 			adrArray.push(street);
 			cp = this.getZipCodeFromGoogleAddress(address);
 			adrArray.push(cp);

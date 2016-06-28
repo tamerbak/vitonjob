@@ -108,6 +108,10 @@ export class CivilityPage {
 					this.cni = this.currentUser.jobyer.cni;
 					this.numSS = this.currentUser.jobyer.numSS;
 					this.nationality = this.currentUser.jobyer.natId;
+					if(this.nationality == 9)
+						this.scanTitle=" de votre CNI";
+					else
+						this.scanTitle=" de votre autorisation de travail";
 				}
 			}
 		});
