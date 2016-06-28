@@ -59,7 +59,7 @@ export class JobAddressPage {
 		// Set local variables and messages
 		this.themeColor = config.themeColor;
 		this.isEmployer = (this.projectTarget == 'employer');
-		this.titlePage = this.isEmployer ? "Adresse mission" : "Adresse de départ au travail";
+		this.titlePage = this.isEmployer ? "Adresse lieu de travail" : "Adresse de départ au travail";
 		//this.tabs=tabs;
 		this.storage = new Storage(SqlStorage);
 		//get current employer data from params passed by phone/mail connection
@@ -125,7 +125,7 @@ export class JobAddressPage {
 	displayRequestAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Géolocalisation : êtes-vous connecté depuis votre" + (this.isEmployer ? " lieu de mission" : " lieu de départ au travail") +"?",
+			message: "Géolocalisation : êtes-vous connecté depuis votre" + (this.isEmployer ? " lieu de travail" : " lieu de départ au travail") +"?",
 			buttons: [
 				{
 					text: 'Non',
@@ -153,7 +153,7 @@ export class JobAddressPage {
 	displayGeolocationAlert(){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider l'" + (this.isEmployer ? "adresse de mission." : "adresse de départ au travail."),
+			message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider l'" + (this.isEmployer ? "adresse lieu de travail." : "adresse de départ au travail."),
 			buttons: [
 				{
 					text: 'Non',

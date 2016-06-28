@@ -74,7 +74,7 @@
         <ion-item text-wrap>
             <ion-icon subtle large item-left name='pin' style="color: #757575"></ion-icon>
             <h5 *ngIf="!isEmployer">Adresse départ au travail</h5>
-            <h5 *ngIf="isEmployer">Adresse de la mission</h5>
+            <h5 *ngIf="isEmployer">Adresse lieu de travail</h5>
             <p *ngIf="!isEmployer">{{userData.jobyer.workAdress.fullAdress}}</p>
             <p *ngIf="isEmployer  && userData.employer.entreprises.length != 0">{{userData.employer.entreprises[0].workAdress.fullAdress}}</p>
 		<button clear item-right (click)="goToJobAddressTab()"><ion-icon name="create"></ion-icon></button>

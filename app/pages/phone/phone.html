@@ -18,7 +18,7 @@
 		<ion-col width-10>
 			<button (click)="doRadioAlert()" class="button button-clear button-outline"><ion-icon name="ios-arrow-down"></ion-icon></button>
 		</ion-col>
-		<ion-col style="    padding-left: 20px;">
+		<ion-col style="padding-left: 20px;">
 			<ion-item>
 				<ion-input type="number" [(ngModel)]="phone" (keyup)="watchPhone($event)" maxlength="9"></ion-input>
 			</ion-item>
@@ -28,10 +28,12 @@
 	
 	<ion-label [hidden]="!showEmailField" stacked>Votre email</ion-label>
 	<ion-item [hidden]="!showEmailField">
-		<ion-input #focusable id="email" type="email" [(ngModel)]="email"></ion-input>
+		<ion-input #focusable id="email" type="email" [(ngModel)]="email" (change)="isEmailExist($event)"></ion-input>
 	</ion-item>
 	<div [hidden]="!showEmailError()" 
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Veuillez saisir un email valide</div>
+	<div [hidden]="!emailExist" 
+            class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Cet email est déjà utilisé. Veuillez choisir un autre.</div>
 	
 	<ion-label stacked>Votre mot de passe</ion-label>
 	<ion-item>
