@@ -336,6 +336,48 @@ export class OffersService {
         return this.db.get('currentUser');
     }
 
+    loadSectorsToLocal(){
+        let sql = 'select pk_user_metier as id, libelle as libelle from user_metier';
+        console.log(sql);
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    this.listSectors = data.data;
+                    this.db.set('SECTOR_LIST',JSON.stringify(this.listSectors));
+                    resolve(this.listSectors);
+                });
+        });
+    }
+
+    loadJobsToLocal(){
+        let sql = 'select pk_user_job as id, libelle as libelle, fk_user_metier as idSector from user_job';
+        console.log(sql);
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    this.listJobs = data.data;
+                    this.db.set('JOB_LIST',JSON.stringify(this.listJobs));
+                    resolve(this.listJobs);
+                });
+        });
+    }
+
     /**
      * @description     loading sector list
      * @return sector list in the format {id : X, libelle : X}
