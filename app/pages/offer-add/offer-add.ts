@@ -86,7 +86,7 @@ export class OfferAddPage {
             isCalendar: false
         };
 
-        this.visibleOffer = true;
+        this.visibleOffer = false;
 
         this.offerToBeAdded = {
             jobData: "", calendarData: [], qualityData: [], languageData: [],

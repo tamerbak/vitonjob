@@ -10,6 +10,7 @@ import {Storage, SqlStorage} from 'ionic-angular';
 import {GlobalService} from "../../providers/global.service";
 import {Camera} from 'ionic-native';
 import {NgZone} from '@angular/core';
+import {CommunesService} from "../../providers/communes-service/communes-service";
 
 /**
 	* @author Amal ROCHD
@@ -18,7 +19,7 @@ import {NgZone} from '@angular/core';
 */
 @Component({
 	templateUrl: 'build/pages/civility/civility.html',
-	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService]
+	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService, CommunesService]
 })
 export class CivilityPage {
 	//tabs:Tabs;
@@ -41,19 +42,23 @@ export class CivilityPage {
 	isAPEValid = true;
 	isSIRETValid = true;
 	fromPage: string;
+	communes : any = [];
+	selectedCommune : any;
+	communesService : CommunesService;
 	
 	/**
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
 	*/
 	constructor(public nav: NavController, 
-				private authService: AuthenticationService,
-				public gc: GlobalConfigs, 
-				private loadListService: LoadListService, 
-				private sqlStorageService: SqlStorageService, 
-				params: NavParams, 
-				private globalService: GlobalService, 
-				private zone: NgZone, 
-				public events: Events) {
+	private authService: AuthenticationService,
+	public gc: GlobalConfigs, 
+	private loadListService: LoadListService, 
+	private sqlStorageService: SqlStorageService, 
+	params: NavParams, 
+	private globalService: GlobalService, 
+	private zone: NgZone, 
+	public events: Events,
+	communesService : CommunesService) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -81,6 +86,29 @@ export class CivilityPage {
 			}else{
 			this.scanTitle = " de votre extrait k-bis";
 		}
+		
+		this.communesService = communesService;
+	}
+	
+	watchBirthPlace(e){
+		
+		let val = e.target.value;
+		if(val.length<3){
+			this.communes = [];
+			return;
+		}
+		console.log(val);
+		this.communes = [];
+		this.communesService.getCommunes(val).then(data=>{
+			this.communes = data;
+			console.log(JSON.stringify(this.communes));
+		});
+	}
+	
+	communeSelected(commune){
+		this.birthplace = commune.nom;
+		this.selectedCommune = commune;
+		this.communes = [];
 	}
 	
 	ionViewDidEnter(){
@@ -109,9 +137,9 @@ export class CivilityPage {
 					this.numSS = this.currentUser.jobyer.numSS;
 					this.nationality = this.currentUser.jobyer.natId;
 					if(this.nationality == 9)
-						this.scanTitle=" de votre CNI";
+					this.scanTitle=" de votre CNI";
 					else
-						this.scanTitle=" de votre autorisation de travail";
+					this.scanTitle=" de votre autorisation de travail";
 				}
 			}
 		});
@@ -159,7 +187,7 @@ export class CivilityPage {
 					loading.dismiss();
 					if(this.fromPage == "profil"){
 						this.nav.pop();
-					}else{
+						}else{
 						//redirecting to personal address tab
 						//this.tabs.select(1);
 						this.nav.push(PersonalAddressPage);
@@ -197,7 +225,7 @@ export class CivilityPage {
 					loading.dismiss();
 					if(this.fromPage == "profil"){
 						this.nav.pop();
-					}else{
+						}else{
 						//redirecting to personal address tab
 						//this.tabs.select(1);
 						this.nav.push(PersonalAddressPage);
@@ -258,20 +286,20 @@ export class CivilityPage {
 		}
 		/*if(this.numSS.length == 1){
 			this.numSS = this.numSS + " ";
-		}
-		if(this.numSS.length == 4){
+			}
+			if(this.numSS.length == 4){
 			this.numSS = this.numSS + " ";
-		}
-		if(this.numSS.length == 7){
+			}
+			if(this.numSS.length == 7){
 			this.numSS = this.numSS + " ";
-		}
-		if(this.numSS.length == 10){
+			}
+			if(this.numSS.length == 10){
 			this.numSS = this.numSS + " ";
-		}
-		if(this.numSS.length == 14){
+			}
+			if(this.numSS.length == 14){
 			this.numSS = this.numSS + " ";
-		}
-		if(this.numSS.length == 18){
+			}
+			if(this.numSS.length == 18){
 			this.numSS = this.numSS + " ";
 		}*/
 	}
@@ -352,7 +380,7 @@ export class CivilityPage {
 		if(this.isNumeric(s.substring(0, 4)) && this.isLetter(s.substring(4, 5)) && s.length == 5){
 			e.target.value = this.changeToUppercase(s);
 			this.isAPEValid = true;
-		}else{
+			}else{
 			this.isAPEValid = false;
 		}
 		
