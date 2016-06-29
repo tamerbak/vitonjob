@@ -56,14 +56,14 @@
         <ion-card-header class="candidate-card-header" style="padding:5px">
           <ion-grid style="padding:0px">
             <ion-row>
-              <ion-col width-15>{{searchResults.indexOf(item) + 1 }} / {{resultsCount}}</ion-col>
-              <ion-col width-70>{{item.titre}} {{item.prenom}} {{item.nom}}</ion-col>
+              <ion-col width-85>{{item.titre}} {{item.prenom}} {{item.nom}}</ion-col>
               <ion-col width-15><ion-badge secondary="" style="margin:-5px">{{item.matching}} %</ion-badge></ion-col>
             </ion-row>
           </ion-grid>
         </ion-card-header>
         <ion-card-content class="candidate-card-content">
-          <h2>{{item.titreoffre}}</h2>
+          {{searchResults.indexOf(item) + 1 }} / {{resultsCount}}
+          <h2>{{item.titreOffre}}{{item.titreoffre}}</h2>
           <ion-row>
             <span>Tel : {{item.tel}}</span>
           </ion-row>
@@ -71,18 +71,15 @@
             <span>Email : {{item.email}}</span>
           </ion-row>
           <ion-row>
-            <ion-col width-10>
-              <button secondary (click)="recruitJobyer(item)" *ngIf="isEmployer" >Recruter</button>
-            </ion-col>
-            <ion-col width-50></ion-col>
-            <ion-col  width-40>
               <button secondary (click)="dialNumber(item)">
-                <ion-icon name="md-mail"></ion-icon>
-              </button>
-              <button secondary (click)="sendSMS(item)">
                 <ion-icon name="md-call"></ion-icon>
               </button>
-            </ion-col >
+              <button secondary (click)="sendSMS(item)">
+                <ion-icon name="md-mail"></ion-icon>
+              </button>
+            <button secondary (click)="recruitJobyer(item)" *ngIf="isEmployer" >
+              <ion-icon name="checkmark-circle-outline" ></ion-icon>
+            </button>
           </ion-row>
         </ion-card-content>
       </ion-card>
