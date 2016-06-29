@@ -110,7 +110,7 @@ export class OffersService {
         let offers:any;
         let result:any;
         return this.db.get('currentUser').then(data => {
-            debugger;
+            
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -191,7 +191,7 @@ export class OffersService {
         delete offerData['identity'];
         delete offerData.jobData['idLevel'];
 
-        debugger;
+        
         // store in remote database
         let stringData = JSON.stringify(offerData);
         console.log('Adding offer payload : '+stringData);
@@ -200,7 +200,7 @@ export class OffersService {
 
         let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            id: 133,
+            id: 169,
             args: [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'creation offre',
@@ -499,7 +499,7 @@ export class OffersService {
      * @return the promise of job propositions
      */
     getOffersJob(idOffer:number, offerTable:string) {
-        debugger;
+        
         var sql = "select job.pk_user_job as id, job.libelle as libellejob, metier.pk_user_metier as idmetier, metier.libelle as libellemetier " +
             "from user_job job, user_metier metier where job.fk_user_metier = metier.pk_user_metier and " +
             "job.pk_user_job in (select fk_user_job from user_pratique_job where fk_" + offerTable + " = " + idOffer + ")";
