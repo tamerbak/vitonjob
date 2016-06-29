@@ -66,7 +66,8 @@ export class Vitonjob {
                 private missionService:MissionService,
                 private networkService:NetworkService,
                 private changeDetRef:ChangeDetectorRef,
-                public events:Events, offerService:OffersService,
+                public events:Events,
+                public offerService:OffersService,
                 private zone:NgZone) {
 
 		this.app = app;
@@ -120,7 +121,9 @@ export class Vitonjob {
         this.offerCount = 0;
         this.isCalculating = true;
 
-
+        //  Initialize sectors and job lists
+        this.offerService.loadSectorsToLocal();
+        this.offerService.loadJobsToLocal();
     }
 
     initializeApp(gc:any) {
