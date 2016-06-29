@@ -15,38 +15,13 @@ export class GlobalConfigs {
     private avatars:any;
     // 3rd Color for backgrounds
     private thirdThemeColor:string;
+    // Instabug object
+    private instabug: any;
 
     constructor() {
         this.projectTarget = "employer";
         this.cnxBtnName = "Se connecter / S'inscrire";
         this.thirdThemeColor = '#f4f4f4';
-        this.avatars = {
-            jobyer: [
-                {
-                    url: 'img/jobyer.png'
-                },
-                {
-                    url: 'img/jobyer2.png'
-                },
-                {
-                    url: 'img/jobyer3.png'
-                },
-                {
-                    url: 'img/jobyer4.png'
-                }
-            ],
-            employer: [
-                {
-                    url: 'img/employer.png'
-                },
-                {
-                    url: 'img/employer2.png'
-                },
-                {
-                    url: 'img/employer3.png'
-                }
-            ]
-        }
     }
 
     setProjectTarget(value) {
@@ -79,6 +54,14 @@ export class GlobalConfigs {
 
     getThirdThemeColor() {
         return this.thirdThemeColor;
+    }
+
+    setInstabug(value) {
+        this.instabug = value;
+    }
+
+    getInstabug() {
+        return this.instabug;
     }
 
 }

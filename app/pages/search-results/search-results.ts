@@ -194,7 +194,7 @@ export class SearchResultsPage implements OnInit {
 
         google.maps.event.addListener(marker, 'click', function(){
             infoWindow.open(this.map, marker);
-            debugger;
+            
             this.itemSelected(r);
         }.bind(this));
 
@@ -284,7 +284,7 @@ export class SearchResultsPage implements OnInit {
     }
 
     recruiteFromMap(index){
-        debugger;
+        
         let jobyer = this.searchResults[index];
         this.recruitJobyer(jobyer);
     }
@@ -330,7 +330,16 @@ export class SearchResultsPage implements OnInit {
 
             } else {
                 //redirect employer to fill the missing informations
-                this.nav.push(InfoUserPage, {currentUser: this.employer});
+                let alert = Alert.create({
+                    title: 'Informations incomplète',
+                    subTitle: "Veuillez compléter votre profil avant d'établir votre premier contrat",
+                    buttons: ['OK']
+                });
+                alert.onDismiss(()=>{
+                    this.nav.push(InfoUserPage, {currentUser: this.employer});
+                });
+                this.nav.present(alert);
+
             }
         }
         else
@@ -360,7 +369,7 @@ export class SearchResultsPage implements OnInit {
      * @description Create a draggable widget to propose criteria for creating an offer from search results
      */
     createCriteria(){
-        debugger;
+        
         if(!this.searchResults || isUndefined(this.searchResults) || this.searchResults.length == 0)
             return;
 
@@ -467,7 +476,7 @@ export class SearchResultsPage implements OnInit {
     }
 
     toggleProposition(){
-        debugger;
+        
         let proposition = {
             proposedJob : this.proposedJob,
             proposedLanguages : this.proposedLanguages,
