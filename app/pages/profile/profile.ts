@@ -152,6 +152,9 @@ export class ProfilePage implements OnInit {
 								this.noSecondAddress = false;
 							}else{
 								this.noSecondAddress = true;
+								let addresses = [latLng1];
+								let bounds = new google.maps.LatLngBounds();
+								this.addMarkers(addresses, bounds);
 							}
 						});
 					}else {
