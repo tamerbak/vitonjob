@@ -279,53 +279,27 @@ export class OffersService {
 
         //  Get job and offer reference
         let job = offer.jobData.job;
-        let sector = offer.jobData.sector;
-        let offerId = offer.idOffer;
 
-        let searchQuery = {
-            class: 'com.vitonjob.callouts.recherche.SearchQuery',
-            job: job,
-            metier: '',
-            lieu: '',
-            nom: '',
-            entreprise: '',
-            date: '',
-            table: (projectTarget === 'jobyer') ? 'user_offre_entreprise' : 'user_offre_jobyer',
-            idOffre: offerId
-        };
-        console.log(searchQuery);
-        //  Prepare payload
-        let query = JSON.stringify(searchQuery);
-
-        let payload = {
-            'class': 'fr.protogen.masterdata.model.CCallout',
-            id: 159,
-            args: [
-                {
-                    class: 'fr.protogen.masterdata.model.CCalloutArguments',
-                    label: 'Requete de recherche',
-                    value: btoa(query)
-                }
-            ]
-        };
-
-        // don't have the data yet
+        let table = (projectTarget === 'jobyer') ? 'user_offre_entreprise' : 'user_offre_jobyer';
+        let sql = "select pk_"+table+" from "+table+" where pk_"+table+" in (select fk_"+table+" from user_pratique_job where fk_user_job in ( select pk_user_job from user_job where lower_unaccent(libelle) like lower_unaccent('%"+job+"%')))";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
             let headers = new Headers();
-            headers.append("Content-Type", 'application/json');
-            this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
-                    this.offersList = data;
-                    console.log(this.offersList);
-                    resolve(this.offersList);
+                    console.log(data);
+                    this.offerList = data.data;
+                    console.log(this.offerList);
+                    resolve(this.offerList);
                 });
         });
+
     }
 
     /**
