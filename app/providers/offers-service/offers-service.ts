@@ -110,7 +110,7 @@ export class OffersService {
         let offers:any;
         let result:any;
         return this.db.get('currentUser').then(data => {
-            debugger;
+            
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -191,7 +191,7 @@ export class OffersService {
         delete offerData['identity'];
         delete offerData.jobData['idLevel'];
 
-        debugger;
+        
         // store in remote database
         let stringData = JSON.stringify(offerData);
         console.log('Adding offer payload : '+stringData);
@@ -200,7 +200,7 @@ export class OffersService {
 
         let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            id: 133,
+            id: 169,
             args: [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'creation offre',
@@ -334,6 +334,48 @@ export class OffersService {
      */
     loadCurrentUser() {
         return this.db.get('currentUser');
+    }
+
+    loadSectorsToLocal(){
+        let sql = 'select pk_user_metier as id, libelle as libelle from user_metier';
+        console.log(sql);
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    this.listSectors = data.data;
+                    this.db.set('SECTOR_LIST',JSON.stringify(this.listSectors));
+                    resolve(this.listSectors);
+                });
+        });
+    }
+
+    loadJobsToLocal(){
+        let sql = 'select pk_user_job as id, libelle as libelle, fk_user_metier as idSector from user_job';
+        console.log(sql);
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    this.listJobs = data.data;
+                    this.db.set('JOB_LIST',JSON.stringify(this.listJobs));
+                    resolve(this.listJobs);
+                });
+        });
     }
 
     /**
@@ -499,7 +541,7 @@ export class OffersService {
      * @return the promise of job propositions
      */
     getOffersJob(idOffer:number, offerTable:string) {
-        debugger;
+        
         var sql = "select job.pk_user_job as id, job.libelle as libellejob, metier.pk_user_metier as idmetier, metier.libelle as libellemetier " +
             "from user_job job, user_metier metier where job.fk_user_metier = metier.pk_user_metier and " +
             "job.pk_user_job in (select fk_user_job from user_pratique_job where fk_" + offerTable + " = " + idOffer + ")";
