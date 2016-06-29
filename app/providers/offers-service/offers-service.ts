@@ -614,8 +614,8 @@ export class OffersService {
         this.configuration = Configs.setConfigs(projectTarget);
 
         //  Constructing the query
-        var table = projectTarget == "jobyer" ? 'user_offre_entreprise' : 'user_offre_jobyer';
-        var sql = "update " + table + " set publiee = '" + statut + "' where pk_" + table + " = '" + offerId + "';";
+        var table = projectTarget == "jobyer" ? 'user_offre_jobyer' : 'user_offre_entreprise';
+		var sql = "update " + table + " set publiee = '" + statut + "' where pk_" + table + " = '" + offerId + "';";
 
 	    return new Promise(resolve => {
 			let headers = new Headers();
@@ -700,8 +700,8 @@ export class OffersService {
     }
 
     updateOfferJobyerTitle(offer){
-        let sql = "update user_offre_jobyer set titre='"+offer.title+"' where pk_user_offre_jobyer="+offer.idOffer;
-
+        let sql = "update user_offre_jobyer set titre='"+offer.title.replace("'", "''")+"', tarif_a_l_heure='"+offer.jobData.remuneration+"' where pk_user_offre_jobyer="+offer.idOffer;
+		
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -928,7 +928,7 @@ export class OffersService {
     }
 
     attacheLanguage(idOffer, table, idLanguage, level){
-        let sql = "insert into user_pratique_langue (fk_"+table+", fk_user_langue, fk_user_niveau) values ("+idOffer+", "+idLanguage+", "+((level=='Débutant')?1:2)+")";
+        let sql = "insert into user_pratique_langue (fk_"+table+", fk_user_langue, fk_user_niveau) values ("+idOffer+", "+idLanguage+", "+((level=='junior')?1:2)+")";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.

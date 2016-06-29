@@ -13,13 +13,13 @@ import {NgZone} from '@angular/core';
 import {CommunesService} from "../../providers/communes-service/communes-service";
 
 /**
- * @author Amal ROCHD
- * @description update civility information
- * @module Authentication
- */
+	* @author Amal ROCHD
+	* @description update civility information
+	* @module Authentication
+*/
 @Component({
-    templateUrl: 'build/pages/civility/civility.html',
-    providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService, CommunesService]
+	templateUrl: 'build/pages/civility/civility.html',
+	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService, CommunesService]
 })
 export class CivilityPage {
     //tabs:Tabs;

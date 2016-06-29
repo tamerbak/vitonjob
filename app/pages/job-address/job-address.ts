@@ -87,7 +87,8 @@ export class JobAddressPage {
 					this.city = this.currentUser.employer.entreprises[0].workAdress.city;
 					this.country = this.currentUser.employer.entreprises[0].workAdress.country;
 					//for old users, retrieve address components from server bd and stocke them in local db
-					if(!this.country && this.searchData){						this.authService.getAddressByUser(this.currentUser.employer.entreprises[0].id).then((data) =>{
+					if(!this.country && this.searchData){
+						this.authService.getAddressByUser(this.currentUser.employer.entreprises[0].id).then((data) =>{
 							this.street = data[1].street;
 							this.zipCode = data[1].zipCode;
 							this.city = data[1].city;
@@ -245,10 +246,10 @@ export class JobAddressPage {
 		//display address components in appropriate inputs
 		var adrArray = this.authService.decorticateAddress(this.selectedPlace.name, this.selectedPlace.adr_address);
 		this.zone.run(()=>{
-			this.street = adrArray[0];
+			this.street = adrArray[0].replace("&#39;", "'");
 			this.zipCode = adrArray[1];
-			this.city = adrArray[2];
-			this.country = adrArray[3];
+			this.city = adrArray[2].replace("&#39;", "'");
+			this.country = adrArray[3].replace("&#39;", "'");
 			this.isGooglePlaceHidden = true;
 		});
 	}

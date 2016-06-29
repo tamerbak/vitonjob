@@ -246,10 +246,10 @@ export class PersonalAddressPage {
 		//display address components in appropriate inputs
 		var adrArray = this.authService.decorticateAddress(this.selectedPlace.name, this.selectedPlace.adr_address);
 		this.zone.run(()=>{
-			this.street = adrArray[0];
+			this.street = adrArray[0].replace("&#39;", "'");
 			this.zipCode = adrArray[1];
-			this.city = adrArray[2];
-			this.country = adrArray[3];
+			this.city = adrArray[2].replace("&#39;", "'");
+			this.country = adrArray[3].replace("&#39;", "'");
 			this.isGooglePlaceHidden = true;
 		});
 	}
