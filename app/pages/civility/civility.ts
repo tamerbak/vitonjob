@@ -45,6 +45,8 @@ export class CivilityPage {
     communes : any = [];
     selectedCommune : any;
     communesService : CommunesService;
+    numSSMessage : string = '';
+    checkSS : boolean = false;
 
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
@@ -88,6 +90,11 @@ export class CivilityPage {
         }
 
         this.communesService = communesService;
+        this.selectedCommune = {
+            id : 0,
+            nom : '',
+            code_insee : ''
+        };
     }
 
     watchBirthPlace(e){
@@ -138,12 +145,70 @@ export class CivilityPage {
                     this.nationality = this.currentUser.jobyer.natId;
                 }
             }
+            debugger;
+            if(this.birthplace && this.birthplace != 'null'){
+               this.communesService.getCommunes(this.birthplace).then(data => {
+                   debugger;
+                   if(data && data.length>0){
+                    this.selectedCommune = data[0];
+                   }
+                   this.checkSS = true;
+               }) ;
+            } else
+                this.checkSS = true;
         });
     }
+
+    checkGender(){
+        let indicator = this.numSS.charAt(0);
+        if ((indicator == '1' && this.title=='M.') || (indicator == '2' && this.title!='M.'))
+            return true;
+        else
+            return false;
+    }
+
+    checkBirthYear(){
+        let indicator = this.numSS.charAt(1)+this.numSS.charAt(2);
+        let birthYear = this.birthdate.split('-')[0];
+        birthYear = birthYear.substr(2);
+        if(indicator == birthYear)
+            return true;
+        else
+            return false;
+    }
+
+    checkBirthMonth(){
+        let indicator = this.numSS.charAt(3)+this.numSS.charAt(4);
+        let birthMonth = this.birthdate.split('-')[1];
+        if(birthMonth.length == 1)
+            birthMonth = "0"+birthMonth;
+        if(indicator == birthMonth)
+            return true;
+        else
+            return false;
+    }
+
+    checkINSEE(){
+        let indicator = this.numSS.substr(5,5);
+        if(this.selectedCommune.id!='0'){
+            if(indicator != this.selectedCommune.code_insee)
+                return false;
+            else
+                return true;
+        }
+        if(indicator.charAt(0) != '9')
+            return false;
+        else
+            return true;
+    }
+
     /**
      * @description update civility information for employer and jobyer
      */
     updateCivility(){
+
+
+
         let loading = Loading.create({
             content: ` 
 			<div>
@@ -259,6 +324,9 @@ export class CivilityPage {
             return (!this.title || !this.firstname || !this.lastname || !this.cni || this.cni.length < 12 || !this.numSS || this.numSS.length != 15 || !this.nationality || !this.birthplace || !this.birthdate)
         }
         else{
+            if(!this.checkGender() || !this.checkBirthYear() || !this.checkBirthMonth() || !this.checkINSEE()){
+                return true;
+            }
             return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5 || !this.isAPEValid)
 
         }
@@ -280,6 +348,9 @@ export class CivilityPage {
         if(!this.numSS){
             return;
         }
+
+
+
         /*if(this.numSS.length == 1){
          this.numSS = this.numSS + " ";
          }
@@ -428,9 +499,36 @@ export class CivilityPage {
      * @description show error msg for num ss field
      */
     showNSSError(){
-        if(this.numSS && this.numSS.length != 15){
+        if(!this.checkSS )
+            return false;
+
+        if(!this.numSS || this.numSS.length != 15){
+            this.numSSMessage = '* Saisissez les 15 chiffres du n° SS';
             return true;
         }
+
+
+        let correct = this.checkGender();
+        if(!correct){
+            this.numSSMessage = '* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles';
+            return true;
+        }
+        correct = this.checkBirthYear();
+        if(!correct){
+            this.numSSMessage = '* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles';
+            return true;
+        }
+        correct = this.checkBirthMonth();
+        if(!correct){
+            this.numSSMessage = '* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles';
+            return true;
+        }
+        correct = this.checkINSEE();
+        if(!correct){
+            this.numSSMessage = '* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles';
+            return true;
+        }
+        return false;
     }
 
     /**
