@@ -122,6 +122,7 @@ export class PhonePage {
 		this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget)
 		.then(data => {
 			console.log(data);
+			
 			//case of authentication failure : server unavailable or connection probleme 
 			if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
 				console.log(data);

@@ -63,6 +63,7 @@ export class CivilityPage {
                 communesService : CommunesService) {
         // Set global configs
         // Get target to determine configs
+        
         this.projectTarget = gc.getProjectTarget();
         this.storage = new Storage(SqlStorage);
 
@@ -127,6 +128,7 @@ export class CivilityPage {
      * @description initiate the civility form with the data of the logged user
      */
     initCivilityForm(){
+        
         this.storage.get("currentUser").then((value) => {
             if(value && value != "null"){
                 this.currentUser = JSON.parse(value);
@@ -145,10 +147,10 @@ export class CivilityPage {
                     this.nationality = this.currentUser.jobyer.natId;
                 }
             }
-            debugger;
+            
             if(this.birthplace && this.birthplace != 'null'){
                this.communesService.getCommunes(this.birthplace).then(data => {
-                   debugger;
+                   
                    if(data && data.length>0){
                     this.selectedCommune = data[0];
                    }
@@ -321,12 +323,15 @@ export class CivilityPage {
      */
     isUpdateDisabled(){
         if(!this.isEmployer){
-            return (!this.title || !this.firstname || !this.lastname || !this.cni || this.cni.length < 12 || !this.numSS || this.numSS.length != 15 || !this.nationality || !this.birthplace || !this.birthdate)
-        }
-        else{
+            if((!this.title || !this.firstname || !this.lastname || !this.cni || this.cni.length < 12 || !this.numSS || this.numSS.length != 15 || !this.nationality || !this.birthplace || !this.birthdate)){
+                return true;
+            }
             if(!this.checkGender() || !this.checkBirthYear() || !this.checkBirthMonth() || !this.checkINSEE()){
                 return true;
             }
+            return false;
+        }
+        else{
             return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5 || !this.isAPEValid)
 
         }
@@ -336,6 +341,8 @@ export class CivilityPage {
      * @description watch and validate the "num de sécurité social" field
      */
     watchNumSS(e){
+        if(this.isEmployer)
+            return;
         var s = e.target.value;
         if(s.length >  14){
             e.preventDefault();
@@ -499,6 +506,8 @@ export class CivilityPage {
      * @description show error msg for num ss field
      */
     showNSSError(){
+        if(this.isEmployer)
+            return false;
         if(!this.checkSS )
             return false;
 
