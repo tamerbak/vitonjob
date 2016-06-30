@@ -323,10 +323,13 @@ export class CivilityPage {
      */
     isUpdateDisabled(){
         if(!this.isEmployer){
+            if((!this.title || !this.firstname || !this.lastname || !this.cni || this.cni.length < 12 || !this.numSS || this.numSS.length != 15 || !this.nationality || !this.birthplace || !this.birthdate)){
+                return true;
+            }
             if(!this.checkGender() || !this.checkBirthYear() || !this.checkBirthMonth() || !this.checkINSEE()){
                 return true;
             }
-            return (!this.title || !this.firstname || !this.lastname || !this.cni || this.cni.length < 12 || !this.numSS || this.numSS.length != 15 || !this.nationality || !this.birthplace || !this.birthdate)
+            return false;
         }
         else{
             return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5 || !this.isAPEValid)
