@@ -390,7 +390,7 @@ export class OfferDetailPage {
 		this.offerService.updateOfferStatut(this.offer.idOffer, statut, this.projectTarget).then(()=> {
 			console.log('offer status changed successfuly');
 			this.offer.visible = (statut == 'Non' ? false : true);
-			this.offerService.setOfferInLocal(this.offer, this.projectTarget);
+			this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
 		});
 	}
 

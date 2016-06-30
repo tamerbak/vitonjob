@@ -630,7 +630,42 @@ export class OffersService {
 		});
 	}
 
-    updateOfferJob(offer, projectTarget){
+    updateOfferInLocal(offer, projectTarget){
+        this.db.get('currentUser').then(data => {
+            if (data) {
+                data = JSON.parse((data));
+                if (projectTarget === 'employer') {
+                    let rawData = data.employer;
+                    //console.log(rawData.entreprises);
+                    if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
+                        //adding userId for remote storing
+                        for(let i = 0 ; i < data.employer.entreprises[0].offers.length ; i++){
+                            if(data.employer.entreprises[0].offers[i].idOffer == offer.idOffer){
+                                data.employer.entreprises[0].offers[i] = offer;
+                                break;
+                            }
+                        }
+                        // Save new offer list in SqlStorage :
+                        this.db.set('currentUser', JSON.stringify(data));
+                    }
+                } else { // jobyer
+                    let rawData = data.jobyer;
+                    if (rawData && rawData.offers) {
+                        for(let i = 0; i < data.jobyer.offers.length ; i++){
+                            if(data.jobyer.offers[i].idOffer == offer.idOffer){
+                                data.jobyer.offers[i] = offer;
+                                break;
+                            }
+                        }
+                        // Save new offer list in SqlStorage :
+                        this.db.set('currentUser', JSON.stringify(data));
+                    }
+                }
+            }
+        });
+    }
+	
+	updateOfferJob(offer, projectTarget){
 
         this.db.get('currentUser').then(data => {
             if (data) {
