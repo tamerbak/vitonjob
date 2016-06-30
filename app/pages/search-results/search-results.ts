@@ -332,7 +332,7 @@ export class SearchResultsPage implements OnInit {
             } else {
                 //redirect employer to fill the missing informations
                 let alert = Alert.create({
-                    title: 'Informations incomplète',
+                    title: 'Informations incomplètes',
                     subTitle: "Veuillez compléter votre profil avant d'établir votre premier contrat",
                     buttons: ['OK']
                 });
