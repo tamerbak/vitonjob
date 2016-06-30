@@ -18,7 +18,10 @@
         <!-- Sector field-->
         <ion-item>
             <ion-label floating>Secteur</ion-label>
-            <ion-input type="text" [(ngModel)]="jobData.sector" (focus)="showSectorList()" (keyup)="watchSector($event)"></ion-input>
+            <ion-input [(ngModel)]="jobData.sector" (keyup)="watchSector($event)" ></ion-input>
+            <button small item-right (click)="setSectorsPicker()" >
+                <ion-icon name="list"></ion-icon>
+            </button>
         </ion-item>
         <ion-item>
             <ion-list>
@@ -27,11 +30,12 @@
                 </ion-item>
             </ion-list>
         </ion-item>
-        <div class="error-box" [hidden]="jobData.sector">* Merci de saisir un secteur</div>
-        <!-- Job field-->
         <ion-item>
             <ion-label floating>Job</ion-label>
-            <ion-input type="text" [(ngModel)]="jobData.job" (focus)="showJobList()" (keyup)="watchJob($event)"></ion-input>
+            <ion-input [(ngModel)]="jobData.job" (keyup)="watchJob($event)"></ion-input>
+            <button small item-right (click)="setJobsPicker()" >
+                <ion-icon name="list"></ion-icon>
+            </button>
         </ion-item>
         <ion-item>
             <ion-list>
@@ -40,8 +44,8 @@
                 </ion-item>
             </ion-list>
         </ion-item>
-        <div class="error-box" [hidden]="jobData.job">* Merci de saisir un job</div>
-        <ion-row>&nbsp;</ion-row>
+
+
         <!-- Level field-->
         <ion-list radio-group [(ngModel)]="jobData.level" style="margin-bottom: 5px;">
             <ion-list-header>
