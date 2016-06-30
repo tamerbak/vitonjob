@@ -237,6 +237,7 @@ export class OfferAddPage {
      * Description : Adding offer in local and remote databases
      */
     addOffer() {
+        
         this.initLocalStorageOffer();
         let loading = Loading.create({
             content: ` 

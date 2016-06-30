@@ -31,6 +31,9 @@ export class ModalJobPage {
     };
     offerService:any;
     db : Storage;
+    sectors : any = [];
+    jobs : any = [];
+
 
     constructor(public nav:NavController,
                 viewCtrl:ViewController,
@@ -66,6 +69,14 @@ export class ModalJobPage {
         this.currency = "euro";
 
         this.db = new Storage(SqlStorage);
+
+
+        this.jobList = [];
+        this.sectorList = [];
+        this.db.get("SECTOR_LIST").then(data => {
+            this.sectorList = JSON.parse(data);
+        });
+
 
         //this.level = 'junior';
 
@@ -105,6 +116,7 @@ export class ModalJobPage {
      */
     closeModal() {
         //this.jobData.validated = false;
+        debugger;
         this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === '') && !(this.jobData.remuneration == 0));
         this.viewCtrl.dismiss(this.jobData);
     }
@@ -123,7 +135,7 @@ export class ModalJobPage {
      * @Description : loads jobs list
      */
     showJobList(){
-        let c = this.jobData.idSector;
+        /*let c = this.jobData.idSector;
         this.db.get("JOB_LIST").then(data => {
 
             this.jobList = JSON.parse(data);
@@ -134,7 +146,7 @@ export class ModalJobPage {
             let selectionModel = Modal.create(ModalSelectionPage,
                 {type: 'job', items: this.jobList, selection: this});
             this.nav.present(selectionModel);
-        });
+        });*/
         /*this.offerService.loadJobs(this.projectTarget).then(data => {
 
             if (this.jobList && this.jobList.length > 0)
@@ -157,19 +169,77 @@ export class ModalJobPage {
      * @Description : loads sector list
      */
     showSectorList() {
-        this.db.get("SECTOR_LIST").then(data => {
+        /*this.db.get("SECTOR_LIST").then(data => {
             this.sectorList = JSON.parse(data);
             let selectionModel = Modal.create(ModalSelectionPage,
                 {type: 'secteur', items: this.sectorList, selection: this});
             this.nav.present(selectionModel);
         });
-        /*this.offerService.loadSectors(this.projectTarget).then(data => {
+        this.offerService.loadSectors(this.projectTarget).then(data => {
             //debugger;
             this.sectorList = data;
             let selectionModel = Modal.create(ModalSelectionPage,
                 {type: 'secteur', items: this.sectorList, selection: this});
             this.nav.present(selectionModel);
         });*/
+
+    }
+
+    watchSector(e){
+        let val = e.target.value;
+        if(val.length<3){
+            this.sectors = [];
+            return;
+        }
+
+        this.sectors = [];
+
+        for(let i = 0 ; i < this.sectorList.length ; i++){
+            let s = this.sectorList[i];
+            if(s.libelle.toLocaleLowerCase().indexOf(val.toLocaleLowerCase())>-1){
+                this.sectors.push(s);
+            }
+        }
+
+    }
+
+    sectorSelected(sector){
+        this.jobData.sector = sector.libelle;
+        this.jobData.idSector = sector.id;
+        this.sectors = [];
+
+        this.db.get("JOB_LIST").then(data => {
+
+            this.jobList = JSON.parse(data);
+            this.jobList = this.jobList.filter((v)=>{
+                return (v.idsector == sector.id);
+            }) ;
+
+        });
+    }
+
+    watchJob(e){
+        let val = e.target.value;
+        if(val.length<3){
+            this.jobs = [];
+            return;
+        }
+
+        this.jobs = [];
+
+        for(let i = 0 ; i < this.jobList.length ; i++){
+            let s = this.jobList[i];
+            if(s.libelle.toLocaleLowerCase().indexOf(val.toLocaleLowerCase())>-1){
+                this.jobs.push(s);
+            }
+        }
+
+    }
+
+    jobSelected(job){
+        this.jobData.job = job.libelle;
+        this.jobData.idJob = job.id;
+        this.jobs = [];
 
     }
 }
