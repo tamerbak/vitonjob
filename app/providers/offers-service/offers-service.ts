@@ -488,7 +488,8 @@ export class OffersService {
     loadQualities(projectTarget:string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
-        var sql = 'select pk_user_indispensable as \"idQuality\", libelle as libelle from user_indispensable';
+        let type = (projectTarget == "jobyer")?'jobyer':'employeur';
+        var sql = "select pk_user_indispensable as \"idQuality\", libelle as libelle from user_indispensable where type='"+type+"'";
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
