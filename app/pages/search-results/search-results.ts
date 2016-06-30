@@ -71,7 +71,7 @@ export class SearchResultsPage implements OnInit {
                 navParams : NavParams,
                 private searchService: SearchService,
                 private userService:UserService,
-                private offersService : OffersService,
+                offersService : OffersService,
                 platform : Platform) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
@@ -80,6 +80,7 @@ export class SearchResultsPage implements OnInit {
         this.isEmployer = this.projectTarget == 'employer';
         this.navParams = navParams;
 
+        this.offersService = offersService;
 
         //  Retrieving last search
         searchService.retrieveLastSearch().then(results =>{
