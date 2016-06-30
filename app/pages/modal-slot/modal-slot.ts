@@ -3,6 +3,7 @@ import {DatePicker} from "ionic-native/dist/index";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {Component} from "@angular/core";
+import {GlobalService} from "../../providers/global.service";
 
 /*
  Generated class for the ModalSlotPage page.
@@ -12,6 +13,7 @@ import {Component} from "@angular/core";
  */
 @Component({
     templateUrl: 'build/pages/modal-slot/modal-slot.html',
+	providers: [GlobalService]
 })
 export class ModalSlotPage {
 
@@ -24,7 +26,7 @@ export class ModalSlotPage {
     private calendarTheme:string;
     private nav:any;
 
-    constructor(public nav:NavController, gc:GlobalConfigs, viewCtrl:ViewController) {
+    constructor(public nav:NavController, gc:GlobalConfigs, viewCtrl:ViewController, private globalService: GlobalService) {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -44,8 +46,8 @@ export class ModalSlotPage {
         };
         this.showedSlot = {
             date: new Date().toISOString(),
-            startHour: '00:00',
-            endHour: '00:00'
+            startHour: null,
+            endHour: null
         };
     }
 
@@ -123,5 +125,17 @@ export class ModalSlotPage {
         let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
         let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
         return hours + ":" + minutes;
+    }
+	
+	 checkHour(i){
+        if(this.showedSlot.startHour && this.showedSlot.endHour && this.showedSlot.startHour >= this.showedSlot.endHour){
+			if(i == 0){
+				this.globalService.showAlertValidation("VitOnJob", "L'heure de début doit être inférieure à l'heure de fin");
+				this.showedSlot.startHour = "";
+			}else{
+				this.globalService.showAlertValidation("VitOnJob", "L'heure de fin doit être supérieure à l'heure de début");
+				this.showedSlot.endHour = "";
+			}
+		}
     }
 }

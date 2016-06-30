@@ -30,8 +30,7 @@
     </ion-item-->
     <ion-item text-wrap>
       <ion-label>Heure de Début</ion-label>
-      <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.startHour"
-                    minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
+      <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.startHour" (ionChange)="checkHour(0)" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
     </ion-item>
 
     <!--ion-item>
@@ -41,8 +40,7 @@
     </ion-item-->
     <ion-item text-wrap>
       <ion-label>Heure de fin</ion-label>
-      <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.endHour"
-                    minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
+      <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.endHour" (ionChange)="checkHour(1)" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
     </ion-item>
   </ion-list>
 
