@@ -18,13 +18,27 @@
         <!-- Sector field-->
         <ion-item>
             <ion-label floating>Secteur</ion-label>
-            <ion-input type="text" [(ngModel)]="jobData.sector" (focus)="showSectorList()"></ion-input>
+            <ion-input type="text" [(ngModel)]="jobData.sector" (focus)="showSectorList()" (keyup)="watchSector($event)"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-list>
+                <ion-item *ngFor="let s of sectors" (click)="sectorSelected(s)">
+                    {{s.libelle}}
+                </ion-item>
+            </ion-list>
         </ion-item>
         <div class="error-box" [hidden]="jobData.sector">* Merci de saisir un secteur</div>
         <!-- Job field-->
         <ion-item>
             <ion-label floating>Job</ion-label>
-            <ion-input type="text" [(ngModel)]="jobData.job" (focus)="showJobList()"></ion-input>
+            <ion-input type="text" [(ngModel)]="jobData.job" (focus)="showJobList()" (keyup)="watchJob($event)"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-list>
+                <ion-item *ngFor="let s of jobs" (click)="jobSelected(s)">
+                    {{s.libelle}}
+                </ion-item>
+            </ion-list>
         </ion-item>
         <div class="error-box" [hidden]="jobData.job">* Merci de saisir un job</div>
         <ion-row>&nbsp;</ion-row>
