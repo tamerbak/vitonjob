@@ -2,7 +2,7 @@ import { NavController, NavParams, ViewController, Alert, Toast} from 'ionic-ang
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {Component} from "@angular/core";
-
+import {ElementRef, Renderer} from '@angular/core'; 
 /*
  Generated class for the ModalSelectionPage page.
 
@@ -15,11 +15,13 @@ import {Component} from "@angular/core";
 export class ModalSelectionPage {
 
     list:any;
-
-    constructor(public nav:NavController,
+	
+	constructor(public nav:NavController,
                 gc:GlobalConfigs,
                 params:NavParams,
-                viewCtrl:ViewController) {
+                viewCtrl:ViewController,
+				public elementRef: ElementRef, 
+				public renderer: Renderer) {
 
 
         // Set global configs
@@ -40,9 +42,15 @@ export class ModalSelectionPage {
         this.searchQuery = "";
         this.searchPlaceholder = 'Recherchez votre ' + params.get('type');
         this.cancelButtonText = 'Annuler';
-
     }
 
+	ionViewDidEnter(){
+		const searchInput = this.elementRef.nativeElement.querySelector('input');
+		setTimeout(() => {
+			//delay required or ionic styling gets finicky
+			this.renderer.invokeElementMethod(searchInput, 'focus', []);
+		}, 0);
+	}
     /**
      * @Description : initializing items' list
      */
