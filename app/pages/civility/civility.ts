@@ -47,6 +47,7 @@ export class CivilityPage {
     communesService : CommunesService;
     numSSMessage : string = '';
     checkSS : boolean = false;
+	uploadVerb: string;
 
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
@@ -89,7 +90,7 @@ export class CivilityPage {
         }else{
             this.scanTitle = " de votre extrait k-bis";
         }
-
+		
         this.communesService = communesService;
         this.selectedCommune = {
             id : 0,
@@ -146,6 +147,11 @@ export class CivilityPage {
                     this.numSS = this.currentUser.jobyer.numSS;
                     this.nationality = this.currentUser.jobyer.natId;
                 }
+				if(this.currentUser.scanUploaded){
+					this.uploadVerb = "Recharger un scan "
+				}else{
+					this.uploadVerb = "Charger un scan "
+				}
             }
             
             if(this.birthplace && this.birthplace != 'null'){
@@ -312,6 +318,8 @@ export class CivilityPage {
                     }
                     else{
                         console.log("Scan uploaded !");
+						this.currentUser.scanUploaded = true;
+                        this.storage.set('currentUser', JSON.stringify(this.currentUser));
                         //this.currentUser.employer.scan = this.scanUri;
                     }
                 });
