@@ -44,7 +44,7 @@
     </ion-item-sliding>
   </ion-list>
   <ion-card *ngIf="resultsCount == 0 ">
-    <ion-card-content>Vitonjob n'a trouvé aucune offre correspondante à votre recherche</ion-card-content>
+    <ion-card-content>Vitonjob n'a trouvé aucune offre correspondant à votre recherche</ion-card-content>
   </ion-card>
   <ion-slides #cardSlider [options]="cardsOptions" (didChange)="onSlideChanged()" *ngIf="cardView">
     <ion-slide *ngFor="let item of searchResults">
