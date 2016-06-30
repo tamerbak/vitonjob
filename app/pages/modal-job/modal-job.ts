@@ -92,7 +92,7 @@ export class ModalJobPage {
                 idSector: 0,
                 idJob: 0,
                 level: 'junior',
-                remuneration: 0,
+                remuneration: null,
                 currency: 'euro',
                 validated: false
             }

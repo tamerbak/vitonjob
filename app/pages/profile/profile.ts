@@ -171,7 +171,7 @@ export class ProfilePage implements OnInit {
 							gData.results[0].geometry.location.lng);
 						let mapOptions = {
 							draggable: false,
-							zoom: 5,
+							//zoom: 5,
 							mapTypeId: google.maps.MapTypeId.ROADMAP
 						};
 						this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
