@@ -337,7 +337,7 @@ export class SearchResultsPage implements OnInit {
                     buttons: ['OK']
                 });
                 alert.onDismiss(()=>{
-                    this.nav.push(InfoUserPage, {currentUser: this.employer});
+                    this.nav.push(CivilityPage, {currentUser: this.employer});
                 });
                 this.nav.present(alert);
 
