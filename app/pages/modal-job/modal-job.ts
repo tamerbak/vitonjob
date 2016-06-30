@@ -1,4 +1,4 @@
-import {NavController, ViewController, Modal, NavParams, Storage, SqlStorage} from 'ionic-angular';
+import {NavController, ViewController, Modal, NavParams} from 'ionic-angular';
 import {FormBuilder, Validators} from "@angular/common";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
@@ -30,14 +30,12 @@ export class ModalJobPage {
         validated:boolean
     };
     offerService:any;
-    db : Storage;
 
     constructor(public nav:NavController,
                 viewCtrl:ViewController,
                 fb:FormBuilder,
                 gc:GlobalConfigs,
-                os:OffersService,
-                params:NavParams) {
+                os:OffersService, params:NavParams) {
 
         // Set global configs
         // Get target to determine configs
@@ -65,8 +63,6 @@ export class ModalJobPage {
 
         this.currency = "euro";
 
-        this.db = new Storage(SqlStorage);
-
         //this.level = 'junior';
 
         //this.jobData.job = this.jobForm.controls['username'];
@@ -92,7 +88,7 @@ export class ModalJobPage {
                 idSector: 0,
                 idJob: 0,
                 level: 'junior',
-                remuneration: null,
+                remuneration: 0,
                 currency: 'euro',
                 validated: false
             }
@@ -123,19 +119,7 @@ export class ModalJobPage {
      * @Description : loads jobs list
      */
     showJobList(){
-        let c = this.jobData.idSector;
-        this.db.get("JOB_LIST").then(data => {
-
-            this.jobList = JSON.parse(data);
-            this.jobList = this.jobList.filter((v)=>{
-                return (v.idsector == c);
-            }) ;
-            console.log(JSON.stringify(this.jobList));
-            let selectionModel = Modal.create(ModalSelectionPage,
-                {type: 'job', items: this.jobList, selection: this});
-            this.nav.present(selectionModel);
-        });
-        /*this.offerService.loadJobs(this.projectTarget).then(data => {
+        this.offerService.loadJobs(this.projectTarget).then(data => {
 
             if (this.jobList && this.jobList.length > 0)
                 return;
@@ -148,7 +132,7 @@ export class ModalJobPage {
                     {type: 'job', items: this.jobList, selection: this});
                 this.nav.present(selectionModel);
             });
-        });*/
+        });
 
     }
 
@@ -157,19 +141,15 @@ export class ModalJobPage {
      * @Description : loads sector list
      */
     showSectorList() {
-        this.db.get("SECTOR_LIST").then(data => {
-            this.sectorList = JSON.parse(data);
-            let selectionModel = Modal.create(ModalSelectionPage,
-                {type: 'secteur', items: this.sectorList, selection: this});
-            this.nav.present(selectionModel);
-        });
-        /*this.offerService.loadSectors(this.projectTarget).then(data => {
+        if (this.sectorList && this.sectorList.length > 0)
+            return;
+        this.offerService.loadSectors(this.projectTarget).then(data => {
             //debugger;
             this.sectorList = data;
             let selectionModel = Modal.create(ModalSelectionPage,
                 {type: 'secteur', items: this.sectorList, selection: this});
             this.nav.present(selectionModel);
-        });*/
+        });
 
     }
 }

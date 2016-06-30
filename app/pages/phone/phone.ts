@@ -40,19 +40,12 @@ export class PhonePage {
 	password2: string;
 	isPhoneNumValid = true;
 	backgroundImage:any;
-	emailExist = false;
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
 	*/
 	constructor(public nav: NavController,
-				public gc: GlobalConfigs, 
-				private authService: AuthenticationService, 
-				private loadListService: LoadListService, 
-				private dataProviderService: DataProviderService, 
-				private globalService: GlobalService, 
-				private validationDataService: ValidationDataService, 
-				public events: Events) {
+	public gc: GlobalConfigs, private authService: AuthenticationService, private loadListService: LoadListService, private dataProviderService: DataProviderService, private globalService: GlobalService, private validationDataService: ValidationDataService, public events: Events) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -122,7 +115,6 @@ export class PhonePage {
 		this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget)
 		.then(data => {
 			console.log(data);
-			
 			//case of authentication failure : server unavailable or connection probleme 
 			if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
 				console.log(data);
@@ -172,6 +164,7 @@ export class PhonePage {
 			//if user is connected for the first time, redirect him to the page 'civility', else redirect him to the home page
 			var isNewUser = data.newAccount;
 			if (isNewUser) {
+				this.globalService.showAlertValidation("VitOnJob", "Bienvenue dans votre espace VitOnJob!");
 				this.nav.setRoot(CivilityPage, {
 				currentUser: data});
 				} else {
@@ -188,7 +181,7 @@ export class PhonePage {
 	isAuthDisabled() {
 		if (this.showEmailField == true) {
 			//inscription
-			return (!this.index || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError() || this.emailExist)
+			return (!this.index || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError())
 			} else {
 			//connection
 			return (!this.index || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error())
@@ -300,21 +293,7 @@ export class PhonePage {
 		return this.password2 != this.password1;
 	}
 	
-	isEmailExist(e){
-		//verify if the email exist in the database
-		this.dataProviderService.getUserByMail(this.email, this.projectTarget).then((data) => {
-			if (!data || data.status == "failure") {
-				console.log(data);
-				this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
-				return;
-			}
-			if (data && data.data.length != 0) {
-				this.emailExist = true;
-			}else{
-				this.emailExist = false;
-			}
-		});
-	}
+	
 	
 	/**
 		* @description return to the home page
