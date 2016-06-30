@@ -1083,7 +1083,7 @@ export class OffersService {
                             }
                         }
                         if(index>=0){
-                            data.employer.entreprises[0].offers.splice(index,1);
+                            data.jobyer.offers.splice(index,1);
                         }
 
                         // Save new offer list in SqlStorage :
