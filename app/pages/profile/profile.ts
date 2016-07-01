@@ -13,6 +13,7 @@ import {DateConverter} from '../../pipes/date-converter/date-converter';
 import {CivilityPage} from "../civility/civility";
 import {PersonalAddressPage} from "../personal-address/personal-address";
 import {JobAddressPage} from "../job-address/job-address";
+import {BankAccountPage} from "../bank-account/bank-account";
 
 /*
  Generated class for the ProfilePage page.
@@ -304,7 +305,11 @@ export class ProfilePage implements OnInit {
         this.nav.present(pictureModel);
 
     }
-	
+
+    goToBankAccount(){
+        this.nav.push(BankAccountPage, {currentUser: this.userData, fromPage: "profil"});
+    }
+
 	goToInfoUserTabs(){
 		this.nav.push(CivilityPage, {currentUser: this.userData, fromPage: "profil"});	
 	}
