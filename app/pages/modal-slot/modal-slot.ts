@@ -1,4 +1,4 @@
-import {NavController, ViewController} from 'ionic-angular';
+import {NavController, ViewController, Alert} from 'ionic-angular';
 import {DatePicker} from "ionic-native/dist/index";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
@@ -103,6 +103,15 @@ export class ModalSlotPage {
             endHour: parseInt(this.showedSlot.endHour.split(':')[0]) * 60 +
             parseInt(this.showedSlot.endHour.split(':')[1]),
         };
+        if(this.slot.startHour>this.slot.endHour){
+            let alert = Alert.create({
+                title: 'Erreur',
+                subTitle: "L'heure de début devrait être inférieure à l'heure de fin",
+                buttons: ['OK']
+            });
+            this.nav.present(alert);
+            return;
+        }
         debugger;
         this.viewCtrl.dismiss(this.slot);
     }
