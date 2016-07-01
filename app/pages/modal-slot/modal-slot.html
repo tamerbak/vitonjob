@@ -6,6 +6,11 @@
 -->
 <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
   <ion-title>Sélection d'un créneau</ion-title>
+  <ion-buttons end>
+    <button (click)="closeModal()">
+      <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+    </button>
+  </ion-buttons>
 </ion-navbar>
 
 <ion-content padding class="modal-slot">
@@ -46,7 +51,7 @@
 
   <ion-row>
     <ion-col text-center>
-      <button [hidden]="false"
+      <button [disabled]="isValidateDisabled()"
               [style.backgroundColor]="themeColor" (click)="validateModal()">
         Valider
         <ion-icon name="checkmark-circle"></ion-icon>

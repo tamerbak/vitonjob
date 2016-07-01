@@ -281,7 +281,7 @@ export class OffersService {
         let job = offer.jobData.job;
 
         let table = (projectTarget === 'jobyer') ? 'user_offre_entreprise' : 'user_offre_jobyer';
-        let sql = "select pk_"+table+" from "+table+" where pk_"+table+" in (select fk_"+table+" from user_pratique_job where fk_user_job in ( select pk_user_job from user_job where lower_unaccent(libelle) like lower_unaccent('%"+job+"%')))";
+        let sql = "select pk_"+table+" from "+table+" where pk_"+table+" in (select fk_"+table+" from user_pratique_job where fk_user_job in ( select pk_user_job from user_job where lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(job)+"%')))";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -1151,6 +1151,10 @@ export class OffersService {
 
     sqlfy(d){
         return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" 00:00:00+00";
+    }
+
+    sqlfyText(text){
+        return text.replace(/'/g , "''")
     }
 }
 
