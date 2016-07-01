@@ -281,7 +281,7 @@ export class JobAddressPage {
 						return;
 					}else{
 						//id address not send by server
-						entreprise.workAdress.fullAdress = this.street + ", " + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
+						entreprise.workAdress.fullAdress = (this.street ? this.street + ", " : "") + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
 						entreprise.workAdress.street = this.street;
 						entreprise.workAdress.zipCode = this.zipCode;
 						entreprise.workAdress.city = this.city;
@@ -309,7 +309,7 @@ export class JobAddressPage {
 						return;
 					}else{
 						//id address not send by server
-						this.currentUser.jobyer.workAdress.fullAdress = this.street + ", " + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
+						this.currentUser.jobyer.workAdress.fullAdress = (this.street ? this.street + ", " : "") + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
 						this.currentUser.jobyer.workAdress.street = this.street;
 						this.currentUser.jobyer.workAdress.zipCode = this.zipCode;
 						this.currentUser.jobyer.workAdress.city = this.city;
@@ -341,10 +341,10 @@ export class JobAddressPage {
 	}
 	
 	isBtnDisabled(){
-		if(!this.street && !this.zipCode && !this.city && !this.country){
-			return true;
-		}else{
+		if(this.city && this.country){
 			return false;
+		}else{
+			return true;
 		}
 	}
 }
