@@ -54,11 +54,11 @@
 			  </ion-item>  
 			  <ion-item>
 				<ion-label fixed>Début de pause</ion-label>
-				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="startPauses[i][j]" (ionChange)="checkPauseHour(i, j, true)" [disabled]="!isNewMission || !isEmployer"></ion-datetime>
+				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="startPauses[i][j]" (ionChange)="checkPauseHour(i, j, true)" [disabled]="!isNewMission || !isEmployer" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"></ion-datetime>
 			  </ion-item>
 			  <ion-item>
 				<ion-label fixed>Fin de pause</ion-label>
-				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="endPauses[i][j]" (ionChange)="checkPauseHour(i, j, false)" [disabled]="!isNewMission || !isEmployer"></ion-datetime>
+				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="endPauses[i][j]" (ionChange)="checkPauseHour(i, j, false)" [disabled]="!isNewMission || !isEmployer" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"></ion-datetime>
 			  </ion-item>
 			  </ion-list>
 			  <ion-item>
@@ -94,7 +94,7 @@
 	</ion-row>
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="validateWork()" [style.backgroundColor]="themeColor" [hidden]="!isEmployer || !invoiceReady" >
+			<button block (click)="validateWork()" [style.backgroundColor]="themeColor" [hidden]="!isEmployer || !invoiceReady || isNewMission" >
 				<ion-icon name="ribbon"></ion-icon>
 				Fin de mission
 			</button>
