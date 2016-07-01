@@ -559,8 +559,8 @@ export class CivilityPage {
             myReader.onloadend = (e) =>{
                 this.scanUri = myReader.result;
             }
+			myReader.readAsDataURL(file);
         });
-        myReader.readAsDataURL(file);
     }
 
     /**
