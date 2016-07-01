@@ -78,7 +78,7 @@ export class ModalJobPage {
         let jobData = params.get('jobData');
 
         if (jobData) {
-            debugger;
+            
             this.jobData = jobData;
         } else {
             this.jobData = {

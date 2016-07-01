@@ -36,6 +36,8 @@ import {AboutPage} from "./pages/about/about";
 //import {ParametersPage} from "./pages/parameters/parameters";
 
 declare var cordova;
+declare var Connection;
+declare var navigator;
 
 @Component({
     templateUrl: 'build/menu.html'
@@ -138,15 +140,6 @@ export class Vitonjob {
 			this.local.remove('qualities');
 			this.local.remove('slots');
 
-			//	Initialize network control
-			if(navigator.connection.type == Connection.NONE){
-				let toast = Toast.create({
-					message: "Vous n'êtes pas connectés à Internet",
-					showCloseButton : true,
-					closeButtonText : 'Fermer'
-				});
-				this.nav.present(toast);
-			}
             // Instabug integration 
             if ((<any>window).cordova) {
                 
@@ -175,7 +168,50 @@ export class Vitonjob {
                         console.log('Instabug could not be initialized - ' + error);
                     }
                 );
+
+
+                //for push notification
+
+                var push = Push.init({
+                    android: {
+                        senderID: "693415120998"
+                    },
+                    ios: {
+                        alert: "true",
+                        badge: true,
+                        sound: 'false'
+                    },
+                    windows: {}
+                });
+                push.on('registration', (data) => {
+                    console.log(data.registrationId);
+                    this.storage.set('deviceToken', data.registrationId);
+                });
+                push.on('notification', (data) => {
+                    console.log(data);
+                    if (data.additionalData.data.objectNotif == "ScheduleValidated") {
+                        this.zone.run(()=> {
+                            this.nav.push(MissionDetailsPage, {contract: JSON.parse(data.additionalData.data.contract)});
+                        });
+                    }
+                });
+                push.on('error', (e) => {
+                    console.log(e.message);
+                });
             }
+
+            //	Initialize network control
+            if (navigator.connection) {
+                if(navigator.connection.type == Connection.NONE){
+                    let toast = Toast.create({
+                        message: "Vous n'êtes pas connectés à Internet",
+                        showCloseButton : true,
+                        closeButtonText : 'Fermer'
+                    });
+                    this.nav.present(toast);
+                }
+            }
+
 
             this.networkService.updateNetworkStat();
 
@@ -206,34 +242,6 @@ export class Vitonjob {
             });
 
             StatusBar.styleDefault();
-
-            //for push notication
-            var push = Push.init({
-                android: {
-                    senderID: "693415120998"
-                },
-                ios: {
-                    alert: "true",
-                    badge: true,
-                    sound: 'false'
-                },
-                windows: {}
-            });
-            push.on('registration', (data) => {
-                console.log(data.registrationId);
-                this.storage.set('deviceToken', data.registrationId);
-            });
-            push.on('notification', (data) => {
-                console.log(data);
-                if (data.additionalData.data.objectNotif == "ScheduleValidated") {
-                    this.zone.run(()=> {
-                        this.nav.push(MissionDetailsPage, {contract: JSON.parse(data.additionalData.data.contract)});
-                    });
-                }
-            });
-            push.on('error', (e) => {
-                console.log(e.message);
-            });
         });
     }
 

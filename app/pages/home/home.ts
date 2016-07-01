@@ -13,6 +13,7 @@ import {Storage, SqlStorage} from 'ionic-angular';
 import {Events} from 'ionic-angular';
 import {Component, OnChanges} from "@angular/core";
 import {PopoverSearchPage} from "../popover-search/popover-search";
+import {AdvancedSearchPage} from "../advanced-search/advanced-search";
 
 
 @Component({
@@ -37,6 +38,7 @@ export class HomePage implements OnChanges{
     private recognition:any;
     private menu:any;
     private backgroundImage:string;
+    private push: any;
 
 
     static get parameters() {
@@ -59,6 +61,8 @@ export class HomePage implements OnChanges{
         this.keyboard = kb;
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
+        // page push 
+        this.push = AdvancedSearchPage;
         //debugger;
         //menu.enable(true, 'rightOnMenu');
 
@@ -226,6 +230,14 @@ export class HomePage implements OnChanges{
     showSearchPopover(ev) {
             let popover = Popover.create(PopoverSearchPage);
             this.nav.present(popover, {
+                ev: ev
+            })
+
+    }
+
+    showAdvencedSearch(ev) {
+            let advenced = advenced.create(PopoverSearchPage);
+            this.nav.present(advenced, {
                 ev: ev
             })
 

@@ -281,7 +281,7 @@ export class OffersService {
         let job = offer.jobData.job;
 
         let table = (projectTarget === 'jobyer') ? 'user_offre_entreprise' : 'user_offre_jobyer';
-        let sql = "select pk_"+table+" from "+table+" where pk_"+table+" in (select fk_"+table+" from user_pratique_job where fk_user_job in ( select pk_user_job from user_job where lower_unaccent(libelle) like lower_unaccent('%"+job+"%')))";
+        let sql = "select pk_"+table+" from "+table+" where pk_"+table+" in (select fk_"+table+" from user_pratique_job where fk_user_job in ( select pk_user_job from user_job where lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(job)+"%')))";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -311,7 +311,7 @@ export class OffersService {
     }
 
     loadSectorsToLocal(){
-        let sql = 'select pk_user_metier as id, libelle as libelle from user_metier';
+        let sql = 'select pk_user_metier as id, libelle as libelle from user_metier order by libelle asc';
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -332,7 +332,7 @@ export class OffersService {
     }
 
     loadJobsToLocal(){
-        let sql = 'select pk_user_job as id, libelle as libelle, fk_user_metier as idSector from user_job';
+        let sql = 'select pk_user_job as id, libelle as libelle, fk_user_metier as idSector from user_job order by libelle asc';
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -630,7 +630,42 @@ export class OffersService {
 		});
 	}
 
-    updateOfferJob(offer, projectTarget){
+    updateOfferInLocal(offer, projectTarget){
+        this.db.get('currentUser').then(data => {
+            if (data) {
+                data = JSON.parse((data));
+                if (projectTarget === 'employer') {
+                    let rawData = data.employer;
+                    //console.log(rawData.entreprises);
+                    if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
+                        //adding userId for remote storing
+                        for(let i = 0 ; i < data.employer.entreprises[0].offers.length ; i++){
+                            if(data.employer.entreprises[0].offers[i].idOffer == offer.idOffer){
+                                data.employer.entreprises[0].offers[i] = offer;
+                                break;
+                            }
+                        }
+                        // Save new offer list in SqlStorage :
+                        this.db.set('currentUser', JSON.stringify(data));
+                    }
+                } else { // jobyer
+                    let rawData = data.jobyer;
+                    if (rawData && rawData.offers) {
+                        for(let i = 0; i < data.jobyer.offers.length ; i++){
+                            if(data.jobyer.offers[i].idOffer == offer.idOffer){
+                                data.jobyer.offers[i] = offer;
+                                break;
+                            }
+                        }
+                        // Save new offer list in SqlStorage :
+                        this.db.set('currentUser', JSON.stringify(data));
+                    }
+                }
+            }
+        });
+    }
+	
+	updateOfferJob(offer, projectTarget){
 
         this.db.get('currentUser').then(data => {
             if (data) {
@@ -672,6 +707,7 @@ export class OffersService {
             this.updateOfferJobyerJob(offer).then(data => {
                 this.updateOfferJobyerTitle(offer);
             });
+
         } else {
             this.updateOfferEntrepriseJob(offer).then(data => {
                 this.updateOfferEntrepriseTitle(offer);
@@ -743,7 +779,8 @@ export class OffersService {
     }
 
     updateOfferEntrepriseTitle(offer){
-        let sql = "update user_offre_entreprise set titre='"+offer.title+"' where pk_user_offre_entreprise="+offer.idOffer;
+        debugger;
+        let sql = "update user_offre_entreprise set titre='"+this.sqlfyText(offer.title)+"', tarif_a_l_heure='"+offer.jobData.remuneration+"' where pk_user_offre_entreprise="+offer.idOffer;
 
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -1083,7 +1120,7 @@ export class OffersService {
                             }
                         }
                         if(index>=0){
-                            data.employer.entreprises[0].offers.splice(index,1);
+                            data.jobyer.offers.splice(index,1);
                         }
 
                         // Save new offer list in SqlStorage :
@@ -1116,6 +1153,10 @@ export class OffersService {
 
     sqlfy(d){
         return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" 00:00:00+00";
+    }
+
+    sqlfyText(text){
+        return text.replace(/'/g , "''")
     }
 }
 
