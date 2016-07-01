@@ -14,9 +14,14 @@
 
 <ion-content padding class="profile" [ngStyle]="backgroundImage">
 
-    <button fab fab-top fab-right [style.backgroundColor]="themeColor"
+    <button fab fab-top fab-right  [style.backgroundColor]="themeColor"
             (click)="goToSettings()">
         <ion-icon name="settings"></ion-icon>
+    </button>
+
+    <button fab fab-top fab-right style="margin-right:20%" [style.backgroundColor]="themeColor"
+            (click)="goToBankAccount()">
+        <ion-icon name="logo-euro"></ion-icon>
     </button>
 
     <button fab fab-top fab-left class="img-button" (click)="showPictureModel()"
