@@ -1,24 +1,13 @@
-<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" *navbar>
-    <button menuToggle>
+<ion-content class="home" [ngStyle]="backgroundImage">
+    <button style="background-color: transparent;"menuToggle>
         <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title style="padding: 0;">
-        {{projectName}}
-    </ion-title>
-    <ion-buttons end>
-        <button (click)="showSearchPopover($event)">
-            <ion-icon name="more"></ion-icon>
-        </button>
-    </ion-buttons>
-</ion-navbar>
-
-<ion-content class="home" [ngStyle]="backgroundImage">
 
     <button fab fab-bottom fab-center (click)="stopRecognition()"
             [style.backgroundColor]="themeColor" [hidden] = "!recording">
         <ion-spinner name="dots"></ion-spinner>
     </button>
-	<ion-row>&nbsp;</ion-row>
+    <ion-row>&nbsp;</ion-row>
     <ion-row>&nbsp;</ion-row>
     <ion-row>
         <ion-col width-20></ion-col>
@@ -26,17 +15,22 @@
         <ion-col width-20></ion-col>
     </ion-row>
     <ion-row>
-            <ion-item class="itemSearch">
+        <ion-item class="itemSearch">
 
-                <ion-label floating class="withoutOverflow">{{searchPlaceHolder}}</ion-label>
-                <ion-input type="text" (focus)="onFocus($event)"
-                           (blur)="onBlur($event)" (keyup)="checkForEnterKey($event)"
-                           [(ngModel)]="scQuery"></ion-input>
-                <button clear item-right (click)="doSemanticSearch()">
-                    <ion-icon name="search" class="searchIcon"></ion-icon>
-                </button>
+            <ion-label floating class="withoutOverflow">{{searchPlaceHolder}}</ion-label>
+            <ion-input type="text" (focus)="onFocus($event)"
+                       (blur)="onBlur($event)" (keyup)="checkForEnterKey($event)"
+                       [(ngModel)]="scQuery"></ion-input>
+            <button clear item-right (click)="doSemanticSearch()">
+                <ion-icon name="search" class="searchIcon"></ion-icon>
+            </button>
 
-            </ion-item>
+        </ion-item>
+    </ion-row>
+    <ion-row>
+        <a id="ra" (click)="showCriteriaModal()">
+            Recherche Avancé
+        </a>
     </ion-row>
     <ion-row>
         <ion-col width-10></ion-col>
@@ -66,22 +60,9 @@
     </ion-row>
     <ion-row>&nbsp;</ion-row>
     <ion-row>&nbsp;</ion-row>
-    <ion-row>
-        <!--button fab fab-center class="bottomButton" [style.backgroundColor]="themeColor"
-                (click)="launchVoiceRecognition()" [hidden]="(keyboard)? keyboard.isOpen():false">
-            <ion-icon name="mic" [hidden]="recording"></ion-icon>
-        </button-->
 
-        <!--button secondary ngClass="left-bottom-btn" (click)="showCriteriaModal()" >
-            <ion-icon name="search"></ion-icon>
-        </button>
 
-        <button primary ngClass="right-bottom-btn" (click)="showGuideModal()">
-            <ion-icon name="reorder"></ion-icon>
-        </button-->
-    </ion-row>
 
-	
     <!--div class="draggable ui-widget-content">
         <ion-list>
             <ion-list-header><ion-icon  name="move"></ion-icon>Recherche</ion-list-header>
@@ -96,7 +77,6 @@
                 </button>
             </ion-item>
         </ion-list>
-
     </div-->
 
 
