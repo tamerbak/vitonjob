@@ -311,7 +311,7 @@ export class OffersService {
     }
 
     loadSectorsToLocal(){
-        let sql = 'select pk_user_metier as id, libelle as libelle from user_metier';
+        let sql = 'select pk_user_metier as id, libelle as libelle from user_metier order by libelle asc';
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -332,7 +332,7 @@ export class OffersService {
     }
 
     loadJobsToLocal(){
-        let sql = 'select pk_user_job as id, libelle as libelle, fk_user_metier as idSector from user_job';
+        let sql = 'select pk_user_job as id, libelle as libelle, fk_user_metier as idSector from user_job order by libelle asc';
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
