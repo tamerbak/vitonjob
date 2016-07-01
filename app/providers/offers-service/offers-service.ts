@@ -707,6 +707,7 @@ export class OffersService {
             this.updateOfferJobyerJob(offer).then(data => {
                 this.updateOfferJobyerTitle(offer);
             });
+
         } else {
             this.updateOfferEntrepriseJob(offer).then(data => {
                 this.updateOfferEntrepriseTitle(offer);
@@ -778,7 +779,8 @@ export class OffersService {
     }
 
     updateOfferEntrepriseTitle(offer){
-        let sql = "update user_offre_entreprise set titre='"+offer.title+"' where pk_user_offre_entreprise="+offer.idOffer;
+        debugger;
+        let sql = "update user_offre_entreprise set titre='"+this.sqlfyText(offer.title)+"', tarif_a_l_heure='"+offer.jobData.remuneration+"' where pk_user_offre_entreprise="+offer.idOffer;
 
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
