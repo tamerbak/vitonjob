@@ -47,7 +47,7 @@ export class CivilityPage {
     communesService : CommunesService;
     numSSMessage : string = '';
     checkSS : boolean = false;
-	uploadVerb: string;
+	uploadVerb = "Charger un scan ";
 
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
