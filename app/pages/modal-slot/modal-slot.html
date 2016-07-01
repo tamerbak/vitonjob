@@ -25,7 +25,7 @@
     <ion-item text-wrap>
       <ion-label>Date</ion-label>
       <ion-datetime id="idt" displayFormat="DD, MMMM YYYY" [(ngModel)]="showedSlot.date"
-                    min="{{showedSlot.date}}" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
+                    [min]="todayDate" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
     </ion-item>
 
     <!--ion-item>

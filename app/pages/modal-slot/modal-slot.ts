@@ -25,6 +25,7 @@ export class ModalSlotPage {
     private viewCtrl:any;
     private calendarTheme:string;
     private nav:any;
+	todayDate;
 
     constructor(public nav:NavController, gc:GlobalConfigs, viewCtrl:ViewController, private globalService: GlobalService) {
 
@@ -39,7 +40,8 @@ export class ModalSlotPage {
         this.viewCtrl = viewCtrl;
         this.calendarTheme = config.calendarTheme;
         this.nav = nav;
-        this.slot = {
+        this.todayDate = new Date().toISOString();
+		this.slot = {
             date: new Date(),
             startHour: 0,
             endHour: 0
