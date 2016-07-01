@@ -46,7 +46,7 @@
 
   <ion-row>
     <ion-col text-center>
-      <button [hidden]="false"
+      <button [disabled]="isValidateDisabled()"
               [style.backgroundColor]="themeColor" (click)="validateModal()">
         Valider
         <ion-icon name="checkmark-circle"></ion-icon>

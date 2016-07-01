@@ -91,6 +91,12 @@ export class ModalSlotPage {
         this.viewCtrl.dismiss();
     }
 
+    isValidateDisabled(){
+        if(!this.showedSlot.startHour || !this.showedSlot.endHour)
+            return true;
+        return false;
+    }
+
     /**
      * @Description : Validating slot modal
      */
