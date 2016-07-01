@@ -47,7 +47,7 @@ export class CivilityPage {
     communesService : CommunesService;
     numSSMessage : string = '';
     checkSS : boolean = false;
-	uploadVerb: string;
+	uploadVerb = "Charger un scan ";
 
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
@@ -310,18 +310,19 @@ export class CivilityPage {
      */
     updateScan(userId){
         if (this.scanUri) {
+			this.currentUser.scanUploaded = true;
+			this.storage.set('currentUser', JSON.stringify(this.currentUser));
             this.authService.uploadScan(this.scanUri, userId, 'scan', 'upload')
                 .then((data) => {
                     if(!data || data.status == "failure"){
                         console.log("Scan upload failed !");
-                        this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde du scan");
+					//this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde du scan");
+					this.currentUser.scanUploaded = false;
+					this.storage.set('currentUser', JSON.stringify(this.currentUser));					
                     }
                     else{
                         console.log("Scan uploaded !");
-						this.currentUser.scanUploaded = true;
-                        this.storage.set('currentUser', JSON.stringify(this.currentUser));
-                        //this.currentUser.employer.scan = this.scanUri;
-                    }
+		            }
                 });
         }
     }
