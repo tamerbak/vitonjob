@@ -18,7 +18,7 @@ export class OfferQuotePage {
     estimatedPayment : number=0;
     missionCosts : number=0;
     TFAmount : number=0;
-    taxRate : string='';
+    taxRate : string='20 %';
     tax : number = 0.0;
     TaxAmount : number=0;
     TotalAmount : number=0;
@@ -37,8 +37,8 @@ export class OfferQuotePage {
         this.nbHours = 0;
 
         this.missionCosts = 6;
-        this.taxRate = '0,00 %';
-        this.tax = 0.0;
+        this.taxRate = '20,00 %';
+        this.tax = 0.2;
 
         for(let i = 0 ; i < this.offer.calendarData.length ; i++){
             let nbMinutes = Math.abs(this.offer.calendarData[i].endHour - this.offer.calendarData[i].startHour);
