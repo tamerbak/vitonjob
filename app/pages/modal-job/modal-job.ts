@@ -1,6 +1,6 @@
 import {
     NavController, ViewController, Modal, NavParams, Storage, SqlStorage, PickerColumnOption,
-    Picker, Popover
+    Picker, Popover, Alert
 } from 'ionic-angular';
 import {FormBuilder, Validators} from "@angular/common";
 import {Configs} from "../../configurations/configs";
@@ -130,6 +130,16 @@ export class ModalJobPage {
      * @Description: Validating the modal page (All fields are filled)
      */
     validateJob() {
+        debugger;
+        if(this.jobData.idJob ==0 || this.jobData.idSector ==0){
+            let alert = Alert.create({
+                title: 'Erreur',
+                subTitle: "Veuillez choisir un secteur et un job valides",
+                buttons: ['OK']
+            });
+            this.nav.present(alert);
+            return;
+        }
         this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === '') && !(this.jobData.remuneration == 0));
         //this.jobData.level = 'senior';
         this.viewCtrl.dismiss(this.jobData);
