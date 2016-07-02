@@ -1,4 +1,7 @@
-import {NavController, ViewController, Loading, Slides, Picker, PickerColumnOption, Storage, SqlStorage} from 'ionic-angular';
+import {
+    NavController, ViewController, Loading, Slides, Picker, PickerColumnOption, Storage, SqlStorage,
+    Modal
+} from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
 import {SearchResultsPage} from "../search-results/search-results";
@@ -6,6 +9,7 @@ import {Component} from "@angular/core";
 import {Configs} from "../../configurations/configs";
 import {CommunesService} from "../../providers/communes-service/communes-service";
 import {isUndefined} from "ionic-angular/util";
+import {SearchGuidePage} from "../search-guide/search-guide";
 
 /**
  * @author abdeslam jakjoud
@@ -503,5 +507,10 @@ export class SearchCriteriaPage {
             this.nav.present(picker);
 
         });
+    }
+
+    showGuideModal(){
+        let m = new Modal(SearchGuidePage);
+        this.nav.present(m);
     }
 }
