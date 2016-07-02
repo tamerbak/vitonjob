@@ -267,15 +267,14 @@ export class SearchCriteriaPage {
             this.nav.push(SearchResultsPage);
         });
 
-        //  Our work is done we dismiss the modal
-        this.viewCtrl.dismiss();
+
     }
 
     /**
      * @description Cancel search and dismiss the modal page
      */
     close() {
-        this.viewCtrl.dismiss();
+        this.nav.pop();
     }
 
     calculateHeight() {
@@ -510,7 +509,7 @@ export class SearchCriteriaPage {
     }
 
     showGuideModal(){
-        let m = new Modal(SearchGuidePage);
-        this.nav.present(m);
+
+        this.nav.push(SearchGuidePage);
     }
 }
