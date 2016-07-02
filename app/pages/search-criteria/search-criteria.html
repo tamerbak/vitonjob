@@ -1,40 +1,83 @@
 <ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-  <ion-title style="padding-left: 0">Recherche par critères</ion-title>
-  <ion-buttons end>
-    <button (click)="close()">
-      <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
-    </button>
-  </ion-buttons>
+    <ion-title style="padding-left: 0">Recherche par critères</ion-title>
+    <ion-buttons end>
+        <button (click)="close()">
+            <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+        </button>
+    </ion-buttons>
 </ion-navbar>
 
 <ion-content class="search-criteria" >
 
-  <ion-list class="criteria-list">
-    <ion-list-header>
-      <button *ngFor="let f of filters" (click)="toogleFilter(f)"
-              style="font-size: small;" [ngClass]="{'button-secondary': f.activated==true}" outline>
-        <ion-icon name="{{f.icon}}"></ion-icon>
-      </button>
-    </ion-list-header>
-    <ion-item *ngFor="let f of filters" [ngClass]="{'hide': f.activated==false }" >
-      <ion-input placeholder="{{f.placeHolder}}" clearInput [(ngModel)]="f.value" ></ion-input>
+    <!--ion-list class="criteria-list">
+        <ion-list-header>
+            <button *ngFor="let f of filters" (click)="toogleFilter(f)"
+                    style="font-size: small;" [ngClass]="{'button-secondary': f.activated==true}" outline>
+                <ion-icon name="{{f.icon}}"></ion-icon>
+            </button>
+        </ion-list-header>
+        <ion-item *ngFor="let f of filters" [ngClass]="{'hide': f.activated==false }" >
+            <ion-input placeholder="{{f.placeHolder}}" clearInput [(ngModel)]="f.value" ></ion-input>
+        </ion-item>
+
+    </ion-list>
+
+    <ion-card *ngIf="activeCount == 0">
+        <ion-card-content>
+            Choisissez vos critères à partir de la barre ci-dessus
+        </ion-card-content>
+    </ion-card-->
+
+    <ion-item>
+        <ion-label floating>Secteur</ion-label>
+        <ion-input [(ngModel)]="sector" (keyup)="watchSector($event)" ></ion-input>
+        <button small item-right (click)="setSectorsPicker()" >
+            <ion-icon name="list"></ion-icon>
+        </button>
     </ion-item>
+    <ion-item *ngIf="sectors.length>0">
+        <ion-list>
+            <ion-item *ngFor="let s of sectors" (click)="sectorSelected(s)">
+                {{s.libelle}}
+            </ion-item>
+        </ion-list>
+    </ion-item>
+    <ion-item>
+        <ion-label floating>Job</ion-label>
+        <ion-input [(ngModel)]="job" (keyup)="watchJob($event)"></ion-input>
+        <button small item-right (click)="setJobsPicker()" >
+            <ion-icon name="list"></ion-icon>
+        </button>
+    </ion-item>
+    <ion-item *ngIf="jobs.length>0">
+        <ion-list>
+            <ion-item *ngFor="let s of jobs" (click)="jobSelected(s)">
+                {{s.libelle}}
+            </ion-item>
+        </ion-list>
+    </ion-item>
+    <ion-item>
+        <ion-label stacked>Date de disponibilité</ion-label>
+        <ion-datetime [(ngModel)]="availabilityDate" displayFormat="DD/MM/YYYY"></ion-datetime>
+    </ion-item>
+    <ion-item>
+        <ion-label floating>Ville</ion-label>
+        <ion-input [(ngModel)]="city" (keyup)="watchCity($event)" ></ion-input>
+    </ion-item>
+    <ion-item *ngIf="cities.length>0">
+        <ion-list>
+            <ion-item *ngFor="let s of cities" (click)="citySelected(s)">
+                {{s.nom}}
+            </ion-item>
+        </ion-list>
+    </ion-item>
+    <ion-row></ion-row>
 
-  </ion-list>
+    <button block [style.backgroundColor]="themeColor" (click)="validateSearch()">
+        <ion-icon name="search"></ion-icon>
+        Recherche
+    </button>
 
-  <ion-card *ngIf="activeCount == 0">
-    <ion-card-content>
-      Choisissez vos critères à partir de la barre ci-dessus
-    </ion-card-content>
-  </ion-card>
 
-  <button fab fab-bottom fab-center [style.backgroundColor]="themeColor" (click)="validateSearch()">
-    <ion-icon name="search"></ion-icon>
-  </button>
-
-  <!--ion-toolbar class="bottom-toolbar" position="bottom">
-    <button (click)="validateSearch()" secondary block>Valider</button>
-    <button (click)="close()" dark block>Annuler</button>
-  </ion-toolbar-->
 
 </ion-content>
