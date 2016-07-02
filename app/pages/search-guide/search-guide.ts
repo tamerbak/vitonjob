@@ -83,11 +83,10 @@ export class SearchGuidePage {
       this.nav.push(SearchResultsPage);
     });
 
-    //  Our work is done we dismiss the modal
-    this.viewCtrl.dismiss();
+
   }
 
   close() {
-    this.viewCtrl.dismiss();
+    this.nav.pop();
   }
 }
