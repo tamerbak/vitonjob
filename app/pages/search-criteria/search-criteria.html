@@ -73,6 +73,10 @@
     </ion-item>
     <ion-row></ion-row>
 
+    <button fab fab-bottom fab-right [style.backgroundColor]="themeColor" (click)="showGuideModal()">
+        <ion-icon name="help"></ion-icon>
+    </button>
+
     <button block [style.backgroundColor]="themeColor" (click)="validateSearch()">
         <ion-icon name="search"></ion-icon>
         Recherche
