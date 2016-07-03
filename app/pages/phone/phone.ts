@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Alert, NavController, Events, Loading} from 'ionic-angular';
+import {Alert, NavController, Events, Loading, Toast} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -356,7 +356,7 @@ export class PhonePage {
 								return;
 							}
 							loading.dismiss();
-							this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par SMS.");
+							//this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par SMS.");
 						});
 					});
 				}
@@ -374,7 +374,7 @@ export class PhonePage {
 								return;
 							}
 							loading.dismiss();
-							this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par email.");
+							//this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par email.");
 						});
 					});
 				}
@@ -410,6 +410,11 @@ export class PhonePage {
 					handler: () => {
 						console.log('SMS selected');	
 						this.passwordForgotten("sms");
+						let toast = Toast.create({
+							message: "Votre mot de passe a été réinitialisé, vous recevrai un SMS avec un nouveau mot de passe d'ici peu",
+							duration: 5000
+						});
+						this.nav.present(toast);
 					}
 				},
 				{
@@ -417,6 +422,11 @@ export class PhonePage {
 					handler: () => {
 						console.log('Email selected');	
 						this.passwordForgotten("email", this.email);
+						let toast = Toast.create({
+							message: "Votre mot de passe a été réinitialisé, vous recevrai un courrier électronique avec un nouveau mot de passe d'ici peu",
+							duration: 5000
+						});
+						this.nav.present(toast);
 					}
 				}
 			]
