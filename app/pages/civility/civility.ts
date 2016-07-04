@@ -11,6 +11,7 @@ import {GlobalService} from "../../providers/global.service";
 import {Camera} from 'ionic-native';
 import {NgZone} from '@angular/core';
 import {ModalGalleryPage} from '../modal-gallery/modal-gallery';
+import {CommunesService} from "../../providers/communes-service/communes-service";
 
 
 
