@@ -22,69 +22,61 @@
             <ion-option value="M.">M.</ion-option>
 		</ion-select>
 	</ion-item>
-
+	
     <ion-item>
         <ion-label floating>Nom</ion-label>
         <ion-input type="text" [(ngModel)]="lastname"></ion-input>
 	</ion-item>
-
+	
     <ion-item>
         <ion-label floating>Prénom</ion-label>
         <ion-input type="text" [(ngModel)]="firstname"></ion-input>
 	</ion-item>
-
+	
 	<ion-item [hidden]="!isEmployer">
         <ion-label floating >Nom entreprise</ion-label>
         <ion-input type="text" [(ngModel)]="companyname"></ion-input>
 	</ion-item>
-
+	
 	<ion-item [hidden]="!isEmployer">
         <ion-label floating>SIRET: 999 999 999 99999</ion-label>
         <ion-input type="tel" [(ngModel)]="siret" (keyup)="watchSIRET($event)" maxlength="17"></ion-input>
 	</ion-item>
-	<div [hidden]="isSIRETValid"
+	<div [hidden]="isSIRETValid" 
 	class="error-box">* Saisissez les 14 chiffres du SIRET</div>
-
+	
 	<ion-item [hidden]="!isEmployer">
         <ion-label floating>NAF: 9999A</ion-label>
         <ion-input type="text" [(ngModel)]="ape" (keyup)="watchAPE($event)" maxlength="5"></ion-input>
 	</ion-item>
-	<div [hidden]="isAPEValid"
+	<div [hidden]="isAPEValid" 
 	class="error-box">* Saisissez les 4 chiffres suivis d'une lettre</div>
-
-
+	
+	
     <ion-item [hidden]="isEmployer">
         <ion-label stacked>Date de naissance (JJ/MM/YYYY)</ion-label>
 		<ion-datetime [(ngModel)]="birthdate" displayFormat="DD/MM/YYYY"></ion-datetime>
 	</ion-item>
-
+	
     <ion-item [hidden]="isEmployer">
         <ion-label floating>Lieu de naissance (ex :Palaiseau (91))</ion-label>
 		<ion-input type="text" [(ngModel)]="birthplace"></ion-input>
 	</ion-item>
-
-	<ion-item [hidden]="isEmployer || communes.length==0">
-		<ion-list>
-			<ion-item *ngFor="let c of communes" (click)="communeSelected(c)">
-				{{c.nom}}
-			</ion-item>
-		</ion-list>
-	</ion-item>
-
+	
     <ion-item [hidden]="isEmployer">
         <ion-label floating>CNI</ion-label>
 		<ion-input type="number" [(ngModel)]="cni" (keypress)="watchCNI($event)" maxlength="12" ></ion-input>
 	</ion-item>
-	<div *ngIf="showCNIError()"
+	<div *ngIf="showCNIError()" 
 	class="error-box">* Saisissez les 12 chiffres du CNI</div>
-
+	
     <ion-item [hidden]="isEmployer">
         <ion-label floating>N° Sécurité sociale</ion-label>
 		<ion-input type="number" [(ngModel)]="numSS" (keypress)="watchNumSS($event)" maxlength="15"></ion-input>
 	</ion-item>
-	<div *ngIf="showNSSError()"
+	<div *ngIf="showNSSError()" 
 	class="error-box">* Saisissez les 15 chiffres du n° Sécurité Sociale</div>
-
+	
     <ion-item [hidden]="isEmployer">
         <ion-label floating>Nationalité</ion-label>
         <ion-select [(ngModel)]="nationality" (ionChange)="onChangeNationality($event)">
@@ -94,18 +86,18 @@
 	<ion-row>
 		<ion-col text-center>
 			<ion-label>Importation {{scanTitle}}</ion-label>
-			<button [hidden]="scanUri" class="file-upload button-picture" [style.backgroundColor]="themeColor">
+			<button [hidden]="scanUri" class="file-upload button-picture" [style.backgroundColor]="themeColor">            
   <input type="file" class="file-input" (change)="onChangeUpload($event)">
   <ion-icon name='folder'></ion-icon>
   </button>
-
+	
 				<button [hidden]="scanUri" seconde (click)="takePicture()" [style.backgroundColor]="themeColor" class="button-picture">
 					<ion-icon name="camera"></ion-icon>
 				</button>
 		</ion-col>
 	</ion-row>
-
-
+	
+	
 
   <ion-card  style="margin: auto;" [hidden]="!scanUri" id="card-file">
 	  <img [src]="scanUri"/>
@@ -124,9 +116,9 @@
 	</ion-card>
 
 
-
-
-
+    
+  
+	
 	<!-- <ion-row>
 		<ion-col text-center>
 		    <button class="file-upload button-picture">
@@ -136,7 +128,7 @@
 			</button>
         </ion-col>
 	</ion-row>
-
+	
 	<ion-row>
 		<ion-col text-center>
 			<button block (click)="takePicture()" [style.backgroundColor]="themeColor" class="button-picture">
@@ -145,7 +137,7 @@
 			</button>
 		</ion-col>
 	</ion-row>
-
+	
 	<ion-card [hidden]="!scanUri">
 		<ion-card-content>
 			<img [src]="scanUri"/>
