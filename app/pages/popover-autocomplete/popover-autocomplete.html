@@ -1,7 +1,8 @@
-<ion-navbar *navbar>
+<ion-header>
+<ion-navbar >
   <ion-title>popover-autocomplete</ion-title>
 </ion-navbar>
-
+</ion-header>
 <ion-content class="popover-autocomplete">
   <ion-searchbar [(ngModel)]="searchQuery"
                  (ionInput)="getItems($event)"

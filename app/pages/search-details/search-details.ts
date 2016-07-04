@@ -80,7 +80,14 @@ export class SearchDetailsPage {
         sms.send(number, "", options, success, error);
     }
     skype(){
-
+        startApp.set({ /* params */
+            "action": "ACTION_VIEW",
+            "uri": "skype:"+this.telephone
+        }).start(function(){
+            console.log('starting skype');
+        }, function(error){
+            console.log('failed to start skype : '+error);
+        });
     }
     googleHangout(){
 
