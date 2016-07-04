@@ -1,10 +1,12 @@
-<ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-	<button menuToggle>
-		<ion-icon name="menu"></ion-icon>
-	</button>
-	<ion-title>{{phoneTitle}}</ion-title>
+<ion-header>
+	<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+		<button menuToggle>
+			<ion-icon name="menu"></ion-icon>
+		</button>
+		<ion-title>{{phoneTitle}}</ion-title>
 
-</ion-navbar>
+	</ion-navbar>
+</ion-header>
 
 <ion-content padding class="phone" [ngStyle]="backgroundImage">
 	

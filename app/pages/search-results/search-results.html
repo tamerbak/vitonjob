@@ -1,11 +1,15 @@
-<ion-navbar navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-  <div class="view-toggle">
-   <button (click)="changeViewMode(1)" style="font-size: small;" [ngClass]="{'button-secondary': listView}" >
-      <ion-icon name="md-list"></ion-icon>
-    </button>
-    <button (click)="changeViewMode(2)" style="font-size: small;" [ngClass]="{'button-secondary': cardView}" >
-      <ion-icon name="md-albums"></ion-icon>
-    </button>
+<ion-header>
+<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+
+    <ion-buttons end>
+      <button (click)="changeViewMode(1)" style="font-size: small;" [ngClass]="{'button-secondary': listView}" >
+        <ion-icon name="md-list"></ion-icon>
+      </button>
+      <button (click)="changeViewMode(2)" style="font-size: small;" [ngClass]="{'button-secondary': cardView}" >
+        <ion-icon name="md-albums"></ion-icon>
+      </button>
+
+    </ion-buttons>
     <!--button (click)="changeViewMode(3)" style="font-size: small;" [ngClass]="{'button-secondary': mapView}" >
       <ion-icon name="md-map"></ion-icon>
     </button-->
@@ -14,9 +18,10 @@
     <!--button (click)="toggleProposition()" style="font-size: small;" *ngIf="offerProposition" >
       <ion-icon name="md-create"></ion-icon>
     </button-->
-  </div>
+
 
 </ion-navbar>
+</ion-header>
 
 <ion-content padding class="search-results">
 
