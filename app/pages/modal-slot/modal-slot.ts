@@ -1,8 +1,9 @@
-import {NavController, ViewController} from 'ionic-angular';
+import {NavController, ViewController, Alert, Toast} from 'ionic-angular';
 import {DatePicker} from "ionic-native/dist/index";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {Component} from "@angular/core";
+import {GlobalService} from "../../providers/global.service";
 
 /*
  Generated class for the ModalSlotPage page.
@@ -12,6 +13,7 @@ import {Component} from "@angular/core";
  */
 @Component({
     templateUrl: 'build/pages/modal-slot/modal-slot.html',
+	providers: [GlobalService]
 })
 export class ModalSlotPage {
 
@@ -23,8 +25,9 @@ export class ModalSlotPage {
     private viewCtrl:any;
     private calendarTheme:string;
     private nav:any;
+	todayDate;
 
-    constructor(public nav:NavController, gc:GlobalConfigs, viewCtrl:ViewController) {
+    constructor(public nav:NavController, gc:GlobalConfigs, viewCtrl:ViewController, private globalService: GlobalService) {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -37,15 +40,16 @@ export class ModalSlotPage {
         this.viewCtrl = viewCtrl;
         this.calendarTheme = config.calendarTheme;
         this.nav = nav;
-        this.slot = {
+        this.todayDate = new Date().toISOString();
+		this.slot = {
             date: new Date(),
             startHour: 0,
             endHour: 0
         };
         this.showedSlot = {
             date: new Date().toISOString(),
-            startHour: '00:00',
-            endHour: '00:00'
+            startHour: null,
+            endHour: null
         };
     }
 
@@ -89,18 +93,32 @@ export class ModalSlotPage {
         this.viewCtrl.dismiss();
     }
 
+    isValidateDisabled(){
+        if(!this.showedSlot.startHour || !this.showedSlot.endHour || this.showedSlot.endHour<this.showedSlot.startHour)
+            return true;
+        return false;
+    }
+
     /**
      * @Description : Validating slot modal
      */
     validateModal() {
-        
+        let date = new Date(this.showedSlot.date);
         this.slot = {
-            date: new Date(this.showedSlot.date),
+            date: date.getTime(),
             startHour: parseInt(this.showedSlot.startHour.split(':')[0]) * 60 +
             parseInt(this.showedSlot.startHour.split(':')[1]),
             endHour: parseInt(this.showedSlot.endHour.split(':')[0]) * 60 +
             parseInt(this.showedSlot.endHour.split(':')[1]),
         };
+        if(this.slot.startHour>this.slot.endHour){
+            let toast = Toast.create({
+                message: "L'heure de début devrait être inférieure à l'heure de fin",
+                duration: 5000
+            });
+            return;
+        }
+        debugger;
         this.viewCtrl.dismiss(this.slot);
     }
 
@@ -123,4 +141,29 @@ export class ModalSlotPage {
         let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
         return hours + ":" + minutes;
     }
+    hoursErrorMessage : string = '';
+	 checkHour(i){
+         this.hoursErrorMessage = '';
+        if(this.showedSlot.startHour && this.showedSlot.endHour && this.showedSlot.startHour >= this.showedSlot.endHour){
+			if(i == 0){
+                this.hoursErrorMessage = "* L'heure de début doit être inférieure à l'heure de fin";
+				//this.globalService.showAlertValidation("VitOnJob", "L'heure de début doit être inférieure à l'heure de fin");
+                /*let toast = Toast.create({
+                    message: "L'heure de début devrait être inférieure à l'heure de fin",
+                    duration: 5000
+                });*/
+				this.showedSlot.startHour = "";
+			}else{
+                this.hoursErrorMessage = "* L'heure de début doit être inférieure à l'heure de fin";
+				//this.globalService.showAlertValidation("VitOnJob", "L'heure de fin doit être supérieure à l'heure de début");
+                /*let toast = Toast.create({
+                    message: "L'heure de début devrait être inférieure à l'heure de fin",
+                    duration: 5000
+                });*/
+				this.showedSlot.endHour = "";
+			}
+		}
+    }
+
+    
 }

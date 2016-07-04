@@ -190,16 +190,7 @@ export class HomePage implements OnChanges{
      * @description this method allows to render the multicriteria modal component
      */
     showCriteriaModal(){
-        var dismissedModal = function(){
-            this.popinCrietria = false;
-        };
-
-        if(this.popinCrietria)
-            return;
-        let m = new Modal(SearchCriteriaPage);
-        m.onDismiss(dismissedModal.bind(this));
-        this.popinCrietria = true;
-        this.nav.present(m);
+        this.nav.push(SearchCriteriaPage);
     }
 
     /**

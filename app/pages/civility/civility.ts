@@ -22,100 +22,223 @@ import {ModalGalleryPage} from '../modal-gallery/modal-gallery';
 */
 @Component({
 	templateUrl: 'build/pages/civility/civility.html',
-	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService],
-	
+	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService, CommunesService]
 })
 export class CivilityPage {
-	//tabs:Tabs;
-	title: string;
-	lastname: string;
-	firstname: string;
-	birthdate;
-	birthplace: string;
-	cni: string;
-	numSS: string;
-	nationality;
-	nationalities = [];
-	currentUser;
-	companyname: string;
-	siret: string;
-	ape:string;
-	scanUri: string;
-	scanTitle: string;
-	titlePage: string;
-	isAPEValid = true;
-	isSIRETValid = true;
-	fromPage: string;
-	
-	/**
-		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
-	*/
-	constructor(public nav: NavController, private authService: AuthenticationService,
-	public gc: GlobalConfigs, private loadListService: LoadListService, private sqlStorageService: SqlStorageService, params: NavParams, private globalService: GlobalService, private zone: NgZone) {
-		// Set global configs
-		// Get target to determine configs
-		this.projectTarget = gc.getProjectTarget();
-		this.storage = new Storage(SqlStorage);
+    //tabs:Tabs;
+    title: string;
+    lastname: string;
+    firstname: string;
+    birthdate;
+    birthplace: string;
+    cni: string;
+    numSS: string;
+    nationality;
+    nationalities = [];
+    currentUser;
+    companyname: string;
+    siret: string;
+    ape:string;
+    scanUri: string;
+    scanTitle: string;
+    titlePage: string;
+    isAPEValid = true;
+    isSIRETValid = true;
+    fromPage: string;
+    communes : any = [];
+    selectedCommune : any;
+    communesService : CommunesService;
+    numSSMessage : string = '';
+    checkSS : boolean = false;
+	uploadVerb = "Charger un scan ";
+
+    /**
+     * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
+     */
+    constructor(public nav: NavController,
+                private authService: AuthenticationService,
+                public gc: GlobalConfigs,
+                private loadListService: LoadListService,
+                private sqlStorageService: SqlStorageService,
+                params: NavParams,
+                private globalService: GlobalService,
+                private zone: NgZone,
+                public events: Events,
+                communesService : CommunesService) {
+        // Set global configs
+        // Get target to determine configs
+        
+        this.projectTarget = gc.getProjectTarget();
+        this.storage = new Storage(SqlStorage);
+
+        // get config of selected target
+        let config = Configs.setConfigs(this.projectTarget);
+
+        // Set local variables and messages
+        this.themeColor = config.themeColor;
+        this.isEmployer = (this.projectTarget == 'employer');
+        //this.tabs=tabs;
+        this.params = params;
+        this.currentUser = this.params.data.currentUser;
+        this.fromPage = this.params.data.fromPage;
+        this.titlePage = this.isEmployer ? "Fiche de l'entreprise" : "Profil";
+        //load nationality list
+        if(!this.isEmployer){
+            this.loadListService.loadNationalities(this.projectTarget).then((data) => {
+                this.nationalities = data.data;
+                //initialize nationality with (9 = francais)
+                this.nationality = 9;
+                this.scanTitle = " de votre CNI";
+            });
+        }else{
+            this.scanTitle = " de votre extrait k-bis";
+        }
 		
-		// get config of selected target
-		let config = Configs.setConfigs(this.projectTarget);
-		
-		// Set local variables and messages
-		this.themeColor = config.themeColor;
-		this.isEmployer = (this.projectTarget == 'employer');
-		//this.tabs=tabs;
-		this.params = params;
-		this.currentUser = this.params.data.currentUser;
-		this.fromPage = this.params.data.fromPage;
-		this.titlePage = this.isEmployer ? "Fiche de l'entreprise" : "Profil";
-		//load nationality list
-		if(!this.isEmployer){
-			this.loadListService.loadNationalities(this.projectTarget).then((data) => {
-				this.nationalities = data.data;
-				//initialize nationality with (9 = francais)
-				this.nationality = 9;
-				this.scanTitle = " de votre CNI";
-			});
-			}else{
-			this.scanTitle = " de votre extrait k-bis";
-		}
-	}
-	
-	ionViewDidEnter(){
-		//in case of user has already signed up
-		this.initCivilityForm();
-	}
-	
-	/**
-		* @description initiate the civility form with the data of the logged user
-	*/
-	initCivilityForm(){
-		this.storage.get("currentUser").then((value) => {
-			if(value && value != "null"){
-				this.currentUser = JSON.parse(value);
-				this.title = this.currentUser.titre;
-				this.lastname = this.currentUser.nom;
-				this.firstname = this.currentUser.prenom;
-				if(this.isEmployer && this.currentUser.employer.entreprises.length != 0){
-					this.companyname = this.currentUser.employer.entreprises[0].nom;
-					this.siret = this.currentUser.employer.entreprises[0].siret;
-					this.ape = this.currentUser.employer.entreprises[0].naf;
-					}else{
-					this.birthdate = this.currentUser.jobyer.dateNaissance ? new Date(this.currentUser.jobyer.dateNaissance).toISOString() : "";
-					this.birthplace = this.currentUser.jobyer.lieuNaissance;
-					this.cni = this.currentUser.jobyer.cni;
-					this.numSS = this.currentUser.jobyer.numSS;
-					this.nationality = this.currentUser.jobyer.natId;
+        this.communesService = communesService;
+        this.selectedCommune = {
+            id : 0,
+            nom : '',
+            code_insee : ''
+        };
+    }
+
+    watchBirthPlace(e){
+
+        let val = e.target.value;
+        if(val.length<3){
+            this.communes = [];
+            return;
+        }
+        console.log(val);
+        this.communes = [];
+        this.communesService.getCommunes(val).then(data=>{
+            this.communes = data;
+            console.log(JSON.stringify(this.communes));
+        });
+    }
+
+    communeSelected(commune){
+        this.birthplace = commune.nom;
+        this.selectedCommune = commune;
+        this.communes = [];
+    }
+
+    ionViewDidEnter(){
+        //in case of user has already signed up
+        this.initCivilityForm();
+    }
+
+    /**
+     * @description initiate the civility form with the data of the logged user
+     */
+    initCivilityForm(){
+        
+        this.storage.get("currentUser").then((value) => {
+            if(value && value != "null"){
+                this.currentUser = JSON.parse(value);
+                this.title = this.currentUser.titre;
+                this.lastname = this.currentUser.nom;
+                this.firstname = this.currentUser.prenom;
+                if(this.isEmployer && this.currentUser.employer.entreprises.length != 0){
+                    this.companyname = this.currentUser.employer.entreprises[0].nom;
+                    this.siret = this.currentUser.employer.entreprises[0].siret;
+                    this.ape = this.currentUser.employer.entreprises[0].naf;
+                }else{
+                    this.birthdate = this.currentUser.jobyer.dateNaissance ? new Date(this.currentUser.jobyer.dateNaissance).toISOString() : "";
+                    this.birthplace = this.currentUser.jobyer.lieuNaissance;
+                    this.cni = this.currentUser.jobyer.cni;
+                    this.numSS = this.currentUser.jobyer.numSS;
+                    this.nationality = this.currentUser.jobyer.natId;
+                }
+				if(this.currentUser.scanUploaded){
+					this.uploadVerb = "Recharger un scan "
+				}else{
+					this.uploadVerb = "Charger un scan "
 				}
-			}
-		});
-	}
-	/**
-		* @description update civility information for employer and jobyer
-	*/
-	updateCivility(){
-		let loading = Loading.create({
-			content: ` 
+            }
+            
+            if(this.birthplace && this.birthplace != 'null'){
+               this.communesService.getCommunes(this.birthplace).then(data => {
+                   
+                   if(data && data.length>0){
+                    this.selectedCommune = data[0];
+                   }
+                   this.checkSS = true;
+               }) ;
+            } else
+                this.checkSS = true;
+        });
+    }
+
+    checkGender(){
+        let indicator = this.numSS.charAt(0);
+        if ((indicator == '1' && this.title=='M.') || (indicator == '2' && this.title!='M.'))
+            return true;
+        else
+            return false;
+    }
+
+    checkBirthYear(){
+        let indicator = this.numSS.charAt(1)+this.numSS.charAt(2);
+        let birthYear = this.birthdate.split('-')[0];
+        birthYear = birthYear.substr(2);
+        if(indicator == birthYear)
+            return true;
+        else
+            return false;
+    }
+
+    checkBirthMonth(){
+        let indicator = this.numSS.charAt(3)+this.numSS.charAt(4);
+        let birthMonth = this.birthdate.split('-')[1];
+        if(birthMonth.length == 1)
+            birthMonth = "0"+birthMonth;
+        if(indicator == birthMonth)
+            return true;
+        else
+            return false;
+    }
+
+    checkINSEE(){
+        let indicator = this.numSS.substr(5,5);
+        if(this.selectedCommune.id!='0'){
+            if(indicator != this.selectedCommune.code_insee)
+                return false;
+            else
+                return true;
+        }
+        if(indicator.charAt(0) != '9')
+            return false;
+        else
+            return true;
+    }
+
+    checkModKey(){
+        try {
+            let indicator = this.numSS.substr(0,13);
+            let key = this.numSS.substr(13);
+            let number = parseInt(indicator);
+            let nkey = parseInt(key);
+            if(nkey == number%97)
+                return true;
+            else
+                return false;
+        }
+        catch(err) {
+            return false;
+        }
+
+    }
+
+    /**
+     * @description update civility information for employer and jobyer
+     */
+    updateCivility(){
+
+
+
+        let loading = Loading.create({
+            content: ` 
 			<div>
 			<img src='img/loading.gif' />
 			</div>

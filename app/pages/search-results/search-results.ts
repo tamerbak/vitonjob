@@ -15,6 +15,7 @@ import {OfferAddPage} from "../offer-add/offer-add";
 import {timeout} from "rxjs/operator/timeout";
 import {InfoUserPage} from "../info-user/info-user";
 import {ModalOfferPropositionPage} from "../modal-offer-proposition/modal-offer-proposition";
+import {SearchDetailsPage} from "../search-details/search-details";
 
 
 /**
@@ -214,7 +215,8 @@ export class SearchResultsPage implements OnInit {
      * @param item the selected Employer/Jobyer
      */
     itemSelected(item){
-        let actionSheet = ActionSheet.create({
+        this.nav.push(SearchDetailsPage, {searchResult : item});
+        /*let actionSheet = ActionSheet.create({
             title: 'Options',
             buttons: [
                 {
@@ -239,7 +241,7 @@ export class SearchResultsPage implements OnInit {
                 }
             ]
         });
-        this.nav.present(actionSheet);
+        this.nav.present(actionSheet);*/
 
     }
 

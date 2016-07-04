@@ -5,6 +5,17 @@
     <button style="background-color: transparent;"menuToggle>
         <ion-icon name="menu"></ion-icon>
     </button>
+    <ion-title style="padding: 0;">
+        {{projectName}}
+    </ion-title>
+    <ion-buttons end>
+        <button (click)="showSearchPopover($event)">
+            <ion-icon name="more"></ion-icon>
+        </button>
+    </ion-buttons>
+</ion-navbar>
+
+<ion-content class="home" [ngStyle]="backgroundImage">
 
     <button fab fab-bottom fab-center (click)="stopRecognition()"
             [style.backgroundColor]="themeColor" [hidden] = "!recording">
@@ -63,7 +74,7 @@
     </ion-row>
     <ion-row>&nbsp;</ion-row>
     <ion-row>&nbsp;</ion-row>
-    
+
 
 	
     <!--div class="draggable ui-widget-content">

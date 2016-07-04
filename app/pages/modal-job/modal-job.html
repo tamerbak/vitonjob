@@ -18,16 +18,34 @@
         <!-- Sector field-->
         <ion-item>
             <ion-label floating>Secteur</ion-label>
-            <ion-input type="text" [(ngModel)]="jobData.sector" (focus)="showSectorList()"></ion-input>
+            <ion-input [(ngModel)]="jobData.sector" (keyup)="watchSector($event)" ></ion-input>
+            <button small item-right (click)="setSectorsPicker()" >
+                <ion-icon name="list"></ion-icon>
+            </button>
         </ion-item>
-        <div class="error-box" [hidden]="jobData.sector">* Merci de saisir un secteur!</div>
-        <!-- Job field-->
+        <ion-item *ngIf="sectors.length>0">
+            <ion-list>
+                <ion-item *ngFor="let s of sectors" (click)="sectorSelected(s)">
+                    {{s.libelle}}
+                </ion-item>
+            </ion-list>
+        </ion-item>
         <ion-item>
             <ion-label floating>Job</ion-label>
-            <ion-input type="text" [(ngModel)]="jobData.job" (focus)="showJobList()"></ion-input>
+            <ion-input [(ngModel)]="jobData.job" (keyup)="watchJob($event)"></ion-input>
+            <button small item-right (click)="setJobsPicker()" >
+                <ion-icon name="list"></ion-icon>
+            </button>
         </ion-item>
-        <div class="error-box" [hidden]="jobData.job">* Merci de saisir un job!</div>
-        <ion-row>&nbsp;</ion-row>
+        <ion-item *ngIf="jobs.length>0">
+            <ion-list>
+                <ion-item *ngFor="let s of jobs" (click)="jobSelected(s)">
+                    {{s.libelle}}
+                </ion-item>
+            </ion-list>
+        </ion-item>
+
+
         <!-- Level field-->
         <ion-list radio-group [(ngModel)]="jobData.level" style="margin-bottom: 5px;">
             <ion-list-header>
@@ -48,7 +66,7 @@
 
             <ion-col>
                 <ion-item style="padding-left: 0;">
-                    <ion-label floating>Rémunération</ion-label>
+                    <ion-label floating>Taux horraire</ion-label>
                     <ion-input type="number" [(ngModel)]="jobData.remuneration"></ion-input>
                 </ion-item>
             </ion-col>
@@ -61,7 +79,7 @@
                                 [alertOptions]="alertOptions"
                                 okText="Ok" cancelText="Annuler">
                         <ion-option value="euro" checked="true">Euro</ion-option>
-                        <ion-option value="dollar" disabled="true">Dollar</ion-option>
+                        <!--ion-option value="dollar" disabled="true">Dollar</ion-option-->
                     </ion-select>
                 </ion-item>
             </ion-col>
