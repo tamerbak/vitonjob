@@ -33,9 +33,9 @@ export class SearchResultsPage implements OnInit {
     @ViewChild('cardSlider') slider: Slides;
 
     searchResults : any;
-    listView : boolean = false;
+    listView : boolean = true;
     cardView : boolean = false;
-    mapView : boolean = true;
+    mapView : boolean = false;
     platform : Platform;
     map : any;
     cardsOptions= {
@@ -72,7 +72,7 @@ export class SearchResultsPage implements OnInit {
                 navParams : NavParams,
                 private searchService: SearchService,
                 private userService:UserService,
-                private offersService : OffersService,
+                offersService : OffersService,
                 platform : Platform) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
@@ -81,6 +81,7 @@ export class SearchResultsPage implements OnInit {
         this.isEmployer = this.projectTarget == 'employer';
         this.navParams = navParams;
 
+        this.offersService = offersService;
 
         //  Retrieving last search
         searchService.retrieveLastSearch().then(results =>{
@@ -137,7 +138,7 @@ export class SearchResultsPage implements OnInit {
     }
 
     loadMap() {
-        
+
         let latLng = new google.maps.LatLng(48.855168, 2.344813);
 
         let mapOptions = {
@@ -151,11 +152,13 @@ export class SearchResultsPage implements OnInit {
 
         let addresses = [];
         let contentTable = [];
+        let locatedResults = [];
         for(let i = 0 ; i < this.searchResults.length ; i++){
             let r = this.searchResults[i];
             if(r.latitude=='0.0' && r.longitude=='0.0')
                 continue;
             let latlng = new google.maps.LatLng(r.latitude, r.longitude);
+            locatedResults.push(r);
             addresses.push(latlng);
             contentTable.push("<h4>"+r.titre+" "+r.prenom+" "+r.nom+ "</h4>" +
                 "<ul>" +
@@ -165,11 +168,11 @@ export class SearchResultsPage implements OnInit {
                 '<button secondary="" class="button button-default button-secondary" ><span class="button-inner">Recruter</span></button>');
         }
         let bounds = new google.maps.LatLngBounds();
-        this.addMarkers(addresses, bounds, contentTable);
+        this.addMarkers(addresses, bounds, contentTable, locatedResults);
 
     }
 
-    addMarkers(addresses:any, bounds:any, contentTable : any) {
+    addMarkers(addresses:any, bounds:any, contentTable : any, locatedResults : any) {
 
         for (let i = 0; i < addresses.length; i++) {
             let marker = new google.maps.Marker({
@@ -178,14 +181,14 @@ export class SearchResultsPage implements OnInit {
                 position: addresses[i]
             });
             bounds.extend(marker.position);
-            this.addInfoWindow(marker,contentTable[i]);
+            this.addInfoWindow(marker,contentTable[i], locatedResults[i]);
         }
 
         this.map.fitBounds(bounds);
 
     }
 
-    addInfoWindow(marker, content){
+    addInfoWindow(marker, content, r){
 
         let infoWindow = new google.maps.InfoWindow({
             content: content
@@ -193,7 +196,9 @@ export class SearchResultsPage implements OnInit {
 
         google.maps.event.addListener(marker, 'click', function(){
             infoWindow.open(this.map, marker);
-        });
+            
+            this.itemSelected(r);
+        }.bind(this));
 
     }
 
@@ -267,22 +272,22 @@ export class SearchResultsPage implements OnInit {
             this.listView = true;
             this.cardView = false;
             this.mapView = false;
-            document.getElementById("map").style.display = 'none';
+            document.getElementById("map").style.height = '0px';
         } else if (mode == 2){  //  Cards view
             this.listView = false;
             this.cardView = true;
             this.mapView = false;
-            document.getElementById("map").style.display = 'none';
+            document.getElementById("map").style.height = '0px';
         } else {                //  Map view
             this.listView = false;
             this.cardView = false;
             this.mapView = true;
-            document.getElementById("map").style.display = 'block';
+            document.getElementById("map").style.height = '100%';
         }
     }
 
     recruiteFromMap(index){
-        debugger;
+        
         let jobyer = this.searchResults[index];
         this.recruitJobyer(jobyer);
     }
@@ -328,7 +333,16 @@ export class SearchResultsPage implements OnInit {
 
             } else {
                 //redirect employer to fill the missing informations
-                this.nav.push(InfoUserPage, {currentUser: this.employer});
+                let alert = Alert.create({
+                    title: 'Informations incomplètes',
+                    subTitle: "Veuillez compléter votre profil avant d'établir votre premier contrat",
+                    buttons: ['OK']
+                });
+                alert.onDismiss(()=>{
+                    this.nav.push(CivilityPage, {currentUser: this.employer});
+                });
+                this.nav.present(alert);
+
             }
         }
         else
@@ -358,7 +372,7 @@ export class SearchResultsPage implements OnInit {
      * @description Create a draggable widget to propose criteria for creating an offer from search results
      */
     createCriteria(){
-        debugger;
+        
         if(!this.searchResults || isUndefined(this.searchResults) || this.searchResults.length == 0)
             return;
 
@@ -465,7 +479,7 @@ export class SearchResultsPage implements OnInit {
     }
 
     toggleProposition(){
-        debugger;
+        
         let proposition = {
             proposedJob : this.proposedJob,
             proposedLanguages : this.proposedLanguages,

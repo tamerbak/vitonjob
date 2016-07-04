@@ -275,11 +275,11 @@ export class OfferDetailPage {
         let modal = Modal.create(ModalQualityPage, {qualities: this.offer.qualityData});
         this.nav.present(modal);
         modal.onDismiss(data => {
-            this.modified.isQuality = (data.length) ? data.length > 0 : false;
-            if (this.modified.isQuality){
+            //this.modified.isQuality = (data.length) ? data.length > 0 : false;
+            //if (this.modified.isQuality){
                 this.offer.qualityData = data;
                 this.offerService.updateOfferQualities(this.offer, this.projectTarget);
-            }
+		//}
 
         })
     }
@@ -292,11 +292,11 @@ export class OfferDetailPage {
         let modal = Modal.create(ModalLanguagePage, {languages: this.offer.languageData});
         this.nav.present(modal);
         modal.onDismiss(data => {
-            this.modified.isLanguage = (data.length) ? data.length > 0 : false;
-            if (this.modified.isLanguage){
+            //this.modified.isLanguage = (data.length) ? data.length > 0 : false;
+            //if (this.modified.isLanguage){
                 this.offer.languageData = data;
                 this.offerService.updateOfferLanguages(this.offer, this.projectTarget);
-            }
+			//}
 
         })
     }
@@ -309,11 +309,11 @@ export class OfferDetailPage {
         let modal = Modal.create(ModalCalendarPage, {slots: this.offer.calendarData});
         this.nav.present(modal);
         modal.onDismiss(data => {
-            this.modified.isCalendar = (data.length) ? data.length > 0 : false;
-            if (this.modified.isCalendar){
+           // this.modified.isCalendar = (data.length) ? data.length > 0 : false;
+            //if (this.modified.isCalendar){
                 this.offer.calendarData = data;
                 this.offerService.updateOfferCalendar(this.offer, this.projectTarget);
-            }
+			//}
 
         })
     }
@@ -390,7 +390,7 @@ export class OfferDetailPage {
 		this.offerService.updateOfferStatut(this.offer.idOffer, statut, this.projectTarget).then(()=> {
 			console.log('offer status changed successfuly');
 			this.offer.visible = (statut == 'Non' ? false : true);
-			this.offerService.setOfferInLocal(this.offer, this.projectTarget);
+			this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
 		});
 	}
 

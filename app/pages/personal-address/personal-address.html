@@ -4,23 +4,47 @@
 		<ion-icon name="menu"></ion-icon>
 	</button>
     <ion-title>{{titlePage}}</ion-title>
-	<button menuToggle="right" right>
-		<ion-icon name="more"></ion-icon>
-	</button>
 </ion-navbar>
 </ion-header>
 
 <ion-content padding>
     <ion-list>
-	<google-places [(bindModelData)]="searchData" (onPlaceChanged)='showResults($event)'></google-places>
+		<google-places [(bindModelData)]="searchData" (onPlaceChanged)='showResults($event)' [hidden]="isGooglePlaceHidden"></google-places>
+
+		<ion-row [hidden]="!isGooglePlaceHidden">
+		<ion-col width-10></ion-col>
+		<ion-col text-center>
+			<button clear (click)="showGooglePlaceInput()" style="white-space: normal;">
+				<ion-icon name="add"></ion-icon>Cliquez ici pour chercher une adresse
+			</button>
+		</ion-col>
+		<ion-col width-10></ion-col>
+	</ion-row>
 	</ion-list>
 	
-	{{geolocAddress}}	
-    
+	<!--{{geolocAddress}}	-->
+
+	<ion-item>
+        <ion-label floating>Rue</ion-label>
+        <ion-textarea type="text" [(ngModel)]="street"></ion-textarea>
+	</ion-item>
+	<ion-item>
+        <ion-label floating>Code postal</ion-label>
+        <ion-input type="text" [(ngModel)]="zipCode"></ion-input>
+	</ion-item>
+	<ion-item>
+        <ion-label floating>Ville</ion-label>
+        <ion-input type="text" [(ngModel)]="city"></ion-input>
+	</ion-item>
+	<ion-item>
+        <ion-label floating>Pays</ion-label>
+        <ion-input type="text" [(ngModel)]="country"></ion-input>
+	</ion-item>
+
 	<ion-row>
 		<ion-col width-10></ion-col>
 		<ion-col text-center>
-			<button block (click)="updatePersonalAddress()" [style.backgroundColor]="themeColor" type="submit">
+			<button block (click)="updatePersonalAddress()" [style.backgroundColor]="themeColor" [disabled]="isBtnDisabled()" type="submit">
 				<ion-icon name="done-all"></ion-icon>Valider
 			</button>
 		</ion-col>
