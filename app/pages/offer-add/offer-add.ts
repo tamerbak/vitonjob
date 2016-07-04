@@ -56,7 +56,7 @@ export class OfferAddPage {
         //Initializing PAGE:
         this.initializePage(config);
         this.offerService = os;
-        this.nav = nav;
+this.nav = nav;
 
     }
 
@@ -86,7 +86,7 @@ export class OfferAddPage {
             isCalendar: false
         };
 
-        this.visibleOffer = false;
+        this.visibleOffer = true;
 
         this.offerToBeAdded = {
             jobData: "", calendarData: [], qualityData: [], languageData: [],
@@ -106,8 +106,8 @@ export class OfferAddPage {
         this.localOffer.get('jobData').then(value => {
             value = JSON.parse(value);
             if (value) {
-                this.offerToBeAdded.jobData = value;
                 let level = (this.offerToBeAdded.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant'
+                this.offerToBeAdded.jobData = value;
                 this.offerToBeAdded.title = this.offerToBeAdded.jobData.job + " " + level;
                 this.validated.isJob = value.validated;
                 this.steps.isCalendar = this.validated.isJob;
@@ -210,7 +210,7 @@ export class OfferAddPage {
                 //this.steps.isCalendar = this.validated.isLanguage;
                 this.localOffer.set('languages', JSON.stringify(data));
                 if (this.validated.isLanguage && this.validated.isQuality)
-                    this.presentToast("Génial! Vous avez préparé une offre complète, " +
+                    this.presentToast("Génial! Vous avez préparez une offre complète, " +
                         "vous pouvez maintenant la valider.", 4);
             })
         });
@@ -237,7 +237,6 @@ export class OfferAddPage {
      * Description : Adding offer in local and remote databases
      */
     addOffer() {
-        
         this.initLocalStorageOffer();
         let loading = Loading.create({
             content: ` 

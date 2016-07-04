@@ -10,7 +10,7 @@
 <ion-content padding>
     <ion-list>
 		<google-places [(bindModelData)]="searchData" (onPlaceChanged)='showResults($event)' [hidden]="isGooglePlaceHidden"></google-places>
-		
+
 		<ion-row [hidden]="!isGooglePlaceHidden">
 		<ion-col width-10></ion-col>
 		<ion-col text-center>
@@ -23,7 +23,7 @@
 	</ion-list>
 	
 	<!--{{geolocAddress}}	-->
-    
+
 	<ion-item>
         <ion-label floating>Rue</ion-label>
         <ion-textarea type="text" [(ngModel)]="street"></ion-textarea>
@@ -40,7 +40,7 @@
         <ion-label floating>Pays</ion-label>
         <ion-input type="text" [(ngModel)]="country"></ion-input>
 	</ion-item>
-	
+
 	<ion-row>
 		<ion-col width-10></ion-col>
 		<ion-col text-center>

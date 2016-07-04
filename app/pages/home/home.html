@@ -1,13 +1,17 @@
+
+
+
 <ion-content class="home" [ngStyle]="backgroundImage">
     <button style="background-color: transparent;"menuToggle>
         <ion-icon name="menu"></ion-icon>
     </button>
 
+
     <button fab fab-bottom fab-center (click)="stopRecognition()"
-            [style.backgroundColor]="themeColor" [hidden] = "!recording">
+            [style.backgroundColor]="themeColor" [hidden]= "!recording">
         <ion-spinner name="dots"></ion-spinner>
     </button>
-    <ion-row>&nbsp;</ion-row>
+	<ion-row>&nbsp;</ion-row>
     <ion-row>&nbsp;</ion-row>
     <ion-row>
         <ion-col width-20></ion-col>
@@ -15,24 +19,24 @@
         <ion-col width-20></ion-col>
     </ion-row>
     <ion-row>
-        <ion-item class="itemSearch">
+            <ion-item class="itemSearch">
 
-            <ion-label floating class="withoutOverflow">{{searchPlaceHolder}}</ion-label>
-            <ion-input type="text" (focus)="onFocus($event)"
-                       (blur)="onBlur($event)" (keyup)="checkForEnterKey($event)"
-                       [(ngModel)]="scQuery"></ion-input>
-            <button clear item-right (click)="doSemanticSearch()">
-                <ion-icon name="search" class="searchIcon"></ion-icon>
-            </button>
+                <ion-label floating class="withoutOverflow">{{searchPlaceHolder}}</ion-label>
+                <ion-input type="text" (focus)="onFocus($event)"
+                           (blur)="onBlur($event)" (keyup)="checkForEnterKey($event)"
+                           [(ngModel)]="scQuery"></ion-input>
+                <button clear item-right (click)="doSemanticSearch()">
+                    <ion-icon name="search" class="searchIcon"></ion-icon>
+                </button>
 
-        </ion-item>
+            </ion-item>
     </ion-row>
     <ion-row>
-        <a id="ra" (click)="showCriteriaModal()">
-            Recherche Avancée
+        <a id="ra" [navPush]="push">
+            Recherche Avancé
         </a>
     </ion-row>
-    <ion-row>
+    <ion-row id="home-text">
         <ion-col width-10></ion-col>
         <ion-col text-center> <h6 primary class="searchHighlight"> {{highlightSentence}} </h6></ion-col>
         <ion-col width-10></ion-col>
@@ -48,7 +52,7 @@
         </ion-col>
         <ion-col width-10></ion-col>
     </ion-row-->
-    <ion-row>
+    <ion-row id="ma-btn">
         <ion-col width-10></ion-col>
         <ion-col text-center>
             <button class="deconnexionButton" [style.backgroundColor]="themeColor"  (click)="openLoginsPage()" [hidden]="cnxBtnName === 'Déconnexion'" dark>
@@ -62,7 +66,7 @@
     <ion-row>&nbsp;</ion-row>
 
 
-
+	
     <!--div class="draggable ui-widget-content">
         <ion-list>
             <ion-list-header><ion-icon  name="move"></ion-icon>Recherche</ion-list-header>
@@ -77,6 +81,7 @@
                 </button>
             </ion-item>
         </ion-list>
+
     </div-->
 
 

@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {AppVersion} from "ionic-native/dist/index";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
+import {HomePage} from "../home/home";
 
 
 @Component({
@@ -23,6 +24,7 @@ export class AboutPage {
         this.releaseDate = '10 Juin 2016';
         //this.appName = AppVersion.getAppName();
         //this.version = AppVersion.getPackageName();
+        this.push = HomePage;
 
         let config = Configs.setConfigs(gc.getProjectTarget());
         this.logo = config.imageURL;
