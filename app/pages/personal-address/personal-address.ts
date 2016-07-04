@@ -30,8 +30,9 @@ export class PersonalAddressPage {
 	zipCode: string;
 	city: string;
 	country: string;
-	isGooglePlaceHidden = true;
+	isGooglePlaceHidden = false;
 	generalLoading;
+	isAdrFormHidden = true;
 	
 	/**
 		* @description While constructing the view, we get the currentUser passed as parameter from the connection page
@@ -109,6 +110,10 @@ export class PersonalAddressPage {
 							this.country = data[0].country;
 						});
 					}
+				}
+				if(this.city){
+					this.isAdrFormHidden = false;
+					this.isGooglePlaceHidden = true;
 				}
 			}
 			//if there is not a logged user or there is no address saved in the user data
@@ -226,6 +231,7 @@ export class PersonalAddressPage {
 					this.city = adrArray[2];
 					this.country = adrArray[3];
 					this.isGooglePlaceHidden = true;
+					this.isAdrFormHidden = false;
 				});	
 				this.generalLoading.dismiss();
 			}else{
@@ -251,6 +257,7 @@ export class PersonalAddressPage {
 			this.city = adrArray[2].replace("&#39;", "'");
 			this.country = adrArray[3].replace("&#39;", "'");
 			this.isGooglePlaceHidden = true;
+			this.isAdrFormHidden = false;
 		});
 	}
 	
