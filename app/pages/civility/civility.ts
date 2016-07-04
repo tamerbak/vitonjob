@@ -210,6 +210,23 @@ export class CivilityPage {
             return true;
     }
 
+    checkModKey(){
+        try {
+            let indicator = this.numSS.substr(0,13);
+            let key = this.numSS.substr(13);
+            let number = parseInt(indicator);
+            let nkey = parseInt(key);
+            if(nkey == number%97)
+                return true;
+            else
+                return false;
+        }
+        catch(err) {
+            return false;
+        }
+
+    }
+
     /**
      * @description update civility information for employer and jobyer
      */
@@ -335,7 +352,7 @@ export class CivilityPage {
             if((!this.title || !this.firstname || !this.lastname || !this.cni || this.cni.length < 12 || !this.numSS || this.numSS.length != 15 || !this.nationality || !this.birthplace || !this.birthdate)){
                 return true;
             }
-            if(!this.checkGender() || !this.checkBirthYear() || !this.checkBirthMonth() || !this.checkINSEE()){
+            if(!this.checkGender() || !this.checkBirthYear() || !this.checkBirthMonth() || !this.checkINSEE() || !this.checkModKey()){
                 return true;
             }
             return false;
@@ -542,6 +559,11 @@ export class CivilityPage {
             return true;
         }
         correct = this.checkINSEE();
+        if(!correct){
+            this.numSSMessage = '* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles';
+            return true;
+        }
+        correct = this.checkModKey();
         if(!correct){
             this.numSSMessage = '* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles';
             return true;

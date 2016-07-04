@@ -1,4 +1,4 @@
-import {NavController, ViewController, Alert} from 'ionic-angular';
+import {NavController, ViewController, Alert, Toast} from 'ionic-angular';
 import {DatePicker} from "ionic-native/dist/index";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
@@ -94,7 +94,7 @@ export class ModalSlotPage {
     }
 
     isValidateDisabled(){
-        if(!this.showedSlot.startHour || !this.showedSlot.endHour)
+        if(!this.showedSlot.startHour || !this.showedSlot.endHour || this.showedSlot.endHour<this.showedSlot.startHour)
             return true;
         return false;
     }
@@ -112,12 +112,10 @@ export class ModalSlotPage {
             parseInt(this.showedSlot.endHour.split(':')[1]),
         };
         if(this.slot.startHour>this.slot.endHour){
-            let alert = Alert.create({
-                title: 'Erreur',
-                subTitle: "L'heure de début devrait être inférieure à l'heure de fin",
-                buttons: ['OK']
+            let toast = Toast.create({
+                message: "L'heure de début devrait être inférieure à l'heure de fin",
+                duration: 5000
             });
-            this.nav.present(alert);
             return;
         }
         debugger;
@@ -143,14 +141,25 @@ export class ModalSlotPage {
         let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
         return hours + ":" + minutes;
     }
-	
+    hoursErrorMessage : string = '';
 	 checkHour(i){
+         this.hoursErrorMessage = '';
         if(this.showedSlot.startHour && this.showedSlot.endHour && this.showedSlot.startHour >= this.showedSlot.endHour){
 			if(i == 0){
-				this.globalService.showAlertValidation("VitOnJob", "L'heure de début doit être inférieure à l'heure de fin");
+                this.hoursErrorMessage = "* L'heure de début doit être inférieure à l'heure de fin";
+				//this.globalService.showAlertValidation("VitOnJob", "L'heure de début doit être inférieure à l'heure de fin");
+                /*let toast = Toast.create({
+                    message: "L'heure de début devrait être inférieure à l'heure de fin",
+                    duration: 5000
+                });*/
 				this.showedSlot.startHour = "";
 			}else{
-				this.globalService.showAlertValidation("VitOnJob", "L'heure de fin doit être supérieure à l'heure de début");
+                this.hoursErrorMessage = "* L'heure de début doit être inférieure à l'heure de fin";
+				//this.globalService.showAlertValidation("VitOnJob", "L'heure de fin doit être supérieure à l'heure de début");
+                /*let toast = Toast.create({
+                    message: "L'heure de début devrait être inférieure à l'heure de fin",
+                    duration: 5000
+                });*/
 				this.showedSlot.endHour = "";
 			}
 		}
