@@ -5,7 +5,7 @@
 			Menu
         </ion-title>
     </ion-toolbar>
-    <ion-content class="menu" style="color: white;" [style.backgroundColor]="themeColor">
+    <ion-content class="menu" [style.backgroundColor]="themeColor">
         <ion-list no-lines text-wrap>
             <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)" class="menuButton w">
                 <ion-icon name="{{p.icon}}" icon-top></ion-icon>
