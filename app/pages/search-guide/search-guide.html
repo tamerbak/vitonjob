@@ -1,4 +1,5 @@
-<ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+<ion-header>
+<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
   <ion-title style="padding-left: 0">Recherche guidée</ion-title>
   <ion-buttons end>
     <button (click)="close()">
@@ -6,6 +7,7 @@
     </button>
   </ion-buttons>
 </ion-navbar>
+</ion-header>
 
 <ion-content padding class="search-guide">
   <ion-row>

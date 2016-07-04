@@ -1,4 +1,5 @@
-<ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+<ion-header>
+<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
   <button menuToggle>
     <ion-icon name="menu"></ion-icon>
   </button>
@@ -7,6 +8,7 @@
     <ion-icon name="more"></ion-icon>
   </button>
 </ion-navbar>
+</ion-header>
 
 <ion-content padding class="slimPay">
   
