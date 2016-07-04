@@ -28,6 +28,8 @@ export class GooglePlaces {
 	*/
 	ngAfterViewInit() {
 		var input = this.searchBar.inputElement;
+		console.log("Log ti determine not an instance of HTMLInputElement error");
+		console.log(input);
 		var acutocomplete = new google.maps.places.Autocomplete(input, this.options);
 		acutocomplete.addListener('place_changed', () => {
 			this.onPlaceChanged.emit(acutocomplete.getPlace());
