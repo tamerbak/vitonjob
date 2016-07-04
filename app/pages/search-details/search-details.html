@@ -1,0 +1,72 @@
+<ion-navbar *navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+    <ion-title style="padding-left: 0">{{fullTitle}}</ion-title>
+    <ion-buttons end>
+        <button (click)="close()">
+            <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+        </button>
+    </ion-buttons>
+</ion-navbar>
+
+<ion-content padding class="search-details">
+    <ion-grid>
+        <ion-row>
+            <h2>{{fullName}}</h2><ion-badge item-right>{{matching}}</ion-badge>
+        </ion-row>
+        <ion-row>
+            &nbsp;
+        </ion-row>
+
+        <ion-row>
+            {{fullTitle}}
+        </ion-row>
+        <ion-row>
+            &nbsp;
+        </ion-row>
+        <ion-row>
+            <ion-col width-20>Tel : </ion-col>
+            <ion-col width-80>
+                <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+                    (click)="call()" >
+                    {{telephone}}
+                </button>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col width-20>Email : </ion-col>
+            <ion-col width-80>
+                <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+                        (click)="sendEmail()">
+                    {{email}}
+                </button>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+
+            <ion-col width-100>
+               <ion-buttons end>
+                   <button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+                        (click)="call()">
+                       <ion-icon name="call"></ion-icon>
+                   </button>
+                   <button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+                           (click)="sendSMS()">
+                       <ion-icon name="mail"></ion-icon>
+                   </button>
+                   <button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''" disabled>
+                       <ion-icon name="logo-skype"></ion-icon>
+                   </button>
+                   <button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''" disabled>
+                       <ion-icon name="logo-googleplus"></ion-icon>
+                   </button>
+               </ion-buttons>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <button block [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''" *ngIf="isEmployer"
+                (click)="contract()" >
+                Contrat
+            </button>
+
+        </ion-row>
+    </ion-grid>
+</ion-content>
