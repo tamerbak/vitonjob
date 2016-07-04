@@ -6,11 +6,6 @@
 -->
 <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
   <ion-title>Sélection d'un créneau</ion-title>
-  <ion-buttons end>
-    <button (click)="closeModal()">
-      <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
-    </button>
-  </ion-buttons>
 </ion-navbar>
 
 <ion-content padding class="modal-slot">
@@ -25,7 +20,7 @@
     <ion-item text-wrap>
       <ion-label>Date</ion-label>
       <ion-datetime id="idt" displayFormat="DD, MMMM YYYY" [(ngModel)]="showedSlot.date"
-                    [min]="todayDate" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
+                    min="{{showedSlot.date}}" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
     </ion-item>
 
     <!--ion-item>
@@ -35,7 +30,8 @@
     </ion-item-->
     <ion-item text-wrap>
       <ion-label>Heure de Début</ion-label>
-      <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.startHour" (ionChange)="checkHour(0)" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
+      <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.startHour"
+                    minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
     </ion-item>
 
     <!--ion-item>
@@ -45,14 +41,15 @@
     </ion-item-->
     <ion-item text-wrap>
       <ion-label>Heure de fin</ion-label>
-      <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.endHour" (ionChange)="checkHour(1)" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
+      <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.endHour"
+                    minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
     </ion-item>
   </ion-list>
   <div class="error-box">{{hoursErrorMessage}}</div>
 
   <ion-row>
     <ion-col text-center>
-      <button [disabled]="isValidateDisabled()"
+      <button [hidden]="false"
               [style.backgroundColor]="themeColor" (click)="validateModal()">
         Valider
         <ion-icon name="checkmark-circle"></ion-icon>

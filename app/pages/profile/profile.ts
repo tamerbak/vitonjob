@@ -13,7 +13,6 @@ import {DateConverter} from '../../pipes/date-converter/date-converter';
 import {CivilityPage} from "../civility/civility";
 import {PersonalAddressPage} from "../personal-address/personal-address";
 import {JobAddressPage} from "../job-address/job-address";
-import {BankAccountPage} from "../bank-account/bank-account";
 
 /*
  Generated class for the ProfilePage page.
@@ -41,8 +40,6 @@ export class ProfilePage implements OnInit {
     userService:any;
     addrService:any;
     backgroundImage: any;
-	noMainAddress = false;
-	noSecondAddress = false;
 
     constructor(public nav:NavController, public gc:GlobalConfigs,
                 userService:UserService, addrService:AddressService) {
@@ -134,12 +131,11 @@ export class ProfilePage implements OnInit {
 						gData.results[0].geometry.location.lng);
 					let mapOptions = {
 						//center: latLng1,
-						//zoom: 10,
+						//zoom: 5,
 						draggable: false,
 						mapTypeId: google.maps.MapTypeId.ROADMAP
 					};
 					this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-					this.noMainAddress = false;
 					if(secondaryAddress){
 						//debugger;
 						this.addrService.getLatLng(secondaryAddress).then(gData => {
@@ -150,51 +146,17 @@ export class ProfilePage implements OnInit {
 								let addresses = [latLng1, latLng2];
 								let bounds = new google.maps.LatLngBounds();
 								this.addMarkers(addresses, bounds);
-								this.noSecondAddress = false;
-							}else{
-								this.noSecondAddress = true;
-								let addresses = [latLng1];
-								let bounds = new google.maps.LatLngBounds();
-								this.addMarkers(addresses, bounds);
 							}
 						});
 					}else {
-						this.noSecondAddress = true;	
 						let addresses = [latLng1];
 						let bounds = new google.maps.LatLngBounds();
 						this.addMarkers(addresses, bounds);
 					}
-				}else{
-					this.noMainAddress = true;
-					this.addrService.getLatLng(secondaryAddress).then(gData => {
-					if (gData && gData.results && gData.results.length > 0) {
-						let latLng2 = new google.maps.LatLng(gData.results[0].geometry.location.lat,
-							gData.results[0].geometry.location.lng);
-						let mapOptions = {
-							draggable: false,
-							//zoom: 5,
-							mapTypeId: google.maps.MapTypeId.ROADMAP
-						};
-						this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-						//new google.maps.LatLng(48.8762300, 2.3617500);
-						let addresses = [latLng2];
-						let bounds = new google.maps.LatLngBounds();
-						this.addMarkers(addresses, bounds);
-						this.noSecondAddress = false;
-					} else {
-						// No addresses
-						this.noSecondAddress = true;
-						let mapOptions = {
-							draggable: false,
-							mapTypeId: google.maps.MapTypeId.ROADMAP
-						};
-						this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-					}
-				});
 				}
 			});
 		} else {
-			this.noMainAddress = true;
+			//let latLng1 = new google.maps.LatLng(48.8785618, 2.3603689);
 			this.addrService.getLatLng(secondaryAddress).then(gData => {
 				if (gData && gData.results && gData.results.length > 0) {
 					let latLng2 = new google.maps.LatLng(gData.results[0].geometry.location.lat,
@@ -208,10 +170,8 @@ export class ProfilePage implements OnInit {
 					let addresses = [latLng2];
 					let bounds = new google.maps.LatLngBounds();
 					this.addMarkers(addresses, bounds);
-					this.noSecondAddress = false;
 				} else {
 					// No addresses
-					this.noSecondAddress = true;
 					let mapOptions = {
 						draggable: false,
 						mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -305,11 +265,7 @@ export class ProfilePage implements OnInit {
         this.nav.present(pictureModel);
 
     }
-
-    goToBankAccount(){
-        this.nav.push(BankAccountPage, {currentUser: this.userData, fromPage: "profil"});
-    }
-
+	
 	goToInfoUserTabs(){
 		this.nav.push(CivilityPage, {currentUser: this.userData, fromPage: "profil"});	
 	}
@@ -323,9 +279,6 @@ export class ProfilePage implements OnInit {
 	}
 	
 	isMapHidden(){
-		if(this.noMainAddress && this.noSecondAddress){
-			return true;	
-		}
 		if(this.isEmployer){
 			if(this.userData.employer.entreprises.length == 0){
 				return true;

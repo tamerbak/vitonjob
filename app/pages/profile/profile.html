@@ -9,20 +9,17 @@
         <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Profil</ion-title>
-
+    <!--button menuToggle="right" right>
+        <ion-icon name="more"></ion-icon>
+    </button-->
 </ion-navbar>
 
 <ion-content padding class="profile" [ngStyle]="backgroundImage">
 
-    <button fab fab-top fab-right  [style.backgroundColor]="themeColor"
+    <button fab fab-top fab-right [style.backgroundColor]="themeColor"
             (click)="goToSettings()">
         <ion-icon name="settings"></ion-icon>
-    </button>
-
-    <button fab fab-top fab-right style="margin-right:20%" [style.backgroundColor]="themeColor"
-            (click)="goToBankAccount()">
-        <ion-icon name="logo-euro"></ion-icon>
-    </button>
+			</button>
 
     <button fab fab-top fab-left class="img-button" (click)="showPictureModel()"
             [style.backgroundColor]="thirdThemeColor">
@@ -40,7 +37,7 @@
                     {{userData.jobyer.lieuNaissance}} le {{userData.jobyer.dateNaissance | dateConverter:'short'}}</p>
                 <ul *ngIf="!isEmployer && userData.jobyer.cni" style="font-size: 1.3rem;">
                     <li>CNI: {{userData.jobyer.cni}}</li>
-                    <li>Numéro SS: {{userData.jobyer.numSS}}</li>
+                    <li>Numéro Sécurité Sociale: {{userData.jobyer.numSS}}</li>
                 </ul>
             </ion-item>
             <ion-item test-wrap *ngIf="isEmployer && userData.employer.entreprises.length != 0 ">
@@ -77,10 +74,10 @@
         <ion-item text-wrap>
             <ion-icon subtle large item-left name='pin' style="color: #757575"></ion-icon>
             <h5 *ngIf="!isEmployer">Adresse départ au travail</h5>
-            <h5 *ngIf="isEmployer">Adresse lieu de travail</h5>
+            <h5 *ngIf="isEmployer">Adresse de la mission</h5>
             <p *ngIf="!isEmployer">{{userData.jobyer.workAdress.fullAdress}}</p>
             <p *ngIf="isEmployer  && userData.employer.entreprises.length != 0">{{userData.employer.entreprises[0].workAdress.fullAdress}}</p>
-            <button clear item-right (click)="goToJobAddressTab()"><ion-icon name="create"></ion-icon></button>
+		<button clear item-right (click)="goToJobAddressTab()"><ion-icon name="create"></ion-icon></button>
         </ion-item>
         <!--div class="button-footer">
             <button clear [style.color]="themeColor">

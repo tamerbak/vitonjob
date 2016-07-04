@@ -29,8 +29,7 @@ export class SettingPasswordPage {
     let config = Configs.setConfigs(this.projectTarget);
     this.options = config.options;
     this.isEmployer = (this.projectTarget === 'employer');
-	this.themeColor = config.themeColor;
-	this.storage = new Storage(SqlStorage);
+    this.storage = new Storage(SqlStorage);
   }
 
   modifyPasswd() {
