@@ -3,7 +3,7 @@
 
 <ion-content class="home" [ngStyle]="backgroundImage">
     <button style="background-color: transparent;"menuToggle>
-        <ion-icon name="menu"></ion-icon>
+        <ion-icon style="color: #808080;" name="menu"></ion-icon>
     </button>
 
 
@@ -13,12 +13,19 @@
     </button>
 	<ion-row>&nbsp;</ion-row>
     <ion-row>&nbsp;</ion-row>
-    <ion-row>
-        <ion-col width-20></ion-col>
-        <ion-col text-center><img [src]="imageURL"/></ion-col>
-        <ion-col width-20></ion-col>
+    <ion-row id="logo-position">
+
+        <ion-col text-center><img id="logo"[src]="imageURL"/></ion-col>
+
     </ion-row>
-    <ion-row>
+
+    <ion-row id="home-text">
+        <ion-col width-10></ion-col>
+        <ion-col text-center> <h6 primary class="searchHighlight"> {{highlightSentence}} </h6></ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+
+    <ion-row id="search-position">
             <ion-item class="itemSearch">
 
                 <ion-label floating class="withoutOverflow">{{searchPlaceHolder}}</ion-label>
@@ -26,21 +33,17 @@
                            (blur)="onBlur($event)" (keyup)="checkForEnterKey($event)"
                            [(ngModel)]="scQuery"></ion-input>
                 <button clear item-right (click)="doSemanticSearch()">
-                    <ion-icon name="search" class="searchIcon"></ion-icon>
+                    <ion-icon id="icon-search" name="search" class="searchIcon"></ion-icon>
                 </button>
 
             </ion-item>
     </ion-row>
-    <ion-row>
+    <ion-row id="adv-search">
         <a id="ra" [navPush]="push">
-            Recherche Avancé
+            Recherche Avancée
         </a>
     </ion-row>
-    <ion-row id="home-text">
-        <ion-col width-10></ion-col>
-        <ion-col text-center> <h6 primary class="searchHighlight"> {{highlightSentence}} </h6></ion-col>
-        <ion-col width-10></ion-col>
-    </ion-row>
+
     <!--ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
