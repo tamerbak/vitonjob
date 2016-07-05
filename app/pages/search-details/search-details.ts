@@ -59,7 +59,20 @@ export class SearchDetailsPage {
 
         });
 
-        console.log(this.result);
+        //get the connexion object and define if the there is a user connected
+        userService.getConnexionObject().then(results =>{
+            if(results && !isUndefined(results)){
+                let connexion = JSON.parse(results);
+                if(connexion && connexion.etat){
+                    this.isUserAuthenticated = true;
+                }else{
+                    this.isUserAuthenticated = false;
+                }
+                console.log(connexion);
+            }
+        });
+
+        console.log(JSON.stringify(this.result));
     }
 
     call(){
