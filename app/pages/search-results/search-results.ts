@@ -300,6 +300,7 @@ export class SearchResultsPage implements OnInit {
 
 
         //init local database
+
         let storage = new Storage(SqlStorage);
 
         if(this.isUserAuthenticated){
