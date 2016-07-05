@@ -31,8 +31,9 @@ export class JobAddressPage {
 	zipCode: string;
 	city: string;
 	country: string;
-	isGooglePlaceHidden = true;
+	isGooglePlaceHidden = false;
 	generalLoading;
+	isAdrFormHidden = true;
 
 	/**
 		* @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
@@ -109,6 +110,10 @@ export class JobAddressPage {
 							this.country = data[1].country;
 						});
 					}
+				}
+				if(this.city){
+					this.isAdrFormHidden = false;
+					this.isGooglePlaceHidden = true;
 				}
 			}
 			//if there is not a logged user or there is no address saced in the user data
@@ -226,6 +231,7 @@ export class JobAddressPage {
 					this.city = adrArray[2];
 					this.country = adrArray[3];
 					this.isGooglePlaceHidden = true;
+					this.isAdrFormHidden = false;
 				});
 				this.generalLoading.dismiss();
 			}else{
@@ -251,6 +257,7 @@ export class JobAddressPage {
 			this.city = adrArray[2].replace("&#39;", "'");
 			this.country = adrArray[3].replace("&#39;", "'");
 			this.isGooglePlaceHidden = true;
+			this.isAdrFormHidden = false;
 		});
 	}
 	
@@ -326,6 +333,24 @@ export class JobAddressPage {
 				});
 			}
 		});
+	}
+	
+	copyPersonalAddress(){
+		if(this.isEmployer){
+			this.searchData = this.currentUser.employer.entreprises[0].siegeAdress.fullAdress;
+			this.street = this.currentUser.employer.entreprises[0].siegeAdress.street;
+			this.zipCode = this.currentUser.employer.entreprises[0].siegeAdress.zipCode;
+			this.city = this.currentUser.employer.entreprises[0].siegeAdress.city;
+			this.country = this.currentUser.employer.entreprises[0].siegeAdress.country;
+			}else{
+			this.searchData = this.currentUser.jobyer.personnalAdress.fullAdress;
+			this.street = this.currentUser.jobyer.personnalAdress.street;
+			this.zipCode = this.currentUser.jobyer.personnalAdress.zipCode;
+			this.city = this.currentUser.jobyer.personnalAdress.city;
+			this.country = this.currentUser.jobyer.personnalAdress.country;
+		}
+		this.isGooglePlaceHidden = true;
+		this.isAdrFormHidden = false;
 	}
 	
 	isAddressModified(){
