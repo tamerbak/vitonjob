@@ -62,7 +62,7 @@
         <ion-card-header class="candidate-card-header" style="padding:5px">
           <ion-grid style="padding:0px">
             <ion-row>
-              <ion-col width-85>{{item.titre}} {{item.prenom}} {{item.nom}}</ion-col>
+              <ion-col width-85>{{isEmployer ? item.titre + ' ' + item.prenom + ' ' + item.nom : item.entreprise}}</ion-col>
               <ion-col width-15><ion-badge secondary="" style="margin:-5px">{{item.matching}} %</ion-badge></ion-col>
             </ion-row>
           </ion-grid>

@@ -40,7 +40,11 @@ export class SearchDetailsPage {
             this.fullTitle = this.result.titreOffre;
         if(this.result.titreoffre)
             this.fullTitle = this.fullTitle+this.result.titreoffre;
-        this.fullName = this.result.titre+' '+this.result.prenom+' '+this.result.nom;
+
+        if(!this.isEmployer)
+            this.fullName = this.result.entreprise;
+        else
+            this.fullName = this.result.titre+' '+this.result.prenom+' '+this.result.nom;
         this.email = this.result.email;
         this.telephone = this.result.tel;
         this.matching = this.result.matching+"%";
