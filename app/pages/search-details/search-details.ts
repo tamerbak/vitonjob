@@ -1,14 +1,16 @@
 import {Component} from '@angular/core';
-import {NavController, NavParams, Alert, Storage, SqlStorage} from 'ionic-angular';
+import {NavController, NavParams, Alert, Storage, SqlStorage, Platform} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {isUndefined} from "ionic-angular/util";
 import {ContractPage} from "../contract/contract";
 import {CivilityPage} from "../civility/civility";
 import {LoginsPage} from "../logins/logins";
 import {UserService} from "../../providers/user-service/user-service";
+import {GlobalService} from "../../providers/global.service";
 
 @Component({
     templateUrl: 'build/pages/search-details/search-details.html',
+	providers: [GlobalService]
 })
 export class SearchDetailsPage {
     isEmployer : boolean = false;
@@ -26,10 +28,13 @@ export class SearchDetailsPage {
     constructor(public nav: NavController,
                 public params : NavParams,
                 public globalConfig: GlobalConfigs,
-                userService : UserService) {
+                userService : UserService,
+				private globalService: GlobalService,
+				platform: Platform) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
         this.isEmployer = this.projectTarget == 'employer';
+		this.platform = platform;
         this.result = params.data.searchResult;
         if(this.result.titreOffre)
             this.fullTitle = this.result.titreOffre;
@@ -81,17 +86,37 @@ export class SearchDetailsPage {
         sms.send(number, "", options, success, error);
     }
     skype(){
-        startApp.set({ /* params */
-            "action": "ACTION_VIEW",
-            "uri": "skype:"+this.telephone
-        }).start(function(){
-            console.log('starting skype');
-        }, function(error){
-            console.log('failed to start skype : '+error);
-        });
-    }
+		var sApp;
+		if(this.platform.is('ios')){
+			sApp = startApp.set("skype://" + this.telephone);
+		}else{
+			sApp = startApp.set({ 
+				"action": "ACTION_VIEW",
+				"uri": "skype:" + this.telephone
+			});
+		}
+		sApp.start(() => {
+			console.log('starting skype');
+		}, (error) => {
+			this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
+		});
+	}
+	
     googleHangout(){
-
+		var sApp = startApp.set({ 
+			"action": "ACTION_VIEW",
+			"uri": "gtalk:"+this.telephone
+		});
+		sApp.check((values) => { /* success */
+			console.log("OK");
+		}, (error) => { /* fail */
+			this.globalService.showAlertValidation("VitOnJob", "Hangout n'est pas installé.");
+		});	
+		sApp.start(() => {
+			console.log('starting hangout');
+		}, (error) => {
+			this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Hangout.");
+		});
     }
 
     contract(){
