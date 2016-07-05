@@ -1,6 +1,120 @@
 .home {
 
   background-size: cover;
+  //font-family: 'Quicksand', sans-serif;
+  font-family: 'Maven Pro', sans-serif;
+
+  @media screen and (max-height: 575px) {
+    #logo {
+      width: 10em;
+    }
+
+    #logo-position {
+      position: absolute;
+      top: 3em;
+    }
+
+    #home-text {
+      color: #808080!important;
+      margin-top: 2em;
+    }
+
+    h6 {
+      font-size: 15px;
+      color: #808080!important;
+    }
+
+
+  }
+  //smartphone iphone 4 size
+  @media screen and (max-height: 480px) {
+    #logo {
+      width: 8.5em;
+    }
+
+    #logo-position {
+      position: absolute;
+      top: 2em;
+    }
+
+    #home-text {
+      color: #808080!important;
+      position: absolute;
+      top: 3.5em;
+    }
+
+
+
+    h6 {
+      font-size: 14px;
+      color: #808080!important;
+    }
+
+
+    #adv-search{
+      position: absolute;
+      top: 14em;
+      font-size: 12px;
+    }
+
+
+  }
+//smartphone iphone 6
+  @media screen and (min-height: 576px) {
+    #logo {
+      width: 13em;
+    }
+
+    #logo-position {
+      position: absolute;
+      top: 4em;
+    }
+
+    #home-text {
+      color: #808080!important;
+      margin-top: 4em;
+    }
+
+    h6 {
+      font-size: 19px;
+      color: #808080!important;
+    }
+
+
+
+
+  }
+
+  //tablette size
+  @media screen and (min-height: 880px) {
+    #logo {
+      width: 20em;
+    }
+
+    #logo-position {
+      position: absolute;
+      top: 8em;
+    }
+
+    #home-text {
+      color: #808080!important;
+      margin-top: 13em;
+    }
+
+    h6 {
+      font-size: 20px;
+      color: #808080!important;
+    }
+
+    #adv-search{
+      position: absolute;
+      top: 23em;
+      right: 0em;
+      font-size: 18px;
+    }
+
+
+  }
 
   .itemSearch {
     background-color: transparent;
@@ -70,17 +184,6 @@
 
 
 
-  #ma-btn {
-    position: absolute;
-    bottom: 0;
-    margin-bottom: 2em;
-
-  }
-  #home-text {
-    position: absolute;
-    bottom: 0;
-    margin-bottom: 7em;
-  }
 
 
 
