@@ -19,7 +19,7 @@
         </ion-row>
 
         <ion-row>
-            {{fullTitle}}
+            {{isEmployer ? 'Offre de service: ' : 'Offre: '}} {{fullTitle}}
         </ion-row>
         <ion-row>
             &nbsp;
@@ -58,11 +58,10 @@
                            (click)="sendSMS()">
                        <ion-icon name="mail"></ion-icon>
                    </button>
-                   <button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''" disabled
-                        (click)="skype()">
+                   <button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''" (click)="skype()">
                        <ion-icon name="logo-skype"></ion-icon>
                    </button>
-                   <button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''" disabled>
+				   <button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''" (click)="googleHangout()" disabled>
                        <ion-icon name="logo-googleplus"></ion-icon>
                    </button>
                </ion-buttons>

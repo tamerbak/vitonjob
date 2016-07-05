@@ -36,7 +36,7 @@
           <img src="img/{{avatar}}.png">
         </ion-avatar>
 
-        {{item.titre}} {{item.prenom}} {{item.nom}}
+        {{isEmployer ? item.titre + ' ' + item.prenom + ' ' + item.nom : item.entreprise}}
 
         <ion-badge item-right secondary>{{item.matching}} %</ion-badge>
 

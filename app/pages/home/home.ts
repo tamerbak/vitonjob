@@ -62,7 +62,7 @@ export class HomePage implements OnChanges{
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
         // page push 
-        this.push = AdvancedSearchPage;
+        this.push = SearchCriteriaPage;
         //debugger;
         //menu.enable(true, 'rightOnMenu');
 
