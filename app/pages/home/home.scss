@@ -1,10 +1,70 @@
 .home {
-
+.button{
+  box-shadow: none!important;
+}
   background-size: cover;
   //font-family: 'Quicksand', sans-serif;
   font-family: 'Maven Pro', sans-serif;
 
-  @media screen and (max-height: 575px) {
+  //smartphone screen size 250px at 550px
+  @media screen and (min-height: 250px) and (max-height: 550px) {
+    #logo {
+      width: 8.5em;
+    }
+
+    #logo-position {
+      position: absolute;
+      top: 2em;
+    }
+
+    #home-text {
+      color: #808080!important;
+      position: absolute;
+      top: 5.5em;
+    }
+
+
+    h6 {
+      font-size: 14px;
+      color: #808080!important;
+    }
+
+
+    #adv-search{
+      position: absolute;
+      right: 1.5em!important;
+      top: 15.5em;
+      font-size: 12px;
+    }
+
+    #search-position{
+      margin-top: 2.5em;
+
+    }
+    #search-label{
+      font-size: 11px;
+
+    }
+    .searchIcon {
+      font-size: 26px;
+      margin-top: 9px;
+      line-height: 2 !important;
+      color: #757575;
+    }
+    #btn-login {
+      position: absolute;
+      bottom: 1.5em;
+    }
+
+    #btn-login, button {
+      font-size: 12px;
+    }
+
+
+  }
+
+  //smartphone screen size 551px at 700px
+  @media screen and (min-height: 551px) and (max-height: 700px) {
     #logo {
       width: 10em;
     }
@@ -20,47 +80,31 @@
     }
 
     h6 {
-      font-size: 15px;
-      color: #808080!important;
-    }
-
-
-  }
-  //smartphone iphone 4 size
-  @media screen and (max-height: 480px) {
-    #logo {
-      width: 8.5em;
-    }
-
-    #logo-position {
-      position: absolute;
-      top: 2em;
-    }
-
-    #home-text {
-      color: #808080!important;
-      position: absolute;
-      top: 3.5em;
-    }
-
-
-
-    h6 {
       font-size: 14px;
       color: #808080!important;
     }
 
+    #btn-login {
+      position: absolute;
+      bottom: 1.5em;
+    }
+
+    #btn-login, button {
+      font-size: 13px;
+    }
 
     #adv-search{
       position: absolute;
-      top: 14em;
-      font-size: 12px;
+      right: 1.5em;
+      top: 19em;
+      font-size: 13px;
     }
 
 
   }
-//smartphone iphone 6
-  @media screen and (min-height: 576px) {
+
+//smartphone size 701px at 879px
+  @media screen and (min-height: 701px) and (max-height: 879px) {
     #logo {
       width: 13em;
     }
@@ -76,16 +120,36 @@
     }
 
     h6 {
-      font-size: 19px;
+      font-size: 16px;
       color: #808080!important;
     }
 
+    .searchIcon {
+      font-size: xx-large;
+      line-height: 2 !important;
+      color: #757575;
+    }
 
+    #adv-search{
+      position: absolute;
+      right: 1.5em;
+      top: 20em;
+      font-size: 14px;
+    }
+
+    #btn-login {
+      position: absolute;
+      bottom: 1.5em;
+    }
+
+    #btn-login, button {
+      font-size: 14px;
+    }
 
 
   }
 
-  //tablette size
+  //tablet size min 880px
   @media screen and (min-height: 880px) {
     #logo {
       width: 20em;
@@ -108,11 +172,29 @@
 
     #adv-search{
       position: absolute;
-      top: 23em;
-      right: 0em;
+      top: 23.5em;
+      right: 1.5em;
       font-size: 18px;
     }
 
+    .searchIcon {
+      font-size: xx-large;
+      line-height: 2 !important;
+      color: #757575;
+    }
+
+    #btn-login {
+      position: absolute;
+      bottom: 1.5em;
+    }
+
+    #btn-login, button {
+      font-size: 18px;
+    }
+
+    #search-label{
+      font-size: 18px;
+    }
 
   }
 
@@ -131,11 +213,7 @@
     color: #757575;
   }
 
-  .searchIcon {
-    font-size: xx-large;
-    line-height: 2 !important;
-    color: #757575;
-  }
+
 
   .draggable {
     top: 500px;
@@ -159,7 +237,6 @@
 
   .deconnexionButton {
     padding: 0 1.1em;
-    opacity: 0.7;
   }
 
   .buttonLeftOnly {
@@ -177,8 +254,7 @@
   #ra {
 
     text-align: center;
-    margin-left: 220px;
-    margin-top: 1em;
+
     text-decoration : underline;
   }
 
