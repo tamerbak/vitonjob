@@ -43,6 +43,7 @@ export class SearchDetailsPage {
         this.fullName = this.result.titre+' '+this.result.prenom+' '+this.result.nom;
         this.email = this.result.email;
         this.telephone = this.result.tel;
+        this.matching = this.result.matching+"%";
 
         //get the currentEmployer
         this.userService = userService;

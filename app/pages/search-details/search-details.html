@@ -12,7 +12,7 @@
 <ion-content padding class="search-details">
     <ion-grid>
         <ion-row>
-            <h2>{{fullName}}</h2><ion-badge item-right>{{matching}}</ion-badge>
+            <h3>{{fullName}}</h3>&nbsp;<ion-badge item-right style="margin: 0px 8px 9px 0;">{{matching}}</ion-badge>
         </ion-row>
         <ion-row>
             &nbsp;
@@ -25,22 +25,26 @@
             &nbsp;
         </ion-row>
         <ion-row>
-            <ion-col width-20>Tel : </ion-col>
-            <ion-col width-80>
+                <label>Tel : </label>&nbsp;
                 <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
-                    (click)="call()" >
+                    (click)="call()" style="height:14px;margin-top:1px;padding:0px" >
                     {{telephone}}
                 </button>
-            </ion-col>
+
         </ion-row>
         <ion-row>
-            <ion-col width-20>Email : </ion-col>
-            <ion-col width-80>
+                <label>Email : </label>&nbsp;
                 <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
-                        (click)="sendEmail()">
+                        (click)="sendEmail()" style="height:14px;margin-top:1px;padding:0px" >
                     {{email}}
                 </button>
-            </ion-col>
+
+        </ion-row>
+        <ion-row>
+            &nbsp;
+        </ion-row>
+        <ion-row>
+            &nbsp;
         </ion-row>
         <ion-row>
 
