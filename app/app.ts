@@ -33,6 +33,7 @@ import {MissionDetailsPage} from './pages/mission-details/mission-details';
 import {NgZone} from '@angular/core';
 import {SettingsPage} from "./pages/settings/settings";
 import {AboutPage} from "./pages/about/about";
+import {PendingContractsPage} from "./pages/pending-contracts/pending-contracts";
 //import {ParametersPage} from "./pages/parameters/parameters";
 
 declare var cordova;
@@ -94,8 +95,7 @@ export class Vitonjob {
             {title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false},
             {title: "Mes offres", component: OfferListPage, icon: "megaphone", isBadged: true},
             {title: "Mes missions", component: MissionListPage, icon: "paper", isBadged: false},
-            {title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false},
-            {title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false}
+
             //{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
         ];
         this.loggedOutPages = [
@@ -108,6 +108,13 @@ export class Vitonjob {
 
         //local menu variables
         this.isEmployer = (this.projectTarget == 'employer');
+        if(this.isEmployer){
+            this.loggedInPages.push({title: "Contrats en attente", component: PendingContractsPage, icon: "clock", isBadged: false});
+        }
+        this.loggedInPages.push({title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false});
+        this.loggedInPages.push({title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false});
+
+
         this.bgMenuURL = this.config.bgMenuURL;
         this.userImageURL = this.config.userImageURL;
         this.userName = this.isEmployer ? 'Employeur' : 'Jobyer';

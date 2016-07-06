@@ -143,7 +143,7 @@ export class AuthenticationService {
 			"lieu_de_naissance ='" + birthplace + "' " +
 			"where pk_user_jobyer ='" + roleId + "';";
 		}
-		
+
 		return new Promise(resolve => {
 			let headers = new Headers();
 			headers.append("Content-Type", 'text/plain');

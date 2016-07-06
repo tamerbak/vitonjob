@@ -1,0 +1,24 @@
+<ion-header>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" >
+        <button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>Contrats en attente</ion-title>
+
+    </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+    <ion-row>
+        <ion-col width-10></ion-col>
+        <ion-col text-center> <h6> Liste des contrats en attente </h6></ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+    <ion-list text-wrap>
+        <ion-item *ngFor="let item of contractList" (click)="selectContract(item)" >
+            <h2 [style.color]="themeColor" >{{item.titre}} {{item.prenom}} {{item.nom}}</h2>
+            <h6 [style.color]="themeColor" >{{item.titreOffre}}{{item.titreoffre}}</h6>
+        </ion-item>
+    </ion-list>
+</ion-content>
