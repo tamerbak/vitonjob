@@ -206,4 +206,11 @@ export class SearchDetailsPage {
     close(){
         this.nav.pop();
     }
+
+    addToContracts(){
+        this.result.checkedContract = true;
+
+        this.contratsAttente.push(this.result);
+        this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
+    }
 }

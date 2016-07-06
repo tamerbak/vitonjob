@@ -60,6 +60,8 @@ export class SearchResultsPage implements OnInit {
     toast : Toast;
     showingToast : boolean = false;
 
+    db : Storage;
+    contratsAttente : any = [];
 
 
     /**
@@ -83,27 +85,6 @@ export class SearchResultsPage implements OnInit {
 
         this.offersService = offersService;
 
-        //  Retrieving last search
-        searchService.retrieveLastSearch().then(results =>{
-
-            let jsonResults = JSON.parse(results);
-            if(jsonResults){
-                this.searchResults = jsonResults;
-                this.resultsCount = this.searchResults.length;
-                for(let i = 0 ; i < this.searchResults.length ; i++){
-                    let r = this.searchResults[i];
-                    r.matching = Number(r.matching).toFixed(2);
-                }
-                console.log(this.searchResults);
-
-                //  Determine constraints for proposed offer
-                this.createCriteria();
-
-            }
-        });
-
-
-
         //get the connexion object and define if the there is a user connected
         userService.getConnexionObject().then(results =>{
             if(results && !isUndefined(results)){
@@ -118,10 +99,44 @@ export class SearchResultsPage implements OnInit {
         });
 
 
+        this.db = new Storage(SqlStorage);
+        this.db.get('PENDING_CONTRACTS').then(contrats => {
+            
+            if(contrats){
+                this.contratsAttente = JSON.parse(contrats);
+            }
 
+            //  Retrieving last search
+            searchService.retrieveLastSearch().then(results =>{
+                debugger;
+                let jsonResults = JSON.parse(results);
+                if(jsonResults){
+                    this.searchResults = jsonResults;
+                    this.resultsCount = this.searchResults.length;
+                    for(let i = 0 ; i < this.searchResults.length ; i++){
+                        let r = this.searchResults[i];
+                        r.matching = Number(r.matching).toFixed(2);
+                    }
+                    console.log(this.searchResults);
+
+                    //  Determine constraints for proposed offer
+                    this.createCriteria();
+                    for(let j=0 ; j < this.searchResults.length ; j++){
+                        let r = this.searchResults[j];
+                        r.checkedContract = false;
+                        for(let i = 0 ; i < this.contratsAttente.length ; i++){
+                            if(this.contratsAttente[i].idOffre == r.idOffre){
+                                r.checkedContract = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+        });
     }
     ngOnInit() {
-        
+
         //get the currentEmployer
         this.userService.getCurrentUser().then(results =>{
 
@@ -196,7 +211,7 @@ export class SearchResultsPage implements OnInit {
 
         google.maps.event.addListener(marker, 'click', function(){
             infoWindow.open(this.map, marker);
-            
+
             this.itemSelected(r);
         }.bind(this));
 
@@ -222,31 +237,31 @@ export class SearchResultsPage implements OnInit {
     itemSelected(item){
         this.nav.push(SearchDetailsPage, {searchResult : item});
         /*let actionSheet = ActionSheet.create({
-            title: 'Options',
-            buttons: [
-                {
-                    text: 'Envoyer SMS',
-                    icon: 'md-mail',
-                    handler: () => {
-                        this.sendSMS(item);
-                    }
-                },{
-                    text: 'Appeler',
-                    icon: 'md-call',
-                    handler: () => {
-                        this.dialNumber(item);
-                    }
-                },{
-                    text: 'Annuler',
-                    role: 'cancel',
-                    icon: 'md-close',
-                    handler: () => {
+         title: 'Options',
+         buttons: [
+         {
+         text: 'Envoyer SMS',
+         icon: 'md-mail',
+         handler: () => {
+         this.sendSMS(item);
+         }
+         },{
+         text: 'Appeler',
+         icon: 'md-call',
+         handler: () => {
+         this.dialNumber(item);
+         }
+         },{
+         text: 'Annuler',
+         role: 'cancel',
+         icon: 'md-close',
+         handler: () => {
 
-                    }
-                }
-            ]
-        });
-        this.nav.present(actionSheet);*/
+         }
+         }
+         ]
+         });
+         this.nav.present(actionSheet);*/
 
     }
 
@@ -287,11 +302,11 @@ export class SearchResultsPage implements OnInit {
     }
 
     recruiteFromMap(index){
-        
+
         let jobyer = this.searchResults[index];
         this.recruitJobyer(jobyer);
     }
-    
+
     /**
      * @description verify informations of Employer/Jobyer and redirect to recruitement contract
      * @param item the selected Employer/Jobyer
@@ -323,7 +338,7 @@ export class SearchResultsPage implements OnInit {
 
             if (isDataValid) {
                 //navigate to contract page
-                
+
                 let o = this.navParams.get('currentOffer');
                 if(o && !isUndefined(o)){
                     this.nav.push(ContractPage, {jobyer: jobyer, currentOffer : o});
@@ -373,7 +388,7 @@ export class SearchResultsPage implements OnInit {
      * @description Create a draggable widget to propose criteria for creating an offer from search results
      */
     createCriteria(){
-        
+
         if(!this.searchResults || isUndefined(this.searchResults) || this.searchResults.length == 0)
             return;
 
@@ -480,7 +495,7 @@ export class SearchResultsPage implements OnInit {
     }
 
     toggleProposition(){
-        
+
         let proposition = {
             proposedJob : this.proposedJob,
             proposedLanguages : this.proposedLanguages,
@@ -494,5 +509,12 @@ export class SearchResultsPage implements OnInit {
             }
         });
         this.nav.present(propositionModal);
+    }
+
+    addToContracts(item){
+        item.checkedContract = true;
+
+        this.contratsAttente.push(item);
+        this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
     }
 }

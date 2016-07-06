@@ -160,6 +160,7 @@ export class CivilityPage {
 				}
 			});
 			}else{
+			
 			//get the role id
 			var jobyerId = this.currentUser.jobyer.id;
 			// update jobyer
