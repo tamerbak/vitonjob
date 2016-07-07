@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams, Alert, Storage, SqlStorage, Platform} from 'ionic-angular';
+//import {GoogleMap, GoogleMapsEvent} from 'ionic-native';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {isUndefined} from "ionic-angular/util";
 import {ContractPage} from "../contract/contract";
@@ -7,12 +8,16 @@ import {CivilityPage} from "../civility/civility";
 import {LoginsPage} from "../logins/logins";
 import {UserService} from "../../providers/user-service/user-service";
 import {GlobalService} from "../../providers/global.service";
+import {OffersService} from "../../providers/offers-service/offers-service";
 
+
+declare var google:any;
+//const mapConfig: any;
 @Component({
     templateUrl: 'build/pages/search-details/search-details.html',
-	providers: [GlobalService]
+	providers: [GlobalService, OffersService]
 })
-export class SearchDetailsPage {
+export class SearchDetailsPage implements OnInit {
     isEmployer : boolean = false;
     fullTitle : string = '';
     fullName : string = '';
@@ -26,13 +31,19 @@ export class SearchDetailsPage {
     employer : any;
     contratsAttente : any = [];
     db : Storage;
+    offersService : OffersService;
+    languages : any[];
+    qualities : any[];
+    map : any;
 
     constructor(public nav: NavController,
                 public params : NavParams,
                 public globalConfig: GlobalConfigs,
                 userService : UserService,
 				private globalService: GlobalService,
-				platform: Platform) {
+				platform: Platform,
+                offersService : OffersService) {
+
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
         this.isEmployer = this.projectTarget == 'employer';
@@ -90,6 +101,81 @@ export class SearchDetailsPage {
                 this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
             }
         });
+
+        this.offersService = offersService;
+        let table = this.isEmployer?'user_offre_jobyer':'user_offre_entreprise';
+        let idOffers = [];
+        idOffers.push(this.result.idOffre);
+        this.offersService.getOffersLanguages(idOffers, table).then(data=>{
+            if(data)
+                this.languages = data;
+        });
+        this.offersService.getOffersQualities(idOffers, table).then(data=>{
+            if(data)
+                this.qualities = data;
+
+        });
+        //platform.ready().then(() => this.loadMap());
+
+    }
+
+    ngOnInit() {
+        //get the currentEmployer
+        this.userService.getCurrentUser().then(results =>{
+
+
+            this.loadMap();
+        });
+
+    }
+
+    loadMap() {
+        /*this.map = new GoogleMap('map_canvas');
+        this.mcontrol = new MarkerController(this.map);
+        this.map.on(GoogleMapsEvent.MAP_READY)
+            .subscribe(() => this.onMapReady());*/
+        //this.map.on(GoogleMapsEvent.MAP_READY).subscribe(() => console.log("Map is ready!"));
+        let latLng = new google.maps.LatLng(48.855168, 2.344813);
+
+        let mapOptions = {
+            center: latLng,
+            zoom:15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        let mapElement = document.getElementById("map_canvas");
+        this.map = new google.maps.Map(mapElement, mapOptions);
+
+        let addresses = [];
+
+        if(this.result.latitude == "0" && this.result.longitude == "0")
+            return;
+        debugger;
+        let latlng = new google.maps.LatLng(this.result.latitude , this.result.longitude);
+
+        addresses.push(latlng);
+
+        let bounds = new google.maps.LatLngBounds();
+        this.addMarkers(addresses, bounds);
+
+    }
+    onMapReady(): void {
+        console.log('Map ready');
+        this.map.setOptions(mapConfig);
+    }
+    addMarkers(addresses:any, bounds:any) {
+
+        for (let i = 0; i < addresses.length; i++) {
+            let marker = new google.maps.Marker({
+                map: this.map,
+                animation: google.maps.Animation.DROP,
+                position: addresses[i]
+            });
+            bounds.extend(marker.position);
+        }
+
+        this.map.fitBounds(bounds);
+
     }
 
     call(){
