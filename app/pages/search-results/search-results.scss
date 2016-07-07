@@ -54,7 +54,163 @@ scroll-content{
   background-color: rgba(black, 0.8);
   color: white;
   box-shadow: #222222;
-  font-size: 15px;
+  font-size: 13px;
 
   z-index : 1;
 }
+
+
+#card{
+  position: absolute;
+  top: 0;
+}
+
+#btn-r{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+#btn-rg{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+#info-name{
+  position: absolute;
+}
+
+#info-lastname{
+  position: absolute;
+}
+
+#info-civility{
+  position: absolute;
+}
+
+#info-titre{
+  position: absolute;
+}
+
+#btn-mail{
+  position: absolute;
+  -webkit-border-radius: 50%;
+  background-color: transparent;
+  right: 0;
+}
+
+#btn-call{
+  position: absolute;
+  -webkit-border-radius: 50%;
+  background-color: transparent;
+  right: 0;
+}
+
+#btn-skype{
+  position: absolute;
+  -webkit-border-radius: 50%;
+  background-color: transparent;
+  right: 0;
+}
+
+#btn-google{
+  position: absolute;
+  -webkit-border-radius: 50%;
+  background-color: transparent;
+  left: 0;
+}
+
+//screen size 250px at 550px
+@media screen and (min-height: 250px) and (max-height: 550px) {
+
+  #card{
+    height: 24em;
+
+  }
+
+  #btn-r{
+    font-size: 11px;
+  }
+
+  #btn-rg{
+    font-size: 11px;
+  }
+
+  #icon-call{
+    color: black;
+  }
+
+  #icon-mail{
+    color: black;
+  }
+
+  #btn-mail{
+    top: 9em;
+  }
+
+  #btn-call{
+    top: 7em;
+  }
+
+  #info-civility{
+    top: 10em;
+    left: 1em;
+  }
+
+  #cover{
+    top: 0;
+    left: 0;
+    right: 0;
+    font-size: 15px;
+    height: 7em;
+    position: absolute;
+    background-image: url("../../img/fotolia_103610514.jpg");
+  }
+
+  #info-name{
+    top: 10em;
+    left: 3em;
+  }
+
+  #info-lastname{
+    top: 11em;
+    left: 3em;
+  }
+
+  #info-titre{
+    top: 1em;
+    right: 0;
+    left: 0;
+    color: white;
+    font-size: 17px;
+  }
+
+  #btn-skype{
+    //color: #14baa6;
+    color: white;
+    top: 3em;
+  }
+
+  #btn-google{
+    color: white;
+    top: 3em;
+  }
+
+}
+
+//screen size 551px at 700px
+@media screen and (min-height: 551px) and (max-height: 700px) {
+
+}
+
+//screen size 701px at 879px
+@media screen and (min-height: 701px) and (max-height: 879px) {
+
+}
+
+//screen size 880px and more (tablet)
+@media screen and (min-height: 880px) {
+
+}
+
