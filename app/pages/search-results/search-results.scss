@@ -118,7 +118,7 @@ scroll-content{
   position: absolute;
   -webkit-border-radius: 50%;
   background-color: transparent;
-  right: 0;
+  left: 0;
 }
 
 //screen size 250px at 550px
@@ -147,19 +147,15 @@ scroll-content{
 
   #btn-mail{
     top: 9em;
-
-
   }
 
   #btn-call{
     top: 7em;
-
   }
 
   #info-civility{
     top: 10em;
     left: 1em;
-
   }
 
   #cover{
@@ -181,12 +177,24 @@ scroll-content{
     top: 11em;
     left: 3em;
   }
+
   #info-titre{
     top: 1em;
     right: 0;
     left: 0;
     color: white;
     font-size: 17px;
+  }
+
+  #btn-skype{
+    //color: #14baa6;
+    color: white;
+    top: 3em;
+  }
+
+  #btn-google{
+    color: white;
+    top: 3em;
   }
 
 }
