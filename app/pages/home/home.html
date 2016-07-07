@@ -28,7 +28,7 @@
     <ion-row id="search-position">
             <ion-item class="itemSearch">
 
-                <ion-label floating class="withoutOverflow">{{searchPlaceHolder}}</ion-label>
+                <ion-label id="search-label" floating class="withoutOverflow">{{searchPlaceHolder}}</ion-label>
                 <ion-input type="text" (focus)="onFocus($event)"
                            (blur)="onBlur($event)" (keyup)="checkForEnterKey($event)"
                            [(ngModel)]="scQuery"></ion-input>
@@ -38,11 +38,11 @@
 
             </ion-item>
     </ion-row>
-    <ion-row id="adv-search">
+    <div id="adv-search">
         <a id="ra" [navPush]="push">
             Recherche Avancée
         </a>
-    </ion-row>
+    </div>
 
     <!--ion-row>
         <ion-col width-10></ion-col>
@@ -55,7 +55,7 @@
         </ion-col>
         <ion-col width-10></ion-col>
     </ion-row-->
-    <ion-row id="ma-btn">
+    <ion-row id="btn-login">
         <ion-col width-10></ion-col>
         <ion-col text-center>
             <button class="deconnexionButton" [style.backgroundColor]="themeColor"  (click)="openLoginsPage()" [hidden]="cnxBtnName === 'Déconnexion'" dark>

@@ -68,11 +68,20 @@
             </ion-col>
         </ion-row>
         <ion-row>
-            <button block [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''" *ngIf="isEmployer"
+            <button block [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''" *ngIf="isEmployer && !result.checkedContract"
                 (click)="contract()" >
-                Contrat
+                Recruter maintenant
             </button>
 
+        </ion-row>
+        <ion-row *ngIf="isEmployer && !result.checkedContract" >
+            <ion-item>
+                <ion-label>Sélectionner pour embauche</ion-label>
+                <ion-checkbox [(ngModel)]="result.checkedContract" (ionChange)="selectContract()" ></ion-checkbox>
+            </ion-item>
+        </ion-row>
+        <ion-row *ngIf="isEmployer && result.checkedContract" >
+            <span style="text-align: right;margin-top: 40px;">Ce jobyer est déjà sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Contrats en attente"</span>
         </ion-row>
     </ion-grid>
 </ion-content>

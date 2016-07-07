@@ -7,12 +7,19 @@ import {CivilityPage} from "../civility/civility";
 import {LoginsPage} from "../logins/logins";
 import {UserService} from "../../providers/user-service/user-service";
 import {GlobalService} from "../../providers/global.service";
+import {PendingContractsPage} from "../pending-contracts/pending-contracts";
 
+/*
+ Generated class for the PendingContratDetailsPage page.
+
+ See http://ionicframework.com/docs/v2/components/#navigation for more info on
+ Ionic pages and navigation.
+ */
 @Component({
-    templateUrl: 'build/pages/search-details/search-details.html',
-	providers: [GlobalService]
+    templateUrl: 'build/pages/pending-contrat-details/pending-contrat-details.html',
+    providers: [GlobalService]
 })
-export class SearchDetailsPage {
+export class PendingContratDetailsPage {
     isEmployer : boolean = false;
     fullTitle : string = '';
     fullName : string = '';
@@ -24,20 +31,21 @@ export class SearchDetailsPage {
     userService : UserService;
     isUserAuthenticated : boolean;
     employer : any;
-    contratsAttente : any = [];
-    db : Storage;
+    delegate : PendingContractsPage;
+    deleteFlag : boolean = false;
 
     constructor(public nav: NavController,
                 public params : NavParams,
                 public globalConfig: GlobalConfigs,
                 userService : UserService,
-				private globalService: GlobalService,
-				platform: Platform) {
+                private globalService: GlobalService,
+                platform: Platform) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
         this.isEmployer = this.projectTarget == 'employer';
-		this.platform = platform;
+        this.platform = platform;
         this.result = params.data.searchResult;
+        this.delegate = params.data.delegate;
         if(this.result.titreOffre)
             this.fullTitle = this.result.titreOffre;
         if(this.result.titreoffre)
@@ -79,21 +87,10 @@ export class SearchDetailsPage {
         });
 
         console.log(JSON.stringify(this.result));
-
-        this.db = new Storage(SqlStorage);
-        this.db.get('PENDING_CONTRACTS').then(contrats => {
-
-            if (contrats) {
-                this.contratsAttente = JSON.parse(contrats);
-            } else {
-                this.contratsAttente = [];
-                this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
-            }
-        });
     }
 
     call(){
-        
+
         window.location = 'tel:'+ this.telephone;
     }
 
@@ -116,37 +113,37 @@ export class SearchDetailsPage {
         sms.send(number, "", options, success, error);
     }
     skype(){
-		var sApp;
-		if(this.platform.is('ios')){
-			sApp = startApp.set("skype://" + this.telephone);
-		}else{
-			sApp = startApp.set({ 
-				"action": "ACTION_VIEW",
-				"uri": "skype:" + this.telephone
-			});
-		}
-		sApp.start(() => {
-			console.log('starting skype');
-		}, (error) => {
-			this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
-		});
-	}
-	
+        var sApp;
+        if(this.platform.is('ios')){
+            sApp = startApp.set("skype://" + this.telephone);
+        }else{
+            sApp = startApp.set({
+                "action": "ACTION_VIEW",
+                "uri": "skype:" + this.telephone
+            });
+        }
+        sApp.start(() => {
+            console.log('starting skype');
+        }, (error) => {
+            this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
+        });
+    }
+
     googleHangout(){
-		var sApp = startApp.set({ 
-			"action": "ACTION_VIEW",
-			"uri": "gtalk:"+this.telephone
-		});
-		sApp.check((values) => { /* success */
-			console.log("OK");
-		}, (error) => { /* fail */
-			this.globalService.showAlertValidation("VitOnJob", "Hangout n'est pas installé.");
-		});	
-		sApp.start(() => {
-			console.log('starting hangout');
-		}, (error) => {
-			this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Hangout.");
-		});
+        var sApp = startApp.set({
+            "action": "ACTION_VIEW",
+            "uri": "gtalk:"+this.telephone
+        });
+        sApp.check((values) => { /* success */
+            console.log("OK");
+        }, (error) => { /* fail */
+            this.globalService.showAlertValidation("VitOnJob", "Hangout n'est pas installé.");
+        });
+        sApp.start(() => {
+            console.log('starting hangout');
+        }, (error) => {
+            this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Hangout.");
+        });
     }
 
     contract(){
@@ -216,14 +213,32 @@ export class SearchDetailsPage {
         }
     }
 
-    close(){
-        this.nav.pop();
+    delete(){
+        let alert = Alert.create({
+            title: 'Attention',
+            message: 'Etes vous sûr de vouloir écarter ce candidat ?',
+            buttons: [
+                {
+                    text: 'Annuler',
+                    role: 'cancel',
+                },
+                {
+                    text: 'Confirmer',
+                    handler: () => {
+                        this.delegate.removeContract(this.result);
+                        this.deleteFlag = true;
+                    }
+                }
+            ]
+        });
+        this.nav.present(alert);
+        alert.onDismiss(()=>{
+           if(this.deleteFlag)
+               this.nav.pop();
+        });
     }
 
-    selectContract(){
-        this.result.checkedContract = true;
-
-        this.contratsAttente.push(this.result);
-        this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
+    close(){
+        this.nav.pop();
     }
 }
