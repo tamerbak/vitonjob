@@ -30,7 +30,6 @@ declare var google:any;
     providers : [OffersService]
 })
 export class SearchResultsPage implements OnInit {
-    @ViewChild('cardSlider') slider: Slides;
 
     searchResults : any;
     listView : boolean = true;
@@ -38,9 +37,6 @@ export class SearchResultsPage implements OnInit {
     mapView : boolean = false;
     platform : Platform;
     map : any;
-    cardsOptions= {
-        loop: false
-    };
     currentCardIndex : number = 0;
     projectTarget : any;
     avatar : string;
@@ -104,11 +100,14 @@ export class SearchResultsPage implements OnInit {
             
             if(contrats){
                 this.contratsAttente = JSON.parse(contrats);
+            } else {
+                this.contratsAttente = [];
+                this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
             }
 
             //  Retrieving last search
             searchService.retrieveLastSearch().then(results =>{
-                debugger;
+                
                 let jsonResults = JSON.parse(results);
                 if(jsonResults){
                     this.searchResults = jsonResults;
@@ -215,19 +214,6 @@ export class SearchResultsPage implements OnInit {
             this.itemSelected(r);
         }.bind(this));
 
-    }
-
-    /**
-     * @description Detecting the motion of cards to the right or to the left in order to decide if we add or reject the candidate
-     */
-    onSlideChanged(){
-        let currentIndex = this.slider.getActiveIndex();
-        if(currentIndex > this.currentCardIndex){
-            console.log("went right");
-        } else {
-            console.log("went left");
-        }
-        this.currentCardIndex = currentIndex;
     }
 
     /**
@@ -528,6 +514,7 @@ export class SearchResultsPage implements OnInit {
     }
 
     addToContracts(item){
+        
         item.checkedContract = true;
 
         this.contratsAttente.push(item);

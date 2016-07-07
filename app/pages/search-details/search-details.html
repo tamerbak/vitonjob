@@ -76,8 +76,8 @@
         </ion-row>
         <ion-row *ngIf="isEmployer && !result.checkedContract" >
             <ion-item>
-                <ion-label>Sélectionner pour contrat</ion-label>
-                <ion-checkbox [(ngModel)]="result.checkedContract"(change)="addToContracts()" ></ion-checkbox>
+                <ion-label>Sélectionner pour embauche</ion-label>
+                <ion-checkbox [(ngModel)]="result.checkedContract" (ionChange)="selectContract()" ></ion-checkbox>
             </ion-item>
         </ion-row>
         <ion-row *ngIf="isEmployer && result.checkedContract" >
