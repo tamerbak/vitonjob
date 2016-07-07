@@ -5,7 +5,7 @@
       <button (click)="changeViewMode(1)" style="font-size: small;" [ngClass]="{'button-secondary': listView}" >
         <ion-icon name="md-list"></ion-icon>
       </button>
-      <button (click)="changeViewMode(2)" style="font-size: small;" [ngClass]="{'button-secondary': cardView}" >
+      <button (click)="changeViewMode(2)" style="font-size: small;"  [ngClass]="{'button-secondary': cardView}" >
         <ion-icon name="md-albums"></ion-icon>
       </button>
 
@@ -54,7 +54,31 @@
   </ion-card>
   <ion-slides #cardSlider [options]="cardsOptions" (didChange)="onSlideChanged()" *ngIf="cardView">
     <ion-slide *ngFor="let item of searchResults">
-      <ion-card>
+      <ion-card id="card">
+        <ion-row>
+
+            <button id="btn-r">Recrutement direct</button>
+            <button id="btn-rg">Recrutement grouper</button>
+
+          <div id="info-civility">{{item.titre}}</div>
+          <div><img src="" alt=""></div>
+          <div id="info-name">{{item.nom}}</div>
+          <div id="info-lastname">{{item.prenom}}</div>
+
+          <div id="cover"></div>
+          <div id="info-titre">{{item.titreOffre}}</div>
+          <div>description</div>
+          <div>
+            <button id="btn-call"><ion-icon id="icon-call" name="call"></ion-icon></button>
+            <button id="btn-mail"><ion-icon id="icon-mail" name="mail"></ion-icon></button>
+            <button id="btn-google"><ion-icon name="googleplus"></ion-icon></button>
+            <button id="btn-skype"><ion-icon name="logo-skype"></ion-icon></button>
+
+
+          </div>
+        </ion-row>
+      </ion-card>
+     <!-- <ion-card>
         <ion-card-header>Vitonjob a trouvé {{resultsCount}} offre(s)</ion-card-header>
       </ion-card>
 
@@ -88,7 +112,7 @@
             </button>
           </ion-row>
         </ion-card-content>
-      </ion-card>
+      </ion-card> -->
     </ion-slide>
   </ion-slides>
 
