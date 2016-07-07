@@ -10,7 +10,7 @@
 <ion-content padding class="offer" [ngStyle]="backgroundImage">
     <button block (click)="goToNewOffer()" [style.backgroundColor]="themeColor">
 		<ion-icon name="add-circle"></ion-icon>
-		Créer une nouvelle offre
+		Nouvelle offre {{isEmployer? " d'emploi":" de service"}}
 	</button>
 	<ion-card [hidden]="!listMode">
         <ion-card-header style = "text-align: center;">
