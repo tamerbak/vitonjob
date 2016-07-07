@@ -273,8 +273,24 @@ export class SearchResultsPage implements OnInit {
             this.listView = true;
             this.cardView = false;
             this.mapView = false;
+
             document.getElementById("map").style.height = '0px';
-        } else if (mode == 2){  //  Cards view
+        } else if (mode == 2){//  Cards view and toast
+            let message;
+            if(this.resultsCount <= 1 ){
+                message = this.resultsCount+' offre';
+            }
+            else {
+                message = this.resultsCount+' offres';
+            }
+            let toast = Toast.create({
+
+                message: 'Vitonjob a trouvé '+message,
+                showCloseButton: true,
+                closeButtonText: 'Ok',
+                position: 'top'
+            });
+            this.nav.present(toast);
             this.listView = false;
             this.cardView = true;
             this.mapView = false;
