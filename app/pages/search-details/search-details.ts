@@ -24,6 +24,8 @@ export class SearchDetailsPage {
     userService : UserService;
     isUserAuthenticated : boolean;
     employer : any;
+    contratsAttente : any = [];
+    db : Storage;
 
     constructor(public nav: NavController,
                 public params : NavParams,
@@ -77,6 +79,17 @@ export class SearchDetailsPage {
         });
 
         console.log(JSON.stringify(this.result));
+
+        this.db = new Storage(SqlStorage);
+        this.db.get('PENDING_CONTRACTS').then(contrats => {
+
+            if (contrats) {
+                this.contratsAttente = JSON.parse(contrats);
+            } else {
+                this.contratsAttente = [];
+                this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
+            }
+        });
     }
 
     call(){
@@ -207,7 +220,7 @@ export class SearchDetailsPage {
         this.nav.pop();
     }
 
-    addToContracts(){
+    selectContract(){
         this.result.checkedContract = true;
 
         this.contratsAttente.push(this.result);
