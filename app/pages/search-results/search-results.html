@@ -50,7 +50,7 @@
     <ion-item>&nbsp;</ion-item>
   </ion-list>
   <ion-card *ngIf="resultsCount == 0 ">
-    <ion-card-content>Vitonjob n'a trouvé aucune offre correspondant à votre recherche</ion-card-content>
+    <ion-card-content>Vitonjob n'a trouvé aucune offre {{isEmployer? "de service":"d'emploi"}} correspondant à votre recherche</ion-card-content>
   </ion-card>
   <ion-slides #cardSlider [options]="cardsOptions" (didChange)="onSlideChanged()" *ngIf="cardView">
     <ion-slide *ngFor="let item of searchResults">
@@ -107,9 +107,18 @@
               <button secondary (click)="sendSMS(item)">
                 <ion-icon name="md-mail"></ion-icon>
               </button>
-            <button secondary (click)="recruitJobyer(item)" *ngIf="isEmployer" >
+              <button secondary (click)="recruitJobyer(item)" *ngIf="isEmployer && !item.checkedContract" >
               <ion-icon name="checkmark-circle-outline" ></ion-icon>
             </button>
+          </ion-row>
+          <ion-row *ngIf="isEmployer && !item.checkedContract">
+            <ion-item>
+              <ion-label>Sélectionner pour contrat</ion-label>
+              <ion-checkbox [(ngModel)]="item.checkedContract" (ionChange)="addToContracts(item)" ></ion-checkbox>
+            </ion-item>
+          </ion-row>
+          <ion-row *ngIf="isEmployer && result.checkedContract" >
+            <span style="text-align: right;margin-top: 40px;" >Ce jobyer est déjà sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Contrats en attente"</span>
           </ion-row>
         </ion-card-content>
       </ion-card> -->

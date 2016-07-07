@@ -8,11 +8,17 @@ import {LoginsPage} from "../logins/logins";
 import {UserService} from "../../providers/user-service/user-service";
 import {GlobalService} from "../../providers/global.service";
 
+/*
+ Generated class for the PendingContratDetailsPage page.
+
+ See http://ionicframework.com/docs/v2/components/#navigation for more info on
+ Ionic pages and navigation.
+ */
 @Component({
-    templateUrl: 'build/pages/search-details/search-details.html',
-	providers: [GlobalService]
+    templateUrl: 'build/pages/pending-contrat-details/pending-contrat-details.html',
+    providers: [GlobalService]
 })
-export class SearchDetailsPage {
+export class PendingContratDetailsPage {
     isEmployer : boolean = false;
     fullTitle : string = '';
     fullName : string = '';
@@ -29,12 +35,12 @@ export class SearchDetailsPage {
                 public params : NavParams,
                 public globalConfig: GlobalConfigs,
                 userService : UserService,
-				private globalService: GlobalService,
-				platform: Platform) {
+                private globalService: GlobalService,
+                platform: Platform) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
         this.isEmployer = this.projectTarget == 'employer';
-		this.platform = platform;
+        this.platform = platform;
         this.result = params.data.searchResult;
         if(this.result.titreOffre)
             this.fullTitle = this.result.titreOffre;
@@ -80,7 +86,7 @@ export class SearchDetailsPage {
     }
 
     call(){
-        
+
         window.location = 'tel:'+ this.telephone;
     }
 
@@ -103,37 +109,37 @@ export class SearchDetailsPage {
         sms.send(number, "", options, success, error);
     }
     skype(){
-		var sApp;
-		if(this.platform.is('ios')){
-			sApp = startApp.set("skype://" + this.telephone);
-		}else{
-			sApp = startApp.set({ 
-				"action": "ACTION_VIEW",
-				"uri": "skype:" + this.telephone
-			});
-		}
-		sApp.start(() => {
-			console.log('starting skype');
-		}, (error) => {
-			this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
-		});
-	}
-	
+        var sApp;
+        if(this.platform.is('ios')){
+            sApp = startApp.set("skype://" + this.telephone);
+        }else{
+            sApp = startApp.set({
+                "action": "ACTION_VIEW",
+                "uri": "skype:" + this.telephone
+            });
+        }
+        sApp.start(() => {
+            console.log('starting skype');
+        }, (error) => {
+            this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
+        });
+    }
+
     googleHangout(){
-		var sApp = startApp.set({ 
-			"action": "ACTION_VIEW",
-			"uri": "gtalk:"+this.telephone
-		});
-		sApp.check((values) => { /* success */
-			console.log("OK");
-		}, (error) => { /* fail */
-			this.globalService.showAlertValidation("VitOnJob", "Hangout n'est pas installé.");
-		});	
-		sApp.start(() => {
-			console.log('starting hangout');
-		}, (error) => {
-			this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Hangout.");
-		});
+        var sApp = startApp.set({
+            "action": "ACTION_VIEW",
+            "uri": "gtalk:"+this.telephone
+        });
+        sApp.check((values) => { /* success */
+            console.log("OK");
+        }, (error) => { /* fail */
+            this.globalService.showAlertValidation("VitOnJob", "Hangout n'est pas installé.");
+        });
+        sApp.start(() => {
+            console.log('starting hangout');
+        }, (error) => {
+            this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Hangout.");
+        });
     }
 
     contract(){
@@ -205,12 +211,5 @@ export class SearchDetailsPage {
 
     close(){
         this.nav.pop();
-    }
-
-    addToContracts(){
-        this.result.checkedContract = true;
-
-        this.contratsAttente.push(this.result);
-        this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
     }
 }
