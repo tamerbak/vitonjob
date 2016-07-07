@@ -7,6 +7,7 @@ import {CivilityPage} from "../civility/civility";
 import {LoginsPage} from "../logins/logins";
 import {UserService} from "../../providers/user-service/user-service";
 import {GlobalService} from "../../providers/global.service";
+import {PendingContractsPage} from "../pending-contracts/pending-contracts";
 
 /*
  Generated class for the PendingContratDetailsPage page.
@@ -30,6 +31,8 @@ export class PendingContratDetailsPage {
     userService : UserService;
     isUserAuthenticated : boolean;
     employer : any;
+    delegate : PendingContractsPage;
+    deleteFlag : boolean = false;
 
     constructor(public nav: NavController,
                 public params : NavParams,
@@ -42,6 +45,7 @@ export class PendingContratDetailsPage {
         this.isEmployer = this.projectTarget == 'employer';
         this.platform = platform;
         this.result = params.data.searchResult;
+        this.delegate = params.data.delegate;
         if(this.result.titreOffre)
             this.fullTitle = this.result.titreOffre;
         if(this.result.titreoffre)
@@ -207,6 +211,31 @@ export class PendingContratDetailsPage {
             });
             this.nav.present(alert);
         }
+    }
+
+    delete(){
+        let alert = Alert.create({
+            title: 'Attention',
+            message: 'Etes vous sûr de vouloir écarter ce candidat ?',
+            buttons: [
+                {
+                    text: 'Annuler',
+                    role: 'cancel',
+                },
+                {
+                    text: 'Confirmer',
+                    handler: () => {
+                        this.delegate.removeContract(this.result);
+                        this.deleteFlag = true;
+                    }
+                }
+            ]
+        });
+        this.nav.present(alert);
+        alert.onDismiss(()=>{
+           if(this.deleteFlag)
+               this.nav.pop();
+        });
     }
 
     close(){

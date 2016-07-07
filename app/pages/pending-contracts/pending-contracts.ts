@@ -16,6 +16,7 @@ export class PendingContractsPage {
 
     constructor(private nav: NavController,
                 public gc: GlobalConfigs) {
+        debugger;
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
 
@@ -25,6 +26,7 @@ export class PendingContractsPage {
         // Set store variables and messages
         this.themeColor = config.themeColor;
         this.db = new Storage(SqlStorage);
+
         this.db.get('PENDING_CONTRACTS').then(contrats => {
 
             if (contrats) {
@@ -34,7 +36,21 @@ export class PendingContractsPage {
     }
 
     selectContract(item){
-        this.nav.push(PendingContratDetailsPage, {searchResult : item});
+        this.nav.push(PendingContratDetailsPage, {searchResult : item, delegate : this});
+    }
+
+    removeContract(item){
+        let index = -1;
+        for(let i = 0 ; i < this.contractList.length ; i++)
+            if(this.contractList[i].idOffre == item.idOffre){
+                index = i;
+                break;
+            }
+        if(index<0)
+            return;
+
+        this.contractList.splice(index, 1);
+        this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contractList));
     }
 
 }
