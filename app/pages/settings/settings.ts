@@ -41,6 +41,7 @@ export class SettingsPage {
 	
 	logOut() {
 		this.storage.set("currentUser", null);
+		this.storage.set("RECRUITER_LIST", null);
 		this.events.publish('user:logout');
 		this.nav.setRoot(HomePage);
 	}

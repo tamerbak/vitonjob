@@ -34,6 +34,8 @@ import {NgZone} from '@angular/core';
 import {SettingsPage} from "./pages/settings/settings";
 import {AboutPage} from "./pages/about/about";
 import {PendingContractsPage} from "./pages/pending-contracts/pending-contracts";
+import {RecruiterListPage} from "./pages/recruiter-list/recruiter-list";
+
 //import {ParametersPage} from "./pages/parameters/parameters";
 
 declare var cordova;
@@ -110,6 +112,7 @@ export class Vitonjob {
         this.isEmployer = (this.projectTarget == 'employer');
         if(this.isEmployer){
             this.loggedInPages.push({title: "Contrats en attente", component: PendingContractsPage, icon: "clock", isBadged: false});
+			this.loggedInPages.push({title: "Gestion des habilitations", component: RecruiterListPage, icon: "contacts", isBadged: false});
         }
         this.loggedInPages.push({title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false});
         this.loggedInPages.push({title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false});
