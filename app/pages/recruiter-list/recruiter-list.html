@@ -16,7 +16,7 @@
 			</button>
 		</ion-col>
 		<ion-col width-50>
-			<button block [style.backgroundColor]="themeColor" class="button-picture">
+			<button block [style.backgroundColor]="themeColor" class="button-picture" (click)="showRecruiterManualModal()">
 				<ion-icon name="add-circle"></ion-icon>
 				Ajout manuel
 			</button>
@@ -28,7 +28,7 @@
 			Liste des recruteurs
 		</ion-list-header>
         <ion-item *ngFor="let item of recruiterList">
-			<h2>{{item.prenom}} {{item.nom}}</h2>
+			<h2>{{item.firstname}} {{item.lastname}}</h2>
 			<button clear item-right [style.color]="themeColor" (click)="showRecruiterManualModal(item)">
 				<ion-icon name="create"></ion-icon>
 			</button>

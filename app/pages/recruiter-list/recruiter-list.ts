@@ -19,7 +19,6 @@ export class RecruiterListPage {
     themeColor:string;
 	recruiterList: any;
 	currentUser: any;
-	contactsTemp = [];
 	
     constructor(public gc: GlobalConfigs,
                 public nav: NavController,
@@ -58,13 +57,12 @@ export class RecruiterListPage {
 		let modal = Modal.create(ModalRecruiterRepertoryPage);
 		this.nav.present(modal);
 		modal.onDismiss(contacts => {
-			this.recruiterService.insertRecruiters(contacts, this.currentUser.employer.id).then((data) => {
+			this.recruiterService.insertRecruiters(contacts, this.currentUser.employer.id, 'repertory').then((data) => {
 				if(!data || data.status == 'failure'){
 					this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
 				}else{
 					console.log("recruiter saved successfully");
-					this.contactsTemp = data;
-					this.updateRecruiterListInLocal(this.contactsTemp);
+					this.updateRecruiterListInLocal(data);
 				}
 			});
         });
@@ -73,10 +71,21 @@ export class RecruiterListPage {
 	showRecruiterManualModal(contact){
 		let modal = Modal.create(ModalRecruiterManualPage, {contact:contact});
 		this.nav.present(modal);
-		modal.onDismiss(data => {
-			/*this.recruiterService.insertRecruiters(data).then((data) => {
-				this.contactsTemp = data;				
-			});*/
+		modal.onDismiss(recruiter => {
+			//if validate button was clicked, and a new recruiter was entered
+			if(recruiter && !contact){
+				this.recruiterService.insertRecruiters([recruiter], this.currentUser.employer.id, 'manual').then((data) => {
+					console.log("recruiter saved successfully");
+					this.updateRecruiterListInLocal(data);
+				});
+			}
+			//if validate button was clicked and an existant recruiter was modified
+			if(recruiter && contact){
+				this.recruiterService.updateRecruiter(recruiter, this.currentUser.employer.id).then((data) => {
+					console.log("recruiter modified successfully");
+				this.updateRecruiterListInLocal([recruiter]);
+				});
+			}
         });
 	}
 	
@@ -85,7 +94,11 @@ export class RecruiterListPage {
 			if(value){
 				this.recruiterList = JSON.parse(value);
 				for(var i = 0; i < contacts.length; i++){
-					this.recruiterList.push(contacts[i]);
+					for(var j = 0; j < this.recruiterList.length; j++){
+						if(contacts[i].accountid == this.recruiterList[j].accountid){
+							this.recruiterList.splice(j, 1, contacts[i]);
+						}
+					}
 				}
 				this.storage.set('RECRUITER_LIST', JSON.stringify(this.recruiterList));
 			}

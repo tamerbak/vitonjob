@@ -16,7 +16,7 @@ export class RecruiterService{
 
     loadRecruiters(id){
         //  Init project parameters
-        var sql = "SELECT r.nom, r.prenom, a.telephone as phone, a.email, a.pk_user_account as accountid FROM user_recruteur as r, user_account as a where r.fk_user_employeur = '"+id+"' and r.fk_user_account = a.pk_user_account";
+        var sql = "SELECT r.nom as lastname, r.prenom as firstname, a.telephone as phone, a.email, a.pk_user_account as accountid FROM user_recruteur as r, user_account as a where r.fk_user_employeur = '"+id+"' and r.fk_user_account = a.pk_user_account";
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
@@ -30,18 +30,18 @@ export class RecruiterService{
         });
     }
 	
-	insertRecruiters(contacts, employerId){
+	insertRecruiters(contacts, employerId, fromPage){
 		var sql = "insert into user_account (email, role, telephone, est_employeur) values ";
 		var recruiterList = [];
-		var recruiter;
 		for(var i = 0; i < contacts.length; i++){
-			recruiter = {email: (contacts[i].emails != null ? contacts[i].emails[0].value : ''), phone: (contacts[i].phoneNumbers != null ? contacts[i].phoneNumbers[0].value : '')};
+			var recruiter = this.constituteRecruiterObject(contacts[i], fromPage);
 			recruiterList.push(recruiter);
+			var valuesStr = " ('" + recruiter.email + "', 'recruteur', '" + recruiter.phone + "', 'non')";
 			if(i == 0){
-				sql = sql + " ('" + recruiter.email + "', 'recruteur', '" + recruiter.phone + "', 'non')";
+				sql = sql + valuesStr;
 				continue;
 			}
-			sql = sql + ", ('" + recruiter.email + "', 'recruteur', '" + recruiter.phone + "', 'non')";
+			sql = sql + ", " + valuesStr;
 		}
         console.log(sql);
         return new Promise(resolve => {
@@ -50,8 +50,8 @@ export class RecruiterService{
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(values => {
-                    this.retrieveRecruitersAccount(contacts).then((accounts) => {
-						this.insertRecruitersInfo(contacts, accounts, employerId, recruiterList).then((data) => {
+                    this.retrieveRecruitersAccount(recruiterList).then((accounts) => {
+						this.insertRecruitersInfo(accounts, employerId, recruiterList).then((data) => {
 							this.data = data;
 							resolve(this.data);
 						});						
@@ -60,18 +60,39 @@ export class RecruiterService{
         });
 	}
 	
-	insertRecruitersInfo(contacts, accountData, employerId, recruiterList){
-		var sql = "insert into user_recruteur (nom, prenom, fk_user_account, fk_user_employeur) values ";
-		for(var i = 0; i < contacts.length; i++){
-			var name = this.splitRecruiterName(contacts[i]);
-			recruiterList[i].nom = name[1];
-			recruiterList[i].prenom = name[0];
-			recruiterList[i].accountid = accountData.data[i].pk_user_account;
+	retrieveRecruitersAccount(recruiterList){
+		var str = "";
+		for(var i = 0; i < recruiterList.length; i++){
 			if(i == 0){
-				sql = sql + "('" + name[1] + "', '" + name[0] + "', '" + accountData.data[i].pk_user_account + "', '" + employerId + "')";
+			str = "'" + recruiterList[i].phone + "'";
 				continue;
 			}
-			sql = sql + ", ('" + name[1] + "', '" + name[0] + "', '" + accountData.data[i].pk_user_account + "', '" + employerId + "')";
+		str = str + ", '" + recruiterList[i].phone + "'";
+		}
+        var sql = "select pk_user_account, email, telephone from user_account where telephone in (" + str  + ") and role = 'recruteur'";
+		console.log(sql);
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data;
+					resolve(this.data);
+                });
+        });
+	}
+	
+	insertRecruitersInfo(accountData, employerId, recruiterList){
+		var sql = "insert into user_recruteur (nom, prenom, fk_user_account, fk_user_employeur) values ";
+		for(var i = 0; i < recruiterList.length; i++){
+			recruiterList[i].accountid = accountData.data[i].pk_user_account;
+			var valuesStr = "('" + recruiterList[i].lastname + "', '" + recruiterList[i].firstname + "', '" + accountData.data[i].pk_user_account + "', '" + employerId + "')";
+			if(i == 0){
+				sql = sql + valuesStr;
+				continue;
+			}
+			sql = sql + ", " + valuesStr;
 		}
         console.log(sql);
         return new Promise(resolve => {
@@ -90,29 +111,6 @@ export class RecruiterService{
         });	
 	}
 	
-	retrieveRecruitersAccount(contacts){
-		var str = "";
-		for(var i = 0; i < contacts.length; i++){
-			if(i == 0){
-				str = "'" + contacts[i].phoneNumbers[0].value + "'";
-				continue;
-			}
-			str = str + ", '" + contacts[i].phoneNumbers[0].value + "'";
-		}
-        var sql = "select pk_user_account, email, telephone from user_account where telephone in (" + str  + ") and role = 'recruteur'";
-		console.log(sql);
-        return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
-            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
-                .map(res => res.json())
-                .subscribe(data => {
-                    this.data = data;
-					resolve(this.data);
-                });
-        });
-	}
-	
 	splitRecruiterName(contact){
 		var firstname = '';
 		var lastname = '';
@@ -127,5 +125,34 @@ export class RecruiterService{
 		array.push(firstname);
 		array.push(lastname);
 		return array;
+	}
+	
+	constituteRecruiterObject(contact, fromPage){
+		var recruiter = {};
+		if(fromPage == 'repertory'){
+			var name = this.splitRecruiterName(contact);
+			recruiter = {email: (contact.emails != null ? contact.emails[0].value : ''), phone: (contact.phoneNumbers != null ? contact.phoneNumbers[0].value : ''), firstname: name[0], lastname: name[1]};
+		}
+		else{
+			recruiter = {email: contact.email, phone: contact.phone, firstname: contact.firstname, lastname: contact.lastname};
+		}
+		return recruiter;
+	}
+	
+	updateRecruiter(recruiter, employerId){
+		var sql1 = "update user_recruteur set nom = '" + recruiter.lastname + "', prenom ='" + recruiter.firstname + "' where fk_user_account = '" + recruiter.accountid + "' and fk_user_employeur = '" + employerId+ "';";
+		var sql2 = " update user_account set email = '" + recruiter.email + "', telephone = '" + recruiter.phone + "' where pk_user_account = '" + recruiter.accountid + "' and role = 'recruteur';";
+		var sql = sql1 + sql2;
+		console.log(sql);
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+					this.data = data;
+					resolve(this.data);
+                });
+        });	
 	}
 }

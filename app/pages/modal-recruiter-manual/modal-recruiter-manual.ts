@@ -28,18 +28,26 @@ export class ModalRecruiterManualPage {
         // Set store variables and messages
         this.themeColor = config.themeColor;
         this.isEmployer = (this.projectTarget=='employer');			
-		this.initializeForm(params.data.contact);
+		this.modalTitle = "Détail du contact"
+		if(params.data.contact)
+			this.initializeForm(params.data.contact);
 	}
 	initializeForm(contact){
-		this.modalTitle = "Détail du contact"
-		this.firstname = contact.prenom;
-		this.lastname = contact.nom;
+		this.firstname = contact.firstname;
+		this.lastname = contact.lastname;
 		this.phone = contact.phone;
 		this.email = contact.email;
+		this.accountid = contact.accountid;
 	}
 	
-	updateContact(){
-		
+	saveContact(){
+		var contact = {};
+		contact.firstname = this.firstname;
+		contact.lastname = this.lastname;
+		contact.phone = this.phone;
+		contact.email = this.email;
+		contact.accountid = this.accountid;
+		this.viewCtrl.dismiss(contact);
 	}
 	
 	isUpdateDisabled(){
