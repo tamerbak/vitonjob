@@ -27,9 +27,7 @@ export class GooglePlaces {
 		* @description Component views are initialized here
 	*/
 	ngAfterViewInit() {
-		var input = this.searchBar.inputElement;
-		console.log("Log ti determine not an instance of HTMLInputElement error");
-		console.log(input);
+		var input = this.searchBar._searchbarInput.nativeElement;
 		var acutocomplete = new google.maps.places.Autocomplete(input, this.options);
 		acutocomplete.addListener('place_changed', () => {
 			this.onPlaceChanged.emit(acutocomplete.getPlace());
