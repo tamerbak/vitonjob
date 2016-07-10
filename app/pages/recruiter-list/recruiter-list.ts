@@ -57,14 +57,16 @@ export class RecruiterListPage {
 		let modal = Modal.create(ModalRecruiterRepertoryPage);
 		this.nav.present(modal);
 		modal.onDismiss(contacts => {
-			this.recruiterService.insertRecruiters(contacts, this.currentUser.employer.id, 'repertory').then((data) => {
-				if(!data || data.status == 'failure'){
-					this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
-				}else{
-					console.log("recruiter saved successfully");
-					this.updateRecruiterListInLocal(data);
-				}
-			});
+			if(contacts){
+				this.recruiterService.insertRecruiters(contacts, this.currentUser.employer.id, 'repertory').then((data) => {
+					if(!data || data.status == 'failure'){
+						this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
+					}else{
+						console.log("recruiter saved successfully");
+						this.updateRecruiterListInLocal(data);
+					}
+				});
+			}
         });
 	}
 	
@@ -83,7 +85,7 @@ export class RecruiterListPage {
 			if(recruiter && contact){
 				this.recruiterService.updateRecruiter(recruiter, this.currentUser.employer.id).then((data) => {
 					console.log("recruiter modified successfully");
-				this.updateRecruiterListInLocal([recruiter]);
+					this.updateRecruiterListInLocal([recruiter]);
 				});
 			}
         });
@@ -94,10 +96,15 @@ export class RecruiterListPage {
 			if(value){
 				this.recruiterList = JSON.parse(value);
 				for(var i = 0; i < contacts.length; i++){
+					var recruiterExist = false;
 					for(var j = 0; j < this.recruiterList.length; j++){
 						if(contacts[i].accountid == this.recruiterList[j].accountid){
 							this.recruiterList.splice(j, 1, contacts[i]);
+							recruiterExist = true;
 						}
+					}
+					if(!recruiterExist){
+						this.recruiterList.push(contacts[i]);	
 					}
 				}
 				this.storage.set('RECRUITER_LIST', JSON.stringify(this.recruiterList));
