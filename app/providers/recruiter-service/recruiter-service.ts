@@ -140,7 +140,7 @@ export class RecruiterService{
 	}
 	
 	updateRecruiter(recruiter, employerId){
-		var sql1 = "update user_recruteur set nom = '" + recruiter.lastname + "', prenom ='" + recruiter.firstname + "' where fk_user_account = '" + recruiter.accountid + "' and fk_user_employeur = '" + employerId+ "';";
+		var sql1 = "update user_recruteur set titre = '" + recruiter.title + "', nom = '" + recruiter.lastname + "', prenom ='" + recruiter.firstname + "' where fk_user_account = '" + recruiter.accountid + "' and fk_user_employeur = '" + employerId+ "';";
 		var sql2 = " update user_account set email = '" + recruiter.email + "', telephone = '" + recruiter.phone + "' where pk_user_account = '" + recruiter.accountid + "' and role = 'recruteur';";
 		var sql = sql1 + sql2;
 		console.log(sql);
@@ -154,5 +154,26 @@ export class RecruiterService{
 					resolve(this.data);
                 });
         });	
+	}
+	
+	sendNotificationBySMS(tel, user){
+		tel = tel.replace('+', '00');
+		let url = "http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoisms";
+		var msg = user.titre + " " + user.nom + " " + user.prenom + " vous invite à télécharger et installer l'application VitOnJob. http://www.vitonjob.com/telecharger/telecharger-appli-employeurs/"
+		let payload = "<fr.protogen.connector.model.SmsModel>"
+		+ 	"<telephone>"+tel+"</telephone>"
+		+ 	"<text>" + msg +"</text>"
+		+ "</fr.protogen.connector.model.SmsModel>";
+
+		return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'text/xml');
+			this.http.post(url, payload, {headers:headers})
+				.subscribe(data => {
+					this.data = data;
+					console.log(this.data);
+					resolve(this.data);
+			});
+		})
 	}
 }

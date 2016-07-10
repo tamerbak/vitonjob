@@ -35,21 +35,31 @@
 			</ion-item>
 		</ion-col>
 	</ion-row>
-	<div [hidden]="isPhoneNumValid" class="error-box"></div>
+	<div [hidden]="!phoneExist" class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon>Ce numéro de téléphone existe déjà. Veuillez saisir un autre.</div>
 
-	<ion-item>
+	<!--<ion-item>
 		<ion-label floating>Email</ion-label>
 		<ion-input type="email" [(ngModel)]="email"></ion-input>
 	</ion-item>
 	<div [hidden]="!showEmailError()" 
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Veuillez saisir un email valide</div>
-	
+	-->
 	<ion-row>
 		<ion-col width-10></ion-col>
 		<ion-col text-center>
 			<button block (click)="saveContact()" [style.backgroundColor]="themeColor" [disabled]="isUpdateDisabled()" type="submit">
 				<ion-icon name="done-all"></ion-icon>
 				Valider
+			</button>
+		</ion-col>
+		<ion-col width-10></ion-col>
+	</ion-row>
+	<ion-row>
+		<ion-col width-10></ion-col>
+		<ion-col text-center>
+			<button block (click)="sendNotification()" [style.backgroundColor]="themeColor" [disabled]="isUpdateDisabled()" type="submit">
+				<ion-icon name="send"></ion-icon>
+				Valider & Notifier
 			</button>
 		</ion-col>
 		<ion-col width-10></ion-col>

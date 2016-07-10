@@ -4,10 +4,12 @@ import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {LoadListService} from "../../providers/load-list.service";
 import {ValidationDataService} from "../../providers/validation-data.service";
+import {DataProviderService} from "../../providers/data-provider.service";
+import {GlobalService} from "../../providers/global.service";
 
 @Component({
   templateUrl: 'build/pages/modal-recruiter-manual/modal-recruiter-manual.html',
-  providers: [LoadListService, ValidationDataService]
+  providers: [LoadListService, ValidationDataService, DataProviderService, GlobalService]
 })
 export class ModalRecruiterManualPage {
 	projectTarget:string;
@@ -19,15 +21,18 @@ export class ModalRecruiterManualPage {
 	firstname: string;
 	index: int;
 	phone: int;
-	email: string;
+	//email: string;
 	isPhoneNumValid = true;
+	phoneExist = false;
 	
 	constructor(public nav: NavController,
 				params: NavParams,
 				public gc: GlobalConfigs,
 				private viewCtrl: ViewController,
 				private loadListService: LoadListService, 
-				private validationDataService: ValidationDataService) {
+				private validationDataService: ValidationDataService,
+				private dataProviderService: DataProviderService, 
+				private globalService: GlobalService) {
 		// Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
         // get config of selected target
@@ -45,7 +50,7 @@ export class ModalRecruiterManualPage {
 		this.lastname = contact.lastname;
 		this.index = this.splitPhoneNumber(contact.phone)[0];
 		this.phone = this.splitPhoneNumber(contact.phone)[1];
-		this.email = contact.email;
+		//this.email = contact.email;
 		this.accountid = contact.accountid;
 	}
 	
@@ -54,7 +59,7 @@ export class ModalRecruiterManualPage {
 		contact.firstname = this.firstname;
 		contact.lastname = this.lastname;
 		contact.phone = "+" + this.index + "" + this.phone;
-		contact.email = this.email;
+		//contact.email = this.email;
 		contact.accountid = this.accountid;
 		this.viewCtrl.dismiss(contact);
 	}
@@ -98,11 +103,44 @@ export class ModalRecruiterManualPage {
 				e.target.value = e.target.value.substring(0, 9);
 			}
 			if (e.target.value.length == 9) {
-				//this.isRegistration(e.target.value);
+				this.doesPhoneExist(e.target.value);
 				this.isPhoneNumValid = true;
 			}
 			this.phone = e.target.value;
 		}
+	}
+	
+	doesPhoneExist(phone){
+		if (this.isPhoneValid(phone)) {
+			var tel = "+" + this.index + phone;
+			this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data);
+					this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+					return;
+				}
+				if (!data || data.data.length == 0) {
+					this.phoneExist = false;
+				} else {
+					this.phoneExist = true;
+				}
+			});
+		}
+	}
+	
+	isPhoneValid(tel) {
+		if (this.phone) {
+			var phone_REGEXP = /^0/;
+			//check if the phone number start with a zero
+			var isMatchRegex = phone_REGEXP.test(tel);
+			if (Number(tel.length) == 9 && !isMatchRegex) {
+				console.log('phone number is valid');
+				return true;
+			}
+			else
+			return false;
+		} else
+		return false;
 	}
 	
 	splitPhoneNumber(num){
@@ -128,8 +166,18 @@ export class ModalRecruiterManualPage {
 		return false
 	}
 	
+	sendNotification(){
+		var contact = {};
+		contact.firstname = this.firstname;
+		contact.lastname = this.lastname;
+		contact.phone = "+" + this.index + "" + this.phone;
+		//contact.email = this.email;
+		contact.accountid = this.accountid;
+		this.viewCtrl.dismiss([contact, "notification"]);
+	}
+	
 	isUpdateDisabled(){
-		return (!this.index || !this.phone || !this.isPhoneNumValid || (!this.firstname && !this.lastname) || this.showEmailError());
+		return (!this.index || !this.phone || !this.isPhoneNumValid || this.phoneExist || (!this.firstname && !this.lastname));
 	}
 	
 	closeModal() {

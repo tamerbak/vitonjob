@@ -20,7 +20,7 @@
    <ion-list [hidden]="!search" text-wrap>
 	   <ion-item *ngFor="let item of contactsfound" [hidden]="item.phoneNumbers == null || item.displayName == null">
 		   <ion-label>{{item.displayName}} : {{item.phoneNumbers != null ? item.phoneNumbers[0].value : ''}}</ion-label> 
-		   <ion-checkbox checked="false" [(ngModel)]="item.checked" ></ion-checkbox>
+		   <ion-checkbox checked="false" [(ngModel)]="item.checked" [disabled]="item.disabled" (ionChange)="verifyContact(item)" ></ion-checkbox>
 	   </ion-item>
    </ion-list>
 </ion-content>

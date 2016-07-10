@@ -1,4 +1,4 @@
-import {NavController, Modal, ViewController} from 'ionic-angular';
+import {NavController, Modal, ViewController, Loading} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {RecruiterService} from '../../providers/recruiter-service/recruiter-service';
@@ -75,22 +75,60 @@ export class RecruiterListPage {
 		this.nav.present(modal);
 		modal.onDismiss(recruiter => {
 			//if validate button was clicked, and a new recruiter was entered
-			if(recruiter && !contact){
-				this.recruiterService.insertRecruiters([recruiter], this.currentUser.employer.id, 'manual').then((data) => {
-					console.log("recruiter saved successfully");
-					this.updateRecruiterListInLocal(data);
-				});
-			}
+			this.saveNewContact(recruiter, contact);
 			//if validate button was clicked and an existant recruiter was modified
-			if(recruiter && contact){
-				this.recruiterService.updateRecruiter(recruiter, this.currentUser.employer.id).then((data) => {
-					console.log("recruiter modified successfully");
-					this.updateRecruiterListInLocal([recruiter]);
+			this.saveExistantContact(recruiter, contact);
+			//if the send notification button was clicked
+			if(Array.isArray(recruiter) && recruiter[0] && recruiter[1] == "notification"){
+				let loading = Loading.create({
+					content: ` 
+					<div>
+					<img src='img/loading.gif' />
+					</div>
+					`,
+					spinner : 'hide'
 				});
+				this.nav.present(loading);
+				var tel = recruiter[0].phone;
+				if(contact && (recruiter[0].firstname != contact.firstname || recruiter[0].lastname != contact.lastname || tel != contact.phone)){
+					this.saveExistantContact(recruiter[0], contact)
+				}
+				if(!contact){
+					this.saveNewContact(recruiter[0], contact);
+				}
+				this.recruiterService.sendNotificationBySMS(tel, this.currentUser).then((data) => {
+					if (!data || data.status != 200){
+						loading.dismiss();
+						this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+						return;
+					}
+					loading.dismiss();
+				});
+				return;
 			}
         });
 	}
 	
+	saveNewContact(recruiter, contact){
+		if(recruiter && !contact && !Array.isArray(recruiter)){
+			this.recruiterService.insertRecruiters([recruiter], this.currentUser.employer.id, 'manual').then((data) => {
+				console.log("recruiter saved successfully");
+				this.updateRecruiterListInLocal(data);
+			});
+			return;
+		}
+	}
+	
+	saveExistantContact(recruiter, contact){
+		if(recruiter && contact && !Array.isArray(recruiter)){
+			this.recruiterService.updateRecruiter(recruiter, this.currentUser.employer.id).then((data) => {
+				console.log("recruiter modified successfully");
+				this.updateRecruiterListInLocal([recruiter]);
+			});
+			return;
+		}		
+	}
+		
 	updateRecruiterListInLocal(contacts){
 		this.storage.get("RECRUITER_LIST").then((value) => {
 			if(value){
