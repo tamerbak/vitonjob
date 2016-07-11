@@ -89,37 +89,17 @@ export class Vitonjob {
         this.tokens = this.config.tokenInstabug;
 
         this.initializeApp(gc);
-	this.storage.get("currentUser").then((value) => {
-        this.pages = [
+		this.pages = [
             {title: "Lancer une recherche", component: HomePage, icon: "search", isBadged: false}
         ];
-        this.loggedInPages = [
-            {title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false},
-            {title: "Mes offres", component: OfferListPage, icon: "megaphone", isBadged: true},
-            {title: "Mes missions", component: MissionListPage, icon: "paper", isBadged: false},
-
-            //{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
-        ];
+        this.constituteDefaultMenu();
         this.loggedOutPages = [
             {title: "Se connecter", component: PhonePage, icon: "log-in", isBadged: false},
             {title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false}
         ];
 
-
         this.rootPage = HomePage;//ProfilePage;//OfferAddPage;//HomePage;//OfferDetailPage;//
 
-        //local menu variables
-        this.isEmployer = (this.projectTarget == 'employer');
-		var currentUser = JSON.parse(value);
-		if(this.isEmployer && !currentUser.estRecruteur){
-			this.loggedInPages.push({title: "Contrats en attente", component: PendingContractsPage, icon: "clock", isBadged: false});
-			this.loggedInPages.push({title: "Gestion des habilitations", component: RecruiterListPage, icon: "contacts", isBadged: false});
-		}
-		
-		this.loggedInPages.push({title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false});
-		this.loggedInPages.push({title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false});
-		});
-		
         this.bgMenuURL = this.config.bgMenuURL;
         this.userImageURL = this.config.userImageURL;
         this.userName = this.isEmployer ? 'Employeur' : 'Jobyer';
@@ -256,16 +236,56 @@ export class Vitonjob {
         });
     }
 
+	constituteDefaultMenu(){
+		this.loggedInPages = [
+            {title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false},
+            {title: "Mes offres", component: OfferListPage, icon: "megaphone", isBadged: true},
+            {title: "Mes missions", component: MissionListPage, icon: "paper", isBadged: false},
+
+            //{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
+        ];	
+		this.isEmployer = (this.projectTarget == 'employer');
+		if(this.isEmployer){
+			this.loggedInPages.push({title: "Contrats en attente", component: PendingContractsPage, icon: "clock", isBadged: false});
+			this.loggedInPages.push({title: "Gestion des habilitations", component: RecruiterListPage, icon: "contacts", isBadged: false});
+		}
+		this.loggedInPages.push({title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false});
+		this.loggedInPages.push({title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false});
+	}
+	
+	constituteRecruiterMenu(){
+		this.loggedInPages = [
+            {title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false},
+            {title: "Mes offres", component: OfferListPage, icon: "megaphone", isBadged: true},
+            {title: "Mes missions", component: MissionListPage, icon: "paper", isBadged: false},
+
+            //{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
+        ];	
+		this.loggedInPages.push({title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false});
+		this.loggedInPages.push({title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false});
+	}
+	
 	listenToLoginEvents() {
 		//verify if the user is already connected
 		this.storage.get("currentUser").then((value) => {
 			if (value) {
+			var currentUser = JSON.parse(value);
+				if(currentUser.estRecruteur){
+					this.constituteRecruiterMenu();
+				}else{
+					this.constituteDefaultMenu();
+				}
 				this.enableMenu(true);
 			} else {
 				this.enableMenu(false);
 			}
 		});
 		this.events.subscribe('user:login', (data) => {
+			if(data[0].estRecruteur){
+				this.constituteRecruiterMenu();
+			}else{
+				this.constituteDefaultMenu();
+			}
 			this.enableMenu(true);
 			if(data[0].titre){
 				this.userName = data[0].titre +' '+data[0].nom +' '+data[0].prenom;
@@ -274,7 +294,8 @@ export class Vitonjob {
 		});
 
         this.events.subscribe('user:logout', () => {
-            this.enableMenu(false);
+            
+			this.enableMenu(false);
         });
 
 		this.events.subscribe('picture-change', (newURL)=> {
