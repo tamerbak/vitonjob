@@ -214,6 +214,7 @@ export class PendingContratDetailsPage {
     }
 
     delete(){
+        this.deleteFlag = false;
         let alert = Alert.create({
             title: 'Attention',
             message: 'Etes vous sûr de vouloir écarter ce candidat ?',
