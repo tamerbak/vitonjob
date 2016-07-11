@@ -86,27 +86,46 @@ export class RecruiterListPage {
 					<img src='img/loading.gif' />
 					</div>
 					`,
-					spinner : 'hide'
+					spinner : 'hide',
+					duration: 10000
 				});
 				this.nav.present(loading);
 				var tel = recruiter[0].phone;
+				//save existant contact
 				if(contact && (recruiter[0].firstname != contact.firstname || recruiter[0].lastname != contact.lastname || tel != contact.phone)){
-					this.saveExistantContact(recruiter[0], contact)
-				}
-				if(!contact){
-					this.saveNewContact(recruiter[0], contact);
-				}
-				this.recruiterService.sendNotificationBySMS(tel, this.currentUser).then((data) => {
-					if (!data || data.status != 200){
+					this.recruiterService.updateRecruiter(recruiter[0], this.currentUser.employer.id).then((data) => {
+						console.log("recruiter modified successfully");
+						this.updateRecruiterListInLocal([recruiter[0]]);
+						this.sendNotification(recruiter[0].accountid, tel);
 						loading.dismiss();
-						this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+					});
+					return;
+				}
+				//save new contact
+				if(!contact){
+					if(recruiter[0] && !contact && !Array.isArray(recruiter[0])){
+						this.recruiterService.insertRecruiters([recruiter[0]], this.currentUser.employer.id, 'manual').then((data) => {
+							console.log("recruiter saved successfully");
+							this.updateRecruiterListInLocal(data);
+							this.sendNotification(data[0].accountid, tel);
+							loading.dismiss();
+						});
 						return;
 					}
-					loading.dismiss();
-				});
-				return;
+				}
 			}
         });
+	}
+	
+	sendNotification(accountid, tel){
+		this.recruiterService.generatePasswd(accountid).then((passwd) => {
+			this.recruiterService.sendNotificationBySMS(tel, this.currentUser, passwd).then((data) => {
+				if (!data || data.status != 200){
+					this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+					return;
+				}
+			});
+		});
 	}
 	
 	saveNewContact(recruiter, contact){
