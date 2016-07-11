@@ -102,6 +102,7 @@ $ ionic plugin add cordova-plugin-app-version
 $ ionic plugin add cordova-plugin-googlemaps --variable API_KEY_FOR_ANDROID="AIzaSyA8uYwoQcLR4D72jRErKXIalRZ_F1koHRg" --variable API_KEY_FOR_IOS="AIzaSyA8uYwoQcLR4D72jRErKXIalRZ_F1koHRg"
 $ cordova plugin add com.lampa.startapp
 $ cordova plugin add https://github.com/lampaa/com.lampa.startapp.git
+$ ionic plugin add cordova-plugin-contacts
 ```
 
 ##Notification Push
