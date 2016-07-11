@@ -68,10 +68,10 @@
 		 class="error-box">* Saisissez les 12 chiffres du CNI</div>
 
 	<ion-item [hidden]="isEmployer">
-		<ion-label floating>N° Sécurité sociale</ion-label>
+		<ion-label floating>N° sécurité sociale</ion-label>
 		<ion-input type="number" [(ngModel)]="numSS" (keypress)="watchNumSS($event)" maxlength="15"></ion-input>
 	</ion-item>
-	<div *ngIf="showNSSError()" class="error-box">* Saisissez les 15 chiffres du n° Sécurité Sociale</div>
+	<div *ngIf="showNSSError()" class="error-box">* Saisissez les 15 chiffres du n° sécurité sociale</div>
 
 	<ion-item [hidden]="isEmployer">
 		<ion-label floating>Nationalité</ion-label>
