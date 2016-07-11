@@ -26,8 +26,7 @@ export class DataProviderService {
 		this.configuration = Configs.setConfigs(role);
 		role = (role === 'employer') ? 'employeur' : role;
 
-		var sql = "select pk_user_account, email from user_account where telephone = '"+tel+"' " +
-			"and role = '" + role +"'";
+		var sql = "select pk_user_account, email, role from user_account where telephone = '"+tel+"'";
 	    return new Promise(resolve => {
 	      let headers = new Headers();
 	      headers.append("Content-Type", 'text/plain');
@@ -51,8 +50,7 @@ export class DataProviderService {
 		this.configuration = Configs.setConfigs(role);
 
 		role = (role === 'employer') ? 'employeur' : role;
-		var sql = "select pk_user_account, email, telephone from user_account where email = '"+mail+"' and " +
-			"role = '" + role +"'";
+		var sql = "select pk_user_account, email, telephone, role from user_account where email = '"+mail+"'";
 
 	    // don't have the data yet
 	    return new Promise(resolve => {

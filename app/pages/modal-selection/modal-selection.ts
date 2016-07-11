@@ -14,7 +14,7 @@ import {Component} from "@angular/core";
 })
 export class ModalSelectionPage {
 
-    list:any;
+    list:any = [];
 
     constructor(public nav:NavController,
                 gc:GlobalConfigs,
@@ -127,14 +127,14 @@ export class ModalSelectionPage {
 
     /**
      * @Description : searching typed text in selection items
-     * @param searchbar : search value
+     * @param ev : search value
      */
-    getItems(searchbar) {
+    getItems(ev) {
         // Reset items back to all of the items
         this.initializeItems(this.params.get('items'));
 
         // set q to the value of the searchbar
-        var q = searchbar.value;
+        var q = ev.target.value;
 
         // if the value is an empty string don't filter the items
         if (q.trim() == '') {

@@ -1,14 +1,9 @@
-<ion-header>
-	<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-		<button menuToggle>
-			<ion-icon name="menu"></ion-icon>
-		</button>
-		<ion-title>{{phoneTitle}}</ion-title>
 
-	</ion-navbar>
-</ion-header>
 
 <ion-content padding class="phone" [ngStyle]="backgroundImage">
+	<button style="background-color: transparent; color: #757575;" menuToggle>
+		<ion-icon name="menu"></ion-icon>
+	</button>
 	
 	<ion-label stacked>Entrez votre numéro de téléphone portable</ion-label>
 	<ion-row baseline>
@@ -51,10 +46,10 @@
 	<div [hidden]="!showPassword2Error()" 
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Mots de passe non identiques!</div>
 	<ion-row>&nbsp;</ion-row>
-	<ion-row>
+	<ion-row id="btn-co">
 		<ion-col width-10></ion-col>
 		<ion-col text-center>
-			<button block (click)="authenticate()" [style.backgroundColor]="themeColor" [disabled]="isAuthDisabled()" type="submit" style="opacity: 0.7;">
+			<button block (click)="authenticate()" [style.backgroundColor]="themeColor" [disabled]="isAuthDisabled()" type="submit">
 				<ion-icon name="log-in"></ion-icon>
 				{{libelleButton}}
 			</button>
@@ -62,10 +57,10 @@
 		<ion-col width-10></ion-col>
 	</ion-row>
 	
-	<ion-row>
+	<ion-row id="btn-q">
 		<ion-col width-10></ion-col>
 		<ion-col text-center>
-			<button block [style.backgroundColor]="themeColor" (click)="goBack()" style="opacity: 0.7;">
+			<button block [style.backgroundColor]="themeColor" (click)="goBack()">
 				<ion-icon name="undo"></ion-icon>
 			Quitter
 			</button>
@@ -73,10 +68,10 @@
 		<ion-col width-10></ion-col>
 	</ion-row>
 	<ion-row>&nbsp;</ion-row>
-	<ion-row>
+	<ion-row id="btn-mdp">
 		<ion-col width-10></ion-col>
 		<ion-col text-center>
-			<button block [style.backgroundColor]="themeColor" (click)="displayPasswordAlert()" style="opacity: 0.7;">
+			<button block [style.backgroundColor]="themeColor" (click)="displayPasswordAlert()">
 				<ion-icon name="key"></ion-icon>
 				Mot de passe oublié
 			</button>
