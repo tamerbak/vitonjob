@@ -255,8 +255,23 @@ export class ContractService {
             "filiere" : contract.sector,
             "HeureDebutMission" : contract.workStartHour,
             "HeureFinMission" : contract.workEndHour,
-            "num"  : contract.num
+            "num"  : contract.num,
+
+            "numero" : contract.num,
+            "contact": contract.contact,
+            "indemniteFinMission" : contract.indemniteFinMission,
+            "indemniteCongesPayes" : contract.indemniteCongesPayes,
+            "moyenAcces" : contract.moyenAcces,
+            "numeroTitreTravail" : contract.numeroTitreTravail,
+            "debutTitreTravail" : contract.debutTitreTravail,
+            "finTitreTravail" : contract.finTitreTravail,
+            "periodesNonTravaillees" : contract.periodesNonTravaillees,
+            "debutSouplesse" : contract.debutSouplesse,
+            "finSouplesse" : contract.finSouplesse,
+            "equipements" : contract.equipements
         };
+        debugger;
+        console.log(JSON.stringify(jsonData));
 
         var dataSign =JSON.stringify(
         {
@@ -274,7 +289,7 @@ export class ContractService {
 
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 91,
+            'id': 186,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',

@@ -1150,12 +1150,37 @@ export class OffersService {
                 });
         });
     }
+    lienVideo : string;
+    getOfferVideo(idOffre, table){
+        let sql = "select lien_video as video from "+table+" where pk_"+table+"="+idOffre;
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    console.log(JSON.stringify(data));
+                    this.lienVideo = null;
+                    if(data.data && data.data.length>0)
+                        this.lienVideo = data.data[0];
+
+                    resolve(this.lienVideo);
+                });
+        });
+    }
 
     sqlfy(d){
         return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" 00:00:00+00";
     }
 
     sqlfyText(text){
+        if(!text || text.length == 0)
+            return "";
         return text.replace(/'/g , "''")
     }
 }

@@ -28,6 +28,8 @@ export class OfferDetailPage {
     offer:any;
     dateOptions:DatePickerOptions;
     offerService: OffersService;
+    videoAvailable : boolean = false;
+    youtubeLink : string = '';
 
     constructor(public nav:NavController, gc:GlobalConfigs, params:NavParams,
                 public offersService:OffersService, public searchService:SearchService) {
