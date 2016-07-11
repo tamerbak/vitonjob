@@ -41,6 +41,7 @@ export class PhonePage {
 	isPhoneNumValid = true;
 	backgroundImage:any;
 	emailExist = false;
+	isRecruteur : boolean = false;
 	//isNewRecruteur = false;
 	//accountid: int;
 	
@@ -121,7 +122,9 @@ export class PhonePage {
 		this.nav.present(loading);
 		//call the service of autentication
 		let pwd = md5(this.password1);
-		
+		debugger;
+		if(this.email == null || this.email == 'null')
+			this.email = '';
 		this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget, this.isNewRecruteur).then(data => {
 			console.log(data);
 			//case of authentication failure : server unavailable or connection probleme 
@@ -248,7 +251,8 @@ export class PhonePage {
 					//this.isNewRecruteur = false;
 				} else {
 					if(data.data[0]["role"] == "recruteur" && !data.data[0]["email"] && this.isEmployer){
-						this.showEmailField = true;
+						this.isRecruteur = true;
+						this.showEmailField = false;
 						this.email = "";
 						this.libelleButton = "S'inscrire";
 						//this.isNewRecruteur = true;
@@ -292,10 +296,12 @@ export class PhonePage {
 		* @description validate the email format
 	*/
 	showEmailError() {
+		if(this.isRecruteur)
+			return false;
 		if(this.email)
-		return !(this.validationDataService.checkEmail(this.email));
+			return !(this.validationDataService.checkEmail(this.email));
 		else
-		return false
+			return false;
 	}
 	
 	/**

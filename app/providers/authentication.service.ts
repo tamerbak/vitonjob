@@ -31,6 +31,7 @@ export class AuthenticationService {
 		* @return JSON results in the form of user accounts
 	*/
 	authenticate(email: string, phone: number, password, projectTarget: string, isNewRecruteur){
+		debugger;
 		//  Init project parameters
 		this.configuration = Configs.setConfigs(projectTarget);
 		
@@ -45,6 +46,7 @@ export class AuthenticationService {
 			'role': 'recruteur' 
 		};
 		login = JSON.stringify(login);
+
 		var encodedLogin = btoa(login);
 		var dataLog = {
 			'class': 'fr.protogen.masterdata.model.CCallout',
@@ -56,7 +58,8 @@ export class AuthenticationService {
 			}]
 		};
 		let body = JSON.stringify(dataLog);
-		
+		console.log(body);
+		debugger;
 	    return new Promise(resolve => {
 			let headers = new Headers();
 			headers.append("Content-Type", 'application/json');
