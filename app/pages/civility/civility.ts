@@ -11,6 +11,7 @@ import {GlobalService} from "../../providers/global.service";
 import {Camera} from 'ionic-native';
 import {NgZone} from '@angular/core';
 import {CommunesService} from "../../providers/communes-service/communes-service";
+import {HomePage} from "../home/home";
 
 /**
 	* @author Amal ROCHD
@@ -48,6 +49,7 @@ export class CivilityPage {
     numSSMessage : string = '';
     checkSS : boolean = false;
 	uploadVerb = "Charger un scan ";
+	isRecruiter = false;
 
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
@@ -74,13 +76,14 @@ export class CivilityPage {
         // Set local variables and messages
         this.themeColor = config.themeColor;
         this.isEmployer = (this.projectTarget == 'employer');
-        //this.tabs=tabs;
+		//this.tabs=tabs;
         this.params = params;
         this.currentUser = this.params.data.currentUser;
+		this.isRecruiter = this.currentUser.estRecruteur;
         this.fromPage = this.params.data.fromPage;
         this.titlePage = this.isEmployer ? "Fiche de l'entreprise" : "Profil";
         //load nationality list
-        if(!this.isEmployer){
+        if(!this.isEmployer && !this.isRecruiter){
             this.loadListService.loadNationalities(this.projectTarget).then((data) => {
                 this.nationalities = data.data;
                 //initialize nationality with (9 = francais)
@@ -129,32 +132,35 @@ export class CivilityPage {
      * @description initiate the civility form with the data of the logged user
      */
     initCivilityForm(){
-        
         this.storage.get("currentUser").then((value) => {
             if(value && value != "null"){
                 this.currentUser = JSON.parse(value);
                 this.title = this.currentUser.titre;
                 this.lastname = this.currentUser.nom;
                 this.firstname = this.currentUser.prenom;
-                if(this.isEmployer && this.currentUser.employer.entreprises.length != 0){
+                if(!this.isRecruiter && this.isEmployer && this.currentUser.employer.entreprises.length != 0){
                     this.companyname = this.currentUser.employer.entreprises[0].nom;
                     this.siret = this.currentUser.employer.entreprises[0].siret;
                     this.ape = this.currentUser.employer.entreprises[0].naf;
                 }else{
-                    this.birthdate = this.currentUser.jobyer.dateNaissance ? new Date(this.currentUser.jobyer.dateNaissance).toISOString() : "";
-                    this.birthplace = this.currentUser.jobyer.lieuNaissance;
-                    this.cni = this.currentUser.jobyer.cni;
-                    this.numSS = this.currentUser.jobyer.numSS;
-                    this.nationality = this.currentUser.jobyer.natId;
+                    if(!this.isRecruiter){
+						this.birthdate = this.currentUser.jobyer.dateNaissance ? new Date(this.currentUser.jobyer.dateNaissance).toISOString() : "";
+						this.birthplace = this.currentUser.jobyer.lieuNaissance;
+						this.cni = this.currentUser.jobyer.cni;
+						this.numSS = this.currentUser.jobyer.numSS;
+						this.nationality = this.currentUser.jobyer.natId;
+					}
                 }
-				if(this.currentUser.scanUploaded){
-					this.uploadVerb = "Recharger un scan "
-				}else{
-					this.uploadVerb = "Charger un scan "
+				if(!this.isRecruiter){
+					if(this.currentUser.scanUploaded){
+						this.uploadVerb = "Recharger un scan "
+					}else{
+						this.uploadVerb = "Charger un scan "
+					}
 				}
             }
             
-            if(this.birthplace && this.birthplace != 'null'){
+            if(this.birthplace && this.birthplace != 'null' && !this.isRecruiter){
                this.communesService.getCommunes(this.birthplace).then(data => {
                    
                    if(data && data.length>0){
@@ -231,9 +237,6 @@ export class CivilityPage {
      * @description update civility information for employer and jobyer
      */
     updateCivility(){
-
-
-
         let loading = Loading.create({
             content: ` 
 			<div>
@@ -243,83 +246,105 @@ export class CivilityPage {
             spinner : 'hide'
         });
         this.nav.present(loading);
-        if(this.isEmployer){
+        if(this.isRecruiter){
+			this.authService.updateRecruiterCivility(this.title, this.lastname, this.firstname, this.currentUser.id).then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					loading.dismiss();
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+				}else{
+					// data saved
+					console.log("response update civility : " + data.status);
+					this.currentUser.titre = this.title;
+					this.currentUser.nom = this.lastname;
+					this.currentUser.prenom = this.firstname;
+					this.storage.set('currentUser', JSON.stringify(this.currentUser));
+					this.events.publish('user:civility', this.currentUser);
+					loading.dismiss();
+					if(this.fromPage == "profil"){
+						this.nav.pop();
+					}
+				}
+			});
+			return;
+		}
+		if(this.isEmployer){
             //get the role id
             var employerId = this.currentUser.employer.id;
             //get entreprise id of the current employer
             var entrepriseId = this.currentUser.employer.entreprises[0].id;
             // update employer
-            this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget)
-                .then((data) => {
-                    if (!data || data.status == "failure") {
-                        console.log(data.error);
-                        loading.dismiss();
-                        this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
-                        return;
-                    }else{
-                        // data saved
-                        console.log("response update civility : " + data.status);
-                        this.currentUser.titre = this.title;
-                        this.currentUser.nom = this.lastname;
-                        this.currentUser.prenom = this.firstname;
-                        this.currentUser.employer.entreprises[0].nom = this.companyname;
-                        this.currentUser.employer.entreprises[0].siret = this.siret;
-                        this.currentUser.employer.entreprises[0].naf = this.ape;
-                        //upload scan
-                        this.updateScan(employerId);
-                        // PUT IN SESSION
-                        this.storage.set('currentUser', JSON.stringify(this.currentUser));
-                        this.events.publish('user:civility', this.currentUser);
-                        loading.dismiss();
-                        if(this.fromPage == "profil"){
-                            this.nav.pop();
-                        }else{
-                            //redirecting to personal address tab
-                            //this.tabs.select(1);
-                            this.nav.push(PersonalAddressPage);
-                        }
-                    }
-                });
+            this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget).then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					loading.dismiss();
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+				}else{
+					// data saved
+					console.log("response update civility : " + data.status);
+					this.currentUser.titre = this.title;
+					this.currentUser.nom = this.lastname;
+					this.currentUser.prenom = this.firstname;
+					this.currentUser.employer.entreprises[0].nom = this.companyname;
+					this.currentUser.employer.entreprises[0].siret = this.siret;
+					this.currentUser.employer.entreprises[0].naf = this.ape;
+					//upload scan
+					this.updateScan(employerId);
+					// PUT IN SESSION
+					this.storage.set('currentUser', JSON.stringify(this.currentUser));
+					this.events.publish('user:civility', this.currentUser);
+					loading.dismiss();
+					if(this.fromPage == "profil"){
+						this.nav.pop();
+					}else{
+						//redirecting to personal address tab
+						//this.tabs.select(1);
+						this.nav.push(PersonalAddressPage);
+					}
+				}
+			});
         }else{
-            //get the role id
-            var jobyerId = this.currentUser.jobyer.id;
-            // update jobyer
-            this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni, this.nationality, jobyerId, this.birthdate, this.birthplace)
-                .then((data) => {
-                    if (!data || data.status == "failure") {
-                        console.log(data.error);
-                        loading.dismiss();
-                        this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
-                        return;
-                    }else{
-                        // data saved
-                        console.log("response update civility : " + data.status);
-                        this.currentUser.titre = this.title;
-                        this.currentUser.nom = this.lastname;
-                        this.currentUser.prenom = this.firstname;
-                        this.currentUser.jobyer.cni = this.cni;
-                        this.currentUser.jobyer.numSS = this.numSS;
-                        this.currentUser.jobyer.natId = this.nationality;
-                        //this.currentUser.jobyer.natLibelle = this.nationality;
-                        this.currentUser.jobyer.dateNaissance = this.birthdate;
-                        this.currentUser.jobyer.lieuNaissance = this.birthplace;
-                        //upload scan
-                        this.updateScan(jobyerId);
-                        // PUT IN SESSION
-                        this.storage.set('currentUser', JSON.stringify(this.currentUser));
-                        this.events.publish('user:civility', this.currentUser);
-                        loading.dismiss();
-                        if(this.fromPage == "profil"){
-                            this.nav.pop();
-                        }else{
-                            //redirecting to personal address tab
-                            //this.tabs.select(1);
-                            this.nav.push(PersonalAddressPage);
-                        }
-                    }
-                });
+            if(!this.isRecruiter){
+				//get the role id
+				var jobyerId = this.currentUser.jobyer.id;
+				// update jobyer
+				this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni, this.nationality, jobyerId, this.birthdate, this.birthplace).then((data) => {
+					if (!data || data.status == "failure") {
+						console.log(data.error);
+						loading.dismiss();
+						this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+						return;
+					}else{
+						// data saved
+						console.log("response update civility : " + data.status);
+						this.currentUser.titre = this.title;
+						this.currentUser.nom = this.lastname;
+						this.currentUser.prenom = this.firstname;
+						this.currentUser.jobyer.cni = this.cni;
+						this.currentUser.jobyer.numSS = this.numSS;
+						this.currentUser.jobyer.natId = this.nationality;
+						//this.currentUser.jobyer.natLibelle = this.nationality;
+						this.currentUser.jobyer.dateNaissance = this.birthdate;
+						this.currentUser.jobyer.lieuNaissance = this.birthplace;
+						//upload scan
+						this.updateScan(jobyerId);
+						// PUT IN SESSION
+						this.storage.set('currentUser', JSON.stringify(this.currentUser));
+						this.events.publish('user:civility', this.currentUser);
+						loading.dismiss();
+						if(this.fromPage == "profil"){
+							this.nav.pop();
+						}else{
+							//redirecting to personal address tab
+							//this.tabs.select(1);
+							this.nav.push(PersonalAddressPage);
+						}
+					}
+				});
+			}
         }
-
     }
 
     /**
@@ -348,20 +373,21 @@ export class CivilityPage {
      * @description function called to decide if the validate button should be disabled or not
      */
     isUpdateDisabled(){
-        if(!this.isEmployer){
-            if((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length!=0)  || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.nationality || !this.birthplace || !this.birthdate)){
-                return true;
-            }
-            if(!this.numSS || this.numSS.length == 0)
-                return false;
-            if(!this.checkGender() || !this.checkBirthYear() || !this.checkBirthMonth() || !this.checkINSEE() || !this.checkModKey()){
-                return true;
-            }
-            return false;
-        }
-        else{
-            return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5 || !this.isAPEValid)
-
+        if(this.isRecruiter){
+			return (!this.title || !this.firstname || !this.lastname);
+		}
+		if(this.isEmployer){
+            return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5 || !this.isAPEValid);
+        }else{
+			if((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length!=0)  || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.nationality || !this.birthplace || !this.birthdate)){
+				return true;
+			}
+			if(!this.numSS || this.numSS.length == 0)
+				return false;
+			if(!this.checkGender() || !this.checkBirthYear() || !this.checkBirthMonth() || !this.checkINSEE() || !this.checkModKey()){
+				return true;
+			}
+			return false;
         }
     }
 

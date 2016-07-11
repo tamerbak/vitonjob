@@ -30,7 +30,7 @@ export class AuthenticationService {
 		* @param email, phone, password, role
 		* @return JSON results in the form of user accounts
 	*/
-	authenticate(email: string, phone: number, password, projectTarget: string, isNewRecruteur){
+	authenticate(email: string, phone: number, password, projectTarget: string, isRecruteur){
 		debugger;
 		//  Init project parameters
 		this.configuration = Configs.setConfigs(projectTarget);
@@ -42,8 +42,7 @@ export class AuthenticationService {
 			'email': email,
 			'telephone': "+" + phone,
 			'password': password,
-			//'role': (isNewRecruteur ? 'recruteur' : (projectTarget == 'employer' ? 'employeur' : projectTarget)) 
-			'role': 'recruteur' 
+			'role': (isRecruteur ? 'recruteur' : (projectTarget == 'employer' ? 'employeur' : projectTarget)) 
 		};
 		login = JSON.stringify(login);
 
@@ -173,6 +172,24 @@ export class AuthenticationService {
 		sql = sql + "siret='" + siret + "', ";
 		//sql = sql + "urssaf='" + numUrssaf + "', ";
 		sql = sql + "ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
+		
+		return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'text/plain');
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			.map(res => res.json())
+			.subscribe(data => {
+	            this.data = data;
+	            console.log(this.data);
+	            resolve(this.data);
+			});
+		})
+	}
+	
+	updateRecruiterCivility(title, lastname, firstname, accountid){
+		var sql = "update user_recruteur set ";
+		sql = sql + " titre='" + title + "', ";
+		sql = sql + " nom='" + lastname + "', prenom='" + firstname + "' where fk_user_account=" + accountid + ";";
 		
 		return new Promise(resolve => {
 			let headers = new Headers();

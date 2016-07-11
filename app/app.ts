@@ -89,7 +89,7 @@ export class Vitonjob {
         this.tokens = this.config.tokenInstabug;
 
         this.initializeApp(gc);
-
+	this.storage.get("currentUser").then((value) => {
         this.pages = [
             {title: "Lancer une recherche", component: HomePage, icon: "search", isBadged: false}
         ];
@@ -110,14 +110,16 @@ export class Vitonjob {
 
         //local menu variables
         this.isEmployer = (this.projectTarget == 'employer');
-        if(this.isEmployer){
-            this.loggedInPages.push({title: "Contrats en attente", component: PendingContractsPage, icon: "clock", isBadged: false});
+		var currentUser = JSON.parse(value);
+		if(this.isEmployer && !currentUser.estRecruteur){
+			this.loggedInPages.push({title: "Contrats en attente", component: PendingContractsPage, icon: "clock", isBadged: false});
 			this.loggedInPages.push({title: "Gestion des habilitations", component: RecruiterListPage, icon: "contacts", isBadged: false});
-        }
-        this.loggedInPages.push({title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false});
-        this.loggedInPages.push({title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false});
-
-
+		}
+		
+		this.loggedInPages.push({title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false});
+		this.loggedInPages.push({title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false});
+		});
+		
         this.bgMenuURL = this.config.bgMenuURL;
         this.userImageURL = this.config.userImageURL;
         this.userName = this.isEmployer ? 'Employeur' : 'Jobyer';
@@ -132,10 +134,9 @@ export class Vitonjob {
 
         this.offerCount = 0;
         this.isCalculating = true;
-
-        //  Initialize sectors and job lists
-        this.offerService.loadSectorsToLocal();
-        this.offerService.loadJobsToLocal();
+		//  Initialize sectors and job lists
+		this.offerService.loadSectorsToLocal();
+		this.offerService.loadJobsToLocal();
     }
 
     initializeApp(gc:any) {

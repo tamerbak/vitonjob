@@ -125,7 +125,7 @@ export class PhonePage {
 		debugger;
 		if(this.email == null || this.email == 'null')
 			this.email = '';
-		this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget, this.isNewRecruteur).then(data => {
+		this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget, this.isRecruteur).then(data => {
 			console.log(data);
 			//case of authentication failure : server unavailable or connection probleme 
 			if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
@@ -248,20 +248,14 @@ export class PhonePage {
 					this.showEmailField = true;
 					this.email = "";
 					this.libelleButton = "S'inscrire";
-					//this.isNewRecruteur = false;
+					this.isNewRecruteur = false;
 				} else {
-					if(data.data[0]["role"] == "recruteur" && !data.data[0]["email"] && this.isEmployer){
+					this.email = data.data[0]["email"];
+					this.libelleButton = "Se connecter";
+					this.showEmailField = false;
+					if(data.data[0]["role"] == "recruteur" && this.isEmployer){
 						this.isRecruteur = true;
-						this.showEmailField = false;
 						this.email = "";
-						this.libelleButton = "S'inscrire";
-						//this.isNewRecruteur = true;
-						//this.accountid = data.data[0]["pk_user_account"];
-					}else{
-						this.email = data.data[0]["email"];
-						this.libelleButton = "Se connecter";
-						this.showEmailField = false;
-						//this.isNewRecruteur = false;
 					}
 				}
 			});
@@ -270,7 +264,7 @@ export class PhonePage {
 			this.showEmailField = true;
 			this.libelleButton = "S'inscrire";
 			this.email = "";
-			//this.isNewRecruteur = false;
+			this.isRecruteur = false;
 		}
 	}
 	
