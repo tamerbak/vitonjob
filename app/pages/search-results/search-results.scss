@@ -55,10 +55,8 @@ scroll-content{
   color: white;
   box-shadow: #222222;
   font-size: 13px;
-
   z-index : 1;
 }
-
 
 #card{
   position: absolute;
@@ -69,12 +67,16 @@ scroll-content{
   position: absolute;
   left: 0;
   bottom: 0;
+  color: #757575;
+  border-color: #757575;
 }
 
 #btn-rg{
   position: absolute;
   right: 0;
   bottom: 0;
+  color: #757575;
+  border-color: #757575;
 }
 
 #info-name{
@@ -97,7 +99,7 @@ scroll-content{
   position: absolute;
   -webkit-border-radius: 50%;
   background-color: transparent;
-  right: 0;
+  left: 0;
 }
 
 #btn-call{
@@ -121,40 +123,65 @@ scroll-content{
   left: 0;
 }
 
+#div-avatar{
+     position: absolute;
+}
+
+#avatar{
+  display: initial;
+}
+
+#matching{
+  position: absolute;
+}
+
+#d-re{
+  border-color: #757575;
+  color: #757575;
+  font-size: 12px;
+  left: 0;
+  right: 0;
+}
+
+#de{
+  position: absolute;
+}
+
 //screen size 250px at 550px
 @media screen and (min-height: 250px) and (max-height: 550px) {
 
   #card{
     height: 24em;
-
   }
 
   #btn-r{
+    bottom: 0.5em;
     font-size: 11px;
   }
 
   #btn-rg{
     font-size: 11px;
+    bottom: 0.5em;
   }
 
   #icon-call{
-    color: black;
+    color: #757575;
   }
 
   #icon-mail{
-    color: black;
+    color: #757575;
   }
 
   #btn-mail{
-    top: 9em;
+    top: 8.5em;
   }
 
   #btn-call{
-    top: 7em;
+    top: 8.5em;
   }
 
   #info-civility{
-    top: 10em;
+    top: 14em;
     left: 1em;
   }
 
@@ -162,55 +189,444 @@ scroll-content{
     top: 0;
     left: 0;
     right: 0;
-    font-size: 15px;
-    height: 7em;
+    font-size: 12.5px;
+    text-align: center;
+    height: 100%;
     position: absolute;
-    background-image: url("../../img/fotolia_103610514.jpg");
+    background-color: rgba(#14baa6, 0.3)
   }
 
   #info-name{
-    top: 10em;
+    top: 14em;
     left: 3em;
   }
 
   #info-lastname{
-    top: 11em;
-    left: 3em;
+    top: 15em;
+    right: 0;
+    left: 0;
   }
 
   #info-titre{
-    top: 1em;
+    top: 3em;
     right: 0;
     left: 0;
     color: white;
-    font-size: 17px;
   }
 
   #btn-skype{
-    //color: #14baa6;
-    color: white;
-    top: 3em;
+    color: #757575;
+    top: 4.5em;
   }
 
   #btn-google{
-    color: white;
-    top: 3em;
+    color: #757575;
+    top: 4.5em;
   }
 
+  #div-avatar{
+    top: 5.5em;
+    left: 0;
+    right: 0;
+  }
+
+  #avatar{
+    left: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    border: 2px solid #757575;
+    -webkit-border-radius: 50%;
+  }
+
+  #matching{
+    top: 12em;
+    right: 0;
+    left: 0;
+  }
+
+  #text-badge{
+    font-size: 15px;
+  }
+
+  #text-lastname{
+    font-size: 14px;
+  }
+
+  #de{
+    left: 0;
+    right: 0;
+    top: 17.4em;
+  }
 }
 
 //screen size 551px at 700px
-@media screen and (min-height: 551px) and (max-height: 700px) {
+@media screen and (min-height: 551px) and (max-height: 660px) {
 
+  #card{
+    height: 29em;
+  }
+
+  #btn-r{
+    bottom: 0.5em;
+    font-size: 11px;
+  }
+
+  #btn-rg{
+    font-size: 11px;
+    bottom: 0.5em;
+  }
+
+  #icon-call{
+    color: #757575;
+  }
+
+  #icon-mail{
+    color: #757575;
+  }
+
+  #btn-mail{
+    top: 8.5em;
+  }
+
+  #btn-call{
+    top: 8.5em;
+  }
+
+  #info-civility{
+    top: 14em;
+    left: 1em;
+  }
+
+  #cover{
+    top: 0;
+    left: 0;
+    right: 0;
+    font-size: 12.5px;
+    text-align: center;
+    height: 100%;
+    position: absolute;
+    background-color: rgba(#14baa6, 0.3)
+  }
+
+  #info-name{
+    top: 14em;
+    left: 3em;
+  }
+
+  #info-lastname{
+    top: 15em;
+    right: 0;
+    left: 0;
+  }
+
+  #info-titre{
+    top: 3em;
+    right: 0;
+    left: 0;
+    color: white;
+  }
+
+  #btn-skype{
+    color: #757575;
+    top: 4.5em;
+  }
+
+  #btn-google{
+    color: #757575;
+    top: 4.5em;
+  }
+
+  #div-avatar{
+    top: 5.5em;
+    left: 0;
+    right: 0;
+  }
+
+  #avatar{
+    left: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    border: 2px solid #757575;
+    -webkit-border-radius: 50%;
+  }
+
+  #matching{
+    top: 12em;
+    right: 0;
+    left: 0;
+  }
+
+  #text-badge{
+    font-size: 15px;
+  }
+
+  #text-lastname{
+    font-size: 14px;
+  }
+
+  #de{
+    left: 0;
+    right: 0;
+    top: 20em;
+  }
 }
 
 //screen size 701px at 879px
-@media screen and (min-height: 701px) and (max-height: 879px) {
+@media screen and (min-height: 661px) and (max-height: 879px) {
 
+  #card{
+    height: 36em;
+  }
+
+  #btn-r{
+    bottom: 1em;
+    font-size: 12px;
+    left: 1em;
+  }
+
+  #btn-rg{
+    font-size: 12px;
+    bottom: 1em;
+    right: 1em;
+
+  }
+
+  #icon-call{
+    color: #757575;
+  }
+
+  #icon-mail{
+    color: #757575;
+  }
+
+  #btn-mail{
+    top: 11em;
+  }
+
+  #btn-call{
+    top: 11em;
+  }
+
+  #info-civility{
+    top: 14em;
+    left: 1em;
+  }
+
+  #cover{
+    top: 0;
+    left: 0;
+    right: 0;
+    font-size: 12.5px;
+    text-align: center;
+    height: 100%;
+    position: absolute;
+    background-color: rgba(#14baa6, 0.3)
+  }
+
+  #info-name{
+    top: 14em;
+    left: 3em;
+  }
+
+  #info-lastname{
+    top: 19em;
+    right: 0;
+    left: 0;
+  }
+
+  #info-titre{
+    top: 3em;
+    right: 0;
+    left: 0;
+    color: white;
+  }
+
+  #btn-skype{
+    color: #757575;
+    top: 4.5em;
+  }
+
+  #btn-google{
+    color: #757575;
+    top: 4.5em;
+  }
+
+  #div-avatar{
+  position: absolute;
+    text-align: center;
+    top: 5.5em;
+    width: 100%;
+  }
+
+
+  #avatar{
+    left: 0;
+    right: 0;
+    display: initial;
+    width: 150px;
+    height: 150px;
+    border: 2px solid #757575;
+    -webkit-border-radius: 50%;
+  }
+
+  #matching{
+    top: 15.5em;
+    right: 0;
+    left: 0;
+  }
+
+  #text-badge{
+    font-size: 17px;
+  }
+
+  #text-lastname{
+    font-size: 17px;
+
+  }
+
+  #de{
+    left: 0;
+    right: 0;
+    top: 22em;
+  }
 }
 
 //screen size 880px and more (tablet)
 @media screen and (min-height: 880px) {
 
+  #card{
+    height: 62em;
+  }
+
+  #btn-r{
+    bottom: 1em;
+    font-size: 20px;
+    left: 1em;
+  }
+
+  #btn-rg{
+    font-size: 20px;
+    bottom: 1em;
+    right: 1em;
+
+  }
+
+  #icon-call{
+    color: #757575;
+  }
+
+  #icon-mail{
+    color: #757575;
+  }
+
+  #btn-mail{
+    top: 11em;
+    font-size: 30px;
+  }
+
+  #btn-call{
+    top: 11em;
+    font-size: 30px;
+  }
+
+  #info-civility{
+    top: 14em;
+    left: 1em;
+  }
+
+  #cover{
+    top: 0;
+    left: 0;
+    right: 0;
+    font-size: 12.5px;
+    text-align: center;
+    height: 100%;
+    position: absolute;
+    background-color: rgba(#14baa6, 0.3)
+  }
+
+  #info-name{
+    top: 14em;
+    left: 3em;
+  }
+
+  #info-lastname{
+    top: 28em;
+    right: 0;
+    left: 0;
+  }
+
+  #info-titre{
+    top: 3em;
+    right: 0;
+    left: 0;
+    color: white;
+  }
+
+  #btn-skype{
+    color: #757575;
+    top: 2em;
+    font-size: 30px;
+  }
+
+  #btn-google{
+    color: #757575;
+    top: 2em;
+    font-size: 30px;
+  }
+
+  #div-avatar{
+    position: absolute;
+    text-align: center;
+    top: 8em;
+    width: 100%;
+  }
+
+
+  #avatar{
+    left: 0;
+    right: 0;
+    display: initial;
+    width: 250px;
+    height: 250px;
+    border: 2px solid #757575;
+    -webkit-border-radius: 50%;
+  }
+
+  #matching{
+    top: 25em;
+    right: 0;
+    left: 0;
+
+  }
+
+  #text-badge{
+    font-size: 25px;
+  }
+
+  #text-lastname{
+    font-size: 20px;
+
+  }
+
+  #de{
+    left: 0;
+    right: 0;
+    top: 35em;
+  }
+
+  #d-re{
+    font-size: 20px;
+  }
+
+  #match-bdg{
+    font-size: 18px;
+  }
+
+  .offer-proposition-div{
+    font-size: 18px;
+  }
 }
 
