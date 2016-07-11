@@ -1179,6 +1179,8 @@ export class OffersService {
     }
 
     sqlfyText(text){
+        if(!text || text.length == 0)
+            return "";
         return text.replace(/'/g , "''")
     }
 }
