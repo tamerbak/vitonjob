@@ -28,6 +28,8 @@ export class OfferDetailPage {
     offer:any;
     dateOptions:DatePickerOptions;
     offerService: OffersService;
+    videoAvailable : boolean = false;
+    youtubeLink : string = '';
 
     constructor(public nav:NavController, gc:GlobalConfigs, params:NavParams,
                 public offersService:OffersService, public searchService:SearchService) {
@@ -133,7 +135,18 @@ export class OfferDetailPage {
             spinner: 'hide'
         });
         this.nav.present(loading);
-        this.offerService.getCorrespondingOffers(this.offer, this.projectTarget).then(data => {
+        let searchFields = {
+            class : 'com.vitonjob.callouts.recherche.SearchQuery',
+            job : this.offer.jobData.job,
+            metier : '',
+            lieu : '',
+            nom : '',
+            entreprise : '',
+            date : '',
+            table : this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer',
+            idOffre :'0'
+        };
+        this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
             console.log(data);
             this.searchService.persistLastSearch(data);
             loading.dismiss();

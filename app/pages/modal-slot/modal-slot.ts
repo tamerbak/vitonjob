@@ -118,7 +118,7 @@ export class ModalSlotPage {
             });
             return;
         }
-        debugger;
+        //debugger;
         this.viewCtrl.dismiss(this.slot);
     }
 
