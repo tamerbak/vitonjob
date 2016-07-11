@@ -130,7 +130,6 @@ export class ModalJobPage {
      * @Description: Validating the modal page (All fields are filled)
      */
     validateJob() {
-        debugger;
         if(this.jobData.idJob ==0 || this.jobData.idSector ==0){
             let alert = Alert.create({
                 title: 'Erreur',
