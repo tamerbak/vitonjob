@@ -81,6 +81,19 @@ export class ContractPage {
         // initialize contract data
         this.contractData = {
             num:"",
+            numero:"",
+            contact:this.employerFullName,
+            indemniteFinMission : "0.00",
+            indemniteCongesPayes : "0.00",
+            moyenAcces : "",
+            numeroTitreTravail : "",
+            debutTitreTravail : "",
+            finTitreTravail : "",
+            periodesNonTravaillees : "",
+            debutSouplesse : "",
+            finSouplesse : "",
+            equipements : "",
+
             interim:"Groupe 3S",
             missionStartDate: this.getStartDate(),
             missionEndDate:this.getEndDate(),
@@ -209,6 +222,19 @@ export class ContractPage {
     initContract(){
         this.contractData = {
             num:this.numContrat,
+
+            numero:"",
+            contact:this.employerFullName,
+            indemniteFinMission : "0.00",
+            indemniteCongesPayes : "0.00",
+            moyenAcces : "",
+            numeroTitreTravail : "",
+            debutTitreTravail : "",
+            finTitreTravail : "",
+            periodesNonTravaillees : "",
+            debutSouplesse : "",
+            finSouplesse : "",
+            equipements : "",
             interim:"Groupe 3S",
             missionStartDate: this.getStartDate(),
             missionEndDate:this.getEndDate(),
@@ -264,6 +290,8 @@ export class ContractPage {
             if(data && data.length>0){
                 this.numContrat = this.formatNumContrat(data[0].numct);
                 this.contractData.num = this.numContrat;
+                this.contractData.numero = this.numContrat;
+                this.contractData.adresseInterim = this.workAdress;
             }
             this.nav.push(YousignPage,{
                 jobyer:this.jobyer,

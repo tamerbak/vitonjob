@@ -71,6 +71,17 @@
                 <ion-label>Nationalité</ion-label><ion-input type="text" [(ngModel)]="jobyer.nationaliteLibelle"></ion-input>
             </ion-item>
 
+            <ion-item>
+                <ion-label>Num. Titre de travail</ion-label><ion-input type="text" [(ngModel)]="contractData.numeroTitreTravail"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Valable du</ion-label><ion-input type="text" [(ngModel)]="contractData.debutTitreTravail"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Valable au</ion-label><ion-input type="text" [(ngModel)]="contractData.finTitreTravail"></ion-input>
+            </ion-item>
     </ion-list>
 
 
@@ -100,7 +111,15 @@
             <ion-item>
                 <ion-label>Justification de recours</ion-label><ion-input type="text" [(ngModel)]="contractData.justification"></ion-input>
             </ion-item>
-
+            <ion-item>
+                <ion-label>Début de souplesse</ion-label><ion-input type="text" [(ngModel)]="contractData.debutSouplesse"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Fin de souplesse</ion-label><ion-input type="text" [(ngModel)]="contractData.finSouplesse"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Période non travaillée</ion-label><ion-input type="text" [(ngModel)]="contractData.periodesNonTravaillees"></ion-input>
+            </ion-item>
     </ion-list>
 
     <ion-list>
@@ -134,6 +153,9 @@
                 <ion-label>EPI</ion-label><ion-input type="text" [(ngModel)]="contractData.epi"></ion-input>
             </ion-item>
 
+            <ion-item>
+                <ion-label>Equipement</ion-label><ion-input type="text" [(ngModel)]="contractData.equipements"></ion-input>
+            </ion-item>
     </ion-list>
 
 
@@ -177,6 +199,16 @@
 
             <ion-item>
                 <ion-label>Droit au repos compensateur</ion-label><ion-input type="text" [(ngModel)]="contractData.restRight"></ion-input>
+
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Ind. fin de mission</ion-label><ion-input type="text" [(ngModel)]="contractData.indemniteFinMission"></ion-input>
+
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Ind. congés payés</ion-label><ion-input type="text" [(ngModel)]="contractData.indemniteCongesPayes"></ion-input>
 
             </ion-item>
 
