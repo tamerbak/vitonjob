@@ -23,6 +23,8 @@ export class PendingContractsPage {
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
 
+        this.isEmployer = this.projectTarget === 'employer';
+
         // Set store variables and messages
         this.themeColor = config.themeColor;
         this.db = new Storage(SqlStorage);
