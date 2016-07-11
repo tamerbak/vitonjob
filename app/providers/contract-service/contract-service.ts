@@ -258,6 +258,8 @@ export class ContractService {
             "num"  : contract.num
         };
 
+        console.log(JSON.stringify(jsonData));
+
         var dataSign =JSON.stringify(
         {
             'class': 'com.vitonjob.yousign.callouts.YousignConfig',

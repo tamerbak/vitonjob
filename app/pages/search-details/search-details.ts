@@ -1,6 +1,5 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NavController, NavParams, Alert, Storage, SqlStorage, Platform} from 'ionic-angular';
-//import {GoogleMap, GoogleMapsEvent} from 'ionic-native';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {isUndefined} from "ionic-angular/util";
 import {ContractPage} from "../contract/contract";
@@ -9,13 +8,14 @@ import {LoginsPage} from "../logins/logins";
 import {UserService} from "../../providers/user-service/user-service";
 import {GlobalService} from "../../providers/global.service";
 import {OffersService} from "../../providers/offers-service/offers-service";
+import {AddressService} from "../../providers/address-service/address-service";
 
 
 declare var google:any;
-//const mapConfig: any;
+
 @Component({
     templateUrl: 'build/pages/search-details/search-details.html',
-	providers: [GlobalService, OffersService]
+	providers: [GlobalService, OffersService, AddressService]
 })
 export class SearchDetailsPage implements OnInit {
     isEmployer : boolean = false;
@@ -35,6 +35,10 @@ export class SearchDetailsPage implements OnInit {
     languages : any[];
     qualities : any[];
     map : any;
+    availability : any;
+    addressService : AddressService;
+    videoPresent : boolean = false;
+    videoLink : string;
 
     constructor(public nav: NavController,
                 public params : NavParams,
@@ -42,7 +46,8 @@ export class SearchDetailsPage implements OnInit {
                 userService : UserService,
 				private globalService: GlobalService,
 				platform: Platform,
-                offersService : OffersService) {
+                offersService : OffersService,
+                addressService : AddressService) {
 
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
@@ -62,8 +67,14 @@ export class SearchDetailsPage implements OnInit {
         this.telephone = this.result.tel;
         this.matching = this.result.matching+"%";
 
+        this.availability = {
+            duree : 0,
+            code : 'vert'
+        };
+
         //get the currentEmployer
         this.userService = userService;
+        this.addressService = addressService;
         this.userService.getCurrentUser().then(results =>{
 
             if(results && !isUndefined(results)){
@@ -113,28 +124,41 @@ export class SearchDetailsPage implements OnInit {
         this.offersService.getOffersQualities(idOffers, table).then(data=>{
             if(data)
                 this.qualities = data;
+        });
+        this.offersService.getOfferVideo(this.result.idOffre, table).then(data=>{
+            this.videoPresent = false;
+            if(data && data != null && data.video && data.video != "null"){
+                this.videoPresent = true;
+                this.videoLink = data.video;
+            }
 
         });
-        //platform.ready().then(() => this.loadMap());
-
     }
 
     ngOnInit() {
         //get the currentEmployer
-        this.userService.getCurrentUser().then(results =>{
-
+        this.userService.getCurrentUser().then(results => {
 
             this.loadMap();
+
+            if (results) {
+                let user = JSON.parse(results);
+                let addressOffer = this.result.address;
+                let addressUser = '';
+                if (this.isEmployer)
+                    addressUser = user.employer.entreprises[0].workAdress.fullAdress;
+                else
+                    addressUser = user.jobyer.workAdress.fullAdress;
+
+                this.addressService.getDistance(addressOffer, addressUser).then(data=> {
+                    this.availability = data;
+                });
+            }
         });
 
     }
 
     loadMap() {
-        /*this.map = new GoogleMap('map_canvas');
-        this.mcontrol = new MarkerController(this.map);
-        this.map.on(GoogleMapsEvent.MAP_READY)
-            .subscribe(() => this.onMapReady());*/
-        //this.map.on(GoogleMapsEvent.MAP_READY).subscribe(() => console.log("Map is ready!"));
         let latLng = new google.maps.LatLng(48.855168, 2.344813);
 
         let mapOptions = {
@@ -150,19 +174,16 @@ export class SearchDetailsPage implements OnInit {
 
         if(this.result.latitude == "0" && this.result.longitude == "0")
             return;
-        debugger;
+        
         let latlng = new google.maps.LatLng(this.result.latitude , this.result.longitude);
-
+        console.log(JSON.stringify(latlng));
         addresses.push(latlng);
 
         let bounds = new google.maps.LatLngBounds();
         this.addMarkers(addresses, bounds);
 
     }
-    onMapReady(): void {
-        console.log('Map ready');
-        this.map.setOptions(mapConfig);
-    }
+
     addMarkers(addresses:any, bounds:any) {
 
         for (let i = 0; i < addresses.length; i++) {

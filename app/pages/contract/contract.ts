@@ -197,6 +197,7 @@ export class ContractPage {
     }
 
     selectOffer(){
+        debugger;
         let m = new Modal(ModalOffersPage);
         m.onDismiss(data => {
             this.currentOffer = data;
