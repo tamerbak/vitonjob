@@ -22,7 +22,15 @@
 
 </ion-navbar>
 </ion-header>
+<ion-buttons end>
+    <button (click)="changeViewMode(1)" style="font-size: small;" [ngClass]="{'button-secondary': listView}" >
+        <ion-icon name="md-list"></ion-icon>
+    </button>
+    <button (click)="changeViewMode(2)" style="font-size: small;"  [ngClass]="{'button-secondary': cardView}" >
+        <ion-icon name="md-albums"></ion-icon>
+    </button>
 
+</ion-buttons>
 <ion-content padding class="search-results">
 
   <div id="map" style="width:100%;height:0px;" >
@@ -56,27 +64,26 @@
     <ion-slide *ngFor="let item of searchResults">
       <ion-card id="card">
         <ion-row>
+            <div id="cover"></div>
+            <div id="info-lastname"><ion-badge id="text-lastname" style="background-color: #757575;">{{item.titre}} {{item.prenom}} {{item.nom}}</ion-badge></div>
+            <button  outline id="btn-r" (click)="recruitJobyer(item)" *ngIf="isEmployer && !item.checkedContract">Recrutement direct</button>
+            <button outline id="btn-rg" *ngIf="isEmployer">Recrutement grouper</button>
+            <div id="de"><button outline *ngIf="isEmployer" id="d-re">Détail sur {{item.prenom}}</button></div>
+           <div><button outline *ngIf="!isEmployer">Détail</button></div>
+            <div id="div-avatar"><img id="avatar" src="img/{{avatar}}.png"></div>
+            <div id="matching"> <ion-badge id="match-bdg" style="background-color: #757575;">{{item.matching}} %</ion-badge></div>
+          <div id="info-titre"><ion-badge id="text-badge" style="background-color: #757575;">{{item.titreOffre}}</ion-badge></div>
 
-            <button id="btn-r">Recrutement direct</button>
-            <button id="btn-rg">Recrutement grouper</button>
-
-          <div id="info-civility">{{item.titre}}</div>
-          <div id="avatar"><img src="img/{{avatar}}.png"></div>
-          <div id="info-name">{{item.nom}}</div>
-          <div id="info-lastname">{{item.prenom}}</div>
-
-          <div id="cover"></div>
-          <div id="info-titre">{{item.titreOffre}}</div>
-          <div>description</div>
           <div>
-            <button id="btn-call"><ion-icon id="icon-call" name="call"></ion-icon></button>
-            <button id="btn-mail"><ion-icon id="icon-mail" name="mail"></ion-icon></button>
-            <button id="btn-google"><ion-icon name="logo-googleplus"></ion-icon></button>
-            <button id="btn-skype"><ion-icon name="logo-skype"></ion-icon></button>
+            <button id="btn-call"  (click)="dialNumber(item)"><ion-icon id="icon-call" name="call"></ion-icon></button>
+            <button id="btn-mail" (click)="sendSMS(item)"><ion-icon id="icon-mail" name="mail"></ion-icon></button>
+            <button id="btn-google"><ion-icon name="at"></ion-icon></button>
+            <button  id="btn-skype"><ion-icon name="logo-skype"></ion-icon></button>
 
 
           </div>
         </ion-row>
+
       </ion-card>
      <!-- <ion-card>
         <ion-card-header>Vitonjob a trouvé {{resultsCount}} offre(s)</ion-card-header>
