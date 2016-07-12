@@ -1,4 +1,7 @@
-import {NavController, NavParams, ActionSheet, Loading, Platform, Modal, Storage, LocalStorage} from 'ionic-angular';
+import {
+    NavController, NavParams, ActionSheet, Loading, Platform, Modal, Storage, LocalStorage,
+    Picker, PickerColumnOption, SqlStorage
+} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {MissionService} from '../../providers/mission-service/mission-service';
@@ -10,6 +13,7 @@ import {DateConverter} from '../../pipes/date-converter/date-converter';
 import {TimeConverter} from '../../pipes/time-converter/time-converter';
 import {GlobalService} from "../../providers/global.service";
 import {ModalInvoicePage} from "../modal-invoice/modal-invoice";
+import {NotationService} from "../../providers/notation-service/notation-service";
 
 /*
  Generated class for the MissionDetailsPage page.
@@ -20,7 +24,7 @@ import {ModalInvoicePage} from "../modal-invoice/modal-invoice";
 @Component({
     templateUrl: 'build/pages/mission-details/mission-details.html',
     pipes: [DateConverter, TimeConverter],
-    providers: [GlobalService, PushNotificationService]
+    providers: [GlobalService, PushNotificationService, NotationService]
 })
 export class MissionDetailsPage {
     projectTarget:string;
@@ -41,11 +45,14 @@ export class MissionDetailsPage {
     startPauses = [['']];
     endPauses = [['']];
     isNewMission = true;
-    contract;
     contractSigned = false;
 
     store : Storage;
     invoiceReady : boolean =  false;
+
+    rating : number = 0;
+    starsText : string = '';
+    db : Storage;
 
     constructor(private platform:Platform,
                 public gc: GlobalConfigs,
@@ -53,9 +60,11 @@ export class MissionDetailsPage {
                 public navParams:NavParams,
                 private missionService:MissionService,
                 private globalService: GlobalService,
-                private pushNotificationService: PushNotificationService) {
+                private pushNotificationService: PushNotificationService,
+                private notationService : NotationService) {
 
         this.store = new Storage(LocalStorage);
+        this.db = new Storage(SqlStorage);
 
         this.platform = platform;
         // Get target to determine configs
@@ -80,9 +89,15 @@ export class MissionDetailsPage {
             }
         });
 
-        debugger;
+
         if(this.contract.numero_de_facture && this.contract.numero_de_facture != 'null')
             this.invoiceReady = true;
+
+        //  Getting contract score
+        this.notationService.loadContractNotation(this.contract, this.projectTarget).then(score=>{
+            this.rating = score;
+            this.starsText = this.writeStars(this.rating);
+        });
     }
 
     constructMissionHoursArray(initialMissionArray){
@@ -385,5 +400,49 @@ export class MissionDetailsPage {
 
     goToHomePage(){
         this.nav.setRoot(HomePage);
+    }
+
+    /**
+     * Stars picker
+     */
+    setStarPicker() {
+
+        let picker = Picker.create();
+        let options:PickerColumnOption[] = new Array<PickerColumnOption>();
+        for (let i = 1; i <= 5; i++) {
+            options.push({
+                value: i,
+                text: this.writeStars(i)
+            })
+        }
+
+        let column = {
+            selectedIndex: this.rating,
+            options: options
+        };
+        picker.addColumn(column);
+        picker.addButton('Annuler');
+        picker.addButton({
+            text: 'OK',
+            handler: data => {
+                debugger;
+                this.rating = data.undefined.value;
+                this.starsText = this.writeStars(this.rating);
+                this.notationService.saveContractNotation(this.contract, this.projectTarget, this.rating);
+            }
+        });
+        this.nav.present(picker);
+    }
+
+    /**
+     * writing stars
+     * @param number of stars writed
+     */
+    writeStars(number:number):string {
+        let starText = '';
+        for (let i = 0; i < number; i++) {
+            starText += '\u2605'
+        }
+        return starText;
     }
 }
