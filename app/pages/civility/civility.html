@@ -55,9 +55,16 @@
 		<ion-datetime [(ngModel)]="birthdate" displayFormat="DD/MM/YYYY"></ion-datetime>
 	</ion-item>
 
-	<ion-item [hidden]="isEmployer">
-		<ion-label floating>Lieu de naissance (ex :Palaiseau (91))</ion-label>
-		<ion-input type="text" [(ngModel)]="birthplace"></ion-input>
+    <ion-item [hidden]="isEmployer">
+        <ion-label floating>Lieu de naissance (ex :Palaiseau (91))</ion-label>
+		<ion-input type="text" [(ngModel)]="birthplace" (keyup)="watchBirthPlace($event)"></ion-input>
+	</ion-item>
+	<ion-item [hidden]="isEmployer || communes.length==0">
+		<ion-list>
+			<ion-item *ngFor="let c of communes" (click)="communeSelected(c)">
+				{{c.nom}}
+			</ion-item>
+		</ion-list>
 	</ion-item>
 
 	<ion-item [hidden]="isEmployer">
