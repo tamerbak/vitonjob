@@ -41,6 +41,9 @@ export class PhonePage {
 	isPhoneNumValid = true;
 	backgroundImage:any;
 	emailExist = false;
+	isRecruteur : boolean = false;
+	//isNewRecruteur = false;
+	//accountid: int;
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
@@ -119,10 +122,11 @@ export class PhonePage {
 		this.nav.present(loading);
 		//call the service of autentication
 		let pwd = md5(this.password1);
-		this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget)
-		.then(data => {
+		debugger;
+		if(this.email == null || this.email == 'null')
+			this.email = '';
+		this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget, this.isRecruteur).then(data => {
 			console.log(data);
-			
 			//case of authentication failure : server unavailable or connection probleme 
 			if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
 				console.log(data);
@@ -136,42 +140,17 @@ export class PhonePage {
 				loading.dismiss();
 				if(!this.showEmailField){
 					this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe est incorrect.");
-					}else{
+				}else{
 					console.log("used email error");
 					this.globalService.showAlertValidation("VitOnJob", "Cette adresse email a été déjà utilisé. Veuillez choisir une autre.");
 				}
 				return;
 			}
-			
-			//case of authentication success
-			this.authService.setObj('connexion', null);
-			this.authService.setObj('currentUser', null);
-			var connexion = {
-				'etat': true,
-				'libelle': 'Se déconnecter',
-				'employeID' : (this.projectTarget == 'jobyer' ? data.jobyerId : data.employerId)
-			};
-			
-			//load device token to current account
-			var token;
-			this.storage.get("deviceToken").then(token => {
-				if (token) {
-				console.log("insertion du token : " + token);
-				this.authService.insertToken(token, accountId, this.projectTarget);
-			}
-			});
-			var accountId = data.id;
-			this.storage.set('connexion', JSON.stringify(connexion));
-			this.storage.set('currentUser', JSON.stringify(data));
-			this.events.publish('user:login', data);
-			
-			//user is connected, then change the name of connexion btn to deconnection
-			this.gc.setCnxBtnName("Déconnexion");
+			this.afterAuthSuccess(data);
 			loading.dismiss();
-			
 			//if user is connected for the first time, redirect him to the page 'civility', else redirect him to the home page
 			var isNewUser = data.newAccount;
-			if (isNewUser) {
+			if (isNewUser || this.isNewRecruteur) {
 				this.nav.setRoot(CivilityPage, {
 				currentUser: data});
 				} else {
@@ -180,6 +159,33 @@ export class PhonePage {
 				//currentUser: data});
 			}
 		});
+	}
+	
+	afterAuthSuccess(data){
+		//case of authentication success
+		this.authService.setObj('connexion', null);
+		this.authService.setObj('currentUser', null);
+		var connexion = {
+			'etat': true,
+			'libelle': 'Se déconnecter',
+			'employeID' : (this.projectTarget == 'jobyer' ? data.jobyerId : data.employerId)
+		};
+		
+		//load device token to current account
+		var accountId = data.id;
+		var token;
+		this.storage.get("deviceToken").then(token => {
+			if (token) {
+			console.log("insertion du token : " + token);
+			this.authService.insertToken(token, accountId, this.projectTarget);
+		}
+		});
+		this.storage.set('connexion', JSON.stringify(connexion));
+		this.storage.set('currentUser', JSON.stringify(data));
+		this.events.publish('user:login', data);
+		
+		//user is connected, then change the name of connexion btn to deconnection
+		this.gc.setCnxBtnName("Déconnexion");
 	}
 	
 	/**
@@ -242,10 +248,15 @@ export class PhonePage {
 					this.showEmailField = true;
 					this.email = "";
 					this.libelleButton = "S'inscrire";
-					} else {
+					this.isNewRecruteur = false;
+				} else {
 					this.email = data.data[0]["email"];
 					this.libelleButton = "Se connecter";
 					this.showEmailField = false;
+					if(data.data[0]["role"] == "recruteur" && this.isEmployer){
+						this.isRecruteur = true;
+						this.email = "";
+					}
 				}
 			});
 			} else {
@@ -253,6 +264,7 @@ export class PhonePage {
 			this.showEmailField = true;
 			this.libelleButton = "S'inscrire";
 			this.email = "";
+			this.isRecruteur = false;
 		}
 	}
 	
@@ -278,10 +290,12 @@ export class PhonePage {
 		* @description validate the email format
 	*/
 	showEmailError() {
+		if(this.isRecruteur)
+			return false;
 		if(this.email)
-		return !(this.validationDataService.checkEmail(this.email));
+			return !(this.validationDataService.checkEmail(this.email));
 		else
-		return false
+			return false;
 	}
 	
 	/**

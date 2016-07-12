@@ -31,12 +31,12 @@ export class RecruiterService{
     }
 	
 	insertRecruiters(contacts, employerId, fromPage){
-		var sql = "insert into user_account (email, role, telephone, est_employeur) values ";
+		var sql = "insert into user_account (role, telephone, est_employeur) values ";
 		var recruiterList = [];
 		for(var i = 0; i < contacts.length; i++){
 			var recruiter = this.constituteRecruiterObject(contacts[i], fromPage);
 			recruiterList.push(recruiter);
-			var valuesStr = " ('" + recruiter.email + "', 'recruteur', '" + recruiter.phone + "', 'non')";
+			var valuesStr = " ('recruteur', '" + recruiter.phone + "', 'non')";
 			if(i == 0){
 				sql = sql + valuesStr;
 				continue;
@@ -141,7 +141,7 @@ export class RecruiterService{
 	
 	updateRecruiter(recruiter, employerId){
 		var sql1 = "update user_recruteur set titre = '" + recruiter.title + "', nom = '" + recruiter.lastname + "', prenom ='" + recruiter.firstname + "' where fk_user_account = '" + recruiter.accountid + "' and fk_user_employeur = '" + employerId+ "';";
-		var sql2 = " update user_account set email = '" + recruiter.email + "', telephone = '" + recruiter.phone + "' where pk_user_account = '" + recruiter.accountid + "' and role = 'recruteur';";
+		var sql2 = " update user_account set telephone = '" + recruiter.phone + "' where pk_user_account = '" + recruiter.accountid + "' and role = 'recruteur';";
 		var sql = sql1 + sql2;
 		console.log(sql);
         return new Promise(resolve => {
@@ -156,10 +156,10 @@ export class RecruiterService{
         });	
 	}
 	
-	sendNotificationBySMS(tel, user){
+	sendNotificationBySMS(tel, user, passwd){
 		tel = tel.replace('+', '00');
 		let url = "http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoisms";
-		var msg = user.titre + " " + user.nom + " " + user.prenom + " vous invite à télécharger et installer l'application VitOnJob. http://www.vitonjob.com/telecharger/telecharger-appli-employeurs/"
+		var msg = user.titre + " " + user.nom + " " + user.prenom + " vous invite à télécharger et installer l'application VitOnJob. http://www.vitonjob.com/telecharger/telecharger-appli-employeurs/\n Votre mot de passe est " + passwd;
 		let payload = "<fr.protogen.connector.model.SmsModel>"
 		+ 	"<telephone>"+tel+"</telephone>"
 		+ 	"<text>" + msg +"</text>"
@@ -173,6 +173,23 @@ export class RecruiterService{
 					this.data = data;
 					console.log(this.data);
 					resolve(this.data);
+			});
+		})
+	}
+	
+	generatePasswd(accountid){
+		var passwd = (((1+Math.random())*0x10000)|0).toString(16).substring(1) + 'MO';
+		var hashedPasswd = md5(passwd);
+		var sql = "update user_account set mot_de_passe = '" + hashedPasswd + "' where pk_user_account = '" + accountid + "'";
+			
+		return new Promise(resolve => {
+			let headers = new Headers();
+			headers.append("Content-Type", 'text/plain');
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			.map(res => res.json())
+			.subscribe(data => {
+				this.data = passwd;
+				resolve(this.data);
 			});
 		})
 	}

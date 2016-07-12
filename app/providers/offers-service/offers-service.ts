@@ -26,6 +26,7 @@ export class OffersService {
     offerQuelities:any;
     offerList:any;
     addedOffer:any;
+    lienVideo : string;
 
     constructor(public http:Http) {
         this.count = 0;
@@ -1150,7 +1151,7 @@ export class OffersService {
                 });
         });
     }
-    lienVideo : string;
+
     getOfferVideo(idOffre, table){
         let sql = "select lien_video as video from "+table+" where pk_"+table+"="+idOffre;
         return new Promise(resolve => {
@@ -1169,6 +1170,27 @@ export class OffersService {
                     if(data.data && data.data.length>0)
                         this.lienVideo = data.data[0];
 
+                    resolve(this.lienVideo);
+                });
+        });
+    }
+
+    updateVideoLink(idOffer, youtubeLink, projectTarget){
+        let table = projectTarget == 'jobyer' ? "user_offre_jobyer":"user_offre_entreprise";
+        let sql = "update "+table+" set lien_video='"+this.sqlfyText(youtubeLink)+"' where pk_"+table+"="+idOffer;
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    console.log(JSON.stringify(data));
+                    this.lienVideo = youtubeLink;
                     resolve(this.lienVideo);
                 });
         });

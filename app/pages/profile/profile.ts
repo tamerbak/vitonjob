@@ -43,6 +43,7 @@ export class ProfilePage implements OnInit {
     backgroundImage: any;
 	noMainAddress = false;
 	noSecondAddress = false;
+	isRecruiter = false;
 
     constructor(public nav:NavController, public gc:GlobalConfigs,
                 userService:UserService, addrService:AddressService) {
@@ -107,7 +108,9 @@ export class ProfilePage implements OnInit {
         this.storage.get("currentUser").then(data => {
             if (data) {
                 this.userData = JSON.parse(data);
-                this.loadMap(this.userData);
+				this.isRecruiter = this.userData.estRecruteur;
+				if(!this.isRecruiter)
+					this.loadMap(this.userData);
             }
         });
     }

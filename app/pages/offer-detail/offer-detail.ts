@@ -99,6 +99,15 @@ export class OfferDetailPage {
             day: "numeric"//, hour: "2-digit", minute: "2-digit"
         };
 
+        let table = this.isEmployer?'user_offre_jobyer':'user_offre_entreprise';
+        this.offerService.getOfferVideo(this.offer.idOffre, table).then(data=>{
+            this.videoAvailable = false;
+            if(data && data != null && data.video && data.video != "null"){
+                this.videoAvailable = true;
+                this.youtubeLink = data.video;
+            }
+
+        });
     }
 
     /**
@@ -443,5 +452,11 @@ export class OfferDetailPage {
             }
         })
 
+    }
+
+    updateVideo(){
+        this.offerService.updateVideoLink(this.offer.idOffer, this.youtubeLink, this.projectTarget).then(()=>{
+           this.videoAvailable = true;
+        });
     }
 }
