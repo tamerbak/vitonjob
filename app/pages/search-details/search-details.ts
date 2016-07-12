@@ -43,6 +43,7 @@ export class SearchDetailsPage implements OnInit {
     starsText : string = '';
     rating : number = 0;
     platform : any;
+    isRecruteur : boolean = false;
 
     constructor(public nav: NavController,
                 public params : NavParams,
@@ -83,10 +84,16 @@ export class SearchDetailsPage implements OnInit {
         this.userService.getCurrentUser().then(results =>{
 
             if(results && !isUndefined(results)){
+                debugger;
                 let currentEmployer = JSON.parse(results);
                 if(currentEmployer){
                     this.employer = currentEmployer;
+                    if(this.employer.estRecruteur)
+                        this.isRecruteur = this.employer.estRecruteur;
                 }
+
+
+
                 console.log(currentEmployer);
             }
 

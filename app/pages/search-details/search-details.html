@@ -73,7 +73,7 @@
          <div id="map_canvas" style="height:200px;" >
         </div>
          <ion-row>
-            <button block [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''" *ngIf="isEmployer && !result.checkedContract"
+            <button block [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''" *ngIf="isEmployer && !result.checkedContract && !isRecruteur"
                     (click)="contract()" >
                 Recruter maintenant
             </button>
