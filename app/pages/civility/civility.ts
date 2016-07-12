@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Alert, NavController, NavParams, Loading, Events} from 'ionic-angular';
+import {Alert, NavController, NavParams, Loading, Events, Modal} from 'ionic-angular';
 import {LoadListService} from "../../providers/load-list.service";
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
@@ -11,6 +11,7 @@ import {GlobalService} from "../../providers/global.service";
 import {Camera} from 'ionic-native';
 import {NgZone} from '@angular/core';
 import {CommunesService} from "../../providers/communes-service/communes-service";
+import {ModalGalleryPage} from "../modal-gallery/modal-gallery";
 
 /**
 	* @author Amal ROCHD
@@ -538,7 +539,7 @@ export class CivilityPage {
             return false;
         if(!this.checkSS )
             return false;
-        if(this.numSS.length == 0)
+        if(this.numSS && this.numSS.length == 0)
             return false;
 
         if(!this.numSS || this.numSS.length != 15){
@@ -615,5 +616,20 @@ export class CivilityPage {
             this.scanTitle=" de votre CNI";
         else
             this.scanTitle=" de votre autorisation de travail";
+    }
+
+    /**
+     * @description remove data to scanUri
+     */
+    onDelete(e){
+        this.scanUri= null;
+    }
+
+    /**
+     * @description show modal
+     */
+    showModal() {
+        let modal = Modal.create(ModalGalleryPage, {scanUri: this.scanUri});
+        this.nav.present(modal);
     }
 }
