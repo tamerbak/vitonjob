@@ -1,9 +1,11 @@
 <ion-header>
-
-    <ion-navbar>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+        <button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
         <ion-title>Coffre numérique</ion-title>
-    </ion-navbar>
 
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding>

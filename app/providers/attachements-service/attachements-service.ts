@@ -105,9 +105,8 @@ export class AttachementsService {
             headers.append("Content-Type", 'application/json');
             this.http.post(Configs.fssURL, stringData, {headers:headers})
                 .subscribe(data => {
-                    debugger;
+
                     let v = data._body;
-                    console.log(v);
                     v = JSON.parse(v);
                     resolve(v);
                 });

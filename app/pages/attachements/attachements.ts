@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {NavController, Storage, SqlStorage, Modal, Alert} from 'ionic-angular';
+import {NavController, Storage, SqlStorage, Modal, Alert, Loading} from 'ionic-angular';
 import {AttachementsService} from "../../providers/attachements-service/attachements-service";
 import {ModalAttachementPage} from "../modal-attachement/modal-attachement";
 import {ModalGalleryPage} from "../modal-gallery/modal-gallery";
@@ -28,7 +28,6 @@ export class AttachementsPage {
 
     downloadAttachement(a){
         this.service.downloadActualFile(a.id, a.fileName).then(data => {
-            debugger;
             let scan = data.stream;
             let modal = Modal.create(ModalGalleryPage, {scanUri: scan});
             this.nav.present(modal);
