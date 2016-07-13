@@ -68,7 +68,7 @@
             </ion-col>
         </ion-row>
         <ion-row>
-            <button block (click)="contract()" >
+            <button block (click)="contract()" *ngIf="!isRecruteur" >
                 Recruter maintenant
             </button>
         </ion-row>

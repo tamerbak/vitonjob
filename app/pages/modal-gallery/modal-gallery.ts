@@ -13,6 +13,7 @@ import {Modal, NavController,ViewController, NavParams} from 'ionic-angular';
 export class ModalGalleryPage {
   scanUri:string;
   constructor(private nav: NavController,  private viewCtrl: ViewController, params: NavParams) {
+    debugger;
     this.scanUri = params.get('scanUri');// params.data.scanUri;
   }
 

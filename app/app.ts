@@ -35,6 +35,8 @@ import {SettingsPage} from "./pages/settings/settings";
 import {AboutPage} from "./pages/about/about";
 import {PendingContractsPage} from "./pages/pending-contracts/pending-contracts";
 import {RecruiterListPage} from "./pages/recruiter-list/recruiter-list";
+import {NotationService} from "./providers/notation-service/notation-service";
+import {AttachementsPage} from "./pages/attachements/attachements";
 
 //import {ParametersPage} from "./pages/parameters/parameters";
 
@@ -43,13 +45,14 @@ declare var Connection;
 declare var navigator;
 
 @Component({
-    templateUrl: 'build/menu.html'
+    templateUrl: 'build/menu.html',
+    providers:[NotationService]
 })
 export class Vitonjob {
 
-	@ViewChild(Nav) nav:Nav;
-	rootPage:any = HomePage;
-	public pages:Array<{title:string, component:any, icon:string, isBadged:boolean}>;
+    @ViewChild(Nav) nav:Nav;
+    rootPage:any = HomePage;
+    public pages:Array<{title:string, component:any, icon:string, isBadged:boolean}>;
 
     projectTarget:any;
     isEmployer:boolean;
@@ -69,17 +72,18 @@ export class Vitonjob {
                 private menu:MenuController,
                 private gc:GlobalConfigs,
                 private missionService:MissionService,
+                private notationService:NotationService,
                 private networkService:NetworkService,
                 private changeDetRef:ChangeDetectorRef,
                 public events:Events,
                 public offerService:OffersService,
                 private zone:NgZone) {
 
-		this.app = app;
-		this.platform = platform;
-		this.menu = menu;
-		this.storage = new Storage(SqlStorage);
-		this.local = new Storage(LocalStorage);
+        this.app = app;
+        this.platform = platform;
+        this.menu = menu;
+        this.storage = new Storage(SqlStorage);
+        this.local = new Storage(LocalStorage);
         // Set global configs
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -89,16 +93,35 @@ export class Vitonjob {
         this.tokens = this.config.tokenInstabug;
 
         this.initializeApp(gc);
-		this.pages = [
+
+        this.pages = [
             {title: "Lancer une recherche", component: HomePage, icon: "search", isBadged: false}
         ];
-        this.constituteDefaultMenu();
+        this.loggedInPages = [
+            {title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false},
+            {title: "Mes offres", component: OfferListPage, icon: "megaphone", isBadged: true},
+            {title: "Mes missions", component: MissionListPage, icon: "paper", isBadged: false},
+
+            //{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
+        ];
         this.loggedOutPages = [
             {title: "Se connecter", component: PhonePage, icon: "log-in", isBadged: false},
             {title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false}
         ];
 
+
         this.rootPage = HomePage;//ProfilePage;//OfferAddPage;//HomePage;//OfferDetailPage;//
+
+        //local menu variables
+        this.isEmployer = (this.projectTarget == 'employer');
+        if(this.isEmployer){
+            this.loggedInPages.push({title: "Contrats en attente", component: PendingContractsPage, icon: "clock", isBadged: false});
+            this.loggedInPages.push({title: "Gestion des habilitations", component: RecruiterListPage, icon: "contacts", isBadged: false});
+        }
+        this.loggedInPages.push({title: "Coffre numérique", component: AttachementsPage, icon: "albums", isBadged: false});
+        this.loggedInPages.push({title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false});
+        this.loggedInPages.push({title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false});
+
 
         this.bgMenuURL = this.config.bgMenuURL;
         this.userImageURL = this.config.userImageURL;
@@ -114,9 +137,10 @@ export class Vitonjob {
 
         this.offerCount = 0;
         this.isCalculating = true;
-		//  Initialize sectors and job lists
-		this.offerService.loadSectorsToLocal();
-		this.offerService.loadJobsToLocal();
+
+        //  Initialize sectors and job lists
+        this.offerService.loadSectorsToLocal();
+        this.offerService.loadJobsToLocal();
     }
 
     initializeApp(gc:any) {
@@ -125,15 +149,15 @@ export class Vitonjob {
             // Here you can do any higher level native things you might need.
             // target:string = "employer"; //Jobyer
 
-			//	We will initialize the new offer
-			this.local.remove('jobData');
-			this.local.remove('languages');
-			this.local.remove('qualities');
-			this.local.remove('slots');
+            //	We will initialize the new offer
+            this.local.remove('jobData');
+            this.local.remove('languages');
+            this.local.remove('qualities');
+            this.local.remove('slots');
 
             // Instabug integration 
             if ((<any>window).cordova) {
-                
+
                 gc.setInstabug(cordova.plugins.instabug);
                 cordova.plugins.instabug.activate(
                     {
@@ -213,8 +237,8 @@ export class Vitonjob {
             offline.subscribe(() => {
                 let toast = Toast.create({
                     message: "Vous n'êtes pas connectés à Internet",
-					showCloseButton : true,
-					closeButtonText : 'Fermer'
+                    showCloseButton : true,
+                    closeButtonText : 'Fermer'
                 });
                 this.nav.present(toast);
                 this.changeDetRef.detectChanges();
@@ -223,8 +247,8 @@ export class Vitonjob {
             online.subscribe(()=> {
                 let toast = Toast.create({
                     message: "La connection à Internet a été restaurée",
-					showCloseButton : true,
-					closeButtonText : 'Fermer'
+                    showCloseButton : true,
+                    closeButtonText : 'Fermer'
                 });
                 this.nav.present(toast);
 
@@ -236,79 +260,42 @@ export class Vitonjob {
         });
     }
 
-	constituteDefaultMenu(){
-		this.loggedInPages = [
-            {title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false},
-            {title: "Mes offres", component: OfferListPage, icon: "megaphone", isBadged: true},
-            {title: "Mes missions", component: MissionListPage, icon: "paper", isBadged: false},
-
-            //{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
-        ];	
-		this.isEmployer = (this.projectTarget == 'employer');
-		if(this.isEmployer){
-			this.loggedInPages.push({title: "Contrats en attente", component: PendingContractsPage, icon: "clock", isBadged: false});
-			this.loggedInPages.push({title: "Gestion des habilitations", component: RecruiterListPage, icon: "contacts", isBadged: false});
-		}
-		this.loggedInPages.push({title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false});
-		this.loggedInPages.push({title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false});
-	}
-	
-	constituteRecruiterMenu(){
-		this.loggedInPages = [
-            {title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false},
-            {title: "Mes offres", component: OfferListPage, icon: "megaphone", isBadged: true},
-            {title: "Mes missions", component: MissionListPage, icon: "paper", isBadged: false},
-
-            //{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
-        ];	
-		this.loggedInPages.push({title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false});
-		this.loggedInPages.push({title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false});
-	}
-	
-	listenToLoginEvents() {
-		//verify if the user is already connected
-		this.storage.get("currentUser").then((value) => {
-			if (value) {
-			var currentUser = JSON.parse(value);
-				if(currentUser.estRecruteur){
-					this.constituteRecruiterMenu();
-				}else{
-					this.constituteDefaultMenu();
-				}
-				this.enableMenu(true);
-			} else {
-				this.enableMenu(false);
-			}
-		});
-		this.events.subscribe('user:login', (data) => {
-			if(data[0].estRecruteur){
-				this.constituteRecruiterMenu();
-			}else{
-				this.constituteDefaultMenu();
-			}
-			this.enableMenu(true);
-			if(data[0].titre){
-				this.userName = data[0].titre +' '+data[0].nom +' '+data[0].prenom;
-			}
-			this.userMail = data[0].email;
-		});
-
-        this.events.subscribe('user:logout', () => {
-            
-			this.enableMenu(false);
+    listenToLoginEvents() {
+        //verify if the user is already connected
+        this.storage.get("currentUser").then((value) => {
+            this.storage.set("SCORE", "0");
+            if (value) {
+                this.enableMenu(true);
+                this.notationService.loadNotation(JSON.parse(value)).then((score)=>{
+                    this.storage.set("SCORE", score);
+                });
+            } else {
+                this.enableMenu(false);
+            }
+        });
+        this.events.subscribe('user:login', (data) => {
+            this.enableMenu(true);
+            if(data[0].titre){
+                this.userName = data[0].titre +' '+data[0].nom +' '+data[0].prenom;
+            }
+            this.userMail = data[0].email;
         });
 
-		this.events.subscribe('picture-change', (newURL)=> {
-			this.userImageURL = newURL;
-		});
-		
-		this.events.subscribe('user:civility', (data) => {
-			this.enableMenu(true);
-			this.userName = data[0].titre +' '+data[0].nom +' '+data[0].prenom;
-			this.userMail = data[0].email;
-		});
+        this.events.subscribe('user:logout', () => {
+            this.enableMenu(false);
+        });
 
-	}
+        this.events.subscribe('picture-change', (newURL)=> {
+            this.userImageURL = newURL;
+        });
+
+        this.events.subscribe('user:civility', (data) => {
+            this.enableMenu(true);
+            this.userName = data[0].titre +' '+data[0].nom +' '+data[0].prenom;
+            this.userMail = data[0].email;
+        });
+
+    }
 
     enableMenu(loggedIn) {
         this.menu.enable(loggedIn, "loggedInMenu");

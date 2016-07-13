@@ -121,6 +121,7 @@ export class Configs {
     public static yousignURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
     public static smsURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sms';
     public static emailURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/email';
+    public static fssURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/fssjs';
 
     public static setConfigs(type:string):AbstractConfigs {
         if (type === "employer") {

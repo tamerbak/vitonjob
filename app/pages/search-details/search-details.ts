@@ -9,13 +9,14 @@ import {UserService} from "../../providers/user-service/user-service";
 import {GlobalService} from "../../providers/global.service";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {AddressService} from "../../providers/address-service/address-service";
+import {NotationService} from "../../providers/notation-service/notation-service";
 
 
 declare var google:any;
 
 @Component({
     templateUrl: 'build/pages/search-details/search-details.html',
-	providers: [GlobalService, OffersService, AddressService]
+	providers: [GlobalService, OffersService, AddressService, NotationService]
 })
 export class SearchDetailsPage implements OnInit {
     isEmployer : boolean = false;
@@ -39,6 +40,10 @@ export class SearchDetailsPage implements OnInit {
     addressService : AddressService;
     videoPresent : boolean = false;
     videoLink : string;
+    starsText : string = '';
+    rating : number = 0;
+    platform : any;
+    isRecruteur : boolean = false;
 
     constructor(public nav: NavController,
                 public params : NavParams,
@@ -47,7 +52,8 @@ export class SearchDetailsPage implements OnInit {
 				private globalService: GlobalService,
 				platform: Platform,
                 offersService : OffersService,
-                addressService : AddressService) {
+                addressService : AddressService,
+                private notationService : NotationService) {
 
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
@@ -78,10 +84,16 @@ export class SearchDetailsPage implements OnInit {
         this.userService.getCurrentUser().then(results =>{
 
             if(results && !isUndefined(results)){
+                debugger;
                 let currentEmployer = JSON.parse(results);
                 if(currentEmployer){
                     this.employer = currentEmployer;
+                    if(this.employer.estRecruteur)
+                        this.isRecruteur = this.employer.estRecruteur;
                 }
+
+
+
                 console.log(currentEmployer);
             }
 
@@ -133,6 +145,23 @@ export class SearchDetailsPage implements OnInit {
             }
 
         });
+
+        //  Loading score
+        let resultType = !this.isEmployer;
+        let id = this.result.idOffre;
+        this.notationService.loadSearchNotation(resultType, id).then(score=>{
+            debugger;
+            this.rating = score;
+            this.starsText = this.writeStars(this.rating);
+        });
+    }
+
+    writeStars(number:number):string {
+        let starText = '';
+        for (let i = 0; i < number; i++) {
+            starText += '\u2605'
+        }
+        return starText;
     }
 
     ngOnInit() {

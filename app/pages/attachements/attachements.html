@@ -1,0 +1,28 @@
+<ion-header>
+
+    <ion-navbar>
+        <ion-title>Coffre numérique</ion-title>
+    </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+    <button block (click)="newAttachement()" [style.backgroundColor]="themeColor">
+        <ion-icon name="add-circle"></ion-icon>
+        Nouveau document
+    </button>
+    <ion-list>
+        <ion-item-sliding *ngFor="let a of attachments">
+            <ion-item  (click)="downloadAttachement(a)">
+                <h2>{{a.fileName}}</h2>
+                <h3>{{a.uploadDate}}</h3>
+            </ion-item>
+            <ion-item-options>
+                <button danger (click)="deleteAttachment(a)">
+                    <ion-icon name="trash"></ion-icon>
+                    Supprimer
+                </button>
+            </ion-item-options>
+        </ion-item-sliding>
+    </ion-list>
+</ion-content>
