@@ -35,8 +35,6 @@ import {SettingsPage} from "./pages/settings/settings";
 import {AboutPage} from "./pages/about/about";
 import {PendingContractsPage} from "./pages/pending-contracts/pending-contracts";
 import {RecruiterListPage} from "./pages/recruiter-list/recruiter-list";
-import {NotationService} from "./providers/notation-service/notation-service";
-import {AttachementsPage} from "./pages/attachements/attachements";
 
 //import {ParametersPage} from "./pages/parameters/parameters";
 
@@ -157,8 +155,8 @@ export class Vitonjob {
 
             // Instabug integration 
             if ((<any>window).cordova) {
-
-                gc.setInstabug(cordova.plugins.instabug);
+                
+                //gc.setInstabug(cordova.plugins.instabug);
                 cordova.plugins.instabug.activate(
                     {
                         android: this.tokens.android,
