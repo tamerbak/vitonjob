@@ -153,7 +153,7 @@ export class Vitonjob {
             // Instabug integration 
             if ((<any>window).cordova) {
                 
-                gc.setInstabug(cordova.plugins.instabug);
+                //gc.setInstabug(cordova.plugins.instabug);
                 cordova.plugins.instabug.activate(
                     {
                         android: this.tokens.android,
