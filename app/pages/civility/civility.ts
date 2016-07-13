@@ -13,6 +13,7 @@ import {NgZone} from '@angular/core';
 import {CommunesService} from "../../providers/communes-service/communes-service";
 import {ModalGalleryPage} from "../modal-gallery/modal-gallery";
 import {HomePage} from "../home/home";
+import {AttachementsService} from "../../providers/attachements-service/attachements-service";
 
 /**
 	* @author Amal ROCHD
@@ -21,7 +22,7 @@ import {HomePage} from "../home/home";
 */
 @Component({
 	templateUrl: 'build/pages/civility/civility.html',
-	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService, CommunesService]
+	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService, CommunesService, AttachementsService]
 })
 export class CivilityPage {
 	//tabs:Tabs;
@@ -56,15 +57,16 @@ export class CivilityPage {
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
 	*/
 	constructor(public nav: NavController,
-	private authService: AuthenticationService,
-	public gc: GlobalConfigs,
-	private loadListService: LoadListService,
-	private sqlStorageService: SqlStorageService,
-	params: NavParams,
-	private globalService: GlobalService,
-	private zone: NgZone,
-	public events: Events,
-	communesService : CommunesService) {
+				private authService: AuthenticationService,
+				public gc: GlobalConfigs,
+				private loadListService: LoadListService,
+				private sqlStorageService: SqlStorageService,
+				params: NavParams,
+				private globalService: GlobalService,
+				private zone: NgZone,
+				public events: Events,
+				private attachementService : AttachementsService,
+				communesService : CommunesService) {
 		// Set global configs
 		// Get target to determine configs
 		
@@ -366,7 +368,15 @@ export class CivilityPage {
 				else{
 					console.log("Scan uploaded !");
 				}
+
 			});
+			this.storage.get("currentUser").then(usr => {
+				if(usr){
+					let user = JSON.parse(usr);
+					this.attachementService.uploadFile(user, 'scan '+this.scanTitle, this.scanUri);
+				}
+			});
+
 		}
 	}
 	
