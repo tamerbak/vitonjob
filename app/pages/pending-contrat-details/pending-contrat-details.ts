@@ -33,6 +33,7 @@ export class PendingContratDetailsPage {
     employer : any;
     delegate : PendingContractsPage;
     deleteFlag : boolean = false;
+    isRecruteur : boolean = false;
 
     constructor(public nav: NavController,
                 public params : NavParams,
@@ -64,9 +65,12 @@ export class PendingContratDetailsPage {
         this.userService.getCurrentUser().then(results =>{
 
             if(results && !isUndefined(results)){
+                debugger;
                 let currentEmployer = JSON.parse(results);
                 if(currentEmployer){
                     this.employer = currentEmployer;
+                    if(this.employer.estRecruteur)
+                        this.isRecruteur = this.employer.estRecruteur;
                 }
                 console.log(currentEmployer);
             }

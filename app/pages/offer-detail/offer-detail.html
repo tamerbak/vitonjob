@@ -166,13 +166,17 @@
             </div>
         </ion-card>
 
-        <!--ion-card>
+        <ion-card >
             <ion-card-header>Vidéo</ion-card-header>
             <ion-card-content>
-                <iframe width="100%" height="200" style="display:{{videoAvailable?'block':'none'}}"
-                        src="{{youtubeLink}}">
+                <ion-input placeholder="Lien de vidéo Youtube" [(ngModel)]="youtubeLink"></ion-input>
+                <div *ngIf="videoAvailable">
+                    <iframe width="100%" height="200" style="display:{{videoAvailable?'block':'none'}}"
+                            src="{{youtubeLink}}">
 
-                </iframe>
+                    </iframe>
+                </div>
+
             </ion-card-content>
             <div class="button-footer">
                 <button clear [style.color]="themeColor" (click)="updateVideo()">
@@ -184,7 +188,7 @@
                     <div>Supprimer</div>
                 </button>
             </div>
-        </ion-card-->
+        </ion-card>
     </ion-list>
 
     <!--ion-row>

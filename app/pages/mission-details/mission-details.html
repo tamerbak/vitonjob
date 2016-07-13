@@ -75,6 +75,13 @@
 	</ion-row>
 	<ion-row>
 		<ion-col text-center>
+			<button [style.backgroundColor]="themeColor" block (click)="setStarPicker()">
+                {{starsText==''?'Attribuer une note':starsText}}
+			</button>
+        </ion-col>
+	</ion-row>
+	<ion-row>
+		<ion-col text-center>
 			<button block (click)="resetForm()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission || (missionHours && missionHours.length == 0) || !isEmployer">
 				<ion-icon name="refresh"></ion-icon>
 				Rénitialiser
