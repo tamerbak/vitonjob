@@ -415,36 +415,59 @@ export class PhonePage {
 			this.globalService.showAlertValidation("VitOnJob", "Aucun compte ne correspond à ce numéro de téléphone.");
 			return;
 		}
-		let confirm = Alert.create({
-			title: "VitOnJob",
-			message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez vous le recevoir par SMS ou par email?",
-			buttons: [
-				{
-					text: 'SMS',
-					handler: () => {
-						console.log('SMS selected');	
-						this.passwordForgotten("sms");
-						let toast = Toast.create({
-							message: "Votre mot de passe a été réinitialisé, vous recevrai un SMS avec un nouveau mot de passe d'ici peu",
-							duration: 5000
-						});
-						this.nav.present(toast);
+		if(this.isRecruteur){
+			let confirm = Alert.create({
+				title: "VitOnJob",
+				message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez vous continuer?",
+				buttons: [
+					{
+						text: 'Recevoir par SMS',
+						handler: () => {
+							console.log('SMS selected');	
+							this.passwordForgotten("sms");
+							let toast = Toast.create({
+								message: "Votre mot de passe a été réinitialisé, vous recevrai un SMS avec un nouveau mot de passe d'ici peu",
+								duration: 5000
+							});
+							this.nav.present(toast);
+						}
+					},
+				]
+			});
+			this.nav.present(confirm);
+		}else{
+			let confirm = Alert.create({
+				title: "VitOnJob",
+				message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez vous le recevoir par SMS ou par email?",
+				buttons: [
+					{
+						text: 'SMS',
+						handler: () => {
+							console.log('SMS selected');	
+							this.passwordForgotten("sms");
+							let toast = Toast.create({
+								message: "Votre mot de passe a été réinitialisé, vous recevrai un SMS avec un nouveau mot de passe d'ici peu",
+								duration: 5000
+							});
+							this.nav.present(toast);
+						}
+					},
+					{
+						text: 'Email',
+						handler: () => {
+							console.log('Email selected');	
+							this.passwordForgotten("email", this.email);
+							let toast = Toast.create({
+								message: "Votre mot de passe a été réinitialisé, vous recevrai un courrier électronique avec un nouveau mot de passe d'ici peu",
+								duration: 5000
+							});
+							this.nav.present(toast);
+						}
 					}
-				},
-				{
-					text: 'Email',
-					handler: () => {
-						console.log('Email selected');	
-						this.passwordForgotten("email", this.email);
-						let toast = Toast.create({
-							message: "Votre mot de passe a été réinitialisé, vous recevrai un courrier électronique avec un nouveau mot de passe d'ici peu",
-							duration: 5000
-						});
-						this.nav.present(toast);
-					}
-				}
-			]
-		});
-		this.nav.present(confirm);
+				]
+			});
+			this.nav.present(confirm);
+		}
+		
 	}
 }

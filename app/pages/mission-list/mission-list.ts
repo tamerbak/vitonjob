@@ -7,7 +7,7 @@ import {DatePicker} from 'ionic-native';
 import {MissionDetailsPage} from '../mission-details/mission-details';
 import {Storage, SqlStorage} from 'ionic-angular';
 import {DateConverter} from '../../pipes/date-converter/date-converter';
-
+import {MissionPointingPage} from "../mission-pointing/mission-pointing";
 /*
   Generated class for the MissionListPage page.
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
@@ -70,6 +70,10 @@ export class MissionListPage {
     goToMissionDetailsPage(contract){
         this.nav.push(MissionDetailsPage,{contract:contract});
     }
+	
+	goToMissionPointingPage(contract){
+		this.nav.push(MissionPointingPage,{contract:contract});
+	}
     
     showI(){
         DatePicker.show({

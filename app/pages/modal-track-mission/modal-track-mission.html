@@ -1,0 +1,36 @@
+﻿<ion-header>
+<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" >
+	<ion-title>Option suivi mission</ion-title>
+	<ion-buttons end>
+        <button (click)="closeModal()">
+            <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+        </button>
+    </ion-buttons>
+</ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+	<ion-list radio-group text-wrap [(ngModel)]="options">
+		<ion-list-header text-wrap>
+			<p>Choisissez votre mode de suivi de mission</p>
+		</ion-list-header>
+		
+		<ion-item>
+			<ion-label>Option1: Fixer les horaires sans intervention du Jobyer</ion-label>
+			<ion-radio checked="true"  value="1" (ionSelect)="watchOption($event)"></ion-radio>
+		</ion-item>
+		
+		<ion-item>
+			<ion-label>Options 2: Suivi des horaires pointés par les Jobyers</ion-label>
+			<ion-radio value="2" (ionSelect)="watchOption($event)"></ion-radio>
+		</ion-item>
+		
+		<ion-item>
+			<ion-label>Option 3: Définition, suivi et validation des horaires pointés par les Jobyers</ion-label>
+			<ion-radio value="3" (ionSelect)="watchOption($event)"></ion-radio>
+		</ion-item>
+		
+	</ion-list>
+	
+</ion-content>
