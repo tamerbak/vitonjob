@@ -1,0 +1,44 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Nouveau document</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-input [(ngModel)]="fileName" placeholder="Nom du fichier" ></ion-input>
+  <ion-row>
+    <ion-col text-center>
+      <ion-label>Importation {{scanTitle}}</ion-label>
+      <button [hidden]="scanUri" class="file-upload button-picture" [style.backgroundColor]="themeColor">
+        <input type="file" class="file-input" (change)="onChangeUpload($event)">
+        <ion-icon name='folder'></ion-icon>
+      </button>
+
+      <button [hidden]="scanUri" seconde (click)="takePicture()" [style.backgroundColor]="themeColor" class="button-picture">
+        <ion-icon name="camera"></ion-icon>
+      </button>
+    </ion-col>
+  </ion-row>
+  <ion-card  style="margin: auto;" [hidden]="!scanUri" id="card-file">
+    <img [src]="scanUri"/>
+    <ion-row>
+      <ion-col text-center>
+        <button  style="margin: auto;" clear (click)="showModal()" small>
+          <ion-icon name='expand'></ion-icon>
+        </button>
+      </ion-col>
+      <ion-col text-center>
+        <button style="margin: auto;" clear (click)="onDelete()" small>
+          <ion-icon name='close'></ion-icon>
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+    <button block (click)="saveFile()">
+        <ion-icon name="cloud-upload"></ion-icon>
+        Enregistrer
+    </button>
+</ion-content>
