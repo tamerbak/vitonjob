@@ -83,8 +83,13 @@ export class MissionService {
         });
     }
 
-    signSchedule(contractId){
-        var sql = "update user_contrat set approuve = 'Oui' where pk_user_contrat = '" + contractId + "'; ";
+    signSchedule(contract){
+		var sql;
+        if(this.projectTarget == "jobyer"){
+			var sql = "update user_contrat set releve_jobyer = 'OUI' where pk_user_contrat = '" + contract.pk_user_contrat + "'; ";
+		}else{
+			var sql = "update user_contrat set approuve = 'OUI' where pk_user_contrat = '" + contract.pk_user_contrat + "'; ";
+		}
         console.log(sql);
 
         return new Promise(resolve => {
@@ -249,6 +254,10 @@ export class MissionService {
             //if the mission is not yet pushed
             if(ids.indexOf(m.id) == -1){
                 //push the mission
+				if(forPointing){
+					m.heure_debut_pointe = this.convertToFormattedHour(m.heure_debut_pointe);
+					m.heure_fin_pointe = this.convertToFormattedHour(m.heure_fin_pointe);
+				}
                 missionHours.push(m);
                 //push the id mission to not stock the same mission many time
                 ids.push(m.id);
@@ -319,6 +328,46 @@ export class MissionService {
                 });
         });
 	}
+	
+	saveCorrectedMissions(id, missionHours, pauseHours){
+		var sql = "";
+		for(var i = 0; i < missionHours.length; i++){
+			var m = missionHours[i];
+			var str = "";
+			m.value = this.convertHoursToMinutes(m.value);
+			if(m.isStart){
+				str = " heure_debut_pointe = '" + m.value + "', debut_corrigee = 'OUI' ";
+				
+			}else{
+				str = " heure_fin_pointe = '" + m.value + "', fin_corrigee = 'OUI' ";
+			}
+			sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '"+m.id +"'; ";
+		}
+		for(var i = 0; i < pauseHours.length; i++){
+			var p = pauseHours[i];
+			var str = "";
+			p.value = this.convertHoursToMinutes(p.value);
+			if(p.isStart){
+				str = " debut_pointe = '" + p.value + "', debut_corrigee = 'OUI' ";
+			}else{
+				str = " fin_pointe = '" + p.value + "', fin_corrigee = 'OUI' ";
+			}
+			sql = sql + " update user_pause set " + str + " where pk_user_pause = '"+p.id +"'; ";
+		}
+		sql = sql + " update user_contrat set releve_employeur = 'OUI' where pk_user_contrat = '" + id + "'; ";
+		console.log(sql);
+
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });
+	}
 
 	convertToFormattedHour(value){
         var hours = Math.floor(value / 60);
@@ -331,8 +380,10 @@ export class MissionService {
     }
     
 	convertHoursToMinutes(hour){
-        var hourArray = hour.split(':');
-        return 	hourArray[0] * 60 + parseInt(hourArray[1]);
+		if(hour){
+			var hourArray = hour.split(':');
+			return 	hourArray[0] * 60 + parseInt(hourArray[1]);
+		}        
     }
 
     sqlfyDate(date){

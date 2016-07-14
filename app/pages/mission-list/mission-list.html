@@ -25,7 +25,7 @@
 						<ion-icon name="ribbon" item-right [hidden]="item.approuve == 'Non'"></ion-icon>
 					</ion-col>
 					<ion-col width-10>
-						<button item-right (click)="goToMissionPointingPage(item)" [hidden]="item.option_mission != '2.0' || isEmployer || item.signature_jobyer == 'NON'">
+						<button item-right (click)="goToMissionPointingPage(item)" [hidden]="item.option_mission != '2.0' || isEmployer || item.signature_jobyer == 'NON' || item.releve_employeur == 'OUI'">
 							<ion-icon name="finger-print"></ion-icon>
 						</button>
 					</ion-col>

@@ -162,13 +162,13 @@ export class YousignPage {
                                 pk_user_contrat : idContract
                             };
                             this.contractService.setOffer(idContract, this.currentOffer.idOffer);
-                            this.pushNotificationService.getTokenByJobyer(this.jobyer.id).then(token => {
+                            this.pushNotificationService.getToken(this.jobyer.id, "toJobyer").then(token => {
                                 if(token.data && token.data.length>0){
                                     let tk = token;
                                     var message = "Une demande de signature de contrat vous a été adressée";
                                     console.log('message notification : '+message);
                                     console.log('token : '+tk);
-                                    this.pushNotificationService.sendPushNotification(tk, message, contract).then(data => {
+                                    this.pushNotificationService.sendPushNotification(tk, message, contract, "MissionDetailsPage").then(data => {
                                         console.log('Notification sent : '+JSON.stringify(data));
                                     });
                                 }

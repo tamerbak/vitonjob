@@ -35,6 +35,9 @@ import {SettingsPage} from "./pages/settings/settings";
 import {AboutPage} from "./pages/about/about";
 import {PendingContractsPage} from "./pages/pending-contracts/pending-contracts";
 import {RecruiterListPage} from "./pages/recruiter-list/recruiter-list";
+import {NotationService} from "./providers/notation-service/notation-service";
+import {AttachementsPage} from "./pages/attachements/attachements";
+
 
 //import {ParametersPage} from "./pages/parameters/parameters";
 
@@ -202,7 +205,7 @@ export class Vitonjob {
                 });
                 push.on('notification', (data) => {
                     console.log(data);
-                    if (data.additionalData.data.objectNotif == "ScheduleValidated") {
+                    if(data.additionalData.data.objectNotif == "MissionDetailsPage") {
                         this.zone.run(()=> {
                             this.nav.push(MissionDetailsPage, {contract: JSON.parse(data.additionalData.data.contract)});
                         });

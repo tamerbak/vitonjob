@@ -34,9 +34,14 @@ export class PushNotificationService {
 		})
 	}
 
-	getTokenByJobyer(jobyerId){
-		var sql = "select a.device_token from user_account as a, user_jobyer as j where a.pk_user_account = j.fk_user_account and j.pk_user_jobyer = '" + jobyerId + "';";
-
+	getToken(id, who){
+		var sql = "";
+		if(who == "toJobyer"){
+			sql = "select a.device_token from user_account as a, user_jobyer as j where a.pk_user_account = j.fk_user_account and j.pk_user_jobyer = '" + id + "';";
+		}else{
+			sql = "select a.device_token from user_account as a, user_entreprise as e where a.pk_user_account = e.fk_user_account and e.pk_user_entreprise = '" + id + "';";
+		}
+		
 		return new Promise(resolve => {
 			let headers = new Headers();
 			headers.append("Content-Type", 'text/plain');
@@ -50,7 +55,7 @@ export class PushNotificationService {
 		});
 	}
 
-	sendPushNotification(deviceToken, message, contract){
+	sendPushNotification(deviceToken, message, contract, objectNotif){
 		var url = "https://api.ionic.io/push/notifications";
 		let headers = new Headers();
 		headers.append("Content-Type", "application/json");
@@ -64,13 +69,13 @@ export class PushNotificationService {
 				"android": {
 					"data": {
 						"contract": JSON.stringify(contract),
-						"objectNotif": "ScheduleValidated"
+						"objectNotif": objectNotif
 					}
 				},
 				"ios": {
 					"data": {
 						"contract": JSON.stringify(contract),
-						"objectNotif": "ScheduleValidated"
+						"objectNotif": objectNotif
 					}
 				}
 			}
@@ -79,12 +84,12 @@ export class PushNotificationService {
 		return new Promise(resolve => {
 			this.http.post(url, JSON.stringify(body), {headers : headers}).map(res => res.json())
 				.subscribe(data => {
-						console.log('notification body : '+JSON.stringify(data));
-						this.data = data;
-						console.log("push notification sent", data);
-						resolve(this.data);
-					},
-					err => console.log(err));
+					console.log('notification body : '+JSON.stringify(data));
+					this.data = data;
+					console.log("push notification sent", data);
+					resolve(this.data);
+				},
+				err => console.log(err));
 		});
 	}
 
