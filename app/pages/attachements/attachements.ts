@@ -35,10 +35,23 @@ export class AttachementsPage {
     }
 
     deleteAttachment(a){
-        /*let alert = Alert.create({
+        let alert = Alert.create({
             title : 'Supprimer ce document',
-            message : '',
-        });*/
+            message : 'Etes vous sûr de vouloir supprimer cedocument ?',
+            buttons:[{
+                text: 'Annuler',
+                role : 'cancel'
+            },
+            {
+                text: 'Supprimer',
+                handler: () => {
+                    this.service.deleteAttachement(a);
+                    let i = this.attachments.indexOf(a);
+                    this.attachments.splice(i,1);
+                }
+            }]
+        });
+        this.nav.present(alert);
     }
 
     newAttachement(){

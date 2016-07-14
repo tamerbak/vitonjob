@@ -13,6 +13,8 @@ import {NgZone} from '@angular/core';
 import {CommunesService} from "../../providers/communes-service/communes-service";
 import {ModalGalleryPage} from "../modal-gallery/modal-gallery";
 import {HomePage} from "../home/home";
+import {AttachementsService} from "../../providers/attachements-service/attachements-service";
+import {MedecineService} from "../../providers/medecine-service/medecine-service";
 
 /**
 	* @author Amal ROCHD
@@ -21,7 +23,7 @@ import {HomePage} from "../home/home";
 */
 @Component({
 	templateUrl: 'build/pages/civility/civility.html',
-	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService, CommunesService]
+	providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService, CommunesService, AttachementsService, MedecineService]
 })
 export class CivilityPage {
 	//tabs:Tabs;
@@ -51,20 +53,25 @@ export class CivilityPage {
 	checkSS : boolean = false;
 	uploadVerb = "Charger un scan ";
 	isRecruiter = false;
+	medecineTravail : any;
+	medecineId : number;
+	medecines : any = [];
 	
 	/**
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
 	*/
 	constructor(public nav: NavController,
-	private authService: AuthenticationService,
-	public gc: GlobalConfigs,
-	private loadListService: LoadListService,
-	private sqlStorageService: SqlStorageService,
-	params: NavParams,
-	private globalService: GlobalService,
-	private zone: NgZone,
-	public events: Events,
-	communesService : CommunesService) {
+				private authService: AuthenticationService,
+				public gc: GlobalConfigs,
+				private loadListService: LoadListService,
+				private sqlStorageService: SqlStorageService,
+				params: NavParams,
+				private globalService: GlobalService,
+				private zone: NgZone,
+				public events: Events,
+				private attachementService : AttachementsService,
+                private medecineService : MedecineService,
+				communesService : CommunesService) {
 		// Set global configs
 		// Get target to determine configs
 		
@@ -142,8 +149,15 @@ export class CivilityPage {
 				if(!this.isRecruiter && this.isEmployer && this.currentUser.employer.entreprises.length != 0){
 					this.companyname = this.currentUser.employer.entreprises[0].nom;
 					this.siret = this.currentUser.employer.entreprises[0].siret;
-					this.ape = this.currentUser.employer.entreprises[0].naf;
-					}else{
+                    this.ape = this.currentUser.employer.entreprises[0].naf;
+                    this.medecineService.getMedecine(this.currentUser.employer.entreprises[0].id).then(data=>{
+                        if(data && data != null){
+                            this.medecineId = data.id;
+                            this.medecineTravail = data.libelle;
+                        }
+
+                    });
+                }else{
 					if(!this.isRecruiter){
 						this.birthdate = this.currentUser.jobyer.dateNaissance ? new Date(this.currentUser.jobyer.dateNaissance).toISOString() : "";
 						this.birthplace = this.currentUser.jobyer.lieuNaissance;
@@ -275,8 +289,9 @@ export class CivilityPage {
 			var employerId = this.currentUser.employer.id;
 			//get entreprise id of the current employer
 			var entrepriseId = this.currentUser.employer.entreprises[0].id;
+            debugger;
 			// update employer
-			this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget).then((data) => {
+			this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget, this.medecineId).then((data) => {
 				if (!data || data.status == "failure") {
 					console.log(data.error);
 					loading.dismiss();
@@ -366,7 +381,15 @@ export class CivilityPage {
 				else{
 					console.log("Scan uploaded !");
 				}
+
 			});
+			this.storage.get("currentUser").then(usr => {
+				if(usr){
+					let user = JSON.parse(usr);
+					this.attachementService.uploadFile(user, 'scan '+this.scanTitle, this.scanUri);
+				}
+			});
+
 		}
 	}
 	
@@ -659,5 +682,26 @@ export class CivilityPage {
 		let modal = Modal.create(ModalGalleryPage, {scanUri: this.scanUri});
 		this.nav.present(modal);
 	}
+
+	watchMedecineTravail(e){
+
+		let val = e.target.value;
+		if(val.length<3){
+			this.medecines = [];
+			return;
+		}
+		console.log(val);
+		this.medecines = [];
+		this.medecineService.autocomplete(val).then(data=>{
+			this.medecines = data;
+			console.log(JSON.stringify(this.medecines));
+		});
+	}
+
+    medecineSelected(c){
+        this.medecineId = c.id;
+        this.medecineTravail = c.libelle;
+        this.medecines = [];
+    }
 }
 
