@@ -1,31 +1,42 @@
 <ion-header>
-<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" >
-  <button menuToggle>
-		<ion-icon name="menu"></ion-icon>
-	</button>
-	<ion-title>{{missionListTitle}}</ion-title>
-
-</ion-navbar>
+	<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" >
+		<button menuToggle>
+			<ion-icon name="menu"></ion-icon>
+		</button>
+		<ion-title>{{missionListTitle}}</ion-title>
+		
+	</ion-navbar>
 </ion-header>
 <ion-content padding>
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center> <h6 [style.color]="themeColor"> Liste des contrats signés </h6></ion-col>
         <ion-col width-10></ion-col>
-    </ion-row>
+	</ion-row>
     <ion-list text-wrap>
-        <ion-item *ngFor="let item of contractList" (click)="goToMissionDetailsPage(item)" >
-			<h2>Contrat n° {{item.numero}} signé le {{item.date_signature | dateConverter:'short'}}</h2>
-			<h3 [style.color]="themeColor" [hidden]="!isEmployer">{{item.prenom}} {{item.nom}}</h3>
-			<h3 [style.color]="themeColor" [hidden]="isEmployer">{{item.nom}}</h3>
-			<ion-icon name="checkmark" item-right [hidden]="item.vu == 'Non'"></ion-icon>
-			<ion-icon name="ribbon" item-right [hidden]="item.approuve == 'Non'"></ion-icon>
-        </ion-item>
-    </ion-list>
+        <ion-item *ngFor="let item of contractList">
+			<ion-grid>
+				<ion-row>
+					<ion-col (click)="goToMissionDetailsPage(item)">
+						<h2>Contrat n° {{item.numero}} signé le {{item.date_signature | dateConverter:'short'}}</h2>
+						<h3 [style.color]="themeColor" [hidden]="!isEmployer">{{item.prenom}} {{item.nom}}</h3>
+						<h3 [style.color]="themeColor" [hidden]="isEmployer">{{item.nom}}</h3>
+						<ion-icon name="checkmark" item-right [hidden]="item.vu == 'Non'"></ion-icon>
+						<ion-icon name="ribbon" item-right [hidden]="item.approuve == 'Non'"></ion-icon>
+					</ion-col>
+					<ion-col width-10>
+						<button item-right (click)="goToMissionPointingPage(item)" [hidden]="item.option_mission != '2.0' || isEmployer || item.signature_jobyer == 'NON'">
+							<ion-icon name="finger-print"></ion-icon>
+						</button>
+					</ion-col>
+				</ion-row>
+			</ion-grid>
+		</ion-item>
+	</ion-list>
 	<!--<ion-card>
         <ion-card-header>Prochainement</ion-card-header>
         <ion-card-content>
-            Restez à l'écoute de la prochaine mise à jour de l'application qui vous permettra de signer des contrats
+		Restez à l'écoute de la prochaine mise à jour de l'application qui vous permettra de signer des contrats
         </ion-card-content>
-    </ion-card>-->
+	</ion-card>-->
 </ion-content>

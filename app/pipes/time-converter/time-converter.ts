@@ -8,7 +8,12 @@ export class TimeConverter {
 		if(args == 'minute'){
 			var hours = Math.floor(value / 60);
 			var minutes = value % 60;
-			return ((hours < 10 ? ('0' + hours) : hours) + ':' + (minutes < 10 ? ('0' + minutes) : minutes));
+			if(!hours && !minutes){
+				return '';
+			}else{
+				return ((hours < 10 ? ('0' + hours) : hours) + ':' + (minutes < 10 ? ('0' + minutes) : minutes));
+			}
+
 		}
 	}
 }

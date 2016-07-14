@@ -5,6 +5,16 @@
 </ion-header>
 
 <ion-content padding>
+	<ion-row [hidden]="!isEmployer || !missionHours || missionHours.length == 0">
+        <ion-col> 
+			<h6 [style.color]="themeColor"> {{optionMission}} </h6>
+		</ion-col>
+        <ion-col width-20>
+			<button clear item-right [style.color]="themeColor" (click)="changeOption()" [hidden]="contract.vu == 'Oui'">
+				<ion-icon name="create"></ion-icon>
+			</button>	
+		</ion-col>
+    </ion-row>
 	<ion-row [hidden]="(missionHours && missionHours.length != 0)">
         <ion-col width-10></ion-col>
         <ion-col text-center> <h6 [style.color]="themeColor"> Aucun jour de mission n'est encore défini pour ce contrat </h6></ion-col>
