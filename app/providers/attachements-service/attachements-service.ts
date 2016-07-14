@@ -113,6 +113,23 @@ export class AttachementsService {
         });
     }
 
+    deleteAttachement(attachement){
+        let sql = "update user_pieces_justificatives set dirty='Y' where pk_user_pieces_justificatives="+attachement.id;
+
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+
+                    console.log(JSON.stringify(data));
+
+                    resolve(data);
+                });
+        });
+    }
+
     parseDate(strdate){
         if(!strdate)
             return '';
