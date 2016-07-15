@@ -21,8 +21,10 @@
 						<h2>Contrat n° {{item.numero}} signé le {{item.date_signature | dateConverter:'short'}}</h2>
 						<h3 [style.color]="themeColor" [hidden]="!isEmployer">{{item.prenom}} {{item.nom}}</h3>
 						<h3 [style.color]="themeColor" [hidden]="isEmployer">{{item.nom}}</h3>
-						<ion-icon name="checkmark" item-right [hidden]="item.vu == 'Non'"></ion-icon>
-						<ion-icon name="ribbon" item-right [hidden]="item.approuve == 'Non'"></ion-icon>
+						<ion-badge item-right [hidden]="item.vu == 'Non'">validé</ion-badge>
+					<!--<ion-icon name="checkmark" item-right [hidden]="item.vu == 'Non'"></ion-icon>-->
+						<ion-badge item-right [hidden]="item.approuve == 'Non'">signé</ion-badge>
+					<!--<ion-icon name="ribbon" item-right [hidden]="item.approuve == 'Non'"></ion-icon>-->
 					</ion-col>
 					<ion-col width-10>
 						<button item-right (click)="goToMissionPointingPage(item)" [hidden]="item.option_mission == '1.0' || isEmployer || item.signature_jobyer == 'NON' || item.releve_employeur == 'OUI'">

@@ -249,6 +249,7 @@ export class MissionService {
 		var endPauses = [['']];
 		var startPausesPointe = [['']];
 		var endPausesPointe = [['']];
+		var k = 0;
         for(var i = 0; i < initialMissionArray.length; i++){
             var m = initialMissionArray[i];
             //if the mission is not yet pushed
@@ -257,25 +258,26 @@ export class MissionService {
 				m.heure_debut_pointe = this.convertToFormattedHour(m.heure_debut_pointe);
 				m.heure_fin_pointe = this.convertToFormattedHour(m.heure_fin_pointe);
 				missionHours.push(m);
-                //push the id mission to not stock the same mission many time
+                k = missionHours.length - 1;
+				//push the id mission to not stock the same mission many time
                 ids.push(m.id);
                 //push the pauses
-                startPauses[i] = [];
-                endPauses[i] = [];
-				startPausesPointe[i] = [];
-				endPausesPointe[i] = [];	
+                startPauses[k] = [];
+                endPauses[k] = [];
+				startPausesPointe[k] = [];
+				endPausesPointe[k] = [];	
 				if(m.pause_debut != "null"){
-                    startPauses[i][0] = this.convertToFormattedHour(m.pause_debut);
+                    startPauses[k][0] = this.convertToFormattedHour(m.pause_debut);
 					idsPause.push(m.id_pause);
 				}
-				if(m.pause_debut_pointe != "null"){
-					startPausesPointe[i][0] = this.convertToFormattedHour(m.pause_debut_pointe);
+				if(m.pause_debut_pointe != "null" && m.pause_debut_pointe != ""){
+					startPausesPointe[k][0] = this.convertToFormattedHour(m.pause_debut_pointe);
                 }
                 if(m.pause_fin != "null"){
-                    endPauses[i][0] = this.convertToFormattedHour(m.pause_fin);
+                    endPauses[k][0] = this.convertToFormattedHour(m.pause_fin);
 				}
-				if(m.pause_fin_pointe != "null"){
-					endPausesPointe[i][0] = this.convertToFormattedHour(m.pause_fin_pointe);
+				if(m.pause_fin_pointe != "null" && m.pause_fin_pointe != ""){
+					endPausesPointe[k][0] = this.convertToFormattedHour(m.pause_fin_pointe);
 				}
 			}else{
                 //if the mission is already pushed, just push its pause
