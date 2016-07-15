@@ -254,50 +254,41 @@ export class MissionService {
             //if the mission is not yet pushed
             if(ids.indexOf(m.id) == -1){
                 //push the mission
-				if(forPointing){
-					m.heure_debut_pointe = this.convertToFormattedHour(m.heure_debut_pointe);
-					m.heure_fin_pointe = this.convertToFormattedHour(m.heure_fin_pointe);
-				}
-                missionHours.push(m);
+				m.heure_debut_pointe = this.convertToFormattedHour(m.heure_debut_pointe);
+				m.heure_fin_pointe = this.convertToFormattedHour(m.heure_fin_pointe);
+				missionHours.push(m);
                 //push the id mission to not stock the same mission many time
                 ids.push(m.id);
                 //push the pauses
                 startPauses[i] = [];
                 endPauses[i] = [];
-				if(forPointing){
-					startPausesPointe[i] = [];
-					endPausesPointe[i] = [];	
-				}
+				startPausesPointe[i] = [];
+				endPausesPointe[i] = [];	
 				if(m.pause_debut != "null"){
                     startPauses[i][0] = this.convertToFormattedHour(m.pause_debut);
-					if(forPointing){
-						startPausesPointe[i][0] = this.convertToFormattedHour(m.pause_debut_pointe);
-					}
 					idsPause.push(m.id_pause);
+				}
+				if(m.pause_debut_pointe != "null"){
+					startPausesPointe[i][0] = this.convertToFormattedHour(m.pause_debut_pointe);
                 }
                 if(m.pause_fin != "null"){
                     endPauses[i][0] = this.convertToFormattedHour(m.pause_fin);
-					if(forPointing){
-						endPausesPointe[i][0] = this.convertToFormattedHour(m.pause_fin_pointe);
-					}
-                }
-            }else{
+				}
+				if(m.pause_fin_pointe != "null"){
+					endPausesPointe[i][0] = this.convertToFormattedHour(m.pause_fin_pointe);
+				}
+			}else{
                 //if the mission is already pushed, just push its pause
                 var idExistMission = ids.indexOf(m.id);
                 var j = startPauses[idExistMission].length;
                 startPauses[idExistMission][j] = this.convertToFormattedHour(m.pause_debut);
                 endPauses[idExistMission][j] = this.convertToFormattedHour(m.pause_fin);
 				idsPause.push(m.id_pause);
-				if(forPointing){
-					startPausesPointe[idExistMission][j] = this.convertToFormattedHour(m.pause_debut_pointe);
-					endPausesPointe[idExistMission][j] = this.convertToFormattedHour(m.pause_fin_pointe);
-				}
+				startPausesPointe[idExistMission][j] = this.convertToFormattedHour(m.pause_debut_pointe);
+				endPausesPointe[idExistMission][j] = this.convertToFormattedHour(m.pause_fin_pointe);
             }
         }
-		if(forPointing)
 			return [missionHours, startPauses, endPauses, idsPause, startPausesPointe, endPausesPointe];
-		else
-			return [missionHours, startPauses, endPauses, idsPause];
     }
 	
 	savePointing(pointing){
