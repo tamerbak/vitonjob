@@ -91,7 +91,7 @@ export class MissionDetailsPage {
 		this.contract = navParams.get('contract');
 		//verify if the mission has already pauses
 		this.isNewMission = this.contract.vu == 'Oui' ? false : true;
-		var forPointing = this.contract.option_mission == "2.0" ? true : false;
+		var forPointing = this.contract.option_mission != "1.0" ? true : false;
 		this.missionService.listMissionHours(this.contract, forPointing).then((data) => {
 			if(data.data){
 				this.initialMissionHours = data.data;
@@ -101,10 +101,8 @@ export class MissionDetailsPage {
 				this.startPauses = array[1];
 				this.endPauses = array[2];
 				this.idsPauses = array[3];
-				if(forPointing){
-					this.startPausesPointe = array[4];
-					this.endPausesPointe = array[5];
-				}
+				this.startPausesPointe = array[4];
+				this.endPausesPointe = array[5];
 			}
 		});
 		
@@ -242,6 +240,9 @@ export class MissionDetailsPage {
 			var message = "Horaire du contrat n°" + this.contract.numero + " validé";
 			var objectifNotif = "MissionDetailsPage";
 			this.sendPushNotification(message, objectifNotif, "toJobyer");
+			if(this.contract.option_mission != "1.0"){
+				this.missionService.schedulePointeuse(this.contract, this.missionHours, this.startPauses, this.endPauses, this.idsPauses);
+			} 
 			this.nav.pop();
 		});
 	}
@@ -490,7 +491,7 @@ export class MissionDetailsPage {
 					this.contract.signature_jobyer = 'Oui';
 				}
 			});
-			if(this.contract.option_mission == "2.0"){
+			if(this.contract.option_mission != "1.0"){
 				this.missionService.schedulePointeuse(this.contract, this.missionHours, this.startPauses, this.endPauses, this.idsPauses);
 			} 
 			loading.dismiss();
@@ -514,6 +515,23 @@ export class MissionDetailsPage {
 		}
 	}
 	
+	changeOption(){
+		let modal = Modal.create(ModalTrackMissionPage);
+		this.nav.present(modal);
+		modal.onDismiss(selectedOption => {
+			if(selectedOption){
+				this.missionService.updateOptionMission(selectedOption, this.contract.pk_user_contrat).then((data) => {
+					if(!data || data.status == 'failure'){
+						this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
+						}else{
+						console.log("option mission saved successfully");
+						this.contract.option_mission = selectedOption;
+						this.optionMission = "Option de suivi de mission n°" + selectedOption + " activée";
+					}
+				});
+			}
+		});
+	}
 	/**
 		* @author daoudi amine
 		* @param currentTime string the current time value of the item
@@ -539,24 +557,6 @@ export class MissionDetailsPage {
 		
 		this.showTimePicker(date);
 		
-	}
-	
-	changeOption(){
-		let modal = Modal.create(ModalTrackMissionPage);
-		this.nav.present(modal);
-		modal.onDismiss(selectedOption => {
-			if(selectedOption){
-				this.missionService.updateOptionMission(selectedOption, this.contract.pk_user_contrat).then((data) => {
-					if(!data || data.status == 'failure'){
-						this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
-						}else{
-						console.log("option mission saved successfully");
-						this.contract.option_mission = selectedOption;
-						this.optionMission = "Option de suivi de mission n°" + selectedOption + " activée";
-					}
-				});
-			}
-		});
 	}
 
 	/**
