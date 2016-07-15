@@ -17,6 +17,7 @@ import {NotationService} from "../../providers/notation-service/notation-service
 import {ModalTrackMissionPage} from "../modal-track-mission/modal-track-mission";
 import {LocalNotifications} from 'ionic-native';
 import {MissionPointingPage} from "../mission-pointing/mission-pointing";
+import {NgZone} from '@angular/core';
 
 /*
 	Generated class for the MissionDetailsPage page.
@@ -71,7 +72,8 @@ export class MissionDetailsPage {
 				private missionService:MissionService,
 				private globalService: GlobalService,
 				private pushNotificationService: PushNotificationService,
-				private notationService : NotationService) {
+				private notationService : NotationService,
+				private zone:NgZone) {
 		
 		this.store = new Storage(LocalStorage);
 		this.db = new Storage(SqlStorage);
@@ -115,30 +117,32 @@ export class MissionDetailsPage {
 			this.optionMission = "Option de suivi de mission n°" + this.contract.option_mission.substring(0, 1) + " activée";
 		}
 		
-		LocalNotifications.on("click", (notification, state) => {
-			let alert = Alert.create({
-				title: "Notification",
-				message: notification.text,
-				buttons: [
-					{
-						text: 'Annuler',
-						handler: () => {
-							console.log('No clicked');
+		this.zone.run(()=> {
+			LocalNotifications.on("click", (notification, state) => {
+				let alert = Alert.create({
+					title: "Notification",
+					message: notification.text,
+					buttons: [
+						{
+							text: 'Annuler',
+							handler: () => {
+								console.log('No clicked');
+							}
+						},
+						{
+							text: 'Pointer',
+							handler: () => {
+								console.log('pointer clicked');	
+								alert.dismiss().then(() => {
+									var data = JSON.parse(notification.data)
+									this.nav.push(MissionPointingPage,{contract: data.contract, autoPointing: true, nextPointing: data.nextPointing});
+								})
+							}
 						}
-					},
-					{
-						text: 'Pointer',
-						handler: () => {
-							console.log('pointer clicked');	
-							alert.dismiss().then(() => {
-								var data = JSON.parse(notification.data)
-								this.nav.push(MissionPointingPage,{contract: data.contract, autoPointing: true, nextPointing: data.nextPointing});
-							})
-						}
-					}
-				]
+					]
+				});
+				this.nav.present(alert);
 			});
-			this.nav.present(alert);
 		});
 		//  Getting contract score
 		this.notationService.loadContractNotation(this.contract, this.projectTarget).then(score=>{
@@ -148,7 +152,7 @@ export class MissionDetailsPage {
 	}
 	
 	onCardClick(dayIndex){
-		if(!this.isNewMission || !this.isEmployer){
+		if(!this.isNewMission || !this.isEmployer || this.contract.signature_jobyer == 'Non'){
 			return;
 		}
 		//open action sheet menu

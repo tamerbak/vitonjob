@@ -116,11 +116,11 @@ export class MissionPointingPage {
 		var m = new Date().getMinutes();
 		var minutesNow = this.missionService.convertHoursToMinutes(h+':'+m);
 		for(var i = 0; i < this.missionHours.length; i++){
-			if(this.missionHours[i].heure_debut - minutesNow <=  10 && this.missionHours[i].heure_debut - minutesNow >=  0 && this.missionHours[i].heure_debut_pointe == "null"){
+			if(this.missionHours[i].heure_debut - minutesNow <=  10 && this.missionHours[i].heure_debut - minutesNow >=  0 && (this.missionHours[i].heure_debut_pointe == "null" || this.missionHours[i].heure_debut_pointe == "")){
 				disabled = false;
 				this.nextPointing = {id: this.missionHours[i].id, start: true};
 			}
-			if(this.missionHours[i].heure_fin - minutesNow <=  10 && this.missionHours[i].heure_fin - minutesNow >=  0 && this.missionHours[i].heure_fin_pointe == "null"){
+			if(this.missionHours[i].heure_fin - minutesNow <=  10 && this.missionHours[i].heure_fin - minutesNow >=  0 && (this.missionHours[i].heure_fin_pointe == "null" || this.missionHours[i].heure_fin_pointe == "")){
 				disabled = false;
 				this.nextPointing = {id: this.missionHours[i].id, start: false};
 			}
