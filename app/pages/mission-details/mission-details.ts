@@ -348,6 +348,11 @@ export class MissionDetailsPage {
 		var slot;
 		if(isPause){
 			slot = {id: this.idsPauses[j], value: value, isStart: isStart};
+			if(isStart){
+				this.missionHours[i].pause_debut_pointe = value;
+			}else{
+				this.missionHours[i].pause_fin_pointe = value;
+			}
 			for(var k = 0; k < this.correctedPauseHours.length; k++){
 				if(this.correctedPauseHours[k].id == slot.id && this.correctedPauseHours[k].isStart == slot.isStart){
 					this.correctedPauseHours[k].value = slot.value;
@@ -505,14 +510,26 @@ export class MissionDetailsPage {
 	}
 	
 	disableTimesheetButton(){
+		var disable;
 		for(var i = 0; i < this.missionHours.length; i++){
 			var m = this.missionHours[i];
-			if(!m.heure_debut_pointe || !m.heure_fin_pointe || !m.pause_debut_pointe || !m.pause_fin_pointe){
-				return true;
+			if(m.id_pause == "null"){
+				if(!m.heure_debut_pointe || m.heure_debut_pointe == "null" || !m.heure_fin_pointe || m.heure_fin_pointe == "null"){
+					disable = true;
+					break;
+				}else{
+					disable = false;
+				}
 			}else{
-				return false;
+				if((!m.heure_debut_pointe || m.heure_debut_pointe == "null" || !m.heure_fin_pointe || m.heure_fin_pointe == "null" || !m.pause_debut_pointe || m.pause_debut_pointe == "null" || !m.pause_fin_pointe || m.pause_fin_pointe == "null") ){
+					disable = true;
+					break;
+				}else{
+					disable = false;
+				}
 			}
 		}
+		return disable;
 	}
 	
 	changeOption(){

@@ -91,7 +91,7 @@
 	</ion-row>
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="signSchedule()" [style.backgroundColor]="themeColor" [hidden]="isNewMission || !isEmployer || contract.approuve == 'OUI'">
+			<button block (click)="signSchedule()" [style.backgroundColor]="themeColor" [hidden]="isNewMission || !isEmployer || contract.approuve == 'OUI' || contract.option_mission != '1.0'">
 				<ion-icon name="ribbon"></ion-icon>
 				Signer les horaires
 			</button>
@@ -106,9 +106,9 @@
 		</ion-col>
 	</ion-row>
 	
-	<ion-row [hidden]="(missionHours && missionHours.length == 0) || !isEmployer || contract.option_mission == '1.0' || isNewMission || contract.releve_employeur == 'OUI'">
+	<ion-row>
 		<ion-col text-center>
-			<button block (click)="generateTimesheet()" [style.backgroundColor]="themeColor" [disabled]="disableTimesheetButton()" class="button-picture">
+			<button block (click)="generateTimesheet()" [style.backgroundColor]="themeColor" [disabled]="disableTimesheetButton()" [hidden]="(missionHours && missionHours.length == 0) || !isEmployer || contract.option_mission == '1.0' || isNewMission || contract.releve_employeur == 'Oui'" class="button-picture">
 				<ion-icon name="paper"></ion-icon>
 				Générer le relevé d'heure et envoyer
 			</button>
@@ -117,7 +117,7 @@
 	
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="displaySignAlert()" [style.backgroundColor]="themeColor" [hidden]="isNewMission || contract.option_mission == '1.0' || contract.releve_jobyer == 'OUI'">
+			<button block (click)="displaySignAlert()" [style.backgroundColor]="themeColor" [hidden]="isNewMission || contract.option_mission == '1.0' || contract.releve_jobyer == 'Oui' || contract.releve_jobyer == 'Non'">
 				<ion-icon name="ribbon"></ion-icon>
 				Signer les horaires
 			</button>
@@ -125,7 +125,7 @@
 	</ion-row>
 	<ion-row>
 		<ion-col text-center>
-			<h6 [style.color]="themeColor" [hidden]="isEmployer || isNewMission || contract.option_mission != '3.0' || contract.releve_jobyer != 'OUI'"> En attente de signature par l'employeur </h6>
+			<h6 [style.color]="themeColor" [hidden]="isEmployer || isNewMission || contract.option_mission != '3.0' || contract.releve_jobyer != 'Oui'"> En attente de signature par l'employeur </h6>
 		</ion-col>
 	</ion-row>
 	
