@@ -59,15 +59,19 @@ export class MissionDetailsPage {
 	
 	contract;
 	optionMission: string;
+	startPausesPointe = [['']];
+    endPausesPointe = [['']];
+	correctedMissionHours = [];
+	correctedPauseHours = [];
 	
 	constructor(private platform:Platform,
-	public gc: GlobalConfigs,
-	public nav: NavController,
-	public navParams:NavParams,
-	private missionService:MissionService,
-	private globalService: GlobalService,
-	private pushNotificationService: PushNotificationService,
-	private notationService : NotationService) {
+				public gc: GlobalConfigs,
+				public nav: NavController,
+				public navParams:NavParams,
+				private missionService:MissionService,
+				private globalService: GlobalService,
+				private pushNotificationService: PushNotificationService,
+				private notationService : NotationService) {
 		
 		this.store = new Storage(LocalStorage);
 		this.db = new Storage(SqlStorage);
@@ -87,15 +91,20 @@ export class MissionDetailsPage {
 		this.contract = navParams.get('contract');
 		//verify if the mission has already pauses
 		this.isNewMission = this.contract.vu == 'Oui' ? false : true;
-		this.missionService.listMissionHours(this.contract, false).then((data) => {
+		var forPointing = this.contract.option_mission == "2.0" ? true : false;
+		this.missionService.listMissionHours(this.contract, forPointing).then((data) => {
 			if(data.data){
 				this.initialMissionHours = data.data;
 				//initiate pauses array
-				var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
+				var array = this.missionService.constructMissionHoursArray(this.initialMissionHours, forPointing);
 				this.missionHours = array[0];
 				this.startPauses = array[1];
 				this.endPauses = array[2];
 				this.idsPauses = array[3];
+				if(forPointing){
+					this.startPausesPointe = array[4];
+					this.endPausesPointe = array[5];
+				}
 			}
 		});
 		
@@ -230,59 +239,149 @@ export class MissionDetailsPage {
 				}
 			});
 			loading.dismiss();
-			this.sendPushNotification();
+			var message = "Horaire du contrat n°" + this.contract.numero + " validé";
+			var objectifNotif = "MissionDetailsPage";
+			this.sendPushNotification(message, objectifNotif, "toJobyer");
 			this.nav.pop();
 		});
 	}
 	
-	sendPushNotification(){
-		this.pushNotificationService.getTokenByJobyer(this.contract.fk_user_jobyer).then(token => {
-			var message = "Horaire du contrat n°" + this.contract.numero + " validé";
-			this.pushNotificationService.sendPushNotification(token, message, this.contract).then(data => {
+	sendPushNotification(message, objectifNotif, who){
+		var id = (who == "toJobyer" ? this.contract.fk_user_jobyer : this.contract.fk_user_entreprise);
+		this.pushNotificationService.getToken(id, who).then(token => {
+			this.pushNotificationService.sendPushNotification(token, message, this.contract, objectifNotif).then(data => {
 				this.globalService.showAlertValidation("VitOnJob", "Notification envoyée.");
 			});
 		});
 	}
 	
-	checkPauseHour(i, j, isStartPause){
+	checkHour(i, j, isStartPause, pointing, isStartMission){
+		var startPause;
+		var startMission;
+		var endMission;
+		var endPause;
+		if(pointing){
+			startPause = this.missionService.convertHoursToMinutes(this.startPausesPointe[i][j]);
+			startMission = this.missionHours[i].heure_debut_pointe;
+			endMission = this.missionHours[i].heure_fin_pointe;
+			endPause = this.missionService.convertHoursToMinutes(this.endPausesPointe[i][j]);
+		}else{
+			startPause = this.missionService.convertHoursToMinutes(this.startPauses[i][j]);
+			startMission = this.missionHours[i].heure_debut;
+			endMission = this.missionHours[i].heure_fin;
+			endPause = this.missionService.convertHoursToMinutes(this.endPauses[i][j]);
+		}
+	
 		if(isStartPause){
 			//start pause should be greater than start mission
-			var startPause = this.missionService.convertHoursToMinutes(this.startPauses[i][j]);
-			if(this.missionHours[i].heure_debut >= startPause){
+			if(startMission >= startPause){
 				this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure à l'heure de début du travail");
-				this.startPauses[i][j] = "";
+				if(pointing)
+					this.startPausesPointe[i][j] = "";
+				else
+					this.startPauses[i][j] = "";
 				return;
 			}
 			//start pause should be less than end mission
-			if(this.missionHours[i].heure_fin <= startPause){
+			if(endMission <= startPause){
 				this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieur à l'heure de fin de travail");
-				this.startPauses[i][j] = '';
+				if(pointing)
+					this.startPausesPointe[i][j] = "";
+				else
+					this.startPauses[i][j] = "";
 				return;
 			}
-			}else{
-			var endPause = this.missionService.convertHoursToMinutes(this.endPauses[i][j])
+		}else{
 			//end pause should be greater than start mission
-			if(this.missionHours[i].heure_debut >= endPause){
+			if(startMission >= endPause){
 				this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure à l'heure de début du travail");
-				this.endPauses[i][j] = '';
+				if(pointing)
+					this.endPausesPointe[i][j] = "";
+				else
+					this.endPauses[i][j] = "";
 				return;
 			}
 			//end pause should be less than end mission
-			if(this.missionHours[i].heure_fin <= endPause){
+			if(endMission <= endPause){
 				this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieur à l'heure de fin de travail");
-				this.endPauses[i][j] = '';
+				if(pointing)
+					this.endPausesPointe[i][j] = "";
+				else
+					this.endPauses[i][j] = "";
 				return;
 			}
 		}
 		//start pause should be less than end pause
-		if((this.startPauses[i][j]) && (this.endPauses[i][j]) &&(this.endPauses[i][j] <= this.startPauses[i][j])){
+		if(((this.startPauses[i][j]) && (this.endPauses[i][j]) &&(this.endPauses[i][j] <= this.startPauses[i][j])) || ((this.startPausesPointe[i][j]) && (this.endPausesPointe[i][j]) &&(this.endPausesPointe[i][j] <= this.startPausesPointe[i][j]))){
 			this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieur à l'heure de fin de pause");
 			if(isStartPause)
-			this.startPauses[i][j] = '';
+				pointing ? this.startPausesPointe[i][j] = '' : this.startPauses[i][j] = '';
 			else
-			this.endPauses[i][j] = '';
+				pointing ? this.endPausesPointe[i][j] = '' : this.endPauses[i][j] = '';
 			return;
 		}
+		//after checking hour validity
+		if(pointing){
+			if(isStartPause){
+				this.saveCorrectedHours(i, j, this.startPausesPointe[i][j], true, true);
+				return;
+			}else{
+				if(j >= 0){
+					this.saveCorrectedHours(i, j, this.endPausesPointe[i][j], false, true);
+					return;
+				}
+			}
+			if(isStartMission){
+				this.saveCorrectedHours(i, j, this.missionHours[i].heure_debut_pointe, true, false);
+				return;
+			}else{
+				if(!j){
+					this.saveCorrectedHours(i, j, this.missionHours[i].heure_fin_pointe, false, false);
+					return;
+				}
+			}
+		}
+	}
+	
+	saveCorrectedHours(i, j, value, isStart, isPause){
+		var slot;
+		if(isPause){
+			slot = {id: this.idsPauses[j], value: value, isStart: isStart};
+			for(var k = 0; k < this.correctedPauseHours.length; k++){
+				if(this.correctedPauseHours[k].id == slot.id && this.correctedPauseHours[k].isStart == slot.isStart){
+					this.correctedPauseHours[k].value = slot.value;
+					return;
+				}else{
+					this.correctedPauseHours.push(slot);
+					return;
+				}
+			}
+			this.correctedPauseHours.push(slot);
+		}else{
+			slot = {id: this.missionHours[i].id, value: value, isStart: isStart};
+			for(var k = 0; k < this.correctedMissionHours.length; k++){
+				if(this.correctedMissionHours[k].id == slot.id && this.correctedMissionHours[k].isStart == slot.isStart){
+					this.correctedMissionHours[k].value = slot.value;
+					return;
+				}else{
+					this.correctedMissionHours.push(slot);
+					return;
+				}
+			}
+			this.correctedMissionHours.push(slot);
+		}			
+	}
+	
+	generateTimesheet(){
+		this.missionService.saveCorrectedMissions(this.contract.pk_user_contrat, this.correctedMissionHours, this.correctedPauseHours).then((data) => {
+			if(data && data.status == "success"){
+				console.log("timesheet saved");
+				var message = "Vous avez reçu le relevé d'heure du contrat n°" + this.contract.numero;
+				var objectifNotif = "MissionDetailsPage";
+				this.sendPushNotification(message, objectifNotif, "toJobyer");
+				this.nav.pop();
+			}
+		});
 	}
 	
 	signSchedule(){
@@ -297,7 +396,7 @@ export class MissionDetailsPage {
 		});
 		
 		this.nav.present(loading).then(()=> {
-			this.missionService.signSchedule(this.contract.pk_user_contrat).then((data) => {
+			this.missionService.signSchedule(this.contract).then((data) => {
 				if (!data || data.status == "failure") {
 					console.log(data.error);
 					loading.dismiss();
@@ -306,11 +405,41 @@ export class MissionDetailsPage {
 					}else{
 					// data saved
 					console.log("schedule signed : " + data.status);
+					if(this.contract.option_mission == "2.0" && !this.isEmployer){
+						var message = "Le relevé d'heure du contrat n° " + this.contract.numero + " a été signé.";
+						var objectifNotif = "MissionDetailsPage";
+						this.sendPushNotification(message, objectifNotif, "toEmployer");	
+					}
 				}
 			});
 			loading.dismiss();
 			this.nav.pop();
 		});
+	}
+		
+	displaySignAlert(){
+		let confirm = Alert.create({
+			title: "VitOnJob",
+			message: "Signature fin de mission",
+			buttons: [
+				{
+					text: 'Annuler',
+					handler: () => {
+						console.log('No clicked');
+					}
+				},
+				{
+					text: 'Signer',
+					handler: () => {
+						console.log('Yes clicked');	
+						confirm.dismiss().then(() => {
+							this.signSchedule();
+						})
+					}
+				}
+			]
+		});
+		this.nav.present(confirm);
 	}
 	
 	validateWork(){
@@ -373,6 +502,18 @@ export class MissionDetailsPage {
 			cordova.InAppBrowser.open(this.contract.lien_jobyer, "_system", "location=true");
 		});
 	}
+	
+	disableTimesheetButton(){
+		for(var i = 0; i < this.missionHours.length; i++){
+			var m = this.missionHours[i];
+			if(!m.heure_debut_pointe || !m.heure_fin_pointe || !m.pause_debut_pointe || !m.pause_fin_pointe){
+				return true;
+			}else{
+				return false;
+			}
+		}
+	}
+	
 	/**
 		* @author daoudi amine
 		* @param currentTime string the current time value of the item
