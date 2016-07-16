@@ -16,7 +16,6 @@ import {ModalInvoicePage} from "../modal-invoice/modal-invoice";
 import {NotationService} from "../../providers/notation-service/notation-service";
 import {ModalTrackMissionPage} from "../modal-track-mission/modal-track-mission";
 import {LocalNotifications} from 'ionic-native';
-import {MissionPointingPage} from "../mission-pointing/mission-pointing";
 import {NgZone} from '@angular/core';
 
 /*
@@ -117,33 +116,6 @@ export class MissionDetailsPage {
 			this.optionMission = "Option de suivi de mission n°" + this.contract.option_mission.substring(0, 1) + " activée";
 		}
 		
-		this.zone.run(()=> {
-			LocalNotifications.on("click", (notification, state) => {
-				let alert = Alert.create({
-					title: "Notification",
-					message: notification.text,
-					buttons: [
-						{
-							text: 'Annuler',
-							handler: () => {
-								console.log('No clicked');
-							}
-						},
-						{
-							text: 'Pointer',
-							handler: () => {
-								console.log('pointer clicked');	
-								alert.dismiss().then(() => {
-									var data = JSON.parse(notification.data)
-									this.nav.push(MissionPointingPage,{contract: data.contract, autoPointing: true, nextPointing: data.nextPointing});
-								})
-							}
-						}
-					]
-				});
-				this.nav.present(alert);
-			});
-		});
 		//  Getting contract score
 		this.notationService.loadContractNotation(this.contract, this.projectTarget).then(score=>{
 			this.rating = score;
@@ -244,6 +216,7 @@ export class MissionDetailsPage {
 			var message = "Horaire du contrat n°" + this.contract.numero + " validé";
 			var objectifNotif = "MissionDetailsPage";
 			this.sendPushNotification(message, objectifNotif, "toJobyer");
+			this.sendInfoBySMS(message, "toJobyer");
 			if(this.contract.option_mission != "1.0"){
 				this.missionService.schedulePointeuse(this.contract, this.missionHours, this.startPauses, this.endPauses, this.idsPauses);
 			} 
@@ -258,6 +231,18 @@ export class MissionDetailsPage {
 				this.globalService.showAlertValidation("VitOnJob", "Notification envoyée.");
 			});
 		});
+	}
+	
+	sendInfoBySMS(message, who){
+		if(who == "toJobyer"){
+			this.missionService.getTelByJobyer(this.contract.fk_user_jobyer).then((data) => {
+				this.missionService.sendInfoBySMS(data.data[0]["telephone"], message);
+			});
+		}else{
+			this.missionService.getTelByEmployer(this.contract.fk_user_entreprise).then((data) => {
+				this.missionService.sendInfoBySMS(data.data[0]["telephone"], message);
+			});
+		}
 	}
 	
 	checkHour(i, j, isStartPause, pointing, isStartMission){
@@ -389,6 +374,7 @@ export class MissionDetailsPage {
 				var message = "Vous avez reçu le relevé d'heure du contrat n°" + this.contract.numero;
 				var objectifNotif = "MissionDetailsPage";
 				this.sendPushNotification(message, objectifNotif, "toJobyer");
+				this.sendInfoBySMS(message, "toJobyer");
 				this.nav.pop();
 			}
 		});
@@ -418,7 +404,8 @@ export class MissionDetailsPage {
 					if(this.contract.option_mission == "2.0" && !this.isEmployer){
 						var message = "Le relevé d'heure du contrat n° " + this.contract.numero + " a été signé.";
 						var objectifNotif = "MissionDetailsPage";
-						this.sendPushNotification(message, objectifNotif, "toEmployer");	
+						this.sendPushNotification(message, objectifNotif, "toEmployer");
+						this.sendInfoBySMS(message, "toEmployer");
 					}
 				}
 			});

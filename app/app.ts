@@ -1,4 +1,4 @@
-import {Platform, MenuController, Nav, ionicBootstrap, App, Modal, Toast, LocalStorage} from 'ionic-angular';
+import {Platform, MenuController, Nav, ionicBootstrap, App, Modal, Toast, LocalStorage, Alert} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {HomePage} from './pages/home/home';
 //import {LoginsPage} from './pages/logins/logins';
@@ -37,6 +37,8 @@ import {PendingContractsPage} from "./pages/pending-contracts/pending-contracts"
 import {RecruiterListPage} from "./pages/recruiter-list/recruiter-list";
 import {NotationService} from "./providers/notation-service/notation-service";
 import {AttachementsPage} from "./pages/attachements/attachements";
+import {LocalNotifications} from 'ionic-native';
+import {MissionPointingPage} from "./pages/mission-pointing/mission-pointing";
 
 
 //import {ParametersPage} from "./pages/parameters/parameters";
@@ -216,6 +218,33 @@ export class Vitonjob {
                 });
             }
 
+			//local notification
+			LocalNotifications.on("click", (notification, state) => {
+				let alert = Alert.create({
+					title: "Notification",
+					message: notification.text,
+					buttons: [
+						{
+							text: 'Annuler',
+							handler: () => {
+								console.log('No clicked');
+							}
+						},
+						{
+							text: 'Pointer',
+							handler: () => {
+								console.log('pointer clicked');	
+								alert.dismiss().then(() => {
+									var data = JSON.parse(notification.data)
+									this.nav.push(MissionPointingPage,{contract: data.contract, autoPointing: true, nextPointing: data.nextPointing});
+								})
+							}
+						}
+					]
+				});
+				this.nav.present(alert);
+			});
+			
             //	Initialize network control
             if (navigator.connection) {
                 if(navigator.connection.type == Connection.NONE){
