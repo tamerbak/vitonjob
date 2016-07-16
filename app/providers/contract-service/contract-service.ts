@@ -268,7 +268,11 @@ export class ContractService {
             "periodesNonTravaillees" : contract.periodesNonTravaillees,
             "debutSouplesse" : contract.debutSouplesse,
             "finSouplesse" : contract.finSouplesse,
-            "equipements" : contract.equipements
+            "equipements" : contract.equipements,
+            "centreMedecineEntreprise":contract.centreMedecineEntreprise,
+            "adresseCentreMedecineEntreprise":contract.adresseCentreMedecineEntreprise,
+            "centreMedecineETT":contract.centreMedecineETT,
+            "adresseCentreMedecineETT":contract.adresseCentreMedecineETT
         };
         debugger;
         console.log(JSON.stringify(jsonData));

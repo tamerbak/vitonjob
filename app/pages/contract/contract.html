@@ -218,13 +218,24 @@
         <ion-list-header>
             MEDECINE DU TRAVAIL
         </ion-list-header>
-
             <ion-item>
+                <ion-label>Centre de médecine ETT</ion-label><ion-input type="text" [(ngModel)]="contractData.centreMedecineETT"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Adresse Centre de médecine ETT</ion-label><ion-input type="text" [(ngModel)]="contractData.adresseCentreMedecineETT"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Centre de médecine Entreprise</ion-label><ion-input type="text" [(ngModel)]="contractData.centreMedecineEntreprise"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Adresse Centre de médecine Entreprise</ion-label><ion-input type="text" [(ngModel)]="contractData.adresseCentreMedecineEntreprise"></ion-input>
+            </ion-item>
+            <!--ion-item>
                 <ion-label>Gestion intérim</ion-label><ion-input type="text" [(ngModel)]="contractData.interimAddress"></ion-input>
             </ion-item>
             <ion-item>
                 <ion-label>Client</ion-label><ion-input type="text" [(ngModel)]="contractData.customer"></ion-input>
-            </ion-item>
+            </ion-item-->
 
     </ion-list>
 
