@@ -10,6 +10,7 @@ import {isUndefined} from "ionic-angular/util";
 import {ModalOffersPage} from "../modal-offers/modal-offers";
 import {ContractService} from "../../providers/contract-service/contract-service";
 import {Component} from "@angular/core";
+import {MedecineService} from "../../providers/medecine-service/medecine-service";
 
 
 /**
@@ -19,7 +20,7 @@ import {Component} from "@angular/core";
  */
 @Component({
     templateUrl: 'build/pages/contract/contract.html',
-    providers:[UserService][ContractService]
+    providers:[UserService, ContractService, MedecineService]
 })
 export class ContractPage {
 
@@ -47,7 +48,8 @@ export class ContractPage {
                 public nav: NavController,
                 private navParams:NavParams,
                 private userService:UserService,
-                private contractService : ContractService) {
+                private contractService : ContractService,
+                private medecineService : MedecineService) {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -82,6 +84,10 @@ export class ContractPage {
         this.contractData = {
             num:"",
             numero:"",
+            centreMedecineEntreprise:"",
+            adresseCentreMedecineEntreprise:"",
+            centreMedecineETT:"181 - CMIE",
+            adresseCentreMedecineETT:"80 RUE DE CLICHY 75009 PARIS",
             contact:this.employerFullName,
             indemniteFinMission : "0.00",
             indemniteCongesPayes : "0.00",
@@ -130,7 +136,7 @@ export class ContractPage {
         };
 
         /*this.contractService.getNumContract().then(data =>{
-            debugger;
+            
            if(data && data.length>0){
                this.numContrat = this.formatNumContrat(data[0].numct);
                this.contractData.num = this.numContrat;
@@ -150,11 +156,18 @@ export class ContractPage {
                 this.hqAdress=this.employer.entreprises[0].siegeAdress.fullAdress;
                 let civility = this.currentUser.titre;
                 this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
-                
+                this.medecineService.getMedecine(this.employer.entreprises[0].id).then(data=>{
+                    if(data && data !=null){
+                        debugger;
+                        this.contractData.centreMedecineEntreprise = data.libelle;
+                        this.contractData.adresseCentreMedecineEntreprise = data.adresse+' '+data.code_postal;
+                    }
+
+                });
             }
 
             //  check if there is a current offer
-            debugger;
+            
             if(navParams.get("currentOffer") && !isUndefined(navParams.get("currentOffer"))){
                 this.currentOffer = navParams.get("currentOffer");
                 this.initContract();
@@ -210,7 +223,7 @@ export class ContractPage {
     }
 
     selectOffer(){
-        debugger;
+        
         let m = new Modal(ModalOffersPage);
         m.onDismiss(data => {
             this.currentOffer = data;
@@ -222,6 +235,10 @@ export class ContractPage {
     initContract(){
         this.contractData = {
             num:this.numContrat,
+            centreMedecineEntreprise:"",
+            adresseCentreMedecineEntreprise:"",
+            centreMedecineETT:"181 - CMIE",
+            adresseCentreMedecineETT:"80 RUE DE CLICHY 75009 PARIS",
 
             numero:"",
             contact:this.employerFullName,
@@ -271,6 +288,15 @@ export class ContractPage {
             workAdress : this.workAdress,
             jobyerBirthDate : this.jobyerBirthDate
         };
+
+        this.medecineService.getMedecine(this.employer.entreprises[0].id).then(data=>{
+            if(data && data !=null){
+                debugger;
+                this.contractData.centreMedecineEntreprise = data.libelle;
+                this.contractData.adresseCentreMedecineEntreprise = data.adresse+' '+data.code_postal;
+            }
+
+        });
     }
 
     calculateOfferHours(){
