@@ -52,6 +52,7 @@ export class MissionService {
         for(var i = 0; i < startPauses.length; i++){
             if(startPauses[i].length != 0){
                 pauseArrayEmpty = false;
+				break;
             }else{
                 pauseArrayEmpty = true;
             }
@@ -86,9 +87,9 @@ export class MissionService {
     signSchedule(contract){
 		var sql;
         if(this.projectTarget == "jobyer"){
-			var sql = "update user_contrat set releve_jobyer = 'OUI' where pk_user_contrat = '" + contract.pk_user_contrat + "'; ";
+			var sql = "update user_contrat set releve_jobyer = 'Oui' where pk_user_contrat = '" + contract.pk_user_contrat + "'; ";
 		}else{
-			var sql = "update user_contrat set approuve = 'OUI' where pk_user_contrat = '" + contract.pk_user_contrat + "'; ";
+			var sql = "update user_contrat set approuve = 'Oui' where pk_user_contrat = '" + contract.pk_user_contrat + "'; ";
 		}
         console.log(sql);
 
@@ -329,10 +330,10 @@ export class MissionService {
 			var str = "";
 			m.value = this.convertHoursToMinutes(m.value);
 			if(m.isStart){
-				str = " heure_debut_pointe = '" + m.value + "', debut_corrigee = 'OUI' ";
+				str = " heure_debut_pointe = '" + m.value + "', debut_corrigee = 'Oui' ";
 				
 			}else{
-				str = " heure_fin_pointe = '" + m.value + "', fin_corrigee = 'OUI' ";
+				str = " heure_fin_pointe = '" + m.value + "', fin_corrigee = 'Oui' ";
 			}
 			sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '"+m.id +"'; ";
 		}
@@ -341,13 +342,13 @@ export class MissionService {
 			var str = "";
 			p.value = this.convertHoursToMinutes(p.value);
 			if(p.isStart){
-				str = " debut_pointe = '" + p.value + "', debut_corrigee = 'OUI' ";
+				str = " debut_pointe = '" + p.value + "', debut_corrigee = 'Oui' ";
 			}else{
-				str = " fin_pointe = '" + p.value + "', fin_corrigee = 'OUI' ";
+				str = " fin_pointe = '" + p.value + "', fin_corrigee = 'Oui' ";
 			}
 			sql = sql + " update user_pause set " + str + " where pk_user_pause = '"+p.id +"'; ";
 		}
-		sql = sql + " update user_contrat set releve_employeur = 'OUI' where pk_user_contrat = '" + id + "'; ";
+		sql = sql + " update user_contrat set releve_employeur = 'Oui' where pk_user_contrat = '" + id + "'; ";
 		console.log(sql);
 
         return new Promise(resolve => {

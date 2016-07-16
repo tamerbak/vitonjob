@@ -40,14 +40,14 @@
     <ion-card *ngFor="let day of missionHours, let i=index">
 		<ion-card-header (click)="onCardClick(i)" class="cardHeader">
             Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}
-			<ion-icon name="add-circle" [hidden]="!isNewMission || !isEmployer" class="iconRight"></ion-icon>
+			<ion-icon name="add-circle" [hidden]="!isNewMission || !isEmployer || contract.signature_jobyer == 'Non'" class="iconRight"></ion-icon>
         </ion-card-header>
         <ion-card-content style="padding: 0;">
 			<ion-list>
 			  <ion-item>
 				<ion-label fixed>H. de début</ion-label>
 				<ion-input value="{{day.heure_debut | timeConverter:'minute'}}" disabled="true"></ion-input>
-				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" (ionChange)="checkHour(i, j, false, true, true)" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" [(ngModel)]="day.heure_debut_pointe" [disabled]="(day.heure_debut_pointe != '' && contract.option_mission == '3.0')" [hidden]="contract.option_mission == '1.0'|| isNewMission" ></ion-datetime>
+				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" (ionChange)="checkHour(i, j, false, true, true)" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" [(ngModel)]="day.heure_debut_pointe" [disabled]="(day.heure_debut_pointe != '' && contract.option_mission == '3.0') || contract.releve_employeur == 'Oui' || !isEmployer" [hidden]="contract.option_mission == '1.0'|| isNewMission" ></ion-datetime>
 			  </ion-item>
 			  <ion-list *ngFor="let startPause of startPauses[i], let j=index" class="marginTopList">
 			  <ion-item (click)="onPauseClick(i, j)">
@@ -63,27 +63,27 @@
 			  <ion-item>
 				<ion-label fixed>Début de pause</ion-label>
 				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="startPauses[i][j]" (ionChange)="checkHour(i, j, true, false, false)" [disabled]="!isNewMission || !isEmployer" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"></ion-datetime>
-				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="startPausesPointe[i][j]" (ionChange)="checkHour(i, j, true, true, false)" [disabled]="startPausesPointe[i][j] != '' && contract.option_mission == '3.0'"
+				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="startPausesPointe[i][j]" (ionChange)="checkHour(i, j, true, true, false)" [disabled]="(startPausesPointe[i][j] != '' && contract.option_mission == '3.0') || contract.releve_employeur == 'Oui' || !isEmployer"
 				[hidden]="contract.option_mission == '1.0'|| isNewMission" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"></ion-datetime>
 			  </ion-item>
 			  <ion-item>
 				<ion-label fixed>Fin de pause</ion-label>
 				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="endPauses[i][j]" (ionChange)="checkHour(i, j, false, false, false)" [disabled]="!isNewMission || !isEmployer" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"></ion-datetime>
-				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="endPausesPointe[i][j]" (ionChange)="checkHour(i, j, false, true, false)" [disabled]="endPausesPointe[i][j] != '' && contract.option_mission == '3.0'"
+				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="endPausesPointe[i][j]" (ionChange)="checkHour(i, j, false, true, false)" [disabled]="(endPausesPointe[i][j] != '' && contract.option_mission == '3.0') || contract.releve_employeur == 'Oui' || !isEmployer"
 				[hidden]="contract.option_mission == '1.0'|| isNewMission" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"></ion-datetime>
 			  </ion-item>
 			  </ion-list>
 			  <ion-item>
 				<ion-label fixed>H. de fin</ion-label>
 				<ion-input value="{{day.heure_fin | timeConverter:'minute'}}" disabled="true"></ion-input>
-				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" (ionChange)="checkHour(i, j, false, true, false)" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" [(ngModel)]="day.heure_fin_pointe" [disabled]="day.heure_fin_pointe != '' && contract.option_mission == '3.0'" [hidden]="contract.option_mission == '1.0'|| isNewMission" ></ion-datetime>
+				<ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" (ionChange)="checkHour(i, j, false, true, false)" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" [(ngModel)]="day.heure_fin_pointe" [disabled]="(day.heure_fin_pointe != '' && contract.option_mission == '3.0') || contract.releve_employeur == 'Oui' || !isEmployer" [hidden]="contract.option_mission == '1.0'|| isNewMission" ></ion-datetime>
 			  </ion-item>
 			</ion-list>
 		</ion-card-content>
 	</ion-card>	
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="validatePauses()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission || (missionHours && missionHours.length == 0) || !isEmployer">
+			<button block (click)="validatePauses()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission || (missionHours && missionHours.length == 0) || !isEmployer || contract.signature_jobyer == 'Non'">
 				<ion-icon name="send"></ion-icon>
 				Valider et notifier le Jobyer
 			</button>
@@ -91,7 +91,7 @@
 	</ion-row>
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="signSchedule()" [style.backgroundColor]="themeColor" [hidden]="isNewMission || !isEmployer || contract.approuve == 'OUI'">
+			<button block (click)="signSchedule()" [style.backgroundColor]="themeColor" [hidden]="isNewMission || !isEmployer || contract.approuve == 'Oui' || contract.releve_employeur == 'Non'">
 				<ion-icon name="ribbon"></ion-icon>
 				Signer les horaires
 			</button>
@@ -106,9 +106,9 @@
 		</ion-col>
 	</ion-row>
 	
-	<ion-row [hidden]="(missionHours && missionHours.length == 0) || !isEmployer || contract.option_mission == '1.0' || isNewMission || contract.releve_employeur == 'OUI'">
+	<ion-row>
 		<ion-col text-center>
-			<button block (click)="generateTimesheet()" [style.backgroundColor]="themeColor" [disabled]="disableTimesheetButton()" class="button-picture">
+			<button block (click)="generateTimesheet()" [style.backgroundColor]="themeColor" [disabled]="disableTimesheetButton()" [hidden]="(missionHours && missionHours.length == 0) || !isEmployer || contract.option_mission == '1.0' || isNewMission || contract.releve_employeur == 'Oui'" class="button-picture">
 				<ion-icon name="paper"></ion-icon>
 				Générer le relevé d'heure et envoyer
 			</button>
@@ -117,7 +117,7 @@
 	
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="displaySignAlert()" [style.backgroundColor]="themeColor" [hidden]="isNewMission || contract.option_mission == '1.0' || contract.releve_jobyer == 'OUI'">
+			<button block (click)="displaySignAlert()" [style.backgroundColor]="themeColor" [hidden]="isNewMission || contract.option_mission == '1.0' || contract.releve_jobyer == 'Oui' || contract.releve_jobyer == 'Non'">
 				<ion-icon name="ribbon"></ion-icon>
 				Signer les horaires
 			</button>
@@ -125,14 +125,14 @@
 	</ion-row>
 	<ion-row>
 		<ion-col text-center>
-			<h6 [style.color]="themeColor" [hidden]="isEmployer || isNewMission || contract.option_mission != '3.0' || contract.releve_jobyer != 'OUI'"> En attente de signature par l'employeur </h6>
+			<h6 [style.color]="themeColor" [hidden]="isEmployer || isNewMission || contract.option_mission != '3.0' || contract.releve_jobyer != 'Oui'"> En attente de signature par l'employeur </h6>
 		</ion-col>
 	</ion-row>
 	
 	
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="resetForm()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission || (missionHours && missionHours.length == 0) || !isEmployer">
+			<button block (click)="resetForm()" [style.backgroundColor]="themeColor" [hidden]="!isNewMission || (missionHours && missionHours.length == 0) || !isEmployer || contract.signature_jobyer == 'Non'">
 				<ion-icon name="refresh"></ion-icon>
 				Rénitialiser
 			</button>
