@@ -21,7 +21,7 @@
 				<ion-item>
 					<ion-label fixed>H. de début</ion-label>
 					<ion-input value="{{day.heure_debut | timeConverter:'minute'}}" disabled="true"></ion-input>
-					<ion-input value="{{day.heure_debut_pointe | timeConverter:'minute'}}" disabled="true"></ion-input>
+					<ion-input value="{{day.heure_debut_pointe}}" disabled="true"></ion-input>
 				</ion-item>
 				<ion-list *ngFor="let startPause of startPauses[i], let j=index" class="marginTopList">
 					<ion-item>
@@ -45,7 +45,7 @@
 				<ion-item>
 					<ion-label fixed>H. de fin</ion-label>
 					<ion-input value="{{day.heure_fin | timeConverter:'minute'}}" disabled="true"></ion-input>
-					<ion-input value="{{day.heure_fin_pointe | timeConverter:'minute'}}" disabled="true"></ion-input>
+					<ion-input value="{{day.heure_fin_pointe}}" disabled="true"></ion-input>
 				</ion-item>
 			</ion-list>
 		</ion-card-content>
