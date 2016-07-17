@@ -362,7 +362,59 @@ export class MissionService {
                 });
         });
 	}
+	
+	sendInfoBySMS(tel, message){
+        tel = tel.replace('+', '00');
+        let url = "http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoisms";
+        let payload = "<fr.protogen.connector.model.SmsModel>"
+            + 	"<telephone>"+tel+"</telephone>"
+            + 	"<text>" + message + "</text>"
+            + "</fr.protogen.connector.model.SmsModel>";
 
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/xml');
+            this.http.post(url, payload, {headers:headers})
+                .subscribe(data => {
+                    this.data = data;
+                    console.log(this.data);
+                    resolve(this.data);
+                });
+        })
+    }
+
+	getTelByJobyer(id){
+		var sql = "select a.telephone from user_account as a, user_jobyer as j where a.pk_user_account = j.fk_user_account and j.pk_user_jobyer = '" + id + "'";
+		console.log(sql);
+
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });
+	}
+	
+	getTelByEmployer(id){
+		var sql = "select a.telephone from user_account as a, user_entreprise as e where a.pk_user_account = e.fk_user_account and e.pk_user_entreprise = '" + id + "'";
+		console.log(sql);
+
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });
+	}
+	
 	convertToFormattedHour(value){
         var hours = Math.floor(value / 60);
         var minutes = value % 60;
