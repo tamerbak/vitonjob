@@ -67,7 +67,7 @@ export class ModalJobPage {
 
         this.alertOptions = {
             title: 'Devise',
-            subTitle: 'Sélectionnez votre devise'
+            subTitle: 'Sélectionner votre devise'
         };
 
         this.currency = "euro";
