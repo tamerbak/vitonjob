@@ -24,11 +24,12 @@ export class MissionPointingPage {
 	
 	contract;
 	missionHours = [];
-	startPauses = [['']];
-    endPauses = [['']];
-	startPausesPointe = [['']];
-    endPausesPointe = [['']];
-	idPauses = [];
+	missionPauses = []
+	//startPauses = [['']];
+    //endPauses = [['']];
+	//startPausesPointe = [['']];
+    //endPausesPointe = [['']];
+	//idPauses = [];
 	nextPointing;
 	disableBtnPointing = true;
     
@@ -52,11 +53,7 @@ export class MissionPointingPage {
 				var missionHoursTemp = data.data;
 				var array = this.getTodayMission(missionHoursTemp);
 				this.missionHours = array[0];
-				this.startPauses = array[1];
-				this.endPauses = array[2];
-				this.idPauses = array[3];
-				this.startPausesPointe = array[4];
-				this.endPausesPointe = array[5];
+				this.missionPauses = array[1];
 				this.disableBtnPointing = this.disablePointing();
 				var autoPointing = navParams.get('autoPointing');
 				if(autoPointing){
@@ -92,11 +89,7 @@ export class MissionPointingPage {
 						var missionHoursTemp = data.data;
 						var array = this.getTodayMission(missionHoursTemp);
 						this.missionHours = array[0];
-						this.startPauses = array[1];
-						this.endPauses = array[2];
-						this.idPauses = array[3];
-						this.startPausesPointe = array[4];
-						this.endPausesPointe = array[5];
+						this.missionPauses = array[1];
 						this.disableBtnPointing = true;
 					}
 				});
@@ -118,20 +111,21 @@ export class MissionPointingPage {
 				disabled = false;
 				this.nextPointing = {id: this.missionHours[i].id, start: false};
 			}
-			for(var j = 0; j < this.startPauses[i].length; j++){
-				var h = (this.startPauses[i][j]).split(":")[0];
-				var m = (this.startPauses[i][j]).split(":")[1];
+			for(var j = 0; j < this.missionPauses[i].length; j++){
+				var p = this.missionPauses[i][j];
+				var h = (p.pause_debut).split(":")[0];
+				var m = (p.pause_debut).split(":")[1];
 				var minutesPause = this.missionService.convertHoursToMinutes(h+':'+m);
-				if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && !this.startPausesPointe[i][j]){
+				if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && !p.pause_debut_pointe){
 					disabled = false;
-					this.nextPointing = {id: this.missionHours[i].id, start: true, id_pause: this.idPauses[j]};
+					this.nextPointing = {id: this.missionHours[i].id, start: true, id_pause: p.id};
 				}
-				var h = (this.endPauses[i][j]).split(":")[0];
-				var m = (this.endPauses[i][j]).split(":")[1];
+				var h = (p.pause_fin).split(":")[0];
+				var m = (p.pause_fin).split(":")[1];
 				var minutesPause = this.missionService.convertHoursToMinutes(h+':'+m);
-				if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && !this.endPausesPointe[i][j]){
+				if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && !p.pause_fin_pointe){
 					disabled = false;
-					this.nextPointing = {id: this.missionHours[i].id, start: false, id_pause: this.idPauses[j]};
+					this.nextPointing = {id: this.missionHours[i].id, start: false, id_pause: p.id};
 				}
 			}
 		}
