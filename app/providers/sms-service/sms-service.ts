@@ -32,7 +32,7 @@ export class SmsService {
         phoneNumber = "00" + phoneNumber;
         
         //only for test 
-        phoneNumber = "00212672435408";
+        //phoneNumber = "00212672435408";
         var soapMessage=
             '<fr.protogen.connector.model.SmsModel>'+
                 '<telephone>'+phoneNumber+'</telephone>'+

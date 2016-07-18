@@ -140,11 +140,14 @@ export class YousignPage {
             let jobyerPhoneNumber = this.jobyer.tel;
             
             // Send sms to jobyer
-            /*this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée : '+yousignJobyerLink).then((dataSms) => {
+            debugger;
+            this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : '+this.contractData.numero).then((dataSms) => {
+                debugger;
                  console.log("The message was sent successfully");
             }).catch(function(err) {
+                debugger;
                  console.log(err);
-            });*/
+            });
             // send notification to jobyer
             console.log('jobyer id : '+this.jobyer.id);
 
