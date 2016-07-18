@@ -29,4 +29,12 @@
     box-shadow: none!important;
   }
 
+  ion-item {
+    border-top: solid white 1px;
+    border-left: solid white 1px;
+  }
+
+  .ionRow {
+    padding-left: 16px;
+  }
 }
