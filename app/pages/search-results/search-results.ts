@@ -435,7 +435,7 @@ export class SearchResultsPage implements OnInit {
         });
 
         this.toast = Toast.create({
-            message: 'Vous pouvez utiliser ces critères de recherche pour créer une nouvelle offre',
+            message: 'Utiliser vos critères de recherches pour créer une nouvelle offre',
             showCloseButton: true,
             closeButtonText: 'Créer'
         });
