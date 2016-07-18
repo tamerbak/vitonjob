@@ -11,7 +11,7 @@
   color: red;
   text-align: right;
 }
-  #btn-co{
+  /*#btn-co{
     bottom: 11em;
     position: absolute;
 
@@ -23,6 +23,10 @@
   #btn-mdp{
     position: absolute;
     bottom: 3em;
+  }*/
+
+  .button{
+    box-shadow: none!important;
   }
 
 }
