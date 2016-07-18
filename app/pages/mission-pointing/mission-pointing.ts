@@ -86,26 +86,20 @@ export class MissionPointingPage {
 			var minutesNow = this.missionService.convertHoursToMinutes(h+':'+m);
 			this.nextPointing.pointe = minutesNow;
 			this.missionService.savePointing(this.nextPointing).then((data) => {
-				if(!autoPointing){
-					this.nav.pop();
-				}
-				else{
-					
-					//retrieve mission hours of tody
-					this.missionService.listMissionHours(this.contract, true).then((data) => {
-						if(data.data){
-							var missionHoursTemp = data.data;
-							var array = this.getTodayMission(missionHoursTemp);
-							this.missionHours = array[0];
-							this.startPauses = array[1];
-							this.endPauses = array[2];
-							this.idPauses = array[3];
-							this.startPausesPointe = array[4];
-							this.endPausesPointe = array[5];
-							this.disableBtnPointing = true;
-						}
-					});
-				}
+				//retrieve mission hours of tody
+				this.missionService.listMissionHours(this.contract, true).then((data) => {
+					if(data.data){
+						var missionHoursTemp = data.data;
+						var array = this.getTodayMission(missionHoursTemp);
+						this.missionHours = array[0];
+						this.startPauses = array[1];
+						this.endPauses = array[2];
+						this.idPauses = array[3];
+						this.startPausesPointe = array[4];
+						this.endPausesPointe = array[5];
+						this.disableBtnPointing = true;
+					}
+				});
 			});
 		}
 	}

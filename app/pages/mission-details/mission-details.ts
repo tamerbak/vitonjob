@@ -91,7 +91,7 @@ export class MissionDetailsPage {
 		//get missions
 		this.contract = navParams.get('contract');
 		//verify if the mission has already pauses
-		this.isNewMission = this.contract.vu == 'Oui' ? false : true;
+		this.isNewMission = this.contract.vu.toUpperCase() == 'Oui'.toUpperCase() ? false : true;
 		var forPointing = this.contract.option_mission != "1.0" ? true : false;
 		this.missionService.listMissionHours(this.contract, forPointing).then((data) => {
 			if(data.data){
@@ -124,7 +124,7 @@ export class MissionDetailsPage {
 	}
 	
 	onCardClick(dayIndex){
-		if(!this.isNewMission || !this.isEmployer || this.contract.signature_jobyer == 'Non'){
+		if(!this.isNewMission || !this.isEmployer || this.contract.signature_jobyer.toUpperCase() == 'Non'.toUpperCase()){
 			return;
 		}
 		//open action sheet menu
