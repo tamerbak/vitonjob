@@ -428,7 +428,7 @@ export class PhonePage {
 							console.log('SMS selected');	
 							this.passwordForgotten("sms");
 							let toast = Toast.create({
-								message: "Votre mot de passe a été réinitialisé, vous recevrai un SMS avec un nouveau mot de passe d'ici peu",
+								message: "Votre mot de passe a été réinitialisé, vous recevrez un SMS avec un nouveau mot de passe d'ici peu.",
 								duration: 5000
 							});
 							this.nav.present(toast);

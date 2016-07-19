@@ -6,7 +6,7 @@
 	</button>
 	
 	<ion-label stacked style="padding: 16px">Entrez votre numéro de téléphone portable</ion-label>
-	<ion-row baseline>
+	<ion-row baseline class="ionRow">
 		<ion-col width-33>
 			<ion-item>
 				<ion-input type="number" [(ngModel)]="index"></ion-input>
@@ -24,7 +24,7 @@
 	<div [hidden]="isPhoneNumValid" class="error-box"></div>
 	
 	<ion-label [hidden]="!showEmailField" stacked style="padding: 16px">Votre email</ion-label>
-	<ion-item [hidden]="!showEmailField">
+	<ion-item [hidden]="!showEmailField"  style="margin-left: 16px">
 		<ion-input #focusable id="email" type="email" [(ngModel)]="email" (change)="isEmailExist($event)"></ion-input>
 	</ion-item>
 	<div [hidden]="!showEmailError()" 
@@ -33,14 +33,14 @@
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Cet email est déjà utilisé. Veuillez choisir un autre.</div>
 	
 	<ion-label stacked style="padding: 16px">Votre mot de passe</ion-label>
-	<ion-item>
+	<ion-item style="margin-left: 16px">
 		<ion-input type="password" [(ngModel)]="password1"></ion-input>
 	</ion-item>
 	<div [hidden]="!showPassword1Error()" 
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Taille minimale: 6 caractères</div>
 	
 	<ion-label [hidden]="!showEmailField" stacked style="padding: 16px">Confirmation du mot de passe</ion-label>
-	<ion-item [hidden]="!showEmailField">
+	<ion-item [hidden]="!showEmailField" style="margin-left: 16px">
 		<ion-input type="password" [(ngModel)]="password2"></ion-input>
 	</ion-item>
 	<div [hidden]="!showPassword2Error()" 

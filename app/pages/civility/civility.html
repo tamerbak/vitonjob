@@ -4,9 +4,6 @@
             <ion-icon name="menu"></ion-icon>
         </button>
         <ion-title>{{titlePage}}</ion-title>
-        <button menuToggle="right" right>
-            <ion-icon name="more"></ion-icon>
-        </button>
     </ion-navbar>
 </ion-header>
 
@@ -51,7 +48,7 @@
 
 
     <ion-item [hidden]="isEmployer">
-        <ion-label stacked>Date de naissance (JJ/MM/YYYY)</ion-label>
+        <ion-label stacked>Date de naissance</ion-label>
         <ion-datetime [(ngModel)]="birthdate" displayFormat="DD/MM/YYYY"></ion-datetime>
     </ion-item>
 
@@ -100,7 +97,7 @@
     </ion-item>
     <ion-row>
         <ion-col text-center>
-            <ion-label>Importation {{scanTitle}}</ion-label>
+            <ion-label>Joindre une photo {{scanTitle}}</ion-label>
             <button [hidden]="scanUri" class="file-upload button-picture" [style.backgroundColor]="themeColor">
                 <input type="file" class="file-input" (change)="onChangeUpload($event)">
                 <ion-icon name='folder'></ion-icon>
