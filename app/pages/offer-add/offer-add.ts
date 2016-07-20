@@ -1,4 +1,4 @@
-import { NavController, Toast, Modal, LocalStorage, Storage, Loading} from 'ionic-angular';
+import { NavController, Toast, Modal, LocalStorage, Storage, Loading, Alert} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalJobPage} from "../modal-job/modal-job";
@@ -56,7 +56,7 @@ export class OfferAddPage {
         //Initializing PAGE:
         this.initializePage(config);
         this.offerService = os;
-this.nav = nav;
+		this.nav = nav;
 
     }
 
@@ -90,7 +90,7 @@ this.nav = nav;
 
         this.offerToBeAdded = {
             jobData: "", calendarData: [], qualityData: [], languageData: [],
-            visible: this.visibleOffer, title: "", status: "open"
+            visible: this.visibleOffer, title: "", status: "open", videolink: ""
         };
 
         this.initLocalStorageOffer();
@@ -261,7 +261,35 @@ this.nav = nav;
                     })
 
             });
-
     }
-
+	
+	showVideoAlert(){
+		let prompt = Alert.create({
+		  title: 'Attacher une video',
+		  message: "Coller le lien de votre video Youtube",
+		  inputs: [
+			{
+			  name: 'videolink',
+			  placeholder: 'Lien youtube'
+			},
+		  ],
+		  buttons: [
+			{
+			  text: 'Cancel',
+			  handler: data => {
+				console.log('Cancel clicked');
+			  }
+			},
+			{
+			  text: 'Save',
+			  handler: data => {
+				console.log('Saved clicked');
+				this.localOffer.set('videolink', data["videolink"]);
+				this.offerToBeAdded.videolink = data["videolink"];
+			  }
+			}
+		  ]
+		});
+		this.nav.present(prompt);
+	}
 }

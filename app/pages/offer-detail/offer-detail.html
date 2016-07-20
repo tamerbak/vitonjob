@@ -171,8 +171,7 @@
             <ion-card-content>
                 <ion-input placeholder="Lien de vidéo Youtube" [(ngModel)]="youtubeLink"></ion-input>
                 <div *ngIf="videoAvailable">
-                    <iframe width="100%" height="200" style="display:{{videoAvailable?'block':'none'}}"
-                            src="{{youtubeLink}}">
+                    <iframe width="100%" height="200" style="display:{{videoAvailable?'block':'none'}}" target="_parent" [src]="videoUrl()">
 
                     </iframe>
                 </div>

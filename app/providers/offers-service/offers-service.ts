@@ -228,8 +228,12 @@ export class OffersService {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.addedOffer = data;
-                    console.log('ADDED OFFER IN SERVER : ' + JSON.stringify(this.addedOffer));
-                    resolve(this.addedOffer);
+					var idOffer = JSON.parse(data._body).idOffer;
+					this.updateVideoLink(idOffer, offerData.videolink, projectTarget).then((value) => {
+						resolve(value);
+					});
+					console.log('ADDED OFFER IN SERVER : ' + JSON.stringify(this.addedOffer));
+					resolve(this.addedOffer);
                 });
         });
 
