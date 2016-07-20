@@ -25,10 +25,10 @@ export class MissionService {
 
     listMissionHours(contract, forPointing){
         if(forPointing){
-			var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_pointe, h.heure_fin_pointe, p.debut as pause_debut, p.fin as pause_fin, p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '"+contract.pk_user_contrat+"'";
+			var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_pointe, h.heure_fin_pointe, p.debut as pause_debut, p.fin as pause_fin, p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '"+contract.pk_user_contrat+"' order by h.jour_debut, p.debut";
 
 		}else{
-			var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, p.debut as pause_debut, p.fin as pause_fin, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '"+contract.pk_user_contrat+"'";		
+			var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, p.debut as pause_debut, p.fin as pause_fin, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '"+contract.pk_user_contrat+"' order by h.jour_debut, p.debut";		
 		}
         console.log(sql);
 
@@ -239,13 +239,8 @@ export class MissionService {
 	constructMissionHoursArray(initialMissionArray){
         //index of pause :a mission can have many pauses
         var ids = [];
-        //var idsPause = [];
 		var missionHours = [];
 		var missionPauses = [[]];
-		//var startPauses = [['']];
-		//var endPauses = [['']];
-		//var startPausesPointe = [['']];
-		//var endPausesPointe = [['']];
 		var k = 0;
         for(var i = 0; i < initialMissionArray.length; i++){
             var m = initialMissionArray[i];
@@ -267,20 +262,6 @@ export class MissionService {
 					missionPauses[k][0].pause_debut_pointe = this.convertToFormattedHour(m.pause_debut_pointe);
 					missionPauses[k][0].pause_fin_pointe = this.convertToFormattedHour(m.pause_fin_pointe);
 				}
-                
-				/*startPauses[k] = [];
-                endPauses[k] = [];
-				startPausesPointe[k] = [];
-				endPausesPointe[k] = [];	
-				if(m.pause_debut != "null"){
-                    startPauses[k][0] = this.convertToFormattedHour(m.pause_debut);
-					startPausesPointe[k][0] = this.convertToFormattedHour(m.pause_debut_pointe);
-					idsPause.push(m.id_pause);
-				}
-				if(m.pause_fin != "null"){
-                    endPauses[k][0] = this.convertToFormattedHour(m.pause_fin);
-					endPausesPointe[k][0] = this.convertToFormattedHour(m.pause_fin_pointe);
-				}*/
 			}else{
                 //if the mission is already pushed, just push its pause
                 var idExistMission = ids.indexOf(m.id);
@@ -293,11 +274,6 @@ export class MissionService {
 					missionPauses[idExistMission][j].pause_debut_pointe = this.convertToFormattedHour(m.pause_debut_pointe);
 					missionPauses[idExistMission][j].pause_fin_pointe = this.convertToFormattedHour(m.pause_fin_pointe);
 				}				
-				/*startPauses[idExistMission][j] = this.convertToFormattedHour(m.pause_debut);
-                endPauses[idExistMission][j] = this.convertToFormattedHour(m.pause_fin);
-				idsPause.push(m.id_pause);
-				startPausesPointe[idExistMission][j] = this.convertToFormattedHour(m.pause_debut_pointe);
-				endPausesPointe[idExistMission][j] = this.convertToFormattedHour(m.pause_fin_pointe);*/
             }
         }
 			return [missionHours, missionPauses];

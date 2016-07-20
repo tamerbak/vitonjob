@@ -673,6 +673,8 @@ export class CivilityPage {
 	*/
 	onDelete(e){
 		this.scanUri= null;
+		var fileinput = document.getElementById('fileinput');
+		fileinput.value = "";
 	}
 	
 	/**
