@@ -49,5 +49,9 @@ export class SettingsPage {
 	goToSettingPassword() {
 		this.nav.push(SettingPasswordPage);
 	}
+
+	lockApp() {
+
+	}
 	
 }

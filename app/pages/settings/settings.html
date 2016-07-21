@@ -24,6 +24,14 @@
         </ion-item>
 
         <ion-list-header>
+            Sécurité
+        </ion-list-header>
+        <ion-item (click)="lockApp()">
+            <ion-icon name="lock" item-left></ion-icon>
+            Verrouiller votre compte
+        </ion-item>
+
+        <ion-list-header>
             Déconnexion
         </ion-list-header>
         <ion-item (click)="logOut()">
