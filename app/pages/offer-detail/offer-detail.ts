@@ -105,7 +105,7 @@ export class OfferDetailPage {
 			this.videoAvailable = false;
 		}else{
 			this.videoAvailable = true;
-			this.youtubeLink = this.offer.videolink.replace("watch?v=", "embed/");            
+			this.youtubeLink = this.offer.videolink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");            
 		}
 		 /*this.offerService.getOfferVideo(this.offer.idOffer, table).then(data=>{
             this.videoAvailable = false;
@@ -465,7 +465,11 @@ export class OfferDetailPage {
 		if(deleteLink){
 			this.youtubeLink = "";
 		}else{
-			this.youtubeLink = this.youtubeLink.replace("watch?v=", "embed/");   
+			if(this.youtubeLink == "" || !this.youtubeLink.includes("youtu.be") || !this.youtubeLink.includes("www.youtube.com")){
+				this.youtubeLink = "";
+				return;	
+			}
+			this.youtubeLink = this.youtubeLink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");   
 		}
         this.offerService.updateVideoLink(this.offer.idOffer, this.youtubeLink, this.projectTarget).then(()=>{
            if(deleteLink){
