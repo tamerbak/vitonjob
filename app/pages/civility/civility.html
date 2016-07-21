@@ -99,7 +99,7 @@
         <ion-col text-center>
             <ion-label>Joindre une photo {{scanTitle}}</ion-label>
             <button [hidden]="scanUri" class="file-upload button-picture" [style.backgroundColor]="themeColor">
-                <input type="file" class="file-input" (change)="onChangeUpload($event)">
+                <input id="fileinput" type="file" class="file-input" (change)="onChangeUpload($event)">
                 <ion-icon name='folder'></ion-icon>
             </button>
 

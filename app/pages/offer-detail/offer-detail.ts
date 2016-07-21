@@ -13,6 +13,7 @@ import {OfferListPage} from "../offer-list/offer-list";
 import {Component} from "@angular/core";
 import {OfferQuotePage} from "../offer-quote/offer-quote";
 import {PopoverOfferDetailPage} from "../popover-offer-detail/popover-offer-detail";
+import {DomSanitizationService} from '@angular/platform-browser';
 
 /*
  Generated class for the OfferDetailPage page.
@@ -31,8 +32,7 @@ export class OfferDetailPage {
     videoAvailable : boolean = false;
     youtubeLink : string = '';
 
-    constructor(public nav:NavController, gc:GlobalConfigs, params:NavParams,
-                public offersService:OffersService, public searchService:SearchService) {
+    constructor(public nav:NavController, gc:GlobalConfigs, params:NavParams, public offersService:OffersService, public searchService:SearchService, private sanitizer: DomSanitizationService) {
 
         // Set global configs
         // Get target to determine configs
@@ -45,9 +45,10 @@ export class OfferDetailPage {
         this.inversedThemeColor = config.inversedThemeColor;
         this.backgroundImage = config.backgroundImage;
         this.isEmployer = (this.projectTarget === 'employer');
-
-        this.offerService = offersService;
-        // Get Offer passed in NavParams
+		this.sanitizer = sanitizer;  
+		this.offerService = offersService;
+        
+		// Get Offer passed in NavParams
         this.offer = params.get('selectedOffer');
         this.showJob = false;
         this.jobIconName = 'add';
@@ -99,15 +100,21 @@ export class OfferDetailPage {
             day: "numeric"//, hour: "2-digit", minute: "2-digit"
         };
 
-        let table = this.isEmployer?'user_offre_jobyer':'user_offre_entreprise';
-        this.offerService.getOfferVideo(this.offer.idOffre, table).then(data=>{
+        //let table = !this.isEmployer?'user_offre_jobyer':'user_offre_entreprise';
+        if(!this.offer.videolink){
+			this.videoAvailable = false;
+		}else{
+			this.videoAvailable = true;
+			this.youtubeLink = this.offer.videolink.replace("watch?v=", "embed/");            
+		}
+		 /*this.offerService.getOfferVideo(this.offer.idOffer, table).then(data=>{
             this.videoAvailable = false;
             if(data && data != null && data.video && data.video != "null"){
                 this.videoAvailable = true;
                 this.youtubeLink = data.video;
             }
 
-        });
+		 });*/
     }
 
     /**
@@ -454,9 +461,25 @@ export class OfferDetailPage {
 
     }
 
-    updateVideo(){
+    updateVideo(deleteLink){
+		if(deleteLink){
+			this.youtubeLink = "";
+		}else{
+			this.youtubeLink = this.youtubeLink.replace("watch?v=", "embed/");   
+		}
         this.offerService.updateVideoLink(this.offer.idOffer, this.youtubeLink, this.projectTarget).then(()=>{
-           this.videoAvailable = true;
+           if(deleteLink){
+				this.videoAvailable = false;
+			}else{
+				this.videoAvailable = true;
+			}
+			console.log('offer youtube link updated successfuly');
+			this.offer.videolink = this.youtubeLink;
+			this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
         });
     }
+	
+	videoUrl(){
+		return this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLink);
+	}
 }

@@ -169,21 +169,19 @@
         <ion-card >
             <ion-card-header>Vidéo</ion-card-header>
             <ion-card-content>
-                <ion-input placeholder="Lien de vidéo Youtube" [(ngModel)]="youtubeLink"></ion-input>
+                <ion-input placeholder="Lien de vidéo Youtube" [(ngModel)]="youtubeLink" [hidden]="videoAvailable"></ion-input>
                 <div *ngIf="videoAvailable">
-                    <iframe width="100%" height="200" style="display:{{videoAvailable?'block':'none'}}"
-                            src="{{youtubeLink}}">
-
+                    <iframe width="100%" height="200" style="display:{{videoAvailable?'block':'none'}}" target="_parent" [src]="videoUrl()">
                     </iframe>
                 </div>
 
             </ion-card-content>
             <div class="button-footer">
-                <button clear [style.color]="themeColor" (click)="updateVideo()">
+                <button clear [style.color]="themeColor" (click)="updateVideo(false)" [hidden]="videoAvailable">
                     <ion-icon name="videocam"></ion-icon>
                     <div>Modifier</div>
                 </button>
-                <button clear [style.color]="themeColor" (click)="deleteVideo()">
+                <button clear [style.color]="themeColor" (click)="updateVideo(true)" [hidden]="!videoAvailable">
                     <ion-icon name="trash"></ion-icon>
                     <div>Supprimer</div>
                 </button>

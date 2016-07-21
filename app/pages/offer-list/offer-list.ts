@@ -43,7 +43,6 @@ export class OfferListPage {
         this.themeColor = config.themeColor;
         this.listMode = true;
         this.okButtonName = "add";
-        this.isEmployer = (this.projectTarget === 'employer');
         this.backgroundImage = config.backgroundImage;
         //this.cancelButtonName = "";
         //this.loadPeople();

@@ -29,6 +29,12 @@ $vertical-align : calc(20% - 1px);
     width: $offer-button-size;
     height: $offer-button-size;
   }
+  
+  .video-bottom-center{
+	position: absolute;
+	bottom: 20px;
+	left: 20%;
+  }
 
   .icon-top-left {
     font-size: -webkit-xxx-large;
@@ -107,7 +113,4 @@ $vertical-align : calc(20% - 1px);
     border-radius: 20px;
     text-align: center;*/
   }
-
-
-
 }
