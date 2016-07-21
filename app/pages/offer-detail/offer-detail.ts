@@ -100,13 +100,21 @@ export class OfferDetailPage {
             day: "numeric"//, hour: "2-digit", minute: "2-digit"
         };
 
-        let table = this.isEmployer?'user_offre_jobyer':'user_offre_entreprise';
+        //let table = !this.isEmployer?'user_offre_jobyer':'user_offre_entreprise';
         if(!this.offer.videolink){
 			this.videoAvailable = false;
 		}else{
 			this.videoAvailable = true;
-			this.youtubeLink = this.offer.videolink;            
+			this.youtubeLink = this.offer.videolink.replace("watch?v=", "embed/");            
 		}
+		 /*this.offerService.getOfferVideo(this.offer.idOffer, table).then(data=>{
+            this.videoAvailable = false;
+            if(data && data != null && data.video && data.video != "null"){
+                this.videoAvailable = true;
+                this.youtubeLink = data.video;
+            }
+
+		 });*/
     }
 
     /**
@@ -453,9 +461,21 @@ export class OfferDetailPage {
 
     }
 
-    updateVideo(){
+    updateVideo(deleteLink){
+		if(deleteLink){
+			this.youtubeLink = "";
+		}else{
+			this.youtubeLink = this.youtubeLink.replace("watch?v=", "embed/");   
+		}
         this.offerService.updateVideoLink(this.offer.idOffer, this.youtubeLink, this.projectTarget).then(()=>{
-           this.videoAvailable = true;
+           if(deleteLink){
+				this.videoAvailable = false;
+			}else{
+				this.videoAvailable = true;
+			}
+			console.log('offer youtube link updated successfuly');
+			this.offer.videolink = this.youtubeLink;
+			this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
         });
     }
 	

@@ -275,13 +275,13 @@ export class OfferAddPage {
 		  ],
 		  buttons: [
 			{
-			  text: 'Cancel',
+			  text: 'Annuler',
 			  handler: data => {
 				console.log('Cancel clicked');
 			  }
 			},
 			{
-			  text: 'Save',
+			  text: 'Ajouter',
 			  handler: data => {
 				console.log('Saved clicked');
 				this.localOffer.set('videolink', data["videolink"]);
