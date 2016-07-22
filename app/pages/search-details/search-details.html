@@ -56,25 +56,24 @@
             </iframe>
         </ion-item>
 
-        <ion-item>
-            <ion-label>Sélectionner pour embauche</ion-label>
-            <ion-checkbox [(ngModel)]="result.checkedContract" (ionChange)="selectContract($event)"></ion-checkbox>
-        </ion-item>
 
-        <ion-item *ngIf="isEmployer && result.checkedContract" text-wrap style="background-color: lightcyan;
-    margin-top: 0;
-    margin-bottom: 0;">
-            <p>
-                <span style="font-size: smaller">Ce jobyer est sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Contrats en attente"</span>
-            </p>
-        </ion-item>
+        <ion-row>
+            <ion-col text-center>
+                <button secondary
+                        *ngIf="isEmployer && !isRecruteur"
+                        (click)="contract()" small>
+                    Recrutement immédiat
+                </button>
+            </ion-col>
+        </ion-row>
 
+        <ion-row style="padding-left: 16px; padding-top: 5px"><span style="font-size: small">Entretien :</span></ion-row>
         <ion-item>
-            <button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+            <!--button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
                     *ngIf="isEmployer && !result.checkedContract && !isRecruteur"
                     (click)="contract()" item-left>
                 Recruter maintenant!
-            </button>
+            </button-->
 
             <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
                     (click)="skype()" item-right>
@@ -93,6 +92,21 @@
                 <ion-icon name="mail"></ion-icon>
             </button>
         </ion-item>
+
+
+        <ion-item>
+            <ion-label>Recrutement en groupe</ion-label>
+            <ion-checkbox [(ngModel)]="result.checkedContract" (ionChange)="selectContract($event)"></ion-checkbox>
+        </ion-item>
+
+        <ion-item *ngIf="isEmployer && result.checkedContract" text-wrap style="background-color: lightcyan;
+    margin-top: 0;
+    margin-bottom: 0;">
+            <p>
+                <span style="font-size: smaller">Ce jobyer est sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Contrats en attente"</span>
+            </p>
+        </ion-item>
+
 
     </ion-card>
 </ion-content>
