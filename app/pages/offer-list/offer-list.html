@@ -19,7 +19,7 @@
 
         <ion-list text-wrap>
             <ion-item *ngFor="let item of offerList " (click)="goToDetailOffer(item)" [style.color]="item.color">
-                <h3>{{item.title}}</h3>
+                <h3 class="h3-margintop">{{item.title}}</h3>
                 <h4><ion-icon [name]="item.visible ? 'eye' : 'eye-off'"></ion-icon> Offre {{item.visible ? 'publique' : 'privée'}}</h4>
                 <p [style.color]="item.color">Cliquer pour voir plus de détail</p>
                 <ion-badge [style.backgroundColor]="themeColor" item-right>
