@@ -422,8 +422,14 @@ export class CivilityPage {
 		if(this.isEmployer)
 		return;
 		var s = e.target.value;
-		if(s.length >  14){
-			e.preventDefault();
+		if(s.length >  15){
+			s = s.substring(0, 15);
+			e.target.value = s;
+			return;
+		}
+		if (s.indexOf('.') != -1) {
+			s = s.replace('.', '');
+			e.target.value = s;
 			return;
 		}
 		if (e.keyCode < 48 || e.keyCode > 57){
@@ -433,27 +439,6 @@ export class CivilityPage {
 		if(!this.numSS){
 			return;
 		}
-		
-		
-		
-		/*if(this.numSS.length == 1){
-			this.numSS = this.numSS + " ";
-			}
-			if(this.numSS.length == 4){
-			this.numSS = this.numSS + " ";
-			}
-			if(this.numSS.length == 7){
-			this.numSS = this.numSS + " ";
-			}
-			if(this.numSS.length == 10){
-			this.numSS = this.numSS + " ";
-			}
-			if(this.numSS.length == 14){
-			this.numSS = this.numSS + " ";
-			}
-			if(this.numSS.length == 18){
-			this.numSS = this.numSS + " ";
-		}*/
 	}
 	
 	/**
@@ -461,8 +446,14 @@ export class CivilityPage {
 	*/
 	watchCNI(e){
 		var s = e.target.value;
-		if(s.length >  11){
-			e.preventDefault();
+		if(s.length >  12){
+			s = s.substring(0, 12);
+			e.target.value = s;
+			return;
+		}
+		if (s.indexOf('.') != -1) {
+			s = s.replace('.', '');
+			e.target.value = s;
 			return;
 		}
 		if (e.keyCode < 48 || e.keyCode > 57){
