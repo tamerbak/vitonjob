@@ -55,6 +55,7 @@ export class OfferListPage {
             this.offerList = data;
             for (var i = 0; i < this.offerList.length; i++) {
                 let offer = this.offerList[i];
+                offer.color = offer.visible ? 'darkgreen' : 'grey';
                 offer.correspondantsCount = -1;
                 if (isUndefined(offer) || !offer || !offer.jobData) {
                     continue;

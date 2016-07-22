@@ -10,6 +10,7 @@ import {GlobalService} from "../../providers/global.service";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {AddressService} from "../../providers/address-service/address-service";
 import {NotationService} from "../../providers/notation-service/notation-service";
+import {Configs} from "../../configurations/configs";
 
 
 declare var google:any;
@@ -44,6 +45,9 @@ export class SearchDetailsPage implements OnInit {
     rating : number = 0;
     platform : any;
     isRecruteur : boolean = false;
+    avatar: string;
+    backgroundImage: string;
+    themeColor:string;
 
     constructor(public nav: NavController,
                 public params : NavParams,
@@ -57,6 +61,11 @@ export class SearchDetailsPage implements OnInit {
 
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
+        let configInversed = (this.projectTarget==='employer')? Configs.setConfigs('jobyer'):Configs.setConfigs('employer');
+        let config = Configs.setConfigs(this.projectTarget);
+        this.themeColor = config.themeColor;
+        this.backgroundImage = config.backgroundImage;
+        this.avatar = configInversed.avatars[0].url;
         this.isEmployer = this.projectTarget == 'employer';
 		this.platform = platform;
         this.result = params.data.searchResult;
@@ -84,7 +93,7 @@ export class SearchDetailsPage implements OnInit {
         this.userService.getCurrentUser().then(results =>{
 
             if(results && !isUndefined(results)){
-                debugger;
+                //debugger;
                 let currentEmployer = JSON.parse(results);
                 if(currentEmployer){
                     this.employer = currentEmployer;
@@ -129,6 +138,8 @@ export class SearchDetailsPage implements OnInit {
         let table = this.isEmployer?'user_offre_jobyer':'user_offre_entreprise';
         let idOffers = [];
         idOffers.push(this.result.idOffre);
+        this.languages = [];
+        this.qualities = [];
         this.offersService.getOffersLanguages(idOffers, table).then(data=>{
             if(data)
                 this.languages = data;
@@ -150,7 +161,7 @@ export class SearchDetailsPage implements OnInit {
         let resultType = !this.isEmployer;
         let id = this.result.idOffre;
         this.notationService.loadSearchNotation(resultType, id).then(score=>{
-            debugger;
+            //debugger;
             this.rating = score;
             this.starsText = this.writeStars(this.rating);
         });
@@ -188,29 +199,31 @@ export class SearchDetailsPage implements OnInit {
     }
 
     loadMap() {
-        let latLng = new google.maps.LatLng(48.855168, 2.344813);
+        //call the google maps plugin inside a promise :
+        this.userService.getConnexionObject().then(results =>{
+            let latLng = new google.maps.LatLng(48.855168, 2.344813);
 
-        let mapOptions = {
-            center: latLng,
-            zoom:15,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
+            let mapOptions = {
+                center: latLng,
+                zoom:15,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
 
-        let mapElement = document.getElementById("map_canvas");
-        this.map = new google.maps.Map(mapElement, mapOptions);
+            let mapElement = document.getElementById("map_canvas");
+            this.map = new google.maps.Map(mapElement, mapOptions);
 
-        let addresses = [];
+            let addresses = [];
 
-        if(this.result.latitude == "0" && this.result.longitude == "0")
-            return;
-        
-        let latlng = new google.maps.LatLng(this.result.latitude , this.result.longitude);
-        console.log(JSON.stringify(latlng));
-        addresses.push(latlng);
+            if(this.result.latitude == "0" && this.result.longitude == "0")
+                return;
 
-        let bounds = new google.maps.LatLngBounds();
-        this.addMarkers(addresses, bounds);
+            let latlng = new google.maps.LatLng(this.result.latitude , this.result.longitude);
+            console.log(JSON.stringify(latlng));
+            addresses.push(latlng);
 
+            let bounds = new google.maps.LatLngBounds();
+            this.addMarkers(addresses, bounds);
+        });
     }
 
     addMarkers(addresses:any, bounds:any) {
@@ -356,10 +369,22 @@ export class SearchDetailsPage implements OnInit {
         this.nav.pop();
     }
 
-    selectContract(){
-        this.result.checkedContract = true;
+    selectContract(event){
+        this.result.checkedContract = event.checked;
 
-        this.contratsAttente.push(this.result);
+        if (this.result.checkedContract) {
+            /*let search = {
+                title : "",
+                result : this.result
+            };*/
+            this.contratsAttente.push(this.result);
+        } else {
+            //debugger;
+            this.contratsAttente.splice(this.contratsAttente.findIndex((element) => {
+                return (element.email === this.result.email) && (element.tel === this.result.tel);
+            }), 1);
+        }
         this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
+
     }
 }

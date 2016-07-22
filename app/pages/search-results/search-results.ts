@@ -16,6 +16,7 @@ import {timeout} from "rxjs/operator/timeout";
 import {InfoUserPage} from "../info-user/info-user";
 import {ModalOfferPropositionPage} from "../modal-offer-proposition/modal-offer-proposition";
 import {SearchDetailsPage} from "../search-details/search-details";
+import {Configs} from "../../configurations/configs";
 
 
 /**
@@ -58,6 +59,9 @@ export class SearchResultsPage implements OnInit {
 
     db : Storage;
     contratsAttente : any = [];
+    availability: string= "green";
+    backgroundImage: string;
+    themeColor:string;
 
 
     /**
@@ -74,6 +78,10 @@ export class SearchResultsPage implements OnInit {
                 platform : Platform) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
+        let configInversed = this.projectTarget != 'jobyer' ? Configs.setConfigs('jobyer'): Configs.setConfigs('employer');
+        let config = Configs.setConfigs(this.projectTarget);
+        this.backgroundImage = config.backgroundImage;
+        this.themeColor = config.themeColor;
         this.avatar = this.projectTarget != 'jobyer' ? 'jobyer_avatar':'employer_avatar';
         this.platform = platform;
         this.isEmployer = this.projectTarget == 'employer';
@@ -112,9 +120,20 @@ export class SearchResultsPage implements OnInit {
                 if(jsonResults){
                     this.searchResults = jsonResults;
                     this.resultsCount = this.searchResults.length;
+
+
+
+
                     for(let i = 0 ; i < this.searchResults.length ; i++){
                         let r = this.searchResults[i];
                         r.matching = Number(r.matching).toFixed(2);
+                        r.index = i + 1;
+                        if (r.titre === 'M.') {
+                            r.avatar = configInversed.avatars[0].url;
+                        } else {
+                            r.avatar = configInversed.avatars[1].url;
+                        }
+
                     }
                     console.log(this.searchResults);
 
@@ -134,6 +153,7 @@ export class SearchResultsPage implements OnInit {
             });
         });
     }
+
     ngOnInit() {
 
         //get the currentEmployer
@@ -482,6 +502,8 @@ export class SearchResultsPage implements OnInit {
      * @description send sms to jobyer/employer
      */
     sendSMS(item){
+
+        this.isUserConnected();
         console.log("sending SMS to : " + item.tel);
         var number = item.tel;
         var options = {
@@ -519,5 +541,109 @@ export class SearchResultsPage implements OnInit {
 
         this.contratsAttente.push(item);
         this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
+    }
+
+
+    selectContract(event, item){
+        item.checkedContract = event.checked;
+        /*let search = {
+            title : "",
+            result : this.result
+        };*/
+        if (item.checkedContract) {
+            this.contratsAttente.push(item);
+        } else {
+            //debugger;
+            this.contratsAttente.splice(this.contratsAttente.findIndex((element) => {
+                return (element.email === item.email) && (element.tel === item.tel);
+            }), 1);
+        }
+        this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
+    }
+
+    isUserConnected() {
+        if (!this.isUserAuthenticated) {
+            let alert = Alert.create({
+                title: 'Attention',
+                message: 'Pour contacter ce profil, vous devez être connectés.',
+                buttons: [
+                    {
+                        text: 'Annuler',
+                        role: 'cancel',
+                    },
+                    {
+                        text: 'Connexion',
+                        handler: () => {
+                            this.nav.push(LoginsPage);
+                        }
+                    }
+                ]
+            });
+            this.nav.present(alert);
+        }
+    }
+
+    /**
+     * @description connect to jobyer/employer via call
+     * @param item
+     */
+     call(item){
+        this.isUserConnected();
+        (<any>window).location = 'tel:'+ item.tel;
+    }
+
+    /**
+     * @description connect to jobyer/employer via sms
+     * @param item
+     */
+     sendEmail(item){
+        this.isUserConnected();
+        (<any>window).location = 'mailto:'+ item.email;
+    }
+
+
+    /**
+     * @description connect to jobyer/employer via skype
+     * @param item
+     */
+    skype(item){
+
+        this.isUserConnected();
+        var sApp;
+        if(this.platform.is('ios')){
+            sApp = startApp.set("skype://" + item.tel);
+        }else{
+            sApp = startApp.set({
+                "action": "ACTION_VIEW",
+                "uri": "skype:" + item.tel
+            });
+        }
+        sApp.start(() => {
+            console.log('starting skype');
+        }, (error) => {
+            this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
+        });
+    }
+
+    /**
+     * @description connect to jobyer/employer via hangout
+     * @param item
+     */
+    googleHangout(item){
+        this.isUserConnected();
+        var sApp = startApp.set({
+            "action": "ACTION_VIEW",
+            "uri": "gtalk:"+item.tel
+        });
+        sApp.check((values) => { /* success */
+            console.log("OK");
+        }, (error) => { /* fail */
+            this.globalService.showAlertValidation("VitOnJob", "Hangout n'est pas installé.");
+        });
+        sApp.start(() => {
+            console.log('starting hangout');
+        }, (error) => {
+            this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Hangout.");
+        });
     }
 }
