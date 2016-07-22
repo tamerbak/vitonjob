@@ -16,7 +16,6 @@ import {ModalInvoicePage} from "../modal-invoice/modal-invoice";
 import {NotationService} from "../../providers/notation-service/notation-service";
 import {ModalTrackMissionPage} from "../modal-track-mission/modal-track-mission";
 import {LocalNotifications} from 'ionic-native';
-import {NgZone} from '@angular/core';
 
 /*
 	Generated class for the MissionDetailsPage page.
@@ -65,8 +64,7 @@ export class MissionDetailsPage {
 				private missionService:MissionService,
 				private globalService: GlobalService,
 				private pushNotificationService: PushNotificationService,
-				private notationService : NotationService,
-				private zone:NgZone) {
+				private notationService : NotationService) {
 		
 		this.store = new Storage(LocalStorage);
 		this.db = new Storage(SqlStorage);
@@ -94,11 +92,6 @@ export class MissionDetailsPage {
 				var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
 				this.missionHours = array[0];
 				this.missionPauses = array[1];
-				//this.startPauses = array[1];
-				//this.endPauses = array[2];
-				//this.idsPauses = array[3];
-				//this.startPausesPointe = array[4];
-				//this.endPausesPointe = array[5];
 			}
 		});
 		
@@ -263,10 +256,25 @@ export class MissionDetailsPage {
 				endPause = this.missionService.convertHoursToMinutes(this.missionPauses[i][j].pause_fin);
 			}
 		}
-	
+		//if the pointed start hour mission is changed
+		if(isStartMission){
+			if(this.missionPauses[i][0].pause_debut_pointe && this.missionPauses[i][0].pause_debut_pointe != "" && this.missionPauses[i][0].pause_debut_pointe <= startMission){
+				this.globalService.showAlertValidation("VitOnJob", "L'heure de début de mission doit être inférieure à l'heure de début de pause");
+				this.missionHours[i].heure_debut = "";
+				return;
+			}
+		}else{
+			//if pointed end mission is changed
+			if(!j && this.missionPauses[i][this.missionPauses.length - 1].pause_fin_pointe && this.missionPauses[i][this.missionPauses.length - 1].pause_fin_pointe != "" && this.missionPauses[i][this.missionPauses.length - 1].pause_fin_pointe >= endMission){
+				this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de mission doit être supérieure à l'heure de fin de pause");
+				this.missionHours[i].heure_debut = "";
+				return;
+			}
+		}
+		
 		if(isStartPause){
 			//start pause should be greater than start mission
-			if(startMission >= startPause){
+			if(startMission >= startPause && startMission && startMission != ""){
 				this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure à l'heure de début du travail");
 				if(pointing)
 					this.missionPauses[i][j].pause_debut_pointe = "";
@@ -275,7 +283,7 @@ export class MissionDetailsPage {
 				return;
 			}
 			//start pause should be less than end mission
-			if(endMission <= startPause){
+			if(endMission <= startPause && endMission && endMission != ""){
 				this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieur à l'heure de fin de travail");
 				if(pointing)
 					this.missionPauses[i][j].pause_debut_pointe = "";
@@ -285,7 +293,7 @@ export class MissionDetailsPage {
 			}
 		}else{
 			//end pause should be greater than start mission
-			if(startMission >= endPause){
+			if(startMission >= endPause && startMission && startMission != ""){
 				this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure à l'heure de début du travail");
 				if(pointing)
 					this.missionPauses[i][j].pause_fin_pointe = "";
@@ -294,7 +302,7 @@ export class MissionDetailsPage {
 				return;
 			}
 			//end pause should be less than end mission
-			if(endMission <= endPause){
+			if(endMission <= endPause && endMission && endMission != ""){
 				this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieur à l'heure de fin de travail");
 				if(pointing)
 					this.missionPauses[i][j].pause_fin_pointe = "";
