@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Alert, NavController, Events, Loading, Toast, Keyboard} from 'ionic-angular';
+import {Alert, NavController, Events, Loading, Toast, Keyboard, ViewController} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -56,7 +56,8 @@ export class PhonePage {
 				private dataProviderService: DataProviderService, 
 				private globalService: GlobalService, 
 				private validationDataService: ValidationDataService, 
-				public events: Events, keyboard: Keyboard) {
+				public events: Events, keyboard: Keyboard,
+				private viewCtrl: ViewController) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -150,11 +151,16 @@ export class PhonePage {
 			}
 			this.afterAuthSuccess(data);
 			loading.dismiss();
-			//if user is connected for the first time, redirect him to the page 'civility', else redirect him to the home page
+			//if user is connected for the first time, redirect him to the page 'civility' after removing phone page from the nav stack, otherwise redirect him to the home page
 			var isNewUser = data.newAccount;
 			if (isNewUser || this.isNewRecruteur) {
-				this.nav.setRoot(CivilityPage, {
-				currentUser: data});
+				this.nav.push(CivilityPage, {
+				currentUser: data}).then(() => {
+					// first we find the index of the current view controller:
+					const index = this.viewCtrl.index;
+					// then we remove it from the navigation stack
+					this.nav.remove(index);
+				});
 				} else {
 				this.nav.rootNav.setRoot(HomePage);
 				//this.nav.push(InfoUserPage, {

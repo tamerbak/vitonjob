@@ -66,22 +66,22 @@
           <ion-item no-lines>
               <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
                       (click)="itemSelected(item)" item-right>
-                  <ion-icon name="logo-youtube"></ion-icon>
+                  <ion-icon name="map"></ion-icon>
               </button>
               <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
-                      (click)="skype()" item-right>
+                      (click)="skype(item)" item-right>
                   <ion-icon name="logo-skype"></ion-icon>
               </button>
               <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
-                      (click)="call()"  item-right>
+                      (click)="call(item)"  item-right>
                   <ion-icon name="call"></ion-icon>
               </button>
               <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
-                      (click)="sendSMS()" item-right>
+                      (click)="sendSMS(item)" item-right>
                   <ion-icon name="ios-chatboxes"></ion-icon>
               </button>
               <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
-                      (click)="sendEmail()" item-right>
+                      (click)="sendEmail(item)" item-right>
                   <ion-icon name="mail"></ion-icon>
               </button>
           </ion-item>
