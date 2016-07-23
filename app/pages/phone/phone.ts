@@ -45,6 +45,7 @@ export class PhonePage {
 	keyboard: any;
 	//isNewRecruteur = false;
 	//accountid: int;
+	isIndexValid =true;
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
@@ -214,7 +215,6 @@ export class PhonePage {
 	*/
 	watchPhone(e) {
 		if (this.phone) {
-			this.isPhoneNumValid = false;
 			if (e.target.value.substring(0,1) == '0') {
 				e.target.value = e.target.value.substring(1, e.target.value.length);
 			}
@@ -294,6 +294,13 @@ export class PhonePage {
 		return false;
 	}
 	
+	validatePhone(e){
+		if(e.target.value.length == 9){
+			this.isPhoneNumValid = true;	
+		}else{
+			this.isPhoneNumValid = false;	
+		}
+	}
 	/**
 		* @description validate the email format
 	*/
@@ -336,6 +343,31 @@ export class PhonePage {
 				this.emailExist = false;
 			}
 		});
+	}
+	
+	isIndexExist(e){
+		for(var i = 0; i < this.pays.length; i++){
+			if(this.pays[i].indicatif_telephonique == e.target.value){
+				this.isIndexValid = true;
+				return;
+			}else{
+				this.isIndexValid = false;
+			}
+		}
+	}
+	
+	watchIndex(e) {
+		if (this.index) {
+			if (e.target.value.substring(0,1) == '0') {
+				e.target.value = e.target.value.substring(1, e.target.value.length);
+			}
+			if (e.target.value.indexOf('.') != -1) {
+				e.target.value = e.target.value.replace('.', '');
+			}
+			if(e.target.value.length > 4){
+				e.target.value = e.target.value.substring(0, 4);
+			}
+		}
 	}
 	
 	/**
