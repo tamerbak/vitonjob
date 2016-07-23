@@ -33,9 +33,9 @@ declare var google:any;
 export class SearchResultsPage implements OnInit {
 
     searchResults : any;
-    listView : boolean = true;
+    listView : boolean = false;
     cardView : boolean = false;
-    mapView : boolean = false;
+    mapView : boolean = true;
     platform : Platform;
     map : any;
     currentCardIndex : number = 0;
@@ -62,6 +62,9 @@ export class SearchResultsPage implements OnInit {
     availability: string= "green";
     backgroundImage: string;
     themeColor:string;
+    searchService: any;
+
+    iconName: string;
 
 
     /**
@@ -86,6 +89,8 @@ export class SearchResultsPage implements OnInit {
         this.platform = platform;
         this.isEmployer = this.projectTarget == 'employer';
         this.navParams = navParams;
+        this.searchService = searchService;
+        this.iconName = 'list';
 
         this.offersService = offersService;
 
@@ -166,7 +171,16 @@ export class SearchResultsPage implements OnInit {
                 }
                 console.log(currentEmployer);
             }
-            this.loadMap();
+
+            this.searchService.retrieveLastSearch().then(results =>{
+
+                let jsonResults = JSON.parse(results);
+                if(jsonResults) {
+                    this.searchResults = jsonResults;
+                    this.resultsCount = this.searchResults.length;
+                }
+                this.loadMap();
+            })
         });
 
     }
@@ -194,12 +208,19 @@ export class SearchResultsPage implements OnInit {
             let latlng = new google.maps.LatLng(r.latitude, r.longitude);
             locatedResults.push(r);
             addresses.push(latlng);
-            contentTable.push("<h4>"+r.titre+" "+r.prenom+" "+r.nom+ "</h4>" +
-                "<ul>" +
-                "<li>Tél : <a href='tel:" +r.tel+"'>"+r.tel+"</a></li>"+
-                "<li>Email : <a href='mailto:" +r.email+"'>" +r.email+"</a></li>"+
-                "</ul>" +
-                '<button secondary="" class="button button-default button-secondary" ><span class="button-inner">Recruter</span></button>');
+            let matching: string  = (r.matching.indexOf('.') < 0) ? r.matching:r.matching.split('.')[0];
+            if (this.isEmployer) {
+                contentTable.push("<h4>"+r.prenom + ' ' + r.nom.substring(0,1)+". <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;"+matching+"%&nbsp;</span></h4>" +
+                    "<p>"+r.titreOffre+"</p>" +
+                    "<p><span style='color: #29bb00; font-size: large;'>&#9679;</span> &nbsp; Disponible</p>" +
+                    "<p style='text-decoration: underline;'>Détails</p> ");
+            } else {
+                contentTable.push("<h4>"+r.entreprise+" <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;"+matching+"%&nbsp;</span></h4>" +
+                    "<p>"+r.titreOffre+"</p>" +
+                    "<p><span style='color: #29bb00; font-size: large;'>&#9679;</span> &nbsp; Disponible</p>" +
+                    "<p style='text-decoration: underline;'>Détails</p> ");
+            }
+
         }
         let bounds = new google.maps.LatLngBounds();
         this.addMarkers(addresses, bounds, contentTable, locatedResults);
@@ -225,16 +246,31 @@ export class SearchResultsPage implements OnInit {
     addInfoWindow(marker, content, r){
 
         let infoWindow = new google.maps.InfoWindow({
-            content: content
+            content: '<div id="myInfoWinDiv">'+ content +'</div>'
         });
 
         google.maps.event.addListener(marker, 'click', function(){
             infoWindow.open(this.map, marker);
-
-            this.itemSelected(r);
+            let nav = this.nav;
+            google.maps.event.addDomListener(document.getElementById('myInfoWinDiv'), 'click', function(){
+                nav.push(SearchDetailsPage, {searchResult : r});
+            });
+            //this.itemSelected(r);
         }.bind(this));
 
-    }
+
+
+        /*google.maps.event.addListener(infoWindow,'domready',function() {
+            debugger;
+            document.getElementById('myInfoWinDiv').click(function () {
+                //Do your thing
+                this.itemSelected(r);
+            })
+        });*/
+
+    };
+
+
 
     /**
      * @description Selecting an item allows to call an action sheet for communications and contract
@@ -645,5 +681,17 @@ export class SearchResultsPage implements OnInit {
         }, (error) => {
             this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Hangout.");
         });
+    }
+
+    changeView(){
+        if (this.iconName === 'list') {
+            this.listView = true;
+            this.mapView = 'none';
+            this.iconName = 'map';
+        } else {
+            this.listView = false;
+            this.mapView = 'block';
+            this.iconName = 'list';
+        }
     }
 }
