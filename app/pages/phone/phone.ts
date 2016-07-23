@@ -114,6 +114,9 @@ export class PhonePage {
 		* @description function called to authenticate a user
 	*/
 	authenticate() {
+		if(this.isAuthDisabled()){
+			return;
+		}
 		var indPhone = this.index + this.phone;
 		let loading = Loading.create({
 			content: ` 
@@ -203,10 +206,10 @@ export class PhonePage {
 	isAuthDisabled() {
 		if (this.showEmailField == true) {
 			//inscription
-			return (!this.index || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError() || this.emailExist)
+			return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError() || this.emailExist)
 			} else {
 			//connection
-			return (!this.index || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error())
+			return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error())
 		}
 	}
 	
@@ -225,7 +228,7 @@ export class PhonePage {
 				e.target.value = e.target.value.substring(0, 9);
 			}
 			if (e.target.value.length == 9) {
-				this.isRegistration(e.target.value);
+				this.isRegistration(this.index, e.target.value);
 				this.isPhoneNumValid = true;
 			}
 		}
@@ -236,16 +239,15 @@ export class PhonePage {
 	*/
 	showPhoneError(){
 		return !this.isPhoneNumValid;
-		
 	}
 	
 	/**
 		* @description function called when the phone input is valid to decide if the form is for inscription or authentication
 	*/
-	isRegistration(phone) {
+	isRegistration(index, phone) {
 		if (this.isPhoneValid(phone)) {
 			//On teste si le tél existe dans la base
-			var tel = "+" + this.index + phone;
+			var tel = "+" + index + phone;
 			this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data) => {
 				if (!data || data.status == "failure") {
 					console.log(data);
@@ -349,6 +351,8 @@ export class PhonePage {
 		for(var i = 0; i < this.pays.length; i++){
 			if(this.pays[i].indicatif_telephonique == e.target.value){
 				this.isIndexValid = true;
+				if(this.phone && this.phone.length == 9 && this.isPhoneNumValid)
+					this.isRegistration(e.target.value, this.phone);
 				return;
 			}else{
 				this.isIndexValid = false;
@@ -366,6 +370,12 @@ export class PhonePage {
 			}
 			if(e.target.value.length > 4){
 				e.target.value = e.target.value.substring(0, 4);
+			}
+			if(e.target.value == this.index && !this.isIndexValid){
+				this.isIndexValid = false;
+			}
+			if(this.index && !this.isIndexValid){
+				this.isIndexExist(e);
 			}
 		}
 	}
