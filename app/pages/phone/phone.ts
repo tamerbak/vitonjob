@@ -468,7 +468,7 @@ export class PhonePage {
 		if(this.isRecruteur){
 			let confirm = Alert.create({
 				title: "VitOnJob",
-				message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez vous continuer?",
+				message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez-vous continuer?",
 				buttons: [
 					{
 						text: 'Recevoir par SMS',
@@ -476,7 +476,7 @@ export class PhonePage {
 							console.log('SMS selected');	
 							this.passwordForgotten("sms");
 							let toast = Toast.create({
-								message: "Votre mot de passe a été réinitialisé, vous recevrez un SMS avec un nouveau mot de passe d'ici peu.",
+								message: "Votre mot de passe a été réinitialisé. Vous recevrez un SMS avec un nouveau mot de passe d'ici peu.",
 								duration: 5000
 							});
 							this.nav.present(toast);
@@ -488,7 +488,7 @@ export class PhonePage {
 		}else{
 			let confirm = Alert.create({
 				title: "VitOnJob",
-				message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez vous le recevoir par SMS ou par email?",
+				message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez-vous le recevoir par SMS ou par email?",
 				buttons: [
 					{
 						text: 'SMS',
@@ -496,7 +496,7 @@ export class PhonePage {
 							console.log('SMS selected');	
 							this.passwordForgotten("sms");
 							let toast = Toast.create({
-								message: "Votre mot de passe a été réinitialisé, vous recevrai un SMS avec un nouveau mot de passe d'ici peu",
+								message: "Votre mot de passe a été réinitialisé. Vous recevrai un SMS avec un nouveau mot de passe d'ici peu.",
 								duration: 5000
 							});
 							this.nav.present(toast);
@@ -508,7 +508,7 @@ export class PhonePage {
 							console.log('Email selected');	
 							this.passwordForgotten("email", this.email);
 							let toast = Toast.create({
-								message: "Votre mot de passe a été réinitialisé, vous recevrai un courrier électronique avec un nouveau mot de passe d'ici peu",
+								message: "Votre mot de passe a été réinitialisé. Vous recevrai un courrier électronique avec un nouveau mot de passe d'ici peu.",
 								duration: 5000
 							});
 							this.nav.present(toast);
