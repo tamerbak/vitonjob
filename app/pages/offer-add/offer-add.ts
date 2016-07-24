@@ -210,8 +210,7 @@ export class OfferAddPage {
                 //this.steps.isCalendar = this.validated.isLanguage;
                 this.localOffer.set('languages', JSON.stringify(data));
                 if (this.validated.isLanguage && this.validated.isQuality)
-                    this.presentToast("Génial! Vous avez préparez une offre complète, " +
-                        "vous pouvez maintenant la valider.", 4);
+                    this.presentToast("Félicitations, votre offre est complète. Vous pouvez la valider pour l'enregistrer.", 4);
             })
         });
     }
