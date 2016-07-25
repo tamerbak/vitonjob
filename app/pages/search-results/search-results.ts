@@ -634,7 +634,7 @@ export class SearchResultsPage implements OnInit {
      */
      sendEmail(item){
         this.isUserConnected();
-        (<any>window).location = 'mailto:'+ item.email;
+        window.location = 'mailto:'+ item.email;
     }
 
 
