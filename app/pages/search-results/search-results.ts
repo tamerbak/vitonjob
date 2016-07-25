@@ -208,7 +208,7 @@ export class SearchResultsPage implements OnInit {
             let latlng = new google.maps.LatLng(r.latitude, r.longitude);
             locatedResults.push(r);
             addresses.push(latlng);
-            let matching: string  = (r.matching.indexOf('.') < 0) ? r.matching:r.matching.split('.')[0];
+            let matching: string  = (r.matching.toString().indexOf('.') < 0) ? r.matching:r.matching.toString().split('.')[0];
             if (this.isEmployer) {
                 contentTable.push("<h4>"+r.prenom + ' ' + r.nom.substring(0,1)+". <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;"+matching+"%&nbsp;</span></h4>" +
                     "<p>"+r.titreOffre+"</p>" +
