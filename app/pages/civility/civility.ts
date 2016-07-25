@@ -56,7 +56,9 @@ export class CivilityPage {
 	medecineTravail : any;
 	medecineId : number;
 	medecines : any = [];
-	
+	isValideLastName: boolean = true;
+	isValideFirstName: boolean = true;
+
 	/**
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
 	*/
@@ -401,9 +403,9 @@ export class CivilityPage {
 			return (!this.title || !this.firstname || !this.lastname);
 		}
 		if(this.isEmployer){
-			return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5 || !this.isAPEValid || (!this.scanUri && !this.currentUser.scanUploaded));
+			return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5 || !this.isAPEValid || !this.isValideFirstName || !this.isValideLastName|| (!this.scanUri && !this.currentUser.scanUploaded));
 			}else{
-			if((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length!=0)  || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.nationality || !this.birthplace || !this.birthdate || (!this.scanUri && !this.currentUser.scanUploaded))){
+			if((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length!=0)  || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.nationality || !this.birthplace || !this.birthdate || !this.isValideFirstName || !this.isValideLastName|| (!this.scanUri && !this.currentUser.scanUploaded))){
 				return true;
 			}
 			if(!this.numSS || this.numSS.length == 0)
@@ -528,8 +530,22 @@ export class CivilityPage {
 		}
 		
 	}
+
+	watchLastName(e){
+		let name = e.target.value;
+		this.isValideLastName = CivilityPage.isValidName(name);
+	}
+	watchFirstName(e){
+		let name = e.target.value;
+		this.isValideFirstName = CivilityPage.isValidName(name);
+	}
+
+	static isValidName(name:string) {
+		let regEx = /^[A-Za-zÀ-ú.' \-\p{L}\p{Zs}\p{Lu}\p{Ll}']+$/;
+		return name.match(regEx);
+	}
 	
-	isNumeric(n)
+	static isNumeric(n)
 	{
 		var numbers = /^[0-9]+$/;
 		if(n.match(numbers))
