@@ -5,7 +5,12 @@
     <button style="background-color: transparent;"menuToggle>
         <ion-icon style="color: #808080;" name="menu"></ion-icon>
     </button>
-
+    <!--div>
+        <video autoplay muted loop preload="auto" webkit-playsinline class="bg-vid">
+            <source src="https://v.ftcdn.net/01/15/06/10/700_F_115061056_9c5KmOsNqcOj26YO8Ax4aFGGZIRVpQ7o.mp4" type="video/webm">
+            <source src="https://v.ftcdn.net/01/15/06/10/700_F_115061056_9c5KmOsNqcOj26YO8Ax4aFGGZIRVpQ7o.mp4" type="video/mp4">
+        </video>
+    </div-->
 
     <button fab fab-bottom fab-center (click)="stopRecognition()"
             [style.backgroundColor]="themeColor" [hidden]= "!recording">
@@ -38,11 +43,17 @@
 
             </ion-item>
     </ion-row>
-    <div id="adv-search">
-        <a id="ra" [navPush]="push">
-            Recherche Avancée
-        </a>
-    </div>
+    <!--div id="adv-search"-->
+        <ion-row>
+            <ion-col text-right>
+                <a id="ra" [navPush]="push">
+                    Recherche avancée
+                </a>
+            </ion-col>
+
+        </ion-row>
+
+    <!--/div-->
 
     <!--ion-row>
         <ion-col width-10></ion-col>

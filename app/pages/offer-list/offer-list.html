@@ -18,14 +18,15 @@
         </ion-card-header>
 
         <ion-list text-wrap>
-            <button *ngFor="let item of offerList " ion-item (click)="goToDetailOffer(item)">
-                <ion-icon [name]="item.visible ? 'eye' : 'eye-off'" item-left></ion-icon>
-                {{item.title}}
+            <ion-item *ngFor="let item of offerList " (click)="goToDetailOffer(item)" [style.color]="item.color">
+                <h3 class="h3-margintop">{{item.title}}</h3>
+                <h4><ion-icon [name]="item.visible ? 'eye' : 'eye-off'"></ion-icon> Offre {{item.visible ? 'publique' : 'privée'}}</h4>
+                <p [style.color]="item.color">Cliquer pour voir plus de détail</p>
                 <ion-badge [style.backgroundColor]="themeColor" item-right>
                     <ion-spinner name="crescent" [hidden]="(item.correspondantsCount >= 0)"></ion-spinner>
                     {{(item.correspondantsCount < 0) ? '' : item.correspondantsCount}}
                 </ion-badge>
-            </button>
+            </ion-item>
         </ion-list>
     </ion-card>
 

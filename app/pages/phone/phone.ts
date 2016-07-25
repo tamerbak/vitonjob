@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Alert, NavController, Events, Loading, Toast} from 'ionic-angular';
+import {Alert, NavController, Events, Loading, Toast, Keyboard} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -22,7 +22,7 @@ enableProdMode();
 */
 @Component({
 	templateUrl: 'build/pages/phone/phone.html',
-	providers: [AuthenticationService, LoadListService, DataProviderService, GlobalService, ValidationDataService]
+	providers: [AuthenticationService, LoadListService, DataProviderService, GlobalService, ValidationDataService, Keyboard]
 })
 
 export class PhonePage {
@@ -42,6 +42,7 @@ export class PhonePage {
 	backgroundImage:any;
 	emailExist = false;
 	isRecruteur : boolean = false;
+	keyboard: any;
 	//isNewRecruteur = false;
 	//accountid: int;
 	
@@ -55,7 +56,7 @@ export class PhonePage {
 				private dataProviderService: DataProviderService, 
 				private globalService: GlobalService, 
 				private validationDataService: ValidationDataService, 
-				public events: Events) {
+				public events: Events, keyboard: Keyboard) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -70,7 +71,8 @@ export class PhonePage {
 		this.phoneTitle = "Téléphone";
 		this.index = 33;
 		this.libelleButton = "Se connecter";
-		this.backgroundImage = config.backgroundImage
+		this.backgroundImage = config.backgroundImage;
+		this.keyboard = keyboard;
 		
 		//load countries list
 		this.loadListService.loadCountries(this.projectTarget).then((data) => {
@@ -426,7 +428,7 @@ export class PhonePage {
 							console.log('SMS selected');	
 							this.passwordForgotten("sms");
 							let toast = Toast.create({
-								message: "Votre mot de passe a été réinitialisé, vous recevrai un SMS avec un nouveau mot de passe d'ici peu",
+								message: "Votre mot de passe a été réinitialisé, vous recevrez un SMS avec un nouveau mot de passe d'ici peu.",
 								duration: 5000
 							});
 							this.nav.present(toast);

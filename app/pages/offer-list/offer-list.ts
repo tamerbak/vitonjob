@@ -43,7 +43,6 @@ export class OfferListPage {
         this.themeColor = config.themeColor;
         this.listMode = true;
         this.okButtonName = "add";
-        this.isEmployer = (this.projectTarget === 'employer');
         this.backgroundImage = config.backgroundImage;
         //this.cancelButtonName = "";
         //this.loadPeople();
@@ -56,6 +55,7 @@ export class OfferListPage {
             this.offerList = data;
             for (var i = 0; i < this.offerList.length; i++) {
                 let offer = this.offerList[i];
+                offer.color = offer.visible ? 'darkgreen' : 'grey';
                 offer.correspondantsCount = -1;
                 if (isUndefined(offer) || !offer || !offer.jobData) {
                     continue;

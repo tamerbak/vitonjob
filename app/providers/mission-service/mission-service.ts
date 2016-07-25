@@ -25,10 +25,10 @@ export class MissionService {
 
     listMissionHours(contract, forPointing){
         if(forPointing){
-			var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_pointe, h.heure_fin_pointe, p.debut as pause_debut, p.fin as pause_fin, p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '"+contract.pk_user_contrat+"'";
+			var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_pointe, h.heure_fin_pointe, p.debut as pause_debut, p.fin as pause_fin, p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '"+contract.pk_user_contrat+"' order by h.jour_debut, p.debut";
 
 		}else{
-			var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, p.debut as pause_debut, p.fin as pause_fin, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '"+contract.pk_user_contrat+"'";		
+			var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, p.debut as pause_debut, p.fin as pause_fin, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '"+contract.pk_user_contrat+"' order by h.jour_debut, p.debut";		
 		}
         console.log(sql);
 
@@ -44,32 +44,25 @@ export class MissionService {
         });
     }
 
-    addPauses(missionHours, startPauses, endPauses, contractId){
+    addPauses(missionHours, missionPauses, contractId){
         //  Init project parameters
         var sql = "update user_contrat set vu = 'Oui' where pk_user_contrat = '" + contractId + "'; ";
 
-        var pauseArrayEmpty;
-        for(var i = 0; i < startPauses.length; i++){
-            if(startPauses[i].length != 0){
-                pauseArrayEmpty = false;
-				break;
-            }else{
-                pauseArrayEmpty = true;
-            }
-        }
-        if(!pauseArrayEmpty){
-            var valuesString = "";
-            for(var i = 0; i < missionHours.length; i++){
-                for(var j = 0; j < startPauses[i].length; j++){
-                    //convert startpausehour and endpausehour to minutes
-                    var startMinute = this.convertHoursToMinutes(startPauses[i][j]);
-                    var endMinute = this.convertHoursToMinutes(endPauses[i][j]);
-                    valuesString = valuesString + "(" + missionHours[i].id + ", " + startMinute + ", " + endMinute + "),";
-                }
-            }
-            sql = sql + " insert into user_pause (fk_user_heure_mission, debut, fin) values " + valuesString.slice(0, -1) + "; ";
-        }
-
+		var valuesString = "";
+		for(var i = 0; i < missionHours.length; i++){
+			if(missionPauses[i]){
+				for(var j = 0; j < missionPauses[i].length; j++){
+					//convert startpausehour and endpausehour to minutes
+					var startMinute = this.convertHoursToMinutes(missionPauses[i][j].pause_debut);
+					var endMinute = this.convertHoursToMinutes(missionPauses[i][j].pause_fin);
+					valuesString = valuesString + "(" + missionHours[i].id + ", " + startMinute + ", " + endMinute + "),";
+					
+				}
+			}
+		}
+		if(valuesString != ""){
+			sql = sql + " insert into user_pause (fk_user_heure_mission, debut, fin) values " + valuesString.slice(0, -1) + "; ";
+		}
         console.log(sql);
 
         return new Promise(resolve => {
@@ -192,7 +185,7 @@ export class MissionService {
         });
     }
 	
-	schedulePointeuse(contract, missionHours, startPauses, endPauses, idsPause){
+	schedulePointeuse(contract, missionHours, missionPauses){
 	   var notifArray = [];
 	   var j = missionHours.length;
 	   var l = 2 * j
@@ -213,21 +206,23 @@ export class MissionService {
 			notifArray.push(endNotif);
 			j++;
 			
-			for(var k = 0; k < startPauses[i].length; k++){
-				var year = new Date(missionHours[i].jour_debut).getFullYear();
-				var month = new Date(missionHours[i].jour_debut).getMonth();
-				var day = new Date(missionHours[i].jour_debut).getDate();
-				var startH = startPauses[i][k].split(':');
-				var endH = endPauses[i][k].split(':');
-				
-				nextPointing = {id: missionHours[i].id, start: true, id_pause: idsPause[k]};
-				var startNotifPause = {id: l + 1, text: "Vous devez pointer l'heure de début de pause planifiée pour " + startH[0] + ":" + startH[1], at: new Date(year, month, day, startH[0], startH[1]), data : {contract: contract, nextPointing: nextPointing}};
-				nextPointing = {id: missionHours[i].id, start: false, id_pause: idsPause[k]};
-				var endNotifPause = {id: l + 2, text: "Vous devez pointer l'heure de fin de pause planifiée pour " + endH[0] + ":" + endH[1], at: new Date(year, month, day, endH[0], endH[1]), data : {contract: contract, nextPointing: nextPointing}};
-				
-				notifArray.push(startNotifPause);
-				notifArray.push(endNotifPause);
-				l = l + 2;
+			if(missionPauses[i]){
+				for(var k = 0; k < missionPauses[i].length; k++){
+					var year = new Date(missionHours[i].jour_debut).getFullYear();
+					var month = new Date(missionHours[i].jour_debut).getMonth();
+					var day = new Date(missionHours[i].jour_debut).getDate();
+					var startH = missionPauses[i][k].pause_debut.split(':');
+					var endH = missionPauses[i][k].pause_fin.split(':');
+					
+					nextPointing = {id: missionHours[i].id, start: true, id_pause: missionPauses[i][k].id};
+					var startNotifPause = {id: l + 1, text: "Vous devez pointer l'heure de début de pause planifiée pour " + startH[0] + ":" + startH[1], at: new Date(year, month, day, startH[0], startH[1]), data : {contract: contract, nextPointing: nextPointing}};
+					nextPointing = {id: missionHours[i].id, start: false, id_pause: missionPauses[i][k].id};
+					var endNotifPause = {id: l + 2, text: "Vous devez pointer l'heure de fin de pause planifiée pour " + endH[0] + ":" + endH[1], at: new Date(year, month, day, endH[0], endH[1]), data : {contract: contract, nextPointing: nextPointing}};
+					
+					notifArray.push(startNotifPause);
+					notifArray.push(endNotifPause);
+					l = l + 2;
+				}
 			}
 	   }
 	   
@@ -241,15 +236,11 @@ export class MissionService {
 	   });*/
     }
 	
-	constructMissionHoursArray(initialMissionArray, forPointing){
+	constructMissionHoursArray(initialMissionArray){
         //index of pause :a mission can have many pauses
         var ids = [];
-        var idsPause = [];
 		var missionHours = [];
-		var startPauses = [['']];
-		var endPauses = [['']];
-		var startPausesPointe = [['']];
-		var endPausesPointe = [['']];
+		var missionPauses = [[]];
 		var k = 0;
         for(var i = 0; i < initialMissionArray.length; i++){
             var m = initialMissionArray[i];
@@ -263,35 +254,29 @@ export class MissionService {
 				//push the id mission to not stock the same mission many time
                 ids.push(m.id);
                 //push the pauses
-                startPauses[k] = [];
-                endPauses[k] = [];
-				startPausesPointe[k] = [];
-				endPausesPointe[k] = [];	
-				if(m.pause_debut != "null"){
-                    startPauses[k][0] = this.convertToFormattedHour(m.pause_debut);
-					idsPause.push(m.id_pause);
-				}
-				if(m.pause_debut_pointe != "null" && m.pause_debut_pointe != ""){
-					startPausesPointe[k][0] = this.convertToFormattedHour(m.pause_debut_pointe);
-                }
-                if(m.pause_fin != "null"){
-                    endPauses[k][0] = this.convertToFormattedHour(m.pause_fin);
-				}
-				if(m.pause_fin_pointe != "null" && m.pause_fin_pointe != ""){
-					endPausesPointe[k][0] = this.convertToFormattedHour(m.pause_fin_pointe);
+				if(m.id_pause != "null"){
+					missionPauses[k] = [{}];
+					missionPauses[k][0].id = m.id_pause;
+					missionPauses[k][0].pause_debut = this.convertToFormattedHour(m.pause_debut);
+					missionPauses[k][0].pause_fin = this.convertToFormattedHour(m.pause_fin);
+					missionPauses[k][0].pause_debut_pointe = this.convertToFormattedHour(m.pause_debut_pointe);
+					missionPauses[k][0].pause_fin_pointe = this.convertToFormattedHour(m.pause_fin_pointe);
 				}
 			}else{
                 //if the mission is already pushed, just push its pause
                 var idExistMission = ids.indexOf(m.id);
-                var j = startPauses[idExistMission].length;
-                startPauses[idExistMission][j] = this.convertToFormattedHour(m.pause_debut);
-                endPauses[idExistMission][j] = this.convertToFormattedHour(m.pause_fin);
-				idsPause.push(m.id_pause);
-				startPausesPointe[idExistMission][j] = this.convertToFormattedHour(m.pause_debut_pointe);
-				endPausesPointe[idExistMission][j] = this.convertToFormattedHour(m.pause_fin_pointe);
+                var j = missionPauses[idExistMission].length;
+				if(m.id_pause != "null"){
+					missionPauses[idExistMission][j] = {};
+					missionPauses[idExistMission][j].id = m.id_pause;
+					missionPauses[idExistMission][j].pause_debut = this.convertToFormattedHour(m.pause_debut);
+					missionPauses[idExistMission][j].pause_fin = this.convertToFormattedHour(m.pause_fin);
+					missionPauses[idExistMission][j].pause_debut_pointe = this.convertToFormattedHour(m.pause_debut_pointe);
+					missionPauses[idExistMission][j].pause_fin_pointe = this.convertToFormattedHour(m.pause_fin_pointe);
+				}				
             }
         }
-			return [missionHours, startPauses, endPauses, idsPause, startPausesPointe, endPausesPointe];
+			return [missionHours, missionPauses];
     }
 	
 	savePointing(pointing){
@@ -328,29 +313,35 @@ export class MissionService {
 		for(var i = 0; i < missionHours.length; i++){
 			var m = missionHours[i];
 			var str = "";
-			m.value = this.convertHoursToMinutes(m.value);
-			if(m.isStart){
-				str = " heure_debut_pointe = '" + m.value + "', debut_corrigee = 'Oui' ";
-				
-			}else{
-				str = " heure_fin_pointe = '" + m.value + "', fin_corrigee = 'Oui' ";
+			if(m.heure_debut_corrigee && m.heure_debut_corrigee != ""){
+				str = " heure_debut_pointe = '" +this.convertHoursToMinutes(m.heure_debut_corrigee) + "', debut_corrigee = 'Oui' ";
+				sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '"+m.id +"'; ";
 			}
-			sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '"+m.id +"'; ";
-		}
-		for(var i = 0; i < pauseHours.length; i++){
-			var p = pauseHours[i];
-			var str = "";
-			p.value = this.convertHoursToMinutes(p.value);
-			if(p.isStart){
-				str = " debut_pointe = '" + p.value + "', debut_corrigee = 'Oui' ";
-			}else{
-				str = " fin_pointe = '" + p.value + "', fin_corrigee = 'Oui' ";
+			
+			if(m.heure_fin_corrigee && m.heure_fin_corrigee != ""){
+				str = " heure_fin_pointe = '" + this.convertHoursToMinutes(m.heure_fin_corrigee) + "', fin_corrigee = 'Oui' ";
+				sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '"+m.id +"'; ";
 			}
-			sql = sql + " update user_pause set " + str + " where pk_user_pause = '"+p.id +"'; ";
+			
+			//sql request for pauses
+			if(pauseHours[i]){
+				for(var j = 0; j < pauseHours[i].length; j++){
+					var p = pauseHours[i][j];
+					var str = "";
+					if(p.pause_debut_corrigee && p.pause_debut_corrigee != ""){
+						str = " debut_pointe = '" + this.convertHoursToMinutes(p.pause_debut_corrigee) + "', debut_corrigee = 'Oui' ";
+						sql = sql + " update user_pause set " + str + " where pk_user_pause = '"+p.id +"'; ";
+					}
+					if(p.pause_fin_corrigee && p.pause_fin_corrigee != ""){
+						str = " fin_pointe = '" + this.convertHoursToMinutes(p.pause_fin_corrigee) + "', fin_corrigee = 'Oui' ";
+						sql = sql + " update user_pause set " + str + " where pk_user_pause = '"+p.id +"'; ";
+					}
+				}
+			}
 		}
+		
 		sql = sql + " update user_contrat set releve_employeur = 'Oui' where pk_user_contrat = '" + id + "'; ";
 		console.log(sql);
-
         return new Promise(resolve => {
             let headers = new Headers();
             headers.append("Content-Type", 'text/plain');

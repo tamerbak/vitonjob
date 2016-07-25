@@ -4,9 +4,6 @@
             <ion-icon name="menu"></ion-icon>
         </button>
         <ion-title>{{titlePage}}</ion-title>
-        <button menuToggle="right" right>
-            <ion-icon name="more"></ion-icon>
-        </button>
     </ion-navbar>
 </ion-header>
 
@@ -31,7 +28,7 @@
     </ion-item>
 
     <ion-item [hidden]="!isEmployer">
-        <ion-label floating >Nom entreprise</ion-label>
+        <ion-label floating >Raison sociale</ion-label>
         <ion-input type="text" [(ngModel)]="companyname"></ion-input>
     </ion-item>
 
@@ -51,7 +48,7 @@
 
 
     <ion-item [hidden]="isEmployer">
-        <ion-label stacked>Date de naissance (JJ/MM/YYYY)</ion-label>
+        <ion-label stacked>Date de naissance</ion-label>
         <ion-datetime [(ngModel)]="birthdate" displayFormat="DD/MM/YYYY"></ion-datetime>
     </ion-item>
 
@@ -81,14 +78,14 @@
 
     <ion-item [hidden]="isEmployer">
         <ion-label floating>CNI</ion-label>
-        <ion-input type="number" [(ngModel)]="cni" (keypress)="watchCNI($event)" maxlength="12" ></ion-input>
+        <ion-input type="number" [(ngModel)]="cni" (keyup)="watchCNI($event)" maxlength="12" ></ion-input>
     </ion-item>
     <div *ngIf="showCNIError()"
          class="error-box">* Saisissez les 12 chiffres du CNI</div>
 
     <ion-item [hidden]="isEmployer">
         <ion-label floating>N° sécurité sociale</ion-label>
-        <ion-input type="number" [(ngModel)]="numSS" (keypress)="watchNumSS($event)" maxlength="15"></ion-input>
+        <ion-input type="number" [(ngModel)]="numSS" (keyup)="watchNumSS($event)" maxlength="15"></ion-input>
     </ion-item>
     <div *ngIf="showNSSError()" class="error-box">{{numSSMessage}}</div>
 
@@ -100,9 +97,9 @@
     </ion-item>
     <ion-row>
         <ion-col text-center>
-            <ion-label>Importation {{scanTitle}}</ion-label>
+            <ion-label>Joindre une photo {{scanTitle}}</ion-label>
             <button [hidden]="scanUri" class="file-upload button-picture" [style.backgroundColor]="themeColor">
-                <input type="file" class="file-input" (change)="onChangeUpload($event)">
+                <input id="fileinput" type="file" class="file-input" (change)="onChangeUpload($event)">
                 <ion-icon name='folder'></ion-icon>
             </button>
 

@@ -162,30 +162,33 @@ export class Vitonjob {
             if ((<any>window).cordova) {
                 
                 //gc.setInstabug(cordova.plugins.instabug);
-                cordova.plugins.instabug.activate(
-                    {
-                        android: this.tokens.android,
-                        ios: this.tokens.ios
-                    },
-                    'button',
-                    {
-                        commentRequired: true,
-                        emailRequired: true,
-                        shakingThresholdAndroid: '1.5',
-                        shakingThresholdIPhone: '1.5',
-                        shakingThresholdIPad: '0.6',
-                        enableIntroDialog: false,
-                        floatingButtonOffset: '200',
-                        setLocale: 'french',
-                        colorTheme: 'light'
-                    },
-                    function () {
-                        console.log('Instabug initialized.');
-                    },
-                    function (error) {
-                        console.log('Instabug could not be initialized - ' + error);
-                    }
-                );
+                if (!cordova.plugins.cordova) {
+                    cordova.plugins.instabug.activate(
+                        {
+                            android: this.tokens.android,
+                            ios: this.tokens.ios
+                        },
+                        'button',
+                        {
+                            commentRequired: true,
+                            emailRequired: true,
+                            shakingThresholdAndroid: '1.5',
+                            shakingThresholdIPhone: '1.5',
+                            shakingThresholdIPad: '0.6',
+                            enableIntroDialog: false,
+                            floatingButtonOffset: '200',
+                            setLocale: 'french',
+                            colorTheme: 'light'
+                        },
+                        function () {
+                            console.log('Instabug initialized.');
+                        },
+                        function (error) {
+                            console.log('Instabug could not be initialized - ' + error);
+                        }
+                    )
+                }
+
 
 
                 //for push notification

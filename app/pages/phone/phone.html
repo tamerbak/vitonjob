@@ -1,12 +1,12 @@
 
 
-<ion-content padding class="phone" [ngStyle]="backgroundImage">
+<ion-content class="phone" [ngStyle]="backgroundImage">
 	<button style="background-color: transparent; color: #757575;" menuToggle>
 		<ion-icon name="menu"></ion-icon>
 	</button>
 	
-	<ion-label stacked>Entrez votre numéro de téléphone portable</ion-label>
-	<ion-row baseline>
+	<ion-label stacked style="padding: 16px">Entrez votre numéro de téléphone portable</ion-label>
+	<ion-row baseline class="ionRow">
 		<ion-col width-33>
 			<ion-item>
 				<ion-input type="number" [(ngModel)]="index"></ion-input>
@@ -23,8 +23,8 @@
 	</ion-row>
 	<div [hidden]="isPhoneNumValid" class="error-box"></div>
 	
-	<ion-label [hidden]="!showEmailField" stacked>Votre email</ion-label>
-	<ion-item [hidden]="!showEmailField">
+	<ion-label [hidden]="!showEmailField" stacked style="padding: 16px">Votre email</ion-label>
+	<ion-item [hidden]="!showEmailField"  style="margin-left: 16px">
 		<ion-input #focusable id="email" type="email" [(ngModel)]="email" (change)="isEmailExist($event)"></ion-input>
 	</ion-item>
 	<div [hidden]="!showEmailError()" 
@@ -32,21 +32,27 @@
 	<div [hidden]="!emailExist" 
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Cet email est déjà utilisé. Veuillez choisir un autre.</div>
 	
-	<ion-label stacked>Votre mot de passe</ion-label>
-	<ion-item>
+	<ion-label stacked style="padding: 16px">Votre mot de passe</ion-label>
+	<ion-item style="margin-left: 16px">
 		<ion-input type="password" [(ngModel)]="password1"></ion-input>
 	</ion-item>
 	<div [hidden]="!showPassword1Error()" 
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Taille minimale: 6 caractères</div>
 	
-	<ion-label [hidden]="!showEmailField" stacked>Confirmation du mot de passe</ion-label>
-	<ion-item [hidden]="!showEmailField">
+	<ion-label [hidden]="!showEmailField" stacked style="padding: 16px">Confirmation du mot de passe</ion-label>
+	<ion-item [hidden]="!showEmailField" style="margin-left: 16px">
 		<ion-input type="password" [(ngModel)]="password2"></ion-input>
 	</ion-item>
 	<div [hidden]="!showPassword2Error()" 
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Mots de passe non identiques!</div>
+
+
 	<ion-row>&nbsp;</ion-row>
-	<ion-row id="btn-co">
+	<ion-row>&nbsp;</ion-row>
+	<ion-row>&nbsp;</ion-row>
+	<ion-row>&nbsp;</ion-row>
+	<ion-row>&nbsp;</ion-row>
+	<ion-row id="btn-co" >
 		<ion-col width-10></ion-col>
 		<ion-col text-center>
 			<button block (click)="authenticate()" [style.backgroundColor]="themeColor" [disabled]="isAuthDisabled()" type="submit">
@@ -56,8 +62,8 @@
 		</ion-col>
 		<ion-col width-10></ion-col>
 	</ion-row>
-	
-	<ion-row id="btn-q">
+
+	<!--ion-row id="btn-q">
 		<ion-col width-10></ion-col>
 		<ion-col text-center>
 			<button block [style.backgroundColor]="themeColor" (click)="goBack()">
@@ -66,16 +72,16 @@
 			</button>
 		</ion-col>
 		<ion-col width-10></ion-col>
-	</ion-row>
-	<ion-row>&nbsp;</ion-row>
-	<ion-row id="btn-mdp">
+	</ion-row-->
+	<ion-row id="btn-mdp" >
 		<ion-col width-10></ion-col>
-		<ion-col text-center>
-			<button block [style.backgroundColor]="themeColor" (click)="displayPasswordAlert()">
+		<ion-col text-center style="    padding-top: 0px;">
+			<button block [style.backgroundColor]="themeColor" style="font-size: 13px; padding-top: 0px;" (click)="displayPasswordAlert()">
 				<ion-icon name="key"></ion-icon>
-				Mot de passe oublié
+				Mot de passe oublié ?
 			</button>
 		</ion-col>
 		<ion-col width-10></ion-col>
 	</ion-row>
 </ion-content>
+

@@ -139,9 +139,9 @@ export class OffersService {
                 }
             }
         });
-
     };
-
+	
+	
 
     /**
      * @Author TEL
@@ -151,9 +151,6 @@ export class OffersService {
      * @caution ALWAYS CALLED AFTER setOfferInLocal()!
      */
     setOfferInRemote(offerData:any, projectTarget:string) {
-        
-
-
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
@@ -228,11 +225,51 @@ export class OffersService {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.addedOffer = data;
-                    console.log('ADDED OFFER IN SERVER : ' + JSON.stringify(this.addedOffer));
-                    resolve(this.addedOffer);
+					//save the video link
+					var idOffer = JSON.parse(data._body).idOffer;
+					this.updateVideoLink(idOffer, offerData.videolink, projectTarget);
+					//attach id offer to the offer in local
+					offerData.idOffer = idOffer;
+					this.attachIdOfferInLocal(offerData, projectTarget);
+					console.log('ADDED OFFER IN SERVER : ' + JSON.stringify(this.addedOffer));
+					resolve(this.addedOffer);
                 });
         });
 
+    }
+	
+	attachIdOfferInLocal(offer, projectTarget){
+        this.db.get('currentUser').then(data => {
+            if (data) {
+                data = JSON.parse((data));
+                if (projectTarget === 'employer') {
+                    let rawData = data.employer;
+                    //console.log(rawData.entreprises);
+                    if (rawData && rawData.entreprises && rawData.entreprises[0].offers){
+                        for(let i = data.employer.entreprises[0].offers.length - 1 ; i >= 0 ; i++){
+                            if(!data.employer.entreprises[0].offers[i].idOffer){
+                                data.employer.entreprises[0].offers[i] = offer;
+                                break;
+                            }
+                        }
+                        // Save new offer list in SqlStorage :
+                        this.db.set('currentUser', JSON.stringify(data));
+                    }
+                } else { // jobyer
+                    let rawData = data.jobyer;
+                    if (rawData && rawData.offers) {
+                        for(let i = data.jobyer.offers.length - 1; i >= 0; i++){
+                            if(!data.jobyer.offers[i].idOffer){
+                                data.jobyer.offers[i] = offer;
+                                break;
+                            }
+                        }
+                        // Save new offer list in SqlStorage :
+                        this.db.set('currentUser', JSON.stringify(data));
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -1196,7 +1233,7 @@ export class OffersService {
         });
     }
 
-    sqlfy(d){
+	sqlfy(d){
         return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" 00:00:00+00";
     }
 

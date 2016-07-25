@@ -16,6 +16,7 @@ import {timeout} from "rxjs/operator/timeout";
 import {InfoUserPage} from "../info-user/info-user";
 import {ModalOfferPropositionPage} from "../modal-offer-proposition/modal-offer-proposition";
 import {SearchDetailsPage} from "../search-details/search-details";
+import {Configs} from "../../configurations/configs";
 
 
 /**
@@ -32,9 +33,9 @@ declare var google:any;
 export class SearchResultsPage implements OnInit {
 
     searchResults : any;
-    listView : boolean = true;
+    listView : boolean = false;
     cardView : boolean = false;
-    mapView : boolean = false;
+    mapView : boolean = true;
     platform : Platform;
     map : any;
     currentCardIndex : number = 0;
@@ -58,6 +59,12 @@ export class SearchResultsPage implements OnInit {
 
     db : Storage;
     contratsAttente : any = [];
+    availability: string= "green";
+    backgroundImage: string;
+    themeColor:string;
+    searchService: any;
+
+    iconName: string;
 
 
     /**
@@ -74,10 +81,16 @@ export class SearchResultsPage implements OnInit {
                 platform : Platform) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
+        let configInversed = this.projectTarget != 'jobyer' ? Configs.setConfigs('jobyer'): Configs.setConfigs('employer');
+        let config = Configs.setConfigs(this.projectTarget);
+        this.backgroundImage = config.backgroundImage;
+        this.themeColor = config.themeColor;
         this.avatar = this.projectTarget != 'jobyer' ? 'jobyer_avatar':'employer_avatar';
         this.platform = platform;
         this.isEmployer = this.projectTarget == 'employer';
         this.navParams = navParams;
+        this.searchService = searchService;
+        this.iconName = 'list';
 
         this.offersService = offersService;
 
@@ -112,9 +125,20 @@ export class SearchResultsPage implements OnInit {
                 if(jsonResults){
                     this.searchResults = jsonResults;
                     this.resultsCount = this.searchResults.length;
+
+
+
+
                     for(let i = 0 ; i < this.searchResults.length ; i++){
                         let r = this.searchResults[i];
                         r.matching = Number(r.matching).toFixed(2);
+                        r.index = i + 1;
+                        if (r.titre === 'M.') {
+                            r.avatar = configInversed.avatars[0].url;
+                        } else {
+                            r.avatar = configInversed.avatars[1].url;
+                        }
+
                     }
                     console.log(this.searchResults);
 
@@ -134,6 +158,7 @@ export class SearchResultsPage implements OnInit {
             });
         });
     }
+
     ngOnInit() {
 
         //get the currentEmployer
@@ -146,7 +171,16 @@ export class SearchResultsPage implements OnInit {
                 }
                 console.log(currentEmployer);
             }
-            this.loadMap();
+
+            this.searchService.retrieveLastSearch().then(results =>{
+
+                let jsonResults = JSON.parse(results);
+                if(jsonResults) {
+                    this.searchResults = jsonResults;
+                    this.resultsCount = this.searchResults.length;
+                }
+                this.loadMap();
+            })
         });
 
     }
@@ -174,12 +208,19 @@ export class SearchResultsPage implements OnInit {
             let latlng = new google.maps.LatLng(r.latitude, r.longitude);
             locatedResults.push(r);
             addresses.push(latlng);
-            contentTable.push("<h4>"+r.titre+" "+r.prenom+" "+r.nom+ "</h4>" +
-                "<ul>" +
-                "<li>Tél : <a href='tel:" +r.tel+"'>"+r.tel+"</a></li>"+
-                "<li>Email : <a href='mailto:" +r.email+"'>" +r.email+"</a></li>"+
-                "</ul>" +
-                '<button secondary="" class="button button-default button-secondary" ><span class="button-inner">Recruter</span></button>');
+            let matching: string  = (r.matching.indexOf('.') < 0) ? r.matching:r.matching.split('.')[0];
+            if (this.isEmployer) {
+                contentTable.push("<h4>"+r.prenom + ' ' + r.nom.substring(0,1)+". <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;"+matching+"%&nbsp;</span></h4>" +
+                    "<p>"+r.titreOffre+"</p>" +
+                    "<p><span style='color: #29bb00; font-size: large;'>&#9679;</span> &nbsp; Disponible</p>" +
+                    "<p style='text-decoration: underline;'>Détails</p> ");
+            } else {
+                contentTable.push("<h4>"+r.entreprise+" <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;"+matching+"%&nbsp;</span></h4>" +
+                    "<p>"+r.titreOffre+"</p>" +
+                    "<p><span style='color: #29bb00; font-size: large;'>&#9679;</span> &nbsp; Disponible</p>" +
+                    "<p style='text-decoration: underline;'>Détails</p> ");
+            }
+
         }
         let bounds = new google.maps.LatLngBounds();
         this.addMarkers(addresses, bounds, contentTable, locatedResults);
@@ -205,16 +246,31 @@ export class SearchResultsPage implements OnInit {
     addInfoWindow(marker, content, r){
 
         let infoWindow = new google.maps.InfoWindow({
-            content: content
+            content: '<div id="myInfoWinDiv">'+ content +'</div>'
         });
 
         google.maps.event.addListener(marker, 'click', function(){
             infoWindow.open(this.map, marker);
-
-            this.itemSelected(r);
+            let nav = this.nav;
+            google.maps.event.addDomListener(document.getElementById('myInfoWinDiv'), 'click', function(){
+                nav.push(SearchDetailsPage, {searchResult : r});
+            });
+            //this.itemSelected(r);
         }.bind(this));
 
-    }
+
+
+        /*google.maps.event.addListener(infoWindow,'domready',function() {
+            debugger;
+            document.getElementById('myInfoWinDiv').click(function () {
+                //Do your thing
+                this.itemSelected(r);
+            })
+        });*/
+
+    };
+
+
 
     /**
      * @description Selecting an item allows to call an action sheet for communications and contract
@@ -435,7 +491,7 @@ export class SearchResultsPage implements OnInit {
         });
 
         this.toast = Toast.create({
-            message: 'Vous pouvez utiliser ces critères de recherche pour créer une nouvelle offre',
+            message: 'Utiliser vos critères de recherches pour créer une nouvelle offre',
             showCloseButton: true,
             closeButtonText: 'Créer'
         });
@@ -482,6 +538,8 @@ export class SearchResultsPage implements OnInit {
      * @description send sms to jobyer/employer
      */
     sendSMS(item){
+
+        this.isUserConnected();
         console.log("sending SMS to : " + item.tel);
         var number = item.tel;
         var options = {
@@ -519,5 +577,121 @@ export class SearchResultsPage implements OnInit {
 
         this.contratsAttente.push(item);
         this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
+    }
+
+
+    selectContract(event, item){
+        item.checkedContract = event.checked;
+        /*let search = {
+            title : "",
+            result : this.result
+        };*/
+        if (item.checkedContract) {
+            this.contratsAttente.push(item);
+        } else {
+            //debugger;
+            this.contratsAttente.splice(this.contratsAttente.findIndex((element) => {
+                return (element.email === item.email) && (element.tel === item.tel);
+            }), 1);
+        }
+        this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
+    }
+
+    isUserConnected() {
+        if (!this.isUserAuthenticated) {
+            let alert = Alert.create({
+                title: 'Attention',
+                message: 'Pour contacter ce profil, vous devez être connectés.',
+                buttons: [
+                    {
+                        text: 'Annuler',
+                        role: 'cancel',
+                    },
+                    {
+                        text: 'Connexion',
+                        handler: () => {
+                            this.nav.push(LoginsPage);
+                        }
+                    }
+                ]
+            });
+            this.nav.present(alert);
+        }
+    }
+
+    /**
+     * @description connect to jobyer/employer via call
+     * @param item
+     */
+     call(item){
+        this.isUserConnected();
+        (<any>window).location = 'tel:'+ item.tel;
+    }
+
+    /**
+     * @description connect to jobyer/employer via sms
+     * @param item
+     */
+     sendEmail(item){
+        this.isUserConnected();
+        (<any>window).location = 'mailto:'+ item.email;
+    }
+
+
+    /**
+     * @description connect to jobyer/employer via skype
+     * @param item
+     */
+    skype(item){
+
+        this.isUserConnected();
+        var sApp;
+        if(this.platform.is('ios')){
+            sApp = startApp.set("skype://" + item.tel);
+        }else{
+            sApp = startApp.set({
+                "action": "ACTION_VIEW",
+                "uri": "skype:" + item.tel
+            });
+        }
+        sApp.start(() => {
+            console.log('starting skype');
+        }, (error) => {
+            this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
+        });
+    }
+
+    /**
+     * @description connect to jobyer/employer via hangout
+     * @param item
+     */
+    googleHangout(item){
+        this.isUserConnected();
+        var sApp = startApp.set({
+            "action": "ACTION_VIEW",
+            "uri": "gtalk:"+item.tel
+        });
+        sApp.check((values) => { /* success */
+            console.log("OK");
+        }, (error) => { /* fail */
+            this.globalService.showAlertValidation("VitOnJob", "Hangout n'est pas installé.");
+        });
+        sApp.start(() => {
+            console.log('starting hangout');
+        }, (error) => {
+            this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Hangout.");
+        });
+    }
+
+    changeView(){
+        if (this.iconName === 'list') {
+            this.listView = true;
+            this.mapView = 'none';
+            this.iconName = 'map';
+        } else {
+            this.listView = false;
+            this.mapView = 'block';
+            this.iconName = 'list';
+        }
     }
 }

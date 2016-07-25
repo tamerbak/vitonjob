@@ -52,7 +52,17 @@
           [style.backgroundColor]="themeColor" (click)="showLanguageModal()">
     <ion-icon name="globe" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
   </button>
-
+  
+  <!--video-->
+  <ion-row >
+    <ion-col text-center>
+      <button [style.backgroundColor]="themeColor" (click)="showVideoAlert()" class="video-bottom-center"
+              [disabled] = "!(validated.isJob && validated.isCalendar)" >
+        <ion-icon name="videocam" is-active="false"></ion-icon>
+        Attacher une video
+      </button>
+    </ion-col>
+  </ion-row>
 
 
 

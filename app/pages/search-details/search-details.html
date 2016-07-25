@@ -1,4 +1,4 @@
-<ion-header>
+<!--ion-header>
     <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
         <ion-title style="padding-left: 0">{{fullTitle}}</ion-title>
         <ion-buttons end>
@@ -7,86 +7,106 @@
             </button>
         </ion-buttons>
     </ion-navbar>
-</ion-header>
+</ion-header-->
 
-<ion-content padding class="search-details">
-    <ion-grid>
+<ion-content padding class="search-details" [ngStyle]="backgroundImage">
+
+    <button [style.color]="themeColor" clear nav-pop>
+        <ion-icon name="arrow-back"></ion-icon>
+        Retour aux résultats
+    </button>
+
+    <ion-card>
+        <ion-item>
+            <ion-avatar item-left><img [src]="avatar"></ion-avatar>
+            <h3>{{fullName}}</h3>
+            <ion-badge item-right style="margin: 0px 8px 9px 0;">{{(matching.indexOf('.') < 0) ? matching:matching.split('.')[0]}}%</ion-badge>
+            <p style="color: yellowgreen">{{starsText}}</p>
+        </ion-item>
+        <div id="map_canvas" style="height:200px;">
+        </div>
+
         <ion-row>
-            <h3>{{fullName}}</h3>&nbsp;<ion-badge item-right style="margin: 0px 8px 9px 0;">{{matching}}</ion-badge>
+            <ion-col text-center>
+                <h2 style="font-weight: bold">{{isEmployer ? 'Offre de service: ' : 'Offre: '}} {{fullTitle}} </h2>
+            </ion-col>
         </ion-row>
-        <ion-row>
-           <h4> {{isEmployer ? 'Offre de service: ' : 'Offre: '}} {{fullTitle}} </h4>
-        </ion-row>
-        <ion-row>
-            <ion-list>
-                <ion-list-header>
-                    Langues {{isEmployer?"maîrisées":"requises"}}
-                </ion-list-header>
-                <ion-item *ngFor="let item of languages">
-                    {{item.libelle}}
-                </ion-item>
-                <ion-list-header>
-                    Qualités {{isEmployer?"acquises":"requises"}}
-                </ion-list-header>
-                <ion-item *ngFor="let item of qualities">
-                    {{item.libelle}}
-                </ion-item>
-            </ion-list>
-        </ion-row>
-        <ion-row *ngIf="videoPresent">
+        <ion-row>&nbsp;</ion-row>
+
+        <ion-list no-lines [hidden]="languages.length==0">
+            <ion-list-title>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Langues {{isEmployer?"maîtrisées":"requises"}}
+            </ion-list-title>
+            <ion-item *ngFor="let item of languages">
+                <p>&nbsp;&nbsp;• {{item.libelle}} </p>
+            </ion-item>
+        </ion-list>
+        <ion-list no-lines [hidden]="qualities.length==0">
+            <ion-list-title>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Qualités {{isEmployer?"acquises":"requises"}}
+            </ion-list-title>
+            <ion-item *ngFor="let item of qualities">
+                <p>&nbsp;&nbsp;• {{item.libelle}}</p>
+            </ion-item>
+        </ion-list>
+        <ion-item *ngIf="videoPresent">
             <iframe width="100%" height="200"
                     src="{{videoLink}}">
                 <!--http://www.youtube.com/embed/XGSy3_Czz8k?autoplay=1 -->
             </iframe>
-        </ion-row>
-        <ion-row>
+        </ion-item>
 
-            <ion-col width-100>
-                <ion-buttons end>
-                    <button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
-                            (click)="sendEmail()">
-                        <ion-icon name="at"></ion-icon>
-                    </button>
-                    <button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
-                            (click)="call()">
-                        <ion-icon name="call"></ion-icon>
-                    </button>
-                    <button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
-                            (click)="sendSMS()">
-                        <ion-icon name="mail"></ion-icon>
-                    </button>
-                    <button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''" (click)="skype()">
-                        <ion-icon name="logo-skype"></ion-icon>
-                    </button>
-                    <!--button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''" (click)="googleHangout()" disabled>
-                        <ion-icon name="logo-googleplus"></ion-icon>
-                    </button-->
-                </ion-buttons>
+
+        <ion-row>
+            <ion-col text-center>
+                <button secondary
+                        *ngIf="isEmployer && !isRecruteur"
+                        (click)="contract()" small>
+                    Recrutement immédiat
+                </button>
             </ion-col>
         </ion-row>
 
-        <ion-row>
-            <button block class="{{availability.code}}" disabled>
-                {{starsText}}
-            </button>
-        </ion-row>
-         <div id="map_canvas" style="height:200px;" >
-        </div>
-         <ion-row>
-            <button block [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''" *ngIf="isEmployer && !result.checkedContract && !isRecruteur"
-                    (click)="contract()" >
-                Recruter maintenant
-            </button>
-        </ion-row>
-        <ion-row *ngIf="isEmployer && !result.checkedContract" >
-            <ion-item>
-                <ion-label>Sélectionner pour embauche</ion-label>
-                <ion-checkbox [(ngModel)]="result.checkedContract" (ionChange)="selectContract()" ></ion-checkbox>
-            </ion-item>
-        </ion-row>
+        <ion-row style="padding-left: 16px; padding-top: 5px"><span style="font-size: small">Entretien :</span></ion-row>
+        <ion-item>
+            <!--button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+                    *ngIf="isEmployer && !result.checkedContract && !isRecruteur"
+                    (click)="contract()" item-left>
+                Recruter maintenant!
+            </button-->
 
-        <ion-row *ngIf="isEmployer && result.checkedContract" >
-            <span style="text-align: right;margin-top: 40px;">Ce jobyer est déjà sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Contrats en attente"</span>
-        </ion-row>
-    </ion-grid>
+            <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+                    (click)="skype()" item-right>
+                <ion-icon name="logo-skype"></ion-icon>
+            </button>
+            <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+                    (click)="call()"  item-right>
+                <ion-icon name="call"></ion-icon>
+            </button>
+            <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+                    (click)="sendSMS()" item-right>
+                <ion-icon name="ios-chatboxes"></ion-icon>
+            </button>
+            <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+                    (click)="sendEmail()" item-right>
+                <ion-icon name="mail"></ion-icon>
+            </button>
+        </ion-item>
+
+
+        <ion-item>
+            <ion-label>Recrutement en groupe</ion-label>
+            <ion-checkbox [(ngModel)]="result.checkedContract" (ionChange)="selectContract($event)"></ion-checkbox>
+        </ion-item>
+
+        <ion-item *ngIf="isEmployer && result.checkedContract" text-wrap style="background-color: lightcyan;
+    margin-top: 0;
+    margin-bottom: 0;">
+            <p>
+                <span style="font-size: smaller">Ce jobyer est sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Contrats en attente"</span>
+            </p>
+        </ion-item>
+
+
+    </ion-card>
 </ion-content>
