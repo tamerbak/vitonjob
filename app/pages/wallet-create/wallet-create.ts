@@ -26,6 +26,7 @@ export class WalletCreatePage {
 
     existingWallet : boolean = false;
     walletMsg : string = '';
+	currentUserVar: string;
 
     constructor(public nav: NavController,
                 gc: GlobalConfigs,
@@ -44,8 +45,9 @@ export class WalletCreatePage {
         this.isEmployer = (this.projectTarget=='employer');
         this.mangoPayTitle = "Prise d'empreinte";
         this.themeColor = config.themeColor;
+		this.currentUserVar = config.currentUserVar;
         this.nav = nav;
-        this.storage.get("currentUser").then(data => {
+        this.storage.get(this.currentUserVar).then(data => {
             let user = JSON.parse(data);
             this.service.checkWallet(user).then(walletId => {
                 if(walletId && walletId != 'null' && walletId.length>0){
@@ -75,7 +77,7 @@ export class WalletCreatePage {
         });
         debugger;
         this.nav.present(loading);
-        this.storage.get("currentUser").then(data => {
+        this.storage.get(this.currentUserVar).then(data => {
             let user = JSON.parse(data);
             this.service.empreinteCarte(card, user).then(data=> {
                 loading.dismiss();

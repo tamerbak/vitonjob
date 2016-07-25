@@ -56,6 +56,7 @@ export class CivilityPage {
 	medecineTravail : any;
 	medecineId : number;
 	medecines : any = [];
+	currentUserVar: string;
 	
 	/**
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
@@ -83,6 +84,7 @@ export class CivilityPage {
 		
 		// Set local variables and messages
 		this.themeColor = config.themeColor;
+		this.currentUserVar = config.currentUserVar;
 		this.isEmployer = (this.projectTarget == 'employer');
 		//this.tabs=tabs;
 		this.params = params;
@@ -140,7 +142,7 @@ export class CivilityPage {
 		* @description initiate the civility form with the data of the logged user
 	*/
 	initCivilityForm(){
-		this.storage.get("currentUser").then((value) => {
+		this.storage.get(this.currentUserVar).then((value) => {
 			if(value && value != "null"){
 				this.currentUser = JSON.parse(value);
 				this.title = this.currentUser.titre;
@@ -274,7 +276,7 @@ export class CivilityPage {
 					this.currentUser.titre = this.title;
 					this.currentUser.nom = this.lastname;
 					this.currentUser.prenom = this.firstname;
-					this.storage.set('currentUser', JSON.stringify(this.currentUser));
+					this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
 					this.events.publish('user:civility', this.currentUser);
 					loading.dismiss();
 					if(this.fromPage == "profil"){
@@ -309,7 +311,7 @@ export class CivilityPage {
 					//upload scan
 					this.updateScan(employerId);
 					// PUT IN SESSION
-					this.storage.set('currentUser', JSON.stringify(this.currentUser));
+					this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
 					this.events.publish('user:civility', this.currentUser);
 					loading.dismiss();
 					if(this.fromPage == "profil"){
@@ -347,7 +349,7 @@ export class CivilityPage {
 						//upload scan
 						this.updateScan(jobyerId);
 						// PUT IN SESSION
-						this.storage.set('currentUser', JSON.stringify(this.currentUser));
+						this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
 						this.events.publish('user:civility', this.currentUser);
 						loading.dismiss();
 						if(this.fromPage == "profil"){
@@ -369,21 +371,21 @@ export class CivilityPage {
 	updateScan(userId){
 		if (this.scanUri) {
 			this.currentUser.scanUploaded = true;
-			this.storage.set('currentUser', JSON.stringify(this.currentUser));
+			this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
 			this.authService.uploadScan(this.scanUri, userId, 'scan', 'upload')
 			.then((data) => {
 				if(!data || data.status == "failure"){
 					console.log("Scan upload failed !");
 					//this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde du scan");
 					this.currentUser.scanUploaded = false;
-					this.storage.set('currentUser', JSON.stringify(this.currentUser));					
+					this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));					
 				}
 				else{
 					console.log("Scan uploaded !");
 				}
 
 			});
-			this.storage.get("currentUser").then(usr => {
+			this.storage.get(this.currentUserVar).then(usr => {
 				if(usr){
 					let user = JSON.parse(usr);
 					this.attachementService.uploadFile(user, 'scan '+this.scanTitle, this.scanUri);

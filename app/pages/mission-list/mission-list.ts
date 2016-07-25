@@ -28,11 +28,11 @@ export class MissionListPage {
     society:string;
     contractList:any;
     missionListTitle:string;
-    
+	currentUserVar: string;
+
     constructor(public gc: GlobalConfigs, 
                 public nav: NavController, 
                 private contractService:ContractService) {
-        
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
         
@@ -41,6 +41,7 @@ export class MissionListPage {
         
         // Set store variables and messages
         this.themeColor = config.themeColor;
+		this.currentUserVar = config.currentUserVar;
         this.missionListTitle = "Suivi des missions";
         this.isEmployer = (this.projectTarget=='employer');
 		this.storage = new Storage(SqlStorage);
@@ -49,7 +50,7 @@ export class MissionListPage {
 	onPageWillEnter() {
         console.log('••• On Init');
 		//get contracts
-        this.storage.get("currentUser").then((value) => {
+        this.storage.get(this.currentUserVar).then((value) => {
 			if(value){
 				this.currentUser = JSON.parse(value);
 				var id;

@@ -46,6 +46,7 @@ export class PhonePage {
 	//isNewRecruteur = false;
 	//accountid: int;
 	isIndexValid =true;
+	currentUserVar: string;
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
@@ -74,6 +75,7 @@ export class PhonePage {
 		this.index = 33;
 		this.libelleButton = "Se connecter";
 		this.backgroundImage = config.backgroundImage;
+		this.currentUserVar = config.currentUserVar;
 		this.keyboard = keyboard;
 		
 		//load countries list
@@ -176,7 +178,7 @@ export class PhonePage {
 	afterAuthSuccess(data){
 		//case of authentication success
 		this.authService.setObj('connexion', null);
-		this.authService.setObj('currentUser', null);
+		this.authService.setObj(this.currentUserVar, null);
 		var connexion = {
 			'etat': true,
 			'libelle': 'Se déconnecter',
@@ -193,7 +195,7 @@ export class PhonePage {
 		}
 		});
 		this.storage.set('connexion', JSON.stringify(connexion));
-		this.storage.set('currentUser', JSON.stringify(data));
+		this.storage.set(this.currentUserVar, JSON.stringify(data));
 		this.events.publish('user:login', data);
 		
 		//user is connected, then change the name of connexion btn to deconnection

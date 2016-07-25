@@ -35,9 +35,10 @@ export class ModalAttachementPage {
 
         // Set local variables and messages
         this.themeColor = config.themeColor;
-
-        this.db = new Storage(SqlStorage);
-        this.db.get("currentUser").then(usr => {
+		let currentUserVar = config.currentUserVar;
+        
+		this.db = new Storage(SqlStorage);
+        this.db.get(currentUserVar).then(usr => {
             if(usr){
                 this.user = JSON.parse(usr);
             }

@@ -76,7 +76,7 @@ export class OffersService {
         /*Returning a promise*/
         return new Promise(resolve => {
             // Loading user
-            this.loadCurrentUser()
+            this.loadCurrentUser(projectTarget)
                 .then(data => {
                     switch (projectTarget) {
                         case 'employer' :
@@ -110,7 +110,8 @@ export class OffersService {
         this.configuration = Configs.setConfigs(projectTarget);
         let offers:any;
         let result:any;
-        return this.db.get('currentUser').then(data => {
+		let currentUserVar = this.configuration.currentUserVar;
+        return this.db.get(currentUserVar).then(data => {
             
             if (data) {
                 data = JSON.parse((data));
@@ -123,7 +124,7 @@ export class OffersService {
                         offers = rawData.entreprises[0].offers;
                         offers.push(offerData);
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 } else { // jobyer
                     let rawData = data.jobyer;
@@ -134,7 +135,7 @@ export class OffersService {
                         offers = rawData.offers;
                         offers.push(offerData);
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 }
             }
@@ -239,7 +240,9 @@ export class OffersService {
     }
 	
 	attachIdOfferInLocal(offer, projectTarget){
-        this.db.get('currentUser').then(data => {
+        this.configuration = Configs.setConfigs(projectTarget);
+        let currentUserVar = this.configuration.currentUserVar;
+        this.db.get(currentUserVar).then(data => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -253,7 +256,7 @@ export class OffersService {
                             }
                         }
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 } else { // jobyer
                     let rawData = data.jobyer;
@@ -265,7 +268,7 @@ export class OffersService {
                             }
                         }
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 }
             }
@@ -344,8 +347,10 @@ export class OffersService {
      * @description     Returning the persisted offers list from the local data base
      * @return {any}    A promise of getting serialized data from SQLite phone database
      */
-    loadCurrentUser() {
-        return this.db.get('currentUser');
+    loadCurrentUser(projectTarget) {
+		this.configuration = Configs.setConfigs(projectTarget);
+        let currentUserVar = this.configuration.currentUserVar;
+        return this.db.get(currentUserVar);
     }
 
     loadSectorsToLocal(){
@@ -669,7 +674,9 @@ export class OffersService {
 	}
 
     updateOfferInLocal(offer, projectTarget){
-        this.db.get('currentUser').then(data => {
+        this.configuration = Configs.setConfigs(projectTarget);
+        let currentUserVar = this.configuration.currentUserVar;
+        this.db.get(currentUserVar).then(data => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -684,7 +691,7 @@ export class OffersService {
                             }
                         }
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 } else { // jobyer
                     let rawData = data.jobyer;
@@ -696,7 +703,7 @@ export class OffersService {
                             }
                         }
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 }
             }
@@ -704,8 +711,9 @@ export class OffersService {
     }
 	
 	updateOfferJob(offer, projectTarget){
-
-        this.db.get('currentUser').then(data => {
+		this.configuration = Configs.setConfigs(projectTarget);
+        let currentUserVar = this.configuration.currentUserVar;
+        this.db.get(currentUserVar).then(data => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -721,7 +729,7 @@ export class OffersService {
                         }
 
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 } else { // jobyer
                     let rawData = data.jobyer;
@@ -735,7 +743,7 @@ export class OffersService {
                         }
 
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 }
             }
@@ -846,7 +854,9 @@ export class OffersService {
         let table = projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise';
         this.deleteQualities(offer, table);
         this.attachQualities(offer, table);
-        this.db.get('currentUser').then(data => {
+        this.configuration = Configs.setConfigs(projectTarget);
+        let currentUserVar = this.configuration.currentUserVar;
+        this.db.get(currentUserVar).then(data => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -862,7 +872,7 @@ export class OffersService {
                         }
 
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 } else { // jobyer
                     let rawData = data.jobyer;
@@ -876,7 +886,7 @@ export class OffersService {
                         }
 
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 }
             }
@@ -938,8 +948,10 @@ export class OffersService {
         let table = projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise';
         this.deleteLanguages(offer, table);
         this.attacheLanguages(offer, table);
-
-        this.db.get('currentUser').then(data => {
+		
+		this.configuration = Configs.setConfigs(projectTarget);
+        let currentUserVar = this.configuration.currentUserVar;
+        this.db.get(currentUserVar).then(data => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -955,7 +967,7 @@ export class OffersService {
                         }
 
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 } else { // jobyer
                     let rawData = data.jobyer;
@@ -969,7 +981,7 @@ export class OffersService {
                         }
 
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 }
             }
@@ -1030,8 +1042,10 @@ export class OffersService {
         let table = projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise';
         this.deleteCalendar(offer, table);
         this.attacheCalendar(offer, table);
-
-        this.db.get('currentUser').then(data => {
+		
+		this.configuration = Configs.setConfigs(projectTarget);
+        let currentUserVar = this.configuration.currentUserVar;
+        this.db.get(currentUserVar).then(data => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -1047,7 +1061,7 @@ export class OffersService {
                         }
 
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 } else { // jobyer
                     let rawData = data.jobyer;
@@ -1061,7 +1075,7 @@ export class OffersService {
                         }
 
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 }
             }
@@ -1123,8 +1137,9 @@ export class OffersService {
      * @param offer to be deleted
      */
     deleteOffer(offer, projectTarget){
-
-        this.db.get('currentUser').then(data => {
+		this.configuration = Configs.setConfigs(projectTarget);
+        let currentUserVar = this.configuration.currentUserVar;
+        this.db.get(currentUserVar).then(data => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -1144,7 +1159,7 @@ export class OffersService {
                         }
 
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 } else { // jobyer
                     let rawData = data.jobyer;
@@ -1162,7 +1177,7 @@ export class OffersService {
                         }
 
                         // Save new offer list in SqlStorage :
-                        this.db.set('currentUser', JSON.stringify(data));
+                        this.db.set(currentUserVar, JSON.stringify(data));
                     }
                 }
             }

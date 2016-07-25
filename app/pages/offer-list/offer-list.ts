@@ -73,7 +73,8 @@ export class OfferListPage {
                 });
             }
         });
-		this.db.get("currentUser").then(value => {
+		let currentUserVar = config.currentUserVar;
+        this.db.get(currentUserVar).then(value => {
             if(value && value != "null"){
 				var currentUser = JSON.parse(value);
 				if(!currentUser.titre){

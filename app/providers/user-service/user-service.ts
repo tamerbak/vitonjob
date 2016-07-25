@@ -1,6 +1,6 @@
 import {Storage, SqlStorage} from 'ionic-angular';
 import {Injectable} from '@angular/core';
-
+import {Configs} from "../../configurations/configs";
 
 /**
  * @author daoudi amine
@@ -11,6 +11,7 @@ import {Injectable} from '@angular/core';
 export class UserService {
     data:any = null;
     db:any;
+	
 
     constructor() {
         this.db = new Storage(SqlStorage);
@@ -28,8 +29,10 @@ export class UserService {
      * @description get the current connected employer
      * @return promise
      */
-    getCurrentUser() {
-        return this.db.get('currentUser');
+    getCurrentUser(projectTarget) {
+		this.configuration = Configs.setConfigs(projectTarget);
+        let currentUserVar = this.configuration.currentUserVar;
+        return this.db.get(currentUserVar);
     }
 
 }
