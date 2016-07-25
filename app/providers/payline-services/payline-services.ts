@@ -33,7 +33,8 @@ export class PaylineServices {
             city : '',
             country : '',
             street : '',
-            zipCode:''
+            zipCode:'',
+            contractNumber:2508733
         };
         let encodedArg = btoa(JSON.stringify(bean));
         var payload = {
