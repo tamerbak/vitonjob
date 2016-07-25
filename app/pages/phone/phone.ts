@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Alert, NavController, Events, Loading, Toast, Keyboard} from 'ionic-angular';
+import {Alert, NavController, Events, Loading, Toast, Keyboard, ViewController} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -45,6 +45,7 @@ export class PhonePage {
 	keyboard: any;
 	//isNewRecruteur = false;
 	//accountid: int;
+	isIndexValid =true;
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
@@ -56,7 +57,8 @@ export class PhonePage {
 				private dataProviderService: DataProviderService, 
 				private globalService: GlobalService, 
 				private validationDataService: ValidationDataService, 
-				public events: Events, keyboard: Keyboard) {
+				public events: Events, keyboard: Keyboard,
+				private viewCtrl: ViewController) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -112,6 +114,9 @@ export class PhonePage {
 		* @description function called to authenticate a user
 	*/
 	authenticate() {
+		if(this.isAuthDisabled()){
+			return;
+		}
 		var indPhone = this.index + this.phone;
 		let loading = Loading.create({
 			content: ` 
@@ -150,11 +155,16 @@ export class PhonePage {
 			}
 			this.afterAuthSuccess(data);
 			loading.dismiss();
-			//if user is connected for the first time, redirect him to the page 'civility', else redirect him to the home page
+			//if user is connected for the first time, redirect him to the page 'civility' after removing phone page from the nav stack, otherwise redirect him to the home page
 			var isNewUser = data.newAccount;
 			if (isNewUser || this.isNewRecruteur) {
-				this.nav.setRoot(CivilityPage, {
-				currentUser: data});
+				this.nav.push(CivilityPage, {
+				currentUser: data}).then(() => {
+					// first we find the index of the current view controller:
+					const index = this.viewCtrl.index;
+					// then we remove it from the navigation stack
+					this.nav.remove(index);
+				});
 				} else {
 				this.nav.rootNav.setRoot(HomePage);
 				//this.nav.push(InfoUserPage, {
@@ -196,10 +206,10 @@ export class PhonePage {
 	isAuthDisabled() {
 		if (this.showEmailField == true) {
 			//inscription
-			return (!this.index || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError() || this.emailExist)
+			return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError() || this.emailExist)
 			} else {
 			//connection
-			return (!this.index || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error())
+			return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error())
 		}
 	}
 	
@@ -208,7 +218,6 @@ export class PhonePage {
 	*/
 	watchPhone(e) {
 		if (this.phone) {
-			this.isPhoneNumValid = false;
 			if (e.target.value.substring(0,1) == '0') {
 				e.target.value = e.target.value.substring(1, e.target.value.length);
 			}
@@ -219,7 +228,7 @@ export class PhonePage {
 				e.target.value = e.target.value.substring(0, 9);
 			}
 			if (e.target.value.length == 9) {
-				this.isRegistration(e.target.value);
+				this.isRegistration(this.index, e.target.value);
 				this.isPhoneNumValid = true;
 			}
 		}
@@ -230,16 +239,15 @@ export class PhonePage {
 	*/
 	showPhoneError(){
 		return !this.isPhoneNumValid;
-		
 	}
 	
 	/**
 		* @description function called when the phone input is valid to decide if the form is for inscription or authentication
 	*/
-	isRegistration(phone) {
+	isRegistration(index, phone) {
 		if (this.isPhoneValid(phone)) {
 			//On teste si le tél existe dans la base
-			var tel = "+" + this.index + phone;
+			var tel = "+" + index + phone;
 			this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data) => {
 				if (!data || data.status == "failure") {
 					console.log(data);
@@ -288,6 +296,13 @@ export class PhonePage {
 		return false;
 	}
 	
+	validatePhone(e){
+		if(e.target.value.length == 9){
+			this.isPhoneNumValid = true;	
+		}else{
+			this.isPhoneNumValid = false;	
+		}
+	}
 	/**
 		* @description validate the email format
 	*/
@@ -330,6 +345,39 @@ export class PhonePage {
 				this.emailExist = false;
 			}
 		});
+	}
+	
+	isIndexExist(e){
+		for(var i = 0; i < this.pays.length; i++){
+			if(this.pays[i].indicatif_telephonique == e.target.value){
+				this.isIndexValid = true;
+				if(this.phone && this.phone.length == 9 && this.isPhoneNumValid)
+					this.isRegistration(e.target.value, this.phone);
+				return;
+			}else{
+				this.isIndexValid = false;
+			}
+		}
+	}
+	
+	watchIndex(e) {
+		if (this.index) {
+			if (e.target.value.substring(0,1) == '0') {
+				e.target.value = e.target.value.substring(1, e.target.value.length);
+			}
+			if (e.target.value.indexOf('.') != -1) {
+				e.target.value = e.target.value.replace('.', '');
+			}
+			if(e.target.value.length > 4){
+				e.target.value = e.target.value.substring(0, 4);
+			}
+			if(e.target.value == this.index && !this.isIndexValid){
+				this.isIndexValid = false;
+			}
+			if(this.index && !this.isIndexValid){
+				this.isIndexExist(e);
+			}
+		}
 	}
 	
 	/**
@@ -414,13 +462,13 @@ export class PhonePage {
 			return;
 		}
 		if(this.phone && this.isPhoneValid(this.phone) && this.showEmailField){
-			this.globalService.showAlertValidation("VitOnJob", "Aucun compte ne correspond à ce numéro de téléphone.");
+			this.globalService.showAlertValidation("VitOnJob", "Le numéro que vous avez saisi ne correspond à aucun compte enregistrè. Veuillez créer un compte.");
 			return;
 		}
 		if(this.isRecruteur){
 			let confirm = Alert.create({
 				title: "VitOnJob",
-				message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez vous continuer?",
+				message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez-vous continuer?",
 				buttons: [
 					{
 						text: 'Recevoir par SMS',
@@ -428,7 +476,7 @@ export class PhonePage {
 							console.log('SMS selected');	
 							this.passwordForgotten("sms");
 							let toast = Toast.create({
-								message: "Votre mot de passe a été réinitialisé, vous recevrez un SMS avec un nouveau mot de passe d'ici peu.",
+								message: "Votre mot de passe a été réinitialisé. Vous recevrez un SMS avec un nouveau mot de passe d'ici peu.",
 								duration: 5000
 							});
 							this.nav.present(toast);
@@ -440,7 +488,7 @@ export class PhonePage {
 		}else{
 			let confirm = Alert.create({
 				title: "VitOnJob",
-				message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez vous le recevoir par SMS ou par email?",
+				message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez-vous le recevoir par SMS ou par email?",
 				buttons: [
 					{
 						text: 'SMS',
@@ -448,7 +496,7 @@ export class PhonePage {
 							console.log('SMS selected');	
 							this.passwordForgotten("sms");
 							let toast = Toast.create({
-								message: "Votre mot de passe a été réinitialisé, vous recevrai un SMS avec un nouveau mot de passe d'ici peu",
+								message: "Votre mot de passe a été réinitialisé. Vous recevrai un SMS avec un nouveau mot de passe d'ici peu.",
 								duration: 5000
 							});
 							this.nav.present(toast);
@@ -460,7 +508,7 @@ export class PhonePage {
 							console.log('Email selected');	
 							this.passwordForgotten("email", this.email);
 							let toast = Toast.create({
-								message: "Votre mot de passe a été réinitialisé, vous recevrai un courrier électronique avec un nouveau mot de passe d'ici peu",
+								message: "Votre mot de passe a été réinitialisé. Vous recevrai un courrier électronique avec un nouveau mot de passe d'ici peu.",
 								duration: 5000
 							});
 							this.nav.present(toast);

@@ -1,4 +1,4 @@
-import {NavController} from 'ionic-angular';
+import {NavController, Storage, SqlStorage, Toast} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SearchService} from "../../providers/search-service/search-service";
 import {Configs} from "../../configurations/configs";
@@ -24,6 +24,8 @@ export class OfferListPage {
     offerService: OffersService;
     projectTarget: string;
     backgroundImage: any;
+	db : Storage;
+	isNewUser = true;
 
     constructor(public nav:NavController,
                 public gc:GlobalConfigs,
@@ -44,6 +46,7 @@ export class OfferListPage {
         this.listMode = true;
         this.okButtonName = "add";
         this.backgroundImage = config.backgroundImage;
+		this.db = new Storage(SqlStorage);
         //this.cancelButtonName = "";
         //this.loadPeople();
 
@@ -69,8 +72,18 @@ export class OfferListPage {
                     })
                 });
             }
-
         });
+		this.db.get("currentUser").then(value => {
+            if(value && value != "null"){
+				var currentUser = JSON.parse(value);
+				if(!currentUser.titre){
+					this.isNewUser = true;
+				}else{
+					this.isNewUser = false;
+				}
+			}
+        });
+		
     }
 
     // Testing a web service call
@@ -93,7 +106,12 @@ export class OfferListPage {
      * @Description: Navigating to new offer page
      */
     goToNewOffer() {
-        this.nav.push(OfferAddPage);
+		if(this.isNewUser){
+			this.presentToast("Veuillez remplir les informations de votre profil avant de créer une offre.", 5);
+			return;
+		}else{
+			this.nav.push(OfferAddPage);
+		}
     }
 
     /**
@@ -116,4 +134,11 @@ export class OfferListPage {
         });
     }
 
+	presentToast(message:string, duration:number) {
+        let toast = Toast.create({
+            message: message,
+            duration: duration * 1000
+        });
+        this.nav.present(toast);
+    }
 }

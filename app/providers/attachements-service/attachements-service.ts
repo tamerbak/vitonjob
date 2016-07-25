@@ -76,7 +76,7 @@ export class AttachementsService {
         };
 
         var stringData = JSON.stringify(payload);
-        console.log(stringData);
+        //console.log(stringData);
         return new Promise(resolve => {
             let headers = new Headers();
             headers.append("Content-Type", 'application/json');

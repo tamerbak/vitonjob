@@ -1,4 +1,4 @@
-import {App, NavParams, NavController, Loading, Modal, MenuController, Keyboard, Popover} from 'ionic-angular';
+import {App, NavParams, NavController, Loading, Modal, MenuController, Keyboard, Popover, Toast} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
@@ -157,6 +157,10 @@ export class HomePage implements OnChanges{
      * @description perform semantic search and pushes the results view
      */
     doSemanticSearch(){
+		if(this.scQuery == "" || this.scQuery == " " || !this.scQuery){
+			this.presentToast("Veuillez saisir un job à rechercher avant de lancer la recherche", 5);
+			return;
+		}
         let loading = Loading.create({
             content: ` 
 			<div>
@@ -232,6 +236,14 @@ export class HomePage implements OnChanges{
                 ev: ev
             })
 
+    }
+	
+	presentToast(message:string, duration:number) {
+        let toast = Toast.create({
+            message: message,
+            duration: duration * 1000
+        });
+        this.nav.present(toast);
     }
 
 }

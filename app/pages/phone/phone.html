@@ -9,7 +9,7 @@
 	<ion-row baseline class="ionRow">
 		<ion-col width-33>
 			<ion-item>
-				<ion-input type="number" [(ngModel)]="index"></ion-input>
+			<ion-input type="number" [(ngModel)]="index" maxlength="4"  min="0" inputmode="numeric" pattern="[0-9]*"  (keyup)="watchIndex($event)" (change)="isIndexExist($event)"></ion-input>
 			</ion-item>
 		</ion-col>
 		<ion-col width-10>
@@ -17,11 +17,12 @@
 		</ion-col>
 		<ion-col style="padding-left: 20px;">
 			<ion-item>
-				<ion-input type="number" [(ngModel)]="phone" (keyup)="watchPhone($event)" maxlength="9" min="0" inputmode="numeric" pattern="[0-9]*"></ion-input>
+				<ion-input type="number" [(ngModel)]="phone" (keyup)="watchPhone($event)" (change)="validatePhone($event)" maxlength="9" min="0" inputmode="numeric" pattern="[0-9]*"></ion-input>
 			</ion-item>
 		</ion-col>
 	</ion-row>
-	<div [hidden]="isPhoneNumValid" class="error-box"></div>
+	<div [hidden]="isPhoneNumValid" class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Veuillez saisir un numéro de téléphone valide</div>
+	<div [hidden]="isIndexValid" class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Veuillez saisir un indicatif valide</div>
 	
 	<ion-label [hidden]="!showEmailField" stacked style="padding: 16px">Votre email</ion-label>
 	<ion-item [hidden]="!showEmailField"  style="margin-left: 16px">
