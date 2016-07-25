@@ -146,7 +146,7 @@ export class ContractPage {
 
 
         // get the currentEmployer
-        userService.getCurrentUser().then(results =>{
+        userService.getCurrentUser(this.projectTarget).then(results =>{
             this.currentUser = JSON.parse(results);
 
             if(this.currentUser){

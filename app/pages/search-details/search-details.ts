@@ -90,7 +90,7 @@ export class SearchDetailsPage implements OnInit {
         //get the currentEmployer
         this.userService = userService;
         this.addressService = addressService;
-        this.userService.getCurrentUser().then(results =>{
+        this.userService.getCurrentUser(this.projectTarget).then(results =>{
 
             if(results && !isUndefined(results)){
                 //debugger;
@@ -177,7 +177,7 @@ export class SearchDetailsPage implements OnInit {
 
     ngOnInit() {
         //get the currentEmployer
-        this.userService.getCurrentUser().then(results => {
+        this.userService.getCurrentUser(this.projectTarget).then(results => {
 
             this.loadMap();
 

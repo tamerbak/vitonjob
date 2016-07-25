@@ -23,6 +23,8 @@ export class SettingPasswordPage {
   password1: string;
   password2: string;
   currentUser;
+  currentUserVar: string;
+
 
   constructor(public nav: NavController, gc: GlobalConfigs, private authService: AuthenticationService, private globalService: GlobalService) {
     this.projectTarget = gc.getProjectTarget();
@@ -30,7 +32,8 @@ export class SettingPasswordPage {
     this.options = config.options;
     this.isEmployer = (this.projectTarget === 'employer');
 	this.themeColor = config.themeColor;
-	this.storage = new Storage(SqlStorage);
+	this.currentUserVar = config.currentUserVar;
+    this.storage = new Storage(SqlStorage);
   }
 
   modifyPasswd() {
@@ -43,7 +46,7 @@ export class SettingPasswordPage {
       spinner : 'hide'
     });
     this.nav.present(loading);
-    this.storage.get("currentUser").then((value) => {
+    this.storage.get(this.currentUserVar).then((value) => {
       if(value){
         this.currentUser = JSON.parse(value);
         let pwd = md5(this.password1);

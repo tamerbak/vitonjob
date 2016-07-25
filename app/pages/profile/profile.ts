@@ -44,6 +44,7 @@ export class ProfilePage implements OnInit {
 	noMainAddress = false;
 	noSecondAddress = false;
 	isRecruiter = false;
+	currentUserVar: string;
 
     constructor(public nav:NavController, public gc:GlobalConfigs,
                 userService:UserService, addrService:AddressService) {
@@ -72,7 +73,8 @@ export class ProfilePage implements OnInit {
         this.isEmployer = (this.projectTarget === 'employer');
         this.userImageURL = config.userImageURL;
         this.backgroundImage = config.backgroundImage;
-        this.swipEvent = '';
+		this.currentUserVar = config.currentUserVar;
+		this.swipEvent = '';
         this.userData = {
             titre: "Ajouter mon nom et prénom",
             nom: "",
@@ -105,7 +107,7 @@ export class ProfilePage implements OnInit {
     onPageWillEnter() {
         console.log('••• On Init');
         //Get User information
-        this.storage.get("currentUser").then(data => {
+        this.storage.get(this.currentUserVar).then(data => {
             if (data) {
                 this.userData = JSON.parse(data);
 				this.isRecruiter = this.userData.estRecruteur;

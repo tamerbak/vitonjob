@@ -3,6 +3,8 @@ import {NavController, Storage, SqlStorage, Modal, Alert, Loading} from 'ionic-a
 import {AttachementsService} from "../../providers/attachements-service/attachements-service";
 import {ModalAttachementPage} from "../modal-attachement/modal-attachement";
 import {ModalGalleryPage} from "../modal-gallery/modal-gallery";
+import {GlobalConfigs} from '../../configurations/globalConfigs';
+import {Configs} from "../../configurations/configs";
 
 @Component({
     templateUrl: 'build/pages/attachements/attachements.html',
@@ -12,11 +14,16 @@ export class AttachementsPage {
     attachments : any =[];
     db : Storage;
     user : any;
+	projectTarget : string;
 
     constructor(private nav: NavController,
-                private service : AttachementsService ) {
+                private service : AttachementsService,
+				public globalConfig: GlobalConfigs) {
         this.db = new Storage(SqlStorage);
-        this.db.get("currentUser").then(usr => {
+		this.projectTarget = globalConfig.getProjectTarget();
+    	let config = Configs.setConfigs(this.projectTarget);
+		let currentUserVar = config.currentUserVar;
+        this.db.get(currentUserVar).then(usr => {
             if(usr){
                 this.user = JSON.parse(usr);
                 this.service.loadAttachements(this.user).then(data=>{

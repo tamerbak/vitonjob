@@ -39,6 +39,7 @@ export class HomePage implements OnChanges{
     private menu:any;
     private backgroundImage:string;
     private push: any;
+	private currentUserVar: string;
 
 
     static get parameters() {
@@ -72,6 +73,7 @@ export class HomePage implements OnChanges{
         this.imageURL = config.imageURL;
         this.backgroundImage = config.backgroundImage;
         this.highlightSentence = config.highlightSentence;
+		this.currentUserVar = config.currentUserVar;
         this.isEmployer = this.projectTarget == 'employer';
         this.searchPlaceHolder = "Veuillez saisir votre recherche...";
         this.recording = false;
@@ -80,7 +82,7 @@ export class HomePage implements OnChanges{
         this.selectedItem = navParams.get('item');
         this.search = searchService;
         //verify if the user is already connected
-        this.storage.get("currentUser").then((value) => {
+        this.storage.get(this.currentUserVar).then((value) => {
 
             if(value){
                 this.cnxBtnName = "Déconnexion";
@@ -142,7 +144,7 @@ export class HomePage implements OnChanges{
 
     openLoginsPage() {
         if(this.isConnected){
-            this.storage.set("currentUser", null);
+            this.storage.set(this.currentUserVar, null);
             this.cnxBtnName = "Se connecter / S'inscrire";
             this.isConnected = false;
             this.events.publish('user:logout');

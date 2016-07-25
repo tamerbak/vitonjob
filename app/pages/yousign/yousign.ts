@@ -58,7 +58,7 @@ export class YousignPage {
         // Set local variables and messages
         //get the currentEmployer & call youssign service
         this.pushNotificationService = pushNotificationService;
-        userService.getCurrentUser().then(results =>{
+        userService.getCurrentUser(this.projectTarget).then(results =>{
             this.currentUser = JSON.parse(results);
             let currentEmployer = this.currentUser.employer;
             

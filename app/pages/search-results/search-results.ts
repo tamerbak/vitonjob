@@ -162,7 +162,7 @@ export class SearchResultsPage implements OnInit {
     ngOnInit() {
 
         //get the currentEmployer
-        this.userService.getCurrentUser().then(results =>{
+        this.userService.getCurrentUser(this.projectTarget).then(results =>{
 
             if(results && !isUndefined(results)){
                 let currentEmployer = JSON.parse(results);
