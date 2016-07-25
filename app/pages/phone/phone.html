@@ -9,7 +9,7 @@
 	<ion-row baseline class="ionRow">
 		<ion-col width-33>
 			<ion-item>
-			<ion-input type="number" [(ngModel)]="index" maxlength="4"  min="0" inputmode="numeric" pattern="[0-9]*"  (keyup)="watchIndex($event)" (change)="isIndexExist($event)"></ion-input>
+			<ion-input type="number" [(ngModel)]="index" maxlength="4"  min="0" inputmode="numeric" pattern="[0-9]*"  (keyup)="watchIndex($event)" (change)="isIndexExist($event)" disabled></ion-input>
 			</ion-item>
 		</ion-col>
 		<ion-col width-10>
