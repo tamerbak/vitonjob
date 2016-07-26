@@ -3,7 +3,7 @@
 
     <!--ion-buttons end>
       <button (click)="changeViewMode(1)" style="font-size: small;" [ngClass]="{'button-secondary': listView}" >
-        <ion-icon name="md-list"></ion-icon>
+	  <ion-icon name="md-list"></ion-icon>
       </button>
       <button (click)="changeViewMode(2)" style="font-size: small;"  [ngClass]="{'button-secondary': cardView}" >
         <ion-icon name="md-albums"></ion-icon>
@@ -38,7 +38,7 @@
     </ion-list-divider-->
   <ion-list *ngIf="listView" text-wrap>
 
-      <ion-card *ngFor="let item of searchResults">
+      <ion-card *ngFor="let item of searchResults, let i=index">
           <ion-item no-lines text-wrap style="background-color: lightcyan">
               <ion-avatar item-left>
                   <img [src]="item.avatar">
@@ -46,7 +46,7 @@
               <h2>{{isEmployer ? item.prenom + ' ' + item.nom.substring(0,1) + '.' : item.entreprise}}</h2>
               <h4>{{item.titreOffre}}</h4>
               <p><ion-icon name="ios-timer" [style.color]="availability" style="font-size: large;"></ion-icon> &nbsp; Disponible</p>
-              <ion-badge item-right secondary>{{(item.matching.indexOf('.') < 0) ? item.matching:item.matching.split('.')[0]}}%</ion-badge>
+              <ion-badge item-right secondary>{{(item.matching.toString().indexOf('.') < 0) ? item.matching:item.matching.toString().split('.')[0]}}%</ion-badge>
           </ion-item>
 
           <ion-row><ion-col text-center style="padding-top: 0; padding-bottom: 0;">
@@ -57,7 +57,7 @@
               <ion-col text-center>
                   <button secondary
                           *ngIf="isEmployer && !isRecruteur"
-                          (click)="contract()" small>
+                          (click)="contract(i)" small>
                       Recrutement immédiat
                   </button>
               </ion-col>
