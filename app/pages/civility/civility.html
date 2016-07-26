@@ -19,13 +19,17 @@
 
     <ion-item>
         <ion-label floating>Nom</ion-label>
-        <ion-input type="text" [(ngModel)]="lastname"></ion-input>
+        <ion-input type="text" [(ngModel)]="lastname" (keyup)="watchLastName($event)"></ion-input>
     </ion-item>
+    <div [hidden]="isValideLastName"
+         class="error-box">* Saisissez nom valide</div>
 
     <ion-item>
         <ion-label floating>Prénom</ion-label>
-        <ion-input type="text" [(ngModel)]="firstname"></ion-input>
+        <ion-input type="text" [(ngModel)]="firstname" (keyup)="watchFirstName($event)"></ion-input>
     </ion-item>
+    <div [hidden]="isValideFirstName"
+         class="error-box">* Saisissez un prénom valide</div>
 
     <ion-item [hidden]="!isEmployer">
         <ion-label floating >Raison sociale</ion-label>

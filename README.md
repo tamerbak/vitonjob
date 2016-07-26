@@ -122,4 +122,4 @@ $ ionic plugin add de.appplant.cordova.plugin.local-notification
 
 ## Environnement
 
-Le projet est compatible avec Ionic la version Beta 9 et Angular2 version rc1. (Voir package.json)
+Le projet est compatible avec Ionic 2 la version Beta 10 et Angular2 version rc3. (Voir package.json)

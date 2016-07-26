@@ -638,7 +638,7 @@ export class AuthenticationService {
         let url = "http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoimail";
         let payload = "<fr.protogen.connector.model.MailModel>"
             + "<sendTo>"+email+"</sendTo>"
-            + 	"<title>Mot de passe réinitialisé</title>"
+            + 	"<title>VitOnJob - Mot de passe réinitialisé</title>"
             + 	"<content>"
             + 		"Suite à votre requête nous avons procédé à une rénitialisation de votre mot de passe."
             + 		" Votre nouveau mot de passe est : "+passwd

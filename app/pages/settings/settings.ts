@@ -27,6 +27,8 @@ export class SettingsPage {
 	currentUser: any;
 	storage: any;
 	events:any;
+	currentUserVar: string;
+
 	
 	constructor(public nav: NavController, gc: GlobalConfigs,
 				private authService: AuthenticationService,
@@ -34,13 +36,14 @@ export class SettingsPage {
 		this.projectTarget = gc.getProjectTarget();
 		let config = Configs.setConfigs(this.projectTarget);
 		this.options = config.options;
-		this.isEmployer = (this.projectTarget === 'employer');
+		this.currentUserVar = config.currentUserVar;
+        this.isEmployer = (this.projectTarget === 'employer');
 		this.storage = new Storage(SqlStorage);
 		this.events = events;
 	}
 	
 	logOut() {
-		this.storage.set("currentUser", null);
+		this.storage.set(this.currentUserVar, null);
 		this.storage.set("RECRUITER_LIST", null);
 		this.events.publish('user:logout');
 		this.nav.setRoot(HomePage);

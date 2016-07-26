@@ -17,8 +17,9 @@ export class SearchGuidePage {
   level : string;
   availabilityLabel : string;
   availability : any;
+  adverbeLabel: string;
   themeColor: any;
-
+  
   constructor(private viewCtrl: ViewController,
               public globalConfig: GlobalConfigs,
               private searchService: SearchService,
@@ -34,15 +35,17 @@ export class SearchGuidePage {
   }
 
   prepareLabelsJobyer(){
-    this.jobLabel = "Je cherche de l'emploi ";
+    this.jobLabel = "Je cherche un emploi ";
     this.levelLabel = "mon niveau est ";
     this.availabilityLabel = "je suis disponible à partir ";
+	this.adverbeLabel = " en tant que ";
   }
 
   prepareLabelsEmployer(){
     this.jobLabel = "Je cherche des candidats ";
     this.levelLabel = "le niveau requis est ";
     this.availabilityLabel = "disponibles à partir ";
+	this.adverbeLabel = " comme ";
   }
 
   validateSearch(){

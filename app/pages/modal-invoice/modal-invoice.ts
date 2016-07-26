@@ -4,7 +4,8 @@ import {MissionService} from "../../providers/mission-service/mission-service";
 import {isUndefined} from "ionic-angular/util";
 import {PaylineServices} from "../../providers/payline-services/payline-services";
 import {MissionListPage} from "../mission-list/mission-list";
-
+import {GlobalConfigs} from '../../configurations/globalConfigs';
+import {Configs} from "../../configurations/configs";
 
 @Component({
     templateUrl: 'build/pages/modal-invoice/modal-invoice.html',
@@ -25,7 +26,8 @@ export class ModalInvoicePage {
     constructor(public nav: NavController,
                 viewCtrl : ViewController,
                 service : MissionService,
-                payService : PaylineServices) {
+                payService : PaylineServices,
+				public globalConfig: GlobalConfigs) {
         this.payService = payService;
         this.storage = new Storage(LocalStorage);
         this.db = new Storage(SqlStorage);
@@ -62,8 +64,10 @@ export class ModalInvoicePage {
             if(this.invoice.datePaiement)
                 this.paid = true;
         });
-
-        this.db.get("currentUser").then(data => {
+		this.projectTarget = globalConfig.getProjectTarget();
+    	let config = Configs.setConfigs(this.projectTarget);
+		let currentUserVar = config.currentUserVar;
+        this.db.get(currentUserVar).then(data => {
             
             let user = JSON.parse(data);
             this.payService.checkWallet(user).then(walletId => {

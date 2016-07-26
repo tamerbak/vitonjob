@@ -37,7 +37,8 @@ export class RecruiterListPage {
 			//if db local does not contain recruiter list, retrieve it from server
 			}
 		});
-		this.storage.get("currentUser").then((value) => {
+		let currentUserVar = config.currentUserVar;
+        this.storage.get(currentUserVar).then((value) => {
 			if(value){
 				this.currentUser = JSON.parse(value);
 				console.log(this.recruiterList);

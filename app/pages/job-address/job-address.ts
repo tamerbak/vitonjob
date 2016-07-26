@@ -34,6 +34,8 @@ export class JobAddressPage {
 	isGooglePlaceHidden = true;
 	generalLoading;
 	//isAdrFormHidden = true;
+	currentUserVar: string;
+
 
 	/**
 		* @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
@@ -59,6 +61,7 @@ export class JobAddressPage {
 		let config = Configs.setConfigs(this.projectTarget);
 		// Set local variables and messages
 		this.themeColor = config.themeColor;
+		this.currentUserVar = config.currentUserVar;
 		this.isEmployer = (this.projectTarget == 'employer');
 		this.titlePage = this.isEmployer ? "Adresse lieu de travail" : "Adresse de départ au travail";
 		//this.tabs=tabs;
@@ -77,7 +80,7 @@ export class JobAddressPage {
 		* @description initiate the job address form with data of the logged user
 	*/
 	initJobAddressForm(){
-		this.storage.get("currentUser").then((value) => {
+		this.storage.get(this.currentUserVar).then((value) => {
 			//if user has already signed up, fill the address field with his data
 			if(value){
 				this.currentUser = JSON.parse(value);
@@ -294,7 +297,7 @@ export class JobAddressPage {
 						entreprise.workAdress.city = this.city;
 						entreprise.workAdress.country = this.country;
 						this.currentUser.employer.entreprises[0] = entreprise;
-						this.storage.set('currentUser', JSON.stringify(this.currentUser));
+						this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
 						loading.dismiss();
 						if(this.fromPage == "profil"){
 							this.nav.pop();
@@ -321,7 +324,7 @@ export class JobAddressPage {
 						this.currentUser.jobyer.workAdress.zipCode = this.zipCode;
 						this.currentUser.jobyer.workAdress.city = this.city;
 						this.currentUser.jobyer.workAdress.country = this.country;
-						this.storage.set('currentUser', JSON.stringify(this.currentUser));
+						this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
 						loading.dismiss();
 						if(this.fromPage == "profil"){
 							this.nav.pop();

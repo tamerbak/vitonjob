@@ -1,4 +1,4 @@
-import {App, NavParams, NavController, Loading, Modal, MenuController, Keyboard, Popover} from 'ionic-angular';
+import {App, NavParams, NavController, Loading, Modal, MenuController, Keyboard, Popover, Toast} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
@@ -39,6 +39,7 @@ export class HomePage implements OnChanges{
     private menu:any;
     private backgroundImage:string;
     private push: any;
+	private currentUserVar: string;
 
 
     static get parameters() {
@@ -72,6 +73,7 @@ export class HomePage implements OnChanges{
         this.imageURL = config.imageURL;
         this.backgroundImage = config.backgroundImage;
         this.highlightSentence = config.highlightSentence;
+		this.currentUserVar = config.currentUserVar;
         this.isEmployer = this.projectTarget == 'employer';
         this.searchPlaceHolder = "Veuillez saisir votre recherche...";
         this.recording = false;
@@ -80,7 +82,7 @@ export class HomePage implements OnChanges{
         this.selectedItem = navParams.get('item');
         this.search = searchService;
         //verify if the user is already connected
-        this.storage.get("currentUser").then((value) => {
+        this.storage.get(this.currentUserVar).then((value) => {
 
             if(value){
                 this.cnxBtnName = "Déconnexion";
@@ -142,7 +144,7 @@ export class HomePage implements OnChanges{
 
     openLoginsPage() {
         if(this.isConnected){
-            this.storage.set("currentUser", null);
+            this.storage.set(this.currentUserVar, null);
             this.cnxBtnName = "Se connecter / S'inscrire";
             this.isConnected = false;
             this.events.publish('user:logout');
@@ -157,6 +159,10 @@ export class HomePage implements OnChanges{
      * @description perform semantic search and pushes the results view
      */
     doSemanticSearch(){
+		if(this.scQuery == "" || this.scQuery == " " || !this.scQuery){
+			this.presentToast("Veuillez saisir un job à rechercher avant de lancer la recherche", 5);
+			return;
+		}
         let loading = Loading.create({
             content: ` 
 			<div>
@@ -232,6 +238,14 @@ export class HomePage implements OnChanges{
                 ev: ev
             })
 
+    }
+	
+	presentToast(message:string, duration:number) {
+        let toast = Toast.create({
+            message: message,
+            duration: duration * 1000
+        });
+        this.nav.present(toast);
     }
 
 }

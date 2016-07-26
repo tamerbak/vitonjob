@@ -56,22 +56,25 @@ export class CivilityPage {
 	medecineTravail : any;
 	medecineId : number;
 	medecines : any = [];
+	currentUserVar: string;
+	isValideLastName: boolean = true;
+	isValideFirstName: boolean = true;
 	
 	/**
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
 	*/
 	constructor(public nav: NavController,
-				private authService: AuthenticationService,
-				public gc: GlobalConfigs,
-				private loadListService: LoadListService,
-				private sqlStorageService: SqlStorageService,
-				params: NavParams,
-				private globalService: GlobalService,
-				private zone: NgZone,
-				public events: Events,
-				private attachementService : AttachementsService,
-                private medecineService : MedecineService,
-				communesService : CommunesService) {
+	private authService: AuthenticationService,
+	public gc: GlobalConfigs,
+	private loadListService: LoadListService,
+	private sqlStorageService: SqlStorageService,
+	params: NavParams,
+	private globalService: GlobalService,
+	private zone: NgZone,
+	public events: Events,
+	private attachementService : AttachementsService,
+	private medecineService : MedecineService,
+	communesService : CommunesService) {
 		// Set global configs
 		// Get target to determine configs
 		
@@ -83,6 +86,7 @@ export class CivilityPage {
 		
 		// Set local variables and messages
 		this.themeColor = config.themeColor;
+		this.currentUserVar = config.currentUserVar;
 		this.isEmployer = (this.projectTarget == 'employer');
 		//this.tabs=tabs;
 		this.params = params;
@@ -140,7 +144,7 @@ export class CivilityPage {
 		* @description initiate the civility form with the data of the logged user
 	*/
 	initCivilityForm(){
-		this.storage.get("currentUser").then((value) => {
+		this.storage.get(this.currentUserVar).then((value) => {
 			if(value && value != "null"){
 				this.currentUser = JSON.parse(value);
 				this.title = this.currentUser.titre;
@@ -149,15 +153,15 @@ export class CivilityPage {
 				if(!this.isRecruiter && this.isEmployer && this.currentUser.employer.entreprises.length != 0){
 					this.companyname = this.currentUser.employer.entreprises[0].nom;
 					this.siret = this.currentUser.employer.entreprises[0].siret;
-                    this.ape = this.currentUser.employer.entreprises[0].naf;
-                    this.medecineService.getMedecine(this.currentUser.employer.entreprises[0].id).then(data=>{
-                        if(data && data != null){
-                            this.medecineId = data.id;
-                            this.medecineTravail = data.libelle;
-                        }
-
-                    });
-                }else{
+					this.ape = this.currentUser.employer.entreprises[0].naf;
+					this.medecineService.getMedecine(this.currentUser.employer.entreprises[0].id).then(data=>{
+						if(data && data != null){
+							this.medecineId = data.id;
+							this.medecineTravail = data.libelle;
+						}
+						
+					});
+					}else{
 					if(!this.isRecruiter){
 						this.birthdate = this.currentUser.jobyer.dateNaissance ? new Date(this.currentUser.jobyer.dateNaissance).toISOString() : "";
 						this.birthplace = this.currentUser.jobyer.lieuNaissance;
@@ -274,7 +278,7 @@ export class CivilityPage {
 					this.currentUser.titre = this.title;
 					this.currentUser.nom = this.lastname;
 					this.currentUser.prenom = this.firstname;
-					this.storage.set('currentUser', JSON.stringify(this.currentUser));
+					this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
 					this.events.publish('user:civility', this.currentUser);
 					loading.dismiss();
 					if(this.fromPage == "profil"){
@@ -289,7 +293,7 @@ export class CivilityPage {
 			var employerId = this.currentUser.employer.id;
 			//get entreprise id of the current employer
 			var entrepriseId = this.currentUser.employer.entreprises[0].id;
-            debugger;
+			debugger;
 			// update employer
 			this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget, this.medecineId).then((data) => {
 				if (!data || data.status == "failure") {
@@ -309,7 +313,7 @@ export class CivilityPage {
 					//upload scan
 					this.updateScan(employerId);
 					// PUT IN SESSION
-					this.storage.set('currentUser', JSON.stringify(this.currentUser));
+					this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
 					this.events.publish('user:civility', this.currentUser);
 					loading.dismiss();
 					if(this.fromPage == "profil"){
@@ -347,7 +351,7 @@ export class CivilityPage {
 						//upload scan
 						this.updateScan(jobyerId);
 						// PUT IN SESSION
-						this.storage.set('currentUser', JSON.stringify(this.currentUser));
+						this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
 						this.events.publish('user:civility', this.currentUser);
 						loading.dismiss();
 						if(this.fromPage == "profil"){
@@ -369,27 +373,27 @@ export class CivilityPage {
 	updateScan(userId){
 		if (this.scanUri) {
 			this.currentUser.scanUploaded = true;
-			this.storage.set('currentUser', JSON.stringify(this.currentUser));
+			this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
 			this.authService.uploadScan(this.scanUri, userId, 'scan', 'upload')
 			.then((data) => {
 				if(!data || data.status == "failure"){
 					console.log("Scan upload failed !");
 					//this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde du scan");
 					this.currentUser.scanUploaded = false;
-					this.storage.set('currentUser', JSON.stringify(this.currentUser));					
+					this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));					
 				}
 				else{
 					console.log("Scan uploaded !");
 				}
-
+				
 			});
-			this.storage.get("currentUser").then(usr => {
+			this.storage.get(this.currentUserVar).then(usr => {
 				if(usr){
 					let user = JSON.parse(usr);
 					this.attachementService.uploadFile(user, 'scan '+this.scanTitle, this.scanUri);
 				}
 			});
-
+			
 		}
 	}
 	
@@ -401,9 +405,9 @@ export class CivilityPage {
 			return (!this.title || !this.firstname || !this.lastname);
 		}
 		if(this.isEmployer){
-			return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5 || !this.isAPEValid || (!this.scanUri && !this.currentUser.scanUploaded));
+			return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5 || !this.isAPEValid || !this.isValideFirstName || !this.isValideLastName|| (!this.scanUri && !this.currentUser.scanUploaded));
 			}else{
-			if((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length!=0)  || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.nationality || !this.birthplace || !this.birthdate || (!this.scanUri && !this.currentUser.scanUploaded))){
+			if((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length!=0)  || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.nationality || !this.birthplace || !this.birthdate || !this.isValideFirstName || !this.isValideLastName|| (!this.scanUri && !this.currentUser.scanUploaded))){
 				return true;
 			}
 			if(!this.numSS || this.numSS.length == 0)
@@ -527,6 +531,20 @@ export class CivilityPage {
 			this.isAPEValid = false;
 		}
 		
+	}
+	
+	watchLastName(e){
+		let name = e.target.value;
+		this.isValideLastName = CivilityPage.isValidName(name);
+	}
+	watchFirstName(e){
+		let name = e.target.value;
+		this.isValideFirstName = CivilityPage.isValidName(name);
+	}
+	
+	static isValidName(name:string) {
+		let regEx = /^[A-Za-zÀ-ú.' \-\p{L}\p{Zs}\p{Lu}\p{Ll}']+$/;
+		return name.match(regEx);
 	}
 	
 	isNumeric(n)
@@ -675,9 +693,9 @@ export class CivilityPage {
 		let modal = Modal.create(ModalGalleryPage, {scanUri: this.scanUri});
 		this.nav.present(modal);
 	}
-
+	
 	watchMedecineTravail(e){
-
+		
 		let val = e.target.value;
 		if(val.length<3){
 			this.medecines = [];
@@ -690,11 +708,10 @@ export class CivilityPage {
 			console.log(JSON.stringify(this.medecines));
 		});
 	}
-
-    medecineSelected(c){
-        this.medecineId = c.id;
-        this.medecineTravail = c.libelle;
-        this.medecines = [];
-    }
+	
+	medecineSelected(c){
+		this.medecineId = c.id;
+		this.medecineTravail = c.libelle;
+		this.medecines = [];
+	}
 }
-

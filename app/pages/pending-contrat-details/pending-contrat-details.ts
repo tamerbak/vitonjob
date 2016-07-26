@@ -62,7 +62,7 @@ export class PendingContratDetailsPage {
 
         //get the currentEmployer
         this.userService = userService;
-        this.userService.getCurrentUser().then(results =>{
+        this.userService.getCurrentUser(this.projectTarget).then(results =>{
 
             if(results && !isUndefined(results)){
                 debugger;

@@ -69,6 +69,7 @@ export class Vitonjob {
     storage:Storage;
     local : Storage;
     tokens:any;
+	currentUserVar: string;
 
     constructor(private platform:Platform,
                 private app:App,
@@ -94,6 +95,8 @@ export class Vitonjob {
         // get config of selected target
         this.config = Configs.setConfigs(this.projectTarget);
         this.tokens = this.config.tokenInstabug;
+		this.currentUserVar = this.config.currentUserVar;
+    
 
         this.initializeApp(gc);
 
@@ -295,7 +298,7 @@ export class Vitonjob {
 
     listenToLoginEvents() {
         //verify if the user is already connected
-        this.storage.get("currentUser").then((value) => {
+        this.storage.get(this.currentUserVar).then((value) => {
             this.storage.set("SCORE", "0");
             if (value) {
                 this.enableMenu(true);
@@ -340,7 +343,7 @@ export class Vitonjob {
         this.menu.close();
 
         if (page.title == 'Déconnexion') {
-            this.storage.set("currentUser", null);
+            this.storage.set(this.currentUserVar, null);
             this.events.publish('user:logout');
         }
 

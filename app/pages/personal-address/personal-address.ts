@@ -33,6 +33,7 @@ export class PersonalAddressPage {
 	isGooglePlaceHidden = true;
 	generalLoading;
 	//isAdrFormHidden = true;
+	currentUserVar: string;
 	
 	/**
 		* @description While constructing the view, we get the currentUser passed as parameter from the connection page
@@ -58,6 +59,7 @@ export class PersonalAddressPage {
 		let config = Configs.setConfigs(this.projectTarget);
 		// Set local variables and messages
 		this.themeColor = config.themeColor;
+		this.currentUserVar = config.currentUserVar;
 		this.isEmployer = (this.projectTarget == 'employer');
 		this.titlePage = this.isEmployer ? "Adresse siège" : "Adresse personnelle";
 		//this.tabs=tabs;
@@ -77,7 +79,7 @@ export class PersonalAddressPage {
 		* @description initiate the personal address form with data of the logged user
 	*/
 	initPersonalAddressForm(){
-		this.storage.get("currentUser").then((value) => {
+		this.storage.get(this.currentUserVar).then((value) => {
 			//if user has already signed up, fill the address field with his data
 			if(value){
 				this.currentUser = JSON.parse(value);
@@ -295,7 +297,7 @@ export class PersonalAddressPage {
 						entreprise.siegeAdress.city = this.city;
 						entreprise.siegeAdress.country = this.country;
 						this.currentUser.employer.entreprises[0] = entreprise;
-						this.storage.set('currentUser', JSON.stringify(this.currentUser));
+						this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
 						//redirecting to job address tab
 						loading.dismiss();
 						if(this.fromPage == "profil"){
@@ -324,7 +326,7 @@ export class PersonalAddressPage {
 						this.currentUser.jobyer.personnalAdress.zipCode = this.zipCode;
 						this.currentUser.jobyer.personnalAdress.city = this.city;
 						this.currentUser.jobyer.personnalAdress.country = this.country;
-						this.storage.set('currentUser', JSON.stringify(this.currentUser));
+						this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
 						loading.dismiss();
 						if(this.fromPage == "profil"){
 							this.nav.pop();

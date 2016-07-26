@@ -162,7 +162,7 @@ export class SearchResultsPage implements OnInit {
     ngOnInit() {
 
         //get the currentEmployer
-        this.userService.getCurrentUser().then(results =>{
+        this.userService.getCurrentUser(this.projectTarget).then(results =>{
 
             if(results && !isUndefined(results)){
                 let currentEmployer = JSON.parse(results);
@@ -634,7 +634,7 @@ export class SearchResultsPage implements OnInit {
      */
      sendEmail(item){
         this.isUserConnected();
-        (<any>window).location = 'mailto:'+ item.email;
+        window.location = 'mailto:'+ item.email;
     }
 
 
