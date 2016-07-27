@@ -9,13 +9,14 @@
 
 <ion-content padding>
     <ion-item>
-        <ion-label floating>Civilité</ion-label>
-        <ion-select [(ngModel)]="title">
+        <ion-label id="label-civi" [ngStyle]="titlestyle" floating>Civilité</ion-label>
+        <ion-select id="in-select" [(ngModel)]="title" (ionChange)="titleChange()">
             <ion-option value="Mme">Mme</ion-option>
             <ion-option value="Mlle">Mlle</ion-option>
             <ion-option value="M.">M.</ion-option>
         </ion-select>
     </ion-item>
+
 
     <ion-item>
         <ion-label floating>Nom</ion-label>
