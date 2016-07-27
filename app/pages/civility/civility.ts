@@ -59,6 +59,7 @@ export class CivilityPage {
 	currentUserVar: string;
 	isValideLastName: boolean = true;
 	isValideFirstName: boolean = true;
+	titlestyle: any;
 	
 	/**
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
@@ -77,7 +78,7 @@ export class CivilityPage {
 	communesService : CommunesService) {
 		// Set global configs
 		// Get target to determine configs
-		
+		this.titlestyle = { 'font-size': '2rem', 'position': 'absolute', 'top': '0.2em' };
 		this.projectTarget = gc.getProjectTarget();
 		this.storage = new Storage(SqlStorage);
 		
@@ -138,6 +139,17 @@ export class CivilityPage {
 	ionViewDidEnter(){
 		//in case of user has already signed up
 		this.initCivilityForm();
+	}
+
+	titleChange(){
+		if (this.title){
+			this.titlestyle = {
+				'font-size': '1.4rem'
+			}
+		}
+		else {
+			this.titlestyle = { 'font-size': '2rem', 'position': 'absolute', 'top': '0.2em' };
+		}
 	}
 	
 	/**

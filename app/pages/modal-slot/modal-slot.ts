@@ -1,4 +1,4 @@
-import {NavController, ViewController, Alert, Toast} from 'ionic-angular';
+import {NavController, ViewController, Alert, Toast, Platform} from 'ionic-angular';
 import {DatePicker} from "ionic-native/dist/index";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
@@ -26,8 +26,9 @@ export class ModalSlotPage {
     private calendarTheme:string;
     private nav:any;
 	todayDate;
+    isAndroid4: boolean;
 
-    constructor(public nav:NavController, gc:GlobalConfigs, viewCtrl:ViewController, private globalService: GlobalService) {
+    constructor(public nav:NavController, gc:GlobalConfigs, viewCtrl:ViewController, private globalService: GlobalService, platform:Platform) {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -48,9 +49,11 @@ export class ModalSlotPage {
         };
         this.showedSlot = {
             date: new Date().toISOString(),
+            angular4Date: this.toDateString(new Date().getTime()),
             startHour: null,
             endHour: null
         };
+        this.isAndroid4 = (platform.version('android').major < 5);
     }
 
     /**
@@ -79,6 +82,7 @@ export class ModalSlotPage {
                     default :
                         this.slot.date = date.getTime();
                         this.showedSlot.date = this.toDateString(this.slot.date, '');
+                        this.showedSlot.angular4Date = this.toDateString(this.slot.date, '');
                         break;
                 }
             },
@@ -103,7 +107,13 @@ export class ModalSlotPage {
      * @Description : Validating slot modal
      */
     validateModal() {
-        let date = new Date(this.showedSlot.date);
+        //console.log('Validating '+ this.showedSlot.date + ' or ' + this.showedSlot.angular4Date);
+        let stringDate: string = (this.isAndroid4) ?
+            stringDate = this.showedSlot.angular4Date.split('/')[1]+
+            '-' +this.showedSlot.angular4Date.split('/')[0] +
+            '-' + this.showedSlot.angular4Date.split('/')[2] : "";
+        let date = (this.isAndroid4)? new Date(stringDate) : new Date(this.showedSlot.date);
+        //console.log ('sending ' + date);
         this.slot = {
             date: date.getTime(),
             startHour: parseInt(this.showedSlot.startHour.split(':')[0]) * 60 +
@@ -119,6 +129,8 @@ export class ModalSlotPage {
             return;
         }
         //debugger;
+
+        console.log(JSON.stringify( 'JSON returned: ' + this.slot));
         this.viewCtrl.dismiss(this.slot);
     }
 
@@ -130,6 +142,15 @@ export class ModalSlotPage {
     toDateString(date:number, options:any) {
         return new Date(date).toLocaleDateString('fr-FR', options);
     }
+
+    /*isoToDateString(date:Date) {
+        //debugger;
+        //let date = new Date(this.showedSlot.date);
+        let options = {
+            formatMatcher: 'day, month year'
+        };
+        return date.toLocaleDateString('fr-FR');
+    }*/
 
 
     /**

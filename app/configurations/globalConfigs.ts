@@ -19,7 +19,7 @@ export class GlobalConfigs {
     private instabug: any;
 
     constructor() {
-        this.projectTarget = "jobyer";
+        this.projectTarget = "employer";
         this.cnxBtnName = "Se connecter / S'inscrire";
         this.thirdThemeColor = '#f4f4f4';
     }
