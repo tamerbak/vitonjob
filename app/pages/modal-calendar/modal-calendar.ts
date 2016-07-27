@@ -142,8 +142,8 @@ export class ModalCalendarPage {
      */
     toDateString(date:number, options:any) {
         options = (options) ? options : '';
-        console.log(JSON.stringify(this.slots));
-        console.log('Calendar slot in ms: ' + date);
+        //console.log(JSON.stringify(this.slots));
+        //console.log('Calendar slot in ms: ' + date);
         //console.log('Calendar slot in date format: ' + new Date(date));
         return new Date(date).toLocaleDateString('fr-FR', options);
     }
