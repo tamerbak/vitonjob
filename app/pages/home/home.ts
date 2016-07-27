@@ -165,11 +165,12 @@ export class HomePage implements OnChanges{
 		}
         let loading = Loading.create({
             content: ` 
-			<div>
-			<img src='img/loading.gif' />
-			</div>
+			
+			<img class="loading" src='img/ripple.svg' />
+			
 			`,
             spinner : 'hide'
+
         });
         this.nav.present(loading);
         console.log('Initiating search for '+this.scQuery);

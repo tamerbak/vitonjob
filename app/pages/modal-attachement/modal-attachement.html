@@ -1,6 +1,6 @@
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" >
     <ion-title>Nouveau document</ion-title>
   </ion-navbar>
 
@@ -8,7 +8,12 @@
 
 
 <ion-content padding>
-  <ion-input [(ngModel)]="fileName" placeholder="Nom du fichier" ></ion-input>
+  <ion-row>
+    <ion-item>
+      <ion-label floating>Nom du fichier</ion-label>
+      <ion-input type="text" [(ngModel)]="fileName"></ion-input>
+    </ion-item>
+  </ion-row>
   <ion-row>
     <ion-col text-center>
       <ion-label>Importation {{scanTitle}}</ion-label>

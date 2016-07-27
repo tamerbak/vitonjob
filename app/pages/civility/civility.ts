@@ -60,6 +60,7 @@ export class CivilityPage {
 	isValideLastName: boolean = true;
 	isValideFirstName: boolean = true;
 	titlestyle: any;
+	nationalitiesstyle: any;
 	
 	/**
 		* @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
@@ -78,7 +79,23 @@ export class CivilityPage {
 	communesService : CommunesService) {
 		// Set global configs
 		// Get target to determine configs
-		this.titlestyle = { 'font-size': '2rem', 'position': 'absolute', 'top': '0.2em' };
+		if (this.title){
+			this.titlestyle = {
+				'font-size': '1.4rem'
+			}
+		}
+		else {
+			this.titlestyle = { 'font-size': '2rem', 'position': 'absolute', 'top': '0.2em' };
+		}
+		if (this.nationality){
+			this.nationalitiesstyle = {
+				'font-size': '1.4rem'
+			}
+		}
+		else {
+			this.nationalitiesstyle = { 'font-size': '2rem', 'position': 'absolute', 'top': '0.2em' };
+		}
+
 		this.projectTarget = gc.getProjectTarget();
 		this.storage = new Storage(SqlStorage);
 		
@@ -114,7 +131,7 @@ export class CivilityPage {
 			code_insee : ''
 		};
 	}
-	
+
 	watchBirthPlace(e){
 		
 		let val = e.target.value;
@@ -613,7 +630,7 @@ export class CivilityPage {
 		return false;
 		
 		if(!this.numSS || this.numSS.length != 15){
-			this.numSSMessage = '* Saisissez les 15 chiffres du n° SS';
+			this.numSSMessage = '* Saisissez les 15 chiffres du n° NIR';
 			return true;
 		}
 		
@@ -682,6 +699,15 @@ export class CivilityPage {
 		* @description change the title of the scan buttton according to the selected nationality
 	*/
 	onChangeNationality(e){
+
+		if (this.nationality){
+			this.nationalitiesstyle = {
+				'font-size': '1.4rem'
+			}
+		}
+		else {
+			this.nationalitiesstyle = { 'font-size': '2rem', 'position': 'absolute', 'top': '0.2em' };
+		}
 		if(this.nationality == 9)
 		this.scanTitle=" de votre CNI";
 		else
