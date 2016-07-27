@@ -1,6 +1,5 @@
 .modal {
-    
-    @media screen and (max-width: 750px) { 
+    @media screen and (max-width: 750px) {
         background: rgba(black, 0.7);
         position:fixed !important;
         position:absolute;
@@ -11,25 +10,23 @@
     }
     @media screen and (min-width: 755px) { 
         background: rgba(black, 0.7);
-        
-        
-    
     }
-    
+
 }
 .pics {
-    
-    
-        width: 100%;
-        margin-top: 50vh; /* poussé de la moitié de hauteur de viewport */
-        -webkit-transform: translateY(-50%);
-   
-     
-    
-    
-    
-   
-    
-    
+  width: 100%;
+  margin-top: 50vh; /* poussé de la moitié de hauteur de viewport */
+  -webkit-transform: translateY(-50%);
+}
+#close {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+}
+#close-icon {
+  font-size: 28px;
 }
 
