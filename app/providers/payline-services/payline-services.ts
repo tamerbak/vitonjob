@@ -39,7 +39,7 @@ export class PaylineServices {
         let encodedArg = btoa(JSON.stringify(bean));
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 154,
+            'id': 192,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
