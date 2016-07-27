@@ -52,9 +52,9 @@
          class="error-box">* Saisissez les 4 chiffres suivis d'une lettre</div>
 
 
-    <ion-item [hidden]="isEmployer">
-        <ion-label stacked>Date de naissance</ion-label>
-        <ion-datetime [(ngModel)]="birthdate" displayFormat="DD/MM/YYYY"></ion-datetime>
+    <ion-item style="margin-top: 1.5em" [hidden]="isEmployer">
+        <ion-label>Date de naissance</ion-label>
+        <ion-datetime [(ngModel)]="birthdate"  displayFormat="DD/MM/YYYY"></ion-datetime>
     </ion-item>
 
     <ion-item [hidden]="isEmployer">
@@ -95,7 +95,7 @@
     <div *ngIf="showNSSError()" class="error-box">{{numSSMessage}}</div>
 
     <ion-item [hidden]="isEmployer">
-        <ion-label floating>Nationalité</ion-label>
+        <ion-label [ngStyle]="nationalitiesstyle" floating>Nationalité</ion-label>
         <ion-select [(ngModel)]="nationality" (ionChange)="onChangeNationality($event)">
             <ion-option *ngFor="let n of nationalities" value="{{n.pk_user_nationalite}}">{{n.libelle}}</ion-option>
         </ion-select>
