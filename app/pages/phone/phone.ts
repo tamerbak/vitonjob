@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Alert, NavController, Events, Loading, Toast, Keyboard, ViewController} from 'ionic-angular';
+import {Alert, NavController, Events, Loading, Toast, Keyboard, ViewController, Platform} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -59,7 +59,8 @@ export class PhonePage {
 				private globalService: GlobalService, 
 				private validationDataService: ValidationDataService, 
 				public events: Events, keyboard: Keyboard,
-				private viewCtrl: ViewController) {
+				private viewCtrl: ViewController,
+				private platform:Platform) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -77,7 +78,8 @@ export class PhonePage {
 		this.backgroundImage = config.backgroundImage;
 		this.currentUserVar = config.currentUserVar;
 		this.keyboard = keyboard;
-		
+		this.platform = platform;
+        
 		//load countries list
 		this.loadListService.loadCountries(this.projectTarget).then((data) => {
 			this.pays = data.data;
@@ -160,14 +162,17 @@ export class PhonePage {
 			//if user is connected for the first time, redirect him to the page 'civility' after removing phone page from the nav stack, otherwise redirect him to the home page
 			var isNewUser = data.newAccount;
 			if (isNewUser || this.isNewRecruteur) {
-				this.nav.push(CivilityPage, {
-				currentUser: data}).then(() => {
-					// first we find the index of the current view controller:
-					const index = this.viewCtrl.index;
-					// then we remove it from the navigation stack
-					this.nav.remove(index);
-				});
-				} else {
+				 if(this.platform.is('ios')){
+					this.nav.setRoot(CivilityPage, {currentUser: data});
+				 }else{
+					this.nav.push(CivilityPage, {currentUser: data}).then(() => {
+						// first we find the index of the current view controller:
+						const index = this.viewCtrl.index;
+						// then we remove it from the navigation stack
+						this.nav.remove(index);
+					});
+				 }
+			 } else {
 				this.nav.rootNav.setRoot(HomePage);
 				//this.nav.push(InfoUserPage, {
 				//currentUser: data});
