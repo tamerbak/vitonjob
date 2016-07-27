@@ -63,6 +63,7 @@ export class Vitonjob {
     userImageURL:string;
     userName:string;
     userMail:string;
+	userPhone:string;
     themeColor:string;
     menuBackgroundImage:any;
     config:any;
@@ -131,8 +132,6 @@ export class Vitonjob {
 
         this.bgMenuURL = this.config.bgMenuURL;
         this.userImageURL = this.config.userImageURL;
-        this.userName = this.isEmployer ? 'Employeur' : 'Jobyer';
-        this.userMail = "";
         this.themeColor = this.config.themeColor;
         this.menuBackgroundImage = this.config.menuBackgroundImage;
 
@@ -293,6 +292,12 @@ export class Vitonjob {
             });
 
             StatusBar.styleDefault();
+			
+			//display user info in menu
+			this.storage.get(this.currentUserVar).then((value) => {
+				value = JSON.parse(value);
+				this.displayInfoUser(value);
+			});
         });
     }
 
@@ -311,10 +316,7 @@ export class Vitonjob {
         });
         this.events.subscribe('user:login', (data) => {
             this.enableMenu(true);
-            if(data[0].titre){
-                this.userName = data[0].titre +' '+data[0].nom +' '+data[0].prenom;
-            }
-            this.userMail = data[0].email;
+            this.displayInfoUser(data[0]);
         });
 
         this.events.subscribe('user:logout', () => {
@@ -327,13 +329,22 @@ export class Vitonjob {
 
         this.events.subscribe('user:civility', (data) => {
             this.enableMenu(true);
-            this.userName = data[0].titre +' '+data[0].nom +' '+data[0].prenom;
-            this.userMail = data[0].email;
+            this.displayInfoUser(data[0]);
         });
 
     }
 
-    enableMenu(loggedIn) {
+	displayInfoUser(data){
+		 if(data.titre){
+			this.userName = data.titre +' '+data.nom +' '+data.prenom;
+		}else{
+			this.userName = this.isEmployer ? 'Employeur' : 'Jobyer';
+		}
+		this.userMail = data.email;
+		this.userPhone = data.tel;
+	}
+    
+	enableMenu(loggedIn) {
         this.menu.enable(loggedIn, "loggedInMenu");
         this.menu.enable(!loggedIn, "loggedOutMenu");
     }

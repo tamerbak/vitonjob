@@ -118,6 +118,7 @@ export class PhonePage {
 		* @description function called to authenticate a user
 	*/
 	authenticate() {
+		//in case email was changed just before validate button is clicked
 		if(this.isAuthDisabled()){
 			return;
 		}
@@ -163,9 +164,11 @@ export class PhonePage {
 			var isNewUser = data.newAccount;
 			if (isNewUser || this.isNewRecruteur) {
 				 if(this.platform.is('ios')){
+					console.log("plateform ios : no back button, just menu button");
 					this.nav.setRoot(CivilityPage, {currentUser: data});
 				 }else{
 					this.nav.push(CivilityPage, {currentUser: data}).then(() => {
+						console.log("plateform android : no menu button, just back button");
 						// first we find the index of the current view controller:
 						const index = this.viewCtrl.index;
 						// then we remove it from the navigation stack
