@@ -52,9 +52,15 @@
          class="error-box">* Saisissez les 4 chiffres suivis d'une lettre</div>
 
 
-    <ion-item style="margin-top: 1.5em" [hidden]="isEmployer">
+    <ion-item style="margin-top: 1.5em" [hidden]="isEmployer || isAndroid4">
         <ion-label>Date de naissance</ion-label>
         <ion-datetime [(ngModel)]="birthdate"  displayFormat="DD/MM/YYYY"></ion-datetime>
+    </ion-item>
+
+    <ion-item [hidden]="!isAndroid4">
+        <ion-label floating>Date</ion-label>
+        <ion-input type="text" [(ngModel)] = "birthdate"
+                   (focus)="launchDateTimePicker('date')" readonly></ion-input>
     </ion-item>
 
     <ion-item [hidden]="isEmployer">

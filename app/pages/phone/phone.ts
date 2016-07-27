@@ -472,7 +472,7 @@ export class PhonePage {
 			return;
 		}
 		if(this.phone && this.isPhoneValid(this.phone) && this.showEmailField){
-			this.globalService.showAlertValidation("VitOnJob", "Le numéro que vous avez saisi ne correspond à aucun compte enregistrè. Veuillez créer un compte.");
+			this.globalService.showAlertValidation("VitOnJob", "Le numéro que vous avez saisi ne correspond à aucun compte enregistré. Veuillez créer un compte.");
 			return;
 		}
 		if(this.isRecruteur){

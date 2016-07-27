@@ -15,7 +15,7 @@
     <ion-item [hidden]="!isAndroid4">
       <ion-label floating>Date</ion-label>
       <ion-input type="text" [(ngModel)] = "showedSlot.angular4Date"
-                 (focus)="launchDateTimePicker('date')"></ion-input>
+                 (focus)="launchDateTimePicker('date')" readonly></ion-input>
     </ion-item>
 
     <ion-item text-wrap [hidden]="isAndroid4">
@@ -27,7 +27,7 @@
     <ion-item [hidden]="!isAndroid4">
       <ion-label floating>Heure de début</ion-label>
       <ion-input type="text" [(ngModel)] = "showedSlot.startHour"
-                 (focus)="launchDateTimePicker('time', 'start')"></ion-input>
+                 (focus)="launchDateTimePicker('time', 'start')" readonly></ion-input>
     </ion-item>
     <ion-item text-wrap [hidden]="isAndroid4">
       <ion-label>Heure de Début</ion-label>
@@ -37,7 +37,7 @@
     <ion-item [hidden]="!isAndroid4">
       <ion-label floating>Heure de fin</ion-label>
       <ion-input type="text" [(ngModel)] = "showedSlot.endHour"
-                 (focus)="launchDateTimePicker('time', 'end')"></ion-input>
+                 (focus)="launchDateTimePicker('time', 'end')" readonly></ion-input>
     </ion-item>
     <ion-item text-wrap [hidden]="isAndroid4">
       <ion-label>Heure de fin</ion-label>

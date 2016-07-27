@@ -31,6 +31,7 @@ export class ModalSlotPage {
     constructor(public nav:NavController, gc:GlobalConfigs, viewCtrl:ViewController, private globalService: GlobalService, platform:Platform) {
 
         // Get target to determine configs
+        console.log('entering to modal-slots');
         this.projectTarget = gc.getProjectTarget();
 
         // get config of selected target
@@ -54,6 +55,7 @@ export class ModalSlotPage {
             endHour: null
         };
         this.isAndroid4 = (platform.version('android').major < 5);
+        console.log('Constructor done..');
     }
 
     /**

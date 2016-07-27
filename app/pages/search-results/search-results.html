@@ -201,20 +201,19 @@
       </ion-card> -->
     </ion-slide>
   </ion-slides>
-
+</ion-content>
 
 <ion-footer>
-  <div *ngIf="offerProposition" class="offer-proposition-div">
-    <ion-grid>
-      <ion-row>
-        <ion-col width-70>Vous pouvez utiliser vos critères de recherche pour créer une nouvelle offre</ion-col>
-        <ion-col width-20>
-          <button block (click)="toggleProposition()" style="font-size: small;" >
-            Créer
-          </button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
+    <div *ngIf="offerProposition" class="offer-proposition-div">
+        <ion-grid>
+            <ion-row>
+                <ion-col width-70>Vous pouvez utiliser vos critères de recherche pour créer une nouvelle offre</ion-col>
+                <ion-col width-20>
+                    <button block (click)="toggleProposition()" style="font-size: small;" >
+                        Créer
+                    </button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
 </ion-footer>
-</ion-content>
