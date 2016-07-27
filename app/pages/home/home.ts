@@ -166,7 +166,7 @@ export class HomePage implements OnChanges{
         let loading = Loading.create({
             content: ` 
 			
-			<img class="loading" src='img/ripple.svg' />
+			<img class="loading" src='img/loading.gif' />
 			
 			`,
             spinner : 'hide'
