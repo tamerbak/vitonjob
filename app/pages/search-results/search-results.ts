@@ -694,4 +694,70 @@ export class SearchResultsPage implements OnInit {
             this.iconName = 'list';
         }
     }
+	
+	contract(index){
+		if(this.isUserAuthenticated){
+
+            let currentEmployer = this.employer.employer;
+            console.log(currentEmployer);
+
+            //verification of employer informations
+            let redirectToCivility = (currentEmployer && currentEmployer.entreprises[0]) ?
+            (currentEmployer.titre == "") ||
+            (currentEmployer.prenom == "") ||
+            (currentEmployer.nom == "") ||
+            (currentEmployer.entreprises[0].name == "") ||
+            (currentEmployer.entreprises[0].siret == "") ||
+            (currentEmployer.entreprises[0].naf == "") ||
+            (currentEmployer.entreprises[0].siegeAdress.id == 0) ||
+            (currentEmployer.entreprises[0].workAdress.id == 0): true;
+
+            let isDataValid = !redirectToCivility;
+
+            if (isDataValid) {
+                //navigate to contract page
+
+                let o = this.navParams.get('currentOffer');
+                if(o && !isUndefined(o)){
+                    this.nav.push(ContractPage, {jobyer: this.searchResults[index], currentOffer : o});
+                }else{
+                    this.nav.push(ContractPage, {jobyer: this.searchResults[index]});
+                }
+
+
+            } else {
+                //redirect employer to fill the missing informations
+                let alert = Alert.create({
+                    title: 'Informations incomplètes',
+                    subTitle: "Veuillez compléter votre profil avant d'établir votre premier contrat",
+                    buttons: ['OK']
+                });
+                alert.onDismiss(()=>{
+                    this.nav.push(CivilityPage, {currentUser: this.employer});
+                });
+                this.nav.present(alert);
+
+            }
+        }
+        else
+        {
+            let alert = Alert.create({
+                title: 'Attention',
+                message: 'Pour contacter ce jobyer, vous devez être connectés.',
+                buttons: [
+                    {
+                        text: 'Annuler',
+                        role: 'cancel',
+                    },
+                    {
+                        text: 'Connexion',
+                        handler: () => {
+                            this.nav.push(LoginsPage);
+                        }
+                    }
+                ]
+            });
+            this.nav.present(alert);
+        }
+	}
 }

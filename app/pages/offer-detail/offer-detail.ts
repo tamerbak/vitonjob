@@ -435,7 +435,9 @@ export class OfferDetailPage {
         });
 
         popover.onDismiss( data => {
-            switch (data.option) {
+            if(!data)
+				return;
+			switch (data.option) {
                 case 1:
                     // Launch copy function
                     this.copyOffer();
