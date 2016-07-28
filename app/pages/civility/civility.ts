@@ -474,11 +474,13 @@ export class CivilityPage {
         if (s.length > 15) {
             s = s.substring(0, 15);
             e.target.value = s;
+			this.numSS = e.target.value;
             return;
         }
         if (s.indexOf('.') != -1) {
             s = s.replace('.', '');
             e.target.value = s;
+			this.numSS = e.target.value;
             return;
         }
         if (e.keyCode < 48 || e.keyCode > 57) {
@@ -498,11 +500,13 @@ export class CivilityPage {
         if (s.length > 12) {
             s = s.substring(0, 12);
             e.target.value = s;
+			this.cni = e.target.value;
             return;
         }
         if (s.indexOf('.') != -1) {
             s = s.replace('.', '');
             e.target.value = s;
+            this.cni = e.target.value;
             return;
         }
         if (e.keyCode < 48 || e.keyCode > 57) {
