@@ -60,7 +60,7 @@
             </ion-item>
 
             <ion-item>
-                <ion-label>Date de naissance</ion-label><ion-input type="text" [(ngModel)]="jobyerBirthDate"></ion-input>
+                <ion-label>Date de naissance</ion-label><ion-input type="date" [(ngModel)]="jobyerBirthDate"></ion-input>
             </ion-item>
 
             <ion-item>
@@ -76,11 +76,11 @@
             </ion-item>
 
             <ion-item>
-                <ion-label>Valable du</ion-label><ion-input type="text" [(ngModel)]="contractData.debutTitreTravail"></ion-input>
+                <ion-label>Valable du</ion-label><ion-input type="date" [(ngModel)]="contractData.debutTitreTravail"></ion-input>
             </ion-item>
 
             <ion-item>
-                <ion-label>Valable au</ion-label><ion-input type="text" [(ngModel)]="contractData.finTitreTravail"></ion-input>
+                <ion-label>Valable au</ion-label><ion-input type="date" [(ngModel)]="contractData.finTitreTravail"></ion-input>
             </ion-item>
     </ion-list>
 
@@ -91,19 +91,19 @@
         </ion-list-header>
 
             <ion-item>
-                <ion-label>Début de mission</ion-label><ion-input type="text" [(ngModel)]="contractData.missionStartDate"></ion-input>
+                <ion-label>Début de mission</ion-label><ion-input type="date"  [(ngModel)]="contractData.missionStartDate"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label>Fin de mission</ion-label><ion-input type="text" [(ngModel)]="contractData.missionEndDate"></ion-input>
+                <ion-label>Fin de mission</ion-label><ion-input type="date"  [(ngModel)]="contractData.missionEndDate"></ion-input>
             </ion-item>
             <ion-item>
                 <ion-label>P. essai (J) </ion-label><ion-input type="text" [(ngModel)]="contractData.trialPeriod"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label>Début report </ion-label><ion-input type="text" [(ngModel)]="contractData.termStartDate"></ion-input>
+                <ion-label>Début terme </ion-label><ion-input type="date"  [(ngModel)]="contractData.termStartDate"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label>Fin report</ion-label><ion-input type="text" [(ngModel)]="contractData.termEndDate"></ion-input>
+                <ion-label>Fin terme</ion-label><ion-input type="date"  [(ngModel)]="contractData.termEndDate"></ion-input>
             </ion-item>
             <ion-item>
                 <ion-label>Motif de recours</ion-label><ion-input type="text" [(ngModel)]="contractData.motif"></ion-input>
@@ -112,10 +112,10 @@
                 <ion-label>Justification de recours</ion-label><ion-input type="text" [(ngModel)]="contractData.justification"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label>Début de souplesse</ion-label><ion-input type="text" [(ngModel)]="contractData.debutSouplesse"></ion-input>
+                <ion-label>Début de souplesse</ion-label><ion-input type="date"  [(ngModel)]="contractData.debutSouplesse"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label>Fin de souplesse</ion-label><ion-input type="text" [(ngModel)]="contractData.finSouplesse"></ion-input>
+                <ion-label>Fin de souplesse</ion-label><ion-input type="date"  [(ngModel)]="contractData.finSouplesse"></ion-input>
             </ion-item>
             <ion-item>
                 <ion-label>Période non travaillée</ion-label><ion-input type="text" [(ngModel)]="contractData.periodesNonTravaillees"></ion-input>
