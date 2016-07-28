@@ -11,6 +11,12 @@ export class Helpers {
 	constructor() {
 		
 	}
+
+	parseDate(dateStr:string){
+	    if(!dateStr || isUndefined(dateStr) || dateStr.length == 0 || dateStr.split('-').length == 0)
+	        return '';
+        return dateStr.split('-')[2]+'/'+dateStr.split('-')[1]+'/'+dateStr.split('-')[0];
+    }
     
     /**
 		* @description convert date String to sql Timestamp format

@@ -46,6 +46,13 @@ export class ContractPage {
     hqAdress:string;
     rate : number=0.0;
 
+    dateFormat(d){
+        let m = d.getMonth()+1;
+        let da = d.getDate();
+        let sd = d.getFullYear()+"-"+(m<10?'0':'')+m+"-"+(da<10?'0':'')+da;
+        return sd;
+    }
+
     constructor(public gc: GlobalConfigs,
                 public nav: NavController,
                 private navParams:NavParams,
@@ -69,7 +76,7 @@ export class ContractPage {
         this.jobyerFirstName = this.jobyer.prenom;
         this.jobyerLastName = this.jobyer.nom;
         let bd = new Date(this.jobyer.dateNaissance);
-        this.jobyerBirthDate = bd.getDate()+'/'+(bd.getMonth()+1)+'/'+bd.getFullYear();
+        this.jobyerBirthDate = this.dateFormat(bd);
         this.jobyer.id = 0;
         this.jobyer.numSS = '';
         this.jobyer.nationaliteLibelle = '';
@@ -107,8 +114,8 @@ export class ContractPage {
             missionStartDate: this.getStartDate(),
             missionEndDate:this.getEndDate(),
             trialPeriod: 5,
-            termStartDate: "",
-            termEndDate: "",
+            termStartDate: this.getEndDate(),
+            termEndDate: this.getEndDate(),
             motif: "",
             justification: "",
             qualification: "",
@@ -210,8 +217,12 @@ export class ContractPage {
     }
 
     getStartDate(){
+
         let d = new Date();
-        let sd =  d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+        let m = d.getMonth()+1;
+        let da = d.getDate();
+        let sd = d.getFullYear()+"-"+(m<10?'0':'')+m+"-"+(da<10?'0':'')+da;
+
         if(!this.currentOffer || isUndefined(this.currentOffer))
             return sd;
         if(!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0)
@@ -221,13 +232,17 @@ export class ContractPage {
             if(this.currentOffer.calendarData[i].date < minDate)
                 minDate = this.currentOffer.calendarData[i].date;
         d=new Date(minDate);
-        sd =  d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+        m = d.getMonth()+1;
+        da = d.getDate();
+        sd = d.getFullYear()+"-"+(m<10?'0':'')+m+"-"+(da<10?'0':'')+da;
         return sd;
     }
 
     getEndDate(){
         let d = new Date();
-        let sd =  d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+        let m = d.getMonth()+1;
+        let da = d.getDate();
+        let sd = d.getFullYear()+"-"+(m<10?'0':'')+m+"-"+(da<10?'0':'')+da;
         if(!this.currentOffer || isUndefined(this.currentOffer))
             return sd;
         if(!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0)
@@ -238,12 +253,14 @@ export class ContractPage {
             if(this.currentOffer.calendarData[i].date > maxDate)
                 maxDate = this.currentOffer.calendarData[i].date;
         d=new Date(maxDate);
-        sd =  d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+        m = d.getMonth()+1;
+        da = d.getDate();
+        sd = d.getFullYear()+"-"+(m<10?'0':'')+m+"-"+(da<10?'0':'')+da;
         return sd;
     }
 
     selectOffer(){
-        
+        debugger;
         let m = new Modal(ModalOffersPage);
         m.onDismiss(data => {
             this.currentOffer = data;
@@ -288,8 +305,8 @@ export class ContractPage {
             missionStartDate: this.getStartDate(),
             missionEndDate:this.getEndDate(),
             trialPeriod: 5,
-            termStartDate: "",
-            termEndDate: "",
+            termStartDate: this.getEndDate(),
+            termEndDate: this.getEndDate(),
             motif: "",
             justification: "",
             qualification: this.currentOffer.title,
