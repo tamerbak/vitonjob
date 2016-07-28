@@ -137,7 +137,15 @@ export class ContractService {
                   " signature_employeur," +
                   " signature_jobyer," +
                   " taux_indemnite_fin_de_mission," +
-                  " taux_conges_payes" +
+                  " taux_conges_payes," +
+                  " titre_transport,"+
+                  " zones_transport,"+
+                  " surveillance_medicale_renforcee,"+
+                  " debut_souplesse,"+
+                  " fin_souplesse,"+
+                  " organisation_particuliere,"+
+                  " elements_soumis_a_des_cotisations,"+
+                  " elements_non_soumis_a_des_cotisations"+
                   ")"+
                   " VALUES ("
                   +""+ this.helpers.dateStrToSqlTimestamp(contract.missionStartDate) +","
@@ -158,7 +166,16 @@ export class ContractService {
                   +"'OUI',"
                   +"'NON',"
                   +"10,"
-                  +"10)"
+                  +"10,"
+                  +"'"+contract.titreTransport+"',"
+                  +"'"+contract.zonesTitre+"',"
+                  +"'"+contract.medicalSurv+"',"
+                  +""+this.helpers.dateStrToSqlTimestamp(contract.debutSouplesse)+","
+                  +""+this.helpers.dateStrToSqlTimestamp(contract.finSouplesse)+","
+                  +"'"+contract.usualWorkTimeHours+"',"
+                  +"'"+contract.elementsCotisation+"',"
+                  +"'"+contract.elementsNonCotisation+"'"
+                  +")"
                   +" RETURNING pk_user_contrat";
                   
         console.log(sql);
@@ -272,7 +289,12 @@ export class ContractService {
             "centreMedecineEntreprise":contract.centreMedecineEntreprise,
             "adresseCentreMedecineEntreprise":contract.adresseCentreMedecineEntreprise,
             "centreMedecineETT":contract.centreMedecineETT,
-            "adresseCentreMedecineETT":contract.adresseCentreMedecineETT
+            "adresseCentreMedecineETT":contract.adresseCentreMedecineETT,
+            "risques" : contract.postRisks,
+            "titreTransport" :  contract.titreTransport,
+            "zonesTitre" : contract.zonesTitre,
+            "elementsCotisation" : contract.elementsCotisation,
+            "elementsNonCotisation" : contract.elementsNonCotisation
         };
         debugger;
         console.log(JSON.stringify(jsonData));
