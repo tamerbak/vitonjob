@@ -11,6 +11,7 @@ import {ModalOffersPage} from "../modal-offers/modal-offers";
 import {ContractService} from "../../providers/contract-service/contract-service";
 import {Component} from "@angular/core";
 import {MedecineService} from "../../providers/medecine-service/medecine-service";
+import {ParametersService} from "../../providers/parameters-service/parameters-service";
 
 
 /**
@@ -20,7 +21,7 @@ import {MedecineService} from "../../providers/medecine-service/medecine-service
  */
 @Component({
     templateUrl: 'build/pages/contract/contract.html',
-    providers:[UserService, ContractService, MedecineService]
+    providers:[UserService, ContractService, MedecineService, ParametersService]
 })
 export class ContractPage {
 
@@ -43,13 +44,15 @@ export class ContractPage {
     workAdress:string;
     jobyerBirthDate:string;
     hqAdress:string;
+    rate : number=0.0;
 
     constructor(public gc: GlobalConfigs,
                 public nav: NavController,
                 private navParams:NavParams,
                 private userService:UserService,
                 private contractService : ContractService,
-                private medecineService : MedecineService) {
+                private medecineService : MedecineService,
+                private service : ParametersService) {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -132,7 +135,12 @@ export class ContractPage {
             missionContent : "",
             category: "",
             sector : "",
-            companyName : ''
+            companyName : '',
+            titreTransport : 'NON',
+            zonesTitre : '',
+            risques : '',
+            elementsCotisation : 0.0,
+            elementsNonCotisation : 10.0
         };
 
         /*this.contractService.getNumContract().then(data =>{
@@ -170,6 +178,18 @@ export class ContractPage {
             
             if(navParams.get("currentOffer") && !isUndefined(navParams.get("currentOffer"))){
                 this.currentOffer = navParams.get("currentOffer");
+                this.service.getRates().then(data =>{
+                    debugger;
+                    for(let i = 0 ; i < data.length ; i++){
+                        if(this.currentOffer.jobData.remuneration < data[i].taux_horaire){
+                            this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
+                            this.contractData.elementsCotisation = this.rate;
+                            break;
+                        }
+                    }
+
+
+                });
                 this.initContract();
             }
         });
@@ -227,6 +247,18 @@ export class ContractPage {
         let m = new Modal(ModalOffersPage);
         m.onDismiss(data => {
             this.currentOffer = data;
+            this.service.getRates().then(data =>{
+                debugger;
+                for(let i = 0 ; i < data.length ; i++){
+                    if(this.currentOffer.jobData.remuneration < data[i].taux_horaire){
+                        this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
+                        this.contractData.elementsCotisation = this.rate;
+                        break;
+                    }
+                }
+
+
+            });
             this.initContract();
         });
         this.nav.present(m);
@@ -286,9 +318,15 @@ export class ContractPage {
             sector : this.currentOffer.jobData.sector,
             companyName : this.companyName,
             workAdress : this.workAdress,
-            jobyerBirthDate : this.jobyerBirthDate
+            jobyerBirthDate : this.jobyerBirthDate,
+            titreTransport : 'NON',
+            zonesTitre : '',
+            risques : '',
+            elementsCotisation : this.rate,
+            elementsNonCotisation : 10.0
         };
-
+        console.log(JSON.stringify(this.contractData));
+        debugger;
         this.medecineService.getMedecine(this.employer.entreprises[0].id).then(data=>{
             if(data && data !=null){
                 debugger;
@@ -311,6 +349,7 @@ export class ContractPage {
     }
 
     goToYousignPage() {
+        debugger;
         this.contractService.getNumContract().then(data =>{
             
             if(data && data.length>0){
