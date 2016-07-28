@@ -295,8 +295,10 @@ export class Vitonjob {
 			
 			//display user info in menu
 			this.storage.get(this.currentUserVar).then((value) => {
-				value = JSON.parse(value);
-				this.displayInfoUser(value);
+				if(value){
+					value = JSON.parse(value);
+					this.displayInfoUser(value);
+				}
 			});
         });
     }
