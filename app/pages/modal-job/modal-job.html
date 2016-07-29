@@ -15,7 +15,7 @@
         <ion-item>
             <ion-label floating>Secteur</ion-label>
             <ion-input [(ngModel)]="jobData.sector" (keyup)="watchSector($event)" ></ion-input>
-            <button small item-right (click)="setSectorsPicker()" >
+            <button small class="text-size" item-right (click)="setSectorsPicker()" >
                 <ion-icon name="list"></ion-icon>
             </button>
         </ion-item>
