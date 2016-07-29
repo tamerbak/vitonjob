@@ -31,9 +31,7 @@ export class ModalSlotPage {
     constructor(public nav:NavController, gc:GlobalConfigs, viewCtrl:ViewController, private globalService: GlobalService, platform:Platform) {
 
         // Get target to determine configs
-        console.log('entering to modal-slots');
         this.projectTarget = gc.getProjectTarget();
-
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
         // Set local variables
@@ -48,14 +46,15 @@ export class ModalSlotPage {
             startHour: 0,
             endHour: 0
         };
+        let today = new Date();
+        let stringDate = today.getDate()+'/'+today.getMonth()+'/'+today.getFullYear();
         this.showedSlot = {
             date: new Date().toISOString(),
-            angular4Date: this.toDateString(new Date().getTime()),
+            angular4Date: stringDate,
             startHour: null,
             endHour: null
         };
         this.isAndroid4 = (platform.version('android').major < 5);
-        console.log('Constructor done..');
     }
 
     /**
@@ -83,8 +82,8 @@ export class ModalSlotPage {
                         break;
                     default :
                         this.slot.date = date.getTime();
-                        this.showedSlot.date = this.toDateString(this.slot.date, '');
-                        this.showedSlot.angular4Date = this.toDateString(this.slot.date, '');
+                        this.showedSlot.date = date.getDate()+'/'+date.getMonth()+'/'+date.getFullYear();
+                        this.showedSlot.angular4Date = this.showedSlot.date;
                         break;
                 }
             },
@@ -141,8 +140,8 @@ export class ModalSlotPage {
      * @param date : a timestamp date
      * @param options Date options
      */
-    toDateString(date:number, options:any) {
-        return new Date(date).toLocaleDateString('fr-FR', options);
+    toDateString(date:number) {
+        return new Date(date).toLocaleDateString('fr-FR');
     }
 
     /*isoToDateString(date:Date) {

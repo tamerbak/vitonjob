@@ -240,7 +240,7 @@ export class Vitonjob {
 							handler: () => {
 								console.log('pointer clicked');	
 								alert.dismiss().then(() => {
-									var data = JSON.parse(notification.data)
+									var data = JSON.parse(notification.data);
 									this.nav.push(MissionPointingPage,{contract: data.contract, autoPointing: true, nextPointing: data.nextPointing});
 								})
 							}
