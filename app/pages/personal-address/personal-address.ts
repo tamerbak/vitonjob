@@ -34,6 +34,7 @@ export class PersonalAddressPage {
 	generalLoading;
 	//isAdrFormHidden = true;
 	currentUserVar: string;
+	isZipCodeValid = true;
 	
 	/**
 		* @description While constructing the view, we get the currentUser passed as parameter from the connection page
@@ -354,10 +355,33 @@ export class PersonalAddressPage {
 	}
 	
 	isBtnDisabled(){
-		if(this.city && this.country){
+		if(this.city && this.country && this.zipCode && this.isZipCodeValid){
 			return false;
 		}else{
 			return true;
+		}
+	}
+	
+	watchZipCode(e){
+		if (this.zipCode) {
+			if (e.target.value.indexOf('.') != -1) {
+				e.target.value = e.target.value.replace('.', '');
+				this.zipCode = e.target.value;
+				return;
+			}
+			if(e.target.value.length > 5){
+				e.target.value = e.target.value.substring(0, 5);
+				this.zipCode = e.target.value;
+				return;
+			}
+		}	
+	}
+	
+	validateZipCode(e){
+		if(e.target.value.length == 5){
+			this.isZipCodeValid = true;	
+		}else{
+			this.isZipCodeValid = false;	
 		}
 	}
 }
