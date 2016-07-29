@@ -11,7 +11,7 @@
     <ion-row>
 		<ion-col text-center>
 			<button [style.backgroundColor]="themeColor" class="button-picture" (click)="copyPersonalAddress()">
-				<ion-icon name="copy"></ion-icon>Utiliser mon adresse siège social
+				<ion-icon name="copy"></ion-icon>Utiliser mon adresse {{isEmployer ? ' siège social' : ' personnelle'}}
 			</button>
 		</ion-col>
 	</ion-row>
@@ -36,10 +36,13 @@
 			<ion-label floating>Rue</ion-label>
 			<ion-textarea type="text" [(ngModel)]="street"></ion-textarea>
 		</ion-item>
+		
 		<ion-item>
 			<ion-label floating>Code postal</ion-label>
-			<ion-input type="text" [(ngModel)]="zipCode"></ion-input>
+			<ion-input type="number" [(ngModel)]="zipCode" (keyup)="watchZipCode($event)" (change)="validateZipCode($event)" maxlength="5" min="0" inputmode="numeric" pattern="[0-9]*"></ion-input>
 		</ion-item>
+		<div [hidden]="isZipCodeValid" class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Veuillez saisir un code postal valide</div>
+		
 		<ion-item>
 			<ion-label floating>Ville</ion-label>
 			<ion-input type="text" [(ngModel)]="city"></ion-input>
