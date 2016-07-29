@@ -137,13 +137,21 @@ export class ContractService {
                   " signature_employeur," +
                   " signature_jobyer," +
                   " taux_indemnite_fin_de_mission," +
-                  " taux_conges_payes" +
+                  " taux_conges_payes," +
+                  " titre_transport,"+
+                  " zones_transport,"+
+                  " surveillance_medicale_renforcee,"+
+                  " debut_souplesse,"+
+                  " fin_souplesse,"+
+                  " organisation_particuliere,"+
+                  " elements_soumis_a_des_cotisations,"+
+                  " elements_non_soumis_a_des_cotisations"+
                   ")"+
                   " VALUES ("
-                  +""+ this.helpers.dateStrToSqlTimestamp(contract.missionStartDate) +","
-                  +""+ this.helpers.dateStrToSqlTimestamp(contract.missionEndDate) +","
-                  +""+ this.helpers.dateStrToSqlTimestamp(contract.termStartDate) +","
-                  +""+ this.helpers.dateStrToSqlTimestamp(contract.termEndDate) +","
+                  +"'"+ contract.missionStartDate +"',"
+                  +"'"+ contract.missionEndDate +"',"
+                  +"'"+ contract.termStartDate +"',"
+                  +"'"+ contract.termEndDate +"',"
                   +"'"+ this.helpers.dateToSqlTimestamp(new Date())+"',"
                   +"'"+ this.helpers.timeStrToMinutes(contract.workStartHour) +"',"
                   +"'"+ this.helpers.timeStrToMinutes(contract.workEndHour) +"',"
@@ -158,7 +166,16 @@ export class ContractService {
                   +"'OUI',"
                   +"'NON',"
                   +"10,"
-                  +"10)"
+                  +"10,"
+                  +"'"+contract.titreTransport+"',"
+                  +"'"+contract.zonesTitre+"',"
+                  +"'"+contract.medicalSurv+"',"
+                  +"'"+contract.debutSouplesse+"',"
+                  +"'"+contract.finSouplesse+"',"
+                  +"'"+contract.usualWorkTimeHours+"',"
+                  +"'"+contract.elementsCotisation+"',"
+                  +"'"+contract.elementsNonCotisation+"'"
+                  +")"
                   +" RETURNING pk_user_contrat";
                   
         console.log(sql);
@@ -213,15 +230,15 @@ export class ContractService {
             "jobyerPrenom" : jobyer.prenom,
             "jobyerNom" : jobyer.nom,
             "nss" : jobyer.numSS,
-            "dateNaissance" : contract.jobyerBirthDate,
+            "dateNaissance" : this.helpers.parseDate(contract.jobyerBirthDate),
             "lieuNaissance" : jobyer.lieuNaissance, 
             "nationalite" : jobyer.nationaliteLibelle,
             "adresseDomicile" : jobyer.address,
-            "dateDebutMission" : contract.missionStartDate,
-            "dateFinMission" : contract.missionEndDate,
+            "dateDebutMission" : this.helpers.parseDate(contract.missionStartDate),
+            "dateFinMission" : this.helpers.parseDate(contract.missionEndDate),
             "periodeEssai" :  contract.trialPeriod == null ? "":( contract.trialPeriod == 1 ? "1 jour": (contract.trialPeriod + " jours")),
-            "dateDebutTerme" : contract.termStartDate,
-            "dateFinTerme" : contract.termEndDate,
+            "dateDebutTerme" : this.helpers.parseDate(contract.termStartDate),
+            "dateFinTerme" : this.helpers.parseDate(contract.termEndDate),
             "motifRecours" : contract.motif,
             "justificationRecours" : contract.justification,
             "qualification" : contract.qualification,
@@ -263,16 +280,21 @@ export class ContractService {
             "indemniteCongesPayes" : contract.indemniteCongesPayes,
             "moyenAcces" : contract.moyenAcces,
             "numeroTitreTravail" : contract.numeroTitreTravail,
-            "debutTitreTravail" : contract.debutTitreTravail,
-            "finTitreTravail" : contract.finTitreTravail,
+            "debutTitreTravail" : this.helpers.parseDate(contract.debutTitreTravail),
+            "finTitreTravail" : this.helpers.parseDate(contract.finTitreTravail),
             "periodesNonTravaillees" : contract.periodesNonTravaillees,
-            "debutSouplesse" : contract.debutSouplesse,
-            "finSouplesse" : contract.finSouplesse,
+            "debutSouplesse" : this.helpers.parseDate(contract.debutSouplesse),
+            "finSouplesse" : this.helpers.parseDate(contract.finSouplesse),
             "equipements" : contract.equipements,
             "centreMedecineEntreprise":contract.centreMedecineEntreprise,
             "adresseCentreMedecineEntreprise":contract.adresseCentreMedecineEntreprise,
             "centreMedecineETT":contract.centreMedecineETT,
-            "adresseCentreMedecineETT":contract.adresseCentreMedecineETT
+            "adresseCentreMedecineETT":contract.adresseCentreMedecineETT,
+            "risques" : contract.postRisks,
+            "titreTransport" :  contract.titreTransport,
+            "zonesTitre" : contract.zonesTitre,
+            "elementsCotisation" : contract.elementsCotisation,
+            "elementsNonCotisation" : contract.elementsNonCotisation
         };
         debugger;
         console.log(JSON.stringify(jsonData));

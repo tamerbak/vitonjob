@@ -450,9 +450,9 @@ export class CivilityPage {
             return (!this.title || !this.firstname || !this.lastname);
         }
         if (this.isEmployer) {
-            return (!this.title || !this.firstname || !this.lastname || !this.companyname || !this.siret || this.siret.length < 17 || !this.ape || this.ape.length < 5 || !this.isAPEValid || !this.isValideFirstName || !this.isValideLastName || (!this.scanUri && !this.currentUser.scanUploaded));
+            return (!this.title || !this.firstname || !this.lastname || !this.companyname || (this.siret && this.siret.length < 17) || (this.ape && (this.ape.length < 5 || !this.isAPEValid)) || !this.isValideFirstName || !this.isValideLastName);
         } else {
-            if ((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length != 0) || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.nationality || !this.birthplace || !this.birthdate || !this.isValideFirstName || !this.isValideLastName || (!this.scanUri && !this.currentUser.scanUploaded))) {
+            if ((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length != 0) || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.nationality || !this.birthplace || !this.birthdate || !this.isValideFirstName || !this.isValideLastName )) {
                 return true;
             }
             if (!this.numSS || this.numSS.length == 0)
@@ -474,11 +474,13 @@ export class CivilityPage {
         if (s.length > 15) {
             s = s.substring(0, 15);
             e.target.value = s;
+			this.numSS = e.target.value;
             return;
         }
         if (s.indexOf('.') != -1) {
             s = s.replace('.', '');
             e.target.value = s;
+			this.numSS = e.target.value;
             return;
         }
         if (e.keyCode < 48 || e.keyCode > 57) {
@@ -498,11 +500,13 @@ export class CivilityPage {
         if (s.length > 12) {
             s = s.substring(0, 12);
             e.target.value = s;
+			this.cni = e.target.value;
             return;
         }
         if (s.indexOf('.') != -1) {
             s = s.replace('.', '');
             e.target.value = s;
+            this.cni = e.target.value;
             return;
         }
         if (e.keyCode < 48 || e.keyCode > 57) {

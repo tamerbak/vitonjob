@@ -11,6 +11,7 @@ import {ModalOffersPage} from "../modal-offers/modal-offers";
 import {ContractService} from "../../providers/contract-service/contract-service";
 import {Component} from "@angular/core";
 import {MedecineService} from "../../providers/medecine-service/medecine-service";
+import {ParametersService} from "../../providers/parameters-service/parameters-service";
 
 
 /**
@@ -20,7 +21,7 @@ import {MedecineService} from "../../providers/medecine-service/medecine-service
  */
 @Component({
     templateUrl: 'build/pages/contract/contract.html',
-    providers:[UserService, ContractService, MedecineService]
+    providers:[UserService, ContractService, MedecineService, ParametersService]
 })
 export class ContractPage {
 
@@ -43,13 +44,22 @@ export class ContractPage {
     workAdress:string;
     jobyerBirthDate:string;
     hqAdress:string;
+    rate : number=0.0;
+
+    dateFormat(d){
+        let m = d.getMonth()+1;
+        let da = d.getDate();
+        let sd = d.getFullYear()+"-"+(m<10?'0':'')+m+"-"+(da<10?'0':'')+da;
+        return sd;
+    }
 
     constructor(public gc: GlobalConfigs,
                 public nav: NavController,
                 private navParams:NavParams,
                 private userService:UserService,
                 private contractService : ContractService,
-                private medecineService : MedecineService) {
+                private medecineService : MedecineService,
+                private service : ParametersService) {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -66,7 +76,7 @@ export class ContractPage {
         this.jobyerFirstName = this.jobyer.prenom;
         this.jobyerLastName = this.jobyer.nom;
         let bd = new Date(this.jobyer.dateNaissance);
-        this.jobyerBirthDate = bd.getDate()+'/'+(bd.getMonth()+1)+'/'+bd.getFullYear();
+        this.jobyerBirthDate = this.dateFormat(bd);
         this.jobyer.id = 0;
         this.jobyer.numSS = '';
         this.jobyer.nationaliteLibelle = '';
@@ -104,8 +114,8 @@ export class ContractPage {
             missionStartDate: this.getStartDate(),
             missionEndDate:this.getEndDate(),
             trialPeriod: 5,
-            termStartDate: "",
-            termEndDate: "",
+            termStartDate: this.getEndDate(),
+            termEndDate: this.getEndDate(),
             motif: "",
             justification: "",
             qualification: "",
@@ -132,7 +142,12 @@ export class ContractPage {
             missionContent : "",
             category: "",
             sector : "",
-            companyName : ''
+            companyName : '',
+            titreTransport : 'NON',
+            zonesTitre : '',
+            risques : '',
+            elementsCotisation : 0.0,
+            elementsNonCotisation : 10.0
         };
 
         /*this.contractService.getNumContract().then(data =>{
@@ -170,6 +185,18 @@ export class ContractPage {
             
             if(navParams.get("currentOffer") && !isUndefined(navParams.get("currentOffer"))){
                 this.currentOffer = navParams.get("currentOffer");
+                this.service.getRates().then(data =>{
+                    debugger;
+                    for(let i = 0 ; i < data.length ; i++){
+                        if(this.currentOffer.jobData.remuneration < data[i].taux_horaire){
+                            this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
+                            this.contractData.elementsCotisation = this.rate;
+                            break;
+                        }
+                    }
+
+
+                });
                 this.initContract();
             }
         });
@@ -190,8 +217,12 @@ export class ContractPage {
     }
 
     getStartDate(){
+
         let d = new Date();
-        let sd =  d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+        let m = d.getMonth()+1;
+        let da = d.getDate();
+        let sd = d.getFullYear()+"-"+(m<10?'0':'')+m+"-"+(da<10?'0':'')+da;
+
         if(!this.currentOffer || isUndefined(this.currentOffer))
             return sd;
         if(!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0)
@@ -201,13 +232,17 @@ export class ContractPage {
             if(this.currentOffer.calendarData[i].date < minDate)
                 minDate = this.currentOffer.calendarData[i].date;
         d=new Date(minDate);
-        sd =  d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+        m = d.getMonth()+1;
+        da = d.getDate();
+        sd = d.getFullYear()+"-"+(m<10?'0':'')+m+"-"+(da<10?'0':'')+da;
         return sd;
     }
 
     getEndDate(){
         let d = new Date();
-        let sd =  d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+        let m = d.getMonth()+1;
+        let da = d.getDate();
+        let sd = d.getFullYear()+"-"+(m<10?'0':'')+m+"-"+(da<10?'0':'')+da;
         if(!this.currentOffer || isUndefined(this.currentOffer))
             return sd;
         if(!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0)
@@ -218,15 +253,29 @@ export class ContractPage {
             if(this.currentOffer.calendarData[i].date > maxDate)
                 maxDate = this.currentOffer.calendarData[i].date;
         d=new Date(maxDate);
-        sd =  d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+        m = d.getMonth()+1;
+        da = d.getDate();
+        sd = d.getFullYear()+"-"+(m<10?'0':'')+m+"-"+(da<10?'0':'')+da;
         return sd;
     }
 
     selectOffer(){
-        
+        debugger;
         let m = new Modal(ModalOffersPage);
         m.onDismiss(data => {
             this.currentOffer = data;
+            this.service.getRates().then(data =>{
+                debugger;
+                for(let i = 0 ; i < data.length ; i++){
+                    if(this.currentOffer.jobData.remuneration < data[i].taux_horaire){
+                        this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
+                        this.contractData.elementsCotisation = this.rate;
+                        break;
+                    }
+                }
+
+
+            });
             this.initContract();
         });
         this.nav.present(m);
@@ -256,8 +305,8 @@ export class ContractPage {
             missionStartDate: this.getStartDate(),
             missionEndDate:this.getEndDate(),
             trialPeriod: 5,
-            termStartDate: "",
-            termEndDate: "",
+            termStartDate: this.getEndDate(),
+            termEndDate: this.getEndDate(),
             motif: "",
             justification: "",
             qualification: this.currentOffer.title,
@@ -286,9 +335,15 @@ export class ContractPage {
             sector : this.currentOffer.jobData.sector,
             companyName : this.companyName,
             workAdress : this.workAdress,
-            jobyerBirthDate : this.jobyerBirthDate
+            jobyerBirthDate : this.jobyerBirthDate,
+            titreTransport : 'NON',
+            zonesTitre : '',
+            risques : '',
+            elementsCotisation : this.rate,
+            elementsNonCotisation : 10.0
         };
-
+        console.log(JSON.stringify(this.contractData));
+        debugger;
         this.medecineService.getMedecine(this.employer.entreprises[0].id).then(data=>{
             if(data && data !=null){
                 debugger;
@@ -311,6 +366,7 @@ export class ContractPage {
     }
 
     goToYousignPage() {
+        debugger;
         this.contractService.getNumContract().then(data =>{
             
             if(data && data.length>0){
