@@ -102,7 +102,7 @@ export class YousignPage {
         });
         this.nav.present(loading);
         
-        this.contractService.callYousign(this.currentUser, this.employer, this.jobyer,this.contractData, this.projectTarget).then((data) => {
+        this.contractService.callYousign(this.currentUser, this.employer, this.jobyer,this.contractData, this.projectTarget, this.currentOffer).then((data) => {
             loading.dismiss();
             debugger;
             console.log(JSON.stringify(this.employer));
@@ -120,7 +120,7 @@ export class YousignPage {
             this.jobyer.date_invit = new Date();
             
             //get the link yousign of the contract for the employer
-            let yousignEmployerLink = yousignData.iFrameURLs[0].iFrameURL;
+            let yousignEmployerLink = yousignData.iFrameURLs[1].iFrameURL;
             
             //Create to Iframe to show the contract in the NavPage
             let iframe = document.createElement('iframe');
@@ -136,7 +136,7 @@ export class YousignPage {
             document.getElementById("iframPlaceHolder").appendChild(iframe);
 
             // get the yousign link of the contract and the phoneNumber of the jobyer
-            let yousignJobyerLink = yousignData.iFrameURLs[1].iFrameURL;
+            let yousignJobyerLink = yousignData.iFrameURLs[0].iFrameURL;
             let jobyerPhoneNumber = this.jobyer.tel;
             
             // Send sms to jobyer
