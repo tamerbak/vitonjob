@@ -240,7 +240,7 @@ export class Vitonjob {
 							handler: () => {
 								console.log('pointer clicked');	
 								alert.dismiss().then(() => {
-									var data = JSON.parse(notification.data)
+									var data = JSON.parse(notification.data);
 									this.nav.push(MissionPointingPage,{contract: data.contract, autoPointing: true, nextPointing: data.nextPointing});
 								})
 							}
@@ -254,7 +254,7 @@ export class Vitonjob {
             if (navigator.connection) {
                 if(navigator.connection.type == Connection.NONE){
                     let toast = Toast.create({
-                        message: "Vous n'êtes pas connectés à Internet",
+                        message: "La connexion à Internet est perdu",
                         showCloseButton : true,
                         closeButtonText : 'Fermer'
                     });
@@ -271,7 +271,7 @@ export class Vitonjob {
 
             offline.subscribe(() => {
                 let toast = Toast.create({
-                    message: "Vous n'êtes pas connectés à Internet",
+                    message: "La connexion à Internet est perdu",
                     showCloseButton : true,
                     closeButtonText : 'Fermer'
                 });
@@ -281,7 +281,7 @@ export class Vitonjob {
 
             online.subscribe(()=> {
                 let toast = Toast.create({
-                    message: "La connection à Internet a été restaurée",
+                    message: "La connexion à Internet a été restaurée",
                     showCloseButton : true,
                     closeButtonText : 'Fermer'
                 });

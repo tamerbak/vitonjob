@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Configs} from '../../configurations/configs';
 import {Http, Headers} from '@angular/http';
 import {Helpers} from '../../providers/helpers.service.ts';
+import {isUndefined} from "ionic-angular/util";
 
 
 /**
@@ -14,7 +15,7 @@ export class ContractService {
     data: any = null;
     configuration : any;
 
-    
+
     constructor(public http: Http,private helpers:Helpers) {
 
     }
@@ -32,7 +33,7 @@ export class ContractService {
                 });
         });
     }
-    
+
     //to remove after correction Jobyer object in api service
     getJobyerId(jobyer:any,projectTarget:string){
         //  Init project parameters
@@ -78,121 +79,126 @@ export class ContractService {
                 });
         });
     }
-    
+
     /**
      * @description get employer Entreprise contracts
      * @param employerEntrepriseId
      * @return JSON results in form of created contract Id
-    */
+     */
     getContracts(id:number,projectTarget:string){
-		//  Init project parameters
-		this.configuration = Configs.setConfigs(projectTarget);
-		if(projectTarget == 'employer'){
-			var sql = "SELECT c.pk_user_contrat,c.*, j.nom, j.prenom FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='"+id+"'";
-		}else{
-			var sql = "SELECT c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='"+id+"'";
-		}
+        //  Init project parameters
+        this.configuration = Configs.setConfigs(projectTarget);
+        if(projectTarget == 'employer'){
+            var sql = "SELECT c.pk_user_contrat,c.*, j.nom, j.prenom FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='"+id+"'";
+        }else{
+            var sql = "SELECT c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='"+id+"'";
+        }
 
-		console.log(sql);
-                  
-	    return new Promise(resolve => {
-	      let headers = new Headers();
-	      headers.append("Content-Type", 'text/plain');
-	      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
-	          .map(res => res.json())
-	          .subscribe(data => {
-	            this.data = data;
-	            resolve(this.data);
-	          });
-	    });
-	}
-    
+        console.log(sql);
+
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });
+    }
+
     /**
      * @description save a contract into database
      * @param contract object
      * @param jobyerId
      * @param employerEntrepriseId
      * @return JSON results in form of created contract Id
-    */
+     */
     saveContract(contract:any,jobyerId:Number,employerEntrepriseId:Number,projectTarget:string, yousignJobyerLink){
-		//  Init project parameters
-		this.configuration = Configs.setConfigs(projectTarget);
+        //  Init project parameters
+        this.configuration = Configs.setConfigs(projectTarget);
         var dt = new Date();
-		var sql = "INSERT INTO user_contrat ("+
-                  " date_de_debut,"+
-                  " date_de_fin,"+
-                  " date_debut_terme,"+
-                  " date_fin_terme,"+
-                  " date_signature,"+
-                  " heure_debut,"+
-                  " heure_fin,"+
-                  " motif_de_recours,"+
-                  " numero,"+
-                  " periode_essai,"+
-                  " tarif_heure,"+
-                  " nombre_heures,"+
-                  " fk_user_entreprise,"+
-                  " fk_user_jobyer," +
-                  " lien_jobyer," +
-                  " signature_employeur," +
-                  " signature_jobyer," +
-                  " taux_indemnite_fin_de_mission," +
-                  " taux_conges_payes," +
-                  " titre_transport,"+
-                  " zones_transport,"+
-                  " surveillance_medicale_renforcee,"+
-                  " debut_souplesse,"+
-                  " fin_souplesse,"+
-                  " organisation_particuliere,"+
-                  " elements_soumis_a_des_cotisations,"+
-                  " elements_non_soumis_a_des_cotisations"+
-                  ")"+
-                  " VALUES ("
-                  +"'"+ contract.missionStartDate +"',"
-                  +"'"+ contract.missionEndDate +"',"
-                  +"'"+ contract.termStartDate +"',"
-                  +"'"+ contract.termEndDate +"',"
-                  +"'"+ this.helpers.dateToSqlTimestamp(new Date())+"',"
-                  +"'"+ this.helpers.timeStrToMinutes(contract.workStartHour) +"',"
-                  +"'"+ this.helpers.timeStrToMinutes(contract.workEndHour) +"',"
-                  +"'"+ contract.motif +"',"
-                  +"'"+ contract.num +"',"
-                  +"'"+ contract.trialPeriod +"',"
-                  +"'"+ contract.baseSalary +"',"
-                  +"'"+ contract.workTimeHours +"',"
-                  +"'"+ employerEntrepriseId +"',"
-                  +"'"+ jobyerId +"',"
-                  +"'"+yousignJobyerLink+"',"
-                  +"'OUI',"
-                  +"'NON',"
-                  +"10,"
-                  +"10,"
-                  +"'"+contract.titreTransport+"',"
-                  +"'"+contract.zonesTitre+"',"
-                  +"'"+contract.medicalSurv+"',"
-                  +"'"+contract.debutSouplesse+"',"
-                  +"'"+contract.finSouplesse+"',"
-                  +"'"+contract.usualWorkTimeHours+"',"
-                  +"'"+contract.elementsCotisation+"',"
-                  +"'"+contract.elementsNonCotisation+"'"
-                  +")"
-                  +" RETURNING pk_user_contrat";
-                  
+        var sql = "INSERT INTO user_contrat ("+
+            " date_de_debut,"+
+            " date_de_fin,"+
+            " date_debut_terme,"+
+            " date_fin_terme,"+
+            " date_signature,"+
+            " heure_debut,"+
+            " heure_fin,"+
+            " motif_de_recours,"+
+            " numero,"+
+            " periode_essai,"+
+            " tarif_heure,"+
+            " nombre_heures,"+
+            " fk_user_entreprise,"+
+            " fk_user_jobyer," +
+            " lien_jobyer," +
+            " signature_employeur," +
+            " signature_jobyer," +
+            " taux_indemnite_fin_de_mission," +
+            " taux_conges_payes," +
+            " titre_transport,"+
+            " zones_transport,"+
+            " surveillance_medicale_renforcee,"+
+            " debut_souplesse,"+
+            " fin_souplesse,"+
+            " organisation_particuliere,"+
+            " elements_soumis_a_des_cotisations,"+
+            " elements_non_soumis_a_des_cotisations"+
+            ")"+
+            " VALUES ("
+            +"'"+ contract.missionStartDate +"',"
+            +"'"+ contract.missionEndDate +"',"
+            +"'"+ contract.termStartDate +"',"
+            +"'"+ contract.termEndDate +"',"
+            +"'"+ this.helpers.dateToSqlTimestamp(new Date())+"',"
+            +"'"+ this.helpers.timeStrToMinutes(contract.workStartHour) +"',"
+            +"'"+ this.helpers.timeStrToMinutes(contract.workEndHour) +"',"
+            +"'"+ contract.motif +"',"
+            +"'"+ contract.num +"',"
+            +"'"+ contract.trialPeriod +"',"
+            +"'"+ contract.baseSalary +"',"
+            +"'"+ contract.workTimeHours +"',"
+            +"'"+ employerEntrepriseId +"',"
+            +"'"+ jobyerId +"',"
+            +"'"+yousignJobyerLink+"',"
+            +"'OUI',"
+            +"'NON',"
+            +"10,"
+            +"10,"
+            +"'"+contract.titreTransport+"',"
+            +"'"+contract.zonesTitre+"',"
+            +"'"+contract.medicalSurv+"',"
+            +""+this.checkNull(contract.debutSouplesse)+","
+            +""+this.checkNull(contract.finSouplesse)+","
+            +"'"+contract.usualWorkTimeHours+"',"
+            +"'"+contract.elementsCotisation+"',"
+            +"'"+contract.elementsNonCotisation+"'"
+            +")"
+            +" RETURNING pk_user_contrat";
+
         console.log(sql);
-                  
 
-	    return new Promise(resolve => {
-	      let headers = new Headers();
-	      headers.append("Content-Type", 'text/plain');
-	      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
-	          .map(res => res.json())
-	          .subscribe(data => {
-	            this.data = data;
-	            resolve(this.data);
-	          });
-	    });
-	}
 
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });
+    }
+
+    checkNull(date){
+        if(!date || isUndefined(date) || date.length =='')
+            return 'null';
+        return "'"+date+"'";
+    }
 
     setOffer(idContract, idOffer){
         let sql = "update user_contrat set fk_user_offre_entreprise = "+idOffer+" where pk_user_contrat="+idContract;
@@ -210,15 +216,58 @@ export class ContractService {
                 });
         });
     }
-    
+
+    /**
+     * @Description Converts a timeStamp to date string :
+     * @param date : a timestamp date
+     * @param options Date options
+     */
+    toDateString(date:number, options:any) {
+        options = (options) ? options : '';
+        //console.log(JSON.stringify(this.slots));
+        //console.log('Calendar slot in ms: ' + date);
+        //console.log('Calendar slot in date format: ' + new Date(date));
+        return new Date(date).toLocaleDateString('fr-FR', options);
+    }
+
+
+    /**
+     * @Description Converts a timeStamp to date string
+     * @param time : a timestamp date
+     */
+    toHourString(time:number) {
+        let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+        let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+        return hours + ":" + minutes;
+    }
+
+    prepareHoraire(calendar){
+        let html = "<ul>";
+
+        if(calendar && calendar.length>0) {
+            for (let i = 0; i < calendar.length; i++) {
+                let c = calendar[i];
+                html = html + "<li><span style='font-weight:bold'>"+this.toDateString(c.date, '')+"</span>&nbsp;&nbsp; de "+this.toHourString(c.startHour)+" à "+this.toHourString(c.endHour)+"</li>";
+            }
+        }
+
+        html = html + "</ul>";
+        return html;
+    }
+
     /**
      * @description call yousign service
      * @param employer
      * @param jobyer
      * @return JSON results in form of youSign Object
-    */
-    callYousign(user : any, employer:any, jobyer:any,contract:any,projectTarget:string){
-        
+     */
+    callYousign(user : any, employer:any, jobyer:any,contract:any,projectTarget:string, currentOffer : any){
+
+        let horaires = '';
+        debugger;
+        if(currentOffer){
+            horaires = this.prepareHoraire(currentOffer.calendarData);
+        }
         //get configuration
         this.configuration = Configs.setConfigs(projectTarget);
         var jsonData = {
@@ -231,7 +280,7 @@ export class ContractService {
             "jobyerNom" : jobyer.nom,
             "nss" : jobyer.numSS,
             "dateNaissance" : this.helpers.parseDate(contract.jobyerBirthDate),
-            "lieuNaissance" : jobyer.lieuNaissance, 
+            "lieuNaissance" : jobyer.lieuNaissance,
             "nationalite" : jobyer.nationaliteLibelle,
             "adresseDomicile" : jobyer.address,
             "dateDebutMission" : this.helpers.parseDate(contract.missionStartDate),
@@ -294,28 +343,29 @@ export class ContractService {
             "titreTransport" :  contract.titreTransport,
             "zonesTitre" : contract.zonesTitre,
             "elementsCotisation" : contract.elementsCotisation,
-            "elementsNonCotisation" : contract.elementsNonCotisation
+            "elementsNonCotisation" : contract.elementsNonCotisation,
+            "horaires":horaires
         };
         debugger;
         console.log(JSON.stringify(jsonData));
 
         var dataSign =JSON.stringify(
-        {
-            'class': 'com.vitonjob.yousign.callouts.YousignConfig',
-            'employerFirstName': user.prenom,
-            'employerLastName':user.nom,
-            'employerEmail': user.email,
-            'employerPhone': user.tel,
-            'jobyerFirstName': jobyer.prenom,
-            'jobyerLastName': jobyer.nom,
-            'jobyerEmail': jobyer.email,
-            'jobyerPhone': jobyer.tel,
-            'data': btoa(unescape(encodeURIComponent(JSON.stringify(jsonData))))
-        });
+            {
+                'class': 'com.vitonjob.yousign.callouts.YousignConfig',
+                'employerFirstName': user.prenom,
+                'employerLastName':user.nom,
+                'employerEmail': user.email,
+                'employerPhone': user.tel,
+                'jobyerFirstName': jobyer.prenom,
+                'jobyerLastName': jobyer.nom,
+                'jobyerEmail': jobyer.email,
+                'jobyerPhone': jobyer.tel,
+                'data': btoa(unescape(encodeURIComponent(JSON.stringify(jsonData))))
+            });
 
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 186,
+            'id': 201,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -324,14 +374,14 @@ export class ContractService {
                 }
             ]
         };
-        
+
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
             let headers = new Headers();
             headers.append("Content-Type", 'application/json');
-            
+
             this.http.post('http://ns389914.ovh.net:8080/vitonjobv1/api/callout', JSON.stringify(payload), {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -343,7 +393,7 @@ export class ContractService {
                     resolve(this.data);
                 });
         });
-  }
+    }
 
     generateMission(idContract, offer){
         let calendar = offer.calendarData;

@@ -15,7 +15,7 @@
     <ion-item [hidden]="!isAndroid4">
       <ion-label floating>Date</ion-label>
       <ion-input type="text" [(ngModel)] = "showedSlot.angular4Date"
-                 (focus)="launchDateTimePicker('date')" readonly></ion-input>
+                 (focus)="launchDateTimePicker('date', 'day')" readonly></ion-input>
     </ion-item>
 
     <ion-item text-wrap [hidden]="isAndroid4">
