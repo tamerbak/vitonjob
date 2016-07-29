@@ -13,10 +13,10 @@ export class DateConverter {
 			month: "numeric", year: "numeric", day: "numeric"
 		};
 		if(args == 'long'){
-			return new Date(value).toLocaleDateString('fr-FR', this.longDateOptions);
+			return new Date(value.replace(' ', 'T')).toLocaleDateString('fr-FR', this.longDateOptions);
 		}
 		if(args == 'short'){
-			return new Date(value).toLocaleDateString('fr-FR', this.shortDateOptions);
+			return new Date(value.replace(' ', 'T')).toLocaleDateString('fr-FR', this.shortDateOptions);
 		}
 	}
 }
