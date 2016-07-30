@@ -94,11 +94,6 @@ export class MissionDetailsPage {
 				var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
 				this.missionHours = array[0];
 				this.missionPauses = array[1];
-				//this.startPauses = array[1];
-				//this.endPauses = array[2];
-				//this.idsPauses = array[3];
-				//this.startPausesPointe = array[4];
-				//this.endPausesPointe = array[5];
 			}
 		});
 		
@@ -424,23 +419,27 @@ export class MissionDetailsPage {
 	
 	saveCorrectedHours(i, j, isStartPause, isStartMission){
 		if(isStartPause){
-				this.missionPauses[i][j].pause_debut_corrigee = this.missionPauses[i][j].pause_debut_pointe;
+			this.missionPauses[i][j].pause_debut_corrigee = this.missionPauses[i][j].pause_debut_pointe;
+			this.missionPauses[i][j].is_pause_debut_corrigee = 'oui';
+			return;
+		}else{
+			if(j >= 0){
+				this.missionPauses[i][j].pause_fin_corrigee = this.missionPauses[i][j].pause_fin_pointe;
+				this.missionPauses[i][j].is_pause_fin_corrigee = 'oui';
 				return;
-			}else{
-				if(j >= 0){
-					this.missionPauses[i][j].pause_fin_corrigee = this.missionPauses[i][j].pause_fin_pointe;
-					return;
-				}
 			}
-			if(isStartMission){
-				this.missionHours[i].heure_debut_corrigee = this.missionHours[i].heure_debut_pointe;
+		}
+		if(isStartMission){
+			this.missionHours[i].heure_debut_corrigee = this.missionHours[i].heure_debut_pointe;
+			this.missionHours[i].is_heure_debut_corrigee = 'oui';
+			return;
+		}else{
+			if(!j && j != 0){
+				this.missionHours[i].heure_fin_corrigee = this.missionHours[i].heure_fin_pointe;
+				this.missionHours[i].is_heure_fin_corrigee = 'oui';
 				return;
-			}else{
-				if(!j){
-					this.missionHours[i].heure_fin_corrigee = this.missionHours[i].heure_fin_pointe;
-					return;
-				}
 			}
+		}
 	}
 	
 	checkHour(i, j, isStartPause, pointing, isStartMission){
@@ -672,4 +671,86 @@ export class MissionDetailsPage {
         });
         this.nav.present(toast);
     }
+	
+	onHourClick(i, j, isStartMission, isStartPause){
+		if(!this.isEmployer){
+			return;
+		}
+		if(isStartPause){
+			if(!this.missionPauses[i][j].pause_debut_pointe)
+				return;
+		}else{
+			if(j >= 0){
+				if(!this.missionPauses[i][j].pause_fin_pointe)
+					return;
+			}
+		}
+		if(isStartMission){
+			if(!this.missionHours[i].heure_debut_pointe)
+				return;
+		}else{
+			if(!j && j != 0){
+				if(!this.missionHours[i].heure_fin_pointe)
+					return;
+			}
+		}
+		
+		let actionSheet = ActionSheet.create({
+			title: 'Actions',
+			cssClass: 'action-sheets-basic-page',
+			buttons: [
+				{
+					text: 'Valider l\'heure pointée',
+					icon: 'thumbs-up',
+					handler: () => {
+						console.log('Validate clicked');
+						this.colorHour(i, j, isStartMission, isStartPause, true);
+					}
+				},
+				{
+					text: 'Refuser l\'heure pointée',
+					icon: 'thumbs-down',
+					handler: () => {
+						console.log('Refuse clicked');
+						this.colorHour(i, j, isStartMission, isStartPause, false);
+					}
+				},
+				{
+					text: 'Annuler',
+					role: 'cancel', // will always sort to be on the bottom
+					icon: 'close',
+					handler: () => {
+						console.log('Cancel clicked');
+					}
+				}
+			]
+		});
+		this.nav.present(actionSheet);
+	}
+	
+	colorHour(i, j, isStartMission, isStartPause, valid){
+		var isCorrected = (valid ? 'Non' : 'Oui');
+		var id;
+		if(isStartPause){
+			this.missionPauses[i][j].is_pause_debut_corrigee = isCorrected;
+			id = this.missionPauses[i][j].id;
+		}else{
+			if(j >= 0){
+				this.missionPauses[i][j].is_pause_fin_corrigee = isCorrected;
+				id = this.missionPauses[i][j].id;
+			}
+		}
+		if(isStartMission){
+			this.missionHours[i].is_heure_debut_corrigee = isCorrected;
+			id = this.missionHours[i].id;
+		}else{
+			if(!j && j != 0){
+				this.missionHours[i].is_heure_fin_corrigee = isCorrected;
+				id = this.missionHours[i].id;
+			}
+		}
+		this.missionService.saveIsHourValid(i, j, isStartMission, isStartPause, isCorrected, id).then((data) => {
+			console.log("is hour valid saved")
+		});
+	}
 }

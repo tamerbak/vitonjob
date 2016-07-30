@@ -21,10 +21,8 @@
 						<h2>Contrat n° {{item.numero}} signé le {{item.date_signature | dateConverter:'short'}}</h2>
 						<h3 [style.color]="themeColor" [hidden]="!isEmployer">{{item.prenom}} {{item.nom}}</h3>
 						<h3 [style.color]="themeColor" [hidden]="isEmployer">{{item.nom}}</h3>
-						<ion-badge item-right [hidden]="item.vu.toUpperCase() == 'Non'.toUpperCase()">validé</ion-badge>
-					<!--<ion-icon name="checkmark" item-right [hidden]="item.vu == 'Non'"></ion-icon>-->
-						<ion-badge item-right [hidden]="item.approuve.toUpperCase() == 'Non'.toUpperCase()">signé</ion-badge>
-					<!--<ion-icon name="ribbon" item-right [hidden]="item.approuve == 'Non'"></ion-icon>-->
+						<ion-badge [hidden]="item.vu.toUpperCase() == 'Non'.toUpperCase()">validé</ion-badge>
+						<ion-badge [hidden]="item.approuve.toUpperCase() == 'Non'.toUpperCase()">signé</ion-badge>
 					</ion-col>
 					<ion-col width-10>
 						<button item-right (click)="goToMissionPointingPage(item)" [hidden]="item.option_mission == '1.0' || isEmployer || item.signature_jobyer.toUpperCase() == 'Non'.toUpperCase() || item.releve_employeur.toUpperCase() == 'Oui'.toUpperCase() || item.vu.toUpperCase() == 'Non'.toUpperCase()">
@@ -35,10 +33,4 @@
 			</ion-grid>
 		</ion-item>
 	</ion-list>
-	<!--<ion-card>
-        <ion-card-header>Prochainement</ion-card-header>
-        <ion-card-content>
-		Restez à l'écoute de la prochaine mise à jour de l'application qui vous permettra de signer des contrats
-        </ion-card-content>
-	</ion-card>-->
 </ion-content>
