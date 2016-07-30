@@ -68,7 +68,7 @@ export class MissionPointingPage {
 		var now = new Date().setHours(0, 0, 0, 0);
 		var missionHoursToday = [];
 		for(var i = 0; i < missionHoursTemp.length; i++){
-			if(new Date(missionHoursTemp[i].jour_debut).setHours(0, 0, 0, 0) == now || new Date(missionHoursTemp[i].jour_fin).setHours(0, 0, 0, 0) == now){
+			if(new Date(missionHoursTemp[i].jour_debut.replace(' ', 'T')).setHours(0, 0, 0, 0) == now || new Date(missionHoursTemp[i].jour_fin.replace(' ', 'T')).setHours(0, 0, 0, 0) == now){
 				missionHoursToday.push(missionHoursTemp[i]);
 			}
 		}
