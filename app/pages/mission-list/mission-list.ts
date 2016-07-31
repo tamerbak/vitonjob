@@ -75,15 +75,4 @@ export class MissionListPage {
 	goToMissionPointingPage(contract){
 		this.nav.push(MissionPointingPage,{contract:contract});
 	}
-    
-    showI(){
-        DatePicker.show({
-            date: new Date(),
-            mode: 'time',
-            is24Hour:true
-        }).then(
-            date => console.log("Got date: ", date),
-            err => console.log("Error occurred while getting date:", err)
-        );
-    }
 }
