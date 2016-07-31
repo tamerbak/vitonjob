@@ -32,8 +32,8 @@
         <ion-card-content [hidden]="!userData.titre">
             <ion-item text-wrap>
                 <h5>{{userData.titre ? userData.titre : ''}} {{userData.nom ? userData.nom : ''}} {{userData.prenom ? userData.prenom : ''}}</h5>
-                <p *ngIf="!isEmployer && userData.jobyer.lieuNaissance"><!--{{userData.jobyer.natLibelle}},--> {{(userData.titre==='M.') ? 'né' : 'née'}} à
-                    {{userData.jobyer.lieuNaissance}} le {{userData.jobyer.dateNaissance | dateConverter:'short'}}</p>
+                <!--p *ngIf="!isEmployer && userData.jobyer.lieuNaissance"> {{(userData.titre==='M.') ? 'né' : 'née'}} à
+                    {{userData.jobyer.lieuNaissance}} le {{userData.jobyer.dateNaissance}}</p-->
                 <ul *ngIf="!isEmployer && userData.jobyer.cni" style="font-size: 1.3rem;">
                     <li>CNI: {{userData.jobyer.cni}}</li>
                     <li>Numéro SS: {{userData.jobyer.numSS}}</li>
