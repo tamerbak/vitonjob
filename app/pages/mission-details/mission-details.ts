@@ -677,7 +677,7 @@ export class MissionDetailsPage {
     }
 
     onPointedHourClick(i, j, isStartMission, isStartPause){
-        if(!this.isEmployer){
+        if(!this.isEmployer || this.upperCase(this.contract.releve_employeur) == 'OUI'){
             return;
         }
         if(isStartPause){

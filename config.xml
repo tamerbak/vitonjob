@@ -3,7 +3,7 @@
   <name>Jobyer</name>
   <description>Vite on job et vis ton job!</description>
   <author email="support@vitonjob.com" href="http://wwww.vitonjob.com/">VitOnJob</author>
-  <content src="http://192.168.1.3:8100" original-src="index.html"/>
+  <content src="index.html"/>
   <access origin="*"/>
   <allow-intent href="http://*/*"/>
   <allow-intent href="https://*/*"/>
