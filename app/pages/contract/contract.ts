@@ -264,6 +264,8 @@ export class ContractPage {
         let m = new Modal(ModalOffersPage);
         m.onDismiss(data => {
             this.currentOffer = data;
+            console.log(JSON.stringify(data));
+            debugger;
             this.service.getRates().then(data =>{
                 debugger;
                 for(let i = 0 ; i < data.length ; i++){
@@ -320,9 +322,9 @@ export class ContractPage {
             postRisks:"",
             medicalSurv:"",
             epi:"",
-            baseSalary: (this.currentOffer.jobData.remuneration).toFixed(2),
+            baseSalary: this.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2),
             MonthlyAverageDuration: "0",
-            salaryNHours: (this.currentOffer.jobData.remuneration).toFixed(2)+" € B/H",
+            salaryNHours: this.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2)+" € B/H",
             salarySH35: "+00%",
             salarySH43: "+00%",
             restRight: "00%",
@@ -352,6 +354,15 @@ export class ContractPage {
             }
 
         });
+    }
+
+    parseNumber(str){
+        try {
+            return parseFloat(str);
+        }
+        catch(err) {
+            return 0.0;
+        }
     }
 
     calculateOfferHours(){
