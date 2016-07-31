@@ -62,13 +62,13 @@
 			  </ion-item>  
 			  <ion-item>
 				<ion-label fixed>Début de pause</ion-label>
-				<ion-input value="{{(pause.pause_debut_new != '' && pause.pause_debut_new != 'null') ? (pause.pause_debut_new | timeConverter:'minute') : pause.pause_debut}}" (change)="checkHour(i, j, true, false, false)" disabled="true" (click)="onHourClick(i, j, false, true)" [style.color]="pause.pause_debut_new != 'null' ? 'orange' : 'gray'" ></ion-input>
+				<ion-input value="{{!isEmpty(pause.pause_debut_new) ? (pause.pause_debut_new | timeConverter:'minute') : pause.pause_debut}}" (change)="checkHour(i, j, true, false, false)" disabled="true" (click)="onHourClick(i, j, false, true)" [style.color]="!isEmpty(pause.pause_debut_new) ? 'orange' : 'gray'" ></ion-input>
 				<ion-input value="{{pause.pause_debut_pointe}}" [disabled]="(pause.pause_debut_pointe != '' && contract.option_mission == '3.0') || contract.option_mission == '2.0' || upperCase(contract.releve_employeur) == 'OUI' || !isEmployer"
 				[hidden]="contract.option_mission == '1.0'|| isNewMission" (click)="onPointedHourClick(i, j, false, true)" [style.color]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')"></ion-input>
 			  </ion-item>
 			  <ion-item>
 				<ion-label fixed>Fin de pause</ion-label>
-				<ion-input value="{{(pause.pause_fin_new != '' && pause.pause_fin_new != 'null') ? (pause.pause_fin_new | timeConverter:'minute') : (pause.pause_fin)}}" (change)="checkHour(i, j, false, false, false)" disabled="true" (click)="onHourClick(i, j, false, false)" [style.color]="pause.pause_fin_new != 'null' ? 'orange' : 'gray'" ></ion-input>
+				<ion-input value="{{!isEmpty(pause.pause_fin_new) ? (pause.pause_fin_new | timeConverter:'minute') : (pause.pause_fin)}}" (change)="checkHour(i, j, false, false, false)" disabled="true" (click)="onHourClick(i, j, false, false)" [style.color]="!isEmpty(pause.pause_fin_new) ? 'orange' : 'gray'" ></ion-input>
 				<ion-input value="{{pause.pause_fin_pointe}}" [disabled]="(pause.pause_fin_pointe != '' && contract.option_mission == '3.0') || contract.option_mission == '2.0' || upperCase(contract.releve_employeur) == 'OUI' || !isEmployer"
 				[hidden]="contract.option_mission == '1.0'|| isNewMission" (click)="onPointedHourClick(i, j, false, false)" [style.color]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')"></ion-input>
 			  </ion-item>

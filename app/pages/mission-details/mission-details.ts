@@ -759,9 +759,15 @@ export class MissionDetailsPage {
     }
 	
 	onHourClick(i, j, isStartMission, isStartPause){
-        if(!this.isEmployer){
+        //jobyer cant edit scheduled hours and pauses
+		if(!this.isEmployer || this.upperCase(this.contract.approuve) == 'OUI'){
             return;
         }
+		//if schedule not yet validated
+		if(this.upperCase(this.contract.vu) == 'NON' && (j || j == 0)){
+			this.addPauseHour(i, j, isStartPause);
+			return;	
+		}
 		var initialHour;
 		var buttons = [
 			{
@@ -859,7 +865,8 @@ export class MissionDetailsPage {
 			this.missionService.saveNewHour(i, j, isStartMission, isStartPause, id, newHour).then((data) => {
 				console.log("new hour saved")
 			});
-		});	
+		},
+		err => console.log('Error occurred while getting date: ', err));	
 	}
     
 	undoNewHour(i, j, isStartMission, isStartPause){
@@ -887,9 +894,35 @@ export class MissionDetailsPage {
 		});
 	}
 	
+	addPauseHour(i, j, isStartPause){
+		DatePicker.show({
+            date: new Date(),
+            mode: 'time',
+            minuteInterval: 15,
+			is24Hour: true,
+            allowOldDates: false, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+        }).then(pauseHour => {
+			var pauseHour = pauseHour.getHours() * 60 + pauseHour.getMinutes();
+			if(isStartPause){
+				this.missionPauses[i][j].pause_debut = this.missionService.convertToFormattedHour(pauseHour);
+			}else{
+				this.missionPauses[i][j].pause_fin = this.missionService.convertToFormattedHour(pauseHour);
+			}
+		},
+		err => console.log('Error occurred while getting date: ', err)
+		);
+	}
+	
 	upperCase(str){
         if(str == null || !str || isUndefined(str))
             return '';
         return str.toUpperCase();
     }
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
+	}
 }
