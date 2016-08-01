@@ -147,7 +147,8 @@ export class ContractService {
             " organisation_particuliere,"+
             " elements_soumis_a_des_cotisations,"+
             " elements_non_soumis_a_des_cotisations,"+
-            " recours"+
+            " recours,"+
+            " titre"+
             ")"+
             " VALUES ("
             +"'"+ contract.missionStartDate +"',"
@@ -157,27 +158,28 @@ export class ContractService {
             +"'"+ this.helpers.dateToSqlTimestamp(new Date())+"',"
             +"'"+ this.helpers.timeStrToMinutes(contract.workStartHour) +"',"
             +"'"+ this.helpers.timeStrToMinutes(contract.workEndHour) +"',"
-            +"'"+ contract.motif +"',"
-            +"'"+ contract.num +"',"
+            +"'"+ this.sqlfyText(contract.motif) +"',"
+            +"'"+ this.sqlfyText(contract.num) +"',"
             +"'"+ contract.trialPeriod +"',"
             +"'"+ contract.baseSalary +"',"
             +"'"+ contract.workTimeHours +"',"
             +"'"+ employerEntrepriseId +"',"
             +"'"+ jobyerId +"',"
-            +"'"+yousignJobyerLink+"',"
+            +"'"+this.sqlfyText(yousignJobyerLink)+"',"
             +"'OUI',"
             +"'NON',"
             +"10,"
             +"10,"
-            +"'"+contract.titreTransport+"',"
-            +"'"+contract.zonesTitre+"',"
-            +"'"+contract.medicalSurv+"',"
+            +"'"+this.sqlfyText(contract.titreTransport)+"',"
+            +"'"+this.sqlfyText(contract.zonesTitre)+"',"
+            +"'"+this.sqlfyText(contract.medicalSurv)+"',"
             +""+this.checkNull(contract.debutSouplesse)+","
             +""+this.checkNull(contract.finSouplesse)+","
-            +"'"+contract.usualWorkTimeHours+"',"
+            +"'"+this.sqlfyText(contract.usualWorkTimeHours)+"',"
             +"'"+contract.elementsCotisation+"',"
             +"'"+contract.elementsNonCotisation+"',"
-            +"'"+contract.justification+"'"
+            +"'"+this.sqlfyText(contract.justification)+"',"
+            +"'"+this.sqlfyText(contract.titre)+"'"
             +")"
             +" RETURNING pk_user_contrat";
 
@@ -395,6 +397,12 @@ export class ContractService {
                     resolve(this.data);
                 });
         });
+    }
+
+    sqlfyText(txt){
+        if(!txt || txt.length==0)
+            return "";
+        return txt.replace("'", "''");
     }
 
     generateMission(idContract, offer){
