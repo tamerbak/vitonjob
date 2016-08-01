@@ -839,7 +839,7 @@ export class MissionDetailsPage {
             mode: 'time',
             minuteInterval: 15,
 			is24Hour: true,
-            allowOldDates: false, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+            allowOldDates: true, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
         }).then(newHour => {
 			console.log("Got date: ", newHour);
 			var id;
@@ -900,7 +900,7 @@ export class MissionDetailsPage {
             mode: 'time',
             minuteInterval: 15,
 			is24Hour: true,
-            allowOldDates: false, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+            allowOldDates: true, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
         }).then(pauseHour => {
 			var pauseHour = pauseHour.getHours() * 60 + pauseHour.getMinutes();
 			if(isStartPause){

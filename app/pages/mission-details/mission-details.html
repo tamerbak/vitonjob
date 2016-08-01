@@ -46,8 +46,8 @@
 			<ion-list>
 			  <ion-item>
 				<ion-label fixed>H. de début</ion-label>
-				<ion-input value="{{(day.heure_debut_new != '' && day.heure_debut_new != 'null') ? (day.heure_debut_new | timeConverter:'minute') : (day.heure_debut | timeConverter:'minute')}}" readonly="true" (click)="onHourClick(i, j, true, false)" [style.color]="day.heure_debut_new != 'null' ? 'orange' : 'gray'"></ion-input>
-				<ion-input value="{{day.heure_debut_pointe}}" readonly="true" [hidden]="contract.option_mission == '1.0'|| isNewMission" (click)="onPointedHourClick(i, j, true, false)" [style.color]="upperCase(day.is_heure_debut_corrigee) == 'OUI' ? 'red' : (upperCase(day.is_heure_debut_corrigee) == 'NON' ? 'green' : '')"></ion-input>
+				<ion-label item-content (click)="onHourClick(i, j, true, false)" [style.color]="day.heure_debut_new != 'null' ? 'orange' : 'gray'">{{(day.heure_debut_new != '' && day.heure_debut_new != 'null') ? (day.heure_debut_new | timeConverter:'minute') : (day.heure_debut | timeConverter:'minute')}}</ion-label>
+				<ion-label item-content [hidden]="contract.option_mission == '1.0'|| isNewMission" (click)="onPointedHourClick(i, j, true, false)" [style.color]="upperCase(day.is_heure_debut_corrigee) == 'OUI' ? 'red' : (upperCase(day.is_heure_debut_corrigee) == 'NON' ? 'green' : '')">{{day.heure_debut_pointe}}</ion-label>
 			  </ion-item>
 			  <ion-list *ngFor="let pause of missionPauses[i], let j=index" class="marginTopList">
 			  <ion-item (click)="onPauseClick(i, j)">
@@ -62,21 +62,19 @@
 			  </ion-item>  
 			  <ion-item>
 				<ion-label fixed>Début de pause</ion-label>
-				<ion-input value="{{!isEmpty(pause.pause_debut_new) ? (pause.pause_debut_new | timeConverter:'minute') : pause.pause_debut}}" (change)="checkHour(i, j, true, false, false)" readonly="true" (click)="onHourClick(i, j, false, true)" [style.color]="!isEmpty(pause.pause_debut_new) ? 'orange' : 'gray'" ></ion-input>
-				<ion-input value="{{pause.pause_debut_pointe}}" readonly="true"
-				[hidden]="contract.option_mission == '1.0'|| isNewMission" (click)="onPointedHourClick(i, j, false, true)" [style.color]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')"></ion-input>
+				<ion-label item-content (change)="checkHour(i, j, true, false, false)" (click)="onHourClick(i, j, false, true)" [style.color]="!isEmpty(pause.pause_debut_new) ? 'orange' : 'gray'" >{{!isEmpty(pause.pause_debut_new) ? (pause.pause_debut_new | timeConverter:'minute') : (isEmpty(pause.pause_debut) ? ' - - : - - ' : pause.pause_debut)}}</ion-label>
+				<ion-label item-content [hidden]="contract.option_mission == '1.0'|| isNewMission" (click)="onPointedHourClick(i, j, false, true)" [style.color]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')">{{pause.pause_debut_pointe}}</ion-label>
 			  </ion-item>
 			  <ion-item>
 				<ion-label fixed>Fin de pause</ion-label>
-				<ion-input value="{{!isEmpty(pause.pause_fin_new) ? (pause.pause_fin_new | timeConverter:'minute') : (pause.pause_fin)}}" (change)="checkHour(i, j, false, false, false)" readonly="true" (click)="onHourClick(i, j, false, false)" [style.color]="!isEmpty(pause.pause_fin_new) ? 'orange' : 'gray'" ></ion-input>
-				<ion-input value="{{pause.pause_fin_pointe}}" readonly="true"
-				[hidden]="contract.option_mission == '1.0'|| isNewMission" (click)="onPointedHourClick(i, j, false, false)" [style.color]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')"></ion-input>
+				<ion_label item-content (change)="checkHour(i, j, false, false, false)" (click)="onHourClick(i, j, false, false)" [style.color]="!isEmpty(pause.pause_fin_new) ? 'orange' : 'gray'">{{!isEmpty(pause.pause_fin_new) ? (pause.pause_fin_new | timeConverter:'minute') : (isEmpty(pause.pause_fin) ? ' - - : - - ' : pause.pause_fin)}}</ion_label>
+				<ion_label item-content [hidden]="contract.option_mission == '1.0'|| isNewMission" (click)="onPointedHourClick(i, j, false, false)" [style.color]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')">{{pause.pause_fin_pointe}}</ion_label>
 			  </ion-item>
 			  </ion-list>
 			  <ion-item>
 				<ion-label fixed>H. de fin</ion-label>
-				<ion-input value="{{(day.heure_fin_new != '' && day.heure_fin_new != 'null') ? (day.heure_fin_new | timeConverter:'minute') : (day.heure_fin | timeConverter:'minute')}}" readonly="true" (click)="onHourClick(i, j, false, false)" [style.color]="day.heure_fin_new != 'null' ? 'orange' : 'gray'"></ion-input>
-				<ion-input value="{{day.heure_fin_pointe}}" readonly="true" [hidden]="contract.option_mission == '1.0'|| isNewMission" (click)="onPointedHourClick(i, j, false, false)" [style.color]="upperCase(day.is_heure_fin_corrigee) == 'OUI' ? 'red' : (upperCase(day.is_heure_fin_corrigee) == 'NON' ? 'green' : '')"></ion-input>
+				<ion_label item-content (click)="onHourClick(i, j, false, false)" [style.color]="day.heure_fin_new != 'null' ? 'orange' : 'gray'">{{(day.heure_fin_new != '' && day.heure_fin_new != 'null') ? (day.heure_fin_new | timeConverter:'minute') : (day.heure_fin | timeConverter:'minute')}}</ion_label>
+				<ion_label item-content [hidden]="contract.option_mission == '1.0'|| isNewMission" (click)="onPointedHourClick(i, j, false, false)" [style.color]="upperCase(day.is_heure_fin_corrigee) == 'OUI' ? 'red' : (upperCase(day.is_heure_fin_corrigee) == 'NON' ? 'green' : '')">{{day.heure_fin_pointe}}</ion_label>
 			  </ion-item>
 			</ion-list>
 		</ion-card-content>
