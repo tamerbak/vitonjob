@@ -147,7 +147,8 @@ export class ContractPage {
             zonesTitre : '',
             risques : '',
             elementsCotisation : 0.0,
-            elementsNonCotisation : 10.0
+            elementsNonCotisation : 10.0,
+            titre : ''
         };
 
         /*this.contractService.getNumContract().then(data =>{
@@ -342,7 +343,8 @@ export class ContractPage {
             zonesTitre : '',
             risques : '',
             elementsCotisation : this.rate,
-            elementsNonCotisation : 10.0
+            elementsNonCotisation : 10.0,
+            titre : this.currentOffer.title
         };
         console.log(JSON.stringify(this.contractData));
         debugger;
