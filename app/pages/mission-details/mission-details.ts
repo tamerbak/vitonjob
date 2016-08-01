@@ -6,7 +6,7 @@ import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {MissionService} from '../../providers/mission-service/mission-service';
 import {PushNotificationService} from '../../providers/push-notification-service/push-notification-service';
-import {DatePicker} from 'ionic-native';
+import {DatePicker} from "ionic-native/dist/index";
 import {HomePage} from '../home/home';
 import {Component} from "@angular/core";
 import {DateConverter} from '../../pipes/date-converter/date-converter';
@@ -676,8 +676,8 @@ export class MissionDetailsPage {
         this.nav.present(toast);
     }
 
-    onHourClick(i, j, isStartMission, isStartPause){
-        if(!this.isEmployer){
+    onPointedHourClick(i, j, isStartMission, isStartPause){
+        if(!this.isEmployer || this.upperCase(this.contract.releve_employeur) == 'OUI'){
             return;
         }
         if(isStartPause){
@@ -757,10 +757,172 @@ export class MissionDetailsPage {
             console.log("is hour valid saved")
         });
     }
+	
+	onHourClick(i, j, isStartMission, isStartPause){
+        //jobyer cant edit scheduled hours and pauses
+		if(!this.isEmployer || this.upperCase(this.contract.approuve) == 'OUI'){
+            return;
+        }
+		//if schedule not yet validated
+		if(this.upperCase(this.contract.vu) == 'NON' && (j || j == 0)){
+			this.addPauseHour(i, j, isStartPause);
+			return;	
+		}
+		var initialHour;
+		var buttons = [
+			{
+				text: 'Modifier l\'heure prévue',
+				icon: 'create',
+				handler: () => {
+					console.log('Modify clicked');
+					this.modifyScheduledHour(i, j, isStartMission, isStartPause);
+				}
+			},
+			{
+				text: 'Annuler',
+				role: 'cancel', // will always sort to be on the bottom
+				icon: 'close',
+				handler: () => {
+					console.log('Cancel clicked');
+				}
+			}
+		];
+		var eraseBtn = {
+			text: 'Effacer la modification',
+			icon: 'undo',
+			handler: () => {
+				console.log('Erase clicked');
+				this.undoNewHour(i, j, isStartMission, isStartPause);
+			}
+		};		
+        if(isStartPause){
+			if(this.missionPauses[i][j].pause_debut_pointe)
+                return;
+			if(this.missionPauses[i][j].pause_debut_new != 'null')
+				buttons.push(eraseBtn);
+			initialHour = this.missionPauses[i][j].pause_debut;
+        }else{
+            if(j >= 0){
+                if(this.missionPauses[i][j].pause_fin_pointe)
+                    return;
+				if(this.missionPauses[i][j].pause_fin_new != 'null')
+					buttons.push(eraseBtn);
+				initialHour = this.missionPauses[i][j].pause_fin;
+            }
+        }
+        if(isStartMission){
+			if(this.missionHours[i].heure_debut_pointe)
+                return;
+			if(this.missionHours[i].heure_debut_new != 'null')
+					buttons.push(eraseBtn);
+			initialHour = this.missionService.convertToFormattedHour(this.missionHours[i].heure_debut);
+        }else{
+            if(!j && j != 0){
+				if(this.missionHours[i].heure_fin_pointe)
+                    return;
+				if(this.missionHours[i].heure_fin_new != 'null')
+					buttons.push(eraseBtn);
+				initialHour = this.missionService.convertToFormattedHour(this.missionHours[i].heure_fin);
+            }
+        }
+		let actionSheet = ActionSheet.create({
+            title: 'L\'heure initialement prévue : ' + initialHour,
+            cssClass: 'action-sheets-basic-page',
+            buttons: buttons
+        });
+        this.nav.present(actionSheet);
+    }
+	
+	modifyScheduledHour(i, j, isStartMission, isStartPause){
+		DatePicker.show({
+            date: new Date(),
+            mode: 'time',
+            minuteInterval: 15,
+			is24Hour: true,
+            allowOldDates: false, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+        }).then(newHour => {
+			console.log("Got date: ", newHour);
+			var id;
+			var newHour = newHour.getHours() * 60 + newHour.getMinutes();
+			if(isStartPause){
+				this.missionPauses[i][j].pause_debut_new = newHour;
+				id = this.missionPauses[i][j].id;
+			}else{
+				if(j >= 0){
+					this.missionPauses[i][j].pause_fin_new = newHour;
+					id = this.missionPauses[i][j].id;
+				}
+			}
+			if(isStartMission){
+				this.missionHours[i].heure_debut_new = newHour;
+				id = this.missionHours[i].id;
+			}else{
+				if(!j && j != 0){
+					this.missionHours[i].heure_fin_new = newHour;
+					id = this.missionHours[i].id;
+				}
+			}
+			this.missionService.saveNewHour(i, j, isStartMission, isStartPause, id, newHour).then((data) => {
+				console.log("new hour saved")
+			});
+		},
+		err => console.log('Error occurred while getting date: ', err));	
+	}
     
-    upperCase(str){
+	undoNewHour(i, j, isStartMission, isStartPause){
+		var id;
+		if(isStartPause){
+			id = this.missionPauses[i][j].id;
+			this.missionPauses[i][j].pause_debut_new = 'null';
+		}else{
+			if(j >= 0){
+				id = this.missionPauses[i][j].id;
+				this.missionPauses[i][j].pause_fin_new = 'null';
+			}
+		}
+		if(isStartMission){
+			id = this.missionHours[i].id;
+			this.missionHours[i].heure_debut_new = 'null';
+		}else{
+			if(!j && j != 0){
+				id = this.missionHours[i].id;
+				this.missionHours[i].heure_fin_new = 'null';
+			}
+		}
+		this.missionService.deleteNewHour(i, j, isStartMission, isStartPause, id).then((data) => {
+			console.log("new hour deleted")
+		});
+	}
+	
+	addPauseHour(i, j, isStartPause){
+		DatePicker.show({
+            date: new Date(),
+            mode: 'time',
+            minuteInterval: 15,
+			is24Hour: true,
+            allowOldDates: false, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+        }).then(pauseHour => {
+			var pauseHour = pauseHour.getHours() * 60 + pauseHour.getMinutes();
+			if(isStartPause){
+				this.missionPauses[i][j].pause_debut = this.missionService.convertToFormattedHour(pauseHour);
+			}else{
+				this.missionPauses[i][j].pause_fin = this.missionService.convertToFormattedHour(pauseHour);
+			}
+		},
+		err => console.log('Error occurred while getting date: ', err)
+		);
+	}
+	
+	upperCase(str){
         if(str == null || !str || isUndefined(str))
             return '';
         return str.toUpperCase();
     }
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
+	}
 }

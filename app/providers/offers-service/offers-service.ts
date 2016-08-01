@@ -1186,6 +1186,7 @@ export class OffersService {
 
         let table = projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise';
         let sql = "update "+table+" set dirty='Y' where pk_"+table+"="+offer.idOffer;
+		console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
