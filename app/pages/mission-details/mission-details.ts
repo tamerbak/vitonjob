@@ -58,6 +58,7 @@ export class MissionDetailsPage {
 
     contract;
     optionMission: string;
+    backgroundImage: string;
 
     constructor(private platform:Platform,
                 public gc: GlobalConfigs,
@@ -83,16 +84,17 @@ export class MissionDetailsPage {
         this.themeColor = config.themeColor;
         this.missionDetailsTitle = "Gestion de la mission";
         this.isEmployer = (this.projectTarget=='employer');
+        this.backgroundImage = config.backgroundImage;
         //get missions
         this.contract = navParams.get('contract');
         console.log(JSON.stringify(this.contract));
-        debugger;
+        //debugger;
         //verify if the mission has already pauses
         this.isNewMission = this.contract.vu.toUpperCase() == 'Oui'.toUpperCase() ? false : true;
         var forPointing = this.contract.option_mission != "1.0" ? true : false;
         this.missionService.listMissionHours(this.contract, forPointing).then((data) => {
             if(data.data){
-                debugger;
+                //debugger;
                 this.initialMissionHours = data.data;
                 //initiate pauses array
                 var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
@@ -647,7 +649,7 @@ export class MissionDetailsPage {
         picker.addButton({
             text: 'OK',
             handler: data => {
-                debugger;
+                //debugger;
                 this.rating = data.undefined.value;
                 this.starsText = this.writeStars(this.rating);
                 this.notationService.saveContractNotation(this.contract, this.projectTarget, this.rating);

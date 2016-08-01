@@ -4,7 +4,7 @@
 </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content padding class="mission-details" [ngStyle]="backgroundImage">
 	<ion-row [hidden]="!isEmployer || !missionHours || missionHours.length == 0">
         <ion-col> 
 			<h6 [style.color]="themeColor"> {{optionMission}} </h6>

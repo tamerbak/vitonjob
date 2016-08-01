@@ -29,6 +29,9 @@ export class MissionListPage {
     contractList:any;
     missionListTitle:string;
 	currentUserVar: string;
+    inversedThemeColor: string;
+    backgroundImage: any;
+    badgeColor:any;
 
     constructor(public gc: GlobalConfigs, 
                 public nav: NavController, 
@@ -38,10 +41,12 @@ export class MissionListPage {
         
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
-        
+        this.contractList = [];
         // Set store variables and messages
         this.themeColor = config.themeColor;
+        this.inversedThemeColor = config.inversedThemeColor;
 		this.currentUserVar = config.currentUserVar;
+        this.backgroundImage = config.backgroundImage;
         this.missionListTitle = "Suivi des missions";
         this.isEmployer = (this.projectTarget=='employer');
 		this.storage = new Storage(SqlStorage);

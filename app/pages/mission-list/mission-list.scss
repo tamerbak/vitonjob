@@ -1,3 +1,18 @@
 .mission-list {
+  background-size: cover;
+  /*ion-spinner {
+    width: 14px;
+    height: 14px;
+  }
+  ion-spinner circle {
+    stroke: white !important;
+  }
 
+  ion-spinner.spinner-ios line {
+    stroke: white !important;
+  }*/
+
+  ion-spinner svg * {
+    stroke: white !important;
+  }
 }

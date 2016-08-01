@@ -1,4 +1,4 @@
-<ion-header>
+<!--ion-header>
 	<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" >
 		<button menuToggle>
 			<ion-icon name="menu"></ion-icon>
@@ -6,31 +6,47 @@
 		<ion-title>{{missionListTitle}}</ion-title>
 		
 	</ion-navbar>
-</ion-header>
-<ion-content padding>
+</ion-header-->
+<ion-content padding class="mission-list" [ngStyle]="backgroundImage">
+	<button menuToggle style="background-color: transparent; box-shadow: none">
+		<ion-icon name="menu"></ion-icon>&nbsp;&nbsp;{{missionListTitle}}
+	</button>
     <ion-row>
-        <ion-col width-10></ion-col>
-        <ion-col text-center> <h6 [style.color]="themeColor"> Liste des contrats signés </h6></ion-col>
-        <ion-col width-10></ion-col>
+
+        <ion-col> <h6 [style.color]="themeColor"> Liste des contrats signés :</h6></ion-col>
+
+	</ion-row>
+	<ion-row [hidden]="contractList.length > 0">
+		<ion-col text-center>
+			<ion-spinner class="spinnerColor"></ion-spinner>
+		</ion-col>
 	</ion-row>
     <ion-list text-wrap>
         <ion-item *ngFor="let item of contractList">
-			<ion-grid>
 				<ion-row>
 					<ion-col (click)="goToMissionDetailsPage(item)">
-						<h2>Contrat n° {{item.numero}} signé le {{item.date_signature | dateConverter:'short'}}</h2>
-						<h3 [style.color]="themeColor" [hidden]="!isEmployer">{{item.prenom}} {{item.nom}}</h3>
+						<h2>Contrat N° {{item.numero}}</h2>
+						<h3 [style.color]="themeColor" [hidden]="!isEmployer"> <ion-icon name="person"></ion-icon> {{item.prenom}} {{item.nom}}</h3>
 						<h3 [style.color]="themeColor" [hidden]="isEmployer">{{item.nom}}</h3>
-						<ion-badge [hidden]="item.vu.toUpperCase() == 'Non'.toUpperCase()">validé</ion-badge>
-						<ion-badge [hidden]="item.approuve.toUpperCase() == 'Non'.toUpperCase()">signé</ion-badge>
+						<p><ion-icon name="calendar"></ion-icon> Signé le {{item.date_signature | dateConverter:'short'}}</p>
 					</ion-col>
-					<ion-col width-10>
-						<button item-right (click)="goToMissionPointingPage(item)" [hidden]="item.option_mission == '1.0' || isEmployer || item.signature_jobyer.toUpperCase() == 'Non'.toUpperCase() || item.releve_employeur.toUpperCase() == 'Oui'.toUpperCase() || item.vu.toUpperCase() == 'Non'.toUpperCase()">
-							<ion-icon name="finger-print"></ion-icon>
+				</ion-row>
+				<ion-row>
+					<ion-col text-right>
+						<ion-badge [hidden]="item.approuve.toUpperCase() == 'Non'.toUpperCase()" style="background-color: #14baa6; font-size: x-small;">Contrat signé</ion-badge>
+						<ion-badge [hidden]="item.approuve.toUpperCase() != 'Non'.toUpperCase()" style="background-color: #757575; font-size: x-small;">Contrat non signé</ion-badge>
+						<ion-badge [hidden]="item.approuve.toUpperCase() == 'Non'.toUpperCase()" style="background-color: #14baa6; font-size: x-small;">Horaires validés</ion-badge>
+						<ion-badge [hidden]="item.approuve.toUpperCase() != 'Non'.toUpperCase()" style="background-color: #757575; font-size: x-small;">Horaires non validés</ion-badge>
+
+					</ion-col>
+				</ion-row>
+				<ion-row>
+					<ion-col text-center>
+						<button item-right (click)="goToMissionPointingPage(item)" outline [hidden]="item.option_mission == '1.0' || isEmployer || item.signature_jobyer.toUpperCase() == 'Non'.toUpperCase() || item.releve_employeur.toUpperCase() == 'Oui'.toUpperCase() || item.vu.toUpperCase() == 'Non'.toUpperCase()">
+							<ion-icon name="finger-print"></ion-icon> Pointage
 						</button>
 					</ion-col>
 				</ion-row>
-			</ion-grid>
 		</ion-item>
 	</ion-list>
 </ion-content>
