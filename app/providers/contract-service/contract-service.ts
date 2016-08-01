@@ -146,7 +146,8 @@ export class ContractService {
             " fin_souplesse,"+
             " organisation_particuliere,"+
             " elements_soumis_a_des_cotisations,"+
-            " elements_non_soumis_a_des_cotisations"+
+            " elements_non_soumis_a_des_cotisations,"+
+            " recours"+
             ")"+
             " VALUES ("
             +"'"+ contract.missionStartDate +"',"
@@ -175,7 +176,8 @@ export class ContractService {
             +""+this.checkNull(contract.finSouplesse)+","
             +"'"+contract.usualWorkTimeHours+"',"
             +"'"+contract.elementsCotisation+"',"
-            +"'"+contract.elementsNonCotisation+"'"
+            +"'"+contract.elementsNonCotisation+"',"
+            +"'"+contract.justification+"'"
             +")"
             +" RETURNING pk_user_contrat";
 
