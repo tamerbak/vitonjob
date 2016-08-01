@@ -377,7 +377,7 @@ export class SearchResultsPage implements OnInit {
         let storage = new Storage(SqlStorage);
 
         if(this.isUserAuthenticated){
-
+            debugger;
             let currentEmployer = this.employer.employer;
             console.log(currentEmployer);
 
@@ -696,17 +696,19 @@ export class SearchResultsPage implements OnInit {
     }
 	
 	contract(index){
+	    debugger;
 		if(this.isUserAuthenticated){
 
             let currentEmployer = this.employer.employer;
+            let userData = this.employer;
             console.log(currentEmployer);
 
             //verification of employer informations
             let redirectToCivility = (currentEmployer && currentEmployer.entreprises[0]) ?
-            (currentEmployer.titre == "") ||
-            (currentEmployer.prenom == "") ||
-            (currentEmployer.nom == "") ||
-            (currentEmployer.entreprises[0].name == "") ||
+            (userData.titre == "") ||
+            (userData.prenom == "") ||
+            (userData.nom == "") ||
+            (currentEmployer.entreprises[0].nom == "") ||
             (currentEmployer.entreprises[0].siret == "") ||
             (currentEmployer.entreprises[0].naf == "") ||
             (currentEmployer.entreprises[0].siegeAdress.id == 0) ||

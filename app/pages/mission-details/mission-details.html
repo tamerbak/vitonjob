@@ -99,7 +99,7 @@
 	</ion-row>
 	<ion-row>
 		<ion-col text-center>
-			<button block (click)="validateWork()" [style.backgroundColor]="themeColor" [hidden]="!isEmployer || !invoiceReady || isNewMission" >
+			<button block (click)="validateWork()" [style.backgroundColor]="themeColor" [hidden]="!isEmployer || isNewMission || upperCase(contract.approuve) != 'OUI' || (upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0')" >
 				<ion-icon name="ribbon"></ion-icon>
 				Fin de mission
 			</button>
