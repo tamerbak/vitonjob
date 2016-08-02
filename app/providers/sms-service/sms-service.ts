@@ -48,7 +48,7 @@ export class SmsService {
             let headers = new Headers();
             headers.append("Content-Type", "text/xml");
             
-            this.http.post('http://vps259989.ovh.net:8080/vitonjobv1/api/envoisms', soapMessage, {headers:headers})
+            this.http.post('http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoisms', soapMessage, {headers:headers})
                 .map(res => res)
                 .subscribe(data => {
                     resolve(data);
