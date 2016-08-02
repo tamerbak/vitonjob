@@ -117,17 +117,26 @@ export class MissionPointingPage {
 			}
 			for(var j = 0; j < this.missionPauses[i].length; j++){
 				var p = this.missionPauses[i][j];
-				var h = (p.pause_debut).split(":")[0];
-				var m = (p.pause_debut).split(":")[1];
-				var minutesPause = this.missionService.convertHoursToMinutes(h+':'+m);
+				var minutesPause;
+				if(this.isEmpty(p.pause_debut_new)){
+					var h = (p.pause_debut).split(":")[0];
+					var m = (p.pause_debut).split(":")[1];
+					minutesPause = this.missionService.convertHoursToMinutes(h+':'+m);					
+				}else{
+					minutesPause = p.pause_debut_new;
+				}
 				if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && this.isEmpty(p.pause_debut_pointe)){
 					disabled = false;
 					this.nextPointing = {id: this.missionHours[i].id, start: true, id_pause: p.id};
 					return disabled;
 				}
-				var h = (p.pause_fin).split(":")[0];
-				var m = (p.pause_fin).split(":")[1];
-				var minutesPause = this.missionService.convertHoursToMinutes(h+':'+m);
+				if(this.isEmpty(p.pause_fin_new)){
+					var h = (p.pause_fin).split(":")[0];
+					var m = (p.pause_fin).split(":")[1];
+					var minutesPause = this.missionService.convertHoursToMinutes(h+':'+m);					
+				}else{
+					minutesPause = p.pause_fin_new;
+				}
 				if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && this.isEmpty(p.pause_fin_pointe)){
 					disabled = false;
 					this.nextPointing = {id: this.missionHours[i].id, start: false, id_pause: p.id};
