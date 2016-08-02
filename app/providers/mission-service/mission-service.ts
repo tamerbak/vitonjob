@@ -147,7 +147,7 @@ export class MissionService {
                 });
         });
     }
-
+ 
     validateWork(invoice){
         let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
