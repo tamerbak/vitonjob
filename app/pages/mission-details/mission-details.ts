@@ -529,10 +529,26 @@ export class MissionDetailsPage {
     }
 
     validateWork(){
-        this.store.set('CONTRACT_INVOICE', JSON.stringify(this.contract)).then(data => {
+        /*this.store.set('CONTRACT_INVOICE', JSON.stringify(this.contract)).then(data => {
             this.nav.push(ModalInvoicePage);
         });
+        */
 
+        this.missionService.endOfMission(this.contract.pk_user_contrat).then(data=>{
+            let confirm = Alert.create({
+                title: "VitOnJob",
+                message: "Les détails de cette missions sont en cours de traitements, vous serez contacté par SMS une fois la facturation effectuée",
+                buttons: [
+                    {
+                        text: 'OK',
+                        handler: () => {
+                            console.log('No clicked');
+                        }
+                    }
+                ]
+            });
+            this.nav.present(confirm);
+        });
     }
 
     resetForm(){
