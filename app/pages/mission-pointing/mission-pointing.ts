@@ -103,32 +103,54 @@ export class MissionPointingPage {
 		var m = new Date().getMinutes();
 		var minutesNow = this.missionService.convertHoursToMinutes(h+':'+m);
 		for(var i = 0; i < this.missionHours.length; i++){
-			if(this.missionHours[i].heure_debut - minutesNow <=  10 && this.missionHours[i].heure_debut - minutesNow >=  0 && (this.missionHours[i].heure_debut_pointe == "null" || this.missionHours[i].heure_debut_pointe == "")){
+			var scheduledHour = this.isEmpty(this.missionHours[i].heure_debut_new) ? this.missionHours[i].heure_debut : this.missionHours[i].heure_debut_new;
+			if(scheduledHour - minutesNow <=  10 && scheduledHour - minutesNow >=  0 && this.isEmpty(this.missionHours[i].heure_debut_pointe)){
 				disabled = false;
 				this.nextPointing = {id: this.missionHours[i].id, start: true};
+				return disabled;
 			}
-			if(this.missionHours[i].heure_fin - minutesNow <=  10 && this.missionHours[i].heure_fin - minutesNow >=  0 && (this.missionHours[i].heure_fin_pointe == "null" || this.missionHours[i].heure_fin_pointe == "")){
+			scheduledHour = this.isEmpty(this.missionHours[i].heure_fin_new) ? this.missionHours[i].heure_fin : this.missionHours[i].heure_fin_new;
+			if(scheduledHour - minutesNow <=  10 && scheduledHour - minutesNow >=  0 && (this.isEmpty(this.missionHours[i].heure_fin_pointe))){
 				disabled = false;
 				this.nextPointing = {id: this.missionHours[i].id, start: false};
+				return disabled;
 			}
 			for(var j = 0; j < this.missionPauses[i].length; j++){
 				var p = this.missionPauses[i][j];
-				var h = (p.pause_debut).split(":")[0];
-				var m = (p.pause_debut).split(":")[1];
-				var minutesPause = this.missionService.convertHoursToMinutes(h+':'+m);
-				if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && !p.pause_debut_pointe){
+				var minutesPause;
+				if(this.isEmpty(p.pause_debut_new)){
+					var h = (p.pause_debut).split(":")[0];
+					var m = (p.pause_debut).split(":")[1];
+					minutesPause = this.missionService.convertHoursToMinutes(h+':'+m);					
+				}else{
+					minutesPause = p.pause_debut_new;
+				}
+				if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && this.isEmpty(p.pause_debut_pointe)){
 					disabled = false;
 					this.nextPointing = {id: this.missionHours[i].id, start: true, id_pause: p.id};
+					return disabled;
 				}
-				var h = (p.pause_fin).split(":")[0];
-				var m = (p.pause_fin).split(":")[1];
-				var minutesPause = this.missionService.convertHoursToMinutes(h+':'+m);
-				if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && !p.pause_fin_pointe){
+				if(this.isEmpty(p.pause_fin_new)){
+					var h = (p.pause_fin).split(":")[0];
+					var m = (p.pause_fin).split(":")[1];
+					var minutesPause = this.missionService.convertHoursToMinutes(h+':'+m);					
+				}else{
+					minutesPause = p.pause_fin_new;
+				}
+				if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && this.isEmpty(p.pause_fin_pointe)){
 					disabled = false;
 					this.nextPointing = {id: this.missionHours[i].id, start: false, id_pause: p.id};
+					return disabled;
 				}
 			}
 		}
 		return disabled;
+	}
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
 	}
 }
