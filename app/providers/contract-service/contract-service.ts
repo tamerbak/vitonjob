@@ -148,7 +148,9 @@ export class ContractService {
             " elements_soumis_a_des_cotisations,"+
             " elements_non_soumis_a_des_cotisations,"+
             " recours,"+
-            " titre"+
+            " titre,"+
+            " demande_employeur,"+
+            " demande_jobyer"+
             ")"+
             " VALUES ("
             +"'"+ contract.missionStartDate +"',"
@@ -179,7 +181,9 @@ export class ContractService {
             +"'"+contract.elementsCotisation+"',"
             +"'"+contract.elementsNonCotisation+"',"
             +"'"+this.sqlfyText(contract.justification)+"',"
-            +"'"+this.sqlfyText(contract.titre)+"'"
+            +"'"+this.sqlfyText(contract.titre)+"',"
+            +"'"+this.sqlfyText(contract.demandeEmployer)+"',"
+            +"'"+this.sqlfyText(contract.demandeJobyer)+"'"
             +")"
             +" RETURNING pk_user_contrat";
 
@@ -369,7 +373,7 @@ export class ContractService {
 
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 201,
+            'id': 206,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',

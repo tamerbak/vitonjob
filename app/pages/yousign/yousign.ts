@@ -138,7 +138,10 @@ export class YousignPage {
             // get the yousign link of the contract and the phoneNumber of the jobyer
             let yousignJobyerLink = yousignData.iFrameURLs[0].iFrameURL;
             let jobyerPhoneNumber = this.jobyer.tel;
-            
+
+            this.contractData.demandeJobyer = yousignData.idDemands[0].idDemand;
+            this.contractData.demandeEmployer = yousignData.idDemands[1].idDemand;
+
             // Send sms to jobyer
             debugger;
             this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : '+this.contractData.numero).then((dataSms) => {
