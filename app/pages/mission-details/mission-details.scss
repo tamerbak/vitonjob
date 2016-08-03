@@ -7,6 +7,9 @@
 
 	.cardHeader{
 		background: #b7b5b5 !important;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		font-size: small;
 	}
 
 	.iconRight{
@@ -21,4 +24,17 @@
 		white-space: normal;
 		font-size: 12px;
 	}
+
+	ion-label {
+		padding-top: 5px;
+	}
+
+	.labelInItem {
+		background-color: lightyellow;
+	}
+
+	.ion-col {
+		border: think solid black;
+	}
+
 }

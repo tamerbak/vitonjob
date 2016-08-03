@@ -107,9 +107,9 @@ export class MissionDetailsPage {
             this.invoiceReady = true;
 
         if(!this.contract.option_mission || this.contract.option_mission == "null"){
-            this.optionMission = "Option de suivi de mission n° 1 est activée par défaut."
+            this.optionMission = "Mode de suivi de mission n°1"
         }else{
-            this.optionMission = "Option de suivi de mission n° " + this.contract.option_mission.substring(0, 1) + " activée";
+            this.optionMission = "Mode de suivi de mission n°" + this.contract.option_mission.substring(0, 1);
         }
 
         //  Getting contract score
@@ -619,7 +619,7 @@ export class MissionDetailsPage {
                     }else{
                         console.log("option mission saved successfully");
                         this.contract.option_mission = selectedOption;
-                        this.optionMission = "Option de suivi de mission n°" + selectedOption + " activée";
+                        this.optionMission = "Mode de suivi de mission n°" + selectedOption;
                     }
                 });
             }
