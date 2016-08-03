@@ -20,7 +20,7 @@
 			<ion-list>
 				<ion-item>
 					<ion-label fixed>H. de début</ion-label>
-					<ion-input value="{{day.heure_debut | timeConverter:'minute'}}" disabled="true"></ion-input>
+					<ion-input value="{{(day.heure_debut_new != '' && day.heure_debut_new != 'null') ? (day.heure_debut_new | timeConverter:'minute') : (day.heure_debut | timeConverter:'minute')}}" disabled="true"></ion-input>
 					<ion-input value="{{day.heure_debut_pointe}}" disabled="true"></ion-input>
 				</ion-item>
 				<ion-list *ngFor="let pause of missionPauses[i], let j=index" class="marginTopList">
@@ -33,18 +33,18 @@
 					</ion-item>  
 					<ion-item>
 						<ion-label fixed>Début de pause</ion-label>
-						<ion-input [(ngModel)]="pause.pause_debut" disabled="true"></ion-input>
+						<ion-input value="{{!isEmpty(pause.pause_debut_new) ? (pause.pause_debut_new | timeConverter:'minute') : pause.pause_debut}}" disabled="true"></ion-input>
 						<ion-input [(ngModel)]="pause.pause_debut_pointe" disabled="true"></ion-input>
 					</ion-item>
 					<ion-item>
 						<ion-label fixed>Fin de pause</ion-label>
-						<ion-input [(ngModel)]="pause.pause_fin" disabled="true"></ion-input>
+						<ion-input value="{{!isEmpty(pause.pause_fin_new) ? (pause.pause_fin_new | timeConverter:'minute') : (pause.pause_fin)}}" disabled="true"></ion-input>
 						<ion-input [(ngModel)]="pause.pause_fin_pointe" disabled="true"></ion-input>
 					</ion-item>
 				</ion-list>
 				<ion-item>
 					<ion-label fixed>H. de fin</ion-label>
-					<ion-input value="{{day.heure_fin | timeConverter:'minute'}}" disabled="true"></ion-input>
+					<ion-input value="{{(day.heure_fin_new != '' && day.heure_fin_new != 'null') ? (day.heure_fin_new | timeConverter:'minute') : (day.heure_fin | timeConverter:'minute')}}" disabled="true"></ion-input>
 					<ion-input value="{{day.heure_fin_pointe}}" disabled="true"></ion-input>
 				</ion-item>
 			</ion-list>

@@ -531,10 +531,26 @@ export class MissionDetailsPage {
     }
 
     validateWork(){
-        this.store.set('CONTRACT_INVOICE', JSON.stringify(this.contract)).then(data => {
+        /*this.store.set('CONTRACT_INVOICE', JSON.stringify(this.contract)).then(data => {
             this.nav.push(ModalInvoicePage);
         });
+        */
 
+        this.missionService.endOfMission(this.contract.pk_user_contrat).then(data=>{
+            let confirm = Alert.create({
+                title: "VitOnJob",
+                message: "Les détails de cette missions sont en cours de traitements, vous serez contacté par SMS une fois la facturation effectuée",
+                buttons: [
+                    {
+                        text: 'OK',
+                        handler: () => {
+                            console.log('No clicked');
+                        }
+                    }
+                ]
+            });
+            this.nav.present(confirm);
+        });
     }
 
     resetForm(){
@@ -841,7 +857,7 @@ export class MissionDetailsPage {
             mode: 'time',
             minuteInterval: 15,
 			is24Hour: true,
-            allowOldDates: false, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+            allowOldDates: true, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
         }).then(newHour => {
 			console.log("Got date: ", newHour);
 			var id;
@@ -902,7 +918,7 @@ export class MissionDetailsPage {
             mode: 'time',
             minuteInterval: 15,
 			is24Hour: true,
-            allowOldDates: false, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+            allowOldDates: true, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
         }).then(pauseHour => {
 			var pauseHour = pauseHour.getHours() * 60 + pauseHour.getMinutes();
 			if(isStartPause){
