@@ -82,7 +82,7 @@
                                 <button small
                                         [style.backgroundColor]="upperCase(day.is_heure_debut_corrigee) == 'OUI' ? 'red' : (upperCase(day.is_heure_debut_corrigee) == 'NON' ? 'green' : '')"
                                         (click)="onPointedHourClick(i, j, true, false)"
-                                        [disabled]="(day.heure_debut_pointe != '' && contract.option_mission == '3.0') || contract.option_mission == '2.0' || upperCase(contract.releve_employeur) == 'OUI' || !isEmployer">
+                                        [disabled]="contract.option_mission == '1.0'|| isNewMission">
                                     {{(day.heure_debut_pointe)? day.heure_debut_pointe : '--:--'}}
                                 </button>
                             </ion-col>
