@@ -59,6 +59,9 @@ export class MissionDetailsPage {
     contract;
     optionMission: string;
     backgroundImage: string;
+    
+    enterpriseName: string = "--";
+    jobyerName: string = "--";
 
     constructor(private platform:Platform,
                 public gc: GlobalConfigs,
@@ -102,6 +105,15 @@ export class MissionDetailsPage {
                 this.missionPauses = array[1];
             }
         });
+        
+        this.missionService.getCosignersNames(this.contract).then((data) => {
+            if (data.data) {
+                let cosigners = data.data[0];
+                this.enterpriseName = cosigners.enterprise;
+                this.jobyerName = cosigners.jobyer;
+            }
+        });
+        
 
         if(this.contract.numero_de_facture && this.contract.numero_de_facture != 'null')
             this.invoiceReady = true;
@@ -849,6 +861,10 @@ export class MissionDetailsPage {
             buttons: buttons
         });
         this.nav.present(actionSheet);
+        // TEL@04082016 : replace ion-label change event :
+        actionSheet.onDismiss(() =>{
+            this.checkHour(i, j, isStartPause, false, isStartMission);
+        });
     }
 	
 	modifyScheduledHour(i, j, isStartMission, isStartPause){

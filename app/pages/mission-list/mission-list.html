@@ -8,8 +8,8 @@
 	</ion-navbar>
 </ion-header-->
 <ion-content padding class="mission-list" [ngStyle]="backgroundImage">
-	<button menuToggle style="background-color: transparent; box-shadow: none">
-		<ion-icon name="menu"></ion-icon>&nbsp;&nbsp;{{missionListTitle}}
+	<button menuToggle style="background-color: transparent; box-shadow: none" [style.color]="themeColor">
+		<ion-icon name="menu" primary></ion-icon>&nbsp;&nbsp;{{missionListTitle}}
 	</button>
     <!--ion-row>
 
@@ -17,7 +17,7 @@
 
 	</ion-row-->
     <ion-list text-wrap>
-		<ion-list-header style="color: white">Missions en cours</ion-list-header>
+		<ion-list-header style="color: #757575">Missions en cours</ion-list-header>
 		<ion-row [hidden]="missionNow.length > 0 || contractList.length > 0">
 			<ion-col text-center>
 				<ion-spinner class="spinnerColor"></ion-spinner>
@@ -67,7 +67,7 @@
 		</ion-item>
 
 
-		<ion-list-header style="color: white">Missions en attente</ion-list-header>
+		<ion-list-header style="color: #757575">Missions en attente</ion-list-header>
 		<ion-row [hidden]="missionFutur.length > 0 || contractList.length > 0">
 			<ion-col text-center>
 				<ion-spinner class="spinnerColor"></ion-spinner>
@@ -103,7 +103,7 @@
 		</ion-item>
 
 
-		<ion-list-header style="color: white">Missions terminées</ion-list-header>
+		<ion-list-header style="color: #757575">Missions terminées</ion-list-header>
 		<ion-row [hidden]="missionPast.length > 0 || contractList.length > 0">
 			<ion-col text-center>
 				<ion-spinner class="spinnerColor"></ion-spinner>

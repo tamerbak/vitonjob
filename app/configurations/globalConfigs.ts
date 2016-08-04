@@ -17,6 +17,8 @@ export class GlobalConfigs {
     private thirdThemeColor:string;
     // Instabug object
     private instabug: any;
+    // mission mode
+    private missionOption : any;
 
     constructor() {
         this.projectTarget = "employer";
@@ -62,6 +64,14 @@ export class GlobalConfigs {
 
     getInstabug() {
         return this.instabug;
+    }
+
+    setMissionOption(value) {
+        this.missionOption = value;
+    }
+
+    getMissionOption() {
+        return this.missionOption;
     }
 
 }
