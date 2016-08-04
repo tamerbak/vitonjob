@@ -277,7 +277,8 @@ export class CivilityPage {
             let key = this.numSS.substr(13);
             let number = parseInt(indicator);
             let nkey = parseInt(key);
-            if (nkey == number % 97)
+            let modulo = number % 97;
+            if (nkey == 97 - modulo)
                 return true;
             else
                 return false;
@@ -649,7 +650,7 @@ export class CivilityPage {
             return true;
         }
 
-
+        debugger;
         let correct = this.checkGender();
         if (!correct) {
             this.numSSMessage = '* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles';
