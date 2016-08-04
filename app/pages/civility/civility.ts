@@ -185,7 +185,7 @@ export class CivilityPage {
                     });
                 } else {
                     if (!this.isRecruiter) {
-                        //debugger;
+                        //
                         if (this.currentUser.jobyer.dateNaissance) {
                             if (this.platform.version('android').major < 5) {
                                 this.birthdate = new Date(this.currentUser.jobyer.dateNaissance).toLocaleDateString('fr-FR');
@@ -236,7 +236,7 @@ export class CivilityPage {
 
     checkBirthYear() {
         let indicator = this.numSS.charAt(1) + this.numSS.charAt(2);
-        //debugger;
+        //
         let birthYear = (this.platform.version('android').major < 5 ) ? this.birthdate.split('/')[2] : this.birthdate.split('-')[0];
         birthYear = birthYear.substr(2);
         if (indicator == birthYear)
@@ -247,7 +247,7 @@ export class CivilityPage {
 
     checkBirthMonth() {
         let indicator = this.numSS.charAt(3) + this.numSS.charAt(4);
-        //debugger;
+        //
         let birthMonth = (this.platform.version('android').major < 5 ) ? this.birthdate.split('/')[1] : this.birthdate.split('-')[1];
         if (birthMonth.length == 1)
             birthMonth = "0" + birthMonth;
@@ -330,7 +330,6 @@ export class CivilityPage {
             var employerId = this.currentUser.employer.id;
             //get entreprise id of the current employer
             var entrepriseId = this.currentUser.employer.entreprises[0].id;
-            //debugger;
             // update employer
             this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget, this.medecineId).then((data) => {
                 if (!data || data.status == "failure") {
@@ -383,7 +382,7 @@ export class CivilityPage {
                         this.currentUser.jobyer.numSS = this.numSS;
                         this.currentUser.jobyer.natId = this.nationality;
                         //this.currentUser.jobyer.natLibelle = this.nationality;
-                        //debugger;
+                        //
                         if (this.platform.version('android').major < 5) {
                             let birth = new Date (this.birthdate.split('/')[1] + '-' +
                                 this.birthdate.split('/')[0] + '-' +
@@ -510,10 +509,10 @@ export class CivilityPage {
             this.cni = e.target.value;
             return;
         }
-        if (e.keyCode < 48 || e.keyCode > 57) {
+        /*if (e.keyCode < 48 || e.keyCode > 57) {
             e.preventDefault();
             return;
-        }
+        }*/
     }
 
     /**
@@ -650,7 +649,7 @@ export class CivilityPage {
             return true;
         }
 
-        debugger;
+        
         let correct = this.checkGender();
         if (!correct) {
             this.numSSMessage = '* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles';

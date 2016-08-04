@@ -89,7 +89,7 @@
 
     <ion-item [hidden]="isEmployer">
         <ion-label floating>CNI</ion-label>
-        <ion-input type="number" [(ngModel)]="cni" (keyup)="watchCNI($event)" maxlength="12" ></ion-input>
+        <ion-input type="text" [(ngModel)]="cni" (keyup)="watchCNI($event)" maxlength="12" ></ion-input>
     </ion-item>
     <div *ngIf="showCNIError()"
          class="error-box">* Saisissez les 12 chiffres du CNI</div>
