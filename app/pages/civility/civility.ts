@@ -801,4 +801,14 @@ export class CivilityPage {
             err => console.log("Error occurred while getting date:", err)
         );
     }
+
+    /**
+     * @Description Converts a timeStamp to date string :
+     * @param date : a timestamp date
+     * @param options Date options
+     */
+    toDateString(date:number, options:any) {
+        let d = new Date(date);
+        return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+    }
 }
