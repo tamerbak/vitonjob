@@ -226,8 +226,9 @@ export class SearchCriteriaPage {
 
         //  Construct the search query in the correct format then summon search service
 
+        let ignoreSector: boolean = false;
         if(isUndefined(this.sector) || (this.job && this.job.length>0))
-            this.sector = '';
+            ignoreSector = true;
         if(isUndefined(this.job))
             this.job = '';
         if(isUndefined(this.city))
@@ -241,7 +242,7 @@ export class SearchCriteriaPage {
         var searchFields = {
             class: 'com.vitonjob.callouts.recherche.SearchQuery',
             job: this.job,
-            metier: this.sector,
+            metier: (ignoreSectore)? '' : this.sector,
             lieu: this.city,
             nom: this.filters[2].value,
             entreprise: this.projectTarget == 'jobyer' ? this.filters[5].value : '',
