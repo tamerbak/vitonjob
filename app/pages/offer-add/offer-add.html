@@ -4,7 +4,7 @@
 </ion-navbar>
 </ion-header>
 
-<ion-content padding class="offer-add">
+<ion-content padding class="offer-add" [ngStyle]="backgroundImage">
 
   <!-- Validate Offer -->
   <ion-row >
@@ -54,12 +54,12 @@
   </button>
   
   <!--video-->
-  <ion-row >
+  <ion-row class="video-bottom-center">
     <ion-col text-center>
-      <button [style.backgroundColor]="themeColor" (click)="showVideoAlert()" class="video-bottom-center"
+      <button [style.backgroundColor]="themeColor" (click)="showVideoAlert()"
               [disabled] = "!(validated.isJob && validated.isCalendar)" >
         <ion-icon name="videocam" is-active="false"></ion-icon>
-        Attacher une video
+        Je me présente en directe
       </button>
     </ion-col>
   </ion-row>

@@ -224,8 +224,8 @@ export class SearchCriteriaPage {
             return;
         }*/
 
-        //  Construct the search query in the correct format then summon search service
-
+        // Construct the search query in the correct format then summon search service
+        // TEL05082016 : fixes #628
         let ignoreSector: boolean = false;
         if(isUndefined(this.sector) || (this.job && this.job.length>0))
             ignoreSector = true;
