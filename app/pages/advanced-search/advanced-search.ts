@@ -1,18 +1,18 @@
-import { Component } from '@angular/core';
-import { NavController, PickerColumnOption, Picker, SqlStorage, Storage } from 'ionic-angular';
+import {Component} from '@angular/core';
+import {NavController, PickerColumnOption, Picker, SqlStorage, Storage, Platform} from 'ionic-angular';
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {DatePicker} from "ionic-native/dist/index";
 
 /*
-  Generated class for the AdvancedSearchPage page.
+ Generated class for the AdvancedSearchPage page.
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
+ See http://ionicframework.com/docs/v2/components/#navigation for more info on
+ Ionic pages and navigation.
+ */
 @Component({
-  templateUrl: 'build/pages/advanced-search/advanced-search.html',
-  providers: [OffersService]
+    templateUrl: 'build/pages/advanced-search/advanced-search.html',
+    providers: [OffersService]
 })
 export class AdvancedSearchPage {
     private slot:any;
@@ -27,16 +27,16 @@ export class AdvancedSearchPage {
     private job:string;
     private idJob:number;
     private dateEvent:any;
-    
+    isAndroid4:boolean;
+    platform:any;
 
-  
 
-
-  
-  constructor(private nav: NavController, _service:OffersService, gc:GlobalConfigs) {
+    constructor(private nav:NavController, _service:OffersService, gc:GlobalConfigs, platform:Platform) {
         this.service = _service;
         this.db = new Storage(SqlStorage);
         this.projectTarget = gc.getProjectTarget();
+        this.isAndroid4 = (platform.version('android').major < 5);
+        this.platform = platform;
         _service.loadSectors(this.projectTarget).then(listSectors => {
             if (listSectors) {
                 this.listSectors = listSectors;
@@ -50,26 +50,32 @@ export class AdvancedSearchPage {
             }
         });
         this.slot = {
-            date: new Date(),
-            
+            date: new Date()
+
         };
-        this.showedSlot = {
-            date: new Date().toISOString(),
-        };
+        if (this.isAndroid4) {
+            this.showedSlot = {
+                date: this.toDateString(new Date().getTime())
+            };
+        } else {
+            this.showedSlot = {
+                date: new Date().toISOString()
+            };
+        }
         
-       
 
-  }
-  
 
-   setSectorsPicker() {
+    }
+
+
+    setSectorsPicker() {
         let rating = 0;
         let picker = Picker.create();
         let options:PickerColumnOption[] = new Array<PickerColumnOption>();
         this.db.get('listSectors').then(listSectors => {
             if (listSectors) {
                 listSectors = JSON.parse(listSectors);
-                
+
                 for (let i = 1; i < listSectors.length; i++) {
                     options.push({
                         value: listSectors[i].id,
@@ -150,6 +156,7 @@ export class AdvancedSearchPage {
             }
         );
     }
+
     filterSectorList(ev) {
         var q = ev.target.value;
 
@@ -184,7 +191,50 @@ export class AdvancedSearchPage {
         );
 
     }
-    
+
+    /**
+     * launching dateTimePicker component for slot selection
+     */
+    launchDateTimePicker(type, flag) {
+
+        DatePicker.show({
+            date: new Date(),
+            mode: type,
+            minuteInterval: 15, androidTheme: this.calendarTheme, is24Hour: true,
+            allowOldDates: false, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+        }).then(
+            date => {
+                console.log("Got date: ", date);
+
+                switch (flag) {
+                    case 'start' :
+                        this.slot.startHour = date.getHours() * 60 + date.getMinutes();
+                        this.showedSlot.startHour = this.toHourString(this.slot.startHour);
+                        break;
+                    case 'end' :
+                        this.slot.endHour = date.getHours() * 60 + date.getMinutes();
+                        this.showedSlot.endHour = this.toHourString(this.slot.endHour);
+                        break;
+                    default :
+                        this.slot.date = date.getTime();
+                        this.showedSlot.date = this.toDateString(this.slot.date.getTime(), '');
+                        this.showedSlot.angular4Date = this.toDateString(this.slot.date.getTime(), '');
+                        break;
+                }
+            },
+            err => console.log("Error occurred while getting date:", err)
+        );
+    }
+
+    /**
+     * @Description Converts a timeStamp to date string :
+     * @param date : a timestamp date
+     * @param options Date options
+     */
+    toDateString(date:number, options:any) {
+        let d = new Date(date);
+        return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
+    }
 
 
 }

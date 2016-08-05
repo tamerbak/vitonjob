@@ -1,14 +1,14 @@
 <ion-header>
-<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-    <ion-title style="padding-left: 0">Recherche par critères</ion-title>
-    <ion-buttons end>
-        <button (click)="close()">
-            <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
-        </button>
-    </ion-buttons>
-</ion-navbar>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+        <ion-title style="padding-left: 0">Recherche par critères</ion-title>
+        <ion-buttons end>
+            <button (click)="close()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
 </ion-header>
-<ion-content class="search-criteria" >
+<ion-content class="search-criteria">
 
     <!--ion-list class="criteria-list">
         <ion-list-header>
@@ -31,8 +31,8 @@
 
     <ion-item>
         <ion-label floating>Secteur</ion-label>
-        <ion-input [(ngModel)]="sector" (keyup)="watchSector($event)" ></ion-input>
-        <button small item-right (click)="setSectorsPicker()" >
+        <ion-input [(ngModel)]="sector" (keyup)="watchSector($event)"></ion-input>
+        <button small item-right (click)="setSectorsPicker()">
             <ion-icon name="list"></ion-icon>
         </button>
     </ion-item>
@@ -46,7 +46,7 @@
     <ion-item>
         <ion-label floating>Job</ion-label>
         <ion-input [(ngModel)]="job" (keyup)="watchJob($event)"></ion-input>
-        <button small item-right (click)="setJobsPicker()" >
+        <button small item-right (click)="setJobsPicker()">
             <ion-icon name="list"></ion-icon>
         </button>
     </ion-item>
@@ -57,13 +57,19 @@
             </ion-item>
         </ion-list>
     </ion-item>
-    <ion-item style="margin-top: 15px;">
+    <ion-item style="margin-top: 15px;" [hidden]="isAndroid4">
         <ion-label floating>Date de disponibilité</ion-label>
         <ion-datetime [(ngModel)]="availabilityDate" displayFormat="DD/MM/YYYY"></ion-datetime>
     </ion-item>
+
+    <ion-item [hidden]="!isAndroid4">
+        <ion-label floating>Date</ion-label>
+        <ion-input type="text" [(ngModel)]="availabilityDate"
+                   (focus)="launchDateTimePicker('date')" readonly></ion-input>
+    </ion-item>
     <ion-item>
         <ion-label floating>Ville</ion-label>
-        <ion-input [(ngModel)]="city" (keyup)="watchCity($event)" ></ion-input>
+        <ion-input [(ngModel)]="city" (keyup)="watchCity($event)"></ion-input>
     </ion-item>
     <ion-item *ngIf="cities.length>0">
         <ion-list>
@@ -77,12 +83,14 @@
     <button fab fab-bottom fab-right [style.backgroundColor]="themeColor" (click)="showGuideModal()">
         <ion-icon name="help"></ion-icon>
     </button>
-
-    <button block [style.backgroundColor]="themeColor" (click)="validateSearch()">
-        <ion-icon name="search"></ion-icon>
-        Recherche
-    </button>
-
+    <ion-row>
+        <ion-col text-center>
+            <button [style.backgroundColor]="themeColor" (click)="validateSearch()">
+                <ion-icon name="search"></ion-icon>
+                Recherche
+            </button>
+        </ion-col>
+    </ion-row>
 
 
 </ion-content>
