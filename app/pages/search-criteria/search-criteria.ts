@@ -242,7 +242,7 @@ export class SearchCriteriaPage {
         var searchFields = {
             class: 'com.vitonjob.callouts.recherche.SearchQuery',
             job: this.job,
-            metier: (ignoreSectore)? '' : this.sector,
+            metier: (ignoreSector)? '' : this.sector,
             lieu: this.city,
             nom: this.filters[2].value,
             entreprise: this.projectTarget == 'jobyer' ? this.filters[5].value : '',
