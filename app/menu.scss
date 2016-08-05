@@ -1,5 +1,4 @@
 .menu {
-
   //background-image: url("../../img/bg_menu_employer.png");
   background-size: cover;
   //font-family: 'Quicksand', sans-serif;
@@ -32,6 +31,10 @@
   }
   ion-spinner circle {
     stroke: white;
+  }
+
+  ion-navbar.toolbar {
+    min-height: 70px !important;
   }
 
 

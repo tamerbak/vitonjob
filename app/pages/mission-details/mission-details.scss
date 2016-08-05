@@ -1,19 +1,40 @@
 .mission-details {
+	background-size: cover;
 
-}
-.cardHeader{
-	background: #b7b5b5 !important;
-}
+	ion-toolbar.toolbar {
+		min-height: 70px;
+	}
 
-.iconRight{
-	float: right;
-}
+	.cardHeader{
+		background: #b7b5b5 !important;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		font-size: small;
+	}
 
-.marginTopList{
-	margin-top: 5px;
-}
+	.iconRight{
+		float: right;
+	}
 
-.button-picture {
-	white-space: normal;
-	font-size: 12px;
+	.marginTopList{
+		margin-top: 5px;
+	}
+
+	.button-picture {
+		white-space: normal;
+		font-size: 12px;
+	}
+
+	ion-label {
+		padding-top: 5px;
+	}
+
+	.labelInItem {
+		background-color: lightyellow;
+	}
+
+	.ion-col {
+		border: think solid black;
+	}
+
 }

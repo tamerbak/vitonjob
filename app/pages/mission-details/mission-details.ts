@@ -58,6 +58,10 @@ export class MissionDetailsPage {
 
     contract;
     optionMission: string;
+    backgroundImage: string;
+    
+    enterpriseName: string = "--";
+    jobyerName: string = "--";
 
     constructor(private platform:Platform,
                 public gc: GlobalConfigs,
@@ -83,6 +87,7 @@ export class MissionDetailsPage {
         this.themeColor = config.themeColor;
         this.missionDetailsTitle = "Gestion de la mission";
         this.isEmployer = (this.projectTarget=='employer');
+        this.backgroundImage = config.backgroundImage;
         //get missions
         this.contract = navParams.get('contract');
         console.log(JSON.stringify(this.contract));
@@ -100,14 +105,23 @@ export class MissionDetailsPage {
                 this.missionPauses = array[1];
             }
         });
+        
+        this.missionService.getCosignersNames(this.contract).then((data) => {
+            if (data.data) {
+                let cosigners = data.data[0];
+                this.enterpriseName = cosigners.enterprise;
+                this.jobyerName = cosigners.jobyer;
+            }
+        });
+        
 
         if(this.contract.numero_de_facture && this.contract.numero_de_facture != 'null')
             this.invoiceReady = true;
 
         if(!this.contract.option_mission || this.contract.option_mission == "null"){
-            this.optionMission = "Option de suivi de mission n° 1 est activée par défaut."
+            this.optionMission = "Mode de suivi de mission n°1"
         }else{
-            this.optionMission = "Option de suivi de mission n° " + this.contract.option_mission.substring(0, 1) + " activée";
+            this.optionMission = "Mode de suivi de mission n°" + this.contract.option_mission.substring(0, 1);
         }
 
         //  Getting contract score
@@ -633,7 +647,7 @@ export class MissionDetailsPage {
                     }else{
                         console.log("option mission saved successfully");
                         this.contract.option_mission = selectedOption;
-                        this.optionMission = "Option de suivi de mission n°" + selectedOption + " activée";
+                        this.optionMission = "Mode de suivi de mission n°" + selectedOption;
                     }
                 });
             }
@@ -847,6 +861,10 @@ export class MissionDetailsPage {
             buttons: buttons
         });
         this.nav.present(actionSheet);
+        // TEL@04082016 : replace ion-label change event :
+        actionSheet.onDismiss(() =>{
+            this.checkHour(i, j, isStartPause, false, isStartMission);
+        });
     }
 	
 	modifyScheduledHour(i, j, isStartMission, isStartPause){

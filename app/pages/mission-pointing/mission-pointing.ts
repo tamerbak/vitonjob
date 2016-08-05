@@ -24,7 +24,7 @@ export class MissionPointingPage {
 	
 	contract;
 	missionHours = [];
-	missionPauses = []
+	missionPauses = [];
 	//startPauses = [['']];
     //endPauses = [['']];
 	//startPausesPointe = [['']];
