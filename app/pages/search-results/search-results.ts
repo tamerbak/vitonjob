@@ -35,7 +35,7 @@ export class SearchResultsPage implements OnInit {
     searchResults : any;
     listView : boolean = false;
     cardView : boolean = false;
-    mapView : boolean = true;
+    mapView : string;
     platform : Platform;
     map : any;
     currentCardIndex : number = 0;
@@ -65,6 +65,7 @@ export class SearchResultsPage implements OnInit {
     searchService: any;
 
     iconName: string;
+    isMapView: boolean;
 
 
     /**
@@ -106,9 +107,23 @@ export class SearchResultsPage implements OnInit {
                 console.log(connexion);
             }
         });
-
-
         this.db = new Storage(SqlStorage);
+
+        this.db.get('IS_MAP_VIEW').then( data => {
+            if (data){
+                data = JSON.parse(data);
+            } else {
+                data = {isMapView:true};
+                this.db.set('IS_MAP_VIEW', JSON.stringify(data));
+            }
+            this.isMapView = data.isMapView;
+            this.listView = !this.isMapView;
+            this.mapView = (this.isMapView) ? 'block' : 'none';
+        });
+
+
+
+
         this.db.get('PENDING_CONTRACTS').then(contrats => {
             
             if(contrats){
@@ -203,7 +218,7 @@ export class SearchResultsPage implements OnInit {
         let locatedResults = [];
         for(let i = 0 ; i < this.searchResults.length ; i++){
             let r = this.searchResults[i];
-            if(r.latitude=='0.0' && r.longitude=='0.0')
+            if(parseInt(r.latitude)==0 && parseInt(r.longitude)==0)
                 continue;
             let latlng = new google.maps.LatLng(r.latitude, r.longitude);
             locatedResults.push(r);
@@ -229,6 +244,7 @@ export class SearchResultsPage implements OnInit {
 
     addMarkers(addresses:any, bounds:any, contentTable : any, locatedResults : any) {
 
+        debugger;
         for (let i = 0; i < addresses.length; i++) {
             let marker = new google.maps.Marker({
                 map: this.map,
@@ -684,7 +700,7 @@ export class SearchResultsPage implements OnInit {
     }
 
     changeView(){
-        if (this.iconName === 'list') {
+        /*if (this.iconName === 'list') {
             this.listView = true;
             this.mapView = 'none';
             this.iconName = 'map';
@@ -692,7 +708,11 @@ export class SearchResultsPage implements OnInit {
             this.listView = false;
             this.mapView = 'block';
             this.iconName = 'list';
-        }
+        }*/
+        let data = {isMapView: this.isMapView};
+        this.db.set('IS_MAP_VIEW', JSON.stringify(data));
+        this.listView = !this.isMapView;
+        this.mapView = this.isMapView? 'block' : 'none';
     }
 	
 	contract(index){

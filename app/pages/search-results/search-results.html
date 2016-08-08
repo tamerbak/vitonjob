@@ -29,7 +29,11 @@
         Retour à la recherche
     </button>
 
-    <button fab fab-top fab-right style="top: 0" (click)="changeView()"><ion-icon [name]="iconName"></ion-icon></button>
+    <!--button fab fab-top fab-right style="top: 0" (click)="changeView()"><ion-icon [name]="iconName"></ion-icon></button-->
+    <ion-item no-lines>
+        <ion-label>Activer la vue Map</ion-label>
+        <ion-checkbox secondary (ionChange)="changeView()" [(ngModel)]="isMapView"></ion-checkbox>
+    </ion-item>
   <div id="map" style="width:100%;height:80%;" [style.display]="mapView">
   </div>
 
