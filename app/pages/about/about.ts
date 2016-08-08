@@ -41,7 +41,7 @@ export class AboutPage {
             this.versionCode = '';
             if (platform.is('ios')) {
                 AppVersion.getVersionCode().then(_build => {
-                    this.versionCode = '('+ _build + ')';
+                    this.versionCode = ' ('+ _build + ')';
                 });
             }
         });
