@@ -131,7 +131,7 @@ export class AuthenticationService {
                 "prenom='" + firstname + "', " +
                 "numero_securite_sociale='" + numSS + "', " +
                 "cni='" + cni + "', " +
-                "date_de_naissance ='"+ birthdate +"'," +
+                (!birthdate ? " " : "date_de_naissance ='"+ birthdate +"',") +
                 "lieu_de_naissance ='" + birthplace + "', " +
                 "fk_user_nationalite ='" + nationalityId + "' " +
                 "where pk_user_jobyer ='" + roleId + "';";
