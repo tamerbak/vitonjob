@@ -3,6 +3,7 @@ import {AppVersion} from "ionic-native/dist/index";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {HomePage} from "../home/home";
+import {Platform} from "ionic-angular/index";
 
 
 @Component({
@@ -20,8 +21,12 @@ export class AboutPage {
     projectName:string;
     isEmployer:boolean;
 
-    constructor(gc:GlobalConfigs) {
-        this.releaseDate = '10 Juin 2016';
+    constructor(gc:GlobalConfigs, platform: Platform) {
+        let monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+            "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+        ];
+        let date = new Date();
+        this.releaseDate = date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
         //this.appName = AppVersion.getAppName();
         //this.version = AppVersion.getPackageName();
         this.push = HomePage;
@@ -33,10 +38,12 @@ export class AboutPage {
 
         AppVersion.getVersionNumber().then(_version => {
             this.versionNumber = _version;
-            this.versionCode = '7';
-            /*AppVersion.getVersionCode().then(_build => {
-             this.versionCode = _build;
-             });*/
+            this.versionCode = '';
+            if (platform.is('ios')) {
+                AppVersion.getVersionCode().then(_build => {
+                    this.versionCode = ' ('+ _build + ')';
+                });
+            }
         });
 
     }

@@ -4,6 +4,8 @@ $vertical-align : calc(20% - 1px);
 
 .offer-add {
 
+  background-size: cover;
+
   .offer-top-left {
     top: $vertical-align;
     left: $horizontal-align;
@@ -33,7 +35,8 @@ $vertical-align : calc(20% - 1px);
   .video-bottom-center{
 	position: absolute;
 	bottom: 20px;
-	left: 20%;
+    right: 0;
+	//left: 20%;
   }
 
   .icon-top-left {
@@ -112,5 +115,13 @@ $vertical-align : calc(20% - 1px);
     /*background-color: #757575;
     border-radius: 20px;
     text-align: center;*/
+  }
+
+  div {
+    text-align: left;
+  }
+  img {
+    top: 13px;
+    position: relative;
   }
 }

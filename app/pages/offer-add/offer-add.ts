@@ -43,6 +43,7 @@ export class OfferAddPage {
     visibleOffer:boolean;
     offerToBeAdded:{jobData:any, calendarData:any, qualityData:any, languageData:any,
         visible:boolean, title:string, status:string};
+    backgroundImage:any;
 
     constructor(public nav:NavController, private gc:GlobalConfigs, private os:OffersService) {
 
@@ -69,6 +70,7 @@ export class OfferAddPage {
         // Set local variables
         this.themeColor = config.themeColor;
         this.inversedThemeColor = config.inversedThemeColor;
+        this.backgroundImage = config.backgroundImage;
         this.isEmployer = (this.projectTarget === 'employer');
 
         this.localOffer = new Storage(LocalStorage);
@@ -264,8 +266,14 @@ export class OfferAddPage {
 	
 	showVideoAlert(){
 		let prompt = Alert.create({
-		  title: 'Attacher une video',
-		  message: "Coller le lien de votre video Youtube",
+		  title: 'Attacher une vidéo',
+		  message: "<div id='alertDiv'><ol><li>Ouvrez l'application Youtube </li>" +
+          "<li>Appuyez sur l'icône de <b>caméra</b> <img src='../img/youtube.png'></li>" +
+          "<li>Enregistrez une nouvelle vidéo ou sélectionnez-en une existante</li>" +
+          "<li>Renseignez le titre, la description et choisissez l'option '<b>Non répertoriée</b>' dans la confidentialité</li>" +
+          "<li>Appuyez sur <img src='../img/youtube2.png'> pour mettre en ligne votre vidéo</li>" +
+          "<li>Appuyez sur <img src='../img/youtube3.png'><b> > Partager > Copier le lien</b></li>" +
+          "<li>Coller le lien dans la zone ci-dessous:</li></ol></div>",
 		  inputs: [
 			{
 			  name: 'videolink',

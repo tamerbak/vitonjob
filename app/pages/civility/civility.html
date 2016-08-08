@@ -57,7 +57,7 @@
         <ion-datetime [(ngModel)]="birthdate"  displayFormat="DD/MM/YYYY"></ion-datetime>
     </ion-item>
 
-    <ion-item [hidden]="!isAndroid4">
+    <ion-item [hidden]="isEmployer || !isAndroid4">
         <ion-label floating>Date</ion-label>
         <ion-input type="text" [(ngModel)] = "birthdate"
                    (focus)="launchDateTimePicker('date')" readonly></ion-input>

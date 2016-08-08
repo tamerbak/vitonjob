@@ -793,12 +793,22 @@ export class CivilityPage {
                         break;
                     default :
                         this.slot.date = date.getTime();
-                        this.showedSlot.date = this.toDateString(this.slot.date, '');
-                        this.showedSlot.angular4Date = this.toDateString(this.slot.date, '');
+                        this.showedSlot.date = this.toDateString(this.slot.date.getTime(), '');
+                        this.showedSlot.angular4Date = this.toDateString(this.slot.date.getTime(), '');
                         break;
                 }
             },
             err => console.log("Error occurred while getting date:", err)
         );
+    }
+
+    /**
+     * @Description Converts a timeStamp to date string :
+     * @param date : a timestamp date
+     * @param options Date options
+     */
+    toDateString(date:number, options:any) {
+        let d = new Date(date);
+        return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
     }
 }

@@ -1,6 +1,6 @@
 import {
     NavController, ViewController, Loading, Slides, Picker, PickerColumnOption, Storage, SqlStorage,
-    Modal
+    Modal, Platform
 } from 'ionic-angular';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {SearchService} from "../../providers/search-service/search-service";
@@ -10,6 +10,7 @@ import {Configs} from "../../configurations/configs";
 import {CommunesService} from "../../providers/communes-service/communes-service";
 import {isUndefined} from "ionic-angular/util";
 import {SearchGuidePage} from "../search-guide/search-guide";
+import {DatePicker} from "ionic-native/dist/index";
 
 /**
  * @author abdeslam jakjoud
@@ -40,15 +41,17 @@ export class SearchCriteriaPage {
     city : any;
     cities : any = [];
     cityList : any = [];
+    isAndroid4:boolean;
 
     constructor(private viewCtrl:ViewController,
                 public globalConfig:GlobalConfigs,
                 private searchService:SearchService,
                 private cityServices : CommunesService,
-                private nav:NavController) {
+                private nav:NavController, platform: Platform) {
         this.viewCtrl = viewCtrl;
         this.projectTarget = globalConfig.getProjectTarget();
         let config = Configs.setConfigs(this.projectTarget);
+        this.isAndroid4 = (platform.version('android').major < 5);
         this.themeColor = config.themeColor;
         this.buildFilters();
         this.db = new Storage(SqlStorage);
@@ -224,10 +227,11 @@ export class SearchCriteriaPage {
             return;
         }*/
 
-        //  Construct the search query in the correct format then summon search service
-
+        // Construct the search query in the correct format then summon search service
+        // TEL05082016 : fixes #628
+        let ignoreSector: boolean = false;
         if(isUndefined(this.sector) || (this.job && this.job.length>0))
-            this.sector = '';
+            ignoreSector = true;
         if(isUndefined(this.job))
             this.job = '';
         if(isUndefined(this.city))
@@ -241,7 +245,7 @@ export class SearchCriteriaPage {
         var searchFields = {
             class: 'com.vitonjob.callouts.recherche.SearchQuery',
             job: this.job,
-            metier: this.sector,
+            metier: (ignoreSector)? '' : this.sector,
             lieu: this.city,
             nom: this.filters[2].value,
             entreprise: this.projectTarget == 'jobyer' ? this.filters[5].value : '',
@@ -511,5 +515,34 @@ export class SearchCriteriaPage {
     showGuideModal(){
 
         this.nav.push(SearchGuidePage);
+    }
+
+    /**
+     * launching dateTimePicker component for slot selection
+     */
+    launchDateTimePicker(type) {
+
+        DatePicker.show({
+            date: new Date(),
+            mode: type,
+            minuteInterval: 15, androidTheme: this.calendarTheme, is24Hour: true,
+            allowOldDates: false, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+        }).then(
+            date => {
+                console.log("Got date: ", date);
+                this.availabilityDate = this.toDateString(date.getTime(), '');
+                //this.showedSlot.angular4Date = this.toDateString(this.slot.date.getTime(), '');
+            },
+            err => console.log("Error occurred while getting date:", err)
+        );
+    }
+
+    /**
+     * @Description Converts a timeStamp to date string :
+     * @param date : a timestamp date
+     */
+    toDateString(date:number) {
+        let d = new Date(date);
+        return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
     }
 }

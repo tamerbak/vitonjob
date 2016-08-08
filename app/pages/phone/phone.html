@@ -12,10 +12,13 @@
 			<ion-input type="number" [(ngModel)]="index" maxlength="4"  min="0" inputmode="numeric" pattern="[0-9]*"  (keyup)="watchIndex($event)" (change)="isIndexExist($event)" disabled></ion-input>
 			</ion-item>
 		</ion-col>
-		<ion-col width-10>
-			<button (click)="doRadioAlert()" id="btn-pays" class="button button-clear button-outline"><ion-icon name="ios-arrow-down"></ion-icon></button>
+		<ion-col width-10 style="padding-left: 0;padding-right: 0;">
+			<ion-item (click)="doRadioAlert()" style="padding-left: 0;border-top: none; border-left: none" no-lines>
+				<ion-icon name="ios-arrow-down"></ion-icon>
+				<!--button (click)="doRadioAlert()" id="btn-pays" clear small><ion-icon name="ios-arrow-down"></ion-icon></button-->
+			</ion-item>
 		</ion-col>
-		<ion-col style="padding-left: 20px;">
+		<ion-col style="">
 			<ion-item>
 				<ion-input type="number" [(ngModel)]="phone" (keyup)="watchPhone($event)" (change)="validatePhone($event)" inputmode="numeric" pattern="[0-9]*"></ion-input>
 			</ion-item>
