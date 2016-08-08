@@ -140,10 +140,7 @@ export class SearchResultsPage implements OnInit {
                 if(jsonResults){
                     this.searchResults = jsonResults;
                     this.resultsCount = this.searchResults.length;
-
-
-
-
+                    this.mapView = (this.resultsCount > 0) ? 'block' : 'none';
                     for(let i = 0 ; i < this.searchResults.length ; i++){
                         let r = this.searchResults[i];
                         r.matching = Number(r.matching).toFixed(2);
@@ -169,6 +166,8 @@ export class SearchResultsPage implements OnInit {
                             }
                         }
                     }
+                } else {
+                    this.mapView = 'none';
                 }
             });
         });

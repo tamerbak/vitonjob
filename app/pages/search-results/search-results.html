@@ -91,7 +91,7 @@
               </button>
           </ion-item>
 
-          <ion-item no-lines text-wrap style="font-size: inherit;">
+          <ion-item no-lines text-wrap style="font-size: inherit;" *ngIf="isEmployer">
               <ion-label>Pour recruter en groupe</ion-label>
               <ion-checkbox [(ngModel)]="item.checkedContract" (ionChange)="selectContract($event, item)"></ion-checkbox>
           </ion-item>
