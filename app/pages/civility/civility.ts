@@ -452,7 +452,7 @@ export class CivilityPage {
         if (this.isEmployer) {
             return (!this.title || !this.firstname || !this.lastname || !this.companyname || (this.siret && this.siret.length < 17) || (this.ape && (this.ape.length < 5 || !this.isAPEValid)) || !this.isValideFirstName || !this.isValideLastName);
         } else {
-            if ((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length != 0) || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.nationality || !this.birthplace || !this.birthdate || !this.isValideFirstName || !this.isValideLastName )) {
+            if ((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length != 0) || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.isValideFirstName || !this.isValideLastName )) {
                 return true;
             }
             if (!this.numSS || this.numSS.length == 0)
