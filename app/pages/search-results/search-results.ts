@@ -140,7 +140,9 @@ export class SearchResultsPage implements OnInit {
                 if(jsonResults){
                     this.searchResults = jsonResults;
                     this.resultsCount = this.searchResults.length;
-                    this.mapView = (this.resultsCount > 0) ? 'block' : 'none';
+                    if (this.resultsCount == 0) {
+                        this.mapView = 'none';
+                    }
                     for(let i = 0 ; i < this.searchResults.length ; i++){
                         let r = this.searchResults[i];
                         r.matching = Number(r.matching).toFixed(2);
@@ -711,7 +713,7 @@ export class SearchResultsPage implements OnInit {
         let data = {isMapView: this.isMapView};
         this.db.set('IS_MAP_VIEW', JSON.stringify(data));
         this.listView = !this.isMapView;
-        this.mapView = this.isMapView? 'block' : 'none';
+        this.mapView = (this.isMapView && this.resultsCount >0)? 'block' : 'none';
     }
 	
 	contract(index){
