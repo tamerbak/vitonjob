@@ -254,7 +254,7 @@ export class SearchCriteriaPage {
             idOffre: '0'
         };
         console.log(JSON.stringify(searchFields));
-        debugger;
+       //debugger;
         let loading = Loading.create({
             content: ` 
                 <div>

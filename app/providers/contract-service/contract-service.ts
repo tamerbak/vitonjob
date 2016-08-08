@@ -272,7 +272,7 @@ export class ContractService {
     callYousign(user : any, employer:any, jobyer:any,contract:any,projectTarget:string, currentOffer : any){
 
         let horaires = '';
-        debugger;
+       //debugger;
         if(currentOffer){
             horaires = this.prepareHoraire(currentOffer.calendarData);
         }
@@ -354,7 +354,7 @@ export class ContractService {
             "elementsNonCotisation" : contract.elementsNonCotisation,
             "horaires":horaires
         };
-        debugger;
+       //debugger;
         console.log(JSON.stringify(jsonData));
 
         var dataSign =JSON.stringify(
@@ -393,7 +393,7 @@ export class ContractService {
             this.http.post('http://ns389914.ovh.net:8080/vitonjobv1/api/callout', JSON.stringify(payload), {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
-                    debugger;
+                   //debugger;
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;

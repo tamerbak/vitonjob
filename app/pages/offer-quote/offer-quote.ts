@@ -27,7 +27,7 @@ export class OfferQuotePage {
                 viewCtrl : ViewController,
                 service : ParametersService,
                 navParams : NavParams) {
-        debugger;
+       //debugger;
         this.navParams = navParams;
         this.viewCtrl = viewCtrl;
         this.service = service;

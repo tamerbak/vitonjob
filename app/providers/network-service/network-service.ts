@@ -38,7 +38,7 @@ export class NetworkService {
     updateNetworkStat() {
         if(window.cordova){
             this.platform.ready().then(() => {
-                debugger;
+               //debugger;
                 if(!navigator.connection.type == Connection.NONE){
                     let toast = Toast.create({
                         message: "Vous n'êtes pas connectés à Internet",

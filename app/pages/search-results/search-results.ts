@@ -142,6 +142,10 @@ export class SearchResultsPage implements OnInit {
                     this.resultsCount = this.searchResults.length;
                     if (this.resultsCount == 0) {
                         this.mapView = 'none';
+                    } else if (this.isMapView) {
+                        this.mapView = 'block';
+                    } else {
+                        this.mapView = 'none'
                     }
                     for(let i = 0 ; i < this.searchResults.length ; i++){
                         let r = this.searchResults[i];
@@ -245,7 +249,7 @@ export class SearchResultsPage implements OnInit {
 
     addMarkers(addresses:any, bounds:any, contentTable : any, locatedResults : any) {
 
-        debugger;
+       //debugger;
         for (let i = 0; i < addresses.length; i++) {
             let marker = new google.maps.Marker({
                 map: this.map,
@@ -278,7 +282,7 @@ export class SearchResultsPage implements OnInit {
 
 
         /*google.maps.event.addListener(infoWindow,'domready',function() {
-            debugger;
+           //debugger;
             document.getElementById('myInfoWinDiv').click(function () {
                 //Do your thing
                 this.itemSelected(r);
@@ -394,7 +398,7 @@ export class SearchResultsPage implements OnInit {
         let storage = new Storage(SqlStorage);
 
         if(this.isUserAuthenticated){
-            debugger;
+           //debugger;
             let currentEmployer = this.employer.employer;
             console.log(currentEmployer);
 
@@ -717,7 +721,7 @@ export class SearchResultsPage implements OnInit {
     }
 	
 	contract(index){
-	    debugger;
+	   //debugger;
 		if(this.isUserAuthenticated){
 
             let currentEmployer = this.employer.employer;

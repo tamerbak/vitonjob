@@ -16,7 +16,7 @@ export class PendingContractsPage {
 
     constructor(private nav: NavController,
                 public gc: GlobalConfigs) {
-        debugger;
+       //debugger;
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
 

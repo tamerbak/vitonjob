@@ -65,7 +65,7 @@ export class PendingContratDetailsPage {
         this.userService.getCurrentUser(this.projectTarget).then(results =>{
 
             if(results && !isUndefined(results)){
-                debugger;
+               //debugger;
                 let currentEmployer = JSON.parse(results);
                 if(currentEmployer){
                     this.employer = currentEmployer;
