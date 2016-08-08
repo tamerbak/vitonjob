@@ -10,11 +10,11 @@
         <ion-list-header>
             Compte
         </ion-list-header>
-        <ion-item style="text-decoration: line-through;">
+        <ion-item class="deactivated">
             <ion-icon name="call" item-left></ion-icon>
             Modifier votre téléphone
         </ion-item>
-        <ion-item style="text-decoration: line-through;">
+        <ion-item class="deactivated">
             <ion-icon name="mail" item-left></ion-icon>
             Modifier votre e-mail
         </ion-item>
@@ -26,7 +26,7 @@
         <ion-list-header>
             Sécurité
         </ion-list-header>
-        <ion-item (click)="lockApp()">
+        <ion-item (click)="lockApp()" class="deactivated">
             <ion-icon name="lock" item-left></ion-icon>
             Verrouiller votre compte
         </ion-item>
