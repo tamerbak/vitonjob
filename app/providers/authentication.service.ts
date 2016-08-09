@@ -31,7 +31,7 @@ export class AuthenticationService {
      * @return JSON results in the form of user accounts
      */
     authenticate(email: string, phone: number, password, projectTarget: string, isRecruteur){
-        debugger;
+       //debugger;
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
@@ -58,7 +58,7 @@ export class AuthenticationService {
         };
         let body = JSON.stringify(dataLog);
         console.log(body);
-        debugger;
+       //debugger;
         return new Promise(resolve => {
             let headers = new Headers();
             headers.append("Content-Type", 'application/json');
@@ -131,7 +131,7 @@ export class AuthenticationService {
                 "prenom='" + firstname + "', " +
                 "numero_securite_sociale='" + numSS + "', " +
                 "cni='" + cni + "', " +
-                "date_de_naissance ='"+ birthdate +"'," +
+                (!birthdate ? " " : "date_de_naissance ='"+ birthdate +"',") +
                 "lieu_de_naissance ='" + birthplace + "', " +
                 "fk_user_nationalite ='" + nationalityId + "' " +
                 "where pk_user_jobyer ='" + roleId + "';";
@@ -171,7 +171,7 @@ export class AuthenticationService {
         sql = sql + " update user_entreprise set nom_ou_raison_sociale='" + companyname + "', ";
         sql = sql + "siret='" + siret + "', ";
         //sql = sql + "urssaf='" + numUrssaf + "', ";
-        debugger;
+       //debugger;
         if(medecineId && medecineId>0)
             sql = sql + "fk_user_medecine_de_travail='" + medecineId+ "', ";
         sql = sql + "ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;

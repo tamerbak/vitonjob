@@ -217,7 +217,7 @@ export class HomePage implements OnChanges{
     }
 
     ngOnChanges() {
-        debugger;
+       //debugger;
     }
 
     /**

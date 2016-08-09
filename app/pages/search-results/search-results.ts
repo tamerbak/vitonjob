@@ -140,7 +140,13 @@ export class SearchResultsPage implements OnInit {
                 if(jsonResults){
                     this.searchResults = jsonResults;
                     this.resultsCount = this.searchResults.length;
-                    this.mapView = (this.resultsCount > 0) ? 'block' : 'none';
+                    if (this.resultsCount == 0) {
+                        this.mapView = 'none';
+                    } else if (this.isMapView) {
+                        this.mapView = 'block';
+                    } else {
+                        this.mapView = 'none'
+                    }
                     for(let i = 0 ; i < this.searchResults.length ; i++){
                         let r = this.searchResults[i];
                         r.matching = Number(r.matching).toFixed(2);
@@ -243,7 +249,7 @@ export class SearchResultsPage implements OnInit {
 
     addMarkers(addresses:any, bounds:any, contentTable : any, locatedResults : any) {
 
-        debugger;
+       //debugger;
         for (let i = 0; i < addresses.length; i++) {
             let marker = new google.maps.Marker({
                 map: this.map,
@@ -276,7 +282,7 @@ export class SearchResultsPage implements OnInit {
 
 
         /*google.maps.event.addListener(infoWindow,'domready',function() {
-            debugger;
+           //debugger;
             document.getElementById('myInfoWinDiv').click(function () {
                 //Do your thing
                 this.itemSelected(r);
@@ -392,7 +398,7 @@ export class SearchResultsPage implements OnInit {
         let storage = new Storage(SqlStorage);
 
         if(this.isUserAuthenticated){
-            debugger;
+           //debugger;
             let currentEmployer = this.employer.employer;
             console.log(currentEmployer);
 
@@ -711,11 +717,11 @@ export class SearchResultsPage implements OnInit {
         let data = {isMapView: this.isMapView};
         this.db.set('IS_MAP_VIEW', JSON.stringify(data));
         this.listView = !this.isMapView;
-        this.mapView = this.isMapView? 'block' : 'none';
+        this.mapView = (this.isMapView && this.resultsCount >0)? 'block' : 'none';
     }
 	
 	contract(index){
-	    debugger;
+	   //debugger;
 		if(this.isUserAuthenticated){
 
             let currentEmployer = this.employer.employer;

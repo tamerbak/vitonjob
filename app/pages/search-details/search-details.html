@@ -17,9 +17,9 @@
     </button>
 
     <ion-card>
-        <ion-item>
+        <ion-item >
             <ion-avatar item-left><img [src]="avatar"></ion-avatar>
-            <h3>{{fullName}}</h3>
+            <h3 style="margin-top: 2px;">{{fullName}}</h3>
             <ion-badge item-right style="margin: 0px 8px 9px 0;">{{(matching.toString().indexOf('.') < 0) ? matching:matching.toString().split('.')[0]}}%</ion-badge>
             <p style="color: yellowgreen">{{starsText}}</p>
         </ion-item>

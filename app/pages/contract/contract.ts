@@ -174,7 +174,7 @@ export class ContractPage {
                 this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
                 this.medecineService.getMedecine(this.employer.entreprises[0].id).then(data=>{
                     if(data && data !=null){
-                        debugger;
+                       //debugger;
                         this.contractData.centreMedecineEntreprise = data.libelle;
                         this.contractData.adresseCentreMedecineEntreprise = data.adresse+' '+data.code_postal;
                     }
@@ -187,7 +187,7 @@ export class ContractPage {
             if(navParams.get("currentOffer") && !isUndefined(navParams.get("currentOffer"))){
                 this.currentOffer = navParams.get("currentOffer");
                 this.service.getRates().then(data =>{
-                    debugger;
+                   //debugger;
                     for(let i = 0 ; i < data.length ; i++){
                         if(this.currentOffer.jobData.remuneration < data[i].taux_horaire){
                             this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
@@ -261,14 +261,14 @@ export class ContractPage {
     }
 
     selectOffer(){
-        debugger;
+       //debugger;
         let m = new Modal(ModalOffersPage);
         m.onDismiss(data => {
             this.currentOffer = data;
             console.log(JSON.stringify(data));
-            debugger;
+           //debugger;
             this.service.getRates().then(data =>{
-                debugger;
+               //debugger;
                 for(let i = 0 ; i < data.length ; i++){
                     if(this.currentOffer.jobData.remuneration < data[i].taux_horaire){
                         this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
@@ -347,10 +347,10 @@ export class ContractPage {
             titre : this.currentOffer.title
         };
         console.log(JSON.stringify(this.contractData));
-        debugger;
+       //debugger;
         this.medecineService.getMedecine(this.employer.entreprises[0].id).then(data=>{
             if(data && data !=null){
-                debugger;
+               //debugger;
                 this.contractData.centreMedecineEntreprise = data.libelle;
                 this.contractData.adresseCentreMedecineEntreprise = data.adresse+' '+data.code_postal;
             }
@@ -379,7 +379,7 @@ export class ContractPage {
     }
 
     goToYousignPage() {
-        debugger;
+       //debugger;
         this.contractService.getNumContract().then(data =>{
             
             if(data && data.length>0){
