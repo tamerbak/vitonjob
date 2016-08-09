@@ -714,10 +714,12 @@ export class SearchResultsPage implements OnInit {
             this.mapView = 'block';
             this.iconName = 'list';
         }*/
+        //&& this.resultsCount >0
+        //if (this.resultsCount == 0) return;
         let data = {isMapView: this.isMapView};
         this.db.set('IS_MAP_VIEW', JSON.stringify(data));
         this.listView = !this.isMapView;
-        this.mapView = (this.isMapView && this.resultsCount >0)? 'block' : 'none';
+        this.mapView = (this.isMapView)? 'block' : 'none';
     }
 	
 	contract(index){

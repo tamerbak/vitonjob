@@ -182,8 +182,6 @@ export class YousignPage {
                             });
                             this.contractService.generateMission(idContract, this.currentOffer);
                         }
-
-
                     },
                     (err) => {
                         console.log(err);
