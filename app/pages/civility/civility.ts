@@ -15,6 +15,7 @@ import {ModalGalleryPage} from "../modal-gallery/modal-gallery";
 import {HomePage} from "../home/home";
 import {AttachementsService} from "../../providers/attachements-service/attachements-service";
 import {MedecineService} from "../../providers/medecine-service/medecine-service";
+import {ProfileService} from "../../providers/profile-service/profile-service";
 
 /**
  * @author Amal ROCHD
@@ -23,7 +24,7 @@ import {MedecineService} from "../../providers/medecine-service/medecine-service
  */
 @Component({
     templateUrl: 'build/pages/civility/civility.html',
-    providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService, CommunesService, AttachementsService, MedecineService]
+    providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService, CommunesService, AttachementsService, MedecineService, ProfileService]
 })
 export class CivilityPage {
     //tabs:Tabs;
@@ -80,7 +81,8 @@ export class CivilityPage {
                 private attachementService:AttachementsService,
                 private medecineService:MedecineService,
                 communesService:CommunesService,
-                platform:Platform) {
+                platform:Platform,
+				private profileService: ProfileService) {
         // Set global configs
         // Get target to determine configs
 
@@ -302,7 +304,7 @@ export class CivilityPage {
             spinner: 'hide'
         });
         this.nav.present(loading);
-        if (this.isRecruiter) {
+		if (this.isRecruiter) {
             this.authService.updateRecruiterCivility(this.title, this.lastname, this.firstname, this.currentUser.id).then((data) => {
                 if (!data || data.status == "failure") {
                     console.log(data.error);
@@ -327,40 +329,40 @@ export class CivilityPage {
         }
         if (this.isEmployer) {
             //get the role id
-            var employerId = this.currentUser.employer.id;
-            //get entreprise id of the current employer
-            var entrepriseId = this.currentUser.employer.entreprises[0].id;
-            // update employer
-            this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget, this.medecineId).then((data) => {
-                if (!data || data.status == "failure") {
-                    console.log(data.error);
-                    loading.dismiss();
-                    this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
-                    return;
-                } else {
-                    // data saved
-                    console.log("response update civility : " + data.status);
-                    this.currentUser.titre = this.title;
-                    this.currentUser.nom = this.lastname;
-                    this.currentUser.prenom = this.firstname;
-                    this.currentUser.employer.entreprises[0].nom = this.companyname;
-                    this.currentUser.employer.entreprises[0].siret = this.siret;
-                    this.currentUser.employer.entreprises[0].naf = this.ape;
-                    //upload scan
-                    this.updateScan(employerId);
-                    // PUT IN SESSION
-                    this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
-                    this.events.publish('user:civility', this.currentUser);
-                    loading.dismiss();
-                    if (this.fromPage == "profil") {
-                        this.nav.pop();
-                    } else {
-                        //redirecting to personal address tab
-                        //this.tabs.select(1);
-                        this.nav.push(PersonalAddressPage);
-                    }
-                }
-            });
+			var employerId = this.currentUser.employer.id;
+			//get entreprise id of the current employer
+			var entrepriseId = this.currentUser.employer.entreprises[0].id;
+			// update employer
+			this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget, this.medecineId).then((data) => {
+				if (!data || data.status == "failure") {
+					console.log(data.error);
+					loading.dismiss();
+					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+					return;
+				} else {
+					// data saved
+					console.log("response update civility : " + data.status);
+					this.currentUser.titre = this.title;
+					this.currentUser.nom = this.lastname;
+					this.currentUser.prenom = this.firstname;
+					this.currentUser.employer.entreprises[0].nom = this.companyname;
+					this.currentUser.employer.entreprises[0].siret = this.siret;
+					this.currentUser.employer.entreprises[0].naf = this.ape;
+					//upload scan
+					this.updateScan(employerId);
+					// PUT IN SESSION
+					this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
+					this.events.publish('user:civility', this.currentUser);
+					loading.dismiss();
+					if (this.fromPage == "profil") {
+						this.nav.pop();
+					} else {
+						//redirecting to personal address tab
+						//this.tabs.select(1);
+						this.nav.push(PersonalAddressPage);
+					}
+				}
+			});
         } else {
             if (!this.isRecruiter) {
                 //get the role id
@@ -801,6 +803,79 @@ export class CivilityPage {
             err => console.log("Error occurred while getting date:", err)
         );
     }
+	
+	watchCompanyname(e){
+		//verify if company name exists
+		this.profileService.countEntreprisesByRaisonSocial(this.companyname).then(data => {
+			if(data.data[0].count != 0 && this.companyname != this.currentUser.employer.entreprises[0].nom){
+				if (!this.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
+					this.globalService.showAlertValidation("VitOnJob", "L'entreprise " + this.companyname + " existe déjà. Veuillez saisir une autre raison sociale.");
+					this.companyname = this.currentUser.employer.entreprises[0].nom;
+				}else{
+					this.displayCompanynameAlert();
+				}
+			}else{
+				return;
+			}	
+		})
+	}
+	
+	displayCompanynameAlert(){
+		let confirm = Alert.create({
+			title: "VitOnJob",
+			message: "L'entreprise " + this.companyname + " existe déjà. Si vous continuez, ce compte sera bloqué, \n sinon veuillez saisir une autre raison sociale. \n Voulez vous continuez?",
+			buttons: [
+				{
+					text: 'Non',
+					handler: () => {
+						this.companyname = this.currentUser.employer.entreprises[0].nom;
+						console.log('No clicked');
+					}
+				},
+				{
+					text: 'Oui',
+					handler: () => {
+						console.log('Yes clicked');	
+						confirm.dismiss().then(() => {
+							this.displayCompanynameLastAlert();	
+						})
+					}
+				}
+			]
+		});
+		this.nav.present(confirm);
+	}
+	
+	displayCompanynameLastAlert(){
+		let confirm = Alert.create({
+			title: "VitOnJob",
+			message: "Votre compte sera bloqué. \n Voulez vous vraiment continuez?",
+			buttons: [
+				{
+					text: 'Non',
+					handler: () => {
+						this.companyname = this.currentUser.employer.entreprises[0].nom;
+						console.log('No clicked');
+					}
+				},
+				{
+					text: 'Oui',
+					handler: () => {
+						console.log('Yes clicked');	
+						confirm.dismiss().then(() => {
+							this.profileService.deleteEmployerAccount(this.currentUser.id, this.currentUser.employer.id).then(data => {
+								this.storage.set(this.currentUserVar, null);
+								this.storage.set("RECRUITER_LIST", null);
+								this.events.publish('user:logout');
+								this.nav.setRoot(HomePage);
+							});	
+						})
+					}
+				}
+			]
+		});
+		this.nav.present(confirm);
+	}
 
     /**
      * @Description Converts a timeStamp to date string :
@@ -811,4 +886,11 @@ export class CivilityPage {
         let d = new Date(date);
         return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
     }
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
+	}
 }

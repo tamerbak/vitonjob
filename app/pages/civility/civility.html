@@ -34,7 +34,7 @@
 
     <ion-item [hidden]="!isEmployer">
         <ion-label floating >Raison sociale</ion-label>
-        <ion-input type="text" [(ngModel)]="companyname"></ion-input>
+        <ion-input type="text" [(ngModel)]="companyname" (change)="watchCompanyname($event)"></ion-input>
     </ion-item>
 
     <ion-item [hidden]="!isEmployer">
