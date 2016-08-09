@@ -50,7 +50,7 @@ export class ProfilePage implements OnInit {
     constructor(public nav:NavController, public gc:GlobalConfigs,
                 userService:UserService, addrService:AddressService) {
 
-        debugger;
+       //debugger;
         this.projectTarget = gc.getProjectTarget();
 		this.storage = new Storage(SqlStorage);
 		
@@ -111,7 +111,7 @@ export class ProfilePage implements OnInit {
         //Get User information
         this.storage.get(this.currentUserVar).then(data => {
             if (data) {
-                debugger;
+               //debugger;
                 console.log(data);
                 this.userData = JSON.parse(data);
 				this.isRecruiter = this.userData.estRecruteur;

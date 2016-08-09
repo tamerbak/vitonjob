@@ -825,7 +825,7 @@ export class OffersService {
     }
 
     updateOfferEntrepriseTitle(offer){
-        debugger;
+       //debugger;
         let sql = "update user_offre_entreprise set titre='"+this.sqlfyText(offer.title)+"', tarif_a_l_heure='"+offer.jobData.remuneration+"' where pk_user_offre_entreprise="+offer.idOffer;
 
         return new Promise(resolve => {

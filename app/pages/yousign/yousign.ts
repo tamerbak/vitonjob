@@ -104,7 +104,7 @@ export class YousignPage {
         
         this.contractService.callYousign(this.currentUser, this.employer, this.jobyer,this.contractData, this.projectTarget, this.currentOffer).then((data) => {
             loading.dismiss();
-            debugger;
+           //debugger;
             console.log(JSON.stringify(this.employer));
             if (data == null || data.length == 0) {
                 console.log("Yousign result is null");
@@ -143,12 +143,12 @@ export class YousignPage {
             this.contractData.demandeEmployer = yousignData.idDemands[1].idDemand;
 
             // Send sms to jobyer
-            debugger;
+           //debugger;
             this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : '+this.contractData.numero).then((dataSms) => {
-                debugger;
+               //debugger;
                  console.log("The message was sent successfully");
             }).catch(function(err) {
-                debugger;
+               //debugger;
                  console.log(err);
             });
             // send notification to jobyer
@@ -182,8 +182,6 @@ export class YousignPage {
                             });
                             this.contractService.generateMission(idContract, this.currentOffer);
                         }
-
-
                     },
                     (err) => {
                         console.log(err);
