@@ -271,19 +271,13 @@ export class PhonePage {
 					this.libelleButton = "S'inscrire";
 					this.isNewRecruteur = false;
 				} else {
-					if(data.data[0]["role"] == (this.projectTarget == "employer" ? "employeur" : this.projectTarget)){
-						this.email = data.data[0]["email"];
-						this.libelleButton = "Se connecter";
-						this.showEmailField = false;
-						if(data.data[0]["role"] == "recruteur" && this.isEmployer){
-							this.isRecruteur = true;
-							this.email = "";
-						}
-					}else{
-						this.phone = "";
-						this.globalService.showAlertValidation("VitOnJob", "Ce numéro de téléphone est déjà utilisé. Veuillez choisir un autre.");
+					this.email = data.data[0]["email"];
+					this.libelleButton = "Se connecter";
+					this.showEmailField = false;
+					if(data.data[0]["role"] == "recruteur" && this.isEmployer){
+						this.isRecruteur = true;
+						this.email = "";
 					}
-					
 				}
 			});
 			} else {

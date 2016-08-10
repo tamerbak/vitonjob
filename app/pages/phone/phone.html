@@ -49,7 +49,7 @@
 	</div>
 	<ion-item style="margin-left: 16px">
 		<ion-label>{{showHidePasswdLabel}}</ion-label>
-		<ion-toggle (ionChange)="showHidePasswd()"></ion-toggle>
+		<ion-checkbox (ionChange)="showHidePasswd()"></ion-checkbox>
 	</ion-item>
 	<div [hidden]="!showPassword1Error()" 
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Taille minimale: 6 caractères</div>

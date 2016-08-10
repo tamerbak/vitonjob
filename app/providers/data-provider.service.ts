@@ -26,7 +26,7 @@ export class DataProviderService {
 		this.configuration = Configs.setConfigs(role);
 		role = (role === 'employer') ? 'employeur' : role;
 
-		var sql = "select pk_user_account, email, role from user_account where telephone = '"+tel+"'";
+		var sql = "select pk_user_account, email, role from user_account where telephone = '"+tel+"' and role = '" + role + "'";
 	    return new Promise(resolve => {
 	      let headers = new Headers();
 	      headers.append("Content-Type", 'text/plain');
