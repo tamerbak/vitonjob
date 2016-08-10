@@ -169,12 +169,14 @@ export class AuthenticationService {
         sql = sql + " titre='" + title + "', ";
         sql = sql + " nom='" + lastname + "', prenom='" + firstname + "' where pk_user_employeur=" + roleId + ";";
         sql = sql + " update user_entreprise set nom_ou_raison_sociale='" + companyname + "' ";
-        sql = sql + (!this.isEmpty(siret) ? " , siret='" + siret + "'" : "");
+        siret = (!siret ? "" : siret);
+		sql = sql + " , siret='" + siret + "' ";
         //sql = sql + "urssaf='" + numUrssaf + "', ";
        //debugger;
         if(medecineId && medecineId>0)
             sql = sql + " , fk_user_medecine_de_travail='" + medecineId+ "', ";
-        sql = sql + (!this.isEmpty(ape) ? " , ape_ou_naf='" + ape + "' " : "") + " where  pk_user_entreprise=" + entrepriseId;
+        ape = (!ape ? "" : ape);
+		sql = sql + " , ape_ou_naf='" + ape + "' " + " where  pk_user_entreprise=" + entrepriseId;
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
