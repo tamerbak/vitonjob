@@ -18,7 +18,7 @@
 				<!--button (click)="doRadioAlert()" id="btn-pays" clear small><ion-icon name="ios-arrow-down"></ion-icon></button-->
 			</ion-item>
 		</ion-col>
-		<ion-col style="">
+		<ion-col>
 			<ion-item>
 				<ion-input type="number" [(ngModel)]="phone" (keyup)="watchPhone($event)" (change)="validatePhone($event)" inputmode="numeric" pattern="[0-9]*"></ion-input>
 			</ion-item>
@@ -37,8 +37,19 @@
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Cet email est déjà utilisé. Veuillez choisir un autre.</div>
 	
 	<ion-label stacked style="padding: 16px">Votre mot de passe</ion-label>
+	<div id="hidePasswd">
+		<ion-item style="margin-left: 16px" >
+			<ion-input type="password" [(ngModel)]="password1"></ion-input>
+		</ion-item>
+	</div>
+	<div id="showPasswd" style="display:none;">
+		<ion-item style="margin-left: 16px">
+			<ion-input type="text" [(ngModel)]="password1"></ion-input>
+		</ion-item>
+	</div>
 	<ion-item style="margin-left: 16px">
-		<ion-input type="password" [(ngModel)]="password1"></ion-input>
+		<ion-label>{{showHidePasswdLabel}}</ion-label>
+		<ion-toggle (ionChange)="showHidePasswd()"></ion-toggle>
 	</ion-item>
 	<div [hidden]="!showPassword1Error()" 
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Taille minimale: 6 caractères</div>

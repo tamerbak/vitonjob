@@ -47,6 +47,7 @@ export class PhonePage {
 	//accountid: int;
 	isIndexValid =true;
 	currentUserVar: string;
+	showHidePasswdLabel: string;
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
@@ -79,7 +80,7 @@ export class PhonePage {
 		this.currentUserVar = config.currentUserVar;
 		this.keyboard = keyboard;
 		this.platform = platform;
-        
+        this.showHidePasswdLabel = "Afficher le mot de passe";
 		//load countries list
 		this.loadListService.loadCountries(this.projectTarget).then((data) => {
 			this.pays = data.data;
@@ -270,13 +271,19 @@ export class PhonePage {
 					this.libelleButton = "S'inscrire";
 					this.isNewRecruteur = false;
 				} else {
-					this.email = data.data[0]["email"];
-					this.libelleButton = "Se connecter";
-					this.showEmailField = false;
-					if(data.data[0]["role"] == "recruteur" && this.isEmployer){
-						this.isRecruteur = true;
-						this.email = "";
+					if(data.data[0]["role"] == (this.projectTarget == "employer" ? "employeur" : this.projectTarget)){
+						this.email = data.data[0]["email"];
+						this.libelleButton = "Se connecter";
+						this.showEmailField = false;
+						if(data.data[0]["role"] == "recruteur" && this.isEmployer){
+							this.isRecruteur = true;
+							this.email = "";
+						}
+					}else{
+						this.phone = "";
+						this.globalService.showAlertValidation("VitOnJob", "Ce numéro de téléphone est déjà utilisé. Veuillez choisir un autre.");
 					}
+					
 				}
 			});
 			} else {
@@ -529,5 +536,21 @@ export class PhonePage {
 			this.nav.present(confirm);
 		}
 		
+	}
+	
+	showHidePasswd(){
+		let divHide = document.getElementById('hidePasswd');
+        let divShow = document.getElementById('showPasswd');
+
+        if (divHide.style.display == 'none') {
+            divHide.style.display = 'block';
+            divShow.style.display = 'none';
+			this.showHidePasswdLabel = "Afficher le mot de passe";
+        }
+        else {
+            divHide.style.display = 'none';
+            divShow.style.display = 'block';
+			this.showHidePasswdLabel = "Cacher le mot de passe";
+        }
 	}
 }
