@@ -31,6 +31,7 @@ export class OfferDetailPage {
     offerService: OffersService;
     videoAvailable : boolean = false;
     youtubeLink : string = '';
+	isLinkValid = true;
 
     constructor(public nav:NavController, gc:GlobalConfigs, params:NavParams, public offersService:OffersService, public searchService:SearchService, private sanitizer: DomSanitizationService) {
 
@@ -464,11 +465,13 @@ export class OfferDetailPage {
     }
 
     updateVideo(deleteLink){
+		this.isLinkValid = true;
 		if(deleteLink){
 			this.youtubeLink = "";
 		}else{
-			if(this.youtubeLink == "" || !this.youtubeLink.includes("youtu.be") || !this.youtubeLink.includes("www.youtube.com")){
+			if(this.youtubeLink == "" || (this.youtubeLink.indexOf("youtu.be") == -1 && this.youtubeLink.indexOf("www.youtube.com") == -1)){
 				this.youtubeLink = "";
+				this.isLinkValid = false;
 				return;	
 			}
 			this.youtubeLink = this.youtubeLink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");   
