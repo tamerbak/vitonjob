@@ -25,9 +25,10 @@
                     <iframe width="100%" height="200" style="display:{{videoAvailable?'block':'none'}}" target="_parent" [src]="videoUrl()">
                     </iframe>
                 </div>
-
             </ion-card-content>
-            <div class="button-footer">
+			<div [hidden]="isLinkValid" class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Le lien de la vidéo est non valide</div>
+            
+			<div class="button-footer">
                 <button clear [style.color]="themeColor" (click)="updateVideo(false)" [hidden]="videoAvailable">
                     <ion-icon name="videocam"></ion-icon>
                     <div>Modifier</div>
