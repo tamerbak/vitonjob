@@ -32,141 +32,143 @@
     <div [hidden]="isValideFirstName"
          class="error-box">* Saisissez un prénom valide</div>
 
-    <ion-item [hidden]="!isEmployer">
-        <ion-label floating >Raison sociale</ion-label>
-        <ion-input type="text" [(ngModel)]="companyname" (change)="watchCompanyname($event)"></ion-input>
-    </ion-item>
+    <div [hidden]="isRecruiter">
+		<ion-item [hidden]="!isEmployer">
+			<ion-label floating >Raison sociale</ion-label>
+			<ion-input type="text" [(ngModel)]="companyname" (change)="watchCompanyname($event)"></ion-input>
+		</ion-item>
 
-    <ion-item [hidden]="!isEmployer">
-        <ion-label floating>SIRET: 999 999 999 99999</ion-label>
-        <ion-input type="tel" [(ngModel)]="siret" (keyup)="watchSIRET($event)" maxlength="17"></ion-input>
-    </ion-item>
-    <div [hidden]="isSIRETValid"
-         class="error-box">* Saisissez les 14 chiffres du SIRET</div>
+		<ion-item [hidden]="!isEmployer">
+			<ion-label floating>SIRET: 999 999 999 99999</ion-label>
+			<ion-input type="tel" [(ngModel)]="siret" (keyup)="watchSIRET($event)" maxlength="17"></ion-input>
+		</ion-item>
+		<div [hidden]="isSIRETValid"
+			 class="error-box">* Saisissez les 14 chiffres du SIRET</div>
 
-    <ion-item [hidden]="!isEmployer">
-        <ion-label floating>NAF: 9999A</ion-label>
-        <ion-input type="text" [(ngModel)]="ape" (keyup)="watchAPE($event)" maxlength="5"></ion-input>
-    </ion-item>
-    <div [hidden]="isAPEValid"
-         class="error-box">* Saisissez les 4 chiffres suivis d'une lettre</div>
-
-
-    <ion-item style="margin-top: 1.5em" [hidden]="isEmployer || isAndroid4">
-        <ion-label>Date de naissance</ion-label>
-        <ion-datetime [(ngModel)]="birthdate"  displayFormat="DD/MM/YYYY"></ion-datetime>
-    </ion-item>
-
-    <ion-item [hidden]="isEmployer || !isAndroid4">
-        <ion-label floating>Date</ion-label>
-        <ion-input type="text" [(ngModel)] = "birthdate"
-                   (focus)="launchDateTimePicker('date')" readonly></ion-input>
-    </ion-item>
-
-    <ion-item [hidden]="isEmployer">
-        <ion-label floating>Lieu de naissance (ex :Palaiseau (91))</ion-label>
-        <ion-input type="text" [(ngModel)]="birthplace" (keyup)="watchBirthPlace($event)"></ion-input>
-    </ion-item>
-    <ion-item [hidden]="isEmployer || communes.length==0">
-        <ion-list>
-            <ion-item *ngFor="let c of communes" (click)="communeSelected(c)">
-                {{c.nom}}
-            </ion-item>
-        </ion-list>
-    </ion-item>
-
-    <ion-item [hidden]="!isEmployer">
-        <ion-label floating>Organisme de médecine de travail</ion-label>
-        <ion-input type="text" [(ngModel)]="medecineTravail" (keyup)="watchMedecineTravail($event)"></ion-input>
-    </ion-item>
-    <ion-item [hidden]="!isEmployer || medecines.length==0">
-        <ion-list>
-            <ion-item *ngFor="let c of medecines" (click)="medecineSelected(c)">
-                {{c.libelle}}
-            </ion-item>
-        </ion-list>
-    </ion-item>
-
-    <ion-item [hidden]="isEmployer">
-        <ion-label floating>CNI</ion-label>
-        <ion-input type="text" [(ngModel)]="cni" (keyup)="watchCNI($event)" maxlength="12" ></ion-input>
-    </ion-item>
-    <div *ngIf="showCNIError()"
-         class="error-box">* Saisissez les 12 chiffres du CNI</div>
-
-    <ion-item [hidden]="isEmployer">
-        <ion-label floating>N° sécurité sociale</ion-label>
-        <ion-input type="number" [(ngModel)]="numSS" (keyup)="watchNumSS($event)" maxlength="15"></ion-input>
-    </ion-item>
-    <div *ngIf="showNSSError()" class="error-box">{{numSSMessage}}</div>
-
-    <ion-item [hidden]="isEmployer">
-        <ion-label [ngStyle]="nationalitiesstyle" floating>Nationalité</ion-label>
-        <ion-select [(ngModel)]="nationality" (ionChange)="onChangeNationality($event)">
-            <ion-option *ngFor="let n of nationalities" value="{{n.pk_user_nationalite}}">{{n.libelle}}</ion-option>
-        </ion-select>
-    </ion-item>
-    <ion-row>
-        <ion-col text-center>
-            <ion-label>Joindre une photo {{scanTitle}}</ion-label>
-            <button [hidden]="scanUri" class="file-upload button-picture" [style.backgroundColor]="themeColor">
-                <input id="fileinput" type="file" class="file-input" (change)="onChangeUpload($event)">
-                <ion-icon name='folder'></ion-icon>
-            </button>
-
-            <button [hidden]="scanUri" seconde (click)="takePicture()" [style.backgroundColor]="themeColor" class="button-picture">
-                <ion-icon name="camera"></ion-icon>
-            </button>
-        </ion-col>
-    </ion-row>
+		<ion-item [hidden]="!isEmployer">
+			<ion-label floating>NAF: 9999A</ion-label>
+			<ion-input type="text" [(ngModel)]="ape" (keyup)="watchAPE($event)" maxlength="5"></ion-input>
+		</ion-item>
+		<div [hidden]="isAPEValid"
+			 class="error-box">* Saisissez les 4 chiffres suivis d'une lettre</div>
 
 
+		<ion-item style="margin-top: 1.5em" [hidden]="isEmployer || isAndroid4">
+			<ion-label>Date de naissance</ion-label>
+			<ion-datetime [(ngModel)]="birthdate"  displayFormat="DD/MM/YYYY"></ion-datetime>
+		</ion-item>
 
-    <ion-card  style="margin: auto;" [hidden]="!scanUri" id="card-file">
-        <img [src]="scanUri"/>
-        <ion-row>
-            <ion-col text-center>
-                <button  style="margin: auto;" clear (click)="showModal()" small>
-                    <ion-icon name='expand'></ion-icon>
-                </button>
-            </ion-col>
-            <ion-col text-center>
-                <button style="margin: auto;" clear (click)="onDelete()" small>
-                    <ion-icon name='close'></ion-icon>
-                </button>
-            </ion-col>
-        </ion-row>
-    </ion-card>
+		<ion-item [hidden]="isEmployer || !isAndroid4">
+			<ion-label floating>Date</ion-label>
+			<ion-input type="text" [(ngModel)] = "birthdate"
+					   (focus)="launchDateTimePicker('date')" readonly></ion-input>
+		</ion-item>
+
+		<ion-item [hidden]="isEmployer">
+			<ion-label floating>Lieu de naissance (ex :Palaiseau (91))</ion-label>
+			<ion-input type="text" [(ngModel)]="birthplace" (keyup)="watchBirthPlace($event)"></ion-input>
+		</ion-item>
+		<ion-item [hidden]="isEmployer || communes.length==0">
+			<ion-list>
+				<ion-item *ngFor="let c of communes" (click)="communeSelected(c)">
+					{{c.nom}}
+				</ion-item>
+			</ion-list>
+		</ion-item>
+
+		<ion-item [hidden]="!isEmployer">
+			<ion-label floating>Organisme de médecine de travail</ion-label>
+			<ion-input type="text" [(ngModel)]="medecineTravail" (keyup)="watchMedecineTravail($event)"></ion-input>
+		</ion-item>
+		<ion-item [hidden]="!isEmployer || medecines.length==0">
+			<ion-list>
+				<ion-item *ngFor="let c of medecines" (click)="medecineSelected(c)">
+					{{c.libelle}}
+				</ion-item>
+			</ion-list>
+		</ion-item>
+
+		<ion-item [hidden]="isEmployer">
+			<ion-label floating>CNI</ion-label>
+			<ion-input type="text" [(ngModel)]="cni" (keyup)="watchCNI($event)" maxlength="12" ></ion-input>
+		</ion-item>
+		<div *ngIf="showCNIError()"
+			 class="error-box">* Saisissez les 12 chiffres du CNI</div>
+
+		<ion-item [hidden]="isEmployer">
+			<ion-label floating>N° sécurité sociale</ion-label>
+			<ion-input type="number" [(ngModel)]="numSS" (keyup)="watchNumSS($event)" maxlength="15"></ion-input>
+		</ion-item>
+		<div *ngIf="showNSSError()" class="error-box">{{numSSMessage}}</div>
+
+		<ion-item [hidden]="isEmployer">
+			<ion-label [ngStyle]="nationalitiesstyle" floating>Nationalité</ion-label>
+			<ion-select [(ngModel)]="nationality" (ionChange)="onChangeNationality($event)">
+				<ion-option *ngFor="let n of nationalities" value="{{n.pk_user_nationalite}}">{{n.libelle}}</ion-option>
+			</ion-select>
+		</ion-item>
+		<ion-row>
+			<ion-col text-center>
+				<ion-label>Joindre une photo {{scanTitle}}</ion-label>
+				<button [hidden]="scanUri" class="file-upload button-picture" [style.backgroundColor]="themeColor">
+					<input id="fileinput" type="file" class="file-input" (change)="onChangeUpload($event)">
+					<ion-icon name='folder'></ion-icon>
+				</button>
+
+				<button [hidden]="scanUri" seconde (click)="takePicture()" [style.backgroundColor]="themeColor" class="button-picture">
+					<ion-icon name="camera"></ion-icon>
+				</button>
+			</ion-col>
+		</ion-row>
 
 
 
+		<ion-card  style="margin: auto;" [hidden]="!scanUri" id="card-file">
+			<img [src]="scanUri"/>
+			<ion-row>
+				<ion-col text-center>
+					<button  style="margin: auto;" clear (click)="showModal()" small>
+						<ion-icon name='expand'></ion-icon>
+					</button>
+				</ion-col>
+				<ion-col text-center>
+					<button style="margin: auto;" clear (click)="onDelete()" small>
+						<ion-icon name='close'></ion-icon>
+					</button>
+				</ion-col>
+			</ion-row>
+		</ion-card>
 
 
-    <!-- <ion-row>
-        <ion-col text-center>
-            <button class="file-upload button-picture">
-                <input type="file" class="file-input" (change)="onChangeUpload($event)">
-                <ion-icon name="download" style="padding-right: .4em;"></ion-icon>
-                 Charger un scan {{scanTitle}}
-            </button>
-        </ion-col>
-    </ion-row>
 
-    <ion-row>
-        <ion-col text-center>
-            <button block (click)="takePicture()" [style.backgroundColor]="themeColor" class="button-picture">
-                <ion-icon name="md-camera"></ion-icon>
-                Prendre une photo {{scanTitle}}
-            </button>
-        </ion-col>
-    </ion-row>
 
-    <ion-card [hidden]="!scanUri">
-        <ion-card-content>
-            <img [src]="scanUri"/>
-        </ion-card-content>
-    </ion-card>
-    -->
+
+		<!-- <ion-row>
+			<ion-col text-center>
+				<button class="file-upload button-picture">
+					<input type="file" class="file-input" (change)="onChangeUpload($event)">
+					<ion-icon name="download" style="padding-right: .4em;"></ion-icon>
+					 Charger un scan {{scanTitle}}
+				</button>
+			</ion-col>
+		</ion-row>
+
+		<ion-row>
+			<ion-col text-center>
+				<button block (click)="takePicture()" [style.backgroundColor]="themeColor" class="button-picture">
+					<ion-icon name="md-camera"></ion-icon>
+					Prendre une photo {{scanTitle}}
+				</button>
+			</ion-col>
+		</ion-row>
+
+		<ion-card [hidden]="!scanUri">
+			<ion-card-content>
+				<img [src]="scanUri"/>
+			</ion-card-content>
+		</ion-card>
+		-->
+	</div>
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
