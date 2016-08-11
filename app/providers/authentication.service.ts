@@ -142,7 +142,7 @@ export class AuthenticationService {
                 "prenom='" + firstname + "', " +
                 "numero_securite_sociale='" + numSS + "', " +
                 "cni='" + cni + "', " +
-                "date_de_naissance ='"+ birthdate +"'," +
+                (!birthdate ? " " : "date_de_naissance ='"+ birthdate +"',") +
                 "lieu_de_naissance ='" + birthplace + "' " +
                 "where pk_user_jobyer ='" + roleId + "';";
         }
@@ -168,13 +168,15 @@ export class AuthenticationService {
         var sql = "update user_employeur set ";
         sql = sql + " titre='" + title + "', ";
         sql = sql + " nom='" + lastname + "', prenom='" + firstname + "' where pk_user_employeur=" + roleId + ";";
-        sql = sql + " update user_entreprise set nom_ou_raison_sociale='" + companyname + "', ";
-        sql = sql + "siret='" + siret + "', ";
+        sql = sql + " update user_entreprise set nom_ou_raison_sociale='" + companyname + "' ";
+        siret = (!siret ? "" : siret);
+		sql = sql + " , siret='" + siret + "' ";
         //sql = sql + "urssaf='" + numUrssaf + "', ";
        //debugger;
         if(medecineId && medecineId>0)
-            sql = sql + "fk_user_medecine_de_travail='" + medecineId+ "', ";
-        sql = sql + "ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
+            sql = sql + " , fk_user_medecine_de_travail='" + medecineId+ "', ";
+        ape = (!ape ? "" : ape);
+		sql = sql + " , ape_ou_naf='" + ape + "' " + " where  pk_user_entreprise=" + entrepriseId;
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
@@ -206,7 +208,7 @@ export class AuthenticationService {
                 });
         })
     }
-
+ 
     /**
      * @description update employer and jobyer personal address
      * @param roleId, address
@@ -679,4 +681,11 @@ export class AuthenticationService {
             });
         }
     }
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
+	}
 }

@@ -24,10 +24,13 @@ export class DataProviderService {
 	getUserByPhone(tel, role){
 		//  Init project parameters
 		this.configuration = Configs.setConfigs(role);
-		role = (role === 'employer') ? 'employeur' : role;
-
-		var sql = "select pk_user_account, email, role from user_account where telephone = '"+tel+"'";
-	    return new Promise(resolve => {
+		var sql;
+		if(role == "employer"){
+			sql = "select pk_user_account, email, role from user_account where telephone = '"+tel+"' and (role = 'employeur' or role= 'recruteur')";
+		}else{
+			sql = "select pk_user_account, email, role from user_account where telephone = '"+tel+"' and role = 'jobyer'";
+		}
+		return new Promise(resolve => {
 	      let headers = new Headers();
 	      headers.append("Content-Type", 'text/plain');
 	      this.http.post(this.configuration.sqlURL, sql, {headers:headers})

@@ -47,6 +47,7 @@ export class PhonePage {
 	//accountid: int;
 	isIndexValid =true;
 	currentUserVar: string;
+	showHidePasswdLabel: string;
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
@@ -79,7 +80,7 @@ export class PhonePage {
 		this.currentUserVar = config.currentUserVar;
 		this.keyboard = keyboard;
 		this.platform = platform;
-        
+        this.showHidePasswdLabel = "Afficher le mot de passe";
 		//load countries list
 		this.loadListService.loadCountries(this.projectTarget).then((data) => {
 			this.pays = data.data;
@@ -529,5 +530,21 @@ export class PhonePage {
 			this.nav.present(confirm);
 		}
 		
+	}
+	
+	showHidePasswd(){
+		let divHide = document.getElementById('hidePasswd');
+        let divShow = document.getElementById('showPasswd');
+
+        if (divHide.style.display == 'none') {
+            divHide.style.display = 'block';
+            divShow.style.display = 'none';
+			this.showHidePasswdLabel = "Afficher le mot de passe";
+        }
+        else {
+            divHide.style.display = 'none';
+            divShow.style.display = 'block';
+			this.showHidePasswdLabel = "Cacher le mot de passe";
+        }
 	}
 }
