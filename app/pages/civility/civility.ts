@@ -804,31 +804,46 @@ export class CivilityPage {
         );
     }
 	
-	watchCompanyname(e){
-		//verify if company name exists
-		this.profileService.countEntreprisesByRaisonSocial(this.companyname).then(data => {
-			if(data.data[0].count != 0 && this.companyname != this.currentUser.employer.entreprises[0].nom){
-				if (!this.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
-					this.globalService.showAlertValidation("VitOnJob", "L'entreprise " + this.companyname + " existe déjà. Veuillez saisir une autre raison sociale.");
-					this.companyname = this.currentUser.employer.entreprises[0].nom;
+	IsCompanyExist(e, field){
+		//verify if company exists
+		if(field == "companyname"){
+			this.profileService.countEntreprisesByRaisonSocial(this.companyname).then(data => {
+				if(data.data[0].count != 0 && this.companyname != this.currentUser.employer.entreprises[0].nom){
+					if (!this.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
+						this.globalService.showAlertValidation("VitOnJob", "L'entreprise " + this.companyname + " existe déjà. Veuillez saisir une autre raison sociale.");
+						this.companyname = this.currentUser.employer.entreprises[0].nom;
+					}else{
+						this.displayCompanyAlert('companyname');
+					}
 				}else{
-					this.displayCompanynameAlert();
-				}
-			}else{
-				return;
-			}	
-		})
+					return;
+				}	
+			})	
+		}else{
+			this.profileService.countEntreprisesBySIRET(this.siret).then(data => {
+				if(data.data[0].count != 0 && this.siret != this.currentUser.employer.entreprises[0].siret){
+					if (!this.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
+						this.globalService.showAlertValidation("VitOnJob", "Le SIRET " + this.siret + " existe déjà. Veuillez saisir un autre.");
+						this.siret = this.currentUser.employer.entreprises[0].siret;
+					}else{
+						this.displayCompanyAlert('siret');
+					}
+				}else{
+					return;
+				}	
+			})
+		}
 	}
 	
-	displayCompanynameAlert(){
+	displayCompanyAlert(field){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: "L'entreprise " + this.companyname + " existe déjà. Si vous continuez, ce compte sera bloqué, \n sinon veuillez saisir une autre raison sociale. \n Voulez vous continuez?",
+			message: (field == "siret" ? ("Le SIRET " + this.siret) : ("La raison sociale " + this.companyname)) + " existe déjà. Si vous continuez, ce compte sera bloqué, \n sinon veuillez saisir " + (field == "siret" ? "un " : "une ") + "autre. \n Voulez vous continuez?",
 			buttons: [
 				{
 					text: 'Non',
 					handler: () => {
-						this.companyname = this.currentUser.employer.entreprises[0].nom;
+						(field == "siret" ? (this.siret = this.currentUser.employer.entreprises[0].siret) : (this.companyname = this.currentUser.employer.entreprises[0].nom));
 						console.log('No clicked');
 					}
 				},
@@ -837,7 +852,7 @@ export class CivilityPage {
 					handler: () => {
 						console.log('Yes clicked');	
 						confirm.dismiss().then(() => {
-							this.displayCompanynameLastAlert();	
+							this.displayCompanyLastAlert(field);	
 						})
 					}
 				}
@@ -846,7 +861,7 @@ export class CivilityPage {
 		this.nav.present(confirm);
 	}
 	
-	displayCompanynameLastAlert(){
+	displayCompanyLastAlert(field){
 		let confirm = Alert.create({
 			title: "VitOnJob",
 			message: "Votre compte sera bloqué. \n Voulez vous vraiment continuez?",
@@ -854,7 +869,7 @@ export class CivilityPage {
 				{
 					text: 'Non',
 					handler: () => {
-						this.companyname = this.currentUser.employer.entreprises[0].nom;
+						(field == "siret" ? (this.siret = this.currentUser.employer.entreprises[0].siret) : (this.companyname = this.currentUser.employer.entreprises[0].nom));
 						console.log('No clicked');
 					}
 				},
