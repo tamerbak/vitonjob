@@ -21,6 +21,10 @@
       <!--ion-icon name="search"></ion-icon-->
       Lancer une recherche
     </ion-item>
+	
+	 <ion-item (click)="autoSearchMode()">
+      {{autoSearch ? 'Désactiver' : 'Activer'}} la recherche auto
+    </ion-item>
 
     <ion-item (click)="showQuote()" *ngIf="isEmployer">
       <!--ion-icon name="cash"></ion-icon-->

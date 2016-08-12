@@ -55,8 +55,19 @@
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Taille minimale: 6 caractères</div>
 	
 	<ion-label [hidden]="!showEmailField" stacked style="padding: 16px">Confirmation du mot de passe</ion-label>
-	<ion-item [hidden]="!showEmailField" style="margin-left: 16px">
-		<ion-input type="password" [(ngModel)]="password2"></ion-input>
+	<div id="hidePasswdConfirm">
+		<ion-item [hidden]="!showEmailField" style="margin-left: 16px">
+			<ion-input type="password" [(ngModel)]="password2"></ion-input>
+		</ion-item>
+	</div>
+	<div id="showPasswdConfirm" style="display:none;" [hidden]="!showEmailField">
+		<ion-item style="margin-left: 16px">
+			<ion-input type="text" [(ngModel)]="password2"></ion-input>
+		</ion-item>
+	</div>
+	<ion-item style="margin-left: 16px" [hidden]="!showEmailField">
+		<ion-label>{{showHidePasswdConfirmLabel}}</ion-label>
+		<ion-checkbox (ionChange)="showHidePasswdConfirm()"></ion-checkbox>
 	</ion-item>
 	<div [hidden]="!showPassword2Error()" 
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Mots de passe non identiques!</div>
