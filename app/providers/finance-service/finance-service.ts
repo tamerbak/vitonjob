@@ -28,7 +28,7 @@ export class FinanceService {
         let encodedArg = btoa(JSON.stringify(bean));
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 215,
+            'id': 218,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
