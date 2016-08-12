@@ -15,6 +15,7 @@ import {OfferQuotePage} from "../offer-quote/offer-quote";
 import {PopoverOfferDetailPage} from "../popover-offer-detail/popover-offer-detail";
 import {DomSanitizationService} from '@angular/platform-browser';
 import {GlobalService} from "../../providers/global.service";
+import {OfferTempQuotePage} from "../offer-temp-quote/offer-temp-quote";
 
 /*
  Generated class for the OfferDetailPage page.
@@ -173,8 +174,9 @@ export class OfferDetailPage {
     }
 
     showQuote(){
-        let modal = Modal.create(OfferQuotePage, {currentOffer: this.offer});
-        this.nav.present(modal);
+        /*let modal = Modal.create(OfferQuotePage, {currentOffer: this.offer});
+        this.nav.present(modal);*/
+        this.nav.push(OfferTempQuotePage, {idOffer : this.offer.idOffer});
     }
 
     /**
