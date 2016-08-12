@@ -325,6 +325,31 @@ export class OffersService {
         });
 
     }
+	
+	countCorrespondingOffers(offers, projectTarget){
+		//  Init project parameters
+        this.configuration = Configs.setConfigs(projectTarget);
+
+        let table = (projectTarget === 'jobyer') ? 'user_offre_entreprise' : 'user_offre_jobyer';
+		let sql = "";
+		for(var i = 0; i < offers.length; i++){
+			var offer = offers[i];
+			//  Get job and offer reference
+			let job = offer.jobData.job;
+
+			sql = sql + " select count(*) from "+table+" where pk_"+table+" in (select fk_"+table+" from user_pratique_job where fk_user_job in ( select pk_user_job from user_job where lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(job)+"%')));";
+		}
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    console.log(data);
+                    resolve(data);
+                });
+        });
+	}
 
     /**
      * @description     Returning the persisted offers list from the local data base
@@ -1232,6 +1257,22 @@ export class OffersService {
         });
     }
 
+	saveAutoSearchMode(projectTarget, idOffer, mode){
+		let table = projectTarget == 'jobyer' ? "user_offre_jobyer":"user_offre_entreprise";
+		let sql = "update "+table+" set recherche_automatique='"+ mode +"' where pk_"+table+"="+idOffer;
+        console.log(sql);
+		return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    console.log(data);
+                    resolve(data);
+                });
+        });
+	}
+	
 	sqlfy(d){
         return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" 00:00:00+00";
     }
