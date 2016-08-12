@@ -14,6 +14,8 @@ import {Events} from 'ionic-angular';
 import {Component, OnChanges} from "@angular/core";
 import {PopoverSearchPage} from "../popover-search/popover-search";
 import {AdvancedSearchPage} from "../advanced-search/advanced-search";
+import {OffersService} from "../../providers/offers-service/offers-service";
+import {SearchDetailsPage} from "../search-details/search-details";
 
 
 @Component({
@@ -40,11 +42,16 @@ export class HomePage implements OnChanges{
     private backgroundImage:string;
     private push: any;
 	private currentUserVar: string;
-
-
+	currentUser: any;
+	publicOffers = [];
+	autoSearchOffers = [];
+	searchResults: any;
+	contratsAttente : any = [];
+	private offerService: any;
+	
     static get parameters() {
         return [[GlobalConfigs], [App], [NavController], [NavParams], [SearchService],
-            [NetworkService], [Events], [Keyboard], [MenuController]];
+            [NetworkService], [Events], [Keyboard], [MenuController], [OffersService]];
     }
 
     constructor(public globalConfig: GlobalConfigs,
@@ -53,7 +60,8 @@ export class HomePage implements OnChanges{
                 private navParams: NavParams,
                 private searchService: SearchService,
                 public networkService: NetworkService,
-                public events: Events, private kb:Keyboard, menu: MenuController) {
+                public events: Events, private kb:Keyboard, menu: MenuController,
+				private offersService : OffersService) {
 
 
         // Get target to determine configs
@@ -81,19 +89,30 @@ export class HomePage implements OnChanges{
         // If we navigated to this page, we will have an item available as a nav param
         this.selectedItem = navParams.get('item');
         this.search = searchService;
+		this.offerService = offersService;
         //verify if the user is already connected
         this.storage.get(this.currentUserVar).then((value) => {
-
-            if(value){
-                this.cnxBtnName = "Déconnexion";
-                this.isConnected = true;
-            }else{
-                this.cnxBtnName = "Se connecter / S'inscrire";
-                this.isConnected = false;
-            }
+            var isConnected = false;
+			if(!value || value == "null"){
+				this.currentUser = navParams.get('currentUser');
+				if(!this.currentUser || this.currentUser == "null"){
+					isConnected = false;
+				}else{
+					isConnected = true;
+				}
+			}else{
+                this.currentUser = JSON.parse(value);
+				isConnected = true;
+			}
+			if(isConnected){
+				this.cnxBtnName = "Déconnexion";
+				this.isConnected = true;
+				this.getOffers();
+			}else{
+				this.cnxBtnName = "Se connecter / S'inscrire";
+				this.isConnected = false;
+			}
         });
-
-
     }
 
     /**
@@ -248,5 +267,104 @@ export class HomePage implements OnChanges{
         });
         this.nav.present(toast);
     }
-
+	
+	getOffers(){
+		var offers = this.isEmployer ? this.currentUser.employer.entreprises[0].offers : this.currentUser.jobyer.offers;
+		for(var i = 0; i < offers.length; i++){
+			var offer = offers[i];
+			if(offer.visible && offer.rechercheAutomatique){
+				offer.arrowLabel = "arrow-dropright";
+				offer.isResultHidden = true;
+				this.autoSearchOffers.push(offer);
+				continue;
+			}
+			if(offer.visible && !offer.rechercheAutomatique){
+				offer.correspondantsCount = -1;
+				this.publicOffers.push(offer);
+			}
+		}
+		for(var i = 0; i < this.publicOffers.length; i++){
+			let offer = this.publicOffers[i];
+			this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
+				offer.correspondantsCount = data.length;
+			});
+		}
+	}
+	
+	launchSearch(offer, noRedirect) {
+        if (!offer)
+            return;
+		if(noRedirect){
+			//switch the accordion arrow icon
+			if(offer.arrowLabel == "arrow-dropdown"){
+				offer.arrowLabel = "arrow-dropright";
+				offer.isResultHidden = true;
+				return;
+			}else{
+				for(var i = 0; i < this.autoSearchOffers.length; i++){
+					var offerTemp = this.autoSearchOffers[i];
+					offerTemp.arrowLabel = "arrow-dropright";
+					offerTemp.isResultHidden = true;
+				}
+				offer.arrowLabel = "arrow-dropdown";
+				offer.isResultHidden = false;
+			} 
+		}
+        let loading = Loading.create({
+            content: ` 
+                <div>
+                    <img src='img/loading.gif' />
+                </div>
+                `,
+            spinner: 'hide'
+        });
+        this.nav.present(loading);
+        let searchFields = {
+            class : 'com.vitonjob.callouts.recherche.SearchQuery',
+            job : offer.jobData.job,
+            metier : '',
+            lieu : '',
+            nom : '',
+            entreprise : '',
+            date : '',
+            table : this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer',
+            idOffre :'0'
+        };
+        this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
+            console.log(data);
+            this.searchService.persistLastSearch(data);
+            loading.dismiss();
+            if(!noRedirect){
+				this.nav.push(SearchResultsPage, {currentOffer : offer});
+			}else{
+				this.showResult(offer);
+			}
+        });
+    }
+	
+	showResult(offer){
+		//get search results for this offer
+		let configInversed = this.projectTarget != 'jobyer' ? Configs.setConfigs('jobyer'): Configs.setConfigs('employer');
+		this.searchService.retrieveLastSearch().then(results =>{  
+			let jsonResults = JSON.parse(results);
+			if(jsonResults){
+				this.searchResults = jsonResults;
+				for(let i = 0 ; i < this.searchResults.length ; i++){
+					let r = this.searchResults[i];
+					r.matching = Number(r.matching).toFixed(2);
+					r.index = i + 1;
+					if (r.titre === 'M.') {
+						r.avatar = configInversed.avatars[0].url;
+					} else {
+						r.avatar = configInversed.avatars[1].url;
+					}
+				}
+				console.log(this.searchResults);
+			}
+		});
+	}
+	
+	 itemSelected(item){
+        this.nav.push(SearchDetailsPage, {searchResult : item});
+	 }
 }

@@ -39,7 +39,7 @@ import {NotationService} from "./providers/notation-service/notation-service";
 import {AttachementsPage} from "./pages/attachements/attachements";
 import {LocalNotifications} from 'ionic-native';
 import {MissionPointingPage} from "./pages/mission-pointing/mission-pointing";
-
+//import {SearchAutoPage} from './pages/search-auto/search-auto';
 
 //import {ParametersPage} from "./pages/parameters/parameters";
 
@@ -111,17 +111,15 @@ export class Vitonjob {
 		];
 		
 		
-		this.rootPage = HomePage;//ProfilePage;//OfferAddPage;//HomePage;//OfferDetailPage;//
-		
+		//this.rootPage = HomePage;//ProfilePage;//OfferAddPage;//HomePage;//OfferDetailPage;//
+		this.rootPage = HomePage;
+		//this.getRootPage();
 		this.bgMenuURL = this.config.bgMenuURL;
 		this.userImageURL = this.config.userImageURL;
 		this.userName = this.isEmployer ? 'Employeur' : 'Jobyer';
 		this.userMail = "";
 		this.themeColor = this.config.themeColor;
 		this.menuBackgroundImage = this.config.menuBackgroundImage;
-		
-		//fake call of setMissions from mission-service to fill local db with missions data for test
-		//missionService.setMissions();
 		
 		this.listenToLoginEvents();
 		
@@ -131,6 +129,29 @@ export class Vitonjob {
 		//  Initialize sectors and job lists
 		this.offerService.loadSectorsToLocal();
 		this.offerService.loadJobsToLocal();
+	}
+	
+	getRootPage(){
+		this.storage.get(this.currentUserVar).then((value) => {
+			if (value && value != "null") {
+				var currentUser = JSON.parse(value);
+				var offers = this.isEmployer ? currentUser.employer.entreprises[0].offers : currentUser.jobyer.offers;
+				for(var i = 0; i < offers.length; i++){
+					var offer = offers[i];
+					var noPublicOffer = true;
+					if(offer.visible){
+						noPublicOffer = false;
+						this.rootPage = SearchAutoPage;
+						break;
+					}
+				}
+				if(noPublicOffer){
+					this.rootPage = HomePage;
+				}
+			}else{
+				this.rootPage = HomePage;
+			}
+		});
 	}
 	
 	initializeApp(gc:any) {

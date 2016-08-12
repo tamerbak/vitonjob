@@ -14,6 +14,7 @@ import {Component} from "@angular/core";
 import {OfferQuotePage} from "../offer-quote/offer-quote";
 import {PopoverOfferDetailPage} from "../popover-offer-detail/popover-offer-detail";
 import {DomSanitizationService} from '@angular/platform-browser';
+import {GlobalService} from "../../providers/global.service";
 import {OfferTempQuotePage} from "../offer-temp-quote/offer-temp-quote";
 
 /*
@@ -24,7 +25,7 @@ import {OfferTempQuotePage} from "../offer-temp-quote/offer-temp-quote";
  */
 @Component({
     templateUrl: 'build/pages/offer-detail/offer-detail.html',
-    providers: [GlobalConfigs, OffersService, SearchService]
+    providers: [GlobalConfigs, OffersService, SearchService, GlobalService]
 })
 export class OfferDetailPage {
     offer:any;
@@ -34,7 +35,7 @@ export class OfferDetailPage {
     youtubeLink : string = '';
 	isLinkValid = true;
 
-    constructor(public nav:NavController, gc:GlobalConfigs, params:NavParams, public offersService:OffersService, public searchService:SearchService, private sanitizer: DomSanitizationService) {
+    constructor(public nav:NavController, gc:GlobalConfigs, params:NavParams, public offersService:OffersService, public searchService:SearchService, private sanitizer: DomSanitizationService, private globalService: GlobalService) {
 
         // Set global configs
         // Get target to determine configs
@@ -432,7 +433,7 @@ export class OfferDetailPage {
      * @param ev
      */
     showPopover(ev) {
-        let popover = Popover.create(PopoverOfferDetailPage, {visibility:this.offer.visible});
+        let popover = Popover.create(PopoverOfferDetailPage, {visibility:this.offer.visible, autoSearch:this.offer.rechercheAutomatique});
         this.nav.present(popover, {
             ev: ev
         });
@@ -453,11 +454,15 @@ export class OfferDetailPage {
                     // launch search option
                     this.launchSearch();
                     break;
-                case 4:
+				case 4:
+                    // launch search option
+                    this.autoSearchMode();
+                    break;
+                case 5:
                     // launch devise option
                     this.showQuote();
                     break;
-                case 5:
+                case 6:
                     // launch delete option
                     this.deleteOffer();
                     break;
@@ -492,5 +497,18 @@ export class OfferDetailPage {
 	
 	videoUrl(){
 		return this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLink);
+	}
+	
+	autoSearchMode(){
+		var mode = this.offer.rechercheAutomatique ? "Non" : "Oui";
+		this.offerService.saveAutoSearchMode(this.projectTarget, this.offer.idOffer, mode).then(data => {
+			if(data && data.status == "success"){
+				this.offer.rechercheAutomatique = !this.offer.rechercheAutomatique;
+				this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
+				this.nav.pop();
+			}else{
+				this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
+			}
+		});
 	}
 }

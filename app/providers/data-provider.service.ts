@@ -48,7 +48,7 @@ export class DataProviderService {
 		this.configuration = Configs.setConfigs(role);
 
 		role = (role === 'employer') ? 'employeur' : role;
-		var sql = "select pk_user_account, email, telephone, role from user_account where email = '"+mail+"'";
+		var sql = "select pk_user_account, email, telephone, role from user_account where LOWER(email) = lower_unaccent('"+mail+"')";
 
 	    // don't have the data yet
 	    return new Promise(resolve => {

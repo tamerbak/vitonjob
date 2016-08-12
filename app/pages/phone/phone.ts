@@ -8,6 +8,7 @@ import {DataProviderService} from "../../providers/data-provider.service";
 import {GlobalService} from "../../providers/global.service";
 import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
+import {SearchAutoPage} from '../search-auto/search-auto';
 //import {InfoUserPage} from "../info-user/info-user";
 import {CivilityPage} from "../civility/civility";
 import {Storage, SqlStorage} from 'ionic-angular';
@@ -48,6 +49,7 @@ export class PhonePage {
 	isIndexValid =true;
 	currentUserVar: string;
 	showHidePasswdLabel: string;
+	showHidePasswdConfirmLabel: string;
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
@@ -81,6 +83,7 @@ export class PhonePage {
 		this.keyboard = keyboard;
 		this.platform = platform;
         this.showHidePasswdLabel = "Afficher le mot de passe";
+		this.showHidePasswdConfirmLabel = "Afficher le mot de passe";
 		//load countries list
 		this.loadListService.loadCountries(this.projectTarget).then((data) => {
 			this.pays = data.data;
@@ -177,11 +180,27 @@ export class PhonePage {
 					});
 				 }
 			 } else {
-				this.nav.rootNav.setRoot(HomePage);
-				//this.nav.push(InfoUserPage, {
-				//currentUser: data});
+				this.nav.rootNav.setRoot(HomePage, {currentUser: data});
+				//this.getRootPage(data);
 			}
 		});
+	}
+	getRootPage(data){
+		var offers = this.isEmployer ? data.employer.entreprises[0].offers : data.jobyer.offers;
+		for(var i = 0; i < offers.length; i++){
+			var offer = offers[i];
+			var noPublicOffer = true;
+			if(offer.visible){
+				noPublicOffer = false;
+				this.nav.rootNav.setRoot(SearchAutoPage, {currentUser: data});
+				return;
+			}
+		}
+		if(noPublicOffer){
+			this.nav.rootNav.setRoot(HomePage);
+			return;
+		}
+		this.nav.rootNav.setRoot(HomePage);
 	}
 	
 	afterAuthSuccess(data){
@@ -546,6 +565,22 @@ export class PhonePage {
             divHide.style.display = 'none';
             divShow.style.display = 'block';
 			this.showHidePasswdLabel = "Cacher le mot de passe";
+        }
+	}
+	
+	showHidePasswdConfirm(){
+		let divHide = document.getElementById('hidePasswdConfirm');
+        let divShow = document.getElementById('showPasswdConfirm');
+
+        if (divHide.style.display == 'none') {
+            divHide.style.display = 'block';
+            divShow.style.display = 'none';
+			this.showHidePasswdConfirmLabel = "Afficher le mot de passe";
+        }
+        else {
+            divHide.style.display = 'none';
+            divShow.style.display = 'block';
+			this.showHidePasswdConfirmLabel = "Cacher le mot de passe";
         }
 	}
 }

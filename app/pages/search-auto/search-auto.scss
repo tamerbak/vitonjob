@@ -1,4 +1,4 @@
-.home {
+.search-auto {
 .button{
   box-shadow: none!important;
 }
@@ -356,6 +356,8 @@
     border-style: solid;
   }
 
+
+
   .bg-vid {
     position: absolute;
     top: 50%;
@@ -372,11 +374,5 @@
     transform: translateX(-50%) translateY(-50%);
     background: url(http://www.w3schools.com/tags/movie.mp4) no-repeat;
     background-size: cover;
-  }
-  
-  .itemOpacity{
-		background-color: rgba(0,0,0,0.5);
-		margin: 10px 10px 10px 10px;
-		color: white;
   }
 }
