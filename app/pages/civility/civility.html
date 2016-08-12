@@ -35,12 +35,12 @@
     <div [hidden]="isRecruiter">
 		<ion-item [hidden]="!isEmployer">
 			<ion-label floating >Raison sociale</ion-label>
-			<ion-input type="text" [(ngModel)]="companyname" (change)="watchCompanyname($event)"></ion-input>
+			<ion-input type="text" [(ngModel)]="companyname" (change)="IsCompanyExist($event, 'companyname')"></ion-input>
 		</ion-item>
 
 		<ion-item [hidden]="!isEmployer">
 			<ion-label floating>SIRET: 999 999 999 99999</ion-label>
-			<ion-input type="tel" [(ngModel)]="siret" (keyup)="watchSIRET($event)" maxlength="17"></ion-input>
+			<ion-input type="tel" [(ngModel)]="siret" (keyup)="watchSIRET($event)" maxlength="17" (change)="IsCompanyExist($event, 'siret')"></ion-input>
 		</ion-item>
 		<div [hidden]="isSIRETValid"
 			 class="error-box">* Saisissez les 14 chiffres du SIRET</div>

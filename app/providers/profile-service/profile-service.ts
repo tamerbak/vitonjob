@@ -46,4 +46,19 @@ export class ProfileService {
                 });
         });
 	}
+	
+	countEntreprisesBySIRET(siret){
+		var sql = "select count(*) from user_entreprise where siret='" + siret + "';";
+        console.log(sql);
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    console.log(data);
+                    resolve(data);
+                });
+        });
+	}
 }
