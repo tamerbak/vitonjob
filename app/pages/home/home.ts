@@ -307,7 +307,6 @@ export class HomePage implements OnChanges{
 					offerTemp.isResultHidden = true;
 				}
 				offer.arrowLabel = "arrow-dropdown";
-				offer.isResultHidden = false;
 			} 
 		}
         let loading = Loading.create({
@@ -333,11 +332,13 @@ export class HomePage implements OnChanges{
         this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
             console.log(data);
             this.searchService.persistLastSearch(data);
-            loading.dismiss();
             if(!noRedirect){
+				loading.dismiss();
 				this.nav.push(SearchResultsPage, {currentOffer : offer});
 			}else{
 				this.showResult(offer);
+				offer.isResultHidden = false;
+				loading.dismiss();
 			}
         });
     }
