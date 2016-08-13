@@ -375,8 +375,19 @@
   }
   
   .itemOpacity{
-		background-color: rgba(0,0,0,0.5);
-		margin: 10px 10px 10px 10px;
-		color: white;
+		background: rgba(225,225,225,0.7);;
+  }
+  
+  .cardOpacity{
+		background: rgba(225,225,225,0.7);;
+  }
+  
+  .cardMargin{
+	    margin: 0px;
+		width: 100%;
+  }
+  
+  .h3-margintop{
+	margin-top: 0px!important;	
   }
 }
