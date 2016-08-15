@@ -53,21 +53,16 @@
 
         </ion-row>
 		
-		<ion-list text-wrap [hidden]="autoSearchOffers.length == 0">
-		<ion-list-header>
+		<ion-card text-wrap [hidden]="autoSearchOffers.length == 0" class="cardOpacity">
+		<ion-card-header style = "text-align: center;">
 			Offres en mode recherche automatique
-		</ion-list-header>
-		<ion-item *ngFor="let offer of autoSearchOffers" class="itemOpacity">
-			<ion-row (click)="launchSearch(offer, true)">
-				<ion-col><h3>{{offer.title}}</h3></ion-col>			
-				<ion-col width-10><ion-icon name="{{offer.arrowLabel}}" item-right></ion-icon></ion-col>
-			</ion-row>
-			<ion-card [hidden]="offer.isResultHidden">
-			  <ion-card-header>
-				Offres correspondantes
-			  </ion-card-header>
+		</ion-card-header>
+		<ion-list text-wrap>
+			<ion-item *ngFor="let offer of autoSearchOffers" class="itemOpacity">
+			<h3 (click)="launchSearch(offer, true)">{{offer.title}}</h3><ion-icon name="{{offer.arrowLabel}}" item-right (click)="launchSearch(offer, true)"></ion-icon>
+			<ion-card [hidden]="offer.isResultHidden" class="cardOpacity">
 			  <ion-list text-wrap>
-				  <ion-card *ngFor="let item of searchResults, let i=index">
+				  <ion-card *ngFor="let item of searchResults, let i=index" class="cardMargin">
 					  <ion-item no-lines text-wrap style="background-color: lightcyan">
 						  <ion-avatar item-left>
 							  <img [src]="item.avatar">
@@ -86,11 +81,13 @@
 			</ion-card>
 		</ion-item>
 	</ion-list>
+	</ion-card>
 	
-	<ion-list text-wrap [hidden]="publicOffers.length == 0">
-		<ion-list-header>
+	<ion-card text-wrap [hidden]="publicOffers.length == 0" class="cardOpacity">
+		<ion-card-header style = "text-align: center;">
 			Offres publiques
-		</ion-list-header>
+		</ion-card-header>
+		<ion-list text-wrap>
 		<ion-item *ngFor="let publicOffer of publicOffers " (click)="launchSearch(publicOffer, false)" class="itemOpacity">
 			<h3 class="h3-margintop">{{publicOffer.title}}</h3>
 			<p>Cliquer pour voir plus de détail</p>
@@ -99,7 +96,8 @@
 				{{(publicOffer.correspondantsCount < 0) ? '' : publicOffer.correspondantsCount}}
 			</ion-badge>
 		</ion-item>
-	</ion-list>
+		</ion-list>
+	</ion-card>
 
     <!--/div-->
 
