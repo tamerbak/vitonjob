@@ -275,6 +275,7 @@ export class PhonePage {
 		* @description function called when the phone input is valid to decide if the form is for inscription or authentication
 	*/
 	isRegistration(index, phone) {
+		debugger;
 		if (this.isPhoneValid(phone)) {
 			//On teste si le tél existe dans la base
 			var tel = "+" + index + phone;

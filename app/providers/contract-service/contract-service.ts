@@ -269,7 +269,7 @@ export class ContractService {
      * @param jobyer
      * @return JSON results in form of youSign Object
      */
-    callYousign(user : any, employer:any, jobyer:any,contract:any,projectTarget:string, currentOffer : any){
+    callYousign(user : any, employer:any, jobyer:any,contract:any,projectTarget:string, currentOffer : any, idQuote:any){
 
         let horaires = '';
        //debugger;
@@ -368,12 +368,13 @@ export class ContractService {
                 'jobyerLastName': jobyer.nom,
                 'jobyerEmail': jobyer.email,
                 'jobyerPhone': jobyer.tel,
+                'idQuote' : idQuote,
                 'data': btoa(unescape(encodeURIComponent(JSON.stringify(jsonData))))
             });
 
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 206,
+            'id': 224,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
