@@ -43,6 +43,7 @@ export class SettingsPage {
 	}
 	
 	logOut() {
+		this.storage.set('connexion', null);
 		this.storage.set(this.currentUserVar, null);
 		this.storage.set("RECRUITER_LIST", null);
 		this.events.publish('user:logout');

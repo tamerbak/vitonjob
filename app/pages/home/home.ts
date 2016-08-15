@@ -88,13 +88,16 @@ export class HomePage implements OnChanges{
         this.nav = nav;
         // If we navigated to this page, we will have an item available as a nav param
         this.selectedItem = navParams.get('item');
-        this.search = searchService;
+        this.currentUser = navParams.get('currentUser');
+		this.search = searchService;
 		this.offerService = offersService;
-        //verify if the user is already connected
+    }
+	
+	onPageWillEnter() {
+         //verify if the user is already connected
         this.storage.get(this.currentUserVar).then((value) => {
             var isConnected = false;
 			if(!value || value == "null"){
-				this.currentUser = navParams.get('currentUser');
 				if(!this.currentUser || this.currentUser == "null"){
 					isConnected = false;
 				}else{

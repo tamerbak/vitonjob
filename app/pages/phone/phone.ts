@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Alert, NavController, Events, Loading, Toast, Keyboard, ViewController, Platform} from 'ionic-angular';
+import {Alert, NavController, NavParams, Events, Loading, Toast, Keyboard, ViewController, Platform} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -8,11 +8,11 @@ import {DataProviderService} from "../../providers/data-provider.service";
 import {GlobalService} from "../../providers/global.service";
 import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
-import {SearchAutoPage} from '../search-auto/search-auto';
 //import {InfoUserPage} from "../info-user/info-user";
 import {CivilityPage} from "../civility/civility";
 import {Storage, SqlStorage} from 'ionic-angular';
 import {SMS} from 'ionic-native';
+import {SearchResultsPage} from "../search-results/search-results";
 import {enableProdMode} from '@angular/core'; 
 enableProdMode();
 
@@ -50,12 +50,14 @@ export class PhonePage {
 	currentUserVar: string;
 	showHidePasswdLabel: string;
 	showHidePasswdConfirmLabel: string;
+	fromPage: string;
 	
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
 	*/
 	constructor(public nav: NavController,
-				public gc: GlobalConfigs, 
+				params:NavParams,
+                public gc: GlobalConfigs, 
 				private authService: AuthenticationService, 
 				private loadListService: LoadListService, 
 				private dataProviderService: DataProviderService, 
@@ -84,6 +86,8 @@ export class PhonePage {
 		this.platform = platform;
         this.showHidePasswdLabel = "Afficher le mot de passe";
 		this.showHidePasswdConfirmLabel = "Afficher le mot de passe";
+		this.params = params;
+        this.fromPage = this.params.data.fromPage;
 		//load countries list
 		this.loadListService.loadCountries(this.projectTarget).then((data) => {
 			this.pays = data.data;
@@ -180,27 +184,23 @@ export class PhonePage {
 					});
 				 }
 			 } else {
-				this.nav.rootNav.setRoot(HomePage, {currentUser: data});
-				//this.getRootPage(data);
+				if(this.fromPage == "SearchResult"){
+					if(this.platform.is('ios')){
+						this.nav.push(SearchResultsPage);
+					}else{
+						this.nav.push(SearchResultsPage).then(() => {
+							console.log("plateform android : no menu button, just back button");
+							// first we find the index of the current view controller:
+							const index = this.viewCtrl.index;
+							// then we remove it from the navigation stack
+							this.nav.remove(index);
+						});
+					}
+				}else{
+					this.nav.rootNav.setRoot(HomePage, {currentUser: data});
+				}
 			}
 		});
-	}
-	getRootPage(data){
-		var offers = this.isEmployer ? data.employer.entreprises[0].offers : data.jobyer.offers;
-		for(var i = 0; i < offers.length; i++){
-			var offer = offers[i];
-			var noPublicOffer = true;
-			if(offer.visible){
-				noPublicOffer = false;
-				this.nav.rootNav.setRoot(SearchAutoPage, {currentUser: data});
-				return;
-			}
-		}
-		if(noPublicOffer){
-			this.nav.rootNav.setRoot(HomePage);
-			return;
-		}
-		this.nav.rootNav.setRoot(HomePage);
 	}
 	
 	afterAuthSuccess(data){
