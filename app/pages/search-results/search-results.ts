@@ -8,7 +8,7 @@ import {ContractPage} from '../contract/contract';
 import {CivilityPage} from '../civility/civility';
 import {JobAddressPage} from '../job-address/job-address';
 import {PersonalAddressPage} from '../personal-address/personal-address';
-import {LoginsPage} from '../logins/logins';
+import {PhonePage} from '../phone/phone';
 import {isUndefined} from "ionic-angular/util";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {OfferAddPage} from "../offer-add/offer-add";
@@ -66,7 +66,6 @@ export class SearchResultsPage implements OnInit {
 
     iconName: string;
     isMapView: boolean;
-
 
     /**
      * @description While constructing the view we get the last results of the search from the user
@@ -559,20 +558,21 @@ export class SearchResultsPage implements OnInit {
      * @description send sms to jobyer/employer
      */
     sendSMS(item){
-
         this.isUserConnected();
-        console.log("sending SMS to : " + item.tel);
-        var number = item.tel;
-        var options = {
-            replaceLineBreaks: false, // true to replace \n by a new line, false by default
-            android: {
-                intent: 'INTENT'  // send SMS with the native android SMS messaging
-            }
-        };
-        var success = function () { console.log('Message sent successfully'); };
-        var error = function (e) { console.log('Message Failed:' + e); };
+        if (this.isUserAuthenticated){
+			console.log("sending SMS to : " + item.tel);
+			var number = item.tel;
+			var options = {
+				replaceLineBreaks: false, // true to replace \n by a new line, false by default
+				android: {
+					intent: 'INTENT'  // send SMS with the native android SMS messaging
+				}
+			};
+			var success = function () { console.log('Message sent successfully'); };
+			var error = function (e) { console.log('Message Failed:' + e); };
 
-        sms.send(number, "", options, success, error);
+			sms.send(number, "", options, success, error);
+		}
     }
 
     toggleProposition(){
@@ -622,7 +622,7 @@ export class SearchResultsPage implements OnInit {
         if (!this.isUserAuthenticated) {
             let alert = Alert.create({
                 title: 'Attention',
-                message: 'Pour contacter ce profil, vous devez être connectés.',
+                message: 'Pour contacter ce profil, vous devez être connecté.',
                 buttons: [
                     {
                         text: 'Annuler',
@@ -631,7 +631,7 @@ export class SearchResultsPage implements OnInit {
                     {
                         text: 'Connexion',
                         handler: () => {
-                            this.nav.push(LoginsPage);
+                            this.nav.push(PhonePage, {fromPage: "SearchResult"});
                         }
                     }
                 ]
@@ -646,7 +646,8 @@ export class SearchResultsPage implements OnInit {
      */
      call(item){
         this.isUserConnected();
-        (<any>window).location = 'tel:'+ item.tel;
+		if (this.isUserAuthenticated)
+			(<any>window).location = 'tel:'+ item.tel;
     }
 
     /**
@@ -655,31 +656,32 @@ export class SearchResultsPage implements OnInit {
      */
      sendEmail(item){
         this.isUserConnected();
-        window.location = 'mailto:'+ item.email;
+        if (this.isUserAuthenticated)
+			window.location = 'mailto:'+ item.email;
     }
-
 
     /**
      * @description connect to jobyer/employer via skype
      * @param item
      */
     skype(item){
-
         this.isUserConnected();
-        var sApp;
-        if(this.platform.is('ios')){
-            sApp = startApp.set("skype://" + item.tel);
-        }else{
-            sApp = startApp.set({
-                "action": "ACTION_VIEW",
-                "uri": "skype:" + item.tel
-            });
-        }
-        sApp.start(() => {
-            console.log('starting skype');
-        }, (error) => {
-            this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
-        });
+        if (this.isUserAuthenticated){
+			var sApp;
+			if(this.platform.is('ios')){
+				sApp = startApp.set("skype://" + item.tel);
+			}else{
+				sApp = startApp.set({
+					"action": "ACTION_VIEW",
+					"uri": "skype:" + item.tel
+				});
+			}
+			sApp.start(() => {
+				console.log('starting skype');
+			}, (error) => {
+				this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
+			});
+		}
     }
 
     /**
@@ -688,20 +690,22 @@ export class SearchResultsPage implements OnInit {
      */
     googleHangout(item){
         this.isUserConnected();
-        var sApp = startApp.set({
-            "action": "ACTION_VIEW",
-            "uri": "gtalk:"+item.tel
-        });
-        sApp.check((values) => { /* success */
-            console.log("OK");
-        }, (error) => { /* fail */
-            this.globalService.showAlertValidation("VitOnJob", "Hangout n'est pas installé.");
-        });
-        sApp.start(() => {
-            console.log('starting hangout');
-        }, (error) => {
-            this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Hangout.");
-        });
+        if (this.isUserAuthenticated){
+			var sApp = startApp.set({
+				"action": "ACTION_VIEW",
+				"uri": "gtalk:"+item.tel
+			});
+			sApp.check((values) => { /* success */
+				console.log("OK");
+			}, (error) => { /* fail */
+				this.globalService.showAlertValidation("VitOnJob", "Hangout n'est pas installé.");
+			});
+			sApp.start(() => {
+				console.log('starting hangout');
+			}, (error) => {
+				this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Hangout.");
+			});
+		}
     }
 
     changeView(){
@@ -772,7 +776,7 @@ export class SearchResultsPage implements OnInit {
         {
             let alert = Alert.create({
                 title: 'Attention',
-                message: 'Pour contacter ce jobyer, vous devez être connectés.',
+                message: 'Pour contacter ce profil, vous devez être connecté.',
                 buttons: [
                     {
                         text: 'Annuler',
@@ -781,7 +785,7 @@ export class SearchResultsPage implements OnInit {
                     {
                         text: 'Connexion',
                         handler: () => {
-                            this.nav.push(LoginsPage);
+                            this.nav.push(PhonePage);
                         }
                     }
                 ]

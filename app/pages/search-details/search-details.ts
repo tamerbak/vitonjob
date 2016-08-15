@@ -4,7 +4,7 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {isUndefined} from "ionic-angular/util";
 import {ContractPage} from "../contract/contract";
 import {CivilityPage} from "../civility/civility";
-import {LoginsPage} from "../logins/logins";
+import {PhonePage} from "../phone/phone";
 import {UserService} from "../../providers/user-service/user-service";
 import {GlobalService} from "../../providers/global.service";
 import {OffersService} from "../../providers/offers-service/offers-service";
@@ -242,43 +242,51 @@ export class SearchDetailsPage implements OnInit {
     }
 
     call(){
-        
-        window.location = 'tel:'+ this.telephone;
+        this.isUserConnected();
+		if (this.isUserAuthenticated)
+			window.location = 'tel:'+ this.telephone;
     }
 
     sendEmail(){
-
-        window.location = 'mailto:'+ this.email;
+		this.isUserConnected();
+		if (this.isUserAuthenticated)
+			window.location = 'mailto:'+ this.email;
     }
 
     sendSMS(){
-        var number = this.telephone;
-        var options = {
-            replaceLineBreaks: false, // true to replace \n by a new line, false by default
-            android: {
-                intent: 'INTENT'  // send SMS with the native android SMS messaging
-            }
-        };
-        var success = function () { console.log('Message sent successfully'); };
-        var error = function (e) { console.log('Message Failed:' + e); };
+        this.isUserConnected();
+		if (this.isUserAuthenticated){
+			var number = this.telephone;
+			var options = {
+				replaceLineBreaks: false, // true to replace \n by a new line, false by default
+				android: {
+					intent: 'INTENT'  // send SMS with the native android SMS messaging
+				}
+			};
+			var success = function () { console.log('Message sent successfully'); };
+			var error = function (e) { console.log('Message Failed:' + e); };
 
-        sms.send(number, "", options, success, error);
+			sms.send(number, "", options, success, error);
+		}
     }
     skype(){
-		var sApp;
-		if(this.platform.is('ios')){
-			sApp = startApp.set("skype://" + this.telephone);
-		}else{
-			sApp = startApp.set({ 
-				"action": "ACTION_VIEW",
-				"uri": "skype:" + this.telephone
+		this.isUserConnected();
+		if (this.isUserAuthenticated){
+			var sApp;
+			if(this.platform.is('ios')){
+				sApp = startApp.set("skype://" + this.telephone);
+			}else{
+				sApp = startApp.set({ 
+					"action": "ACTION_VIEW",
+					"uri": "skype:" + this.telephone
+				});
+			}
+			sApp.start(() => {
+				console.log('starting skype');
+			}, (error) => {
+				this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
 			});
 		}
-		sApp.start(() => {
-			console.log('starting skype');
-		}, (error) => {
-			this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
-		});
 	}
 	
     googleHangout(){
@@ -347,7 +355,7 @@ export class SearchDetailsPage implements OnInit {
         {
             let alert = Alert.create({
                 title: 'Attention',
-                message: 'Pour contacter ce jobyer, vous devez être connectés.',
+                message: 'Pour contacter ce profil, vous devez être connecté.',
                 buttons: [
                     {
                         text: 'Annuler',
@@ -356,7 +364,7 @@ export class SearchDetailsPage implements OnInit {
                     {
                         text: 'Connexion',
                         handler: () => {
-                            this.nav.push(LoginsPage);
+                            this.nav.push(PhonePage);
                         }
                     }
                 ]
@@ -386,5 +394,27 @@ export class SearchDetailsPage implements OnInit {
         }
         this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
 
+    }
+	
+	isUserConnected() {
+        if (!this.isUserAuthenticated) {
+            let alert = Alert.create({
+                title: 'Attention',
+                message: 'Pour contacter ce profil, vous devez être connecté.',
+                buttons: [
+                    {
+                        text: 'Annuler',
+                        role: 'cancel',
+                    },
+                    {
+                        text: 'Connexion',
+                        handler: () => {
+                            this.nav.push(PhonePage);
+                        }
+                    }
+                ]
+            });
+            this.nav.present(alert);
+        }
     }
 }
