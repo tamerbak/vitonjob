@@ -14,6 +14,7 @@ import {Component} from "@angular/core";
 import {isUndefined} from "ionic-angular/util";
 import {PushNotificationService} from "../../providers/push-notification-service/push-notification-service";
 import {WalletCreatePage} from "../wallet-create/wallet-create";
+import {FinanceService} from "../../providers/finance-service/finance-service";
 
 
 /**
@@ -23,7 +24,7 @@ import {WalletCreatePage} from "../wallet-create/wallet-create";
  */
 @Component({
   templateUrl: 'build/pages/yousign/yousign.html',
-    providers : [PushNotificationService]
+    providers : [PushNotificationService, FinanceService]
 })
 export class YousignPage {
     
@@ -40,6 +41,7 @@ export class YousignPage {
 
     currentOffer : any = null;
     pushNotificationService:PushNotificationService;
+
     
     constructor(public gc: GlobalConfigs, 
                 public nav: NavController, 
@@ -47,6 +49,7 @@ export class YousignPage {
                 private contractService:ContractService,
                 private userService:UserService,
                 private smsService:SmsService,
+                private financeService : FinanceService,
                 pushNotificationService : PushNotificationService ) {
         
         // Get target to determine configs
@@ -101,98 +104,100 @@ export class YousignPage {
             spinner : 'hide'
         });
         this.nav.present(loading);
-        
-        this.contractService.callYousign(this.currentUser, this.employer, this.jobyer,this.contractData, this.projectTarget, this.currentOffer).then((data) => {
-            loading.dismiss();
-           //debugger;
-            console.log(JSON.stringify(this.employer));
-            if (data == null || data.length == 0) {
-                console.log("Yousign result is null");
-                return;
-            }
-            
-            let dataValue = data[0]['value'];
-            let yousignData = JSON.parse(dataValue);
-            console.log(yousignData);
-            
-            //change jobyer 'contacted' status
-            this.jobyer.contacted = true;
-            this.jobyer.date_invit = new Date();
-            
-            //get the link yousign of the contract for the employer
-            let yousignEmployerLink = yousignData.iFrameURLs[1].iFrameURL;
-            
-            //Create to Iframe to show the contract in the NavPage
-            let iframe = document.createElement('iframe');
-            iframe.frameBorder = "0";
-            iframe.width = "100%";
-            iframe.height = "100%";
-            iframe.id = "youSign";
-            iframe.style.overflow = "hidden";
-            iframe.style.height = "100%";
-            iframe.style.width = "100%";
-            iframe.setAttribute("src", yousignEmployerLink);
-            
-            document.getElementById("iframPlaceHolder").appendChild(iframe);
+        this.financeService.loadQuote(this.currentOffer.idOffer, this.contractData.baseSalary).then(data =>{
+            this.contractService.callYousign(this.currentUser, this.employer, this.jobyer,this.contractData, this.projectTarget, this.currentOffer, data.quoteId).then((data) => {
+                loading.dismiss();
+                //debugger;
+                console.log(JSON.stringify(this.employer));
+                if (data == null || data.length == 0) {
+                    console.log("Yousign result is null");
+                    return;
+                }
 
-            // get the yousign link of the contract and the phoneNumber of the jobyer
-            let yousignJobyerLink = yousignData.iFrameURLs[0].iFrameURL;
-            let jobyerPhoneNumber = this.jobyer.tel;
+                let dataValue = data[0]['value'];
+                let yousignData = JSON.parse(dataValue);
+                console.log(yousignData);
 
-            this.contractData.demandeJobyer = yousignData.idDemands[0].idDemand;
-            this.contractData.demandeEmployer = yousignData.idDemands[1].idDemand;
+                //change jobyer 'contacted' status
+                this.jobyer.contacted = true;
+                this.jobyer.date_invit = new Date();
 
-            // Send sms to jobyer
-           //debugger;
-            this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : '+this.contractData.numero).then((dataSms) => {
-               //debugger;
-                 console.log("The message was sent successfully");
-            }).catch(function(err) {
-               //debugger;
-                 console.log(err);
-            });
-            // send notification to jobyer
-            console.log('jobyer id : '+this.jobyer.id);
+                //get the link yousign of the contract for the employer
+                let yousignEmployerLink = yousignData.iFrameURLs[1].iFrameURL;
+
+                //Create to Iframe to show the contract in the NavPage
+                let iframe = document.createElement('iframe');
+                iframe.frameBorder = "0";
+                iframe.width = "100%";
+                iframe.height = "100%";
+                iframe.id = "youSign";
+                iframe.style.overflow = "hidden";
+                iframe.style.height = "100%";
+                iframe.style.width = "100%";
+                iframe.setAttribute("src", yousignEmployerLink);
+
+                document.getElementById("iframPlaceHolder").appendChild(iframe);
+
+                // get the yousign link of the contract and the phoneNumber of the jobyer
+                let yousignJobyerLink = yousignData.iFrameURLs[0].iFrameURL;
+                let jobyerPhoneNumber = this.jobyer.tel;
+
+                this.contractData.demandeJobyer = yousignData.idDemands[0].idDemand;
+                this.contractData.demandeEmployer = yousignData.idDemands[1].idDemand;
+
+                // Send sms to jobyer
+                //debugger;
+                this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : '+this.contractData.numero).then((dataSms) => {
+                    //debugger;
+                    console.log("The message was sent successfully");
+                }).catch(function(err) {
+                    //debugger;
+                    console.log(err);
+                });
+                // send notification to jobyer
+                console.log('jobyer id : '+this.jobyer.id);
 
 
-            //save contract in Database
-            this.contractService.getJobyerId(this.jobyer,this.projectTarget).then(
-                (jobyerData) => {
-                   this.contractService.saveContract(this.contractData,jobyerData.data[0].pk_user_jobyer,this.employer.entreprises[0].id,this.projectTarget, yousignJobyerLink).then(
-                    (data) => {
-                        if(this.currentOffer && this.currentOffer != null){
-                            let idContract = 0;
-                            if(data && data.data && data.data.length>0)
-                                idContract = data.data[0].pk_user_contrat;
-                            let contract = {
-                                pk_user_contrat : idContract
-                            };
-                            this.contractService.setOffer(idContract, this.currentOffer.idOffer);
-                            this.pushNotificationService.getToken(this.jobyer.id, "toJobyer").then(token => {
-                                if(token.data && token.data.length>0){
-                                    let tk = token;
-                                    var message = "Une demande de signature de contrat vous a été adressée";
-                                    console.log('message notification : '+message);
-                                    console.log('token : '+tk);
-                                    this.pushNotificationService.sendPushNotification(tk, message, contract, "MissionDetailsPage").then(data => {
-                                        console.log('Notification sent : '+JSON.stringify(data));
+                //save contract in Database
+                this.contractService.getJobyerId(this.jobyer,this.projectTarget).then(
+                    (jobyerData) => {
+                        this.contractService.saveContract(this.contractData,jobyerData.data[0].pk_user_jobyer,this.employer.entreprises[0].id,this.projectTarget, yousignJobyerLink).then(
+                            (data) => {
+                                if(this.currentOffer && this.currentOffer != null){
+                                    let idContract = 0;
+                                    if(data && data.data && data.data.length>0)
+                                        idContract = data.data[0].pk_user_contrat;
+                                    let contract = {
+                                        pk_user_contrat : idContract
+                                    };
+                                    this.contractService.setOffer(idContract, this.currentOffer.idOffer);
+                                    this.pushNotificationService.getToken(this.jobyer.id, "toJobyer").then(token => {
+                                        if(token.data && token.data.length>0){
+                                            let tk = token;
+                                            var message = "Une demande de signature de contrat vous a été adressée";
+                                            console.log('message notification : '+message);
+                                            console.log('token : '+tk);
+                                            this.pushNotificationService.sendPushNotification(tk, message, contract, "MissionDetailsPage").then(data => {
+                                                console.log('Notification sent : '+JSON.stringify(data));
+                                            });
+                                        }
+
                                     });
+                                    this.contractService.generateMission(idContract, this.currentOffer);
                                 }
-
-                            });
-                            this.contractService.generateMission(idContract, this.currentOffer);
-                        }
+                            },
+                            (err) => {
+                                console.log(err);
+                            })
                     },
                     (err) => {
                         console.log(err);
                     })
-                },
-                (err) => {
-                    console.log(err);
-                })
-        }).catch(function(err) {
-            console.log(err);
+            }).catch(function(err) {
+                console.log(err);
+            });
         });
+
     }
     
     
