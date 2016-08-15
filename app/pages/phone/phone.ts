@@ -12,7 +12,6 @@ import {HomePage} from "../home/home";
 import {CivilityPage} from "../civility/civility";
 import {Storage, SqlStorage} from 'ionic-angular';
 import {SMS} from 'ionic-native';
-import {SearchResultsPage} from "../search-results/search-results";
 import {enableProdMode} from '@angular/core'; 
 enableProdMode();
 
@@ -185,17 +184,7 @@ export class PhonePage {
 				 }
 			 } else {
 				if(this.fromPage == "SearchResult"){
-					if(this.platform.is('ios')){
-						this.nav.push(SearchResultsPage);
-					}else{
-						this.nav.push(SearchResultsPage).then(() => {
-							console.log("plateform android : no menu button, just back button");
-							// first we find the index of the current view controller:
-							const index = this.viewCtrl.index;
-							// then we remove it from the navigation stack
-							this.nav.remove(index);
-						});
-					}
+					this.nav.pop();
 				}else{
 					this.nav.rootNav.setRoot(HomePage, {currentUser: data});
 				}

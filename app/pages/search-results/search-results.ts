@@ -631,7 +631,7 @@ export class SearchResultsPage implements OnInit {
                     {
                         text: 'Connexion',
                         handler: () => {
-                            this.nav.push(PhonePage, {fromPage: "SearchResult"});
+                            this.nav.push(PhonePage);
                         }
                     }
                 ]
