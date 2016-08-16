@@ -18,6 +18,9 @@ import {ModalTrackMissionPage} from "../modal-track-mission/modal-track-mission"
 import {LocalNotifications} from 'ionic-native';
 import {NgZone} from '@angular/core';
 import {isUndefined} from "ionic-angular/util";
+import {FinanceService} from "../../providers/finance-service/finance-service";
+import {MissionEndInvoicePage} from "../mission-end-invoice/mission-end-invoice";
+import {MissionEndRelevePage} from "../mission-end-releve/mission-end-releve";
 
 /*
  Generated class for the MissionDetailsPage page.
@@ -28,7 +31,7 @@ import {isUndefined} from "ionic-angular/util";
 @Component({
     templateUrl: 'build/pages/mission-details/mission-details.html',
     pipes: [DateConverter, TimeConverter],
-    providers: [GlobalService, PushNotificationService, NotationService]
+    providers: [GlobalService, PushNotificationService, NotationService, FinanceService]
 })
 export class MissionDetailsPage {
     projectTarget:string;
@@ -42,9 +45,11 @@ export class MissionDetailsPage {
     missionDayIndex:number;
     missionTimeIsFirst:boolean;
     missionTimeIsStart:boolean;
+
     //records of user_heure_mission of a contract
     missionHours = [];
     initialMissionHours = [];
+
     //two dimensional array of pauses of mission days
     isNewMission = true;
     contractSigned = false;
@@ -56,12 +61,18 @@ export class MissionDetailsPage {
     starsText : string = '';
     db : Storage;
 
-    contract;
     optionMission: string;
     backgroundImage: string;
     
     enterpriseName: string = "--";
     jobyerName: string = "--";
+
+    /*
+    *   Invoice management
+     */
+    invoiceId : number;
+    isInvoiceAvailable : boolean = false;
+    isReleveAvailable : boolean = false;
 
     constructor(private platform:Platform,
                 public gc: GlobalConfigs,
@@ -71,6 +82,7 @@ export class MissionDetailsPage {
                 private globalService: GlobalService,
                 private pushNotificationService: PushNotificationService,
                 private notationService : NotationService,
+                private financeService : FinanceService,
                 private zone:NgZone) {
 
         this.store = new Storage(LocalStorage);
@@ -105,8 +117,9 @@ export class MissionDetailsPage {
                 this.missionPauses = array[1];
             }
         });
-        
+
         this.missionService.getCosignersNames(this.contract).then((data) => {
+
             if (data.data) {
                 let cosigners = data.data[0];
                 this.enterpriseName = cosigners.enterprise;
@@ -128,6 +141,22 @@ export class MissionDetailsPage {
         this.notationService.loadContractNotation(this.contract, this.projectTarget).then(score=>{
             this.rating = score;
             this.starsText = this.writeStars(this.rating);
+        });
+
+        debugger;
+        console.log(JSON.stringify(this.contract));
+        this.financeService.checkInvoice(this.contract.pk_user_contrat).then(invoice=>{
+            debugger;
+            if(invoice){
+                this.invoiceId = invoice.pk_user_facture_voj;
+
+                if(this.projectTarget == 'employer')
+                    this.isReleveAvailable = invoice.releve_signe_employeur == 'Non';
+                else
+                    this.isReleveAvailable = invoice.releve_signe_jobyer == 'Non';
+
+                this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
+            }
         });
     }
 
@@ -549,6 +578,7 @@ export class MissionDetailsPage {
         */
 
         this.missionService.endOfMission(this.contract.pk_user_contrat).then(data=>{
+            debugger;
             let confirm = Alert.create({
                 title: "VitOnJob",
                 message: "Les détails de cette missions sont en cours de traitements, vous serez contacté par SMS une fois la facturation effectuée",
@@ -562,6 +592,45 @@ export class MissionDetailsPage {
                 ]
             });
             this.nav.present(confirm);
+
+            let idContrat = data.id;
+            let idOffre = data.offerId;
+            let rate = data.rate;
+            debugger;
+            this.financeService.loadInvoice(idContrat, idOffre, rate).then(invoiceData=>{
+                debugger;
+                let idInvoice = invoiceData.invoiceId;
+                let bean = {
+                    "class":'com.vitonjob.yousign.callouts.YousignConfig',
+                    employerFirstName : data.employerFirstName,
+                    employerLastName : data.employerLastName,
+                    employerEmail : data.employerEmail,
+                    employerPhone : data.employerPhone,
+                    jobyerFirstName : data.jobyerFirstName,
+                    jobyerLastName : data.jobyerLastName,
+                    jobyerEmail : data.jobyerEmail,
+                    jobyerPhone : data.jobyerPhone,
+                    idContract : idContrat,
+                    idInvoice : idInvoice
+                }
+                this.missionService.signEndOfMission(bean).then(signatureData=>{
+                    debugger;
+                    this.financeService.checkInvoice(this.contract.pk_user_contrat).then(invoice=>{
+                        debugger;
+                        if(invoice){
+                            this.invoiceId = invoice.pk_user_facture_voj;
+
+                            if(this.projectTarget == 'employer')
+                                this.isReleveAvailable = invoice.releve_signe_employeur == 'Non';
+                            else
+                                this.isReleveAvailable = invoice.releve_signe_jobyer == 'Non';
+
+                            this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
+                        }
+                    });
+                });
+            });
+
         });
     }
 
@@ -946,7 +1015,15 @@ export class MissionDetailsPage {
 		err => console.log('Error occurred while getting date: ', err)
 		);
 	}
-	
+
+    eomReleve(){
+        this.nav.push(MissionEndRelevePage, {idInvoice : this.invoiceId});
+    }
+
+    eomInvoice(){
+        this.nav.push(MissionEndInvoicePage, {idInvoice : this.invoiceId});
+    }
+
 	upperCase(str){
         if(str == null || !str || isUndefined(str))
             return '';

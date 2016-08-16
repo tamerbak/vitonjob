@@ -176,6 +176,12 @@
                     [hidden]="!isEmployer || isNewMission || upperCase(contract.approuve) != 'OUI' || (upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0')">
                 <ion-icon name="ribbon"></ion-icon>
             </button>
+            <button item-right clear (click)="eomReleve()" [style.color]="themeColor" [hidden]="! isReleveAvailable">
+                <ion-icon name="checkbox-outline"></ion-icon>
+            </button>
+            <button item-right clear (click)="eomInvoice()" [style.color]="themeColor" [hidden]="! isInvoiceAvailable">
+                <ion-icon name="document"></ion-icon>
+            </button>
             <button item-right clear (click)="generateTimesheet()" [style.color]="themeColor"
                     [hidden]="disableTimesheetButton()"
                     [hidden]="(missionHours && missionHours.length == 0) || !isEmployer || contract.option_mission == '1.0' || isNewMission || upperCase(contract.releve_employeur) == 'OUI'"
@@ -246,7 +252,12 @@
                 <ion-icon name="refresh"></ion-icon>
                 Rénitialiser
             </p>
-
+            <p [hidden]="! isReleveAvailable">
+                <ion-icon name="checkbox-outline"></ion-icon> Signer le relevé
+            </p>
+            <p [hidden]="! isInvoiceAvailable">
+                <ion-icon name="document"></ion-icon> Signer la facture
+            </p>
         </ion-item>
     </ion-card>
 

@@ -151,7 +151,7 @@ export class MissionService {
     endOfMission(idContrat) {
         let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 205,
+            'id': 234,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -173,7 +173,8 @@ export class MissionService {
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
-                   //debugger;
+
+                    debugger;
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;
@@ -181,6 +182,8 @@ export class MissionService {
                     resolve(this.data);
                 });
         });
+
+
     }
 
     validateWork(invoice) {
@@ -550,6 +553,40 @@ export class MissionService {
                 .map(res => res.json())
                 .subscribe(data => {
                     this.data = data;
+                    resolve(this.data);
+                });
+        });
+    }
+
+    signEndOfMission(bean){
+        let dataSign = JSON.stringify(bean);
+        var payload = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            'id': 236,
+            'args': [
+                {
+                    'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                    label: 'Signature electronique',
+                    value: btoa(dataSign)
+                }
+            ]
+        };
+
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers.append("Content-Type", 'application/json');
+
+            this.http.post('http://ns389914.ovh.net:8080/vitonjobv1/api/callout', JSON.stringify(payload), {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    //debugger;
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    this.data = data;
+                    console.log(this.data);
                     resolve(this.data);
                 });
         });
