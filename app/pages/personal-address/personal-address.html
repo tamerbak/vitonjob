@@ -26,6 +26,16 @@
     
 	<div>
 		<ion-item>
+			<ion-label floating>Nom</ion-label>
+			<ion-textarea type="text" [(ngModel)]="name"></ion-textarea>
+		</ion-item>
+		
+		<ion-item>
+			<ion-label floating>N° de la rue</ion-label>
+			<ion-input type="number" [(ngModel)]="streetNumber" maxlength="5" min="0" inputmode="numeric" pattern="[0-9]*"></ion-input>
+		</ion-item>
+		
+		<ion-item>
 			<ion-label floating>Rue</ion-label>
 			<ion-textarea type="text" [(ngModel)]="street"></ion-textarea>
 		</ion-item>

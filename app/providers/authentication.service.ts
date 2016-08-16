@@ -49,7 +49,7 @@ export class AuthenticationService {
         var encodedLogin = btoa(login);
         var dataLog = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 214,
+            'id': 238,
             'args': [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'requete authentification',
@@ -237,39 +237,43 @@ export class AuthenticationService {
     }
 
     decorticateGeolocAddress(geolocAddress){
-        var adrArray = ['', '', '', ''];
-        var street = "";
-        for(var i = 0; i < geolocAddress.address_components.length; i++){
+        var adrObj = {name, streetNumber: '', street: '', zipCode: '', city: '', country: ''};
+		for(var i = 0; i < geolocAddress.address_components.length; i++){
             if(geolocAddress.address_components[i].types[0] == "street_number"){
-                street = street + geolocAddress.address_components[i].long_name + " ";
+                adrObj.streetNumber = geolocAddress.address_components[i].long_name;
                 continue;
             }
             if(geolocAddress.address_components[i].types[0] == "route"){
-                street = street + geolocAddress.address_components[i].long_name + " ";
+                adrObj.street =  geolocAddress.address_components[i].long_name;
                 continue;
             }
-            if(geolocAddress.address_components[i].types[0] == "street_address"){
+            /*if(geolocAddress.address_components[i].types[0] == "street_address"){
                 street = street + geolocAddress.address_components[i].long_name + " ";
                 continue;
-            }
+            }*/
             if(geolocAddress.address_components[i].types[0] == "postal_code"){
-                adrArray.splice(1, 1, geolocAddress.address_components[i].long_name);
+                adrObj.zipCode =  geolocAddress.address_components[i].long_name;
                 continue;
             }
             if(geolocAddress.address_components[i].types[0] == "locality"){
-                adrArray.splice(2, 1, geolocAddress.address_components[i].long_name);
+                adrObj.city = geolocAddress.address_components[i].long_name;
                 continue;
             }
             if(geolocAddress.address_components[i].types[0] == "country"){
-                adrArray.splice(3, 1, geolocAddress.address_components[i].long_name);
+                adrObj.country = geolocAddress.address_components[i].long_name;
                 continue;
             }
         }
-        adrArray.splice(0, 1, street);
-        return adrArray;
+		
+		if(adrObj.street != "" && geolocAddress.name.indexOf(adrObj.street) != -1){
+			adrObj.name = "";
+		}else{
+			adrObj.name = geolocAddress.name;
+		}
+		return adrObj;
     }
 
-    updateUserPersonalAddress(id: string, street, cp, ville, pays){
+    updateUserPersonalAddress(id: string, name, streetNumber, street, cp, ville, pays){
         //  Now we need to save the address
         var addressData = {
             'class': 'com.vitonjob.localisation.AdressToken',
@@ -277,6 +281,8 @@ export class AuthenticationService {
             'cp': cp,
             'ville': ville,
             'pays': pays,
+			'name': name,
+			'streetNumber': streetNumber,
             'role': (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget),
             'id': id,
             'type': 'personnelle'
@@ -285,7 +291,7 @@ export class AuthenticationService {
         var encodedAddress = btoa(addressData);
         var data = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 138,
+            'id': 239,
             'args': [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'Adresse',
@@ -298,7 +304,7 @@ export class AuthenticationService {
             headers.append("Content-Type", 'application/json');
             this.http.post(this.configuration.calloutURL, stringData, {headers:headers})
                 .subscribe(data => {
-                    this.data = data;
+					this.data = data;
                     resolve(this.data);
                 });
         });
@@ -308,7 +314,7 @@ export class AuthenticationService {
      * @description update employer and jobyer job address
      * @param id  : entreprise id for employer role and role id for jobyer role, address
      */
-    updateUserJobAddress(id: string, street, cp, ville, pays){
+    updateUserJobAddress(id: string, name, streetNumber, street, cp, ville, pays){
         //  Now we need to save the address
         var addressData = {
             'class': 'com.vitonjob.localisation.AdressToken',
@@ -316,6 +322,8 @@ export class AuthenticationService {
             'cp': cp,
             'ville': ville,
             'pays': pays,
+			'name': name,
+			'streetNumber': streetNumber,
             'role': (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget),
             'id': id,
             'type': 'travaille'
@@ -324,7 +332,7 @@ export class AuthenticationService {
         var encodedAddress = btoa(addressData);
         var data = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 138,
+            'id': 239,
             'args': [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'Adresse',

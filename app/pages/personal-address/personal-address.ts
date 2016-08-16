@@ -26,7 +26,9 @@ export class PersonalAddressPage {
 	geolocResult;
 	titlePage: string;
 	fromPage: string;
+	name: string;
 	street: string;
+	streetNumber: string;
 	zipCode: string;
 	city: string;
 	country: string;
@@ -86,6 +88,8 @@ export class PersonalAddressPage {
 				this.currentUser = JSON.parse(value);
 				if(this.isEmployer){
 					this.searchData = this.currentUser.employer.entreprises[0].siegeAdress.fullAdress;
+					this.name = this.currentUser.employer.entreprises[0].siegeAdress.name;
+					this.streetNumber = this.currentUser.employer.entreprises[0].siegeAdress.streetNumber;
 					this.street = this.currentUser.employer.entreprises[0].siegeAdress.street;
 					this.zipCode = this.currentUser.employer.entreprises[0].siegeAdress.zipCode;
 					this.city = this.currentUser.employer.entreprises[0].siegeAdress.city;
@@ -93,6 +97,8 @@ export class PersonalAddressPage {
 					//for old users, retrieve address components from server bd and stocke them in local db
 					if(!this.country && this.searchData){
 						this.authService.getAddressByUser(this.currentUser.employer.entreprises[0].id).then((data) =>{
+							this.name = data[0].name;
+							this.streetNumber = data[0].streetNumber;
 							this.street = data[0].street;
 							this.zipCode = data[0].zipCode;
 							this.city = data[0].city;
@@ -101,12 +107,16 @@ export class PersonalAddressPage {
 					}
 				}else{
 					this.searchData = this.currentUser.jobyer.personnalAdress.fullAdress;
+					this.name = this.currentUser.jobyer.personnalAdress.name;
+					this.streetNumber = this.currentUser.jobyer.personnalAdress.streetNumber;
 					this.street = this.currentUser.jobyer.personnalAdress.street;
 					this.zipCode = this.currentUser.jobyer.personnalAdress.zipCode;
 					this.city = this.currentUser.jobyer.personnalAdress.city;
 					this.country = this.currentUser.jobyer.personnalAdress.country;
 					if(!this.country && this.searchData){
 						this.authService.getAddressByUser(this.currentUser.jobyer.id).then((data) =>{
+							this.name = data[0].name;
+							this.streetNumber = data[0].streetNumber;
 							this.street = data[0].street;
 							this.zipCode = data[0].zipCode;
 							this.city = data[0].city;
@@ -253,14 +263,15 @@ export class PersonalAddressPage {
 		this.geolocAddress = "";
 		this.geolocResult = null;
 		//display address components in appropriate inputs
-		var adrArray = this.authService.decorticateAddress(this.selectedPlace.name, this.selectedPlace.adr_address);
+		var adrObj = this.authService.decorticateGeolocAddress(this.selectedPlace);
 		this.zone.run(()=>{
-			this.street = adrArray[0].replace("&#39;", "'");
-			this.zipCode = adrArray[1];
-			this.city = adrArray[2].replace("&#39;", "'");
-			this.country = adrArray[3].replace("&#39;", "'");
+			this.name = adrObj.name.replace("&#39;", "'");
+			this.streetNumber = adrObj.streetNumber.replace("&#39;", "'");
+			this.street = adrObj.street.replace("&#39;", "'");
+			this.zipCode = adrObj.zipCode;
+			this.city = adrObj.city.replace("&#39;", "'");
+			this.country = (adrObj.country.replace("&#39;", "'") == "" ? 'France' : adrObj.country.replace("&#39;", "'"));
 			this.isGooglePlaceHidden = true;
-			//this.isAdrFormHidden = false;
 		});
 	}
 	
@@ -283,7 +294,7 @@ export class PersonalAddressPage {
 				var entreprise = this.currentUser.employer.entreprises[0];  
 				var eid = "" + entreprise.id + "";
 				// update personal address
-				this.authService.updateUserPersonalAddress(eid, this.street, this.zipCode, this.city, this.country)
+				this.authService.updateUserPersonalAddress(eid, this.name, this.streetNumber, this.street, this.zipCode, this.city, this.country)
 				.then((data) => {
 					if (!data || data.status == "failure") {
 						console.log(data.error);
@@ -292,7 +303,9 @@ export class PersonalAddressPage {
 						return;
 					}else{
 						//id address not send by server
-						entreprise.siegeAdress.fullAdress = (this.street ? this.street + ", " : "") + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
+						entreprise.siegeAdress.fullAdress = (this.name ? this.name + ", " : "") + (this.streetNumber ? this.streetNumber + ", " : "") + (this.street ? this.street + ", " : "") + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
+						entreprise.siegeAdress.name = this.name;
+						entreprise.siegeAdress.streetNumber = this.streetNumber;
 						entreprise.siegeAdress.street = this.street;
 						entreprise.siegeAdress.zipCode = this.zipCode;
 						entreprise.siegeAdress.city = this.city;
@@ -313,7 +326,7 @@ export class PersonalAddressPage {
 				}else{
 				var roleId = "" + this.currentUser.jobyer.id + "";
 				// update personal address
-				this.authService.updateUserPersonalAddress(roleId, this.street, this.zipCode, this.city, this.country)
+				this.authService.updateUserPersonalAddress(roleId, this.name, this.streetNumber, this.street, this.zipCode, this.city, this.country)
 				.then((data) => {
 					if (!data || data.status == "failure") {
 						console.log(data.error);
@@ -322,7 +335,9 @@ export class PersonalAddressPage {
 						return;
 					}else{
 						//id address not send by server
-						this.currentUser.jobyer.personnalAdress.fullAdress = (this.street ? this.street + ", " : "") + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
+						this.currentUser.jobyer.personnalAdress.fullAdress = (this.name ? this.name + ", " : "") + (this.streetNumber ? this.streetNumber + ", " : "") + (this.street ? this.street + ", " : "") + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
+						this.currentUser.jobyer.personnalAdress.name = this.name;
+						this.currentUser.jobyer.personnalAdress.streetNumber = this.streetNumber;
 						this.currentUser.jobyer.personnalAdress.street = this.street;
 						this.currentUser.jobyer.personnalAdress.zipCode = this.zipCode;
 						this.currentUser.jobyer.personnalAdress.city = this.city;

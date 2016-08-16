@@ -112,7 +112,6 @@ export class ProfilePage implements OnInit {
         this.storage.get(this.currentUserVar).then(data => {
             if (data) {
                //debugger;
-                console.log(data);
                 this.userData = JSON.parse(data);
 				this.isRecruiter = this.userData.estRecruteur;
 				if(!this.isRecruiter)
