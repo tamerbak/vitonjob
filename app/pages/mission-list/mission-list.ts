@@ -35,6 +35,9 @@ export class MissionListPage {
     inversedThemeColor: string;
     backgroundImage: any;
     badgeColor:any;
+	isMissionNowLoaded = false;
+	isMissionFuturLoaded = false;
+	isMissionPastLoaded = false;
 
     constructor(public gc: GlobalConfigs, 
                 public nav: NavController, 
@@ -101,6 +104,9 @@ export class MissionListPage {
                             return this.dayDifference(b.date_de_debut, a.date_de_debut)
                         });
 					}
+					this.isMissionNowLoaded = true;
+					this.isMissionFuturLoaded = true;
+					this.isMissionPastLoaded = true;
 				});	
 			}
 		});

@@ -94,7 +94,9 @@ export class HomePage implements OnChanges{
     }
 	
 	onPageWillEnter() {
-         //verify if the user is already connected
+         this.autoSearchOffers = [];
+		 this.publicOffers = [];
+		 //verify if the user is already connected
         this.storage.get(this.currentUserVar).then((value) => {
             var isConnected = false;
 			if(!value || value == "null"){
