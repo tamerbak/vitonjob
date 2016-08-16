@@ -108,19 +108,6 @@ export class SearchDetailsPage implements OnInit {
 
         });
 
-        //get the connexion object and define if the there is a user connected
-        userService.getConnexionObject().then(results =>{
-            if(results && !isUndefined(results)){
-                let connexion = JSON.parse(results);
-                if(connexion && connexion.etat){
-                    this.isUserAuthenticated = true;
-                }else{
-                    this.isUserAuthenticated = false;
-                }
-                console.log(connexion);
-            }
-        });
-
         console.log(JSON.stringify(this.result));
 
         this.db = new Storage(SqlStorage);
@@ -166,6 +153,21 @@ export class SearchDetailsPage implements OnInit {
             this.starsText = this.writeStars(this.rating);
         });
     }
+	
+	onPageWillEnter() {
+	 //get the connexion object and define if the there is a user connected
+        this.userService.getConnexionObject().then(results =>{
+            if(results && !isUndefined(results)){
+                let connexion = JSON.parse(results);
+                if(connexion && connexion.etat){
+                    this.isUserAuthenticated = true;
+                }else{
+                    this.isUserAuthenticated = false;
+                }
+                console.log(connexion);
+            }
+        });
+	}
 
     writeStars(number:number):string {
         let starText = '';
@@ -364,7 +366,7 @@ export class SearchDetailsPage implements OnInit {
                     {
                         text: 'Connexion',
                         handler: () => {
-                            this.nav.push(PhonePage);
+                            this.nav.push(PhonePage, {fromPage: "Search"});
                         }
                     }
                 ]
@@ -409,7 +411,7 @@ export class SearchDetailsPage implements OnInit {
                     {
                         text: 'Connexion',
                         handler: () => {
-                            this.nav.push(PhonePage);
+                            this.nav.push(PhonePage, {fromPage: "Search"});
                         }
                     }
                 ]

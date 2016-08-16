@@ -12,7 +12,6 @@ import {HomePage} from "../home/home";
 import {CivilityPage} from "../civility/civility";
 import {Storage, SqlStorage} from 'ionic-angular';
 import {SMS} from 'ionic-native';
-import {SearchResultsPage} from "../search-results/search-results";
 import {enableProdMode} from '@angular/core'; 
 enableProdMode();
 
@@ -170,36 +169,33 @@ export class PhonePage {
 			loading.dismiss();
 			//if user is connected for the first time, redirect him to the page 'civility' after removing phone page from the nav stack, otherwise redirect him to the home page
 			var isNewUser = data.newAccount;
-			if (isNewUser || this.isNewRecruteur) {
-				 if(this.platform.is('ios')){
-					console.log("plateform ios : no back button, just menu button");
-					this.nav.setRoot(CivilityPage, {currentUser: data});
-				 }else{
-					this.nav.push(CivilityPage, {currentUser: data}).then(() => {
-						console.log("plateform android : no menu button, just back button");
-						// first we find the index of the current view controller:
-						const index = this.viewCtrl.index;
-						// then we remove it from the navigation stack
-						this.nav.remove(index);
-					});
-				 }
-			 } else {
-				if(this.fromPage == "SearchResult"){
-					if(this.platform.is('ios')){
-						this.nav.push(SearchResultsPage);
-					}else{
-						this.nav.push(SearchResultsPage).then(() => {
+			var connexion = {
+				'etat': true,
+				'libelle': 'Se déconnecter',
+				'employeID' : (this.projectTarget == 'jobyer' ? data.jobyerId : data.employerId)
+			};
+			this.storage.set('connexion', JSON.stringify(connexion)).then(() => {
+				if (isNewUser || this.isNewRecruteur) {
+					 if(this.platform.is('ios')){
+						console.log("plateform ios : no back button, just menu button");
+						this.nav.setRoot(CivilityPage, {currentUser: data});
+					 }else{
+						this.nav.push(CivilityPage, {currentUser: data}).then(() => {
 							console.log("plateform android : no menu button, just back button");
 							// first we find the index of the current view controller:
 							const index = this.viewCtrl.index;
 							// then we remove it from the navigation stack
 							this.nav.remove(index);
 						});
+					 }
+				 } else {
+					if(this.fromPage == "Search"){
+						this.nav.pop();
+					}else{
+						this.nav.rootNav.setRoot(HomePage, {currentUser: data});
 					}
-				}else{
-					this.nav.rootNav.setRoot(HomePage, {currentUser: data});
 				}
-			}
+			});
 		});
 	}
 	
@@ -207,12 +203,6 @@ export class PhonePage {
 		//case of authentication success
 		this.authService.setObj('connexion', null);
 		this.authService.setObj(this.currentUserVar, null);
-		var connexion = {
-			'etat': true,
-			'libelle': 'Se déconnecter',
-			'employeID' : (this.projectTarget == 'jobyer' ? data.jobyerId : data.employerId)
-		};
-		
 		//load device token to current account
 		var accountId = data.id;
 		var token;
@@ -222,7 +212,6 @@ export class PhonePage {
 			this.authService.insertToken(token, accountId, this.projectTarget);
 		}
 		});
-		this.storage.set('connexion', JSON.stringify(connexion));
 		this.storage.set(this.currentUserVar, JSON.stringify(data));
 		this.events.publish('user:login', data);
 		

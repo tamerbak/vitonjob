@@ -94,18 +94,6 @@ export class SearchResultsPage implements OnInit {
 
         this.offersService = offersService;
 
-        //get the connexion object and define if the there is a user connected
-        userService.getConnexionObject().then(results =>{
-            if(results && !isUndefined(results)){
-                let connexion = JSON.parse(results);
-                if(connexion && connexion.etat){
-                    this.isUserAuthenticated = true;
-                }else{
-                    this.isUserAuthenticated = false;
-                }
-                console.log(connexion);
-            }
-        });
         this.db = new Storage(SqlStorage);
 
         this.db.get('IS_MAP_VIEW').then( data => {
@@ -178,6 +166,21 @@ export class SearchResultsPage implements OnInit {
         });
     }
 
+	onPageWillEnter() {
+	 //get the connexion object and define if the there is a user connected
+        this.userService.getConnexionObject().then(results =>{
+            if(results && !isUndefined(results)){
+                let connexion = JSON.parse(results);
+                if(connexion && connexion.etat){
+                    this.isUserAuthenticated = true;
+                }else{
+                    this.isUserAuthenticated = false;
+                }
+                console.log(connexion);
+            }
+        });
+	}
+		
     ngOnInit() {
 
         //get the currentEmployer
@@ -631,7 +634,7 @@ export class SearchResultsPage implements OnInit {
                     {
                         text: 'Connexion',
                         handler: () => {
-                            this.nav.push(PhonePage, {fromPage: "SearchResult"});
+                            this.nav.push(PhonePage, {fromPage: "Search"});
                         }
                     }
                 ]
@@ -785,7 +788,7 @@ export class SearchResultsPage implements OnInit {
                     {
                         text: 'Connexion',
                         handler: () => {
-                            this.nav.push(PhonePage);
+                            this.nav.push(PhonePage, {fromPage: "Search"});
                         }
                     }
                 ]
