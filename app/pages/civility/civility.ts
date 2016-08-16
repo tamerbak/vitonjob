@@ -65,6 +65,7 @@ export class CivilityPage {
     calendarTheme:string;
     isAndroid4:boolean;
     platform: any;
+	isBirthdateValid = true;	
 
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
@@ -454,7 +455,7 @@ export class CivilityPage {
         if (this.isEmployer) {
             return (!this.title || !this.firstname || !this.lastname || !this.companyname || (this.siret && this.siret.length < 17) || (this.ape && (this.ape.length < 5 || !this.isAPEValid)) || !this.isValideFirstName || !this.isValideLastName);
         } else {
-            if ((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length != 0) || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.isValideFirstName || !this.isValideLastName )) {
+            if ((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length != 0) || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.isValideFirstName || !this.isValideLastName || !this.isBirthdateValid)) {
                 return true;
             }
             if (!this.numSS || this.numSS.length == 0)
@@ -891,6 +892,16 @@ export class CivilityPage {
 		});
 		this.nav.present(confirm);
 	}
+	
+	watchBirthdate(e){
+		this.isBirthdateValid = true;	
+		var ageDifMs = Date.now() - new Date(this.birthdate).getTime();
+		var ageDate = new Date(ageDifMs); // miliseconds from epoch
+		var diff = Math.abs(ageDate.getUTCFullYear() - 1970);
+		if(diff < 18){
+			this.isBirthdateValid = false;
+		}
+	}
 
     /**
      * @Description Converts a timeStamp to date string :
@@ -908,4 +919,5 @@ export class CivilityPage {
 		else
 			return false;
 	}
+	
 }

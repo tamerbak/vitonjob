@@ -55,8 +55,10 @@
 
 		<ion-item style="margin-top: 1.5em" [hidden]="isEmployer || isAndroid4">
 			<ion-label>Date de naissance</ion-label>
-			<ion-datetime [(ngModel)]="birthdate"  displayFormat="DD/MM/YYYY"></ion-datetime>
+			<ion-datetime [(ngModel)]="birthdate"  displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" (ionChange)="watchBirthdate($event)"></ion-datetime>
 		</ion-item>
+		<div [hidden]="isBirthdateValid"
+			 class="error-box">* Vous devez avoir plus de 18 ans pour pouvoir valider votre profile</div>
 
 		<ion-item [hidden]="isEmployer || !isAndroid4">
 			<ion-label floating>Date</ion-label>
