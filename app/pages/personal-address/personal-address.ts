@@ -258,7 +258,7 @@ export class PersonalAddressPage {
 	}
 	
 	/**
-		* @description function to get the selected result in the google place autocomplete 
+		* @description function to get the selected result in the google place autocomplete
 	*/
 	showResults(place) {
 		this.selectedPlace = place;
