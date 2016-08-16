@@ -265,7 +265,7 @@ export class AuthenticationService {
             }
         }
 		
-		if(adrObj.street != "" && geolocAddress.name.indexOf(adrObj.street) != -1){
+		if(!this.isEmpty(geolocAddress.name) && !this.isEmpty(adrObj.street) && geolocAddress.name.indexOf(adrObj.street) != -1){
 			adrObj.name = "";
 		}else{
 			adrObj.name = geolocAddress.name;

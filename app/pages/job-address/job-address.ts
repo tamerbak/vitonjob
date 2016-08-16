@@ -238,11 +238,13 @@ export class JobAddressPage {
 					this.geolocResult = results[0];
 					this.geolocAddress = results[0].formatted_address;
 					//display address components in appropriate inputs
-					var adrArray = this.authService.decorticateGeolocAddress(this.geolocResult);
-					this.street = adrArray[0];
-					this.zipCode = adrArray[1];
-					this.city = adrArray[2];
-					this.country = adrArray[3];
+					var adrObj = this.authService.decorticateGeolocAddress(this.geolocResult);
+					this.name = !adrObj.name ? '' : adrObj.name.replace("&#39;", "'");
+					this.streetNumber = adrObj.streetNumber.replace("&#39;", "'");
+					this.street = adrObj.street.replace("&#39;", "'");
+					this.zipCode = adrObj.zipCode;
+					this.city = adrObj.city.replace("&#39;", "'");
+					this.country = (adrObj.country.replace("&#39;", "'") == "" ? 'France' : adrObj.country.replace("&#39;", "'"));
 					this.isGooglePlaceHidden = true;
 					//this.isAdrFormHidden = false;
 				});
@@ -265,7 +267,7 @@ export class JobAddressPage {
 		//display address components in appropriate inputs
 		var adrObj = this.authService.decorticateGeolocAddress(this.selectedPlace);
 		this.zone.run(()=>{
-			this.name = adrObj.name.replace("&#39;", "'");
+			this.name = !adrObj.name ? '' : adrObj.name.replace("&#39;", "'");
 			this.streetNumber = adrObj.streetNumber.replace("&#39;", "'");
 			this.street = adrObj.street.replace("&#39;", "'");
 			this.zipCode = adrObj.zipCode;
