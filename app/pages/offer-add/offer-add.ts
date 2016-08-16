@@ -108,8 +108,8 @@ export class OfferAddPage {
         this.localOffer.get('jobData').then(value => {
             value = JSON.parse(value);
             if (value) {
-                let level = (this.offerToBeAdded.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant'
                 this.offerToBeAdded.jobData = value;
+                let level = (this.offerToBeAdded.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant'
                 this.offerToBeAdded.title = this.offerToBeAdded.jobData.job + " " + level;
                 this.validated.isJob = value.validated;
                 this.steps.isCalendar = this.validated.isJob;
