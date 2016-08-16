@@ -18,9 +18,9 @@
 	</ion-row-->
     <ion-list text-wrap>
 		<ion-list-header style="color: #757575">Missions en cours</ion-list-header>
-		<ion-row [hidden]="missionNow.length > 0 || contractList.length > 0">
+		<ion-row>
 			<ion-col text-center>
-				<ion-spinner class="spinnerColor"></ion-spinner>
+				<ion-spinner class="spinnerColor" [hidden]="isMissionNowLoaded"></ion-spinner>
 			</ion-col>
 		</ion-row>
         <ion-item *ngFor="let item of missionNow" (click)="goToMissionDetailsPage(item)">
@@ -68,9 +68,9 @@
 
 
 		<ion-list-header style="color: #757575">Missions en attente</ion-list-header>
-		<ion-row [hidden]="missionFutur.length > 0 || contractList.length > 0">
+		<ion-row>
 			<ion-col text-center>
-				<ion-spinner class="spinnerColor"></ion-spinner>
+				<ion-spinner class="spinnerColor" [hidden]="isMissionFuturLoaded"></ion-spinner>
 			</ion-col>
 		</ion-row>
 		<ion-item *ngFor="let item of missionFutur">
@@ -104,9 +104,9 @@
 
 
 		<ion-list-header style="color: #757575">Missions terminées</ion-list-header>
-		<ion-row [hidden]="missionPast.length > 0 || contractList.length > 0">
+		<ion-row>
 			<ion-col text-center>
-				<ion-spinner class="spinnerColor"></ion-spinner>
+				<ion-spinner class="spinnerColor" [hidden]="isMissionPastLoaded"></ion-spinner>
 			</ion-col>
 		</ion-row>
 		<ion-item *ngFor="let item of missionPast">
