@@ -59,6 +59,9 @@ export class MissionListPage {
 	
 	onPageWillEnter() {
         console.log('••• On Init');
+		this.isMissionNowLoaded = false;
+		this.isMissionFuturLoaded = false;
+		this.isMissionPastLoaded = false;
 		this.contractList = [];
         this.missionNow = [];
         this.missionFutur = [];
