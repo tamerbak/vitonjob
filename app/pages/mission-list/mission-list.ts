@@ -47,10 +47,6 @@ export class MissionListPage {
         
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
-        this.contractList = [];
-        this.missionNow = [];
-        this.missionFutur = [];
-        this.missionPast = [];
         // Set store variables and messages
         this.themeColor = config.themeColor;
         this.inversedThemeColor = config.inversedThemeColor;
@@ -63,6 +59,10 @@ export class MissionListPage {
 	
 	onPageWillEnter() {
         console.log('••• On Init');
+		this.contractList = [];
+        this.missionNow = [];
+        this.missionFutur = [];
+        this.missionPast = [];
 		//get contracts
         this.storage.get(this.currentUserVar).then((value) => {
 			if(value){
