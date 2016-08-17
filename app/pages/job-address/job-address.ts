@@ -305,6 +305,7 @@ export class JobAddressPage {
 						return;
 					}else{
 						//id address not send by server
+						entreprise.workAdress.id = JSON.parse(data._body).id;
 						entreprise.workAdress.fullAdress = (this.name ? this.name + ", " : "") + (this.streetNumber ? this.streetNumber + ", " : "") + (this.street ? this.street + ", " : "") + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
 						entreprise.workAdress.name = this.name;
 						entreprise.workAdress.streetNumber = this.streetNumber;
@@ -335,6 +336,7 @@ export class JobAddressPage {
 						return;
 					}else{
 						//id address not send by server
+						this.currentUser.jobyer.workAdress.id = JSON.parse(data._body).id;
 						this.currentUser.jobyer.workAdress.fullAdress = (this.name ? this.name + ", " : "") + (this.streetNumber ? this.streetNumber + ", " : "") + (this.street ? this.street + ", " : "") + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
 						this.currentUser.jobyer.workAdress.name = this.name;
 						this.currentUser.jobyer.workAdress.streetNumber = this.streetNumber;
@@ -359,12 +361,16 @@ export class JobAddressPage {
 	copyPersonalAddress(){
 		if(this.isEmployer){
 			this.searchData = this.currentUser.employer.entreprises[0].siegeAdress.fullAdress;
+			this.name = this.currentUser.employer.entreprises[0].siegeAdress.name;
+			this.streetNumber = this.currentUser.employer.entreprises[0].siegeAdress.streetNumber;
 			this.street = this.currentUser.employer.entreprises[0].siegeAdress.street;
 			this.zipCode = this.currentUser.employer.entreprises[0].siegeAdress.zipCode;
 			this.city = this.currentUser.employer.entreprises[0].siegeAdress.city;
 			this.country = this.currentUser.employer.entreprises[0].siegeAdress.country;
-			}else{
+		}else{
 			this.searchData = this.currentUser.jobyer.personnalAdress.fullAdress;
+			this.name = this.currentUser.jobyer.personnalAdress.name;
+			this.streetNumber = this.currentUser.jobyer.personnalAdress.streetNumber;
 			this.street = this.currentUser.jobyer.personnalAdress.street;
 			this.zipCode = this.currentUser.jobyer.personnalAdress.zipCode;
 			this.city = this.currentUser.jobyer.personnalAdress.city;
