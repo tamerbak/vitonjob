@@ -232,7 +232,16 @@ export class MissionDetailsPage {
     }
 
     validatePauses(){
-        let loading = Loading.create({
+        //verify if there are empty pause hours 
+		for(var i = 0; i < this.missionHours.length; i++){
+			for(var j = 0; j < this.missionPauses[i].length; j++){
+				if(this.isEmpty(this.missionPauses[i][j].pause_debut) || this.isEmpty(this.missionPauses[i][j].pause_fin)){
+					this.globalService.showAlertValidation("VitOnJob", "Veuillez renseigner toutes les heures de pauses avant de valider.");
+                    return;
+				}
+			}
+		}
+		let loading = Loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
