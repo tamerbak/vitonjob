@@ -572,4 +572,11 @@ export class PhonePage {
 			this.showHidePasswdConfirmLabel = "Cacher le mot de passe";
         }
 	}
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
+	}
 }
