@@ -145,4 +145,17 @@ export class MissionListPage {
 	goToMissionPointingPage(contract){
 		this.nav.push(MissionPointingPage,{contract:contract});
 	}
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
+	}
+	
+	upperCase(str){
+        if(this.isEmpty(str))
+            return '';
+        return str.toUpperCase();
+    }
 }

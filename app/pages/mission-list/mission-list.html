@@ -30,7 +30,7 @@
 						<h2>Mission {{item.titre}}</h2>
 					</ion-col>
 					<ion-col text-right width-10 style="padding-left: 0;">
-						<ion-icon name="md-done-all" style="font-size: x-large;" secondary [hidden]="item.approuve.toUpperCase() == 'Non'.toUpperCase() || item.vu.toUpperCase() == 'Non'.toUpperCase()"></ion-icon>
+						<ion-icon name="md-done-all" style="font-size: x-large;" secondary [hidden]="upperCase(item.approuve) == 'NON' || upperCase(item.vu) == 'NON'"></ion-icon>
 					</ion-col>
 				</ion-row>
 				<ion-row>
@@ -44,20 +44,21 @@
 				</ion-row>
 				<ion-row>
 					<ion-col text-right>
-						<ion-badge [hidden]="item.approuve.toUpperCase() == 'Non'.toUpperCase()" style="background-color: #14baa6; font-size: xx-small;">
-							{{isEmployer? item.prenom : item.nom}} a signé
+						<ion-badge [hidden]="upperCase(item.signature_jobyer) == 'NON'" style="background-color: #14baa6; font-size: xx-small;">
+							Contrat signé
 						</ion-badge>
-						<ion-badge [hidden]="item.signature_employeur.toUpperCase() != 'NON'" style="background-color: #757575; font-size: xx-small;">
-							{{isEmployer? item.prenom : item.nom}} n'a pas signé
+						<ion-badge [hidden]="upperCase(item.vu) == 'NON'" style="background-color: #14baa6; font-size: xx-small;">Horaires validés</ion-badge>
+						<ion-badge [hidden]="upperCase(item.releve_employeur) == 'NON'" style="background-color: #14baa6; font-size: xx-small;">
+							Relevé généré
 						</ion-badge>
-						<ion-badge [hidden]="item.vu.toUpperCase() == 'NON'" style="background-color: #14baa6; font-size: xx-small;">Vous avez validé les horaires</ion-badge>
-						<ion-badge [hidden]="item.vu.toUpperCase() != 'Non'.toUpperCase()" style="background-color: #757575; font-size: xx-small;">Horaires non validés</ion-badge>
-						
+						<ion-badge [hidden]="upperCase(item.approuve) == 'NON'" style="background-color: #14baa6; font-size: xx-small;">
+							Horaires signés
+						</ion-badge>
 					</ion-col>
 				</ion-row>
 				<ion-row>
 					<ion-col text-center>
-						<button item-right (click)="goToMissionPointingPage(item)" outline [hidden]="item.option_mission == '1.0' || isEmployer || item.signature_jobyer.toUpperCase() == 'Non'.toUpperCase() || item.releve_employeur.toUpperCase() == 'Oui'.toUpperCase() || item.vu.toUpperCase() == 'Non'.toUpperCase()">
+						<button item-right (click)="goToMissionPointingPage(item)" outline [hidden]="item.option_mission == '1.0' || isEmployer || upperCase(item.releve_employeur) == 'OUI' || upperCase(item.vu) == 'NON'">
 							<ion-icon name="finger-print"></ion-icon> Pointage
 						</button>
 					</ion-col>
