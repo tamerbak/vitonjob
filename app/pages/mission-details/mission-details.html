@@ -23,11 +23,23 @@
 
         </ion-card-header>
         <!--[hidden]="!isEmployer || !missionHours || missionHours.length == 0"-->
-        <ion-item
-                [hidden]="isEmployer || isNewMission || contract.option_mission != '3.0' || upperCase(contract.releve_jobyer) != 'OUI'"
-                text-wrap>
-            <h6 [style.color]="themeColor"> En attente de signature par l'employeur </h6>
-        </ion-item>
+		 <ion-card [hidden]="isEmployer ||upperCase(contract.signature_jobyer) == 'OUI' || (!missionHours || missionHours.length == 0)">
+			<ion-row>
+				<ion-col text-center>
+				<ion-item>
+				<button block (click)="launchContractPage()" [style.backgroundColor]="themeColor">
+					<ion-icon name="create"></ion-icon>
+					Signer votre contrat</button>
+				</ion-item>
+				</ion-col>
+			</ion-row>
+			<ion-row>
+				<ion-item>
+					<ion-label>Signé</ion-label>
+					<ion-toggle (ionChange)="watchSignedToggle($event)"></ion-toggle>
+				</ion-item>
+			</ion-row>	
+		</ion-card>
         <ion-card-header>Relevé d'heures de travail</ion-card-header>
         <!--ion-item [hidden]="(missionHours && missionHours.length != 0)">
             Aucun jour de mission n'est encore défini pour ce contrat
@@ -67,7 +79,7 @@
                             <ion-col width-33 text-center
                                      style="border-right: solid white;background-color: lightgoldenrodyellow">{{enterpriseName}}
                             </ion-col>
-                            <ion-col width-33 text-center style="background-color: lightgoldenrodyellow">
+                            <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" width-33 text-center style="background-color: lightgoldenrodyellow">
                                 {{jobyerName}}
                             </ion-col>
                         </ion-row>
@@ -75,18 +87,18 @@
                             <ion-col style="font-size: small;border-right: solid white">Heure début</ion-col>
                             <ion-col width-33 style="padding: 0; border-right: solid white;" text-center>
                                 <button small
-                                        [style.backgroundColor]="day.heure_debut_new != 'null' ? 'orange' : 'gray'"
+                                        [style.backgroundColor]="!isEmpty(day.heure_debut_new) ? 'orange' : 'gray'"
                                         (click)="onHourClick(i, j, true, false)">
-                                    {{(day.heure_debut_new != '' && day.heure_debut_new != 'null') ?
+                                    {{!isEmpty(day.heure_debut_new)  ?
                                     (day.heure_debut_new |
                                     timeConverter:'minute') : (day.heure_debut | timeConverter:'minute')}}
                                 </button>
                             </ion-col>
-                            <ion-col style="padding: 0" text-center width-33>
+                            <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" style="padding: 0" text-center width-33>
                                 <button small
                                         [style.backgroundColor]="upperCase(day.is_heure_debut_corrigee) == 'OUI' ? 'red' : (upperCase(day.is_heure_debut_corrigee) == 'NON' ? 'green' : '')"
                                         (click)="onPointedHourClick(i, j, true, false)"
-                                        [disabled]="contract.option_mission == '1.0'|| isNewMission">
+                                        [hidden]="contract.option_mission == '1.0'|| isNewMission">
                                     {{(day.heure_debut_pointe)? day.heure_debut_pointe : '--:--'}}
                                 </button>
                             </ion-col>
@@ -97,8 +109,7 @@
                                 <ion-col>Pause {{j + 1}}</ion-col>
                                 <ion-col width-10>
                                     <button clear (click)="onPauseClick(i, j)">
-                                        <ion-icon name="trash" [hidden]="!isNewMission || !isEmployer"
-                                                  class="iconRight"></ion-icon>
+                                        <ion-icon name="trash" [hidden]="!isNewMission || !isEmployer" class="iconRight"></ion-icon>
                                     </button>
                                 </ion-col>
                             </ion-row>
@@ -106,44 +117,24 @@
                                 <ion-col style="font-size: small;border-right: solid white;">Début de pause</ion-col>
                                 <ion-col style="padding: 0; border-right: solid white;" text-center width-33>
                                     <!--To verify TEL@04082016-->
-                                    <button small
-                                            [style.backgroundColor]="!isEmpty(pause.pause_debut_new) ? 'orange' : 'gray'"
-                                            (change)="checkHour(i, j, true, false, false)"
-                                            (click)="onHourClick(i, j, false, true)">
-                                        {{!isEmpty(pause.pause_debut_new) ? (pause.pause_debut_new |
-                                        timeConverter:'minute') : (isEmpty(pause.pause_debut) ? '--:--' :
-                                        pause.pause_debut)}}
-                                    </button>
+                                    <ion-label item-content (change)="checkHour(i, j, true, false, false)" (click)="onHourClick(i, j, false, true)" [style.color]="!isEmpty(pause.pause_debut_new) ? 'orange' : 'black'" >{{!isEmpty(pause.pause_debut_new) ? (pause.pause_debut_new | timeConverter:'minute') : (isEmpty(pause.pause_debut) ? ' - - : - - ' : pause.pause_debut)}}</ion-label>
                                 </ion-col>
-                                <ion-col style="padding: 0" text-center width-33>
-                                    <button small
-                                            [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')"
-                                            (click)="onPointedHourClick(i, j, false, true)"
-                                            [disabled]="contract.option_mission == '1.0'|| isNewMission">
+                                <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" style="padding: 0" text-center width-33>
+                                    <ion-label item-content [hidden]="contract.option_mission == '1.0'|| isNewMission" (click)="onPointedHourClick(i, j, false, true)" [style.color]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')">
                                         {{(pause.pause_debut_pointe)? pause.pause_debut_pointe : '--:--'}}
-                                    </button>
+                                    </ion-label>
                                 </ion-col>
                             </ion-row>
                             <ion-row baseline style="border-top: solid white;background-color: lightskyblue;">
                                 <ion-col style="font-size: small;border-right: solid white;">Fin de pause</ion-col>
                                 <ion-col style="padding: 0;border-right: solid white;" text-center width-33>
                                     <!--To verify TEL@04082016-->
-                                    <button small
-                                            [style.backgroundColor]="!isEmpty(pause.pause_fin_new) ? 'orange' : 'gray'"
-                                            (change)="checkHour(i, j, false, false, false)"
-                                            (click)="onHourClick(i, j, false, false)">
-                                        {{!isEmpty(pause.pause_fin_new) ? (pause.pause_fin_new |
-                                        timeConverter:'minute') : (isEmpty(pause.pause_fin) ? '--:--' :
-                                        pause.pause_fin)}}
-                                    </button>
+                                    <ion-label item-content (change)="checkHour(i, j, false, false, false)" (click)="onHourClick(i, j, false, false)" [style.color]="!isEmpty(pause.pause_fin_new) ? 'orange' : 'black'">{{!isEmpty(pause.pause_fin_new) ? (pause.pause_fin_new | timeConverter:'minute') : (isEmpty(pause.pause_fin) ? ' - - : - - ' : pause.pause_fin)}}</ion-label>
                                 </ion-col>
-                                <ion-col style="padding: 0" text-center width-33>
-                                    <button small
-                                            [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')"
-                                            (click)="onPointedHourClick(i, j, false, false)"
-                                            [disabled]="contract.option_mission == '1.0'|| isNewMission">
+                                <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" style="padding: 0" text-center width-33>
+                                    <ion-label item-content [hidden]="contract.option_mission == '1.0'|| isNewMission" (click)="onPointedHourClick(i, j, false, false)" [style.color]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')">
                                         {{(pause.pause_fin_pointe)? pause.pause_fin_pointe : '--:--'}}
-                                    </button>
+									</ion-label>
                                 </ion-col>
                             </ion-row>
                         </ion-list>
@@ -151,17 +142,17 @@
                         <ion-row baseline style="background-color: lightgoldenrodyellow;border-top: solid white;">
                             <ion-col style="font-size: small;border-right: solid white;">Heure fin</ion-col>
                             <ion-col style="padding: 0; border-right: solid white;" text-center width-33>
-                                <button small [style.backgroundColor]="day.heure_fin_new != 'null' ? 'orange' : 'gray'"
+                                <button small [style.backgroundColor]="!isEmpty(day.heure_fin_new) ? 'orange' : 'gray'"
                                         (click)="onHourClick(i, j, false, false)">
-                                    {{(day.heure_fin_new != '' && day.heure_fin_new != 'null') ? (day.heure_fin_new |
+                                    {{!isEmpty(day.heure_fin_new) ? (day.heure_fin_new |
                                     timeConverter:'minute') : (day.heure_fin | timeConverter:'minute')}}
                                 </button>
                             </ion-col>
-                            <ion-col style="padding: 0" text-center width-33>
+                            <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" style="padding: 0" text-center width-33>
                                 <button small
                                         [style.backgroundColor]="upperCase(day.is_heure_fin_corrigee) == 'OUI' ? 'red' : (upperCase(day.is_heure_fin_corrigee) == 'NON' ? 'green' : '')"
                                         (click)="onPointedHourClick(i, j, false, false)"
-                                        [disabled]="contract.option_mission == '1.0'|| isNewMission">
+                                        >
                                     {{(day.heure_fin_pointe)? day.heure_fin_pointe : '--:--'}}
                                 </button>
                             </ion-col>
@@ -183,7 +174,6 @@
                 <ion-icon name="document"></ion-icon>
             </button>
             <button item-right clear (click)="generateTimesheet()" [style.color]="themeColor"
-                    [hidden]="disableTimesheetButton()"
                     [hidden]="(missionHours && missionHours.length == 0) || !isEmployer || contract.option_mission == '1.0' || isNewMission || upperCase(contract.releve_employeur) == 'OUI'"
                     [disabled]="disableTimesheetButton()">
                 <ion-icon name="paper"></ion-icon>
