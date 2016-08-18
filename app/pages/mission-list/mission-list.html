@@ -49,10 +49,10 @@
 						<ion-badge [hidden]="item.approuve.toUpperCase() == 'Non'.toUpperCase()" style="background-color: #14baa6; font-size: xx-small;">
 							{{isEmployer? item.prenom : item.nom}} a signé
 						</ion-badge>
-						<ion-badge [hidden]="item.approuve.toUpperCase() != 'Non'.toUpperCase()" style="background-color: #757575; font-size: xx-small;">
+						<ion-badge [hidden]="item.signature_employeur.toUpperCase() != 'NON'" style="background-color: #757575; font-size: xx-small;">
 							{{isEmployer? item.prenom : item.nom}} n'a pas signé
 						</ion-badge>
-						<ion-badge [hidden]="item.vu.toUpperCase() == 'Non'.toUpperCase()" style="background-color: #14baa6; font-size: xx-small;">Vous avez validé les horaires</ion-badge>
+						<ion-badge [hidden]="item.vu.toUpperCase() == 'NON'" style="background-color: #14baa6; font-size: xx-small;">Vous avez validé les horaires</ion-badge>
 						<ion-badge [hidden]="item.vu.toUpperCase() != 'Non'.toUpperCase()" style="background-color: #757575; font-size: xx-small;">Horaires non validés</ion-badge>
 
 					</ion-col>
