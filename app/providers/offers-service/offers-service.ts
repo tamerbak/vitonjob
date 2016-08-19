@@ -232,8 +232,8 @@ export class OffersService {
                     let rawData = data.employer;
                     //console.log(rawData.entreprises);
                     if (rawData && rawData.entreprises && rawData.entreprises[0].offers){
-                        for(let i = data.employer.entreprises[0].offers.length - 1 ; i >= 0 ; i++){
-                            if(!data.employer.entreprises[0].offers[i].idOffer){
+                        for(let i = data.employer.entreprises[0].offers.length - 1 ; i >= 0 ; i--){
+							if(!data.employer.entreprises[0].offers[i].idOffer){
                                 data.employer.entreprises[0].offers[i] = offer;
                                 break;
                             }
@@ -244,7 +244,7 @@ export class OffersService {
                 } else { // jobyer
                     let rawData = data.jobyer;
                     if (rawData && rawData.offers) {
-                        for(let i = data.jobyer.offers.length - 1; i >= 0; i++){
+                        for(let i = data.jobyer.offers.length - 1; i >= 0; i--){
                             if(!data.jobyer.offers[i].idOffer){
                                 data.jobyer.offers[i] = offer;
                                 break;

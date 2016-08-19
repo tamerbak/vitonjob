@@ -273,6 +273,21 @@ export class MissionService {
         });
     }
 
+	updateDefaultOptionMission(selectedOption, accountId) {
+        var sql = "update user_account set option_mission = '" + selectedOption + "' where pk_user_account = '" + accountId + "'; ";
+        console.log(sql);
+
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });
+    }
     schedulePointeuse(contract, missionHours, missionPauses) {
         var notifArray = [];
         var j = missionHours.length;
