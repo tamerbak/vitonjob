@@ -33,7 +33,7 @@
 	</ion-item>
 	<div [hidden]="!showEmailError()" 
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Veuillez saisir un email valide</div>
-	<div [hidden]="!emailExist" 
+	<div [hidden]="!emailExist || isEmpty(email)" 
             class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Cet email est déjà utilisé. Veuillez choisir un autre.</div>
 	
 	<ion-label stacked style="padding: 16px">Votre mot de passe</ion-label>

@@ -27,17 +27,12 @@ export class MissionListPage {
     jobyer:any;
     society:string;
     contractList:any;
-    missionNow : any;
-    missionFutur:any;
-    missionPast:any;
     missionListTitle:string;
 	currentUserVar: string;
     inversedThemeColor: string;
     backgroundImage: any;
     badgeColor:any;
-	isMissionNowLoaded = false;
-	isMissionFuturLoaded = false;
-	isMissionPastLoaded = false;
+	missionList: any;
 
     constructor(public gc: GlobalConfigs, 
                 public nav: NavController, 
@@ -59,13 +54,18 @@ export class MissionListPage {
 	
 	onPageWillEnter() {
         console.log('••• On Init');
-		this.isMissionNowLoaded = false;
-		this.isMissionFuturLoaded = false;
-		this.isMissionPastLoaded = false;
 		this.contractList = [];
-        this.missionNow = [];
-        this.missionFutur = [];
-        this.missionPast = [];
+        var missionNow = [];
+        var missionFutur = [];
+        var missionPast = [];
+		this.missionList = [];
+		var missionsObjNow = {header: 'Missions en cours', list: missionNow, loaded: false};
+		var missionsObjFutur = {header: 'Missions en attente', list: missionFutur, loaded: false};
+		var missionsObjPast = {header: 'Missions terminées', list: missionPast, loaded: false};
+		this.missionList.push(missionsObjNow);
+		this.missionList.push(missionsObjFutur);
+		this.missionList.push(missionsObjPast);
+
 		//get contracts
         this.storage.get(this.currentUserVar).then((value) => {
 			if(value){
@@ -85,31 +85,34 @@ export class MissionListPage {
                             if (item.date_de_debut) {
                                 if ((this.dayDifference(item.date_de_debut) == 0) || (this.dayDifference(item.date_de_debut) < 0 && this.dayDifference(item.date_de_fin) >= 0))
                                 // Mission en cours
-                                    this.missionNow.push(item);
+                                    missionNow.push(item);
                                 else if (this.dayDifference(item.date_de_debut) > 0)
                                 // Mission in futur
-                                    this.missionFutur.push(item);
+                                    missionFutur.push(item);
                                 else
                                 // Mission in past
-                                    this.missionPast.push(item);
+                                    missionPast.push(item);
                             }
                         }
 
-                        this.missionNow = this.missionNow.sort((a, b) => {
+                        missionNow = missionNow.sort((a, b) => {
                             return this.dayDifference(b.date_de_debut, a.date_de_debut)
                         });
 
-                        this.missionFutur = this.missionFutur.sort((a, b) => {
+                        missionFutur = missionFutur.sort((a, b) => {
                             return this.dayDifference(a.date_de_debut, b.date_de_debut)
                         });
 
-                        this.missionPast = this.missionPast.sort((a, b) => {
+                        missionPast = missionPast.sort((a, b) => {
                             return this.dayDifference(b.date_de_debut, a.date_de_debut)
                         });
 					}
-					this.isMissionNowLoaded = true;
-					this.isMissionFuturLoaded = true;
-					this.isMissionPastLoaded = true;
+					this.missionList[0].list = missionNow;
+					this.missionList[0].loaded = true;
+					this.missionList[1].list = missionFutur;
+					this.missionList[1].loaded = true;
+					this.missionList[2].list = missionPast;
+					this.missionList[2].loaded = true;
 				});	
 			}
 		});
@@ -142,4 +145,17 @@ export class MissionListPage {
 	goToMissionPointingPage(contract){
 		this.nav.push(MissionPointingPage,{contract:contract});
 	}
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
+	}
+	
+	upperCase(str){
+        if(this.isEmpty(str))
+            return '';
+        return str.toUpperCase();
+    }
 }
