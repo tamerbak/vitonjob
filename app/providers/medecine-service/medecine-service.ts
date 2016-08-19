@@ -16,7 +16,7 @@ export class MedecineService {
         let sql = "select pk_user_medecine_de_travail as id, libelle from user_medecine_de_travail where lower_unaccent(libelle) like lower_unaccent('%"+kw+"%') limit 5";
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -38,7 +38,7 @@ export class MedecineService {
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {

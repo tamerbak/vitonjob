@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 //import {Configs} from '../../configurations/configs';
 import {Http, Headers} from '@angular/http';
+import {Configs} from "../../configurations/configs";
 
 
 /**
@@ -44,9 +45,8 @@ export class PaymentService {
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
             let headers = new Headers();
-            headers.append("Content-Type", "text/xml");
-            
-            this.http.post('http://vps259989.ovh.net:8080/vitonjobv1/api/envoisms', soapMessage, {headers:headers})
+            headers = Configs.getHttpXmlHeaders();
+            this.http.post(Configs.smsURL, soapMessage, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
                     resolve(data);
