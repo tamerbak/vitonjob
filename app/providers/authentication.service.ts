@@ -60,8 +60,7 @@ export class AuthenticationService {
         console.log(body);
        //debugger;
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'application/json');
+            let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, body, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -82,8 +81,7 @@ export class AuthenticationService {
         var sql = "Update user_account set device_token = '" + token + "' where pk_user_account = '" + accountId + "';";
 
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(
@@ -148,8 +146,7 @@ export class AuthenticationService {
         }
 
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -179,8 +176,7 @@ export class AuthenticationService {
 		sql = sql + " , ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
         console.log(sql);
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -197,8 +193,7 @@ export class AuthenticationService {
         sql = sql + " nom='" + lastname + "', prenom='" + firstname + "' where fk_user_account=" + accountid + ";";
 
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -300,8 +295,7 @@ export class AuthenticationService {
         };
         var stringData = JSON.stringify(data);
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'application/json');
+            let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, stringData, {headers:headers})
                 .subscribe(data => {
 					this.data = data;
@@ -342,8 +336,7 @@ export class AuthenticationService {
         var stringData = JSON.stringify(data);
 
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'application/json');
+            let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, stringData, {headers:headers})
                 .subscribe(data => {
                     this.data = data;
@@ -372,8 +365,7 @@ export class AuthenticationService {
         var stringData = JSON.stringify(payload);
 
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'application/json');
+            let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, stringData, {headers:headers})
                 .subscribe(data => {
                     this.data = JSON.parse(data._body);
@@ -513,8 +505,7 @@ export class AuthenticationService {
 
         //  send request
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'application/json');
+            let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, stringData, {headers:headers})
                 .subscribe(data => {
                     this.data = data;
@@ -536,8 +527,7 @@ export class AuthenticationService {
             }]
         };
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'application/json');
+            let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -551,8 +541,7 @@ export class AuthenticationService {
         var sql = "select mot_de_passe as valeur from user_account where telephone = '" + tel + "';";
 
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -567,8 +556,7 @@ export class AuthenticationService {
         var sql = "update user_account set mot_de_passe = '" + passwd + "' where pk_user_account = '" + id + "';";
 
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -597,8 +585,7 @@ export class AuthenticationService {
         let sql = "update user_account set mot_de_passe = '" + password + "' where email = '" + email + "';";
 
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -613,8 +600,7 @@ export class AuthenticationService {
         let sql = "update user_account set mot_de_passe = '" + password + "' where telephone = '" + tel + "';";
 
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -627,15 +613,14 @@ export class AuthenticationService {
 
     sendPasswordBySMS(tel, passwd){
         tel = tel.replace('+', '00');
-        let url = "http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoisms";
+        let url = Configs.smsURL;
         let payload = "<fr.protogen.connector.model.SmsModel>"
             + 	"<telephone>"+tel+"</telephone>"
             + 	"<text>Votre mot de passe est: " + passwd +".</text>"
             + "</fr.protogen.connector.model.SmsModel>";
 
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/xml');
+            let headers = Configs.getHttpXmlHeaders();
             this.http.post(url, payload, {headers:headers})
                 .subscribe(data => {
                     this.data = data;
@@ -645,7 +630,7 @@ export class AuthenticationService {
         })
     }
     sendPasswordByEmail(email, passwd){
-        let url = "http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoimail";
+        let url = Configs.emailURL;
         let payload = "<fr.protogen.connector.model.MailModel>"
             + "<sendTo>"+email+"</sendTo>"
             + 	"<title>VitOnJob - Mot de passe réinitialisé</title>"
@@ -657,8 +642,7 @@ export class AuthenticationService {
             + "</fr.protogen.connector.model.MailModel>";
 
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/xml');
+            let headers = Configs.getHttpXmlHeaders();
             this.http.post(url, payload, {headers:headers})
                 .subscribe(data => {
                     this.data = data;
@@ -673,8 +657,7 @@ export class AuthenticationService {
             var sql = "update user_account set mot_de_passe = '" + passwd + "', email = '" + email + "' where pk_user_account = '" + accountid + "'";
 
             return new Promise(resolve => {
-                let headers = new Headers();
-                headers.append("Content-Type", 'text/plain');
+                let headers = Configs.getHttpTextHeaders();
                 this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                     .map(res => res.json())
                     .subscribe(data => {

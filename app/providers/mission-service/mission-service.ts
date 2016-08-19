@@ -33,7 +33,7 @@ export class MissionService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -117,7 +117,7 @@ export class MissionService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -138,7 +138,7 @@ export class MissionService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -168,7 +168,7 @@ export class MissionService {
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
             let headers = new Headers();
-            headers.append("Content-Type", 'application/json');
+            headers = Configs.getHttpJsonHeaders();
 
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
@@ -206,7 +206,7 @@ export class MissionService {
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
             let headers = new Headers();
-            headers.append("Content-Type", 'application/json');
+            headers = Configs.getHttpJsonHeaders();
 
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
@@ -231,7 +231,7 @@ export class MissionService {
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -247,7 +247,7 @@ export class MissionService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -263,7 +263,7 @@ export class MissionService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -363,7 +363,7 @@ export class MissionService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -409,7 +409,7 @@ export class MissionService {
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -421,7 +421,7 @@ export class MissionService {
 
     sendInfoBySMS(tel, message) {
         tel = tel.replace('+', '00');
-        let url = "http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoisms";
+        let url = Configs.smsURL;
         let payload = "<fr.protogen.connector.model.SmsModel>"
             + "<telephone>" + tel + "</telephone>"
             + "<text>" + message + "</text>"
@@ -429,7 +429,7 @@ export class MissionService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/xml');
+            headers = Configs.getHttpXmlHeaders();
             this.http.post(url, payload, {headers: headers})
                 .subscribe(data => {
                     this.data = data;
@@ -445,7 +445,7 @@ export class MissionService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -461,7 +461,7 @@ export class MissionService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -490,7 +490,7 @@ export class MissionService {
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -519,7 +519,7 @@ export class MissionService {
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -548,7 +548,7 @@ export class MissionService {
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -626,7 +626,7 @@ export class MissionService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {

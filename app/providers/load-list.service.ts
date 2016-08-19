@@ -26,9 +26,9 @@ export class LoadListService {
 		var sql = "SELECT nom, indicatif_telephonique FROM user_pays ORDER BY nom";
 
 	    return new Promise(resolve => {
-	      let headers = new Headers();
-	      headers.append("Content-Type", 'text/plain');
-	      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			let headers = Configs.getHttpTextHeaders();
+
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
 	          .map(res => res.json())
 	          .subscribe(data => {
 	            this.data = data;
@@ -47,8 +47,8 @@ export class LoadListService {
 		var sql = "select pk_user_nationalite, libelle from user_nationalite";
 		
 		return new Promise(resolve => {
-			let headers = new Headers();
-			headers.append("Content-Type", 'text/plain');
+			let headers = Configs.getHttpTextHeaders();
+
 			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
 			.map(res => res.json())
 			.subscribe(data => {
