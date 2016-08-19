@@ -685,62 +685,63 @@ export class MissionDetailsPage {
             this.nav.push(ModalInvoicePage);
         });
         */
+        this.missionService.saveEndMission(this.contract.pk_user_contrat).then( val => {
+			this.missionService.endOfMission(this.contract.pk_user_contrat).then(data=>{
+				debugger;
+				let confirm = Alert.create({
+					title: "VitOnJob",
+					message: "Les détails de cette missions sont en cours de traitements, vous serez contacté par SMS une fois la facturation effectuée",
+					buttons: [
+						{
+							text: 'OK',
+							handler: () => {
+								console.log('No clicked');
+							}
+						}
+					]
+				});
+				this.nav.present(confirm);
 
-        this.missionService.endOfMission(this.contract.pk_user_contrat).then(data=>{
-            debugger;
-            let confirm = Alert.create({
-                title: "VitOnJob",
-                message: "Les détails de cette missions sont en cours de traitements, vous serez contacté par SMS une fois la facturation effectuée",
-                buttons: [
-                    {
-                        text: 'OK',
-                        handler: () => {
-                            console.log('No clicked');
-                        }
-                    }
-                ]
-            });
-            this.nav.present(confirm);
+				let idContrat = data.id;
+				let idOffre = data.offerId;
+				let rate = data.rate;
+				debugger;
+				this.financeService.loadInvoice(idContrat, idOffre, rate).then(invoiceData=>{
+					debugger;
+					let idInvoice = invoiceData.invoiceId;
+					let bean = {
+						"class":'com.vitonjob.yousign.callouts.YousignConfig',
+						employerFirstName : data.employerFirstName,
+						employerLastName : data.employerLastName,
+						employerEmail : data.employerEmail,
+						employerPhone : data.employerPhone,
+						jobyerFirstName : data.jobyerFirstName,
+						jobyerLastName : data.jobyerLastName,
+						jobyerEmail : data.jobyerEmail,
+						jobyerPhone : data.jobyerPhone,
+						idContract : idContrat,
+						idInvoice : idInvoice
+					}
+					this.missionService.signEndOfMission(bean).then(signatureData=>{
+						debugger;
+						this.financeService.checkInvoice(this.contract.pk_user_contrat).then(invoice=>{
+							debugger;
+							if(invoice){
+								this.invoiceId = invoice.pk_user_facture_voj;
 
-            let idContrat = data.id;
-            let idOffre = data.offerId;
-            let rate = data.rate;
-            debugger;
-            this.financeService.loadInvoice(idContrat, idOffre, rate).then(invoiceData=>{
-                debugger;
-                let idInvoice = invoiceData.invoiceId;
-                let bean = {
-                    "class":'com.vitonjob.yousign.callouts.YousignConfig',
-                    employerFirstName : data.employerFirstName,
-                    employerLastName : data.employerLastName,
-                    employerEmail : data.employerEmail,
-                    employerPhone : data.employerPhone,
-                    jobyerFirstName : data.jobyerFirstName,
-                    jobyerLastName : data.jobyerLastName,
-                    jobyerEmail : data.jobyerEmail,
-                    jobyerPhone : data.jobyerPhone,
-                    idContract : idContrat,
-                    idInvoice : idInvoice
-                }
-                this.missionService.signEndOfMission(bean).then(signatureData=>{
-                    debugger;
-                    this.financeService.checkInvoice(this.contract.pk_user_contrat).then(invoice=>{
-                        debugger;
-                        if(invoice){
-                            this.invoiceId = invoice.pk_user_facture_voj;
+								if(this.projectTarget == 'employer')
+									this.isReleveAvailable = invoice.releve_signe_employeur == 'Non';
+								else
+									this.isReleveAvailable = invoice.releve_signe_jobyer == 'Non';
 
-                            if(this.projectTarget == 'employer')
-                                this.isReleveAvailable = invoice.releve_signe_employeur == 'Non';
-                            else
-                                this.isReleveAvailable = invoice.releve_signe_jobyer == 'Non';
+								this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
+							}
+						});
+					});
+				});
 
-                            this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
-                        }
-                    });
-                });
-            });
-
-        });
+			});
+		});
     }
 
     resetForm(){
