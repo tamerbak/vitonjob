@@ -447,7 +447,7 @@ export class MissionDetailsPage {
                 return;
             }
             for(var k = 0; k < this.missionPauses[i].length; k++){
-                var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionPauses[i][k].pause_debut : this.missionPauses[i][k].pause_debut_new;
+                var startOtherPause = this.missionPauses[i][k].pause_debut_pointe;
                 var endOtherPause = this.missionPauses[i][k].pause_fin_pointe;
                 if((startMission >= startOtherPause && startOtherPause != "") || (startMission >= endOtherPause && endOtherPause != "")){
                     this.missionHours[i].heure_debut_pointe = "";
@@ -497,8 +497,8 @@ export class MissionDetailsPage {
                 return false;
             }
             for(var k = 0; k < this.missionPauses[i].length; k++){
-                var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionPauses[i][k].pause_debut : this.missionPauses[i][k].pause_debut_new;
-                var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionPauses[i][k].pause_fin : this.missionPauses[i][k].pause_fin_new;
+                var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut) : this.missionPauses[i][k].pause_debut_new;
+                var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin) : this.missionPauses[i][k].pause_fin_new;
                 if(j < k && ((newHour >= startOtherPause && startOtherPause != "") || (newHour >= endOtherPause && endOtherPause != ""))){
                     this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure aux heures de pauses postérieurs.");
                     return false;
@@ -523,8 +523,8 @@ export class MissionDetailsPage {
                     return false;
                 }
                 for(var k = 0; k < this.missionPauses[i].length; k++){
-                    var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionPauses[i][k].pause_debut : this.missionPauses[i][k].pause_debut_new;
-					var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionPauses[i][k].pause_fin : this.missionPauses[i][k].pause_fin_new;
+                    var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut) : this.missionPauses[i][k].pause_debut_new;
+					var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin) : this.missionPauses[i][k].pause_fin_new;
                     if(j < k && ((newHour >= startOtherPause && startOtherPause != "") || (newHour >= endOtherPause && endOtherPause != ""))){
                         this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieure aux heures de pauses postérieurs.");
                         return false;
@@ -544,8 +544,8 @@ export class MissionDetailsPage {
             }
 			if(this.missionPauses[i]){
 				for(var k = 0; k < this.missionPauses[i].length; k++){
-					var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionPauses[i][k].pause_debut : this.missionPauses[i][k].pause_debut_new;
-					var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionPauses[i][k].pause_fin : this.missionPauses[i][k].pause_fin_new;
+					var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut) : this.missionPauses[i][k].pause_debut_new;
+					var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin) : this.missionPauses[i][k].pause_fin_new;
 					if((newHour >= startOtherPause && startOtherPause != "") || (newHour >= endOtherPause && endOtherPause != "")){
 						this.globalService.showAlertValidation("VitOnJob", "L'heure de début de travail doit être inférieure aux heures de pauses.");
 						return false;
@@ -560,8 +560,8 @@ export class MissionDetailsPage {
                 }
 				if(this.missionPauses[i]){
 					for(var k = 0; k < this.missionPauses[i].length; k++){
-						var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionPauses[i][k].pause_debut : this.missionPauses[i][k].pause_debut_new;
-						var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionPauses[i][k].pause_fin : this.missionPauses[i][k].pause_fin_new;
+						var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut) : this.missionPauses[i][k].pause_debut_new;
+						var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin) : this.missionPauses[i][k].pause_fin_new;
 						if((newHour <= startOtherPause && startOtherPause != "") || (newHour <= endOtherPause && endOtherPause != "")){
 							this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de travail doit être supérieure aux heures de pauses.");
 							return false;
@@ -685,62 +685,63 @@ export class MissionDetailsPage {
             this.nav.push(ModalInvoicePage);
         });
         */
+        this.missionService.saveEndMission(this.contract.pk_user_contrat).then( val => {
+			this.missionService.endOfMission(this.contract.pk_user_contrat).then(data=>{
+				debugger;
+				let confirm = Alert.create({
+					title: "VitOnJob",
+					message: "Les détails de cette missions sont en cours de traitements, vous serez contacté par SMS une fois la facturation effectuée",
+					buttons: [
+						{
+							text: 'OK',
+							handler: () => {
+								console.log('No clicked');
+							}
+						}
+					]
+				});
+				this.nav.present(confirm);
 
-        this.missionService.endOfMission(this.contract.pk_user_contrat).then(data=>{
-            debugger;
-            let confirm = Alert.create({
-                title: "VitOnJob",
-                message: "Les détails de cette missions sont en cours de traitements, vous serez contacté par SMS une fois la facturation effectuée",
-                buttons: [
-                    {
-                        text: 'OK',
-                        handler: () => {
-                            console.log('No clicked');
-                        }
-                    }
-                ]
-            });
-            this.nav.present(confirm);
+				let idContrat = data.id;
+				let idOffre = data.offerId;
+				let rate = data.rate;
+				debugger;
+				this.financeService.loadInvoice(idContrat, idOffre, rate).then(invoiceData=>{
+					debugger;
+					let idInvoice = invoiceData.invoiceId;
+					let bean = {
+						"class":'com.vitonjob.yousign.callouts.YousignConfig',
+						employerFirstName : data.employerFirstName,
+						employerLastName : data.employerLastName,
+						employerEmail : data.employerEmail,
+						employerPhone : data.employerPhone,
+						jobyerFirstName : data.jobyerFirstName,
+						jobyerLastName : data.jobyerLastName,
+						jobyerEmail : data.jobyerEmail,
+						jobyerPhone : data.jobyerPhone,
+						idContract : idContrat,
+						idInvoice : idInvoice
+					}
+					this.missionService.signEndOfMission(bean).then(signatureData=>{
+						debugger;
+						this.financeService.checkInvoice(this.contract.pk_user_contrat).then(invoice=>{
+							debugger;
+							if(invoice){
+								this.invoiceId = invoice.pk_user_facture_voj;
 
-            let idContrat = data.id;
-            let idOffre = data.offerId;
-            let rate = data.rate;
-            debugger;
-            this.financeService.loadInvoice(idContrat, idOffre, rate).then(invoiceData=>{
-                debugger;
-                let idInvoice = invoiceData.invoiceId;
-                let bean = {
-                    "class":'com.vitonjob.yousign.callouts.YousignConfig',
-                    employerFirstName : data.employerFirstName,
-                    employerLastName : data.employerLastName,
-                    employerEmail : data.employerEmail,
-                    employerPhone : data.employerPhone,
-                    jobyerFirstName : data.jobyerFirstName,
-                    jobyerLastName : data.jobyerLastName,
-                    jobyerEmail : data.jobyerEmail,
-                    jobyerPhone : data.jobyerPhone,
-                    idContract : idContrat,
-                    idInvoice : idInvoice
-                }
-                this.missionService.signEndOfMission(bean).then(signatureData=>{
-                    debugger;
-                    this.financeService.checkInvoice(this.contract.pk_user_contrat).then(invoice=>{
-                        debugger;
-                        if(invoice){
-                            this.invoiceId = invoice.pk_user_facture_voj;
+								if(this.projectTarget == 'employer')
+									this.isReleveAvailable = invoice.releve_signe_employeur == 'Non';
+								else
+									this.isReleveAvailable = invoice.releve_signe_jobyer == 'Non';
 
-                            if(this.projectTarget == 'employer')
-                                this.isReleveAvailable = invoice.releve_signe_employeur == 'Non';
-                            else
-                                this.isReleveAvailable = invoice.releve_signe_jobyer == 'Non';
+								this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
+							}
+						});
+					});
+				});
 
-                            this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
-                        }
-                    });
-                });
-            });
-
-        });
+			});
+		});
     }
 
     resetForm(){

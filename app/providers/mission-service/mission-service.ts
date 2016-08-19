@@ -149,7 +149,7 @@ export class MissionService {
     }
 
     endOfMission(idContrat) {
-        let payload = {
+		let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
             'id': 234,
             'args': [
@@ -636,4 +636,21 @@ export class MissionService {
         });
 
     }
+	
+	saveEndMission(id){
+		//  Init project parameters
+        var sql = "update user_contrat set accompli = 'Oui' where pk_user_contrat = '" + id + "'; ";
+        console.log(sql);
+
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });
+	}
 }
