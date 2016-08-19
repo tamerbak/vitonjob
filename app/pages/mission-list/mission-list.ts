@@ -84,7 +84,7 @@ export class MissionListPage {
                             let item = this.contractList[i];
                             if (item.date_de_debut) {
                                 /*if ((this.dayDifference(item.date_de_debut) == 0) || (this.dayDifference(item.date_de_debut) < 0 && this.dayDifference(item.date_de_fin) >= 0))*/
-                                if(item.signature_jobyer.toUpperCase() == 'OUI' && item.approuve.toUpperCase() == 'NON')
+                                if(item.signature_jobyer.toUpperCase() == 'OUI' && item.accompli.toUpperCase() == 'NON')
 								// Mission en cours
                                     missionNow.push(item);
                                 /*else if (this.dayDifference(item.date_de_debut) > 0)*/
@@ -92,7 +92,7 @@ export class MissionListPage {
 								// Mission in futur
                                     missionFutur.push(item);
                                 //else
-                                if(item.approuve.toUpperCase() == 'OUI')
+                                if(item.accompli.toUpperCase() == 'OUI')
 								// Mission in past
                                     missionPast.push(item);
                             }
