@@ -26,9 +26,8 @@ export class DataProviderService {
 		this.configuration = Configs.setConfigs(role);
 		var sql= "select pk_user_account, email, role from user_account where telephone = '"+tel+"'";
 		return new Promise(resolve => {
-	      let headers = new Headers();
-	      headers.append("Content-Type", 'text/plain');
-	      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			let headers = Configs.getHttpTextHeaders();
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
 	          .map(res => res.json())
 	          .subscribe(data => {
 	            this.data = data;
@@ -52,9 +51,8 @@ export class DataProviderService {
 
 	    // don't have the data yet
 	    return new Promise(resolve => {
-	      let headers = new Headers();
-	      headers.append("Content-Type", 'text/plain');
-	      this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			let headers = Configs.getHttpTextHeaders();
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
 	          .map(res => res.json())
 	          .subscribe(data => {
 	            this.data = data;

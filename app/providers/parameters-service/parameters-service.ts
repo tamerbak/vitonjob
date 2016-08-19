@@ -14,7 +14,7 @@ export class ParametersService {
         let sql = "select libelle, taux_horaire, coefficient from user_coefficient_aiv order by taux_horaire asc";
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {

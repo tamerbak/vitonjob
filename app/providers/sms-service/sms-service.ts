@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 //import {Configs} from '../../configurations/configs';
 import {Http, Headers} from '@angular/http';
+import {Configs} from "../../configurations/configs";
 
 
 /**
@@ -46,9 +47,9 @@ export class SmsService {
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
             let headers = new Headers();
-            headers.append("Content-Type", "text/xml");
+            headers = Configs.getHttpXmlHeaders();
             
-            this.http.post('http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoisms', soapMessage, {headers:headers})
+            this.http.post(Configs.smsURL, soapMessage, {headers:headers})
                 .map(res => res)
                 .subscribe(data => {
                     resolve(data);

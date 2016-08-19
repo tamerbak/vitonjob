@@ -15,8 +15,7 @@ export class AttachementsService {
         let sql = "select pk_user_pieces_justificatives, nom_fichier, date_mise_a_jour from user_pieces_justificatives where fk_user_account="+user.id +" and dirty='N'";
         console.log(sql);
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -44,8 +43,7 @@ export class AttachementsService {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -78,8 +76,7 @@ export class AttachementsService {
         var stringData = JSON.stringify(payload);
         //console.log(stringData);
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'application/json');
+            let headers = Configs.getHttpJsonHeaders();
             this.http.post(Configs.fssURL, stringData, {headers:headers})
                 .subscribe(data => {
                    //debugger;
@@ -101,8 +98,7 @@ export class AttachementsService {
         var stringData = JSON.stringify(payload);
         console.log(stringData);
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'application/json');
+            let headers = Configs.getHttpJsonHeaders();
             this.http.post(Configs.fssURL, stringData, {headers:headers})
                 .subscribe(data => {
 
@@ -117,8 +113,7 @@ export class AttachementsService {
         let sql = "update user_pieces_justificatives set dirty='Y' where pk_user_pieces_justificatives="+attachement.id;
 
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {

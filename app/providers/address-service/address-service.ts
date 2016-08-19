@@ -61,8 +61,8 @@ export class AddressService {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
-            let headers = new Headers();
-            headers.append("Content-Type", 'application/json');
+            let headers = Configs.getHttpJsonHeaders();
+
 
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers:headers})
                 .map(res => res.json())

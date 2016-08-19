@@ -23,8 +23,7 @@ export class ContractService {
     getNumContract(){
         let sql = "select nextval('sequence_num_contrat') as numct";
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -46,7 +45,7 @@ export class ContractService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -69,7 +68,7 @@ export class ContractService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -98,7 +97,7 @@ export class ContractService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -192,7 +191,7 @@ export class ContractService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -215,7 +214,7 @@ export class ContractService {
 
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -441,7 +440,7 @@ export class ContractService {
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {

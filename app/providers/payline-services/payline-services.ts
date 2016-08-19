@@ -54,7 +54,7 @@ export class PaylineServices {
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
             let headers = new Headers();
-            headers.append("Content-Type", 'application/json');
+            headers = Configs.getHttpJsonHeaders();
 
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers:headers})
                 .map(res => res.json())
@@ -77,7 +77,7 @@ export class PaylineServices {
         let sql = 'select wallet_id from user_account where pk_user_account='+user.id;
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {

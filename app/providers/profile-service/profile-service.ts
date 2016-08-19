@@ -20,7 +20,7 @@ export class ProfileService {
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -37,7 +37,7 @@ export class ProfileService {
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
@@ -52,7 +52,7 @@ export class ProfileService {
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
-            headers.append("Content-Type", 'text/plain');
+            headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {

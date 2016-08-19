@@ -1,3 +1,4 @@
+import {Headers} from "@angular/http";
 /**
  * Created by tim on 04/05/16.
  * Here we will define all configurations of both apps.
@@ -39,8 +40,8 @@ class EmployerConfigs implements AbstractConfigs {
     bgMenuURL:string = 'img/bg_employer.png';
     menuBackgroundImage = {'background-image': "url('img/bg_menu_employer.png')"};
     highlightSentence:string = 'Trouvez vos jobyers immédiatement disponibles!';
-    calloutURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
-    sqlURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql';
+    calloutURL:string = Configs.calloutURL;
+    sqlURL:string = Configs.sqlURL;
     calendarTheme:number = 4;
     backgroundImage = {'background-image': "url('img/bg_employer.png')"};
     fontColor = "white";
@@ -86,8 +87,8 @@ class JobyerConfigs implements AbstractConfigs {
     backgroundImage = {'background-image': "url('img/bg_jobyer.png')"};
     bgMenuURL:string = 'img/bg_jobyer.png';
     highlightSentence:string = "Des milliers d'offres à proximité!";
-    calloutURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
-    sqlURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql';
+    calloutURL:string = Configs.calloutURL;
+    sqlURL:string = Configs.sqlURL;
     calendarTheme:number = 5;
     avatars = [
         {
@@ -118,6 +119,7 @@ class JobyerConfigs implements AbstractConfigs {
 }
 
 
+
 export class Configs {
     public static calloutURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
     public static sqlURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql';
@@ -125,6 +127,34 @@ export class Configs {
     public static smsURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sms';
     public static emailURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/email';
     public static fssURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/fssjs';
+
+    /*
+     public static calloutURL:string = 'https://app.vitonjob.com/api/business';
+     public static sqlURL:string = 'https://app.vitonjob.com/api/sql';
+     public static yousignURL:string = 'https://app.vitonjob.com/api/business';
+     public static smsURL:string = 'https://app.vitonjob.com/api/sms';
+     public static emailURL:string = 'https://app.vitonjob.com/api/email';
+     public static fssURL:string = 'https://app.vitonjob.com/api/fssjs';
+     */
+
+    public static getHttpJsonHeaders(){
+        let headers = new Headers();
+        headers.append("Content-Type", 'application/json');
+        //headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
+        return headers;
+    }
+    public static getHttpTextHeaders(){
+        let headers = new Headers();
+        headers.append("Content-Type", 'text/plain');
+        //headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
+        return headers;
+    }
+    public static getHttpXmlHeaders(){
+        let headers = new Headers();
+        headers.append("Content-Type", 'text/xml');
+        //headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
+        return headers;
+    }
 
     public static setConfigs(type:string):AbstractConfigs {
         if (type === "employer") {
