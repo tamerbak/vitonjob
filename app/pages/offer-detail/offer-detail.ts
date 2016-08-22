@@ -358,7 +358,7 @@ export class OfferDetailPage {
     deleteOffer() {
         let confirm = Alert.create({
             title: "Supprimer l'offre",
-            message: "Etes vous sûr de vouloir supprimer cette offre ?",
+            message: "Êtes-vous sûr de vouloir supprimer cette offre ?",
             buttons: [
                 {
                     text: 'Non',

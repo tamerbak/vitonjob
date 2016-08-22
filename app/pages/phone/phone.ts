@@ -161,7 +161,7 @@ export class PhonePage {
 					this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe est incorrect.");
 				}else{
 					console.log("used email error");
-					this.globalService.showAlertValidation("VitOnJob", "Cette adresse email a été déjà utilisé. Veuillez choisir une autre.");
+					this.globalService.showAlertValidation("VitOnJob", "Cette adresse email a été déjà utilisé. Veuillez en choisir une autre.");
 				}
 				return;
 			}
@@ -440,7 +440,7 @@ export class PhonePage {
 								return;
 							}
 							loading.dismiss();
-							//this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par SMS.");
+							//this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été réinitialisé. Vous allez le recevoir par SMS.");
 						});
 					});
 				}
@@ -458,7 +458,7 @@ export class PhonePage {
 								return;
 							}
 							loading.dismiss();
-							//this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par email.");
+							//this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été réinitialisé. Vous allez le recevoir par email.");
 						});
 					});
 				}
@@ -488,7 +488,7 @@ export class PhonePage {
 		if(this.isRecruteur){
 			let confirm = Alert.create({
 				title: "VitOnJob",
-				message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez-vous continuer?",
+				message: "Votre mot de passe est sur le point d'être réinitialisé. Voulez-vous continuer?",
 				buttons: [
 					{
 						text: 'Recevoir par SMS',
@@ -508,7 +508,7 @@ export class PhonePage {
 		}else{
 			let confirm = Alert.create({
 				title: "VitOnJob",
-				message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez-vous le recevoir par SMS ou par email?",
+				message: "Votre mot de passe est sur le point d'être réinitialisé. Voulez-vous le recevoir par SMS ou par email?",
 				buttons: [
 					{
 						text: 'SMS',

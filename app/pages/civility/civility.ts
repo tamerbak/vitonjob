@@ -824,7 +824,7 @@ export class CivilityPage {
 			this.profileService.countEntreprisesBySIRET(this.siret).then(data => {
 				if(data.data[0].count != 0 && this.siret != this.currentUser.employer.entreprises[0].siret){
 					if (!this.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
-						this.globalService.showAlertValidation("VitOnJob", "Le SIRET " + this.siret + " existe déjà. Veuillez saisir un autre.");
+						this.globalService.showAlertValidation("VitOnJob", "Le SIRET " + this.siret + " existe déjà. Veuillez en saisir un autre.");
 						this.siret = this.currentUser.employer.entreprises[0].siret;
 					}else{
 						this.displayCompanyAlert('siret');
@@ -839,7 +839,7 @@ export class CivilityPage {
 	displayCompanyAlert(field){
 		let confirm = Alert.create({
 			title: "VitOnJob",
-			message: (field == "siret" ? ("Le SIRET " + this.siret) : ("La raison sociale " + this.companyname)) + " existe déjà. Si vous continuez, ce compte sera bloqué, \n sinon veuillez saisir " + (field == "siret" ? "un " : "une ") + "autre. \n Voulez vous continuez?",
+			message: (field == "siret" ? ("Le SIRET " + this.siret) : ("La raison sociale " + this.companyname)) + " existe déjà. Si vous continuez, ce compte sera bloqué, \n sinon veuillez en saisir " + (field == "siret" ? "un " : "une ") + "autre. \n Voulez vous continuez?",
 			buttons: [
 				{
 					text: 'Non',

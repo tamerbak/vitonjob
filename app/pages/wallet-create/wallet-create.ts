@@ -86,7 +86,7 @@ export class WalletCreatePage {
                     this.nav.setRoot(MissionListPage);
                 } else {
                     let alert = Alert.create({
-                        title: "Erreur de validation de la carte",
+                        title: "Erreur lors de validation de la carte",
                         subTitle: "le numéro de carte bancaire doit comporter 16 chiffres et doit être valide",
                         buttons: ['OK']
                     });

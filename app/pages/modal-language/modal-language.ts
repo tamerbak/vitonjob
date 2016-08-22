@@ -91,7 +91,7 @@ export class ModalLanguagePage {
   removeLanguage(item) {
 
     let confirm = Alert.create({
-      title: 'Etes vous sûr?',
+      title: 'Êtes-vous sûr?',
       message: 'Voulez-vous supprimer cette Langue?',
       buttons: [
         {
