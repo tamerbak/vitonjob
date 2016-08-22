@@ -16,7 +16,7 @@ export class CommunesService {
     constructor(public http: Http) {}
 
     getCommunes(letters){
-        let sql = "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%"+letters+"%') limit 5";
+        let sql = "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) % lower_unaccent('"+letters+"') limit 5";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -53,7 +53,7 @@ export class CommunesService {
     }
 
     autocompleteCity(letters){
-        let sql = "select pk_user_ville as id, nom from user_ville where lower_unaccent(nom) like lower_unaccent('%"+letters+"%') order by nom asc limit 5";
+        let sql = "select pk_user_ville as id, nom from user_ville where lower_unaccent(nom) % lower_unaccent('"+letters+"') order by nom asc limit 5";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
