@@ -1,15 +1,17 @@
 import {Component} from '@angular/core';
-import {NavController, NavParams, ViewController, Alert} from 'ionic-angular';
+import {NavController, NavParams, ViewController, Alert, Popover} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {LoadListService} from "../../providers/load-list.service";
 import {ValidationDataService} from "../../providers/validation-data.service";
 import {DataProviderService} from "../../providers/data-provider.service";
 import {GlobalService} from "../../providers/global.service";
+import {PopoverRecruiterPage} from "../popover-recruiter/popover-recruiter";
+import {RecruiterService} from '../../providers/recruiter-service/recruiter-service';
 
 @Component({
   templateUrl: 'build/pages/modal-recruiter-manual/modal-recruiter-manual.html',
-  providers: [LoadListService, ValidationDataService, DataProviderService, GlobalService]
+  providers: [LoadListService, ValidationDataService, DataProviderService, GlobalService, RecruiterService]
 })
 export class ModalRecruiterManualPage {
 	projectTarget:string;
@@ -24,7 +26,7 @@ export class ModalRecruiterManualPage {
 	//email: string;
 	isPhoneNumValid = true;
 	phoneExist = false;
-	
+	recruiter;
 	constructor(public nav: NavController,
 				params: NavParams,
 				public gc: GlobalConfigs,
@@ -32,7 +34,8 @@ export class ModalRecruiterManualPage {
 				private loadListService: LoadListService, 
 				private validationDataService: ValidationDataService,
 				private dataProviderService: DataProviderService, 
-				private globalService: GlobalService) {
+				private globalService: GlobalService,
+				private recruiterService: RecruiterService) {
 		// Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
         // get config of selected target
@@ -42,8 +45,10 @@ export class ModalRecruiterManualPage {
         this.isEmployer = (this.projectTarget=='employer');			
 		this.modalTitle = "Détail du contact"
 		this.index = "33";
-		if(params.data.contact)
+		if(params.data.contact){
+			this.recruiter = params.data.contact;
 			this.initializeForm(params.data.contact);
+		}
 	}
 	initializeForm(contact){
 		this.firstname = contact.firstname;
@@ -182,5 +187,61 @@ export class ModalRecruiterManualPage {
 	
 	closeModal() {
 		this.viewCtrl.dismiss();
+	}
+	
+	showPopover(ev) {
+        let popover = Popover.create(PopoverRecruiterPage);
+        this.nav.present(popover, {
+            ev: ev
+        });
+
+        popover.onDismiss( data => {
+            if(!data)
+				return;
+			switch (data.option) {
+                case 1:
+                    this.blockRecruiter();
+                    break;
+                case 2:
+                    this.deleteRecruiter();
+                    break;
+            }
+        })
+    }
+	
+	deleteRecruiter(){
+		let confirm = Alert.create({
+				title: "VitOnJob",
+				message: "Etes-vous sûr de vouloir supprimer ce recruteur?",
+				buttons: [
+					{
+						text: 'Annuler',
+						handler: () => {
+							console.log('Disagree selected');
+						}
+					},
+					{
+						text: 'Oui',
+						handler: () => {
+							console.log('Yes selected');	
+							this.recruiterService.deleteRecruiter(this.recruiter.accountid).then(data => {
+								if(!data || data.status == "failure"){
+									this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+									return;	
+								}else{
+									this.recruiterService.deleteRecruiterFromLocal(this.recruiter).then(data => {
+										this.viewCtrl.dismiss();
+									});
+								}
+							})
+						}
+					}
+				]
+			});
+			this.nav.present(confirm);
+	}
+	
+	blockRecruiter(){
+		
 	}
 }

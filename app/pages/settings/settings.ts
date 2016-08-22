@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController, Loading, Events} from 'ionic-angular';
+import {NavController, Loading, Events, Modal} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -7,7 +7,8 @@ import {Storage, SqlStorage} from 'ionic-angular';
 import {GlobalService} from "../../providers/global.service";
 import {SettingPasswordPage} from "../setting-password/setting-password";
 import {HomePage} from "../home/home";
-
+import {ModalTrackMissionPage} from "../modal-track-mission/modal-track-mission";
+import {MissionService} from '../../providers/mission-service/mission-service';
 /*
 	Generated class for the SettingsPage page.
 	
@@ -32,7 +33,8 @@ export class SettingsPage {
 	
 	constructor(public nav: NavController, gc: GlobalConfigs,
 				private authService: AuthenticationService,
-				private globalService: GlobalService, events:Events) {
+				private globalService: GlobalService, events:Events,
+				private missionService:MissionService) {
 		this.projectTarget = gc.getProjectTarget();
 		let config = Configs.setConfigs(this.projectTarget);
 		this.options = config.options;
@@ -46,6 +48,7 @@ export class SettingsPage {
 		this.storage.set('connexion', null);
 		this.storage.set(this.currentUserVar, null);
 		this.storage.set("RECRUITER_LIST", null);
+		this.storage.set('OPTION_MISSION', null);
 		this.events.publish('user:logout');
 		this.nav.setRoot(HomePage);
 	}
@@ -58,4 +61,26 @@ export class SettingsPage {
 
 	}
 	
+	changeOption(){
+        let modal = Modal.create(ModalTrackMissionPage);
+        this.nav.present(modal);
+        modal.onDismiss(selectedOption => {
+            if(selectedOption){
+				this.storage.get(this.currentUserVar).then((value) => {
+					if(value){
+						this.currentUser = JSON.parse(value);
+						this.storage.set('OPTION_MISSION', selectedOption).then(() =>{
+							this.missionService.updateDefaultOptionMission(selectedOption, this.currentUser.id).then((data) => {
+								if(!data || data.status == 'failure'){
+									this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
+								}else{
+									console.log("default option mission saved successfully");
+								}
+							});
+						});
+					}
+				});
+			}
+		});
+	}
 }

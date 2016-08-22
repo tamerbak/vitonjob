@@ -30,18 +30,22 @@ export class RecruiterListPage {
         this.themeColor = config.themeColor;
         this.isEmployer = (this.projectTarget=='employer');
 		this.storage = new Storage(SqlStorage);
-		//if db local contains recruiter list, retrieve it
+		let currentUserVar = config.currentUserVar;
+        
+		this.storage.get(currentUserVar).then((value) => {
+			if(value){
+				this.currentUser = JSON.parse(value);
+			}
+		});
+	}
+	
+	onPageWillEnter() {
+        //if db local contains recruiter list, retrieve it
 		this.storage.get("RECRUITER_LIST").then((value) => {
 			if(value){
 				this.recruiterList = JSON.parse(value);
 			//if db local does not contain recruiter list, retrieve it from server
-			}
-		});
-		let currentUserVar = config.currentUserVar;
-        this.storage.get(currentUserVar).then((value) => {
-			if(value){
-				this.currentUser = JSON.parse(value);
-				console.log(this.recruiterList);
+			}else{
 				if(!this.recruiterList || this.recruiterList.length == 0){
 					this.recruiterService.loadRecruiters(this.currentUser.employer.id).then((data)=>{
 						if(data && data.status == "success"){
@@ -52,7 +56,8 @@ export class RecruiterListPage {
 				}
 			}
 		});
-	}	
+		
+    }
 	
 	showRecruiterRepertoryModal(){
 		let modal = Modal.create(ModalRecruiterRepertoryPage);
@@ -64,7 +69,9 @@ export class RecruiterListPage {
 						this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
 					}else{
 						console.log("recruiter saved successfully");
-						this.updateRecruiterListInLocal(data);
+						this.recruiterService.updateRecruiterListInLocal(data).then(() => {
+							this.onPageWillEnter();
+						});
 					}
 				});
 			}
@@ -75,6 +82,10 @@ export class RecruiterListPage {
 		let modal = Modal.create(ModalRecruiterManualPage, {contact:contact});
 		this.nav.present(modal);
 		modal.onDismiss(recruiter => {
+			if(!recruiter){
+				this.onPageWillEnter();
+				return;
+			}
 			//if validate button was clicked, and a new recruiter was entered
 			this.saveNewContact(recruiter, contact);
 			//if validate button was clicked and an existant recruiter was modified
@@ -96,7 +107,9 @@ export class RecruiterListPage {
 				if(contact && (recruiter[0].firstname != contact.firstname || recruiter[0].lastname != contact.lastname || tel != contact.phone)){
 					this.recruiterService.updateRecruiter(recruiter[0], this.currentUser.employer.id).then((data) => {
 						console.log("recruiter modified successfully");
-						this.updateRecruiterListInLocal([recruiter[0]]);
+						this.recruiterService.updateRecruiterListInLocal([recruiter[0]]).then(() => {
+							this.onPageWillEnter();
+						});
 						this.sendNotification(recruiter[0].accountid, tel);
 						loading.dismiss();
 					});
@@ -107,7 +120,9 @@ export class RecruiterListPage {
 					if(recruiter[0] && !contact && !Array.isArray(recruiter[0])){
 						this.recruiterService.insertRecruiters([recruiter[0]], this.currentUser.employer.id, 'manual').then((data) => {
 							console.log("recruiter saved successfully");
-							this.updateRecruiterListInLocal(data);
+							this.recruiterService.updateRecruiterListInLocal(data).then(() => {
+								this.onPageWillEnter();
+							});
 							this.sendNotification(data[0].accountid, tel);
 							loading.dismiss();
 						});
@@ -133,7 +148,9 @@ export class RecruiterListPage {
 		if(recruiter && !contact && !Array.isArray(recruiter)){
 			this.recruiterService.insertRecruiters([recruiter], this.currentUser.employer.id, 'manual').then((data) => {
 				console.log("recruiter saved successfully");
-				this.updateRecruiterListInLocal(data);
+				this.recruiterService.updateRecruiterListInLocal(data).then(() => {
+					this.onPageWillEnter();
+				});
 			});
 			return;
 		}
@@ -143,30 +160,11 @@ export class RecruiterListPage {
 		if(recruiter && contact && !Array.isArray(recruiter)){
 			this.recruiterService.updateRecruiter(recruiter, this.currentUser.employer.id).then((data) => {
 				console.log("recruiter modified successfully");
-				this.updateRecruiterListInLocal([recruiter]);
+				this.recruiterService.updateRecruiterListInLocal([recruiter]).then(() => {
+					this.onPageWillEnter();
+				});
 			});
 			return;
 		}		
-	}
-		
-	updateRecruiterListInLocal(contacts){
-		this.storage.get("RECRUITER_LIST").then((value) => {
-			if(value){
-				this.recruiterList = JSON.parse(value);
-				for(var i = 0; i < contacts.length; i++){
-					var recruiterExist = false;
-					for(var j = 0; j < this.recruiterList.length; j++){
-						if(contacts[i].accountid == this.recruiterList[j].accountid){
-							this.recruiterList.splice(j, 1, contacts[i]);
-							recruiterExist = true;
-						}
-					}
-					if(!recruiterExist){
-						this.recruiterList.push(contacts[i]);	
-					}
-				}
-				this.storage.set('RECRUITER_LIST', JSON.stringify(this.recruiterList));
-			}
-		});
 	}
 }

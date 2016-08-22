@@ -131,11 +131,7 @@ export class MissionDetailsPage {
         if(this.contract.numero_de_facture && this.contract.numero_de_facture != 'null')
             this.invoiceReady = true;
 
-        if(!this.contract.option_mission || this.contract.option_mission == "null"){
-            this.optionMission = "Mode de suivi de mission n°1"
-        }else{
-            this.optionMission = "Mode de suivi de mission n°" + this.contract.option_mission.substring(0, 1);
-        }
+       this.getOptionMission();
 
         //  Getting contract score
         this.notationService.loadContractNotation(this.contract, this.projectTarget).then(score=>{
@@ -1167,6 +1163,21 @@ export class MissionDetailsPage {
         this.nav.push(MissionEndInvoicePage, {idInvoice : this.invoiceId});
     }
 
+	getOptionMission(){
+		if(this.isEmpty(this.contract.option_mission)){
+            this.db.get('OPTION_MISSION').then((value) => {
+				if(this.isEmpty(value)){
+					//no need to retrive from db, because option is saved in local and in db in the same time, and oprion 1 is the default option in db
+					this.optionMission = "Mode de suivi de mission n°1";
+				}else{
+					this.optionMission = "Mode de suivi de mission n°" + value.substring(0, 1);
+				}
+			});
+		}else{
+            this.optionMission = "Mode de suivi de mission n°" + this.contract.option_mission.substring(0, 1);
+        }	
+	}
+		
 	upperCase(str){
         if(str == null || !str || isUndefined(str))
             return '';

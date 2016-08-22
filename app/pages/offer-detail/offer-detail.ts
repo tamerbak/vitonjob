@@ -397,8 +397,19 @@ export class OfferDetailPage {
                     text: 'Oui',
                     handler: () => {
                         console.log('Agree clicked');
-                        let offer = this.offer;
+                        let loading = Loading.create({
+							content: ` 
+								<div>
+									<img src='img/loading.gif' />
+								</div>
+								`,
+							spinner: 'hide',
+							duration: 10000
+						});
+						this.nav.present(loading);
+						let offer = this.offer;
                         offer.title = this.offer.title + " (Copie)";
+						offer.idOffer = "";
                         this.offerService.setOfferInLocal(offer, this.projectTarget)
                             .then(()=> {
                                 console.log('••• Adding offer : local storing success!');
@@ -407,9 +418,9 @@ export class OfferDetailPage {
                                     .then(data => {
                                         console.log('••• Adding offer : remote storing success!');
                                        //debugger;
+										loading.dismiss();
                                         this.nav.setRoot(OfferListPage);
                                     })
-
                             });
                     }
                 }
