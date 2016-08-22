@@ -67,7 +67,7 @@ export class ModalRecruiterRepertoryPage {
 					contact.checked = false;
 					contact.disabled = true;
 					let toast = Toast.create({
-						message: 'Ce contact existe déjà. Veuillez choisir un autre.',
+						message: 'Ce contact existe déjà. Veuillez en choisir un autre.',
 						duration: 5000
 					});
 					this.nav.present(toast);

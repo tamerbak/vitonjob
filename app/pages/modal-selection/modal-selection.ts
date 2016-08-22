@@ -88,7 +88,7 @@ export class ModalSelectionPage {
                 }
             else {
                 let toast = Toast.create({
-                    message: "Vous avez déjà choisi cette qualité! Merci de sélectionner une autre.",
+                    message: "Vous avez déjà choisi cette qualité! Merci d'en sélectionner une autre.",
                     duration: 3000
                 });
 
@@ -108,7 +108,7 @@ export class ModalSelectionPage {
                 }
                 else {
                     let toast = Toast.create({
-                        message: "Vous avez déjà choisi cette langue! Merci de sélectionner une autre.",
+                        message: "Vous avez déjà choisi cette langue! Merci d'en sélectionner une autre.",
                         duration: 3000
                     });
 

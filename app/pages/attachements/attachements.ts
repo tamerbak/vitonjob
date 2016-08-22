@@ -44,7 +44,7 @@ export class AttachementsPage {
     deleteAttachment(a){
         let alert = Alert.create({
             title : 'Supprimer ce document',
-            message : 'Etes vous sûr de vouloir supprimer ce document ?',
+            message : 'Etes-vous sûr de vouloir supprimer ce document ?',
             buttons:[{
                 text: 'Annuler',
                 role : 'cancel'

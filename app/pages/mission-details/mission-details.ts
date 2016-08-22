@@ -608,7 +608,7 @@ export class MissionDetailsPage {
         this.missionService.saveCorrectedMissions(this.contract.pk_user_contrat, this.missionHours, this.missionPauses).then((data) => {
             if(data && data.status == "success"){
                 console.log("timesheet saved");
-                var message = "Vous avez reçu le relevé d'heure de contrat n°" + this.contract.numero;
+                var message = "Vous avez reçu le relevé d'heure du contrat n°" + this.contract.numero;
                 var objectifNotif = "MissionDetailsPage";
                 this.sendPushNotification(message, objectifNotif, "toJobyer");
                 this.sendInfoBySMS(message, "toJobyer");

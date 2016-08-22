@@ -113,7 +113,7 @@ export class ModalCalendarPage {
         //debugger;
 
         let confirm = Alert.create({
-            title: 'Etes vous sûr?',
+            title: 'Êtes-vous sûr?',
             message: 'Voulez-vous supprimer ce créneau?',
             buttons: [
                 {
