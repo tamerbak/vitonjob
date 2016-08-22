@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {Http, Headers} from '@angular/http';
+import {Storage, SqlStorage} from 'ionic-angular';
 
 @Injectable()
 export class RecruiterService{
@@ -12,6 +13,7 @@ export class RecruiterService{
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
         this.configuration = Configs.setConfigs(this.projectTarget);
+		this.storage = new Storage(SqlStorage);
     }
 
     loadRecruiters(id){
@@ -192,5 +194,65 @@ export class RecruiterService{
 				resolve(this.data);
 			});
 		})
+	}
+	
+	deleteRecruiter(accountId){
+		var sql = "delete from user_recruteur where fk_user_account = '" + accountId + "';";
+		sql = sql + " delete from user_account where pk_user_account = '" + accountId + "' and role = 'recruteur';";
+		console.log(sql);
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+					console.log(data);
+					resolve(data);
+                });
+        });	
+	}
+	
+	updateRecruiterListInLocal(contacts){
+		return new Promise(resolve => {
+			this.storage.get("RECRUITER_LIST").then((value) => {
+				if(value){
+					var recruiterList = JSON.parse(value);
+					for(var i = 0; i < contacts.length; i++){
+						var recruiterExist = false;
+						for(var j = 0; j < recruiterList.length; j++){
+							if(contacts[i].accountid == recruiterList[j].accountid){
+								recruiterList.splice(j, 1, contacts[i]);
+								recruiterExist = true;
+							}
+						}
+						if(!recruiterExist){
+							recruiterList.push(contacts[i]);	
+						}
+					}
+					this.storage.set('RECRUITER_LIST', JSON.stringify(recruiterList)).then(data => {
+						resolve(data);
+					});
+				}
+			});
+		});	
+	}
+	
+	deleteRecruiterFromLocal(recruiter){
+		return new Promise(resolve => {
+			this.storage.get("RECRUITER_LIST").then((value) => {
+				if(value){
+					var recruiterList = JSON.parse(value);
+					for(var i = 0; i < recruiterList.length; i++){
+						if(recruiter.accountid == recruiterList[i].accountid){
+							recruiterList.splice(i, 1);
+							break;
+						}
+					}
+					this.storage.set('RECRUITER_LIST', JSON.stringify(recruiterList)).then(data => {
+						resolve(data);
+					});
+				}
+			});
+		});	
 	}
 }
