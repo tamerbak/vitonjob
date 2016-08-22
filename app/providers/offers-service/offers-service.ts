@@ -305,7 +305,7 @@ export class OffersService {
         let job = offer.jobData.job;
 
         let table = (projectTarget === 'jobyer') ? 'user_offre_entreprise' : 'user_offre_jobyer';
-        let sql = "select pk_"+table+" from "+table+" where pk_"+table+" in (select fk_"+table+" from user_pratique_job where fk_user_job in ( select pk_user_job from user_job where lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(job)+"')))";
+        let sql = "select pk_"+table+" from "+table+" where dirty='N' and pk_"+table+" in (select fk_"+table+" from user_pratique_job where fk_user_job in ( select pk_user_job from user_job where lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(job)+"')))";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -317,7 +317,8 @@ export class OffersService {
                 .subscribe(data => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
-                    console.log(data);
+                    console.clear();
+                    console.log(JSON.stringify(data));
                     this.offerList = data.data;
                     console.log(this.offerList);
                     resolve(this.offerList);

@@ -1,5 +1,5 @@
 import {Platform, MenuController, Nav, ionicBootstrap, App, Modal, Toast, LocalStorage, Alert} from 'ionic-angular';
-import {StatusBar} from 'ionic-native';
+import {StatusBar, Splashscreen} from 'ionic-native';
 import {HomePage} from './pages/home/home';
 //import {LoginsPage} from './pages/logins/logins';
 import {PhonePage} from './pages/phone/phone';
@@ -305,6 +305,12 @@ export class Vitonjob {
 					this.displayInfoUser(value);
 				}
 			});
+			//  Hide splash screen
+			if (Splashscreen) {
+				setTimeout(() => {
+					Splashscreen.hide();
+				}, 100);
+			}
 		});
 	}
 	
