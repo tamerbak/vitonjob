@@ -19,7 +19,6 @@ import {SearchDetailsPage} from "../search-details/search-details";
 import {Configs} from "../../configurations/configs";
 import {ModalOffersPage} from "../modal-offers/modal-offers";
 
-
 /**
  * @author jakjoud abdeslam
  * @description search results view
@@ -759,7 +758,7 @@ export class SearchResultsPage implements OnInit {
 				if(o && !isUndefined(o)){
                     this.nav.push(ContractPage, {jobyer: this.searchResults[index], currentOffer : o});
                 }else{
-                    //redirect employer to fill the missing informations
+                    //redirect employer to select or create an offer
 					let alert = Alert.create({
 						title: 'Séléction de l\'offre',
 						subTitle: "Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer",
