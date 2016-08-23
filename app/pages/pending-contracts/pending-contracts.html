@@ -23,15 +23,15 @@
         <ion-list text-wrap>
             <ion-item style="background-color: lightcyan" *ngFor="let item of contractList" (click)="selectContract(item)">
                 <ion-avatar item-left>
-                    <img [src]="item.avatar">
+                    <img [src]="item.jobyer.avatar">
                 </ion-avatar>
                 <ion-row>
-                    <ion-col><h2>{{isEmployer ? item.prenom + ' ' + item.nom.substring(0,1) + '.' : item.entreprise}}</h2></ion-col>
+                    <ion-col><h2>{{isEmployer ? item.jobyer.prenom + ' ' + item.jobyer.nom.substring(0,1) + '.' : item.jobyer.entreprise}}</h2></ion-col>
 
                 </ion-row>
-                <h4>{{item.titreOffre}}</h4>
+                <h4>{{item.jobyer.titreOffre}}</h4>
                 <p><ion-icon name="ios-timer" [style.color]="availability" style="font-size: large;"></ion-icon> &nbsp; Disponible</p>
-                <ion-badge item-right secondary>{{(item.matching.toString().indexOf('.') < 0) ? item.matching:item.matching.toString().split('.')[0]}}%</ion-badge>
+                <ion-badge item-right secondary>{{(item.jobyer.matching.toString().indexOf('.') < 0) ? item.jobyer.matching:item.jobyer.matching.toString().split('.')[0]}}%</ion-badge>
             </ion-item>
         </ion-list>
     </ion-card>
