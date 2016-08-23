@@ -13,11 +13,11 @@
 
     <button [style.color]="themeColor" clear nav-pop>
         <ion-icon name="arrow-back"></ion-icon>
-        Retour aux résultats
+        Retour à la liste
     </button>
 
     <ion-card>
-        <ion-item >
+        <ion-item text-wrap>
             <ion-avatar item-left><img [src]="avatar"></ion-avatar>
             <h3 style="margin-top: 2px;">{{fullName}}</h3>
             <ion-badge item-right style="margin: 0px 8px 9px 0;">{{(matching.toString().indexOf('.') < 0) ? matching:matching.toString().split('.')[0]}}%</ion-badge>
@@ -94,16 +94,16 @@
         </ion-item>
 
 
-        <ion-item>
+        <!--ion-item>
             <ion-label>Candidature en groupe</ion-label>
             <ion-checkbox [(ngModel)]="result.checkedContract" (ionChange)="selectContract($event)"></ion-checkbox>
-        </ion-item>
+        </ion-item-->
 
         <ion-item *ngIf="isEmployer && result.checkedContract" text-wrap style="background-color: lightcyan;
     margin-top: 0;
     margin-bottom: 0;">
             <p>
-                <span style="font-size: smaller">Ce jobyer est sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Contrats en attente"</span>
+                <span style="font-size: smaller">Ce jobyer est sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Recrutement groupé"</span>
             </p>
         </ion-item>
 

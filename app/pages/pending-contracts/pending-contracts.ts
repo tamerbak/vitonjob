@@ -3,6 +3,7 @@ import { NavController, Storage, SqlStorage} from 'ionic-angular';
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {PendingContratDetailsPage} from "../pending-contrat-details/pending-contrat-details";
+import {SearchDetailsPage} from "../search-details/search-details";
 
 @Component({
     templateUrl: 'build/pages/pending-contracts/pending-contracts.html',
@@ -13,6 +14,7 @@ export class PendingContractsPage {
     themeColor:string;
     db : Storage;
     projectTarget : any;
+    backgroundImage: any;
 
     constructor(private nav: NavController,
                 public gc: GlobalConfigs) {
@@ -22,6 +24,7 @@ export class PendingContractsPage {
 
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
+        this.backgroundImage = config.backgroundImage;
 
         this.isEmployer = this.projectTarget === 'employer';
 
@@ -38,7 +41,7 @@ export class PendingContractsPage {
     }
 
     selectContract(item){
-        this.nav.push(PendingContratDetailsPage, {searchResult : item, delegate : this});
+        this.nav.push(SearchDetailsPage, {searchResult : item});//, delegate : this
     }
 
     removeContract(item){
@@ -54,5 +57,7 @@ export class PendingContractsPage {
         this.contractList.splice(index, 1);
         this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contractList));
     }
+    
+    //TODO : Adding delete button to every item
 
 }
