@@ -370,7 +370,7 @@ export class HomePage implements OnChanges{
 		});
 	}
 	
-	 itemSelected(item){
-        this.nav.push(SearchDetailsPage, {searchResult : item});
+	 itemSelected(item, offer){
+        this.nav.push(SearchDetailsPage, {searchResult : item, currentOffer: offer});
 	 }
 }
