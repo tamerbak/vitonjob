@@ -300,7 +300,8 @@ export class SearchResultsPage implements OnInit {
      * @param item the selected Employer/Jobyer
      */
     itemSelected(item){
-        this.nav.push(SearchDetailsPage, {searchResult : item});
+		let o = this.navParams.get('currentOffer');
+        this.nav.push(SearchDetailsPage, {searchResult : item, currentOffer: o});
         /*let actionSheet = ActionSheet.create({
          title: 'Options',
          buttons: [
