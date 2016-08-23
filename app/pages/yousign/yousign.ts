@@ -15,6 +15,7 @@ import {isUndefined} from "ionic-angular/util";
 import {PushNotificationService} from "../../providers/push-notification-service/push-notification-service";
 import {WalletCreatePage} from "../wallet-create/wallet-create";
 import {FinanceService} from "../../providers/finance-service/finance-service";
+import {InAppBrowser} from "ionic-native/dist/index";
 
 
 /**
@@ -126,7 +127,7 @@ export class YousignPage {
                 let yousignEmployerLink = yousignData.iFrameURLs[1].iFrameURL;
 
                 //Create to Iframe to show the contract in the NavPage
-                let iframe = document.createElement('iframe');
+                /*let iframe = document.createElement('iframe');
                 iframe.frameBorder = "0";
                 iframe.width = "100%";
                 iframe.height = "100%";
@@ -136,14 +137,20 @@ export class YousignPage {
                 iframe.style.width = "100%";
                 iframe.setAttribute("src", yousignEmployerLink);
 
-                document.getElementById("iframPlaceHolder").appendChild(iframe);
+                document.getElementById("iframPlaceHolder").appendChild(iframe);*/
 
+                // TEL:23082016 : Using inappbrowser plugin :
+                InAppBrowser.open(yousignEmployerLink, '_blank');
+                //browser.show();
                 // get the yousign link of the contract and the phoneNumber of the jobyer
                 let yousignJobyerLink = yousignData.iFrameURLs[0].iFrameURL;
                 let jobyerPhoneNumber = this.jobyer.tel;
 
                 this.contractData.demandeJobyer = yousignData.idDemands[0].idDemand;
                 this.contractData.demandeEmployer = yousignData.idDemands[1].idDemand;
+
+                // TEL23082016 : Navigate to credit card page directly :
+                this.nav.push(WalletCreatePage);
 
                 // Send sms to jobyer
                 //debugger;
