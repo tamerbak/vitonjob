@@ -1,4 +1,4 @@
-import { NavController, Toast, Modal, LocalStorage, Storage, Loading, Alert} from 'ionic-angular';
+import { NavController, NavParams, Toast, Modal, LocalStorage, Storage, Loading, Alert, ViewController} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalJobPage} from "../modal-job/modal-job";
@@ -9,6 +9,7 @@ import {OffersService} from "../../providers/offers-service/offers-service";
 import {OfferListPage} from "../offer-list/offer-list";
 import {isUndefined} from "ionic-angular/util";
 import {Component} from "@angular/core";
+import {ContractPage} from '../contract/contract';
 
 /*
  Generated class for the OfferAddPage page.
@@ -45,7 +46,7 @@ export class OfferAddPage {
         visible:boolean, title:string, status:string};
     backgroundImage:any;
 
-    constructor(public nav:NavController, private gc:GlobalConfigs, private os:OffersService) {
+    constructor(public nav:NavController, private gc:GlobalConfigs, private os:OffersService, navParams : NavParams, private viewCtrl: ViewController) {
 
         // Set global configs
         // Get target to determine configs
@@ -58,7 +59,7 @@ export class OfferAddPage {
         this.initializePage(config);
         this.offerService = os;
 		this.nav = nav;
-
+		this.navParams = navParams;
     }
 
 
@@ -258,7 +259,19 @@ export class OfferAddPage {
                        //debugger;
                         this.localOffer.clear();
                         loading.dismiss();
-                        this.nav.setRoot(OfferListPage);
+						//decide to which page redirect to
+						let fromPage = this.navParams.get('fromPage');
+						let searchRes = this.navParams.get('jobyer');
+						if(fromPage == "Search"){
+							this.nav.push(ContractPage, {jobyer: searchRes, currentOffer : this.offerToBeAdded}).then(() => {
+								// first we find the index of the current view controller:
+								const index = this.viewCtrl.index;
+								// then we remove it from the navigation stack
+								this.nav.remove(index);
+							});
+						}else{
+							this.nav.setRoot(OfferListPage);	
+						}
                     })
 
             });
