@@ -13,7 +13,7 @@
 	<ion-item-group style="border: 1px solid #dedede;">
 		<ion-item-divider light>Photo de profil</ion-item-divider>
 		<ion-card>
-			<img [src]="pictureUri" [hidden]="!pictureUri"/>
+			<img [src]="pictureUri" [hidden]="!pictureUri || pictureUri == defaultImage"/>
 			<ion-row no-padding="">
 				<ion-col>
 					<button clear danger small (click)="uploadPicture()" class="file-upload button-picture">

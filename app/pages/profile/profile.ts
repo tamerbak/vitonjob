@@ -49,6 +49,7 @@ export class ProfilePage implements OnInit {
 	isRecruiter = false;
 	currentUserVar: string;
     storage : Storage;
+	defaultImage: string;
 
     constructor(public nav:NavController, 
 				public gc:GlobalConfigs,
@@ -70,7 +71,8 @@ export class ProfilePage implements OnInit {
         this.thirdThemeColor = gc.getThirdThemeColor();
         this.userService = userService;
         this.addrService = addrService;
-		this.userImageURL = config.userImageURL
+		this.defaultImage = config.userImageURL;
+		this.userImageURL = "../img/loading.gif";
     }
 
     /**
@@ -131,6 +133,9 @@ export class ProfilePage implements OnInit {
 						this.profileService.loadProfilePicture(this.userData.id).then(pic => {
 							if(!this.isEmpty(pic.data[0].encode)){
 								this.userImageURL = pic.data[0].encode;
+								this.profileService.uploadProfilePictureInLocal(pic.data[0].encode);
+							}else{
+								this.userImageURL = this.defaultImage;
 							}
 						});
 					}else{
@@ -325,13 +330,17 @@ export class ProfilePage implements OnInit {
     }
 
     showPictureModel() {
-        let pictureModel = Modal.create(ModalPicturePage, {picture: this.userImageURL});
+        //dont go to picture modal if the picture is not yet uploaded in server
+		if(this.userImageURL == "../img/loading.gif"){
+			return;	
+		}
+		let pictureModel = Modal.create(ModalPicturePage, {picture: this.userImageURL});
         pictureModel.onDismiss(params => {
-            if(!params.uri || params.uri == ""){
+            if(!params){
 				return;
 			}
 			if(params.type == "picture"){
-				this.userImageURL = params.uri;
+				this.userImageURL = "../img/loading.gif";
 				//save image locally
 				// Split the base64 string in data and contentType
 				/*var block = this.userImageURL.split(",");
@@ -340,15 +349,19 @@ export class ProfilePage implements OnInit {
 					this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
 					return;
 				}*/
-				this.profileService.uploadProfilePictureInServer(this.userImageURL, this.userData.id).then(data => {
+				this.profileService.uploadProfilePictureInServer(params.uri, this.userData.id).then(data => {
 					if(!data || data.status == "failure"){
 						this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
 						return;
 					}else{
+						this.userImageURL = params.uri;
+						if(params.uri == ""){
+							this.userImageURL = this.defaultImage;
+						}
 						console.log("profile picture successfuly uploaded");
 					}
 				});
-				this.profileService.uploadProfilePictureInLocal(this.userImageURL);
+				this.profileService.uploadProfilePictureInLocal(params.uri);
 			}
 			if (params.type == "avatar") {
                 this.userImageURL = params.uri;
