@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NavController, NavParams, Alert, Storage, SqlStorage, Platform} from 'ionic-angular';
+import {NavController, NavParams, Alert, Storage, SqlStorage, Platform, Modal} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {isUndefined} from "ionic-angular/util";
 import {ContractPage} from "../contract/contract";
@@ -11,7 +11,8 @@ import {OffersService} from "../../providers/offers-service/offers-service";
 import {AddressService} from "../../providers/address-service/address-service";
 import {NotationService} from "../../providers/notation-service/notation-service";
 import {Configs} from "../../configurations/configs";
-
+import {ModalOffersPage} from "../modal-offers/modal-offers";
+import {OfferAddPage} from "../offer-add/offer-add";
 
 declare var google:any;
 
@@ -329,16 +330,43 @@ export class SearchDetailsPage implements OnInit {
             let isDataValid = !redirectToCivility;
 
             if (isDataValid) {
-                //navigate to contract page
-
                 let o = this.params.get('currentOffer');
+                //navigate to contract page
                 if(o && !isUndefined(o)){
                     this.nav.push(ContractPage, {jobyer: this.result, currentOffer : o});
                 }else{
-                    this.nav.push(ContractPage, {jobyer: this.result});
+                    //redirect employer to select or create an offer
+					let alert = Alert.create({
+						title: 'Séléction de l\'offre',
+						subTitle: "Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer",
+						buttons: [
+						{
+							text: 'Annuler',
+							role: 'cancel',
+						},
+						{
+							text: 'Liste des offres',
+							handler: () => {
+								this.selectOffer().then(offer => {
+									if(offer){
+										this.nav.push(ContractPage, {jobyer: this.result, currentOffer : offer});
+									}else{
+										return;
+									}
+								});
+							}
+						},
+						{
+							text: 'Nouvelle offre',
+							handler: () => {
+								this.nav.push(OfferAddPage, {jobyer: this.result, fromPage: "Search"});
+							}
+						}
+					]
+					});
+					this.nav.present(alert);
+					//this.nav.push(ContractPage, {jobyer: this.result});
                 }
-
-
             } else {
                 //redirect employer to fill the missing informations
                 let alert = Alert.create({
@@ -418,5 +446,16 @@ export class SearchDetailsPage implements OnInit {
             });
             this.nav.present(alert);
         }
+    }
+	
+	selectOffer(){
+        return new Promise(resolve => {
+			let m = new Modal(ModalOffersPage);
+			m.onDismiss(data => {
+				//return selected offer
+				resolve(data);
+			});
+			this.nav.present(m);
+		});
     }
 }

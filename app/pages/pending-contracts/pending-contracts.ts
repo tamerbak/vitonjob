@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { NavController, Storage, SqlStorage} from 'ionic-angular';
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
-import {PendingContratDetailsPage} from "../pending-contrat-details/pending-contrat-details";
 import {SearchDetailsPage} from "../search-details/search-details";
 
 @Component({
@@ -35,19 +34,26 @@ export class PendingContractsPage {
         this.db.get('PENDING_CONTRACTS').then(contrats => {
 
             if (contrats) {
-                this.contractList = JSON.parse(contrats);
+				this.contractList = JSON.parse(contrats);
+				//temporarely : do not display old pending contracts (that dont have jobyer and offer objects included)
+				for(var i = 0; i < this.contractList.length; i++){
+					if(!this.contractList[i].jobyer){
+						this.contractList.splice(i, 1);	
+					}
+				}
+				//temporarely : should be removed after saving pending contracts in server
             }
         });
     }
 
     selectContract(item){
-        this.nav.push(SearchDetailsPage, {searchResult : item});//, delegate : this
+        this.nav.push(SearchDetailsPage, {searchResult : item.jobyer, currentOffer: item.offer});//, delegate : this
     }
 
     removeContract(item){
         let index = -1;
         for(let i = 0 ; i < this.contractList.length ; i++)
-            if(this.contractList[i].idOffre == item.idOffre){
+            if(this.contractList[i].idOffre == item.jobyer.idOffre){
                 index = i;
                 break;
             }

@@ -17,7 +17,7 @@ import {InfoUserPage} from "../info-user/info-user";
 import {ModalOfferPropositionPage} from "../modal-offer-proposition/modal-offer-proposition";
 import {SearchDetailsPage} from "../search-details/search-details";
 import {Configs} from "../../configurations/configs";
-
+import {ModalOffersPage} from "../modal-offers/modal-offers";
 
 /**
  * @author jakjoud abdeslam
@@ -300,7 +300,8 @@ export class SearchResultsPage implements OnInit {
      * @param item the selected Employer/Jobyer
      */
     itemSelected(item){
-        this.nav.push(SearchDetailsPage, {searchResult : item});
+		let o = this.navParams.get('currentOffer');
+        this.nav.push(SearchDetailsPage, {searchResult : item, currentOffer: o});
         /*let actionSheet = ActionSheet.create({
          title: 'Options',
          buttons: [
@@ -606,16 +607,17 @@ export class SearchResultsPage implements OnInit {
 
     selectContract(event, item){
         item.checkedContract = event.checked;
+		let o = this.navParams.get('currentOffer');
         /*let search = {
             title : "",
             result : this.result
         };*/
         if (item.checkedContract) {
-            this.contratsAttente.push(item);
+            this.contratsAttente.push({jobyer: item, offer: o});
         } else {
             //debugger;
             this.contratsAttente.splice(this.contratsAttente.findIndex((element) => {
-                return (element.email === item.email) && (element.tel === item.tel);
+                return (element.jobyer.email === item.jobyer.email) && (element.jobyer.tel === item.jobyer.tel);
             }), 1);
         }
         this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
@@ -751,16 +753,43 @@ export class SearchResultsPage implements OnInit {
             let isDataValid = !redirectToCivility;
 
             if (isDataValid) {
-                //navigate to contract page
-
                 let o = this.navParams.get('currentOffer');
-                if(o && !isUndefined(o)){
+                //navigate to contract page
+				if(o && !isUndefined(o)){
                     this.nav.push(ContractPage, {jobyer: this.searchResults[index], currentOffer : o});
                 }else{
-                    this.nav.push(ContractPage, {jobyer: this.searchResults[index]});
+                    //redirect employer to select or create an offer
+					let alert = Alert.create({
+						title: 'Séléction de l\'offre',
+						subTitle: "Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer",
+						buttons: [
+						{
+							text: 'Annuler',
+							role: 'cancel',
+						},
+						{
+							text: 'Liste des offres',
+							handler: () => {
+								this.selectOffer().then(offer => {
+									if(offer){
+										this.nav.push(ContractPage, {jobyer: this.searchResults[index], currentOffer : offer});
+									}else{
+										return;
+									}
+								});
+							}
+						},
+						{
+							text: 'Nouvelle offre',
+							handler: () => {
+								this.nav.push(OfferAddPage, {jobyer: this.searchResults[index], fromPage: "Search"});
+							}
+						}
+					]
+					});
+					this.nav.present(alert);
+				   //this.nav.push(ContractPage, {jobyer: this.searchResults[index]});
                 }
-
-
             } else {
                 //redirect employer to fill the missing informations
                 let alert = Alert.create({
@@ -796,4 +825,15 @@ export class SearchResultsPage implements OnInit {
             this.nav.present(alert);
         }
 	}
+	
+	selectOffer(){
+        return new Promise(resolve => {
+			let m = new Modal(ModalOffersPage);
+			m.onDismiss(data => {
+				//return selected offer
+				resolve(data);
+			});
+			this.nav.present(m);
+		});
+    }
 }
