@@ -49,6 +49,7 @@ export class SettingsPage {
 		this.storage.set(this.currentUserVar, null);
 		this.storage.set("RECRUITER_LIST", null);
 		this.storage.set('OPTION_MISSION', null);
+		this.storage.set('PROFIL_PICTURE', null);
 		this.events.publish('user:logout');
 		this.nav.setRoot(HomePage);
 	}

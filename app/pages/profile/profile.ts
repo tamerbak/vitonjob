@@ -1,4 +1,4 @@
-import {NavController, Picker, PickerColumnOption, Modal} from 'ionic-angular';
+import {NavController, Picker, PickerColumnOption, Modal, Loading} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModelLockScreenPage} from "../model-lock-screen/model-lock-screen";
@@ -14,6 +14,9 @@ import {CivilityPage} from "../civility/civility";
 import {PersonalAddressPage} from "../personal-address/personal-address";
 import {JobAddressPage} from "../job-address/job-address";
 import {BankAccountPage} from "../bank-account/bank-account";
+import {ProfileService} from "../../providers/profile-service/profile-service";
+import {GlobalService} from "../../providers/global.service";
+import {ImageService} from "../../providers/image-service/image-service";
 
 /*
  Generated class for the ProfilePage page.
@@ -25,7 +28,7 @@ declare var google:any;
 
 @Component({
     templateUrl: 'build/pages/profile/profile.html',
-    providers: [GlobalConfigs, UserService, AddressService],
+    providers: [GlobalConfigs, UserService, AddressService, ProfileService, GlobalService, ImageService],
 	pipes: [DateConverter],
 })
 export class ProfilePage implements OnInit {
@@ -47,8 +50,13 @@ export class ProfilePage implements OnInit {
 	currentUserVar: string;
     storage : Storage;
 
-    constructor(public nav:NavController, public gc:GlobalConfigs,
-                userService:UserService, addrService:AddressService) {
+    constructor(public nav:NavController, 
+				public gc:GlobalConfigs,
+				userService:UserService, 
+				addrService:AddressService,
+				private globalService:GlobalService,
+				private profileService: ProfileService,
+				private imageService: ImageService) {
 
        //debugger;
         this.projectTarget = gc.getProjectTarget();
@@ -62,6 +70,7 @@ export class ProfilePage implements OnInit {
         this.thirdThemeColor = gc.getThirdThemeColor();
         this.userService = userService;
         this.addrService = addrService;
+		this.userImageURL = config.userImageURL
     }
 
     /**
@@ -73,7 +82,6 @@ export class ProfilePage implements OnInit {
         this.themeColor = config.themeColor;
         this.inversedThemeColor = config.inversedThemeColor;
         this.isEmployer = (this.projectTarget === 'employer');
-        this.userImageURL = config.userImageURL;
         this.backgroundImage = config.backgroundImage;
 		this.currentUserVar = config.currentUserVar;
 		this.swipEvent = '';
@@ -103,7 +111,6 @@ export class ProfilePage implements OnInit {
                 ]
             }
         }
-
     }
 
     onPageWillEnter() {
@@ -116,6 +123,20 @@ export class ProfilePage implements OnInit {
 				this.isRecruiter = this.userData.estRecruteur;
 				if(!this.isRecruiter)
 					this.loadMap(this.userData);
+					
+				//load profile picture
+				this.storage.get("PROFIL_PICTURE").then(data => {
+					//if profile picture is not stored in local, retrieve it from server
+					if(this.isEmpty(data)){
+						this.profileService.loadProfilePicture(this.userData.id).then(pic => {
+							if(!this.isEmpty(pic.data[0].encode)){
+								this.userImageURL = pic.data[0].encode;
+							}
+						});
+					}else{
+						this.userImageURL = data;	
+					}
+				});	
             }
         });
     }
@@ -304,10 +325,33 @@ export class ProfilePage implements OnInit {
     }
 
     showPictureModel() {
-        let pictureModel = Modal.create(ModalPicturePage);
-        pictureModel.onDismiss(picture => {
-            if (picture) {
-                this.userImageURL = picture.url;
+        let pictureModel = Modal.create(ModalPicturePage, {picture: this.userImageURL});
+        pictureModel.onDismiss(params => {
+            if(!params.uri || params.uri == ""){
+				return;
+			}
+			if(params.type == "picture"){
+				this.userImageURL = params.uri;
+				//save image locally
+				// Split the base64 string in data and contentType
+				/*var block = this.userImageURL.split(",");
+				var successs = this.imageService.savebase64AsImageFile("img/", this.userData.id + ".jpg", block[1], "image/jpg"); 
+				if(!success){
+					this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+					return;
+				}*/
+				this.profileService.uploadProfilePictureInServer(this.userImageURL, this.userData.id).then(data => {
+					if(!data || data.status == "failure"){
+						this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+						return;
+					}else{
+						console.log("profile picture successfuly uploaded");
+					}
+				});
+				this.profileService.uploadProfilePictureInLocal(this.userImageURL);
+			}
+			if (params.type == "avatar") {
+                this.userImageURL = params.uri;
             }
         });
         this.nav.present(pictureModel);
@@ -352,5 +396,12 @@ export class ProfilePage implements OnInit {
 				return false;
 			}
 		}
+	}
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
 	}
 }
