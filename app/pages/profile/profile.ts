@@ -1,4 +1,4 @@
-import {NavController, Picker, PickerColumnOption, Modal, Loading} from 'ionic-angular';
+import {NavController, Picker, PickerColumnOption, Modal, Loading, Events} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModelLockScreenPage} from "../model-lock-screen/model-lock-screen";
@@ -57,7 +57,8 @@ export class ProfilePage implements OnInit {
 				addrService:AddressService,
 				private globalService:GlobalService,
 				private profileService: ProfileService,
-				private imageService: ImageService) {
+				private imageService: ImageService,
+				public events: Events) {
 
        //debugger;
         this.projectTarget = gc.getProjectTarget();
@@ -354,14 +355,19 @@ export class ProfilePage implements OnInit {
 						this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
 						return;
 					}else{
+						//display new img
 						this.userImageURL = params.uri;
+						//if no image is chosen, display default avatar
 						if(params.uri == ""){
 							this.userImageURL = this.defaultImage;
 						}
+						//upload img in local storage
+						this.profileService.uploadProfilePictureInLocal(params.uri);
+						//publish event to change the picture in side manu
+						this.events.publish('picture-change', this.userImageURL);
 						console.log("profile picture successfuly uploaded");
 					}
 				});
-				this.profileService.uploadProfilePictureInLocal(params.uri);
 			}
 			if (params.type == "avatar") {
                 this.userImageURL = params.uri;

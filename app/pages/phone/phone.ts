@@ -14,6 +14,7 @@ import {Storage, SqlStorage} from 'ionic-angular';
 import {SMS} from 'ionic-native';
 import {enableProdMode} from '@angular/core'; 
 enableProdMode();
+import {ProfileService} from "../../providers/profile-service/profile-service";
 
 /**
 	* @author Amal ROCHD
@@ -22,7 +23,7 @@ enableProdMode();
 */
 @Component({
 	templateUrl: 'build/pages/phone/phone.html',
-	providers: [AuthenticationService, LoadListService, DataProviderService, GlobalService, ValidationDataService, Keyboard]
+	providers: [AuthenticationService, LoadListService, DataProviderService, GlobalService, ValidationDataService, Keyboard, ProfileService]
 })
 
 export class PhonePage {
@@ -50,7 +51,8 @@ export class PhonePage {
 	showHidePasswdLabel: string;
 	showHidePasswdConfirmLabel: string;
 	fromPage: string;
-	
+	defaultImage: string;
+
 	/**
 		* @description While constructing the view, we load the list of countries to display their codes
 	*/
@@ -64,7 +66,8 @@ export class PhonePage {
 				private validationDataService: ValidationDataService, 
 				public events: Events, keyboard: Keyboard,
 				private viewCtrl: ViewController,
-				private platform:Platform) {
+				private platform:Platform,
+				private profileService: ProfileService) {
 		// Set global configs
 		// Get target to determine configs
 		this.projectTarget = gc.getProjectTarget();
@@ -87,6 +90,8 @@ export class PhonePage {
 		this.showHidePasswdConfirmLabel = "Afficher le mot de passe";
 		this.params = params;
         this.fromPage = this.params.data.fromPage;
+		this.defaultImage = config.userImageURL;
+
 		//load countries list
 		this.loadListService.loadCountries(this.projectTarget).then((data) => {
 			this.pays = data.data;
@@ -215,6 +220,17 @@ export class PhonePage {
 		this.storage.set(this.currentUserVar, JSON.stringify(data));
 		this.events.publish('user:login', data);
 		
+		//load profile picture
+		this.profileService.loadProfilePicture(data.id).then(pic => {
+			var userImageURL;
+			if(!this.isEmpty(pic.data[0].encode)){
+				userImageURL = pic.data[0].encode;
+				this.profileService.uploadProfilePictureInLocal(pic.data[0].encode);
+			}else{
+				userImageURL = this.defaultImage;
+			}
+			this.events.publish('picture-change', userImageURL);
+		});
 		//user is connected, then change the name of connexion btn to deconnection
 		this.gc.setCnxBtnName("Déconnexion");
 	}
