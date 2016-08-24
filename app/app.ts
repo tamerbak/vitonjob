@@ -324,7 +324,7 @@ export class Vitonjob {
 		];	
 		this.isEmployer = (this.projectTarget == 'employer');
 		if(this.isEmployer){
-			this.loggedInPages.push({title: "Contrats en attente", component: PendingContractsPage, icon: "clock", isBadged: false});
+			this.loggedInPages.push({title: "Recrutement groupé", component: PendingContractsPage, icon: "logo-buffer", isBadged: false});
 			this.loggedInPages.push({title: "Gestion des habilitations", component: RecruiterListPage, icon: "contacts", isBadged: false});
 		}
 		this.loggedInPages.push({title: "Coffre numérique", component: AttachementsPage, icon: "albums", isBadged: false});
