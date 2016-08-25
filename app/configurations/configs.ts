@@ -23,6 +23,7 @@ interface AbstractConfigs {
     options:any;
     tokenInstabug :any;
 	currentUserVar: string;
+	profilPictureVar: string;
 }
 
 class EmployerConfigs implements AbstractConfigs {
@@ -68,6 +69,7 @@ class EmployerConfigs implements AbstractConfigs {
         ios:'746f8d62a4d8220383315f38c0999418'
     }
 	currentUserVar: string = "currentEmployer";
+	profilPictureVar: string = "pictuteEmployer";
 }
 
 class JobyerConfigs implements AbstractConfigs {
@@ -115,7 +117,8 @@ class JobyerConfigs implements AbstractConfigs {
         android:'8638bb86054b6354141c9a07d8317d26',
         ios:'a79265adfebcc922588a989ab0a07557'
     }
-	currentUserVar: string = "currentJobyer";	
+	currentUserVar: string = "currentJobyer";
+	profilPictureVar: string = "pictuteJobyer";
 }
 
 

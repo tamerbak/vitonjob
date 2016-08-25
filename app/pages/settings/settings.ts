@@ -29,7 +29,7 @@ export class SettingsPage {
 	storage: any;
 	events:any;
 	currentUserVar: string;
-
+	profilPictureVar: string;
 	
 	constructor(public nav: NavController, gc: GlobalConfigs,
 				private authService: AuthenticationService,
@@ -39,6 +39,7 @@ export class SettingsPage {
 		let config = Configs.setConfigs(this.projectTarget);
 		this.options = config.options;
 		this.currentUserVar = config.currentUserVar;
+		this.profilPictureVar = config.profilPictureVar;
         this.isEmployer = (this.projectTarget === 'employer');
 		this.storage = new Storage(SqlStorage);
 		this.events = events;
@@ -47,6 +48,7 @@ export class SettingsPage {
 	logOut() {
 		this.storage.set('connexion', null);
 		this.storage.set(this.currentUserVar, null);
+		this.storage.set(this.profilPictureVar, null);
 		this.storage.set("RECRUITER_LIST", null);
 		this.storage.set('OPTION_MISSION', null);
 		this.storage.set('PROFIL_PICTURE', null);

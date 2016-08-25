@@ -9,6 +9,7 @@ export class ProfileService {
     configuration;
     projectTarget;
 	storage : Storage;
+	profilPictureVar: string;
 	
     constructor(http: Http,gc: GlobalConfigs, private platform: Platform) {
         this.http = http;        
@@ -16,6 +17,7 @@ export class ProfileService {
         this.projectTarget = gc.getProjectTarget();
         this.configuration = Configs.setConfigs(this.projectTarget);
 		this.storage = new Storage(SqlStorage);
+		this.profilPictureVar = this.configuration.profilPictureVar;
 	}
 	
     countEntreprisesByRaisonSocial(companyname: string){
@@ -110,22 +112,34 @@ export class ProfileService {
 		});
 	}
 	
-	loadProfilePicture(accountId){
-		var sql = "select encode(photo_de_profil::bytea, 'escape') from user_account where pk_user_account = '" + accountId + "';";
-			console.log(sql);
-			return new Promise(resolve => {
+	loadProfilePicture(accountId, tel, role){
+		var sql;
+		if(!this.isEmpty(accountId)){
+			sql = "select encode(photo_de_profil::bytea, 'escape') from user_account where pk_user_account = '" + accountId + "';";
+		}else{
+			sql = "select encode(photo_de_profil::bytea, 'escape') from user_account where telephone = '" + tel + "' and role = '" + role +"';";
+		}
+		console.log(sql);
+		return new Promise(resolve => {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers:headers})
 			.map(res => res.json())
 			.subscribe(data => {
-			console.log(data);
-			resolve(data);
+				console.log(data);
+				resolve(data);
 			});
 		});
 	}
 	
 	uploadProfilePictureInLocal(imgUri){
-		this.storage.set("PROFIL_PICTURE", imgUri);	
+		this.storage.set(this.profilPictureVar, imgUri);	
+	}
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
 	}
 }

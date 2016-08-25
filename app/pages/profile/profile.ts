@@ -48,6 +48,7 @@ export class ProfilePage implements OnInit {
 	noSecondAddress = false;
 	isRecruiter = false;
 	currentUserVar: string;
+	profilPictureVar: string;
     storage : Storage;
 	defaultImage: string;
 
@@ -87,6 +88,7 @@ export class ProfilePage implements OnInit {
         this.isEmployer = (this.projectTarget === 'employer');
         this.backgroundImage = config.backgroundImage;
 		this.currentUserVar = config.currentUserVar;
+		this.profilPictureVar = config.profilPictureVar;
 		this.swipEvent = '';
         this.userData = {
             titre: "Ajouter mon nom et prénom",
@@ -128,7 +130,7 @@ export class ProfilePage implements OnInit {
 					this.loadMap(this.userData);
 					
 				//load profile picture
-				this.storage.get("PROFIL_PICTURE").then(data => {
+				this.storage.get(this.profilPictureVar).then(data => {
 					//if profile picture is not stored in local, retrieve it from server
 					if(this.isEmpty(data)){
 						this.profileService.loadProfilePicture(this.userData.id).then(pic => {
@@ -337,7 +339,11 @@ export class ProfilePage implements OnInit {
 		}
 		let pictureModel = Modal.create(ModalPicturePage, {picture: this.userImageURL});
         pictureModel.onDismiss(params => {
-            if(!params){
+            /*var compressed = this.imageService.compressImage(params.uri);
+			var decompressed = this.imageService.decompressImage(compressed);
+			return;
+			*/
+			if(!params){
 				return;
 			}
 			if(params.type == "picture"){
