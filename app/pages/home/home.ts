@@ -281,6 +281,7 @@ export class HomePage implements OnChanges{
 			if(offer.visible && offer.rechercheAutomatique){
 				offer.arrowLabel = "arrow-dropright";
 				offer.isResultHidden = true;
+                offer.correspondantsCount = -1;
 				this.autoSearchOffers.push(offer);
 				continue;
 			}

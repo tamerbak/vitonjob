@@ -7,6 +7,7 @@ import {OfferDetailPage} from "../offer-detail/offer-detail";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {isUndefined} from "ionic-angular/util";
 import {Component} from "@angular/core";
+import {GlobalService} from "../../providers/global.service";
 
 /*
  Generated class for the OfferListPage page.
@@ -16,21 +17,27 @@ import {Component} from "@angular/core";
  */
 @Component({
     templateUrl: 'build/pages/offer-list/offer-list.html',
-    providers: [SearchService, GlobalConfigs, OffersService]
+    providers: [SearchService, GlobalConfigs, OffersService, GlobalService]
 })
 export class OfferListPage {
 
     offerList = [];
-    offerService: OffersService;
-    projectTarget: string;
-    backgroundImage: any;
-	db : Storage;
-	isNewUser = true;
+    offerService:OffersService;
+    projectTarget:string;
+    backgroundImage:any;
+    db:Storage;
+    isNewUser = true;
+    globalOfferList = [];
+    globalService:any;
+    showPublishedOffers= false;
+    showUnpublishedOffers = false;
+    detailsIconName1:string = "add";
+    detailsIconName2:string = "add";
 
     constructor(public nav:NavController,
                 public gc:GlobalConfigs,
                 public search:SearchService,
-                public offersService : OffersService) {
+                public offersService:OffersService, private globalService:GlobalService) {
 
         // Set global configs
         // Get target to determine configs
@@ -46,54 +53,73 @@ export class OfferListPage {
         this.listMode = true;
         this.okButtonName = "add";
         this.backgroundImage = config.backgroundImage;
-		this.db = new Storage(SqlStorage);
+        this.db = new Storage(SqlStorage);
         //this.cancelButtonName = "";
         //this.loadPeople();
 
         // jQuery code for dragging components
         // console.log($( "#draggable" ).draggable());
-
+        this.globalService = globalService;
         this.offerService = offersService;
         this.offerService.loadOfferList(this.projectTarget).then(data => {
+            this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
+            this.globalOfferList.push({header: 'Mes brouillons', list: []});
             this.offerList = data;
             for (var i = 0; i < this.offerList.length; i++) {
                 let offer = this.offerList[i];
-                offer.color = offer.visible ? 'darkgreen' : 'grey';
-                offer.correspondantsCount = -1;
                 if (isUndefined(offer) || !offer || !offer.jobData) {
                     continue;
                 }
-                this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
-                    console.log('getCorrespondingOffers result : ' + data);
-                    offer.correspondantsCount = data.length;
-                    // Sort offers corresponding to their search results :
-                    this.offerList.sort((a, b) => {
-                        return b.correspondantsCount - a.correspondantsCount;
-                    })
-                });
+                if (offer.visible) {
+                    offer.color = 'black';//'darkgreen';
+                    offer.correspondantsCount = -1;
+                    //publishedList.push(offer);
+                    this.globalOfferList[0].list.push(offer);
+                    this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
+                        console.log('getCorrespondingOffers result : ' + data);
+                        offer.correspondantsCount = data.length;
+                        // Sort offers corresponding to their search results :
+                        this.globalOfferList[0].list.sort((a, b) => {
+                            return b.correspondantsCount - a.correspondantsCount;
+                        })
+                    });
+                } else {
+                    offer.color = 'grey';
+                    offer.correspondantsCount = -1;
+                    //unpublishedList.push (offer);
+                    this.globalOfferList[1].list.push(offer);
+                    /*this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
+                        console.log('getCorrespondingOffers result : ' + data);
+                        offer.correspondantsCount = data.length;
+                        // Sort offers corresponding to their search results :
+                        this.globalOfferList[1].list.sort((a, b) => {
+                            return b.correspondantsCount - a.correspondantsCount;
+                        })
+                    });*/
+                }
             }
         });
-		let currentUserVar = config.currentUserVar;
+        let currentUserVar = config.currentUserVar;
         this.db.get(currentUserVar).then(value => {
-            if(value && value != "null"){
-				var currentUser = JSON.parse(value);
-				if(!currentUser.titre){
-					this.isNewUser = true;
-				}else{
-					this.isNewUser = false;
-				}
-			}
+            if (value && value != "null") {
+                var currentUser = JSON.parse(value);
+                if (!currentUser.titre) {
+                    this.isNewUser = true;
+                } else {
+                    this.isNewUser = false;
+                }
+            }
         });
-		
+
     }
 
     // Testing a web service call
     /*loadPeople() {
-        this.search.load()
-            .then(data => {
-                this.people = data.results;
-            });
-    }*/
+     this.search.load()
+     .then(data => {
+     this.people = data.results;
+     });
+     }*/
 
     onAddOffer() {
         this.listMode = (!this.listMode);
@@ -107,12 +133,12 @@ export class OfferListPage {
      * @Description: Navigating to new offer page
      */
     goToNewOffer() {
-		if(this.isNewUser){
-			this.presentToast("Veuillez remplir les informations de votre profil avant de créer une offre.", 5);
-			return;
-		}else{
-			this.nav.push(OfferAddPage);
-		}
+        if (this.isNewUser) {
+            this.presentToast("Veuillez remplir les informations de votre profil avant de créer une offre.", 5);
+            return;
+        } else {
+            this.nav.push(OfferAddPage);
+        }
     }
 
     /**
@@ -122,9 +148,9 @@ export class OfferListPage {
         this.nav.push(OfferDetailPage, {selectedOffer: offer});
     }
 
-    getOfferBadge(item){
+    getOfferBadge(item) {
 
-        if( isUndefined(item) || !item || !item.pricticesJob || item.pricticesJob.length == 0){
+        if (isUndefined(item) || !item || !item.pricticesJob || item.pricticesJob.length == 0) {
             item.correspondantsCount = 0;
             return;
         }
@@ -135,11 +161,38 @@ export class OfferListPage {
         });
     }
 
-	presentToast(message:string, duration:number) {
+    presentToast(message:string, duration:number) {
         let toast = Toast.create({
             message: message,
             duration: duration * 1000
         });
         this.nav.present(toast);
+    }
+
+    autoSearchMode(offer) {
+        var mode = offer.rechercheAutomatique ? "Non" : "Oui";
+        this.offerService.saveAutoSearchMode(this.projectTarget, offer.idOffer, mode).then(data => {
+            if (data && data.status == "success") {
+                offer.rechercheAutomatique = !offer.rechercheAutomatique;
+                this.offerService.updateOfferInLocal(offer, this.projectTarget);
+                //this.nav.pop();
+            } else {
+                this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
+            }
+        });
+    }
+
+    showOfferList (type) {
+
+        if (type == 'Mes offres en ligne') {
+            this.showPublishedOffers = !(this.showPublishedOffers);
+            this.detailsIconName1 = (this.showPublishedOffers)? 'remove' : 'add';
+
+        } else if (type == 'Mes brouillons'){
+            this.showUnpublishedOffers = !(this.showUnpublishedOffers);
+            this.detailsIconName2 = (this.showUnpublishedOffers)? 'remove' : 'add';
+        }
+
+
     }
 }

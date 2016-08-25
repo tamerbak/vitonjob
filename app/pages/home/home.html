@@ -52,15 +52,20 @@
             </ion-col>
 
         </ion-row>
-		
+	<ion-list-header [hidden]="autoSearchOffers.length == 0">
+		Alertes enregistrées
+	</ion-list-header>
 		<ion-card text-wrap [hidden]="autoSearchOffers.length == 0" class="cardOpacity">
-		<ion-card-header style = "text-align: center;">
-			Offres en mode recherche automatique
-		</ion-card-header>
 		<ion-list text-wrap>
-			<ion-item *ngFor="let offer of autoSearchOffers" class="itemOpacity">
-			<h3 (click)="launchSearch(offer, true)">{{offer.title}}</h3><ion-icon name="{{offer.arrowLabel}}" item-right (click)="launchSearch(offer, true)"></ion-icon>
-			<ion-card [hidden]="offer.isResultHidden" class="cardOpacity">
+			<ion-item *ngFor="let offer of autoSearchOffers" class="itemOpacity" (click)="launchSearch(offer, false)">
+			<h3>{{offer.title}}</h3><!--ion-icon name="{{offer.arrowLabel}}" item-right (click)="launchSearch(offer, true)"></ion-icon-->
+				<ion-badge [style.backgroundColor]="themeColor" item-right>
+					<ion-spinner name="crescent" [hidden]="(offer.correspondantsCount >= 0)"></ion-spinner>
+					{{(offer.correspondantsCount < 0) ? '' : offer.correspondantsCount}}
+				</ion-badge>
+
+
+				<!--ion-card [hidden]="offer.isResultHidden" class="cardOpacity">
 			  <ion-list text-wrap>
 				  <ion-card *ngFor="let item of searchResults, let i=index" class="cardMargin">
 					  <ion-item no-lines text-wrap style="background-color: lightcyan">
@@ -78,12 +83,12 @@
 					  </ion-col></ion-row>
 				  </ion-card>
 				</ion-list>
-			</ion-card>
+			</ion-card-->
 		</ion-item>
 	</ion-list>
 	</ion-card>
 	
-	<ion-card text-wrap [hidden]="publicOffers.length == 0" class="cardOpacity">
+	<!--ion-card text-wrap [hidden]="publicOffers.length == 0" class="cardOpacity">
 		<ion-card-header style = "text-align: center;">
 			Offres publiques
 		</ion-card-header>
@@ -97,7 +102,7 @@
 			</ion-badge>
 		</ion-item>
 		</ion-list>
-	</ion-card>
+	</ion-card-->
 
     <!--/div-->
 
