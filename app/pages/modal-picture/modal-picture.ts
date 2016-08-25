@@ -25,6 +25,8 @@ export class ModalPicturePage {
     event:any;
     thirdThemeColor:string;
 	pictureUri: string;
+	isPictureChanged = false;
+	defaultImage: string;
 
     constructor(public nav:NavController, 
 				view:ViewController, 
@@ -42,13 +44,18 @@ export class ModalPicturePage {
         this.avatars = this.config.avatars;
         this.event = event;
 		this.pictureUri = params.data.picture;
+		this.defaultImage = this.config.userImageURL
     }
 
     /**
      * @Description : Closing the modal page
      */
     closeModal() {
-		this.viewCtrl.dismiss({uri: this.pictureUri, type: "picture"});
+		if(this.isPictureChanged){
+			this.viewCtrl.dismiss({uri: this.pictureUri, type: "picture"});	
+		}else{
+			this.viewCtrl.dismiss();	
+		}
     }
 
     /**
@@ -94,6 +101,7 @@ export class ModalPicturePage {
      * @description read the file to upload and convert it to base64
      */
     onChangeUpload(e) {
+		this.isPictureChanged = true;
         var file = e.target.files[0];
         var myReader = new FileReader();
         this.zone.run(()=> {
@@ -105,6 +113,7 @@ export class ModalPicturePage {
     }
 	
 	takePicture() {
+		this.isPictureChanged = true;
         Camera.getPicture({
             destinationType: Camera.DestinationType.DATA_URL,
             targetWidth: 1000,
@@ -120,6 +129,7 @@ export class ModalPicturePage {
     }
 	
 	deletePicture(){
+		this.isPictureChanged = true;
 		this.pictureUri = "";
 	}
 }

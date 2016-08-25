@@ -1,4 +1,4 @@
-import {NavController, Picker, PickerColumnOption, Modal, Loading} from 'ionic-angular';
+import {NavController, Picker, PickerColumnOption, Modal, Loading, Events} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModelLockScreenPage} from "../model-lock-screen/model-lock-screen";
@@ -48,7 +48,9 @@ export class ProfilePage implements OnInit {
 	noSecondAddress = false;
 	isRecruiter = false;
 	currentUserVar: string;
+	profilPictureVar: string;
     storage : Storage;
+	defaultImage: string;
 
     constructor(public nav:NavController, 
 				public gc:GlobalConfigs,
@@ -56,7 +58,8 @@ export class ProfilePage implements OnInit {
 				addrService:AddressService,
 				private globalService:GlobalService,
 				private profileService: ProfileService,
-				private imageService: ImageService) {
+				private imageService: ImageService,
+				public events: Events) {
 
        //debugger;
         this.projectTarget = gc.getProjectTarget();
@@ -70,7 +73,8 @@ export class ProfilePage implements OnInit {
         this.thirdThemeColor = gc.getThirdThemeColor();
         this.userService = userService;
         this.addrService = addrService;
-		this.userImageURL = config.userImageURL
+		this.defaultImage = config.userImageURL;
+		this.userImageURL = "../img/loading.gif";
     }
 
     /**
@@ -84,6 +88,7 @@ export class ProfilePage implements OnInit {
         this.isEmployer = (this.projectTarget === 'employer');
         this.backgroundImage = config.backgroundImage;
 		this.currentUserVar = config.currentUserVar;
+		this.profilPictureVar = config.profilPictureVar;
 		this.swipEvent = '';
         this.userData = {
             titre: "Ajouter mon nom et prénom",
@@ -125,12 +130,15 @@ export class ProfilePage implements OnInit {
 					this.loadMap(this.userData);
 					
 				//load profile picture
-				this.storage.get("PROFIL_PICTURE").then(data => {
+				this.storage.get(this.profilPictureVar).then(data => {
 					//if profile picture is not stored in local, retrieve it from server
 					if(this.isEmpty(data)){
 						this.profileService.loadProfilePicture(this.userData.id).then(pic => {
 							if(!this.isEmpty(pic.data[0].encode)){
 								this.userImageURL = pic.data[0].encode;
+								this.profileService.uploadProfilePictureInLocal(pic.data[0].encode);
+							}else{
+								this.userImageURL = this.defaultImage;
 							}
 						});
 					}else{
@@ -325,13 +333,21 @@ export class ProfilePage implements OnInit {
     }
 
     showPictureModel() {
-        let pictureModel = Modal.create(ModalPicturePage, {picture: this.userImageURL});
+        //dont go to picture modal if the picture is not yet uploaded in server
+		if(this.userImageURL == "../img/loading.gif"){
+			return;	
+		}
+		let pictureModel = Modal.create(ModalPicturePage, {picture: this.userImageURL});
         pictureModel.onDismiss(params => {
-            if(!params.uri || params.uri == ""){
+            /*var compressed = this.imageService.compressImage(params.uri);
+			var decompressed = this.imageService.decompressImage(compressed);
+			return;
+			*/
+			if(!params){
 				return;
 			}
 			if(params.type == "picture"){
-				this.userImageURL = params.uri;
+				this.userImageURL = "../img/loading.gif";
 				//save image locally
 				// Split the base64 string in data and contentType
 				/*var block = this.userImageURL.split(",");
@@ -340,15 +356,24 @@ export class ProfilePage implements OnInit {
 					this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
 					return;
 				}*/
-				this.profileService.uploadProfilePictureInServer(this.userImageURL, this.userData.id).then(data => {
+				this.profileService.uploadProfilePictureInServer(params.uri, this.userData.id).then(data => {
 					if(!data || data.status == "failure"){
 						this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
 						return;
 					}else{
+						//display new img
+						this.userImageURL = params.uri;
+						//if no image is chosen, display default avatar
+						if(params.uri == ""){
+							this.userImageURL = this.defaultImage;
+						}
+						//upload img in local storage
+						this.profileService.uploadProfilePictureInLocal(params.uri);
+						//publish event to change the picture in side manu
+						this.events.publish('picture-change', this.userImageURL);
 						console.log("profile picture successfuly uploaded");
 					}
 				});
-				this.profileService.uploadProfilePictureInLocal(this.userImageURL);
 			}
 			if (params.type == "avatar") {
                 this.userImageURL = params.uri;

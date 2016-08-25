@@ -71,7 +71,8 @@ export class Vitonjob {
 	local : Storage;
 	tokens:any;
 	currentUserVar: string;
-	
+	profilPictureVar: string;
+
 	constructor(private platform:Platform,
 	private app:App,
 	private menu:MenuController,
@@ -97,7 +98,7 @@ export class Vitonjob {
 		this.config = Configs.setConfigs(this.projectTarget);
 		this.tokens = this.config.tokenInstabug;
 		this.currentUserVar = this.config.currentUserVar;
-		
+		this.profilPictureVar = this.config.profilPictureVar;
 		
 		this.initializeApp(gc);
 		
@@ -305,6 +306,14 @@ export class Vitonjob {
 					this.displayInfoUser(value);
 				}
 			});
+			
+			//display profile picture-change
+			this.storage.get(this.profilPictureVar).then((value) => {
+				if(value){
+					this.userImageURL = value;
+				}
+			});
+			
 			//  Hide splash screen
 			if (Splashscreen) {
 				setTimeout(() => {

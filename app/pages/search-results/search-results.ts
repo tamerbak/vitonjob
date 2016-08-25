@@ -18,6 +18,7 @@ import {ModalOfferPropositionPage} from "../modal-offer-proposition/modal-offer-
 import {SearchDetailsPage} from "../search-details/search-details";
 import {Configs} from "../../configurations/configs";
 import {ModalOffersPage} from "../modal-offers/modal-offers";
+import {ProfileService} from "../../providers/profile-service/profile-service";
 
 /**
  * @author jakjoud abdeslam
@@ -28,7 +29,7 @@ declare var google:any;
 
 @Component({
     templateUrl: 'build/pages/search-results/search-results.html',
-    providers : [OffersService]
+    providers : [OffersService, ProfileService]
 })
 export class SearchResultsPage implements OnInit {
 
@@ -78,7 +79,8 @@ export class SearchResultsPage implements OnInit {
                 private searchService: SearchService,
                 private userService:UserService,
                 offersService : OffersService,
-                platform : Platform) {
+                platform : Platform,
+				private profileService: ProfileService) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
         let configInversed = this.projectTarget != 'jobyer' ? Configs.setConfigs('jobyer'): Configs.setConfigs('employer');
@@ -107,9 +109,6 @@ export class SearchResultsPage implements OnInit {
             this.listView = !this.isMapView;
             this.mapView = (this.isMapView) ? 'block' : 'none';
         });
-
-
-
 
         this.db.get('PENDING_CONTRACTS').then(contrats => {
             
@@ -159,6 +158,14 @@ export class SearchResultsPage implements OnInit {
                             }
                         }
                     }
+					
+					//load profile pictures
+					for(let i = 0; i < this.searchResults.length; i++){
+						var role = this.isEmployer ? "jobyer" : "employeur";
+						this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then(data => {
+							this.searchResults[i].avatar = data.data[0].encode;
+						});
+					}
                 } else {
                     this.mapView = 'none';
                 }
