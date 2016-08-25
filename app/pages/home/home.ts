@@ -16,11 +16,11 @@ import {PopoverSearchPage} from "../popover-search/popover-search";
 import {AdvancedSearchPage} from "../advanced-search/advanced-search";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {SearchDetailsPage} from "../search-details/search-details";
-
+import {ProfileService} from "../../providers/profile-service/profile-service";
 
 @Component({
     templateUrl: 'build/pages/home/home.html',
-    providers: [GlobalConfigs]
+    providers: [GlobalConfigs, ProfileService]
 })
 export class HomePage implements OnChanges{
     private projectName:string;
@@ -48,10 +48,11 @@ export class HomePage implements OnChanges{
 	searchResults: any;
 	contratsAttente : any = [];
 	private offerService: any;
+	private profilService: any;
 	
     static get parameters() {
         return [[GlobalConfigs], [App], [NavController], [NavParams], [SearchService],
-            [NetworkService], [Events], [Keyboard], [MenuController], [OffersService]];
+		[NetworkService], [Events], [Keyboard], [MenuController], [OffersService], [ProfileService]];
     }
 
     constructor(public globalConfig: GlobalConfigs,
@@ -61,9 +62,8 @@ export class HomePage implements OnChanges{
                 private searchService: SearchService,
                 public networkService: NetworkService,
                 public events: Events, private kb:Keyboard, menu: MenuController,
-				private offersService : OffersService) {
-
-
+				private offersService : OffersService,
+				private profileService: ProfileService) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
         this.storage = new Storage(SqlStorage);
@@ -91,6 +91,7 @@ export class HomePage implements OnChanges{
         this.currentUser = navParams.get('currentUser');
 		this.search = searchService;
 		this.offerService = offersService;
+		this.profilService = profileService;
     }
 	
 	onPageWillEnter() {
@@ -364,6 +365,11 @@ export class HomePage implements OnChanges{
 					} else {
 						r.avatar = configInversed.avatars[1].url;
 					}
+					
+					var role = this.isEmployer ? "jobyer" : "employeur";
+					this.profilService.loadProfilePicture(null, r.tel, role).then(data => {
+						r.avatar = data.data[0].encode;
+					});
 				}
 				console.log(this.searchResults);
 			}
