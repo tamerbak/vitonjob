@@ -368,7 +368,9 @@ export class HomePage implements OnChanges{
 					
 					var role = this.isEmployer ? "jobyer" : "employeur";
 					this.profilService.loadProfilePicture(null, r.tel, role).then(data => {
-						r.avatar = data.data[0].encode;
+						if(data && data.data && !this.isEmpty(data.data[0].encode)){
+							r.avatar = data.data[0].encode;
+						}
 					});
 				}
 				console.log(this.searchResults);
@@ -376,7 +378,14 @@ export class HomePage implements OnChanges{
 		});
 	}
 	
-	 itemSelected(item, offer){
+	itemSelected(item, offer){
         this.nav.push(SearchDetailsPage, {searchResult : item, currentOffer: offer});
 	 }
+	 
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
+	}
 }
