@@ -169,14 +169,6 @@
 			</button>
 		</ion-item>
 		
-        <ion-item [hidden]="!isEmployer || !missionHours || missionHours.length == 0">
-            <h6> {{optionMission}} </h6>
-            <button clear item-right [style.color]="themeColor" (click)="changeOption()"
-			[hidden]="upperCase(contract.vu) == 'OUI'">
-                <ion-icon name="create"></ion-icon>
-			</button>
-		</ion-item>
-		
         <ion-item class="labelInItem" text-wrap>
             <h3>
                 <ion-icon name="ios-information-circle-outline"></ion-icon>
