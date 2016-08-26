@@ -225,6 +225,45 @@ export class ContractService {
     }
 
     /**
+     * Load predefined recours list
+     */
+    loadRecoursList(){
+        let sql = "select pk_user_recours as id, libelle from user_recours";
+        console.log(sql);
+
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data.data;
+                    resolve(this.data);
+                });
+        });
+    }
+
+    /**
+     * Loading justification list
+     * @param idRecours identifier of recours
+     */
+    loadJustificationsList(idRecours){
+        let sql = "select pk_user_justificatifs_de_recours as id, libelle from user_justificatifs_de_recours where fk_user_recours="+idRecours;
+        console.log(sql);
+
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data.data;
+                    resolve(this.data);
+                });
+        });
+    }
+
+    /**
      * @Description Converts a timeStamp to date string :
      * @param date : a timestamp date
      * @param options Date options

@@ -106,10 +106,22 @@
                 <ion-label>Fin terme</ion-label><ion-input type="date"  [(ngModel)]="contractData.termEndDate"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label>Motif de recours</ion-label><ion-input type="text" [(ngModel)]="contractData.motif"></ion-input>
+                <ion-label>Recours</ion-label>
+                <ion-select [(ngModel)]="contractData.motif" (ionChange)="recoursSelected($event)">
+                    <ion-option *ngFor="let r of recours" value="{{r.libelle}}" >
+                            {{r.libelle}}
+                    </ion-option>
+                </ion-select>
+                <!--ion-input type="text" [(ngModel)]="contractData.motif"></ion-input-->
             </ion-item>
             <ion-item>
-                <ion-label>Justification de recours</ion-label><ion-input type="text" [(ngModel)]="contractData.justification"></ion-input>
+                <ion-label>Motif</ion-label>
+                <ion-select [(ngModel)]="contractData.justification">
+                    <ion-option *ngFor="let r of justificatifs" value="{{r.libelle}}" >
+                        {{r.libelle}}
+                    </ion-option>
+                </ion-select>
+                <!--ion-input type="text" [(ngModel)]="contractData.justification"></ion-input-->
             </ion-item>
             <ion-item>
                 <ion-label>Début de souplesse</ion-label><ion-input type="date"  [(ngModel)]="contractData.debutSouplesse"></ion-input>
