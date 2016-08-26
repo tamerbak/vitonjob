@@ -163,7 +163,9 @@ export class SearchResultsPage implements OnInit {
 					for(let i = 0; i < this.searchResults.length; i++){
 						var role = this.isEmployer ? "jobyer" : "employeur";
 						this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then(data => {
-							this.searchResults[i].avatar = data.data[0].encode;
+							if(data && data.data && !this.isEmpty(data.data[0].encode)){
+								this.searchResults[i].avatar = data.data[0].encode;
+							}
 						});
 					}
                 } else {
@@ -843,4 +845,11 @@ export class SearchResultsPage implements OnInit {
 			this.nav.present(m);
 		});
     }
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
+	}
 }
