@@ -273,9 +273,9 @@ export class MissionService {
         });
     }
 
-	updateDefaultOptionMission(selectedOption, accountId) {
+	updateDefaultOptionMission(selectedOption, accountId, entrepriseId) {
         var sql = "update user_account set option_mission = '" + selectedOption + "' where pk_user_account = '" + accountId + "'; ";
-        console.log(sql);
+		console.log(sql);
 
         return new Promise(resolve => {
             let headers = new Headers();
@@ -667,5 +667,21 @@ export class MissionService {
                     resolve(this.data);
                 });
         });
+	}
+	
+	getOptionMission(id){
+		var sql = "select option_mission from user_account where pk_user_account = '" + id + "'; ";
+        console.log(sql);
+
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers.append("Content-Type", 'text/plain');
+            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });	
 	}
 }
