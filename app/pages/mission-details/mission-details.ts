@@ -66,6 +66,7 @@ export class MissionDetailsPage {
     
     enterpriseName: string = "--";
     jobyerName: string = "--";
+	currentUserVar: string;
 
     /*
     *   Invoice management
@@ -100,6 +101,7 @@ export class MissionDetailsPage {
         this.missionDetailsTitle = "Gestion de la mission";
         this.isEmployer = (this.projectTarget=='employer');
         this.backgroundImage = config.backgroundImage;
+		this.currentUserVar = config.currentUserVar;		
         //get missions
         this.contract = navParams.get('contract');
         console.log(JSON.stringify(this.contract));
@@ -1165,14 +1167,8 @@ export class MissionDetailsPage {
 
 	getOptionMission(){
 		if(this.isEmpty(this.contract.option_mission)){
-            this.db.get('OPTION_MISSION').then((value) => {
-				if(this.isEmpty(value)){
-					//no need to retrive from db, because option is saved in local and in db in the same time, and oprion 1 is the default option in db
-					this.optionMission = "Mode de suivi de mission n°1";
-				}else{
-					this.optionMission = "Mode de suivi de mission n°" + value.substring(0, 1);
-				}
-			});
+			this.optionMission = "Mode de suivi de mission n°1";
+			this.contract.option_mission = "1.0";
 		}else{
             this.optionMission = "Mode de suivi de mission n°" + this.contract.option_mission.substring(0, 1);
         }	

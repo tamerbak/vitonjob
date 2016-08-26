@@ -32,9 +32,9 @@ export class SettingsPage {
 	profilPictureVar: string;
 	
 	constructor(public nav: NavController, gc: GlobalConfigs,
-				private authService: AuthenticationService,
-				private globalService: GlobalService, events:Events,
-				private missionService:MissionService) {
+	private authService: AuthenticationService,
+	private globalService: GlobalService, events:Events,
+	private missionService:MissionService) {
 		this.projectTarget = gc.getProjectTarget();
 		let config = Configs.setConfigs(this.projectTarget);
 		this.options = config.options;
@@ -59,29 +59,31 @@ export class SettingsPage {
 	goToSettingPassword() {
 		this.nav.push(SettingPasswordPage);
 	}
-
+	
 	lockApp() {
-
+		
 	}
 	
 	changeOption(){
-        let modal = Modal.create(ModalTrackMissionPage);
-        this.nav.present(modal);
-        modal.onDismiss(selectedOption => {
-            if(selectedOption){
-				this.storage.get(this.currentUserVar).then((value) => {
-					if(value){
-						this.currentUser = JSON.parse(value);
-						this.storage.set('OPTION_MISSION', selectedOption).then(() =>{
-							this.missionService.updateDefaultOptionMission(selectedOption, this.currentUser.id).then((data) => {
-								if(!data || data.status == 'failure'){
-									this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
-								}else{
-									console.log("default option mission saved successfully");
-								}
+        this.storage.get(this.currentUserVar).then((value) => {
+			if(value){
+				this.currentUser = JSON.parse(value);
+				this.missionService.getOptionMission(this.currentUser.id).then((opt) => {
+					let modal = Modal.create(ModalTrackMissionPage, {optionMission: opt.data[0].option_mission});
+					this.nav.present(modal);
+					modal.onDismiss(selectedOption => {
+						if(selectedOption){
+							this.storage.set('OPTION_MISSION', selectedOption).then(() =>{
+								this.missionService.updateDefaultOptionMission(selectedOption, this.currentUser.id, this.currentUser.employer.entreprises[0].id).then((data) => {
+									if(!data || data.status == 'failure'){
+										this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
+										}else{
+										console.log("default option mission saved successfully");
+									}
+								});
 							});
-						});
-					}
+						}
+					});		
 				});
 			}
 		});

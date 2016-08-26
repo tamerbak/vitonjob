@@ -58,7 +58,7 @@
 				</ion-row>
 				<ion-row>
 					<ion-col text-center>
-						<button item-right (click)="goToMissionPointingPage(item)" outline [hidden]="item.option_mission == '1.0' || isEmployer || upperCase(item.releve_employeur) == 'OUI' || upperCase(item.vu) == 'NON'">
+						<button item-right (click)="goToMissionPointingPage(item)" outline [hidden]="item.option_mission != '2.0' || isEmployer || upperCase(item.releve_employeur) == 'OUI' || upperCase(item.vu) == 'NON'">
 							<ion-icon name="finger-print"></ion-icon> Pointage
 						</button>
 					</ion-col>

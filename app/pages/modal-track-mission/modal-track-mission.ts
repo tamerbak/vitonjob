@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController, Toast, ViewController} from 'ionic-angular';
+import {NavController, NavParams, Toast, ViewController} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {Storage, SqlStorage} from 'ionic-angular';
@@ -11,8 +11,10 @@ export class ModalTrackMissionPage {
 	projectTarget: string;
 	storage:any;
 	options;
+	initialOpt;
 	
-	constructor(public nav: NavController, 
+	constructor(public nav: NavController,
+				navParams : NavParams,
 				public gc: GlobalConfigs,
 				private viewCtrl: ViewController) {
 		this.nav = nav;
@@ -23,6 +25,7 @@ export class ModalTrackMissionPage {
 		// Set local variables and messages
 		this.isEmployer = (this.projectTarget == 'employer');
 		this.storage = new Storage(SqlStorage);
+		this.initialOpt = navParams.get('optionMission');
 	}
 	
 	watchOption(e){

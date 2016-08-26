@@ -114,7 +114,7 @@ export class ContractService {
      * @param employerEntrepriseId
      * @return JSON results in form of created contract Id
      */
-    saveContract(contract:any,jobyerId:Number,employerEntrepriseId:Number,projectTarget:string, yousignJobyerLink){
+    saveContract(contract:any,jobyerId:Number,employerEntrepriseId:Number,projectTarget:string, yousignJobyerLink, accountId){
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
         var dt = new Date();
@@ -148,9 +148,10 @@ export class ContractService {
             " elements_non_soumis_a_des_cotisations,"+
             " recours,"+
             " titre,"+
-            " demande_employeur,"+
-            " demande_jobyer"+
-            ")"+
+			" demande_employeur,"+
+            " demande_jobyer,"+
+            " option_mission"+
+			")"+
             " VALUES ("
             +"'"+ contract.missionStartDate +"',"
             +"'"+ contract.missionEndDate +"',"
@@ -182,7 +183,8 @@ export class ContractService {
             +"'"+this.sqlfyText(contract.justification)+"',"
             +"'"+this.sqlfyText(contract.titre)+"',"
             +"'"+this.sqlfyText(contract.demandeEmployer)+"',"
-            +"'"+this.sqlfyText(contract.demandeJobyer)+"'"
+            +"'"+this.sqlfyText(contract.demandeJobyer)+"',"
+			+"(select option_mission :: numeric from user_account where pk_user_account = '" + accountId + "')"
             +")"
             +" RETURNING pk_user_contrat";
 

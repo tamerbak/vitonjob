@@ -168,7 +168,7 @@ export class YousignPage {
                 //save contract in Database
                 this.contractService.getJobyerId(this.jobyer,this.projectTarget).then(
                     (jobyerData) => {
-                        this.contractService.saveContract(this.contractData,jobyerData.data[0].pk_user_jobyer,this.employer.entreprises[0].id,this.projectTarget, yousignJobyerLink).then(
+                        this.contractService.saveContract(this.contractData,jobyerData.data[0].pk_user_jobyer,this.employer.entreprises[0].id,this.projectTarget, yousignJobyerLink, this.currentUser.id).then(
                             (data) => {
                                 if(this.currentOffer && this.currentOffer != null){
                                     let idContract = 0;
