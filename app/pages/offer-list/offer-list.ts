@@ -61,7 +61,26 @@ export class OfferListPage {
         // console.log($( "#draggable" ).draggable());
         this.globalService = globalService;
         this.offerService = offersService;
+
+        let currentUserVar = config.currentUserVar;
+        this.db.get(currentUserVar).then(value => {
+            if (value && value != "null") {
+                var currentUser = JSON.parse(value);
+                if (!currentUser.titre) {
+                    this.isNewUser = true;
+                } else {
+                    this.isNewUser = false;
+                }
+            }
+        });
+
+    }
+
+    onPageWillEnter() {
+
         this.offerService.loadOfferList(this.projectTarget).then(data => {
+            // TEL26082016 ref : http://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
+            this.globalOfferList.length = 0;
             this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
             this.globalOfferList.push({header: 'Mes brouillons', list: []});
             this.offerList = data;
@@ -89,28 +108,16 @@ export class OfferListPage {
                     //unpublishedList.push (offer);
                     this.globalOfferList[1].list.push(offer);
                     /*this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
-                        console.log('getCorrespondingOffers result : ' + data);
-                        offer.correspondantsCount = data.length;
-                        // Sort offers corresponding to their search results :
-                        this.globalOfferList[1].list.sort((a, b) => {
-                            return b.correspondantsCount - a.correspondantsCount;
-                        })
-                    });*/
+                     console.log('getCorrespondingOffers result : ' + data);
+                     offer.correspondantsCount = data.length;
+                     // Sort offers corresponding to their search results :
+                     this.globalOfferList[1].list.sort((a, b) => {
+                     return b.correspondantsCount - a.correspondantsCount;
+                     })
+                     });*/
                 }
             }
         });
-        let currentUserVar = config.currentUserVar;
-        this.db.get(currentUserVar).then(value => {
-            if (value && value != "null") {
-                var currentUser = JSON.parse(value);
-                if (!currentUser.titre) {
-                    this.isNewUser = true;
-                } else {
-                    this.isNewUser = false;
-                }
-            }
-        });
-
     }
 
     // Testing a web service call
