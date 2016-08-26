@@ -12,7 +12,7 @@
         <ion-col text-center>
             <button small (click)="goToNewOffer()" [style.backgroundColor]="themeColor">
                 <ion-icon name="add-circle"></ion-icon>
-                Nouvelle offre {{isEmployer? " d'emploi":" de service"}}
+                Créer une offre {{isEmployer? " d'emploi":" de service"}}
                 </button>
         </ion-col>
     </ion-row>
@@ -23,7 +23,7 @@
         </ion-card-header-->
 
         <ion-list text-wrap *ngFor="let globalList of globalOfferList">
-            <div style="display: flex;">
+            <div style="display: flex;" *ngIf="globalList.list.length >0">
                 <ion-list-header style="color: #757575">{{globalList.header}}</ion-list-header>
                 <button outline small style="position: relative; top: 0;" (click)="showOfferList(globalList.header)">
                     <ion-icon [name]="detailsIconName1" *ngIf="globalList.header == 'Mes offres en ligne'"></ion-icon>
@@ -55,7 +55,7 @@
                     <ion-toggle secondary [checked]="item.rechercheAutomatique" (ionChange)="autoSearchMode(item)"></ion-toggle>
                 </ion-item>
                 <ion-item style="border-bottom: 0;margin-top: 0;margin-bottom: 0;text-align: center;" *ngIf="item.visible && showPublishedOffers">
-                    <button secondary small>Lancer la recherche</button>
+                    <button secondary small (click)="launchSearch(item)">Lancer la recherche</button>
                 </ion-item>
             </div>
         </ion-list>
