@@ -16,6 +16,8 @@ export class AttachementsPage {
     user : any;
 	projectTarget : string;
     isEmployer: boolean;
+    backgroundImage : string;
+    themeColor : string;
 
     constructor(private nav: NavController,
                 private service : AttachementsService,
@@ -24,6 +26,8 @@ export class AttachementsPage {
 		this.projectTarget = globalConfig.getProjectTarget();
         this.isEmployer = this.projectTarget === 'employer';
     	let config = Configs.setConfigs(this.projectTarget);
+        this.themeColor = config.themeColor;
+        this.backgroundImage = config.backgroundImage;
 		let currentUserVar = config.currentUserVar;
         this.db.get(currentUserVar).then(usr => {
             if(usr){

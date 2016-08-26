@@ -1,14 +1,19 @@
-<ion-header>
+<!--ion-header>
 <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" >
 	<button menuToggle>
 		<ion-icon name="menu"></ion-icon>
 	</button>
   <ion-title>Gestion des habilitations</ion-title>
 </ion-navbar>
-</ion-header>
+</ion-header-->
 
-<ion-content padding>
-	 <ion-row>
+<ion-content padding class="recruiter-list" [ngStyle]="backgroundImage">
+	<button menuToggle style="background-color: transparent; box-shadow: none" [style.color]="themeColor">
+		<ion-icon name="menu"></ion-icon>
+		&nbsp;&nbsp;Gestion des habilitations
+	</button>
+
+	<ion-row>
 		<ion-col width-50>
 			<button block (click)="showRecruiterRepertoryModal()" [style.backgroundColor]="themeColor" class="button-picture">
 				<ion-icon name="contacts"></ion-icon>

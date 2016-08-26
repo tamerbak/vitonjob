@@ -1,4 +1,4 @@
-<ion-header>
+<!--ion-header>
     <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
         <button menuToggle>
             <ion-icon name="menu"></ion-icon>
@@ -6,9 +6,15 @@
         <ion-title>Coffre numérique</ion-title>
 
     </ion-navbar>
-</ion-header>
+</ion-header-->
 
-<ion-content padding>
+<ion-content padding class="attachements" [ngStyle]="backgroundImage">
+
+    <button menuToggle  style="background-color: transparent; box-shadow: none" [style.color]="themeColor">
+        <ion-icon name="menu"></ion-icon>
+        &nbsp;&nbsp;Coffre numérique
+    </button>
+
     <button block (click)="newAttachement()" [style.backgroundColor]="themeColor">
         <ion-icon name="add-circle"></ion-icon>
         Nouveau document

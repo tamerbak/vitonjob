@@ -1,4 +1,4 @@
-<ion-header>
+<!--ion-header>
 <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
     <button menuToggle>
         <ion-icon name="menu"></ion-icon>
@@ -6,21 +6,26 @@
     <ion-title>Profil</ion-title>
 
 </ion-navbar>
-</ion-header>
+</ion-header-->
 
 <ion-content padding class="profile" [ngStyle]="backgroundImage">
 
-    <button fab fab-top fab-right  [style.backgroundColor]="themeColor"
+    <button menuToggle  style="background-color: transparent; box-shadow: none" [style.color]="themeColor">
+        <ion-icon name="menu"></ion-icon>
+        &nbsp;&nbsp;Mon profil
+    </button>
+
+    <button fab fab-top fab-right  [style.backgroundColor]="themeColor" style="margin-top:50px"
             (click)="goToSettings()">
         <ion-icon name="settings"></ion-icon>
     </button>
 
-    <button fab fab-top fab-right style="margin-right:20%" [style.backgroundColor]="themeColor"
+    <button fab fab-top fab-right style="margin-right:66px; margin-top:50px" [style.backgroundColor]="themeColor"
             (click)="goToBankAccount()">
         <ion-icon name="logo-euro"></ion-icon>
     </button>
 
-    <button fab fab-top fab-left class="img-button" (click)="showPictureModel()"
+    <button fab fab-top fab-left class="img-button" (click)="showPictureModel()" style="margin-top:50px"
             [style.backgroundColor]="thirdThemeColor">
         <img [src]="userImageURL">
     </button>
@@ -60,7 +65,7 @@
 			<ion-item-divider light>Adresses</ion-item-divider>
 		</ion-card>
 
-		<div id="map" [hidden]="isMapHidden()"></div>
+		<div id="map" ></div>
 		<ion-card class="adv-map" style="margin-top: 0;">
 			<ion-item text-wrap>
 				<ion-icon subtle large item-left name='pin' style="color: #14baa6"></ion-icon>
