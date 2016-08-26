@@ -23,6 +23,7 @@ export class ModalAttachementPage {
     db : Storage;
     user : any;
     handler : AttachementsPage;
+    isEmployer:boolean;
     constructor(private nav: NavController,
                 private zone: NgZone,
                 public gc: GlobalConfigs,
@@ -32,6 +33,8 @@ export class ModalAttachementPage {
 
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
+
+        this.isEmployer = this.projectTarget === 'employer';
 
         // Set local variables and messages
         this.themeColor = config.themeColor;
