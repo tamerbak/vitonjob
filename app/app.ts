@@ -336,7 +336,7 @@ export class Vitonjob {
 			this.loggedInPages.push({title: "Recrutement groupé", component: PendingContractsPage, icon: "logo-buffer", isBadged: false});
 			this.loggedInPages.push({title: "Gestion des habilitations", component: RecruiterListPage, icon: "contacts", isBadged: false});
 		}
-		this.loggedInPages.push({title: "Coffre numérique", component: AttachementsPage, icon: "albums", isBadged: false});
+		this.loggedInPages.push({title: "Coffre numérique", component: AttachementsPage, icon: "cube", isBadged: false});
 		this.loggedInPages.push({title: "Mes options", component: SettingsPage, icon: "settings", isBadged: false});
 		this.loggedInPages.push({title: "A propos", component: AboutPage, icon: "help-circle", isBadges: false});
 	}

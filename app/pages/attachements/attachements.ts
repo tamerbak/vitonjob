@@ -15,12 +15,14 @@ export class AttachementsPage {
     db : Storage;
     user : any;
 	projectTarget : string;
+    isEmployer: boolean;
 
     constructor(private nav: NavController,
                 private service : AttachementsService,
 				public globalConfig: GlobalConfigs) {
         this.db = new Storage(SqlStorage);
 		this.projectTarget = globalConfig.getProjectTarget();
+        this.isEmployer = this.projectTarget === 'employer';
     	let config = Configs.setConfigs(this.projectTarget);
 		let currentUserVar = config.currentUserVar;
         this.db.get(currentUserVar).then(usr => {

@@ -6,13 +6,13 @@
 
 <ion-content padding class="offer-add" [ngStyle]="backgroundImage">
 
-  <!-- Validate Offer -->
-  <ion-row >
+  <!--video-->
+  <ion-row>
     <ion-col text-center>
-      <button [style.backgroundColor]="themeColor" (click)="addOffer()"
-              [disabled] = "!(validated.isJob && validated.isCalendar)" >
-        <ion-icon name="add-circle" is-active="false"></ion-icon>
-        Ajouter l'offre
+      <button [style.backgroundColor]="themeColor" (click)="showVideoAlert()"
+              [disabled] = "!validated.isCalendar" >
+        <ion-icon name="videocam" is-active="false"></ion-icon>
+        Je me valorise avec une vidéo
       </button>
     </ion-col>
   </ion-row>
@@ -21,6 +21,8 @@
   <ion-label class="text-top-left">Job</ion-label>
   <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
             class="icon-top-left" [hidden]="!validated.isJob"></ion-icon>
+  <ion-icon name="warning" style="color: orange;"
+            class="icon-top-left" [hidden]="validated.isJob || !steps.isJob"></ion-icon>
   <button fab class = "offer-top-left" [disabled] = "!steps.isJob"
           [style.backgroundColor]="themeColor" (click)="showJobModal()">
     <ion-icon name="briefcase" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
@@ -30,7 +32,7 @@
   <ion-label class="text-top-right">Agenda</ion-label>
   <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
             class="icon-top-right" [hidden]="!validated.isCalendar"></ion-icon>
-  <button fab class = "offer-top-right" [disabled] = "!steps.isCalendar"
+  <button fab class = "offer-top-right" [disabled] = "!steps.isCalendar && !validated.isJob"
           [style.backgroundColor]="themeColor" (click)="showCalendarModal()">
     <ion-icon name="calendar" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
   </button>
@@ -52,17 +54,18 @@
           [style.backgroundColor]="themeColor" (click)="showLanguageModal()">
     <ion-icon name="globe" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
   </button>
-  
-  <!--video-->
+
+  <!-- Validate Offer -->
   <ion-row class="video-bottom-center">
     <ion-col text-center>
-      <button [style.backgroundColor]="themeColor" (click)="showVideoAlert()"
+      <button [style.backgroundColor]="themeColor" (click)="addOffer()"
               [disabled] = "!(validated.isJob && validated.isCalendar)" >
-        <ion-icon name="videocam" is-active="false"></ion-icon>
-        Je me présente en direct
+        <ion-icon name="add-circle" is-active="false"></ion-icon>
+        Ajouter l'offre
       </button>
     </ion-col>
   </ion-row>
+
 
 
 

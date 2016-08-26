@@ -1,4 +1,4 @@
-import {NavController, Storage, SqlStorage, Toast} from 'ionic-angular';
+import {NavController, Storage, SqlStorage, Toast, Loading} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SearchService} from "../../providers/search-service/search-service";
 import {Configs} from "../../configurations/configs";
@@ -8,6 +8,7 @@ import {OffersService} from "../../providers/offers-service/offers-service";
 import {isUndefined} from "ionic-angular/util";
 import {Component} from "@angular/core";
 import {GlobalService} from "../../providers/global.service";
+import {SearchResultsPage} from "../search-results/search-results";
 
 /*
  Generated class for the OfferListPage page.
@@ -17,7 +18,7 @@ import {GlobalService} from "../../providers/global.service";
  */
 @Component({
     templateUrl: 'build/pages/offer-list/offer-list.html',
-    providers: [SearchService, GlobalConfigs, OffersService, GlobalService]
+    providers: [SearchService, GlobalConfigs, OffersService, GlobalService, SearchService]
 })
 export class OfferListPage {
 
@@ -33,11 +34,12 @@ export class OfferListPage {
     showUnpublishedOffers = false;
     detailsIconName1:string = "add";
     detailsIconName2:string = "add";
+    searchService: any;
 
     constructor(public nav:NavController,
                 public gc:GlobalConfigs,
                 public search:SearchService,
-                public offersService:OffersService, private globalService:GlobalService) {
+                public offersService:OffersService, private globalService:GlobalService, private searchService: SearchService) {
 
         // Set global configs
         // Get target to determine configs
@@ -61,7 +63,27 @@ export class OfferListPage {
         // console.log($( "#draggable" ).draggable());
         this.globalService = globalService;
         this.offerService = offersService;
+        this.searchService = searchService;
+
+        let currentUserVar = config.currentUserVar;
+        this.db.get(currentUserVar).then(value => {
+            if (value && value != "null") {
+                var currentUser = JSON.parse(value);
+                if (!currentUser.titre) {
+                    this.isNewUser = true;
+                } else {
+                    this.isNewUser = false;
+                }
+            }
+        });
+
+    }
+
+    onPageWillEnter() {
+
         this.offerService.loadOfferList(this.projectTarget).then(data => {
+            // TEL26082016 ref : http://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
+            this.globalOfferList.length = 0;
             this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
             this.globalOfferList.push({header: 'Mes brouillons', list: []});
             this.offerList = data;
@@ -89,28 +111,16 @@ export class OfferListPage {
                     //unpublishedList.push (offer);
                     this.globalOfferList[1].list.push(offer);
                     /*this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
-                        console.log('getCorrespondingOffers result : ' + data);
-                        offer.correspondantsCount = data.length;
-                        // Sort offers corresponding to their search results :
-                        this.globalOfferList[1].list.sort((a, b) => {
-                            return b.correspondantsCount - a.correspondantsCount;
-                        })
-                    });*/
+                     console.log('getCorrespondingOffers result : ' + data);
+                     offer.correspondantsCount = data.length;
+                     // Sort offers corresponding to their search results :
+                     this.globalOfferList[1].list.sort((a, b) => {
+                     return b.correspondantsCount - a.correspondantsCount;
+                     })
+                     });*/
                 }
             }
         });
-        let currentUserVar = config.currentUserVar;
-        this.db.get(currentUserVar).then(value => {
-            if (value && value != "null") {
-                var currentUser = JSON.parse(value);
-                if (!currentUser.titre) {
-                    this.isNewUser = true;
-                } else {
-                    this.isNewUser = false;
-                }
-            }
-        });
-
     }
 
     // Testing a web service call
@@ -194,5 +204,40 @@ export class OfferListPage {
         }
 
 
+    }
+
+    /**
+     * @Description : Launch search from current offer-list
+     */
+    launchSearch(offer) {
+        console.log(offer);
+        if (!offer)
+            return;
+        let loading = Loading.create({
+            content: ` 
+                <div>
+                    <img src='img/loading.gif' />
+                </div>
+                `,
+            spinner: 'hide'
+        });
+        this.nav.present(loading);
+        let searchFields = {
+            class : 'com.vitonjob.callouts.recherche.SearchQuery',
+            job : offer.jobData.job,
+            metier : '',
+            lieu : '',
+            nom : '',
+            entreprise : '',
+            date : '',
+            table : this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer',
+            idOffre :'0'
+        };
+        this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
+            console.log(data);
+            this.searchService.persistLastSearch(data);
+            loading.dismiss();
+            this.nav.push(SearchResultsPage, {currentOffer : offer});
+        });
     }
 }

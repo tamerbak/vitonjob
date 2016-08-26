@@ -285,13 +285,13 @@ export class HomePage implements OnChanges{
 				this.autoSearchOffers.push(offer);
 				continue;
 			}
-			if(offer.visible && !offer.rechercheAutomatique){
+			/*if(offer.visible && !offer.rechercheAutomatique){
 				offer.correspondantsCount = -1;
 				this.publicOffers.push(offer);
-			}
+			}*/
 		}
-		for(var i = 0; i < this.publicOffers.length; i++){
-			let offer = this.publicOffers[i];
+		for(var i = 0; i < this.autoSearchOffers.length; i++){
+			let offer = this.autoSearchOffers[i];
 			this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
 				offer.correspondantsCount = data.length;
 			});
