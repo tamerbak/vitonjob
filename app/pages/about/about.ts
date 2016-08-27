@@ -20,8 +20,9 @@ export class AboutPage {
     logo:string;
     projectName:string;
     isEmployer:boolean;
+    themeColor:string;
 
-    constructor(gc:GlobalConfigs, platform: Platform) {
+    constructor(gc:GlobalConfigs, platform:Platform) {
         let monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
             "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
         ];
@@ -32,6 +33,7 @@ export class AboutPage {
         this.push = HomePage;
 
         let config = Configs.setConfigs(gc.getProjectTarget());
+        this.themeColor = config.themeColor;
         this.logo = config.imageURL;
         this.projectName = config.projectName;
         this.isEmployer = (gc.getProjectTarget() === 'employer');
@@ -41,7 +43,7 @@ export class AboutPage {
             this.versionCode = '';
             if (platform.is('ios')) {
                 AppVersion.getVersionCode().then(_build => {
-                    this.versionCode = ' ('+ _build + ')';
+                    this.versionCode = ' (' + _build + ')';
                 });
             }
         });

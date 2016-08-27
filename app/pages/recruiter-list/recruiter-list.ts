@@ -19,6 +19,7 @@ export class RecruiterListPage {
     themeColor:string;
 	recruiterList: any;
 	currentUser: any;
+	backgroundImage:string;
 	
     constructor(public gc: GlobalConfigs,
                 public nav: NavController,
@@ -28,6 +29,7 @@ export class RecruiterListPage {
         this.projectTarget = gc.getProjectTarget();
         let config = Configs.setConfigs(this.projectTarget);
         this.themeColor = config.themeColor;
+		this.backgroundImage = config.backgroundImage;
         this.isEmployer = (this.projectTarget=='employer');
 		this.storage = new Storage(SqlStorage);
 		let currentUserVar = config.currentUserVar;
