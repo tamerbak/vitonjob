@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController, NavParams, ViewController, Events} from 'ionic-angular';
+import {NavController, NavParams, ViewController, Events, Alert, Toast} from 'ionic-angular';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {NgZone} from '@angular/core';
@@ -20,6 +20,7 @@ export class ModalPicturePage {
     avatars:any;
     projectTarget: string;
     themeColor:string;
+	inversedTemeColor:string;
     isEmployer: boolean;
     config: any;
     event:any;
@@ -27,6 +28,8 @@ export class ModalPicturePage {
 	pictureUri: string;
 	isPictureChanged = false;
 	defaultImage: string;
+	imgCrop;
+	hideCropBtn = true;
 
     constructor(public nav:NavController, 
 				view:ViewController, 
@@ -40,6 +43,7 @@ export class ModalPicturePage {
         this.config = Configs.setConfigs(this.projectTarget);
         this.isEmployer = (this.projectTarget=='employer');
         this.themeColor= this.config.themeColor;
+		this.inversedThemeColor= this.config.inversedThemeColor;
         this.thirdThemeColor = gc.getThirdThemeColor();
         this.avatars = this.config.avatars;
         this.event = event;
@@ -51,10 +55,37 @@ export class ModalPicturePage {
      * @Description : Closing the modal page
      */
     closeModal() {
-		if(this.isPictureChanged){
-			this.viewCtrl.dismiss({uri: this.pictureUri, type: "picture"});	
+		if(this.isPictureChanged && !this.hideCropBtn){
+			let confirm = Alert.create({
+				title: "VitOnJob",
+				message: "Voulez-vous valider votre photo de profil?",
+				buttons: [
+					{
+						text: 'Oui',
+						handler: () => {
+							console.log('Yes selected');	
+							this.validateCrop();
+						}
+					},
+					{
+						text: 'Non',
+						handler: () => {
+							console.log('Non selected');	
+							this.viewCtrl.dismiss();
+						}
+					}
+				]
+			});
+			this.nav.present(confirm);
 		}else{
-			this.viewCtrl.dismiss();	
+			if(!this.isPictureChanged){
+				this.viewCtrl.dismiss();
+				return;
+			}
+			if(this.hideCropBtn){
+				this.viewCtrl.dismiss({uri: this.pictureUri, type: "picture"});
+				return;
+			}
 		}
     }
 
@@ -101,35 +132,84 @@ export class ModalPicturePage {
      * @description read the file to upload and convert it to base64
      */
     onChangeUpload(e) {
+		if(!this.hideCropBtn)
+			this.imgCrop.destroy();
 		this.isPictureChanged = true;
         var file = e.target.files[0];
         var myReader = new FileReader();
         this.zone.run(()=> {
             myReader.onloadend = (e) => {
-                this.pictureUri = myReader.result;
+				this.loadPictureForCropping(myReader.result);
+				this.pictureUri = null;
             }
             myReader.readAsDataURL(file);
         });
+		this.resetFileInput();
     }
 	
 	takePicture() {
+		if(!this.hideCropBtn)
+			this.imgCrop.destroy();
 		this.isPictureChanged = true;
         Camera.getPicture({
             destinationType: Camera.DestinationType.DATA_URL,
             targetWidth: 1000,
-            targetHeight: 1000
+            targetHeight: 1000,
+			correctOrientation : true
         }).then((imageData) => {
             this.zone.run(()=> {
                 // imageData is a base64 encoded string
-                this.pictureUri = "data:image/jpeg;base64," + imageData;
+                var imgBase64 = "data:image/jpeg;base64," + imageData;
+				this.loadPictureForCropping(imgBase64);
+				this.pictureUri = null;
             });
         }, (err) => {
             console.log(err);
         });
+		this.resetFileInput();
     }
 	
 	deletePicture(){
+		if(!this.hideCropBtn)
+			this.imgCrop.destroy();
 		this.isPictureChanged = true;
 		this.pictureUri = "";
+		this.hideCropBtn = true;
+		this.resetFileInput();
+	}
+	
+	loadPictureForCropping(img){
+		var el = document.getElementById('profile-picture');
+		this.imgCrop = new Croppie(el, {
+			viewport: { width: 100, height: 100 },
+			boundary: { width: 250, height: 250 },
+			showZoomer: false,
+		});
+		this.imgCrop.bind({
+			url: img,
+		});
+		this.hideCropBtn = false;
+	}
+	
+	validateCrop(){
+		this.imgCrop.result('canvas').then(base64Image => {
+			this.pictureUri = base64Image;
+			this.imgCrop.destroy();
+		});
+		this.hideCropBtn = true;
+		this.resetFileInput();
+	}
+	
+	//initialize fileinput (bug in navigator), and destroy croopie
+	resetFileInput(){
+		var fileinput = document.getElementById('fileinput');
+        fileinput.value = "";
+	}
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
 	}
 }
