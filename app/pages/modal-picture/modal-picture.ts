@@ -181,7 +181,7 @@ export class ModalPicturePage {
 	loadPictureForCropping(img){
 		var el = document.getElementById('profile-picture');
 		this.imgCrop = new Croppie(el, {
-			viewport: { width: 100, height: 100 },
+			viewport: { width: 100, height: 100, type: 'circle' },
 			boundary: { width: 250, height: 250 },
 			showZoomer: false,
 		});

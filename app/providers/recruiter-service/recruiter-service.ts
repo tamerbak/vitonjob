@@ -133,9 +133,8 @@ export class RecruiterService{
 		var recruiter = {};
 		if(fromPage == 'repertory'){
 			var name = this.splitRecruiterName(contact);
-			recruiter = {email: (contact.emails != null ? contact.emails[0].value : ''), phone: (contact.phoneNumbers != null ? contact.phoneNumbers[0].value : ''), firstname: name[0], lastname: name[1]};
-		}
-		else{
+			recruiter = {email: (contact.emails != null ? contact.emails[0].value : ''), phone: (contact.phoneNumbers != null ? contact.phoneNumbers[0].value.replace(" ", "") : ''), firstname: name[0], lastname: name[1]};
+		}else{
 			recruiter = {email: contact.email, phone: contact.phone, firstname: contact.firstname, lastname: contact.lastname};
 		}
 		return recruiter;
