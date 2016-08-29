@@ -38,8 +38,7 @@
 						<h3 [style.color]="themeColor"><ion-icon name="calendar"></ion-icon>&nbsp;Du {{toStringDate(item.date_de_debut)}} {{(toStringDate(item.date_de_fin) != toStringDate(item.date_de_debut)) ? 'au ' + toStringDate(item.date_de_fin) : ''}}</h3>
 						<h3 [style.color]="themeColor"><ion-icon name="document"></ion-icon>&nbsp;Contrat N° {{item.numero}}</h3>
 						<h3 [style.color]="themeColor" [hidden]="!isEmployer"> <ion-icon name="person"></ion-icon>&nbsp;Avec {{item.prenom}} {{item.nom}}</h3>
-						<h3 [style.color]="themeColor" [hidden]="isEmployer">&nbsp;Avec {{item.nom}}</h3>
-						<h3 [style.color]="themeColor"><ion-icon name="md-create"></ion-icon>&nbsp;Vous l'avez signé le {{item.date_signature | dateConverter:'short'}}</h3>
+						<h3 [style.color]="themeColor"><ion-icon name="md-create"></ion-icon>&nbsp;{{isEmployer ? 'Vous l\'avez signé ' : 'Signé par ' + item.nom + ' '}} le {{item.date_signature | dateConverter:'short'}}</h3>
 					</ion-col>
 				</ion-row>
 				<ion-row>
