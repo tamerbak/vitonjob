@@ -1,4 +1,13 @@
-
+<ion-header>
+  <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
+    <ion-title>Proposition</ion-title>
+    <ion-buttons end>
+      <button (click)="closeModal()">
+        <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
 <ion-content padding class="modal-offer-proposition">
   <h2>Proposition</h2>
   <ion-list >

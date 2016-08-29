@@ -158,9 +158,9 @@ export class HomePage implements OnChanges{
 
     onFocus() {
         if (this.projectTarget == 'employer')
-            this.searchPlaceHolder = "Ex : Je cherche un serveur débutant disponible demain sur Villepinte";
+            this.searchPlaceHolder = "Ex : Je cherche un serveur";// débutant disponible demain sur Villepinte";
         else
-            this.searchPlaceHolder = "Ex : Je cherche une offre d'emploi pour serveur débutant demain sur Villepinte";
+            this.searchPlaceHolder = "Ex : Je suis un serveur";//Je cherche une offre d'emploi pour serveur débutant demain sur Villepinte";
     }
 
     onBlur() {

@@ -769,7 +769,7 @@ export class SearchResultsPage implements OnInit {
                 }else{
                     //redirect employer to select or create an offer
 					let alert = Alert.create({
-						title: 'Séléction de l\'offre',
+						title: 'Sélection de l\'offre',
 						subTitle: "Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer",
 						buttons: [
 						{
