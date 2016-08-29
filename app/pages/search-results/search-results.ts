@@ -29,65 +29,65 @@ declare var google:any;
 
 @Component({
     templateUrl: 'build/pages/search-results/search-results.html',
-    providers : [OffersService, ProfileService]
+    providers: [OffersService, ProfileService]
 })
 export class SearchResultsPage implements OnInit {
 
-    searchResults : any;
-    listView : boolean = false;
-    cardView : boolean = false;
-    mapView : string;
-    platform : Platform;
-    map : any;
-    currentCardIndex : number = 0;
-    projectTarget : any;
-    avatar : string;
-    resultsCount : number = 0;
-    isUserAuthenticated : boolean;
+    searchResults:any;
+    listView:boolean = false;
+    cardView:boolean = false;
+    mapView:string;
+    platform:Platform;
+    map:any;
+    currentCardIndex:number = 0;
+    projectTarget:any;
+    avatar:string;
+    resultsCount:number = 0;
+    isUserAuthenticated:boolean;
     employer:any;
-    isEmployer : boolean;
+    isEmployer:boolean;
 
     //  Attributes for offer creation proposition
-    proposedJob : any;
-    proposedLanguages : any = [];
-    proposedQualities : any = [];
-    offerProposition : boolean = false;
-    offersService : any;
-    navParams : NavParams;
+    proposedJob:any;
+    proposedLanguages:any = [];
+    proposedQualities:any = [];
+    offerProposition:boolean = false;
+    offersService:any;
+    navParams:NavParams;
 
-    toast : Toast;
-    showingToast : boolean = false;
+    toast:Toast;
+    showingToast:boolean = false;
 
-    db : Storage;
-    contratsAttente : any = [];
-    availability: string= "green";
-    backgroundImage: string;
+    db:Storage;
+    contratsAttente:any = [];
+    availability:string = "green";
+    backgroundImage:string;
     themeColor:string;
-    searchService: any;
+    searchService:any;
 
-    iconName: string;
-    isMapView: boolean;
+    iconName:string;
+    isMapView:boolean;
 
     /**
      * @description While constructing the view we get the last results of the search from the user
      * @param nav Navigation controller of the application
      * @param searchService the provider that allows us to get data from search service
      */
-    constructor(public globalConfig: GlobalConfigs,
-                public nav: NavController,
-                navParams : NavParams,
-                private searchService: SearchService,
+    constructor(public globalConfig:GlobalConfigs,
+                public nav:NavController,
+                navParams:NavParams,
+                private searchService:SearchService,
                 private userService:UserService,
-                offersService : OffersService,
-                platform : Platform,
-				private profileService: ProfileService) {
+                offersService:OffersService,
+                platform:Platform,
+                private profileService:ProfileService) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
-        let configInversed = this.projectTarget != 'jobyer' ? Configs.setConfigs('jobyer'): Configs.setConfigs('employer');
+        let configInversed = this.projectTarget != 'jobyer' ? Configs.setConfigs('jobyer') : Configs.setConfigs('employer');
         let config = Configs.setConfigs(this.projectTarget);
         this.backgroundImage = config.backgroundImage;
         this.themeColor = config.themeColor;
-        this.avatar = this.projectTarget != 'jobyer' ? 'jobyer_avatar':'employer_avatar';
+        this.avatar = this.projectTarget != 'jobyer' ? 'jobyer_avatar' : 'employer_avatar';
         this.platform = platform;
         this.isEmployer = this.projectTarget == 'employer';
         this.navParams = navParams;
@@ -98,11 +98,11 @@ export class SearchResultsPage implements OnInit {
 
         this.db = new Storage(SqlStorage);
 
-        this.db.get('IS_MAP_VIEW').then( data => {
-            if (data){
+        this.db.get('IS_MAP_VIEW').then(data => {
+            if (data) {
                 data = JSON.parse(data);
             } else {
-                data = {isMapView:true};
+                data = {isMapView: true};
                 this.db.set('IS_MAP_VIEW', JSON.stringify(data));
             }
             this.isMapView = data.isMapView;
@@ -111,8 +111,8 @@ export class SearchResultsPage implements OnInit {
         });
 
         this.db.get('PENDING_CONTRACTS').then(contrats => {
-            
-            if(contrats){
+
+            if (contrats) {
                 this.contratsAttente = JSON.parse(contrats);
             } else {
                 this.contratsAttente = [];
@@ -120,10 +120,10 @@ export class SearchResultsPage implements OnInit {
             }
 
             //  Retrieving last search
-            searchService.retrieveLastSearch().then(results =>{
-                
+            searchService.retrieveLastSearch().then(results => {
+
                 let jsonResults = JSON.parse(results);
-                if(jsonResults){
+                if (jsonResults) {
                     this.searchResults = jsonResults;
                     this.resultsCount = this.searchResults.length;
                     if (this.resultsCount == 0) {
@@ -133,7 +133,7 @@ export class SearchResultsPage implements OnInit {
                     } else {
                         this.mapView = 'none'
                     }
-                    for(let i = 0 ; i < this.searchResults.length ; i++){
+                    for (let i = 0; i < this.searchResults.length; i++) {
                         let r = this.searchResults[i];
                         r.matching = Number(r.matching).toFixed(2);
                         r.index = i + 1;
@@ -148,26 +148,26 @@ export class SearchResultsPage implements OnInit {
 
                     //  Determine constraints for proposed offer
                     this.createCriteria();
-                    for(let j=0 ; j < this.searchResults.length ; j++){
+                    for (let j = 0; j < this.searchResults.length; j++) {
                         let r = this.searchResults[j];
                         r.checkedContract = false;
-                        for(let i = 0 ; i < this.contratsAttente.length ; i++){
-                            if(this.contratsAttente[i].idOffre == r.idOffre){
+                        for (let i = 0; i < this.contratsAttente.length; i++) {
+                            if (this.contratsAttente[i].idOffre == r.idOffre) {
                                 r.checkedContract = true;
                                 break;
                             }
                         }
                     }
-					
-					//load profile pictures
-					for(let i = 0; i < this.searchResults.length; i++){
-						var role = this.isEmployer ? "jobyer" : "employeur";
-						this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then(data => {
-							if(data && data.data && !this.isEmpty(data.data[0].encode)){
-								this.searchResults[i].avatar = data.data[0].encode;
-							}
-						});
-					}
+
+                    //load profile pictures
+                    for (let i = 0; i < this.searchResults.length; i++) {
+                        var role = this.isEmployer ? "jobyer" : "employeur";
+                        this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then(data => {
+                            if (data && data.data && !this.isEmpty(data.data[0].encode)) {
+                                this.searchResults[i].avatar = data.data[0].encode;
+                            }
+                        });
+                    }
                 } else {
                     this.mapView = 'none';
                 }
@@ -175,38 +175,38 @@ export class SearchResultsPage implements OnInit {
         });
     }
 
-	onPageWillEnter() {
-	 //get the connexion object and define if the there is a user connected
-        this.userService.getConnexionObject().then(results =>{
-            if(results && !isUndefined(results)){
+    onPageWillEnter() {
+        //get the connexion object and define if the there is a user connected
+        this.userService.getConnexionObject().then(results => {
+            if (results && !isUndefined(results)) {
                 let connexion = JSON.parse(results);
-                if(connexion && connexion.etat){
+                if (connexion && connexion.etat) {
                     this.isUserAuthenticated = true;
-                }else{
+                } else {
                     this.isUserAuthenticated = false;
                 }
                 console.log(connexion);
             }
         });
-	}
-		
+    }
+
     ngOnInit() {
 
         //get the currentEmployer
-        this.userService.getCurrentUser(this.projectTarget).then(results =>{
+        this.userService.getCurrentUser(this.projectTarget).then(results => {
 
-            if(results && !isUndefined(results)){
+            if (results && !isUndefined(results)) {
                 let currentEmployer = JSON.parse(results);
-                if(currentEmployer){
+                if (currentEmployer) {
                     this.employer = currentEmployer;
                 }
                 console.log(currentEmployer);
             }
 
-            this.searchService.retrieveLastSearch().then(results =>{
+            this.searchService.retrieveLastSearch().then(results => {
 
                 let jsonResults = JSON.parse(results);
-                if(jsonResults) {
+                if (jsonResults) {
                     this.searchResults = jsonResults;
                     this.resultsCount = this.searchResults.length;
                 }
@@ -222,7 +222,7 @@ export class SearchResultsPage implements OnInit {
 
         let mapOptions = {
             center: latLng,
-            zoom:15,
+            zoom: 15,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
 
@@ -232,22 +232,22 @@ export class SearchResultsPage implements OnInit {
         let addresses = [];
         let contentTable = [];
         let locatedResults = [];
-        for(let i = 0 ; i < this.searchResults.length ; i++){
+        for (let i = 0; i < this.searchResults.length; i++) {
             let r = this.searchResults[i];
-            if(parseInt(r.latitude)==0 && parseInt(r.longitude)==0)
+            if (parseInt(r.latitude) == 0 && parseInt(r.longitude) == 0)
                 continue;
             let latlng = new google.maps.LatLng(r.latitude, r.longitude);
             locatedResults.push(r);
             addresses.push(latlng);
-            let matching: string  = (r.matching.toString().indexOf('.') < 0) ? r.matching:r.matching.toString().split('.')[0];
+            let matching:string = (r.matching.toString().indexOf('.') < 0) ? r.matching : r.matching.toString().split('.')[0];
             if (this.isEmployer) {
-                contentTable.push("<h4>"+r.prenom + ' ' + r.nom.substring(0,1)+". <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;"+matching+"%&nbsp;</span></h4>" +
-                    "<p>"+r.titreOffre+"</p>" +
+                contentTable.push("<h4>" + r.prenom + ' ' + r.nom.substring(0, 1) + ". <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;" + matching + "%&nbsp;</span></h4>" +
+                    "<p>" + r.titreOffre + "</p>" +
                     "<p><span style='color: #29bb00; font-size: large;'>&#9679;</span> &nbsp; Disponible</p>" +
                     "<p style='text-decoration: underline;'>Détails</p> ");
             } else {
-                contentTable.push("<h4>"+r.entreprise+" <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;"+matching+"%&nbsp;</span></h4>" +
-                    "<p>"+r.titreOffre+"</p>" +
+                contentTable.push("<h4>" + r.entreprise + " <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;" + matching + "%&nbsp;</span></h4>" +
+                    "<p>" + r.titreOffre + "</p>" +
                     "<p><span style='color: #29bb00; font-size: large;'>&#9679;</span> &nbsp; Disponible</p>" +
                     "<p style='text-decoration: underline;'>Détails</p> ");
             }
@@ -258,9 +258,9 @@ export class SearchResultsPage implements OnInit {
 
     }
 
-    addMarkers(addresses:any, bounds:any, contentTable : any, locatedResults : any) {
+    addMarkers(addresses:any, bounds:any, contentTable:any, locatedResults:any) {
 
-       //debugger;
+        //debugger;
         for (let i = 0; i < addresses.length; i++) {
             let marker = new google.maps.Marker({
                 map: this.map,
@@ -268,49 +268,47 @@ export class SearchResultsPage implements OnInit {
                 position: addresses[i]
             });
             bounds.extend(marker.position);
-            this.addInfoWindow(marker,contentTable[i], locatedResults[i]);
+            this.addInfoWindow(marker, contentTable[i], locatedResults[i]);
         }
 
         this.map.fitBounds(bounds);
 
     }
 
-    addInfoWindow(marker, content, r){
+    addInfoWindow(marker, content, r) {
 
         let infoWindow = new google.maps.InfoWindow({
-            content: '<div id="myInfoWinDiv">'+ content +'</div>'
+            content: '<div id="myInfoWinDiv">' + content + '</div>'
         });
 
-        google.maps.event.addListener(marker, 'click', function(){
+        google.maps.event.addListener(marker, 'click', function () {
             infoWindow.open(this.map, marker);
             let nav = this.nav;
-            google.maps.event.addDomListener(document.getElementById('myInfoWinDiv'), 'click', function(){
-                nav.push(SearchDetailsPage, {searchResult : r});
+            google.maps.event.addDomListener(document.getElementById('myInfoWinDiv'), 'click', function () {
+                nav.push(SearchDetailsPage, {searchResult: r});
             });
             //this.itemSelected(r);
         }.bind(this));
 
 
-
         /*google.maps.event.addListener(infoWindow,'domready',function() {
-           //debugger;
-            document.getElementById('myInfoWinDiv').click(function () {
-                //Do your thing
-                this.itemSelected(r);
-            })
-        });*/
+         //debugger;
+         document.getElementById('myInfoWinDiv').click(function () {
+         //Do your thing
+         this.itemSelected(r);
+         })
+         });*/
 
     };
-
 
 
     /**
      * @description Selecting an item allows to call an action sheet for communications and contract
      * @param item the selected Employer/Jobyer
      */
-    itemSelected(item){
-		let o = this.navParams.get('currentOffer');
-        this.nav.push(SearchDetailsPage, {searchResult : item, currentOffer: o});
+    itemSelected(item) {
+        let o = this.navParams.get('currentOffer');
+        this.nav.push(SearchDetailsPage, {searchResult: item, currentOffer: o});
         /*let actionSheet = ActionSheet.create({
          title: 'Options',
          buttons: [
@@ -340,7 +338,7 @@ export class SearchResultsPage implements OnInit {
 
     }
 
-    contract(item){
+    contract(item) {
         console.log('Contract');
     }
 
@@ -348,7 +346,7 @@ export class SearchResultsPage implements OnInit {
      * @description This function allows to select the candidate for a group recruitment
      * @param item the selected Employer/Jobyer
      */
-    addGroupContract(item){
+    addGroupContract(item) {
         console.log(item);
     }
 
@@ -356,25 +354,25 @@ export class SearchResultsPage implements OnInit {
      * @description changing layout of results
      * @param mode
      */
-    changeViewMode(mode){
+    changeViewMode(mode) {
 
-        if(mode == 1){          //  List view
+        if (mode == 1) {          //  List view
             this.listView = true;
             this.cardView = false;
             this.mapView = false;
 
             document.getElementById("map").style.height = '0px';
-        } else if (mode == 2){//  Cards view and toast
+        } else if (mode == 2) {//  Cards view and toast
             let message;
-            if(this.resultsCount <= 1 ){
-                message = this.resultsCount+' offre';
+            if (this.resultsCount <= 1) {
+                message = this.resultsCount + ' offre';
             }
             else {
-                message = this.resultsCount+' offres';
+                message = this.resultsCount + ' offres';
             }
             let toast = Toast.create({
 
-                message: 'Vitonjob a trouvé '+message,
+                message: 'Vitonjob a trouvé ' + message,
                 showCloseButton: true,
                 closeButtonText: 'Ok',
                 position: 'top'
@@ -392,7 +390,7 @@ export class SearchResultsPage implements OnInit {
         }
     }
 
-    recruiteFromMap(index){
+    recruiteFromMap(index) {
 
         let jobyer = this.searchResults[index];
         this.recruitJobyer(jobyer);
@@ -402,15 +400,15 @@ export class SearchResultsPage implements OnInit {
      * @description verify informations of Employer/Jobyer and redirect to recruitement contract
      * @param item the selected Employer/Jobyer
      */
-    recruitJobyer(jobyer){
+    recruitJobyer(jobyer) {
 
 
         //init local database
 
         let storage = new Storage(SqlStorage);
 
-        if(this.isUserAuthenticated){
-           //debugger;
+        if (this.isUserAuthenticated) {
+            //debugger;
             let currentEmployer = this.employer.employer;
             console.log(currentEmployer);
 
@@ -423,7 +421,7 @@ export class SearchResultsPage implements OnInit {
             (currentEmployer.entreprises[0].siret == "") ||
             (currentEmployer.entreprises[0].naf == "") ||
             (currentEmployer.entreprises[0].siegeAdress.id == 0) ||
-            (currentEmployer.entreprises[0].workAdress.id == 0): true;
+            (currentEmployer.entreprises[0].workAdress.id == 0) : true;
 
             let isDataValid = !redirectToCivility;
 
@@ -431,9 +429,9 @@ export class SearchResultsPage implements OnInit {
                 //navigate to contract page
 
                 let o = this.navParams.get('currentOffer');
-                if(o && !isUndefined(o)){
-                    this.nav.push(ContractPage, {jobyer: jobyer, currentOffer : o});
-                }else{
+                if (o && !isUndefined(o)) {
+                    this.nav.push(ContractPage, {jobyer: jobyer, currentOffer: o});
+                } else {
                     this.nav.push(ContractPage, {jobyer: jobyer});
                 }
 
@@ -445,15 +443,14 @@ export class SearchResultsPage implements OnInit {
                     subTitle: "Veuillez compléter votre profil avant d'établir votre premier contrat",
                     buttons: ['OK']
                 });
-                alert.onDismiss(()=>{
+                alert.onDismiss(()=> {
                     this.nav.push(CivilityPage, {currentUser: this.employer});
                 });
                 this.nav.present(alert);
 
             }
         }
-        else
-        {
+        else {
             let alert = Alert.create({
                 title: 'Attention',
                 message: 'Pour contacter ce jobyer, vous devez être connectés.',
@@ -478,9 +475,9 @@ export class SearchResultsPage implements OnInit {
     /**
      * @description Create a draggable widget to propose criteria for creating an offer from search results
      */
-    createCriteria(){
+    createCriteria() {
 
-        if(!this.searchResults || isUndefined(this.searchResults) || this.searchResults.length == 0)
+        if (!this.searchResults || isUndefined(this.searchResults) || this.searchResults.length == 0)
             return;
 
         this.offerProposition = true;
@@ -489,18 +486,18 @@ export class SearchResultsPage implements OnInit {
          *  We will start by identifying the proposed job
          *  by using the first result and getting job details
          */
-        let table = this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer';
+        let table = this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer';
         console.log(JSON.stringify(this.searchResults[0]));
         let idOffer = this.searchResults[0].idOffre;
         this.proposedJob = {
-            id : 0,
-            libellejob : '',
-            idmetier : 0,
-            libellemetier : 0
+            id: 0,
+            libellejob: '',
+            idmetier: 0,
+            libellemetier: 0
         };
 
-        this.offersService.getOffersJob(idOffer,table).then(data =>{
-            if(data && data.length>0)
+        this.offersService.getOffersJob(idOffer, table).then(data => {
+            if (data && data.length > 0)
                 this.proposedJob = data[0];
             else
                 this.offerProposition = false;
@@ -508,18 +505,18 @@ export class SearchResultsPage implements OnInit {
 
         //  To manage resources and calls we will group offers ids
         let listOffersId = [];
-        for(let i = 0 ; i < this.searchResults.length ; i++){
+        for (let i = 0; i < this.searchResults.length; i++) {
             let o = this.searchResults[i];
             listOffersId.push(o.idOffre);
 
         }
 
         //  Now let us get the list of languages and qualities
-        this.offersService.getOffersLanguages(listOffersId, table).then(data =>{
+        this.offersService.getOffersLanguages(listOffersId, table).then(data => {
             this.proposedLanguages = data;
         });
 
-        this.offersService.getOffersQualities(listOffersId, table).then(data =>{
+        this.offersService.getOffersQualities(listOffersId, table).then(data => {
             this.proposedQualities = data;
         });
 
@@ -530,7 +527,7 @@ export class SearchResultsPage implements OnInit {
         });
 
         this.toast.onDismiss(() => {
-            if(this.showingToast)
+            if (this.showingToast)
                 this.toggleProposition();
             this.showingToast = false;
         });
@@ -543,7 +540,7 @@ export class SearchResultsPage implements OnInit {
      * @description removes from the proposition list a specific language
      * @param language
      */
-    deleteLanguage(language){
+    deleteLanguage(language) {
         let index = this.proposedLanguages.indexOf(language);
         this.proposedLanguages.splice(index, 1);
         console.log(this.proposedLanguages);
@@ -553,7 +550,7 @@ export class SearchResultsPage implements OnInit {
      * @description removes from the proposition list a specific quality
      * @param quality
      */
-    deleteQuality(quality){
+    deleteQuality(quality) {
         let index = this.proposedQualities.indexOf(quality);
         this.proposedQualities.splice(index, 1);
         console.log(this.proposedQualities);
@@ -562,51 +559,55 @@ export class SearchResultsPage implements OnInit {
     /**
      * @description dial number of jobyer/employer
      */
-    dialNumber(item){
+    dialNumber(item) {
         console.log("dial number : " + item.tel);
-        window.location = 'tel:'+ item.tel;
+        window.location = 'tel:' + item.tel;
     }
 
     /**
      * @description send sms to jobyer/employer
      */
-    sendSMS(item){
+    sendSMS(item) {
         this.isUserConnected();
-        if (this.isUserAuthenticated){
-			console.log("sending SMS to : " + item.tel);
-			var number = item.tel;
-			var options = {
-				replaceLineBreaks: false, // true to replace \n by a new line, false by default
-				android: {
-					intent: 'INTENT'  // send SMS with the native android SMS messaging
-				}
-			};
-			var success = function () { console.log('Message sent successfully'); };
-			var error = function (e) { console.log('Message Failed:' + e); };
+        if (this.isUserAuthenticated) {
+            console.log("sending SMS to : " + item.tel);
+            var number = item.tel;
+            var options = {
+                replaceLineBreaks: false, // true to replace \n by a new line, false by default
+                android: {
+                    intent: 'INTENT'  // send SMS with the native android SMS messaging
+                }
+            };
+            var success = function () {
+                console.log('Message sent successfully');
+            };
+            var error = function (e) {
+                console.log('Message Failed:' + e);
+            };
 
-			sms.send(number, "", options, success, error);
-		}
+            sms.send(number, "", options, success, error);
+        }
     }
 
-    toggleProposition(){
+    toggleProposition() {
 
         let proposition = {
-            proposedJob : this.proposedJob,
-            proposedLanguages : this.proposedLanguages,
-            proposedQualities : this.proposedQualities
+            proposedJob: this.proposedJob,
+            proposedLanguages: this.proposedLanguages,
+            proposedQualities: this.proposedQualities
         };
 
         let propositionModal = Modal.create(ModalOfferPropositionPage, proposition);
-        propositionModal.onDismiss(ret =>{
-            if(ret.status == true){
+        propositionModal.onDismiss(ret => {
+            if (ret.status == true) {
                 this.nav.push(OfferAddPage);
             }
         });
         this.nav.present(propositionModal);
     }
 
-    addToContracts(item){
-        
+    addToContracts(item) {
+
         item.checkedContract = true;
 
         this.contratsAttente.push(item);
@@ -614,13 +615,13 @@ export class SearchResultsPage implements OnInit {
     }
 
 
-    selectContract(event, item){
+    selectContract(event, item) {
         item.checkedContract = event.checked;
-		let o = this.navParams.get('currentOffer');
+        let o = this.navParams.get('currentOffer');
         /*let search = {
-            title : "",
-            result : this.result
-        };*/
+         title : "",
+         result : this.result
+         };*/
         if (item.checkedContract) {
             this.contratsAttente.push({jobyer: item, offer: o});
         } else {
@@ -658,91 +659,91 @@ export class SearchResultsPage implements OnInit {
      * @description connect to jobyer/employer via call
      * @param item
      */
-     call(item){
+    call(item) {
         this.isUserConnected();
-		if (this.isUserAuthenticated)
-			(<any>window).location = 'tel:'+ item.tel;
+        if (this.isUserAuthenticated)
+            (<any>window).location = 'tel:' + item.tel;
     }
 
     /**
      * @description connect to jobyer/employer via sms
      * @param item
      */
-     sendEmail(item){
+    sendEmail(item) {
         this.isUserConnected();
         if (this.isUserAuthenticated)
-			window.location = 'mailto:'+ item.email;
+            window.location = 'mailto:' + item.email;
     }
 
     /**
      * @description connect to jobyer/employer via skype
      * @param item
      */
-    skype(item){
+    skype(item) {
         this.isUserConnected();
-        if (this.isUserAuthenticated){
-			var sApp;
-			if(this.platform.is('ios')){
-				sApp = startApp.set("skype://" + item.tel);
-			}else{
-				sApp = startApp.set({
-					"action": "ACTION_VIEW",
-					"uri": "skype:" + item.tel
-				});
-			}
-			sApp.start(() => {
-				console.log('starting skype');
-			}, (error) => {
-				this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
-			});
-		}
+        if (this.isUserAuthenticated) {
+            var sApp;
+            if (this.platform.is('ios')) {
+                sApp = startApp.set("skype://" + item.tel);
+            } else {
+                sApp = startApp.set({
+                    "action": "ACTION_VIEW",
+                    "uri": "skype:" + item.tel
+                });
+            }
+            sApp.start(() => {
+                console.log('starting skype');
+            }, (error) => {
+                this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
+            });
+        }
     }
 
     /**
      * @description connect to jobyer/employer via hangout
      * @param item
      */
-    googleHangout(item){
+    googleHangout(item) {
         this.isUserConnected();
-        if (this.isUserAuthenticated){
-			var sApp = startApp.set({
-				"action": "ACTION_VIEW",
-				"uri": "gtalk:"+item.tel
-			});
-			sApp.check((values) => { /* success */
-				console.log("OK");
-			}, (error) => { /* fail */
-				this.globalService.showAlertValidation("VitOnJob", "Hangout n'est pas installé.");
-			});
-			sApp.start(() => {
-				console.log('starting hangout');
-			}, (error) => {
-				this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Hangout.");
-			});
-		}
+        if (this.isUserAuthenticated) {
+            var sApp = startApp.set({
+                "action": "ACTION_VIEW",
+                "uri": "gtalk:" + item.tel
+            });
+            sApp.check((values) => { /* success */
+                console.log("OK");
+            }, (error) => { /* fail */
+                this.globalService.showAlertValidation("VitOnJob", "Hangout n'est pas installé.");
+            });
+            sApp.start(() => {
+                console.log('starting hangout');
+            }, (error) => {
+                this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Hangout.");
+            });
+        }
     }
 
-    changeView(){
+    changeView() {
         /*if (this.iconName === 'list') {
-            this.listView = true;
-            this.mapView = 'none';
-            this.iconName = 'map';
-        } else {
-            this.listView = false;
-            this.mapView = 'block';
-            this.iconName = 'list';
-        }*/
+         this.listView = true;
+         this.mapView = 'none';
+         this.iconName = 'map';
+         } else {
+         this.listView = false;
+         this.mapView = 'block';
+         this.iconName = 'list';
+         }*/
         //&& this.resultsCount >0
         //if (this.resultsCount == 0) return;
         let data = {isMapView: this.isMapView};
         this.db.set('IS_MAP_VIEW', JSON.stringify(data));
         this.listView = !this.isMapView;
-        this.mapView = (this.isMapView)? 'block' : 'none';
+        this.mapView = (this.isMapView) ? 'block' : 'none';
     }
-	
-	contract(index){
-	   //debugger;
-		if(this.isUserAuthenticated){
+
+    contract(index) {
+        //debugger;
+        if (this.isUserAuthenticated) {
 
             let currentEmployer = this.employer.employer;
             let userData = this.employer;
@@ -757,47 +758,53 @@ export class SearchResultsPage implements OnInit {
             (currentEmployer.entreprises[0].siret == "") ||
             (currentEmployer.entreprises[0].naf == "") ||
             (currentEmployer.entreprises[0].siegeAdress.id == 0) ||
-            (currentEmployer.entreprises[0].workAdress.id == 0): true;
+            (currentEmployer.entreprises[0].workAdress.id == 0) : true;
 
             let isDataValid = !redirectToCivility;
 
             if (isDataValid) {
                 let o = this.navParams.get('currentOffer');
                 //navigate to contract page
-				if(o && !isUndefined(o)){
-                    this.nav.push(ContractPage, {jobyer: this.searchResults[index], currentOffer : o});
-                }else{
+                if (o && !isUndefined(o)) {
+                    this.nav.push(ContractPage, {jobyer: this.searchResults[index], currentOffer: o});
+                } else {
                     //redirect employer to select or create an offer
-					let alert = Alert.create({
-						title: 'Sélection de l\'offre',
-						subTitle: "Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer",
-						buttons: [
-						{
-							text: 'Annuler',
-							role: 'cancel',
-						},
-						{
-							text: 'Liste des offres',
-							handler: () => {
-								this.selectOffer().then(offer => {
-									if(offer){
-										this.nav.push(ContractPage, {jobyer: this.searchResults[index], currentOffer : offer});
-									}else{
-										return;
-									}
-								});
-							}
-						},
-						{
-							text: 'Nouvelle offre',
-							handler: () => {
-								this.nav.push(OfferAddPage, {jobyer: this.searchResults[index], fromPage: "Search"});
-							}
-						}
-					]
-					});
-					this.nav.present(alert);
-				   //this.nav.push(ContractPage, {jobyer: this.searchResults[index]});
+                    let alert = Alert.create({
+                        title: 'Sélection de l\'offre',
+                        subTitle: "Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer",
+                        buttons: [
+                            {
+                                text: 'Liste des offres',
+                                handler: () => {
+                                    this.selectOffer().then(offer => {
+                                        if (offer) {
+                                            this.nav.push(ContractPage, {
+                                                jobyer: this.searchResults[index],
+                                                currentOffer: offer
+                                            });
+                                        } else {
+                                            return;
+                                        }
+                                    });
+                                }
+                            },
+                            {
+                                text: 'Nouvelle offre',
+                                handler: () => {
+                                    this.nav.push(OfferAddPage, {
+                                        jobyer: this.searchResults[index],
+                                        fromPage: "Search"
+                                    });
+                                }
+                            },
+                            {
+                                text: 'Annuler',
+                                role: 'cancel',
+                            }
+                        ]
+                    });
+                    this.nav.present(alert);
+                    //this.nav.push(ContractPage, {jobyer: this.searchResults[index]});
                 }
             } else {
                 //redirect employer to fill the missing informations
@@ -806,15 +813,14 @@ export class SearchResultsPage implements OnInit {
                     subTitle: "Veuillez compléter votre profil avant d'établir votre premier contrat",
                     buttons: ['OK']
                 });
-                alert.onDismiss(()=>{
+                alert.onDismiss(()=> {
                     this.nav.push(CivilityPage, {currentUser: this.employer});
                 });
                 this.nav.present(alert);
 
             }
         }
-        else
-        {
+        else {
             let alert = Alert.create({
                 title: 'Attention',
                 message: 'Pour contacter ce profil, vous devez être connecté.',
@@ -833,23 +839,23 @@ export class SearchResultsPage implements OnInit {
             });
             this.nav.present(alert);
         }
-	}
-	
-	selectOffer(){
-        return new Promise(resolve => {
-			let m = new Modal(ModalOffersPage);
-			m.onDismiss(data => {
-				//return selected offer
-				resolve(data);
-			});
-			this.nav.present(m);
-		});
     }
-	
-	isEmpty(str){
-		if(str == '' || str == 'null' || !str)
-			return true;
-		else
-			return false;
-	}
+
+    selectOffer() {
+        return new Promise(resolve => {
+            let m = new Modal(ModalOffersPage);
+            m.onDismiss(data => {
+                //return selected offer
+                resolve(data);
+            });
+            this.nav.present(m);
+        });
+    }
+
+    isEmpty(str) {
+        if (str == '' || str == 'null' || !str)
+            return true;
+        else
+            return false;
+    }
 }
