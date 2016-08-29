@@ -44,6 +44,7 @@ export class ModalRecruiterRepertoryPage {
 	getContacts(ev) {
 	  this.platform.ready().then(() => {
 		  Contacts.find(['*'], {filter: ev.target.value}).then((contacts) => {
+			//in birthday is always invalid date, and displayname is null
 			for(let i = 0; i < contacts.length; i++){
 				contacts[i].birthday = null;
 				if(this.isEmpty(contacts[i].displayName))
@@ -114,5 +115,12 @@ export class ModalRecruiterRepertoryPage {
 	
 	closeModal() {
 		this.viewCtrl.dismiss();
+	}
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
 	}
 }
