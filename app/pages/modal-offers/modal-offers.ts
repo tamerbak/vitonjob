@@ -4,6 +4,7 @@ import {SearchService} from "../../providers/search-service/search-service";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {OfferAddPage} from "../offer-add/offer-add";
 import {Component} from "@angular/core";
+import {Configs} from "../../configurations/configs";
 
 /**
  * @author Abdeslam Jakjoud
@@ -19,6 +20,7 @@ export class ModalOffersPage {
   offerList : any = [];
   offerService : any;
   voidOffers : boolean = false;
+  isEmployer:boolean;
 
   constructor(private viewCtrl: ViewController,
               public nav:NavController,
@@ -29,6 +31,8 @@ export class ModalOffersPage {
     // Set global configs
     // Get target to determine configs
     this.projectTarget = gc.getProjectTarget();
+    let config = Configs.setConfigs(this.projectTarget);
+    this.isEmployer = (this.projectTarget === 'employer');
 
     // Load offers
     this.offerService = offerService;
@@ -51,5 +55,12 @@ export class ModalOffersPage {
    */
   goToNewOffer() {
     this.nav.push(OfferAddPage);
+  }
+
+  /**
+   * @description : Closing the modal page :
+   */
+  closeModal() {
+    this.viewCtrl.dismiss();
   }
 }

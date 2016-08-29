@@ -1,5 +1,6 @@
 import {Page, NavController, NavParams, Storage, LocalStorage, ViewController} from 'ionic-angular';
 import {OfferAddPage} from "../offer-add/offer-add";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
 
 /*
  Generated class for the ModalOfferPropositionPage page.
@@ -9,18 +10,23 @@ import {OfferAddPage} from "../offer-add/offer-add";
  */
 @Page({
     templateUrl: 'build/pages/modal-offer-proposition/modal-offer-proposition.html',
+    providers: [GlobalConfigs]
 })
 export class ModalOfferPropositionPage {
     proposedJob:any;
     proposedLanguages:any=[];
     proposedQualities:any=[];
+    projectTarget:string;
+    isEmployer:boolean;
 
     constructor(public nav: NavController,
                 public navParams : NavParams,
-                public viewCtrl : ViewController) {
+                public viewCtrl : ViewController, gc: GlobalConfigs) {
         this.proposedJob = navParams.get('proposedJob');
         this.proposedLanguages = navParams.get('proposedLanguages');
         this.proposedQualities = navParams.get('proposedQualities');
+        this.projectTarget = gc.getProjectTarget();
+        this.isEmployer = this.projectTarget === 'employer';
     }
 
     /**
@@ -86,5 +92,12 @@ export class ModalOfferPropositionPage {
     cancel(){
         let status = {status : false};
         this.viewCtrl.dismiss(status);
+    }
+
+    /**
+     * @description : Closing the modal page :
+     */
+    closeModal() {
+        this.viewCtrl.dismiss();
     }
 }
