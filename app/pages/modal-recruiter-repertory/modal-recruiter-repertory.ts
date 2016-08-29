@@ -44,8 +44,12 @@ export class ModalRecruiterRepertoryPage {
 	getContacts(ev) {
 	  this.platform.ready().then(() => {
 		  Contacts.find(['*'], {filter: ev.target.value}).then((contacts) => {
-			  this.contactsfound = contacts;
-			  console.log(contacts[0]);
+			for(let i = 0; i < contacts.length; i++){
+				contacts[i].birthday = null;
+				if(this.isEmpty(contacts[i].displayName))
+					contacts[i].displayName = contacts[i].name.formatted;
+			}
+			this.contactsfound = contacts;
 		  })
 		  this.search = true;
 	  });
