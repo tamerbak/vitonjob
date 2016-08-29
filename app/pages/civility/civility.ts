@@ -113,6 +113,7 @@ export class CivilityPage {
                 //initialize nationality with (9 = francais)
                 this.nationality = 9;
                 this.scanTitle = " de votre CNI";
+				this.nationalitiesstyle = {'font-size': '1.4rem'};
             });
         } else {
             this.scanTitle = " de votre extrait k-bis";
@@ -648,7 +649,7 @@ export class CivilityPage {
             return false;
 
         if (!this.numSS || this.numSS.length != 15) {
-            this.numSSMessage = '* Saisissez les 15 chiffres du n° NIR';
+            this.numSSMessage = '* Saisissez les 15 chiffres du n° SS';
             return true;
         }
 
