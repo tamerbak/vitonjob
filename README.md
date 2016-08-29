@@ -103,7 +103,12 @@ $ ionic plugin add cordova-plugin-googlemaps --variable API_KEY_FOR_ANDROID="AIz
 $ cordova plugin add com.lampa.startapp
 $ cordova plugin add https://github.com/lampaa/com.lampa.startapp.git
 $ ionic plugin add cordova-plugin-contacts
+	- si l'app plante lors de la recherche d'un contact, il faut alors supprimer le plugin et réinstaller la version 0.2.16:
+		$ cordova plugin remove cordova-plugin-contacts
+		$ cordova plugin add org.apache.cordova.contacts@0.2.16
+	
 $ ionic plugin add de.appplant.cordova.plugin.local-notification
+$ npm install croppie
 ```
 
 ##Notification Push

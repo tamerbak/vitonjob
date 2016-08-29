@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController, ViewController, Toast} from 'ionic-angular';
+import {NavController, ViewController, Toast, Platform} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {Contacts} from 'ionic-native';
@@ -27,24 +27,32 @@ export class ModalRecruiterRepertoryPage {
 				public gc: GlobalConfigs,
 				private viewCtrl: ViewController,
 				private dataProviderService: DataProviderService, 
-				private globalService: GlobalService) {
+				private globalService: GlobalService,
+				private platform:Platform) {
 		// Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
         // Set store variables and messages
         this.themeColor = config.themeColor;
-        this.isEmployer = (this.projectTarget=='employer');			
+        this.isEmployer = (this.projectTarget=='employer');	
+		this.platform = platform;
 		this.contactsfound = [];
 		this.search = false;		
 	}
 	
 	getContacts(ev) {
-	  Contacts.find(['*'], {filter: ev.target.value}).then((contacts) => {
-		  this.contactsfound = contacts;
-		  console.log(contacts[0]);
-	  })
-	  this.search = true;    
+	  this.platform.ready().then(() => {
+		  Contacts.find(['*'], {filter: ev.target.value}).then((contacts) => {
+			for(let i = 0; i < contacts.length; i++){
+				contacts[i].birthday = null;
+				if(this.isEmpty(contacts[i].displayName))
+					contacts[i].displayName = contacts[i].name.formatted;
+			}
+			this.contactsfound = contacts;
+		  })
+		  this.search = true;
+	  });
 	}
 	
 	verifyContact(contact){

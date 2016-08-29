@@ -74,7 +74,7 @@ export class ProfilePage implements OnInit {
         this.userService = userService;
         this.addrService = addrService;
 		this.defaultImage = config.userImageURL;
-		this.userImageURL = "../img/loading.gif";
+		this.userImageURL = "img/loading.gif";
     }
 
     /**
@@ -334,7 +334,7 @@ export class ProfilePage implements OnInit {
 
     showPictureModel() {
         //dont go to picture modal if the picture is not yet uploaded in server
-		if(this.userImageURL == "../img/loading.gif"){
+		if(this.userImageURL == "img/loading.gif"){
 			return;	
 		}
 		let pictureModel = Modal.create(ModalPicturePage, {picture: this.userImageURL});
@@ -347,7 +347,7 @@ export class ProfilePage implements OnInit {
 				return;
 			}
 			if(params.type == "picture"){
-				this.userImageURL = "../img/loading.gif";
+				this.userImageURL = "img/loading.gif";
 				//save image locally
 				// Split the base64 string in data and contentType
 				/*var block = this.userImageURL.split(",");

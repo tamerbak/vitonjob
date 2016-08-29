@@ -160,7 +160,7 @@ export class ModalRecruiterManualPage {
 		if(index == 0){
 			index = "";
 		}
-		var phone = num.substring(len - 9, len);
+		var phone = num.substring(len - 9, len).replace(" ", "");
 		return [index, phone];
 	}
 	
