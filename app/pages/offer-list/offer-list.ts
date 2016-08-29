@@ -96,7 +96,22 @@ export class OfferListPage {
                     offer.color = 'black';//'darkgreen';
                     offer.correspondantsCount = -1;
                     //publishedList.push(offer);
-                    this.globalOfferList[0].list.push(offer);
+					
+					//verify if offer is obsolete
+					for(var j = 0; j < offer.calendarData.length; j++){
+						var slotDate = offer.calendarData[j].date;
+						var startH = this.offersService.convertToFormattedHour(offer.calendarData[j].startHour);
+						slotDate = new Date(slotDate).setHours(startH.split(':')[0], startH.split(':')[1]);						
+						var dateNow = new Date().getTime();
+						if(slotDate <= dateNow){
+							offer.obsolete = true;
+							break;
+						}else{
+							offer.obsolete = false;
+						}
+					} 
+                    
+					this.globalOfferList[0].list.push(offer);
                     this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
                         console.log('getCorrespondingOffers result : ' + data);
                         offer.correspondantsCount = data.length;

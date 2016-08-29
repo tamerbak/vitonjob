@@ -13,10 +13,11 @@
 <ion-content padding class="modal-calendar">
     <ion-row>
         <ion-col text-center>
-            <button [style.backgroundColor]="themeColor" (click)="showSlotModal()">
+            <button [style.backgroundColor]="themeColor" (click)="showSlotModal()" [disabled]="isObsolete">
                 <ion-icon name="add-circle"></ion-icon>
                 Ajouter un créneau
             </button>
+			<p [hidden]="!isObsolete" style="color:red">Cette offre contient des créneaux qui sont dépassés. Veuillez les mettre à jour.</p>
         </ion-col>
     </ion-row>
 
@@ -56,7 +57,7 @@
     <ion-row>
         <ion-col text-center>
             <button [hidden]="(slots.length == 0)"
-                    [style.backgroundColor]="themeColor" (click)="validateCalendar()">
+                    [style.backgroundColor]="themeColor" (click)="validateCalendar()" [disabled]="isObsolete">
                 Valider
                 <ion-icon name="checkmark-circle"></ion-icon>
             </button>
