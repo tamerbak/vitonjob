@@ -13,7 +13,7 @@ import {Component} from "@angular/core";
  Ionic pages and navigation.
  */
 @Component({
-    templateUrl: 'build/pages/modal-calendar/modal-calendar.html',
+    templateUrl: 'build/pages/modal-calendar/modal-calendar.html'
 })
 export class ModalCalendarPage {
 
@@ -28,6 +28,7 @@ export class ModalCalendarPage {
 
     dateOptions:DatePickerOptions;
     timeOptions:DatePickerOptions;
+	isObsolete = false;
 
     constructor(public nav:NavController, gc:GlobalConfigs, viewCtrl:ViewController, private navParams: NavParams) {
         // Set global configs
@@ -55,21 +56,43 @@ export class ModalCalendarPage {
         this.timeOptions = {
             hour: "2-digit", minute: "2-digit"
         };
+		
+		this.verifySlotsValidity();
+		if(this.isObsolete){
+			
+		}
     }
 
     /**
      * @Description : Closing the modal page :
      */
     closeModal() {
-        this.viewCtrl.dismiss(this.slots);
+        this.viewCtrl.dismiss({slots: this.slots, isObsolete: this.isObsolete});
     }
 
     /**
      * @Description : Validating quality modal
      */
     validateCalendar() {
-        this.viewCtrl.dismiss(this.slots);
+		this.viewCtrl.dismiss({slots: this.slots, isObsolete: this.isObsolete});
     }
+	
+	verifySlotsValidity(){
+		//verify if slots are obsolete
+		this.isObsolete = false;
+		for(var i = 0; i < this.slots.length; i++){
+			var slotDate = this.slots[i].date;
+			var startH = this.convertToFormattedHour(this.slots[i].startHour);
+			slotDate = new Date(slotDate).setHours(startH.split(':')[0], startH.split(':')[1]);
+			var dateNow = new Date().getTime();
+			if(slotDate < dateNow){
+				this.isObsolete = true;
+				return;
+			}else{
+				this.isObsolete = false;
+			}
+		}
+	}
 
     /**
      * @Description : Show date picker component
@@ -127,6 +150,7 @@ export class ModalCalendarPage {
                     handler: () => {
                         console.log('Agree clicked');
                         this.slots.splice(this.slots.indexOf(item), 1);
+						this.verifySlotsValidity();
                     }
                 }
             ]
@@ -158,6 +182,23 @@ export class ModalCalendarPage {
         let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
         let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
         return hours + ":" + minutes;
+    }
+	
+	convertToFormattedHour(value) {
+        var hours = Math.floor(value / 60);
+        var minutes = value % 60;
+        if (!hours && !minutes) {
+            return '';
+        } else {
+            return ((hours < 10 ? ('0' + hours) : hours) + ':' + (minutes < 10 ? ('0' + minutes) : minutes));
+        }
+    }
+
+    convertHoursToMinutes(hour) {
+        if (hour) {
+            var hourArray = hour.split(':');
+            return hourArray[0] * 60 + parseInt(hourArray[1]);
+        }
     }
 
 

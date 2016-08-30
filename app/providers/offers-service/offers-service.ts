@@ -1283,5 +1283,22 @@ export class OffersService {
             return "";
         return text.replace(/'/g , "''")
     }
+	
+	convertToFormattedHour(value) {
+        var hours = Math.floor(value / 60);
+        var minutes = value % 60;
+        if (!hours && !minutes) {
+            return '';
+        } else {
+            return ((hours < 10 ? ('0' + hours) : hours) + ':' + (minutes < 10 ? ('0' + minutes) : minutes));
+        }
+    }
+
+    convertHoursToMinutes(hour) {
+        if (hour) {
+            var hourArray = hour.split(':');
+            return hourArray[0] * 60 + parseInt(hourArray[1]);
+        }
+    }
 }
 
