@@ -38,6 +38,8 @@ export class ModalJobPage {
     sectors:any = [];
     jobs:any = [];
     platform:any;
+	isSectorFound = true;
+	isJobFound = true;
 
 
     constructor(public nav:NavController,
@@ -170,7 +172,7 @@ export class ModalJobPage {
      * @Description : loads sector list
      */
     showSectorList() {
-        this.db.get("SECTOR_LIST").then(data => {
+		this.db.get("SECTOR_LIST").then(data => {
             this.sectorList = JSON.parse(data);
             let selectionModel = Modal.create(ModalSelectionPage,
                 {type: 'secteur', items: this.sectorList, selection: this});
@@ -182,25 +184,34 @@ export class ModalJobPage {
     watchSector(e) {
         let val = e.target.value;
         if (val.length < 3) {
+			this.isSectorFound = true;
             this.sectors = [];
             return;
         }
 
         this.sectors = [];
-
-        for (let i = 0; i < this.sectorList.length; i++) {
-            let s = this.sectorList[i];
-            if (s.libelle.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) > -1) {
-                this.sectors.push(s);
-            }
-        }
+		for (let i = 0; i < this.sectorList.length; i++) {
+			let s = this.sectorList[i];
+			if (s.libelle.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) > -1) {
+				this.sectors.push(s);
+			}
+		}
+		if(this.sectors.length == 0){
+			this.isSectorFound = false;
+		}else{
+			this.isSectorFound = true;
+		}
     }
 
     sectorSelected(sector) {
-        this.jobData.sector = sector.libelle;
-        this.jobData.idSector = sector.id;
-        this.sectors = [];
+		this.isJobFound = true;
 
+		this.jobData.sector = sector.libelle;
+        this.jobData.idSector = sector.id;
+		this.jobData.job = '';
+		this.jobData.idJob = 0;
+		this.sectors = [];
+						
         this.db.get("JOB_LIST").then(data => {
 
             this.jobList = JSON.parse(data);
@@ -214,18 +225,23 @@ export class ModalJobPage {
     watchJob(e) {
         let val = e.target.value;
         if (val.length < 3) {
+			this.isJobFound = true;
             this.jobs = [];
             return;
         }
 
         this.jobs = [];
-
-        for (let i = 0; i < this.jobList.length; i++) {
-            let s = this.jobList[i];
-            if (s.libelle.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) > -1) {
-                this.jobs.push(s);
-            }
-        }
+		for (let i = 0; i < this.jobList.length; i++) {
+			let s = this.jobList[i];
+			if (s.libelle.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) > -1) {
+				this.jobs.push(s);
+			}
+		}
+		if(this.jobs.length == 0){
+			this.isJobFound = false;
+		}else{
+			this.isJobFound = true;
+		}
     }
 
     jobSelected(job) {
@@ -265,6 +281,8 @@ export class ModalJobPage {
                 picker.addButton({
                     text: 'Valider',
                     handler: data => {
+						this.isSectorFound = true;
+						this.isJobFound = true;
                         this.jobData.sector = data.undefined.text;
                         this.jobData.idSector = data.undefined.value;
                         this.filterJobList();
@@ -346,6 +364,7 @@ export class ModalJobPage {
                         picker.addButton({
                             text: 'Valider',
                             handler: data => {
+								this.isJobFound = true;
                                 this.jobData.job = data.undefined.text;
                                 this.jobData.idJob = data.undefined.value;
                                 /*this.enterpriseCard.offer.job = data.undefined.text;
