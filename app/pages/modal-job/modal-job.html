@@ -26,6 +26,9 @@
                 </ion-item>
             </ion-list>
         </ion-item>
+		<div [hidden]="isSectorFound" 
+            style="color:red"><ion-icon name="md-arrow-dropup"></ion-icon> Veuillez saisir un secteur valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus</div>
+			
         <ion-item>
             <ion-label floating>Job</ion-label>
             <ion-input [(ngModel)]="jobData.job" (keyup)="watchJob($event)"></ion-input>
@@ -40,7 +43,8 @@
                 </ion-item>
             </ion-list>
         </ion-item>
-
+		<div [hidden]="isJobFound" 
+            style="color:red"><ion-icon name="md-arrow-dropup"></ion-icon> Veuillez saisir un job valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus</div>
 
         <!-- Level field-->
         <ion-list radio-group [(ngModel)]="jobData.level" style="margin-bottom: 5px;">
@@ -85,7 +89,7 @@
 
         <ion-row>
             <ion-col text-center>
-                <button [style.backgroundColor]="themeColor" [disabled]="!jobData.job || !jobData.sector || !jobData.remuneration" (click)="validateJob()">
+                <button [style.backgroundColor]="themeColor" [disabled]="!jobData.job || !jobData.sector || !jobData.remuneration || !isSectorFound || !isJobFound" (click)="validateJob()">
                     Valider
                     <ion-icon name="checkmark-circle"></ion-icon>
                 </button>
