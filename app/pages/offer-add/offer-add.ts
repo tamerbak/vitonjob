@@ -226,8 +226,8 @@ export class OfferAddPage {
             let modal = Modal.create(ModalCalendarPage, {slots: JSON.parse(value)});
             this.nav.present(modal);
             modal.onDismiss(data => {
-                this.validated.isCalendar = (data.length) ? data.length > 0 : false;
-                this.localOffer.set('slots', JSON.stringify(data));
+                this.validated.isCalendar = (data.slots.length) ? data.slots.length > 0 : false;
+                this.localOffer.set('slots', JSON.stringify(data.slots));
                 if (this.validated.isCalendar && this.validated.isQuality)
                     this.presentToast("Vous pouvez ajouter votre nouvelle offre dès maintenant! " +
                         "Pour plus de précision pensez à saisir les qualités et langues...", 3);
