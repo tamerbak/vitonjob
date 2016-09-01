@@ -2,7 +2,7 @@
 <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
     <ion-title>Détail</ion-title>
     <ion-buttons end>
-        <button (click)="showPopover($event)">
+        <button (click)="showPopover($event)" [hidden]="fromPage == 'ModalOffers'">
             <ion-icon name="more"></ion-icon>
         </button>
     </ion-buttons>

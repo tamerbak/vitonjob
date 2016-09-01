@@ -1,28 +1,32 @@
 <ion-header>
-  <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
-    <ion-title>Proposition</ion-title>
-    <ion-buttons end>
-      <button (click)="closeModal()">
-        <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
-      </button>
-    </ion-buttons>
-  </ion-navbar>
+	<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
+		<ion-title>Proposition</ion-title>
+		<ion-buttons end>
+			<button (click)="closeModal()">
+				<ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+			</button>
+		</ion-buttons>
+	</ion-navbar>
 </ion-header>
 <ion-content padding class="modal-offers">
-  <ion-card *ngIf="voidOffers">
-    <ion-card-content>
-        Vous n'avez créer aucune offre pour le moment.
-    </ion-card-content>
-  </ion-card>
-  <button button block (click)="goToNewOffer()">
-    <ion-icon name="add-circle" style="font-size: xx-large;"></ion-icon>
-    Créer une nouvelle offre
-  </button>
-  <ion-list text-wrap *ngIf="!voidOffers">
-    <ion-list-header>Offres disponibles</ion-list-header>
-    <button *ngFor="let item of offerList " ion-item (click)="chooseOffer(item)">
-      <ion-icon name="eye" item-left></ion-icon>
-      {{item.title}}
-    </button>
-  </ion-list>
+	<ion-card *ngIf="voidOffers">
+		<ion-card-content>
+			Vous n'avez créer aucune offre pour le moment.
+		</ion-card-content>
+	</ion-card>
+	<button button block (click)="goToNewOffer()">
+		<ion-icon name="add-circle" style="font-size: xx-large;"></ion-icon>
+		Créer une nouvelle offre
+	</button>
+	<ion-list text-wrap *ngIf="!voidOffers">
+		<ion-list-header>Offres disponibles</ion-list-header>
+		<ion-item *ngFor="let item of offerList " text-wrap>
+			<ion-label text-wrap (click)="chooseOffer(item)">
+				{{item.title}}
+			</ion-label>
+			<button item-right (click)="goToOfferDetails(item)" outline>
+				Détail
+			</button>
+		</ion-item>
+	</ion-list>
 </ion-content>
