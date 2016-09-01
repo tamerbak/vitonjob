@@ -302,10 +302,10 @@ export class SearchCriteriaPage {
         }
 
         this.sectors = [];
-
+		var removeDiacritics = require('diacritics').remove;
         for(let i = 0 ; i < this.sectorList.length ; i++){
             let s = this.sectorList[i];
-            if(s.libelle.toLocaleLowerCase().indexOf(val.toLocaleLowerCase())>-1){
+            if(removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase())>-1){
                 this.sectors.push(s);
             }
         }
@@ -325,10 +325,10 @@ export class SearchCriteriaPage {
         }
 
         this.jobs = [];
-
+		var removeDiacritics = require('diacritics').remove;
         for(let i = 0 ; i < this.jobList.length ; i++){
             let s = this.jobList[i];
-            if(s.libelle.toLocaleLowerCase().indexOf(val.toLocaleLowerCase())>-1){
+            if(removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase())>-1){
                 this.jobs.push(s);
             }
         }
@@ -465,9 +465,8 @@ export class SearchCriteriaPage {
 		this.isJobFound = true;
         this.sector = sector.libelle;
         this.idSector = sector.id;
-		this.jobData.job = '';
-		this.jobData.idJob = 0;
-        this.sectors = [];
+		this.job = '';
+		this.sectors = [];
 
         this.db.get("JOB_LIST").then(data => {
 
@@ -487,8 +486,7 @@ export class SearchCriteriaPage {
         }
 
         this.cities = [];
-
-        this.cityServices.autocompleteCity(val).then(data=>{
+		this.cityServices.autocompleteCity(val).then(data=>{
             if(data)
                 this.cities = data;
         });
