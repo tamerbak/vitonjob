@@ -34,6 +34,7 @@ export class OfferDetailPage {
     videoAvailable : boolean = false;
     youtubeLink : string = '';
 	isLinkValid = true;
+	fromPage: string;
 
     constructor(public nav:NavController, gc:GlobalConfigs, params:NavParams, public offersService:OffersService, public searchService:SearchService, private sanitizer: DomSanitizationService, private globalService: GlobalService) {
 
@@ -53,6 +54,7 @@ export class OfferDetailPage {
         
 		// Get Offer passed in NavParams
         this.offer = params.get('selectedOffer');
+		this.fromPage = params.get('fromPage');
         this.showJob = false;
         this.jobIconName = 'add';
         this.showQuality = false;

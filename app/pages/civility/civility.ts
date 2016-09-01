@@ -52,7 +52,7 @@ export class CivilityPage {
     communesService:CommunesService;
     numSSMessage:string = '';
     checkSS:boolean = false;
-    uploadVerb = "Charger un scan ";
+    uploadVerb = "Charger ";
     isRecruiter = false;
     medecineTravail:any;
     medecineId:number;
@@ -210,9 +210,9 @@ export class CivilityPage {
                 }
                 if (!this.isRecruiter) {
                     if (this.currentUser.scanUploaded) {
-                        this.uploadVerb = "Recharger un scan "
+                        this.uploadVerb = "Recharger "
                     } else {
-                        this.uploadVerb = "Charger un scan "
+                        this.uploadVerb = "Charger "
                     }
                 }
             }

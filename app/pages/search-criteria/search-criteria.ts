@@ -42,6 +42,8 @@ export class SearchCriteriaPage {
     cities : any = [];
     cityList : any = [];
     isAndroid4:boolean;
+	isSectorFound = true;
+	isJobFound = true;
 
     constructor(private viewCtrl:ViewController,
                 public globalConfig:GlobalConfigs,
@@ -294,35 +296,47 @@ export class SearchCriteriaPage {
     watchSector(e){
         let val = e.target.value;
         if(val.length<3){
+			this.isSectorFound = true;			
             this.sectors = [];
             return;
         }
 
         this.sectors = [];
-
+		var removeDiacritics = require('diacritics').remove;
         for(let i = 0 ; i < this.sectorList.length ; i++){
             let s = this.sectorList[i];
-            if(s.libelle.toLocaleLowerCase().indexOf(val.toLocaleLowerCase())>-1){
+            if(removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase())>-1){
                 this.sectors.push(s);
             }
         }
+		if(this.sectors.length == 0){
+			this.isSectorFound = false;
+		}else{
+			this.isSectorFound = true;
+		}
     }
 
     watchJob(e){
         let val = e.target.value;
         if(val.length<3){
+			this.isJobFound = true;
             this.jobs = [];
             return;
         }
 
         this.jobs = [];
-
+		var removeDiacritics = require('diacritics').remove;
         for(let i = 0 ; i < this.jobList.length ; i++){
             let s = this.jobList[i];
-            if(s.libelle.toLocaleLowerCase().indexOf(val.toLocaleLowerCase())>-1){
+            if(removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase())>-1){
                 this.jobs.push(s);
             }
         }
+		if(this.jobs.length == 0){
+			this.isJobFound = false;
+		}else{
+			this.isJobFound = true;
+		}
     }
 
     jobSelected(job){
@@ -356,6 +370,8 @@ export class SearchCriteriaPage {
             picker.addButton({
                 text: 'Valider',
                 handler: data => {
+					this.isSectorFound = true;
+					this.isJobFound = true;
                     this.sector = data.undefined.text;
                     this.idSector = data.undefined.value;
                     this.filterJobList();
@@ -428,6 +444,7 @@ export class SearchCriteriaPage {
                     picker.addButton({
                         text: 'Valider',
                         handler: data => {
+							this.isJobFound = true;
                             this.job = data.undefined.text;
                             this.idJob = data.undefined.value;
                             /*this.enterpriseCard.offer.job = data.undefined.text;
@@ -445,9 +462,11 @@ export class SearchCriteriaPage {
     }
 
     sectorSelected(sector){
+		this.isJobFound = true;
         this.sector = sector.libelle;
         this.idSector = sector.id;
-        this.sectors = [];
+		this.job = '';
+		this.sectors = [];
 
         this.db.get("JOB_LIST").then(data => {
 
@@ -467,8 +486,7 @@ export class SearchCriteriaPage {
         }
 
         this.cities = [];
-
-        this.cityServices.autocompleteCity(val).then(data=>{
+		this.cityServices.autocompleteCity(val).then(data=>{
             if(data)
                 this.cities = data;
         });

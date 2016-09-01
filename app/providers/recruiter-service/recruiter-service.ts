@@ -133,7 +133,14 @@ export class RecruiterService{
 		var recruiter = {};
 		if(fromPage == 'repertory'){
 			var name = this.splitRecruiterName(contact);
-			recruiter = {email: (contact.emails != null ? contact.emails[0].value : ''), phone: (contact.phoneNumbers != null ? contact.phoneNumbers[0].value.replace(/\s/g, "") : ''), firstname: name[0], lastname: name[1]};
+			var tel = '';
+			if(contact.phoneNumbers != null){
+				tel = contact.phoneNumbers[0].value.replace(/\s/g, "");
+				if(tel.startsWith("06") && tel.length == 10){
+					tel = "+33" + tel.substring(1, 10);
+				}
+			}
+			recruiter = {email: (contact.emails != null ? contact.emails[0].value : ''), phone: (contact.phoneNumbers != null ? tel : ''), firstname: name[0], lastname: name[1]};
 		}else{
 			recruiter = {email: contact.email, phone: contact.phone, firstname: contact.firstname, lastname: contact.lastname};
 		}

@@ -190,9 +190,11 @@ export class ModalJobPage {
         }
 
         this.sectors = [];
+		var removeDiacritics = require('diacritics').remove;
+		//console.log(removeDiacritics("Iлｔèｒｎåｔïｏｎɑｌíƶａｔï߀ԉ"));
 		for (let i = 0; i < this.sectorList.length; i++) {
 			let s = this.sectorList[i];
-			if (s.libelle.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) > -1) {
+			if (removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase()) > -1) {
 				this.sectors.push(s);
 			}
 		}
@@ -231,9 +233,10 @@ export class ModalJobPage {
         }
 
         this.jobs = [];
+		var removeDiacritics = require('diacritics').remove;
 		for (let i = 0; i < this.jobList.length; i++) {
 			let s = this.jobList[i];
-			if (s.libelle.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) > -1) {
+			if (removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase()) > -1) {
 				this.jobs.push(s);
 			}
 		}

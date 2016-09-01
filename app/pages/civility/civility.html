@@ -111,7 +111,7 @@
 		</ion-item>
 		<ion-row>
 			<ion-col text-center>
-				<ion-label>Joindre une photo {{scanTitle}}</ion-label>
+				<ion-label>{{uploadVerb}} une photo {{scanTitle}}</ion-label>
 				<button [hidden]="scanUri" class="file-upload button-picture" [style.backgroundColor]="themeColor">
 					<input id="fileinput" type="file" class="file-input" (change)="onChangeUpload($event)">
 					<ion-icon name='folder'></ion-icon>

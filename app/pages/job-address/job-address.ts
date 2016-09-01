@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController, NavParams, Alert, Loading} from 'ionic-angular';
+import {NavController, NavParams, Alert, Loading, Toast} from 'ionic-angular';
 import {Configs} from '../../configurations/configs';
 import {GlobalConfigs} from '../../configurations/globalConfigs';
 import {GooglePlaces} from '../../components/google-places/google-places';
@@ -320,7 +320,9 @@ export class JobAddressPage {
 							this.nav.pop();
 						}else{
 							//redirecting to offer list page
-							this.nav.setRoot(OfferListPage);
+							this.nav.setRoot(OfferListPage).then(() => {
+								this.presentToast("Félicitations, vous venez de créer votre compte avec succès. Vous pouvez maintenant créer vos offres de service.", 3);
+							});
 						}						
 					}
 				});
@@ -350,7 +352,9 @@ export class JobAddressPage {
 							this.nav.pop();
 						}else{
 							//redirecting to offer list page
-							this.nav.setRoot(OfferListPage);
+							this.nav.setRoot(OfferListPage).then(() => {
+								this.presentToast("Félicitations, vous venez de créer votre compte avec succès. Vous pouvez maintenant créer vos offres de service.", 3);
+							});
 						}
 					}
 				});
@@ -422,4 +426,12 @@ export class JobAddressPage {
 			this.isZipCodeValid = false;	
 		}
 	}
+	
+	presentToast(message:string, duration:number) {
+        let toast = Toast.create({
+            message: message,
+            duration: duration * 1000
+        });
+        this.nav.present(toast);
+    }
 }

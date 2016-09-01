@@ -89,7 +89,7 @@
 
         <ion-row>
             <ion-col text-center>
-                <button [style.backgroundColor]="themeColor" [disabled]="!jobData.job || !jobData.sector || !jobData.remuneration || !isSectorFound || !isJobFound" (click)="validateJob()">
+                <button [style.backgroundColor]="themeColor" [disabled]="!jobData.job || !jobData.sector || !jobData.remuneration || !isSectorFound || !isJobFound || jobs.length > 0 || sectors.length > 0" (click)="validateJob()">
                     Valider
                     <ion-icon name="checkmark-circle"></ion-icon>
                 </button>
