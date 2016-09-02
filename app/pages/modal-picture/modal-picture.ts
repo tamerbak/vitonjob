@@ -83,6 +83,7 @@ export class ModalPicturePage {
 				return;
 			}
 			if(this.hideCropBtn){
+				this.pictureUri = this.resize(this.pictureUri, 100, 100);
 				this.viewCtrl.dismiss({uri: this.pictureUri, type: "picture"});
 				return;
 			}
@@ -132,13 +133,18 @@ export class ModalPicturePage {
      * @description read the file to upload and convert it to base64
      */
     onChangeUpload(e) {
-		if(!this.hideCropBtn)
-			this.imgCrop.destroy();
 		this.isPictureChanged = true;
         var file = e.target.files[0];
-        var myReader = new FileReader();
+		if (!file.type.match(/image.*/)) {
+		  console.log("not an image!");
+		  return;
+		};
+        if(!this.hideCropBtn)
+			this.imgCrop.destroy();
+		var myReader = new FileReader();
         this.zone.run(()=> {
             myReader.onloadend = (e) => {
+				console.log("initial length : " + myReader.result.length);
 				this.loadPictureForCropping(myReader.result);
 				this.pictureUri = null;
             }
@@ -193,14 +199,29 @@ export class ModalPicturePage {
 	
 	validateCrop(){
 		this.imgCrop.result('canvas').then(base64Image => {
+			console.log("initial length : " + base64Image.length);
 			this.pictureUri = base64Image;
 			this.imgCrop.destroy();
 		});
 		this.hideCropBtn = true;
 		this.resetFileInput();
+		
 	}
 	
-	//initialize fileinput (bug in navigator), and destroy croopie
+	//resize picture to compress it
+	resize(base64Img, width, height) {
+        var img = new Image();
+        img.src = base64Img;
+        var canvas = document.createElement('canvas');
+		var ctx = canvas.getContext('2d');
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        console.log(canvas.toDataURL("image/jpeg").length);
+		return canvas.toDataURL("image/jpeg");
+    }
+	
+	//initialize fileinput (bug in navigator)
 	resetFileInput(){
 		var fileinput = document.getElementById('fileinput');
         fileinput.value = "";
