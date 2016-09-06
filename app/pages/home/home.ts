@@ -19,7 +19,7 @@ import {SearchDetailsPage} from "../search-details/search-details";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 
 @Component({
-    templateUrl: 'build/pages/home/home.html',
+    templateUrl: 'build/pages/home/home' + GlobalConfigs.platformTarget + '.html',
     providers: [GlobalConfigs, ProfileService]
 })
 export class HomePage implements OnChanges{

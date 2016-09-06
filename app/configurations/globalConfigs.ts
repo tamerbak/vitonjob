@@ -4,11 +4,15 @@
 
 import {Injectable} from '@angular/core';
 
+let platform = {app: '', web: '.web'};
+
 @Injectable()
 export class GlobalConfigs {
 
     //Project Target : employer or jobyer
     private projectTarget;
+    // Platform Target : app or web
+    public static platformTarget = platform.web;
     //Name of the connexion button : Connexion or Deconnexion
     private cnxBtnName: string;
     // Avatars :
