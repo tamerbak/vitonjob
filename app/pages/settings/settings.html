@@ -23,10 +23,10 @@
             Modifier votre mot de passe
         </ion-item>
 
-		<ion-list-header>
+		<ion-list-header [hidden]="!isEmployer">
             Mission
         </ion-list-header>
-        <ion-item (click)="changeOption()" text-wrap>
+        <ion-item (click)="changeOption()" [hidden]="!isEmployer" text-wrap>
             <ion-icon name="clipboard" item-left></ion-icon>
             Modifier l'option suivi de mission
         </ion-item>
