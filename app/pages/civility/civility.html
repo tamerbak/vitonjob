@@ -67,6 +67,18 @@
 		</ion-item>
 
 		<ion-item [hidden]="isEmployer">
+			<ion-label floating>Code postal du lieu de naissance</ion-label>
+			<ion-input type="text" [(ngModel)]="birthcp" (keyup)="watchBirthCP($event)"></ion-input>
+		</ion-item>
+		<ion-item [hidden]="isEmployer || codesPostaux.length==0">
+			<ion-list>
+				<ion-item *ngFor="let c of codesPostaux" (click)="cpSelected(c)">
+					{{c.code}}
+				</ion-item>
+			</ion-list>
+		</ion-item>
+
+		<ion-item [hidden]="isEmployer">
 			<ion-label floating>Lieu de naissance (ex :Palaiseau (91))</ion-label>
 			<ion-input type="text" [(ngModel)]="birthplace" (keyup)="watchBirthPlace($event)"></ion-input>
 		</ion-item>

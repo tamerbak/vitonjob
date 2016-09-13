@@ -47,7 +47,10 @@ export class CivilityPage {
     isAPEValid = true;
     isSIRETValid = true;
     fromPage:string;
-    communes:any = [];
+    codesPostaux : any = [];
+    birthcp : any;
+    selectedCP : number = 0;
+    communes : any = [];
     selectedCommune:any;
     communesService:CommunesService;
     numSSMessage:string = '';
@@ -127,8 +130,27 @@ export class CivilityPage {
         };
     }
 
-    watchBirthPlace(e) {
+    watchBirthCP(e){
+        this.selectedCP = 0;
+        let val = e.target.value;
+        if(val.length < 4){
+            this.codesPostaux = [];
+            return;
+        }
 
+        this.codesPostaux = [];
+
+        this.communesService.getCodesPostaux(val).then(data => {
+            this.codesPostaux = data;
+        });
+    }
+
+    watchBirthPlace(e) {
+        this.selectedCommune = {
+            id: 0,
+            nom: '',
+            code_insee: ''
+        };
         let val = e.target.value;
         if (val.length < 3) {
             this.communes = [];
@@ -136,10 +158,32 @@ export class CivilityPage {
         }
         console.log(val);
         this.communes = [];
-        this.communesService.getCommunes(val).then(data=> {
-            this.communes = data;
+
+        this.communesService.getCommunesExact(val, this.selectedCP).then(data=> {
+            if(!data || data.length == 0)
+                this.communesService.getCommunes(val, this.selectedCP).then(data=> {
+                    this.communes = data;
+                    console.log(JSON.stringify(this.communes));
+                });
+            else
+                this.communes = data;
             console.log(JSON.stringify(this.communes));
         });
+    }
+
+    cpSelected(c){
+        this.selectedCP = c.id;
+        this.birthcp = c.code;
+        this.codesPostaux = [];
+
+        //  Init communes list
+        this.communes = [];
+        this.birthplace = '';
+        this.selectedCommune = {
+            id: 0,
+            nom: '',
+            code_insee: ''
+        };
     }
 
     communeSelected(commune) {
@@ -218,10 +262,20 @@ export class CivilityPage {
             }
 
             if (this.birthplace && this.birthplace != 'null' && !this.isRecruiter) {
-                this.communesService.getCommunes(this.birthplace).then(data => {
 
+                this.communesService.getCommune(this.birthplace).then(data => {
+                    debugger;
                     if (data && data.length > 0) {
                         this.selectedCommune = data[0];
+                        if(this.selectedCommune.fk_user_code_postal && this.selectedCommune.fk_user_code_postal != "null"){
+                            this.selectedCP = parseInt(this.selectedCommune.fk_user_code_postal);
+                            this.birthcp = this.selectedCommune.code;
+                        } else {
+                            this.selectedCP = 0;
+                            this.birthcp = '';
+                        }
+
+
                     }
                     this.checkSS = true;
                 });
