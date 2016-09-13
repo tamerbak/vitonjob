@@ -15,8 +15,55 @@ export class CommunesService {
 
     constructor(public http: Http) {}
 
-    getCommunes(letters){
-        let sql = "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) % lower_unaccent('"+letters+"') limit 20";
+    getCommune(cname){
+        let sql = "select c.pk_user_commune as id, c.nom, c.code_insee, c.fk_user_code_postal, cp.code " +
+            "from user_commune c left join user_code_postal cp on c.fk_user_code_postal = cp.pk_user_code_postal " +
+            "where c.nom='"+cname+"'";
+
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    this.data = data.data;
+                    resolve(this.data);
+                });
+        });
+    }
+
+    getCommunes(letters, idcp){
+        let sql = "";
+        if(!idcp || idcp==0)
+            sql = "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) % lower_unaccent('"+letters+"') limit 5";
+        else
+            sql = "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) % lower_unaccent('"+letters+"') and fk_user_code_postal="+idcp+" limit 5";
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    this.data = data.data;
+                    resolve(this.data);
+                });
+        });
+    }
+
+    getCommunesExact(letters, idcp){
+        let sql = "";
+        if(!idcp || idcp == 0)
+            sql = "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%"+letters+"%') limit 5";
+        else
+            sql = "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%"+letters+"%') and fk_user_code_postal="+idcp+" limit 5";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -69,6 +116,55 @@ export class CommunesService {
                 });
         });
 
+    }
+
+    /**
+     * load an autocomplete of zip codes
+     * @param val a part of the zip code to load
+     * @date 12/09/2016
+     * @author Abdeslam
+     */
+    getCodesPostaux(val){
+        let sql = "select pk_user_code_postal as id, code from user_code_postal where code like '%"+val+"%'";
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    this.data = [];
+                    if(data.data)
+                        this.data = data.data;
+                    resolve(this.data);
+                });
+        });
+    }
+
+    /**
+     * @description Loading list of all prefectures
+     */
+    loadPrefectures(){
+        let sql = "select pk_user_prefecture, nom from user_prefecture";
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    this.data = [];
+                    if(data.data)
+                        this.data = data.data;
+                    resolve(this.data);
+                });
+        });
     }
 }
 

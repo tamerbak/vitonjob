@@ -67,6 +67,18 @@
 		</ion-item>
 
 		<ion-item [hidden]="isEmployer">
+			<ion-label floating>Code postal du lieu de naissance</ion-label>
+			<ion-input type="text" [(ngModel)]="birthcp" (keyup)="watchBirthCP($event)"></ion-input>
+		</ion-item>
+		<ion-item [hidden]="isEmployer || codesPostaux.length==0">
+			<ion-list>
+				<ion-item *ngFor="let c of codesPostaux" (click)="cpSelected(c)">
+					{{c.code}}
+				</ion-item>
+			</ion-list>
+		</ion-item>
+
+		<ion-item [hidden]="isEmployer">
 			<ion-label floating>Lieu de naissance (ex :Palaiseau (91))</ion-label>
 			<ion-input type="text" [(ngModel)]="birthplace" (keyup)="watchBirthPlace($event)"></ion-input>
 		</ion-item>
@@ -109,6 +121,37 @@
 				<ion-option *ngFor="let n of nationalities" value="{{n.pk_user_nationalite}}">{{n.libelle}}</ion-option>
 			</ion-select>
 		</ion-item>
+
+		<ion-item [hidden]="isEmployer || isFrench">
+			<ion-label [ngStyle]="nationalitiesstyle" floating>Identifiant de nationalité</ion-label>
+			<ion-select [(ngModel)]="idnationality" (ionChange)="onChangeIDNationality($event)">
+				<ion-option value="41" >UE</ion-option>
+				<ion-option value="43" >EEE</ion-option>
+				<ion-option value="42" >Autre</ion-option>
+			</ion-select>
+		</ion-item>
+		<ion-item [hidden]="isEmployer || isFrench || isEU">
+			<ion-label >Titre séjour délivré le</ion-label>
+			<ion-datetime [(ngModel)]="tsejProvideDate" (ionChange)="watchTsejProvideDate($event)"
+						  displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejProvideDate" [(min)]="mintsejProvideDate"></ion-datetime>
+		</ion-item>
+		<ion-item [hidden]="isEmployer || isFrench || isEU">
+			<ion-label >Titre séjour valable du</ion-label>
+			<ion-datetime [(ngModel)]="tsejFromDate" (ionChange)="watchTsejFromDate($event)"
+						  displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejFromDate" [(min)]="mintsejFromDate"></ion-datetime>
+		</ion-item>
+		<ion-item [hidden]="isEmployer || isFrench || isEU">
+			<ion-label >Titre séjour valable au</ion-label>
+			<ion-datetime [(ngModel)]="tsejToDate"   displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejToDate" [(min)]="mintsejToDate"></ion-datetime>
+		</ion-item>
+		<ion-item [hidden]="isEmployer || isFrench || isEU">
+			<ion-label [ngStyle]="nationalitiesstyle" floating>Délivré par</ion-label>
+			<ion-select [(ngModel)]="prefecture" >
+				<ion-option *ngFor="let n of prefectures" value="{{n.pk_user_prefecture}}">{{n.nom}}</ion-option>
+			</ion-select>
+		</ion-item>
+		<div class="error-box">{{tsMessage}}</div>
+
 		<ion-row>
 			<ion-col text-center>
 				<ion-label>{{uploadVerb}} une photo {{scanTitle}}</ion-label>
