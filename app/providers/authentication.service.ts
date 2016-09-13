@@ -3,6 +3,7 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import {Storage, SqlStorage} from 'ionic-angular';
 import {Configs} from '../configurations/configs';
 import {GlobalConfigs} from '../configurations/globalConfigs';
+import {isUndefined} from "ionic-angular/util/util";
 
 /**
  * @author Amal ROCHD
@@ -49,7 +50,7 @@ export class AuthenticationService {
         var encodedLogin = btoa(login);
         var dataLog = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 240,
+            'id': 254,
             'args': [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'requete authentification',
@@ -65,6 +66,9 @@ export class AuthenticationService {
                 .map(res => res.json())
                 .subscribe(data => {
                     this.data = data;
+                    console.clear();
+                    console.log(JSON.stringify(data));
+                    debugger;
                     resolve(this.data);
                 });
         })
@@ -119,7 +123,8 @@ export class AuthenticationService {
      * @description update jobyer information
      * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
      */
-    updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace){
+    updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace,
+                         idnationality, prefecture, tsejProvideDate, tsejFromDate, tsejToDate){
         var sql = "";
         //building the sql request
         if (nationalityId){
@@ -129,7 +134,12 @@ export class AuthenticationService {
                 "prenom='" + firstname + "', " +
                 "numero_securite_sociale='" + numSS + "', " +
                 "cni='" + cni + "', " +
-                (!birthdate ? " " : "date_de_naissance ='"+ birthdate +"',") +
+                (!birthdate ? " " : "date_de_naissance ='"+ birthdate +"', ") +
+                (idnationality==0?" " : "fk_user_identifiants_nationalite='"+idnationality+"', ")+
+                (prefecture==0 || isUndefined(prefecture)?" " : "fk_user_prefecture='"+prefecture+"', ")+
+                (isUndefined(tsejProvideDate)?" " : "date_de_delivrance='"+(tsejProvideDate)+"', ")+
+                (isUndefined(tsejFromDate)?" " : "debut_validite='"+(tsejFromDate)+"', ")+
+                (isUndefined(tsejToDate)?" " : "fin_validite='"+(tsejToDate)+"', ")+
                 "lieu_de_naissance ='" + birthplace + "', " +
                 "fk_user_nationalite ='" + nationalityId + "' " +
                 "where pk_user_jobyer ='" + roleId + "';";
@@ -141,6 +151,11 @@ export class AuthenticationService {
                 "numero_securite_sociale='" + numSS + "', " +
                 "cni='" + cni + "', " +
                 (!birthdate ? " " : "date_de_naissance ='"+ birthdate +"',") +
+                (idnationality==0?" " : "fk_user_identifiants_nationalite='"+idnationality+"', ")+
+                (prefecture==0?" " : "fk_user_prefecture='"+prefecture+"', ")+
+                (isUndefined(tsejProvideDate)?" " : "date_de_delivrance='"+(tsejProvideDate)+"', ")+
+                (isUndefined(tsejFromDate)?" " : "debut_validite='"+(tsejFromDate)+"', ")+
+                (isUndefined(tsejToDate)?" " : "fin_validite='"+(tsejToDate)+"', ")+
                 "lieu_de_naissance ='" + birthplace + "' " +
                 "where pk_user_jobyer ='" + roleId + "';";
         }
@@ -155,6 +170,12 @@ export class AuthenticationService {
                     resolve(this.data);
                 });
         })
+    }
+
+    sqlfyDate(date){
+        debugger;
+        let sqldate = date.getFullYear()+"-"+(date.getMonth()-1)+"-"+date.getDate();
+        return sqldate;
     }
 
     /**

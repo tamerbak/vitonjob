@@ -68,7 +68,25 @@ export class CivilityPage {
     calendarTheme:string;
     isAndroid4:boolean;
     platform: any;
-	isBirthdateValid = true;	
+	isBirthdateValid = true;
+
+    isFrench : boolean = true;
+    isEU : boolean = true;
+    idnationality : number = 40;
+    tsejProvideDate:any;
+    tsejFromDate:any;
+    tsejToDate:any;
+    prefecture : any;
+    prefectures : any = [];
+
+    maxtsejProvideDate : any;
+    mintsejProvideDate : any;
+    maxtsejFromDate : any;
+    mintsejFromDate : any;
+    maxtsejToDate : any;
+    mintsejToDate : any;
+    tsMessage : string = "";
+
 
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
@@ -128,6 +146,20 @@ export class CivilityPage {
             nom: '',
             code_insee: ''
         };
+        this.communesService.loadPrefectures().then(data=>{
+            this.prefectures = data;
+        });
+        let today = new Date();
+        let m = (today.getMonth()+1)<10?"0"+(today.getMonth()+1):""+(today.getMonth()+1);
+        let d = (today.getDate())<10?"0"+(today.getDate()):""+(today.getDate());
+        this.maxtsejProvideDate = today.getFullYear()+"-"+m+"-"+d;
+        this.mintsejProvideDate = (today.getFullYear()-70)+"-01-01";
+
+        this.maxtsejFromDate = today.getFullYear()+"-"+m+"-"+d;
+        this.mintsejFromDate = (today.getFullYear()-70)+"-01-01";
+
+        this.mintsejToDate = today.getFullYear()+"-"+m+"-"+d;
+        this.maxtsejToDate = (today.getFullYear()+70)+"-12-31";
     }
 
     watchBirthCP(e){
@@ -247,9 +279,42 @@ export class CivilityPage {
                         this.birthplace = this.currentUser.jobyer.lieuNaissance;
                         this.cni = this.currentUser.jobyer.cni;
                         this.numSS = this.currentUser.jobyer.numSS;
-                        this.nationality = this.currentUser.jobyer.natId;
+                        this.nationality = parseInt(this.currentUser.jobyer.natId);
                         if (this.nationality) this.nationalitiesstyle = {'font-size': '1.4rem'};
                         else this.nationalitiesstyle = {'font-size': '2rem', 'position': 'absolute', 'top': '0.2em'};
+                    }
+
+                    let jobyer = this.currentUser.jobyer;
+                    if(jobyer.auTS && jobyer.auTS!='null'){
+                        let d = new Date(jobyer.auTS);
+                        let month = (d.getMonth()+1)<10?"0"+(d.getMonth()+1):""+(d.getMonth()+1);
+                        let day = d.getDate()<10?"0"+d.getDate():d.getDate();
+                        this.tsejToDate = d.getFullYear()+"-"+month+"-"+day;
+                    }
+                    if(jobyer.duTS && jobyer.duTS!='null'){
+                        let d = new Date(jobyer.duTS);
+                        let month = (d.getMonth()+1)<10?"0"+(d.getMonth()+1):""+(d.getMonth()+1);
+                        let day = d.getDate()<10?"0"+d.getDate():d.getDate();
+                        this.tsejFromDate = d.getFullYear()+"-"+month+"-"+day;
+                    }
+                    if(jobyer.delivranceTS && jobyer.delivranceTS!='null'){
+                        let d = new Date(jobyer.delivranceTS);
+                        let month = (d.getMonth()+1)<10?"0"+(d.getMonth()+1):""+(d.getMonth()+1);
+                        let day = d.getDate()<10?"0"+d.getDate():d.getDate();
+                        this.tsejProvideDate = d.getFullYear()+"-"+month+"-"+day;
+                    }
+                    if(jobyer.identifiantNationalite && jobyer.identifiantNationalite>0){
+                        this.idnationality = jobyer.identifiantNationalite;
+                        if(jobyer.identifiantNationalite>40){
+                            this.isFrench = false;
+                        }
+                        if(jobyer.identifiantNationalite>41){
+                            this.isEU = false;
+                        }
+
+                    }
+                    if(jobyer.idPrefecture && jobyer.idPrefecture>0){
+                        this.prefecture = jobyer.idPrefecture;
                     }
                 }
                 if (!this.isRecruiter) {
@@ -424,7 +489,8 @@ export class CivilityPage {
                 //get the role id
                 var jobyerId = this.currentUser.jobyer.id;
                 // update jobyer
-                this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni, this.nationality, jobyerId, this.birthdate, this.birthplace).then((data) => {
+                this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni, this.nationality, jobyerId, this.birthdate, this.birthplace,
+                                                        this.idnationality, this.prefecture, this.tsejProvideDate, this.tsejFromDate, this.tsejToDate).then((data) => {
                     if (!data || data.status == "failure") {
                         console.log(data.error);
                         loading.dismiss();
@@ -439,6 +505,20 @@ export class CivilityPage {
                         this.currentUser.jobyer.cni = this.cni;
                         this.currentUser.jobyer.numSS = this.numSS;
                         this.currentUser.jobyer.natId = this.nationality;
+
+                        debugger;
+                        if(this.idnationality>0)
+                            this.currentUser.jobyer.identifiantNationalite = this.idnationality;
+                        if(this.prefecture>0)
+                            this.currentUser.jobyer.idPrefecture = this.prefecture;
+                        if(this.tsejFromDate)
+                            this.currentUser.jobyer.duTS = (new Date(this.tsejFromDate)).getTime();
+                        if(this.tsejToDate)
+                            this.currentUser.jobyer.auTS = (new Date(this.tsejToDate)).getTime();
+                        if(this.tsejProvideDate)
+                            this.currentUser.jobyer.delivranceTS = (new Date(this.tsejProvideDate)).getTime();
+
+
                         //this.currentUser.jobyer.natLibelle = this.nationality;
                         //
                         if (this.platform.version('android').major < 5) {
@@ -468,6 +548,8 @@ export class CivilityPage {
                 });
             }
         }
+        
+
     }
 
     /**
@@ -510,6 +592,17 @@ export class CivilityPage {
         if (this.isEmployer) {
             return (!this.title || !this.firstname || !this.lastname || !this.companyname || (this.siret && this.siret.length < 17) || (this.ape && (this.ape.length < 5 || !this.isAPEValid)) || !this.isValideFirstName || !this.isValideLastName);
         } else {
+
+            if(!this.isFrench && !this.isEU){
+                if(!this.tsejToDate || !this.tsejFromDate || !this.tsejProvideDate || !this.prefecture || this.prefecture.length == 0){
+                    this.tsMessage = "* Veuillez vérifier les informations du Titre de séjour pour pouvoir enregistrer vos données";
+                    return true;
+                } else {
+                    this.tsMessage = "";
+                }
+
+            }
+
             if ((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length != 0) || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.isValideFirstName || !this.isValideLastName || !this.isBirthdateValid)) {
                 return true;
             }
@@ -781,12 +874,30 @@ export class CivilityPage {
         else {
             this.nationalitiesstyle = {'font-size': '2rem', 'position': 'absolute', 'top': '0.2em'};
         }
-        if (this.nationality == 9)
+        if (this.nationality == 9){
             this.scanTitle = " de votre CNI";
-        else
-            this.scanTitle = " de votre autorisation de travail";
+            this.isFrench = true;
+            this.idnationality = 40;
+        }
+        else{
+            this.scanTitle = " de votre titre de séjour";
+            this.isFrench = false;
+            this.isEU = true;
+            this.idnationality = 41;
+        }
+
+
+
     }
 
+    /**
+     * Changed the id nationality
+     * @param e event
+     */
+    onChangeIDNationality(e){
+        if(this.idnationality>41)
+            this.isEU = false;
+    }
 
     /**
      * @description remove data to scanUri
@@ -957,6 +1068,38 @@ export class CivilityPage {
 			this.isBirthdateValid = false;
 		}
 	}
+
+    watchTsejProvideDate(e){
+
+        let provDate = new Date(this.tsejProvideDate);
+        let d = provDate.getDate()<10?"0"+provDate.getDate():""+provDate.getDate();
+        let m = (provDate.getMonth()+1)<10?"0"+(provDate.getMonth()+1):""+(provDate.getMonth()+1);
+        this.mintsejFromDate = provDate.getFullYear()+"-"+m+"-"+d;
+        let minD = new Date(this.mintsejFromDate);
+        this.maxtsejFromDate = (provDate.getFullYear())+"-12-31";
+        let maxD = new Date(this.maxtsejFromDate);
+        if(this.tsejFromDate){
+            if(this.tsejFromDate.getFullYear() <  minD.getFullYear() || this.tsejFromDate.getFullYear() >  maxD.getFullYear()){
+                this.tsejFromDate = null;
+            }
+        }
+
+        this.mintsejToDate = this.mintsejFromDate;
+        this.maxtsejToDate = (provDate.getFullYear()+73)+"-12-31";
+
+        this.tsejFromDate = this.tsejProvideDate;
+    }
+
+    watchTsejFromDate(e){
+        let fromDate = new Date(this.tsejFromDate);
+        let d = fromDate.getDate()<10?"0"+fromDate.getDate():""+fromDate.getDate();
+        let m = (fromDate.getMonth()+1)<10?"0"+(fromDate.getMonth()+1):""+(fromDate.getMonth()+1);
+
+        this.mintsejToDate = (fromDate.getFullYear())+"-"+m+"-"+d;
+        this.maxtsejToDate = (fromDate.getFullYear()+73)+"-12-31";
+
+        this.tsejToDate = this.tsejFromDate;
+    }
 
     /**
      * @Description Converts a timeStamp to date string :
