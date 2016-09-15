@@ -33,6 +33,18 @@ export class ContractService {
         });
     }
 
+    dayDifference(first, second) {
+        if (first)
+            first = new Date (first).getTime();
+        else
+            first = new Date().getTime();
+        if (second)
+            second = new Date (second).getTime();
+        else
+            second = new Date().getTime();
+        return Math.round((first-second)/(1000*60*60*24)) + 1;
+    }
+
     //to remove after correction Jobyer object in api service
     getJobyerId(jobyer:any,projectTarget:string){
         //  Init project parameters

@@ -12,6 +12,7 @@ import {ContractService} from "../../providers/contract-service/contract-service
 import {Component} from "@angular/core";
 import {MedecineService} from "../../providers/medecine-service/medecine-service";
 import {ParametersService} from "../../providers/parameters-service/parameters-service";
+import {ContractualisationPage} from "../contractualisation/contractualisation";
 
 
 /**
@@ -410,7 +411,7 @@ export class ContractPage {
                 this.contractData.numero = this.numContrat;
                 this.contractData.adresseInterim = this.workAdress;
             }
-            this.nav.push(YousignPage,{
+            this.nav.push(YousignPage,{ //ContractualisationPage
                 jobyer:this.jobyer,
                 contractData:this.contractData,
                 currentOffer:this.currentOffer

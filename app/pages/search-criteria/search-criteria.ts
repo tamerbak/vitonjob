@@ -12,6 +12,7 @@ import {isUndefined} from "ionic-angular/util";
 import {SearchGuidePage} from "../search-guide/search-guide";
 import {DatePicker} from "ionic-native/dist/index";
 
+declare var require: any
 /**
  * @author abdeslam jakjoud
  * @descirption Modal page exposing search criteria

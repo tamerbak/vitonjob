@@ -42,7 +42,7 @@
         </ion-item>
     </ion-list>
 
-    <ion-list>
+    <ion-list [disabled]="isEmployer">
         <ion-list-header>
             SALARIE INTERIMAIRE
         </ion-list-header>
@@ -284,7 +284,7 @@
         <ion-col width-10></ion-col>
         <ion-col text-center>
             <button [style.backgroundColor]="themeColor" (click)="goToYousignPage()">
-                Afficher le contrat
+                Valider les informations de contrat
             </button>
         </ion-col>
         <ion-col width-10></ion-col>

@@ -99,15 +99,15 @@ export class MissionListPage {
                         }
 
                         missionNow = missionNow.sort((a, b) => {
-                            return this.dayDifference(b.date_de_debut, a.date_de_debut)
+                            return this.contractService.dayDifference(b.date_de_debut, a.date_de_debut)
                         });
 
                         missionFutur = missionFutur.sort((a, b) => {
-                            return this.dayDifference(a.date_de_debut, b.date_de_debut)
+                            return this.contractService.dayDifference(a.date_de_debut, b.date_de_debut)
                         });
 
                         missionPast = missionPast.sort((a, b) => {
-                            return this.dayDifference(b.date_de_debut, a.date_de_debut)
+                            return this.contractService.dayDifference(b.date_de_debut, a.date_de_debut)
                         });
 					}
 					this.missionList[0].list = missionNow;
@@ -119,18 +119,6 @@ export class MissionListPage {
 				});	
 			}
 		});
-    }
-
-    dayDifference(first, second) {
-        if (first)
-            first = new Date (first).getTime();
-        else
-            first = new Date().getTime();
-        if (second)
-            second = new Date (second).getTime();
-        else
-            second = new Date().getTime();
-        return Math.round((first-second)/(1000*60*60*24)) + 1;
     }
 
     toStringDate(date: any) {

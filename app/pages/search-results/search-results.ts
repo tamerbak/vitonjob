@@ -6,19 +6,16 @@ import {SearchService} from "../../providers/search-service/search-service";
 import {UserService} from "../../providers/user-service/user-service";
 import {ContractPage} from '../contract/contract';
 import {CivilityPage} from '../civility/civility';
-import {JobAddressPage} from '../job-address/job-address';
-import {PersonalAddressPage} from '../personal-address/personal-address';
 import {PhonePage} from '../phone/phone';
 import {isUndefined} from "ionic-angular/util";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {OfferAddPage} from "../offer-add/offer-add";
-import {timeout} from "rxjs/operator/timeout";
-import {InfoUserPage} from "../info-user/info-user";
 import {ModalOfferPropositionPage} from "../modal-offer-proposition/modal-offer-proposition";
 import {SearchDetailsPage} from "../search-details/search-details";
 import {Configs} from "../../configurations/configs";
 import {ModalOffersPage} from "../modal-offers/modal-offers";
 import {ProfileService} from "../../providers/profile-service/profile-service";
+import {NotificationContractPage} from "../notification-contract/notification-contract";
 
 /**
  * @author jakjoud abdeslam
@@ -766,7 +763,7 @@ export class SearchResultsPage implements OnInit {
                 let o = this.navParams.get('currentOffer');
                 //navigate to contract page
                 if (o && !isUndefined(o)) {
-                    this.nav.push(ContractPage, {jobyer: this.searchResults[index], currentOffer: o});
+                    this.nav.push(NotificationContractPage, {jobyer: this.searchResults[index], currentOffer: o});
                 } else {
                     //redirect employer to select or create an offer
                     let alert = Alert.create({
@@ -778,7 +775,7 @@ export class SearchResultsPage implements OnInit {
                                 handler: () => {
                                     this.selectOffer().then(offer => {
                                         if (offer) {
-                                            this.nav.push(ContractPage, {
+                                            this.nav.push(NotificationContractPage, {
                                                 jobyer: this.searchResults[index],
                                                 currentOffer: offer
                                             });

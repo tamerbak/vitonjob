@@ -39,6 +39,8 @@ import {NotationService} from "./providers/notation-service/notation-service";
 import {AttachementsPage} from "./pages/attachements/attachements";
 import {LocalNotifications} from 'ionic-native';
 import {MissionPointingPage} from "./pages/mission-pointing/mission-pointing";
+import {ContractWizardPage} from "./pages/contract-wizard/contract-wizard";
+import {SearchAutoPage} from "./pages/search-auto/search-auto";
 //import {SearchAutoPage} from './pages/search-auto/search-auto';
 
 //import {ParametersPage} from "./pages/parameters/parameters";
@@ -112,8 +114,7 @@ export class Vitonjob {
 		];
 		
 		
-		//this.rootPage = HomePage;//ProfilePage;//OfferAddPage;//HomePage;//OfferDetailPage;//
-		this.rootPage = HomePage;
+		this.rootPage = HomePage;//ContractWizardPage;//
 		//this.getRootPage();
 		this.bgMenuURL = this.config.bgMenuURL;
 		this.userImageURL = this.config.userImageURL;
