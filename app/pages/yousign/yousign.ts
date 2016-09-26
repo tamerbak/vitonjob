@@ -107,16 +107,19 @@ export class YousignPage {
         this.nav.present(loading);
         this.financeService.loadQuote(this.currentOffer.idOffer, this.contractData.baseSalary).then(data =>{
             this.contractService.callYousign(this.currentUser, this.employer, this.jobyer,this.contractData, this.projectTarget, this.currentOffer, data.quoteId).then((data) => {
+
                 loading.dismiss();
-                //debugger;
+                console.clear();
+                console.log(data);
+                debugger;
                 console.log(JSON.stringify(this.employer));
                 if (data == null || data.length == 0) {
                     console.log("Yousign result is null");
                     return;
                 }
 
-                let dataValue = data[0]['value'];
-                let yousignData = JSON.parse(dataValue);
+                let dataValue = data;//[0]['value'];
+                let yousignData = dataValue;
                 console.log(yousignData);
 
                 //change jobyer 'contacted' status
@@ -124,7 +127,7 @@ export class YousignPage {
                 this.jobyer.date_invit = new Date();
 
                 //get the link yousign of the contract for the employer
-                let yousignEmployerLink = yousignData.iFrameURLs[1].iFrameURL;
+                let yousignEmployerLink = yousignData.Employeur.url;
 
                 //Create to Iframe to show the contract in the NavPage
                 /*let iframe = document.createElement('iframe');
@@ -143,11 +146,11 @@ export class YousignPage {
                 InAppBrowser.open(yousignEmployerLink, '_blank');
                 //browser.show();
                 // get the yousign link of the contract and the phoneNumber of the jobyer
-                let yousignJobyerLink = yousignData.iFrameURLs[0].iFrameURL;
+                let yousignJobyerLink = yousignData.Jobyer.url;
                 let jobyerPhoneNumber = this.jobyer.tel;
 
-                this.contractData.demandeJobyer = yousignData.idDemands[0].idDemand;
-                this.contractData.demandeEmployer = yousignData.idDemands[1].idDemand;
+                this.contractData.demandeJobyer = yousignData.Jobyer.idContrat;
+                this.contractData.demandeEmployer = yousignData.Employeur.idContrat;
 
                 // TEL23082016 : Navigate to credit card page directly :
                 this.nav.push(WalletCreatePage);
@@ -168,7 +171,7 @@ export class YousignPage {
                 //save contract in Database
                 this.contractService.getJobyerId(this.jobyer,this.projectTarget).then(
                     (jobyerData) => {
-                        this.contractService.saveContract(this.contractData,jobyerData.data[0].pk_user_jobyer,this.employer.entreprises[0].id,this.projectTarget, yousignJobyerLink, this.currentUser.id).then(
+                        this.contractService.saveContract(this.contractData,jobyerData.data[0].pk_user_jobyer,this.employer.entreprises[0].id,this.projectTarget, yousignJobyerLink, yousignEmployerLink, this.currentUser.id).then(
                             (data) => {
                                 if(this.currentOffer && this.currentOffer != null){
                                     let idContract = 0;

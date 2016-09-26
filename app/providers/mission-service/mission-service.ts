@@ -577,7 +577,7 @@ export class MissionService {
         let dataSign = JSON.stringify(bean);
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 236,
+            'id': 275,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
