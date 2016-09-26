@@ -126,7 +126,7 @@ export class ContractService {
      * @param employerEntrepriseId
      * @return JSON results in form of created contract Id
      */
-    saveContract(contract:any,jobyerId:Number,employerEntrepriseId:Number,projectTarget:string, yousignJobyerLink, accountId){
+    saveContract(contract:any,jobyerId:Number,employerEntrepriseId:Number,projectTarget:string, yousignJobyerLink, yousignEmployerLink, accountId){
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
         var dt = new Date();
@@ -162,7 +162,8 @@ export class ContractService {
             " titre,"+
 			" demande_employeur,"+
             " demande_jobyer,"+
-            " option_mission"+
+            " option_mission,"+
+            " lien_employeur"+
 			")"+
             " VALUES ("
             +"'"+ contract.missionStartDate +"',"
@@ -196,7 +197,8 @@ export class ContractService {
             +"'"+this.sqlfyText(contract.titre)+"',"
             +"'"+this.sqlfyText(contract.demandeEmployer)+"',"
             +"'"+this.sqlfyText(contract.demandeJobyer)+"',"
-			+"(select option_mission :: numeric from user_account where pk_user_account = '" + accountId + "')"
+			+"(select option_mission :: numeric from user_account where pk_user_account = '" + accountId + "'),"
+            +"'"+this.sqlfyText(yousignEmployerLink)+"'"
             +")"
             +" RETURNING pk_user_contrat";
 
@@ -411,7 +413,7 @@ export class ContractService {
 
         var dataSign =JSON.stringify(
             {
-                'class': 'com.vitonjob.yousign.callouts.YousignConfig',
+                'class': 'com.vitonjob.docusign.model.DSConfig',
                 'employerFirstName': user.prenom,
                 'employerLastName':user.nom,
                 'employerEmail': user.email,
@@ -421,12 +423,14 @@ export class ContractService {
                 'jobyerEmail': jobyer.email,
                 'jobyerPhone': jobyer.tel,
                 'idQuote' : idQuote,
+                'idDocument' : idQuote,
+
                 'data': btoa(unescape(encodeURIComponent(JSON.stringify(jsonData))))
             });
 
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 224,
+            'id': 272,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -443,7 +447,7 @@ export class ContractService {
             let headers = new Headers();
             headers.append("Content-Type", 'application/json');
 
-            this.http.post('http://ns389914.ovh.net:8080/vitonjobv1/api/callout', JSON.stringify(payload), {headers:headers})
+            this.http.post('http://ns389914.ovh.net:8080/vitonjobv1/api/business', JSON.stringify(payload), {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
                    //debugger;
