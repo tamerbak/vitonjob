@@ -1,9 +1,10 @@
 import {Storage, SqlStorage} from 'ionic-angular';
-import {Injectable} from '@angular/core';
+import {Injectable, Inject} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {Configs} from '../../configurations/configs';
 import {isUndefined} from "ionic-angular/util";
+import {CordovaHttpService} from "../cordova-http-service/cordova-http-service";
 
 /**
  * @author jakjoud abdeslam
@@ -27,10 +28,12 @@ export class OffersService {
     offerList:any;
     addedOffer:any;
     lienVideo : string;
+    cordovaHttp: any;
 
-    constructor(public http:Http) {
+    constructor(public http:Http, @Inject(CordovaHttpService) _cordovaHttp:CordovaHttpService) {
         this.count = 0;
         this.db = new Storage(SqlStorage);
+        this.cordovaHttp = _cordovaHttp;
     }
 
     /**
@@ -53,8 +56,9 @@ export class OffersService {
             // Next we process the data and resolve the promise with the new data.
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
+            //this.http.post(Configs.sqlURL, sql, {headers: headers})
             this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
+                /*.map(res => res.json())
                 .subscribe(data => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
@@ -62,7 +66,7 @@ export class OffersService {
                     this.count = data.data[0].count;
                     console.log(this.count);
                     resolve(this.count);
-                });
+                })*/;
         });
     }
 
@@ -371,15 +375,16 @@ export class OffersService {
             // Next we process the data and resolve the promise with the new data.
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
+            console.log('cordova http call');
+            this.cordovaHttp.post(Configs.sqlURL, sql, {"Content-Type": 'text/plain'})
+                /*.map(res => res.json())
                 .subscribe(data => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.listSectors = data.data;
                     this.db.set('SECTOR_LIST',JSON.stringify(this.listSectors));
                     resolve(this.listSectors);
-                });
+                })*/;
         });
     }
 

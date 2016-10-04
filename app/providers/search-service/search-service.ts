@@ -1,8 +1,9 @@
 import {Storage, SqlStorage} from 'ionic-angular';
-import {Injectable} from '@angular/core';
+import {Injectable, Inject} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {Configs} from '../../configurations/configs';
+import {CordovaHttpService} from "../cordova-http-service/cordova-http-service";
 
 /**
  * @author jakjoud abdeslam
@@ -14,8 +15,10 @@ export class SearchService {
   data: any = null;
   configuration : any;
   db : any;
-  constructor(public http: Http) {
+  cordovaHttp: any;
+  constructor(public http: Http, @Inject(CordovaHttpService) _cordovaHttp:CordovaHttpService) {
     this.db = new Storage(SqlStorage);
+    this.cordovaHttp = _cordovaHttp;
   }
 
 
@@ -62,15 +65,18 @@ export class SearchService {
       // Next we process the data and resolve the promise with the new data.
       let headers = new Headers();
       headers = Configs.getHttpJsonHeaders();
-      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers:headers})
-          .map(res => res.json())
+      //this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers:headers})
+      //todo not use promise in return cordova post must be same as http post return ..
+      debugger;
+      this.cordovaHttp.post(Configs.calloutURL, payload, headers)
+          /*.map(res => res.json())
           .subscribe(data => {
             // we've got back the raw data, now generate the core schedule data
             // and save the data for later reference
             this.data = data;
             console.log(this.data);
             resolve(this.data);
-          });
+          })*/;
     });
   }
 

@@ -41,6 +41,7 @@ import {LocalNotifications} from 'ionic-native';
 import {MissionPointingPage} from "./pages/mission-pointing/mission-pointing";
 import {ContractWizardPage} from "./pages/contract-wizard/contract-wizard";
 import {SearchAutoPage} from "./pages/search-auto/search-auto";
+import {CordovaHttpService} from "./providers/cordova-http-service/cordova-http-service";
 //import {SearchAutoPage} from './pages/search-auto/search-auto';
 
 //import {ParametersPage} from "./pages/parameters/parameters";
@@ -129,6 +130,7 @@ export class Vitonjob {
 		this.isCalculating = true;
 		
 		//  Initialize sectors and job lists
+		console.log("••••••••••••••••••• bouda bouda bouda... ");
 		this.offerService.loadSectorsToLocal();
 		this.offerService.loadJobsToLocal();
 	}
@@ -450,7 +452,7 @@ export class Vitonjob {
 }
 	
 ionicBootstrap(Vitonjob, [GlobalConfigs, SearchService, UserService, ContractService, SmsService,
-	MissionService, NetworkService, Helpers, OffersService], {
+	MissionService, NetworkService, Helpers, OffersService, CordovaHttpService], {
 	backButtonText: "",
 	monthNames: ['Janvier', 'F\u00e9vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao\u00fbt', 'Septembre', 'Octobre', 'Novembre', 'D\u00e9cembre'],
 	monthShortNames: ['Jan', 'F\u00e9v', 'Mar', 'Avr', 'Jui', 'Juil', 'Ao\u00fb', 'Sept', 'Oct', 'Nov', 'D\u00e9c'],

@@ -2,13 +2,14 @@ import {Injectable} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {Configs} from "../../configurations/configs";
+import {CordovaHttpService} from "../cordova-http-service/cordova-http-service";
 
 
 @Injectable()
 export class AddressService {
     data: any = null;
 
-    constructor(public http: Http) {}
+    constructor(public http: Http, private cordovaHttp:CordovaHttpService) {}
 
     /**
      * get latitude and langitude of a string address
@@ -37,6 +38,12 @@ export class AddressService {
         });
     }
 
+    /**
+     * 
+     * @param origine
+     * @param destination
+     * @returns {Promise<T>}
+     */
     getDistance(origine, destination){
         let bean = {
             'class' : 'com.vitonjob.callouts.recherche.SearchQuery',
