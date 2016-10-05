@@ -113,7 +113,7 @@ export class ContractPage {
             finSouplesse : "",
             equipements : "",
 
-            interim:"Groupe 3S",
+            interim:"TEMPO'AIR",
             missionStartDate: this.getStartDate(),
             missionEndDate:this.getEndDate(),
             trialPeriod: 5,
