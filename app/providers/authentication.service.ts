@@ -50,7 +50,7 @@ export class AuthenticationService {
         var encodedLogin = btoa(login);
         var dataLog = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 254,
+            'id': 283,
             'args': [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'requete authentification',
@@ -58,8 +58,9 @@ export class AuthenticationService {
             }]
         };
         let body = JSON.stringify(dataLog);
+        console.clear();
         console.log(body);
-       //debugger;
+        debugger;
         return new Promise(resolve => {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, body, {headers:headers})
@@ -182,7 +183,7 @@ export class AuthenticationService {
      * @description update employer and jobyer civility information
      * @param title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId
      */
-    updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId,projectTarget, medecineId){
+    updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId,projectTarget, medecineId, conventionId){
         var sql = "update user_employeur set ";
         sql = sql + " titre='" + title + "' ";
         sql = sql + ", nom='" + lastname + "', prenom='" + firstname + "' where pk_user_employeur=" + roleId + ";";
@@ -193,6 +194,9 @@ export class AuthenticationService {
        //debugger;
         if(medecineId && medecineId>0)
             sql = sql + " , fk_user_medecine_de_travail='" + medecineId+ "' ";
+        debugger;
+        if(conventionId && conventionId>0)
+            sql = sql + " , fk_user_convention_collective="+conventionId;
         ape = (!ape ? "" : ape);
 		sql = sql + " , ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
         console.log(sql);

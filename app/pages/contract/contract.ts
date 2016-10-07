@@ -49,6 +49,7 @@ export class ContractPage {
     recours : any;
     justificatifs : any;
 
+
     dateFormat(d){
         let m = d.getMonth()+1;
         let da = d.getDate();
