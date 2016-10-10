@@ -111,7 +111,7 @@ export class YousignPage {
                 loading.dismiss();
                 console.clear();
                 console.log(data);
-                debugger;
+               //debugger;
                 console.log(JSON.stringify(this.employer));
                 if (data == null || data.length == 0) {
                     console.log("Yousign result is null");

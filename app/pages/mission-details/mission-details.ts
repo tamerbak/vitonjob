@@ -141,10 +141,10 @@ export class MissionDetailsPage {
             this.starsText = this.writeStars(this.rating);
         });
 
-        debugger;
+       //debugger;
         console.log(JSON.stringify(this.contract));
         this.financeService.checkInvoice(this.contract.pk_user_contrat).then(invoice=>{
-            debugger;
+           //debugger;
             if(invoice){
                 this.invoiceId = invoice.pk_user_facture_voj;
 

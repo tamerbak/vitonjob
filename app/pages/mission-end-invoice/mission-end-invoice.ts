@@ -29,7 +29,7 @@ export class MissionEndInvoicePage {
         };
 
         this.service.loadInvoiceSignature(this.idInvoice).then(data=>{
-            debugger;
+           //debugger;
             this.invoice = data;
             this.unSigned = (this.invoice.facture_signee == "Non");
             if(this.unSigned)

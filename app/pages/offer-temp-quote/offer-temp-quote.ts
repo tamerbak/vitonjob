@@ -11,7 +11,7 @@ export class OfferTempQuotePage {
     constructor(private nav: NavController,
                 private service : FinanceService,
                 navParams : NavParams) {
-        debugger;
+       //debugger;
         let id = navParams.data.idOffer;
         this.service.loadPrevQuote(id).then(data=>{
             this.quote = data;
