@@ -52,6 +52,17 @@
 		<div [hidden]="isAPEValid"
 			 class="error-box">* Saisissez les 4 chiffres suivis d'une lettre</div>
 
+		<ion-item [hidden]="!isEmployer">
+			<ion-label floating>Convention collective</ion-label>
+			<ion-input type="text" [(ngModel)]="convention" (keyup)="watchConvention($event)"></ion-input>
+		</ion-item>
+		<ion-item [hidden]="!isEmployer || conventions.length==0">
+			<ion-list>
+				<ion-item *ngFor="let c of conventions" (click)="convSelected(c)">
+					{{c.code}} - {{c.libelle}}
+				</ion-item>
+			</ion-list>
+		</ion-item>
 
 		<ion-item style="margin-top: 1.5em" [hidden]="isEmployer || isAndroid4">
 			<ion-label>Date de naissance</ion-label>

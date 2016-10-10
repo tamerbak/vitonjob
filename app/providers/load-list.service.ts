@@ -11,7 +11,8 @@ import {Configs} from '../configurations/configs';
 @Injectable()
 export class LoadListService {
 	configuration;
-	
+	data: any;
+	http : any;
 	constructor(http: Http) {
 		this.http = http;
 	}
@@ -44,7 +45,7 @@ export class LoadListService {
 	loadNationalities(projectTarget) {
 		//  Init project parameters
 		this.configuration = Configs.setConfigs(projectTarget);
-		var sql = "select pk_user_nationalite, libelle from user_nationalite";
+		var sql = "select pk_user_nationalite, libelle from user_nationalite where dirty='N'";
 		
 		return new Promise(resolve => {
 			let headers = Configs.getHttpTextHeaders();
@@ -57,5 +58,24 @@ export class LoadListService {
 	            resolve(this.data);
 			});
 		})
+	}
+
+	loadConventions(kw){
+		let sql = "select pk_user_convention_collective as id, code, libelle from user_convention_collective where lower_unaccent(libelle) % lower_unaccent('"+kw+"') or lower_unaccent(code) % lower_unaccent('"+kw+"') or lower_unaccent(libelle)=lower_unaccent('%"+kw+"%') limit 10";
+		console.clear();
+		console.log(sql);
+		return new Promise(resolve => {
+			let headers = Configs.getHttpTextHeaders();
+
+			this.http.post(Configs.sqlURL, sql, {headers:headers})
+				.map(res => res.json())
+				.subscribe(data => {
+					this.data = [];
+					if(data.data)
+						this.data = data.data;
+					console.log(this.data);
+					resolve(this.data);
+				});
+		});
 	}
 }

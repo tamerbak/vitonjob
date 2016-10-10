@@ -88,6 +88,14 @@ export class CivilityPage {
     tsMessage : string = "";
 
 
+    /*
+     Gestion des conventions collectives
+     */
+    convention : any;
+    conventionId : any;
+    conventions : any = [];
+    convObject : any;
+    
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
      */
@@ -162,6 +170,19 @@ export class CivilityPage {
         this.maxtsejToDate = (today.getFullYear()+70)+"-12-31";
     }
 
+    watchConvention(e){
+        this.conventionId = 0;
+        let val = e.target.value;
+        if(val.length < 4){
+            this.conventions = [];
+            return;
+        }
+
+        this.loadListService.loadConventions(val).then(data=>{
+           this.conventions = data;
+        });
+    }
+    
     watchBirthCP(e){
         this.selectedCP = 0;
         let val = e.target.value;
@@ -201,6 +222,13 @@ export class CivilityPage {
                 this.communes = data;
             console.log(JSON.stringify(this.communes));
         });
+    }
+
+    convSelected(c){
+        this.convObject = c;
+        this.conventionId = c.id;
+        this.convention = c.code+" - "+c.libelle;
+        this.conventions = [];
     }
 
     cpSelected(c){
@@ -263,6 +291,12 @@ export class CivilityPage {
                         }
 
                     });
+                    if(this.currentUser.employer.entreprises[0].conventionCollective &&
+                        this.currentUser.employer.entreprises[0].conventionCollective.id>0){
+                        this.convention =this.currentUser.employer.entreprises[0].conventionCollective.code+" - "+
+                            this.currentUser.employer.entreprises[0].conventionCollective.libelle;
+                        this.conventionId = this.currentUser.employer.entreprises[0].conventionCollective.id;
+                    }
                 } else {
                     if (!this.isRecruiter) {
                         //
@@ -329,7 +363,7 @@ export class CivilityPage {
             if (this.birthplace && this.birthplace != 'null' && !this.isRecruiter) {
 
                 this.communesService.getCommune(this.birthplace).then(data => {
-                   //debugger;
+                    //debugger;
                     if (data && data.length > 0) {
                         this.selectedCommune = data[0];
                         if(this.selectedCommune.fk_user_code_postal && this.selectedCommune.fk_user_code_postal != "null"){
@@ -454,7 +488,7 @@ export class CivilityPage {
 			//get entreprise id of the current employer
 			var entrepriseId = this.currentUser.employer.entreprises[0].id;
 			// update employer
-			this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget, this.medecineId).then((data) => {
+			this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget, this.medecineId, this.conventionId).then((data) => {
 				if (!data || data.status == "failure") {
 					console.log(data.error);
 					loading.dismiss();
@@ -469,6 +503,7 @@ export class CivilityPage {
 					this.currentUser.employer.entreprises[0].nom = this.companyname;
 					this.currentUser.employer.entreprises[0].siret = this.siret;
 					this.currentUser.employer.entreprises[0].naf = this.ape;
+                    this.currentUser.employer.entreprises[0].conventionCollective = this.convObject;
 					//upload scan
 					this.updateScan(employerId);
 					// PUT IN SESSION
@@ -506,7 +541,7 @@ export class CivilityPage {
                         this.currentUser.jobyer.numSS = this.numSS;
                         this.currentUser.jobyer.natId = this.nationality;
 
-                       //debugger;
+                        //debugger;
                         if(this.idnationality>0)
                             this.currentUser.jobyer.identifiantNationalite = this.idnationality;
                         if(this.prefecture>0)

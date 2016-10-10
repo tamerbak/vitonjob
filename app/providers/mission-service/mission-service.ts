@@ -174,7 +174,7 @@ export class MissionService {
                 .map(res => res.json())
                 .subscribe(data => {
 
-                   //debugger;
+                    //debugger;
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;
