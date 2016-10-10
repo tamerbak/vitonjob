@@ -21,9 +21,9 @@ interface AbstractConfigs {
     calendarTheme:number;
     avatars:any;
     options:any;
-    tokenInstabug :any;
-	currentUserVar: string;
-	profilPictureVar: string;
+    tokenInstabug:any;
+    currentUserVar:string;
+    profilPictureVar:string;
 }
 
 class EmployerConfigs implements AbstractConfigs {
@@ -65,11 +65,11 @@ class EmployerConfigs implements AbstractConfigs {
     };
 
     tokenInstabug = {
-        android:'848700bc8ccff3bb4be3fd54dabbf020',
-        ios:'746f8d62a4d8220383315f38c0999418'
-    }
-	currentUserVar: string = "currentEmployer";
-	profilPictureVar: string = "pictuteEmployer";
+        android: '848700bc8ccff3bb4be3fd54dabbf020',
+        ios: '746f8d62a4d8220383315f38c0999418'
+    };
+    currentUserVar:string = "currentEmployer";
+    profilPictureVar:string = "pictuteEmployer";
 }
 
 class JobyerConfigs implements AbstractConfigs {
@@ -114,13 +114,12 @@ class JobyerConfigs implements AbstractConfigs {
     };
 
     tokenInstabug = {
-        android:'8638bb86054b6354141c9a07d8317d26',
-        ios:'a79265adfebcc922588a989ab0a07557'
-    }
-	currentUserVar: string = "currentJobyer";
-	profilPictureVar: string = "pictuteJobyer";
+        android: '8638bb86054b6354141c9a07d8317d26',
+        ios: 'a79265adfebcc922588a989ab0a07557'
+    };
+    currentUserVar:string = "currentJobyer";
+    profilPictureVar:string = "pictuteJobyer";
 }
-
 
 
 export class Configs {
@@ -140,19 +139,21 @@ export class Configs {
      public static fssURL:string = 'https://app.vitonjob.com/api/fssjs';
      */
 
-    public static getHttpJsonHeaders(){
+    public static getHttpJsonHeaders() {
         let headers = new Headers();
         headers.append("Content-Type", 'application/json');
         //headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
         return headers;
     }
-    public static getHttpTextHeaders(){
+
+    public static getHttpTextHeaders() {
         let headers = new Headers();
         headers.append("Content-Type", 'text/plain');
         //headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
         return headers;
     }
-    public static getHttpXmlHeaders(){
+
+    public static getHttpXmlHeaders() {
         let headers = new Headers();
         headers.append("Content-Type", 'text/xml');
         //headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
