@@ -214,7 +214,7 @@ export class ContractPage {
     }
 
     recoursSelected(evt){
-        debugger;
+        //debugger;
         let selectedRecoursLib = evt;
         let id = 40;
         for(let i = 0 ; i < this.recours.length ; i++)

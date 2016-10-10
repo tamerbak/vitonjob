@@ -363,7 +363,7 @@ export class CivilityPage {
             if (this.birthplace && this.birthplace != 'null' && !this.isRecruiter) {
 
                 this.communesService.getCommune(this.birthplace).then(data => {
-                    debugger;
+                    //debugger;
                     if (data && data.length > 0) {
                         this.selectedCommune = data[0];
                         if(this.selectedCommune.fk_user_code_postal && this.selectedCommune.fk_user_code_postal != "null"){
@@ -541,7 +541,7 @@ export class CivilityPage {
                         this.currentUser.jobyer.numSS = this.numSS;
                         this.currentUser.jobyer.natId = this.nationality;
 
-                        debugger;
+                        //debugger;
                         if(this.idnationality>0)
                             this.currentUser.jobyer.identifiantNationalite = this.idnationality;
                         if(this.prefecture>0)
