@@ -172,7 +172,7 @@ export class Vitonjob {
 			if ((<any>window).cordova) {
 				
 				//gc.setInstabug(cordova.plugins.instabug);
-				if (!cordova.plugins.cordova) {
+				/*if (!cordova.plugins.cordova) {
 					cordova.plugins.instabug.activate(
 					{
 						android: this.tokens.android,
@@ -197,7 +197,7 @@ export class Vitonjob {
 						console.log('Instabug could not be initialized - ' + error);
 					}
 					)
-				}
+				}*/
 				
 				
 				//for push notification
