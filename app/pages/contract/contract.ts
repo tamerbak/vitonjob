@@ -49,6 +49,7 @@ export class ContractPage {
     recours : any;
     justificatifs : any;
 
+
     dateFormat(d){
         let m = d.getMonth()+1;
         let da = d.getDate();
@@ -113,7 +114,7 @@ export class ContractPage {
             finSouplesse : "",
             equipements : "",
 
-            interim:"Groupe 3S",
+            interim:"TEMPO'AIR",
             missionStartDate: this.getStartDate(),
             missionEndDate:this.getEndDate(),
             trialPeriod: 5,
@@ -213,7 +214,7 @@ export class ContractPage {
     }
 
     recoursSelected(evt){
-        debugger;
+        //debugger;
         let selectedRecoursLib = evt;
         let id = 40;
         for(let i = 0 ; i < this.recours.length ; i++)

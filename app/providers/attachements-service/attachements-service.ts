@@ -56,9 +56,88 @@ export class AttachementsService {
                             uploadDate : this.parseDate(this.sqlfyDate(d))
                         };
                         this.uploadActualFile(this.attachement.id, fileName, scanUri);
+                        this.updateAttachements(user, this.attachement.id, fileName, scanUri);
                     }
 
                     resolve(this.attachement);
+                });
+        });
+    }
+
+    updateAttachements(user, idAttachment, fileName, scanUri){
+        debugger;
+        if(user.estRecruteur || user.estEmployeur)
+            return;
+        let today = this.sqlfyDate(new Date());
+        let storageId = "{	\"class\":\"com.vitonjob.callouts.AttachementDownload\", \"idBean\" : <<DBID>>,	\"idAttachement\" : "+idAttachment+"}";
+        let rowId = user.jobyer.id;
+        let sql =  "insert into row_document " +
+            "(" +
+            "file_name, " +
+            "file_extension, " +
+            "date_creation, " +
+            "file_version, " +
+            "storage_identifier, " +
+            "storage_callout_id, " +
+            "id_row, " +
+            "id_window, " +
+            "id_type, " +
+            "id_folder, " +
+            "id_user," +
+            "text_content" +
+            ") values (" +
+            "'"+fileName+"'," +
+            "'jpg'," +
+            "'"+today+"'," +
+            "1," +
+            "'"+storageId+"'," +
+            "0,"+
+            ""+rowId+"," +
+            "2538," +
+            "2," +
+            "5," +
+            "210," +
+            "'"+scanUri+"');";
+        sql = sql+"insert into row_document " +
+            "(" +
+            "file_name, " +
+            "file_extension, " +
+            "date_creation, " +
+            "file_version, " +
+            "storage_identifier, " +
+            "storage_callout_id, " +
+            "id_row, " +
+            "id_window, " +
+            "id_type, " +
+            "id_folder, " +
+            "id_user," +
+            "text_content" +
+            ") values (" +
+            "'"+fileName+"'," +
+            "'jpg'," +
+            "'"+today+"'," +
+            "1," +
+            "'"+storageId+"'," +
+            "0,"+
+            ""+rowId+"," +
+            "2606," +
+            "2," +
+            "5," +
+            "210," +
+            "'"+scanUri+"');";
+        console.log(sql);
+
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    //debugger;
+
+                    resolve(this.data);
                 });
         });
     }
