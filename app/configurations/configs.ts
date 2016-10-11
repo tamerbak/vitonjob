@@ -136,8 +136,8 @@ export class Configs {
     public static calloutURL:string = 'https://app.vitonjob.com/api/business';
     public static sqlURL:string = 'https://app.vitonjob.com/api/sql';
     public static yousignURL:string = 'https://app.vitonjob.com/api/business';
-    public static smsURL:string = 'https://app.vitonjob.com/api/sms';
-    public static emailURL:string = 'https://app.vitonjob.com/api/email';
+    public static smsURL:string = 'https://app.vitonjob.com/api/envoisms';
+    public static emailURL:string = 'https://app.vitonjob.com/api/envoimail';
     public static fssURL:string = 'https://app.vitonjob.com/api/fssjs';
 
 
