@@ -16,14 +16,14 @@
       <h4 class="title">{{projectName}}<span class="junior"> <ion-icon name="globe"></ion-icon> <a href="http://www.vitonjob.com">Site</a></span></h4>
 
       <ion-list no-lines style="margin-bottom: 0px;">
-        <ion-item>
+        <ion-item text-wrap style="padding-left: 0;">
           <ion-icon name="calendar" item-left></ion-icon>
-          <ion-label>Lancement</ion-label>
-          <ion-label text-right>{{releaseDate}}</ion-label>
+          <ion-label style="margin-right: 0;">Lancement</ion-label>
+          <ion-label text-right style="margin-right: 0;">{{releaseDate}}</ion-label>
           <!--ion-datetime displayFormat="DD MMM YYYY" [(ngModel)]="releaseDate" disabled></ion-datetime-->
         </ion-item>
 
-        <ion-item>
+        <ion-item style="padding-left: 0;">
           <ion-icon ios="logo-apple" md="logo-android" item-left></ion-icon>
           <ion-label>Version</ion-label>
           <ion-label text-right>{{versionNumber}} {{versionCode}}</ion-label>
