@@ -64,16 +64,18 @@ export class FinanceService {
 
     loadQuote(id, rate){
         let bean = {
-            'class' : 'com.vitonjob.callouts.finance.DocumentQuery',
+            'class' : 'com.vitonjob.api.CalloutConfiguration',
+            idContrat:0,
             idOffre : id,
-            documentType : 'QUOTE',
-            appliedHourRate : rate
+            mode : 'VALEURS',
+            preContract : true,
+            documentType : 'QUOTE'
         };
         console.log(JSON.stringify(bean));
         let encodedArg = btoa(JSON.stringify(bean));
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 225,
+            'id': 4,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -82,7 +84,9 @@ export class FinanceService {
                 }
             ]
         };
-
+        console.clear();
+        console.log(JSON.stringify(payload));
+        debugger;
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
