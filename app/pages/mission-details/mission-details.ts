@@ -262,7 +262,7 @@ export class MissionDetailsPage {
                 }
             });
             loading.dismiss();
-            var message = "Horaire du contrat n°" + this.contract.numero + " validé";
+            var message = "Horaire du contrat numéro " + this.contract.numero + " validé";
             var objectifNotif = "MissionDetailsPage";
             this.sendPushNotification(message, objectifNotif, "toJobyer");
             this.sendInfoBySMS(message, "toJobyer");
@@ -610,7 +610,7 @@ export class MissionDetailsPage {
         this.missionService.saveCorrectedMissions(this.contract.pk_user_contrat, this.missionHours, this.missionPauses).then((data) => {
             if(data && data.status == "success"){
                 console.log("timesheet saved");
-                var message = "Vous avez reçu le relevé d'heure du contrat n°" + this.contract.numero;
+                var message = "Le relevé d'heure du contrat numéro : " + this.contract.numero + "vous a été envoyé";
                 var objectifNotif = "MissionDetailsPage";
                 this.sendPushNotification(message, objectifNotif, "toJobyer");
                 this.sendInfoBySMS(message, "toJobyer");
@@ -641,7 +641,7 @@ export class MissionDetailsPage {
                     // data saved
                     console.log("schedule signed : " + data.status);
                     if(this.contract.option_mission == "2.0" && !this.isEmployer){
-                        var message = "Le relevé d'heure du contrat n° " + this.contract.numero + " a été signé.";
+                        var message = "Le relevé d'heure du contrat numéro " + this.contract.numero + " a été signé.";
                         var objectifNotif = "MissionDetailsPage";
                         this.sendPushNotification(message, objectifNotif, "toEmployer");
                         this.sendInfoBySMS(message, "toEmployer");
