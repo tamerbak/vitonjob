@@ -309,6 +309,33 @@ export class ContractPage {
     }
 
     initContract(){
+        //  Calculate trial period
+
+        let calendar = this.currentOffer.calendarData;
+        let minDay = new Date(calendar[0].date);
+        let maxDay = new Date(calendar[0].date);
+        debugger;
+        for(let i=1 ; i <calendar.length;i++){
+            let date = new Date(calendar[i].date);
+            if(minDay.getTime()>date.getTime())
+                minDay = date;
+            if(maxDay.getTime()<date.getTime())
+                maxDay = date;
+        }
+
+        let trial = 2;
+        let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
+        let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+        if(contractLength <= 1)
+            trial = 0;
+        else if(contractLength<30)
+            trial = 2;
+        else if(contractLength <60)
+            trial = 3;
+        else 
+            trial = 5;
+
         this.contractData = {
             num:this.numContrat,
             centreMedecineEntreprise:"",
@@ -331,7 +358,7 @@ export class ContractPage {
             interim:"Groupe 3S",
             missionStartDate: this.getStartDate(),
             missionEndDate:this.getEndDate(),
-            trialPeriod: 5,
+            trialPeriod: trial,
             termStartDate: this.getEndDate(),
             termEndDate: this.getEndDate(),
             motif: "",
