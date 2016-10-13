@@ -69,7 +69,7 @@ export class AuthenticationService {
                     this.data = data;
                     console.clear();
                     console.log(JSON.stringify(data));
-                    debugger;
+                    //debugger;
                     resolve(this.data);
                 });
         })
@@ -174,7 +174,7 @@ export class AuthenticationService {
     }
 
     sqlfyDate(date){
-        debugger;
+        //debugger;
         let sqldate = date.getFullYear()+"-"+(date.getMonth()-1)+"-"+date.getDate();
         return sqldate;
     }

@@ -141,10 +141,10 @@ export class MissionDetailsPage {
             this.starsText = this.writeStars(this.rating);
         });
 
-        debugger;
+        //debugger;
         console.log(JSON.stringify(this.contract));
         this.financeService.checkInvoice(this.contract.pk_user_contrat).then(invoice=>{
-            debugger;
+            //debugger;
             if(invoice){
                 this.invoiceId = invoice.pk_user_facture_voj;
 
@@ -685,7 +685,7 @@ export class MissionDetailsPage {
         */
         this.missionService.saveEndMission(this.contract.pk_user_contrat).then( val => {
 			this.missionService.endOfMission(this.contract.pk_user_contrat).then(data=>{
-				debugger;
+				//debugger;
 				let confirm = Alert.create({
 					title: "VitOnJob",
 					message: "Les détails de cette missions sont en cours de traitements, vous serez contacté par SMS une fois la facturation effectuée",
@@ -703,9 +703,9 @@ export class MissionDetailsPage {
 				let idContrat = data.id;
 				let idOffre = data.offerId;
 				let rate = data.rate;
-				debugger;
+				//debugger;
 				this.financeService.loadInvoice(idContrat, idOffre, rate).then(invoiceData=>{
-					debugger;
+					//debugger;
 					let idInvoice = invoiceData.invoiceId;
 					let bean = {
 						"class":'com.vitonjob.docusign.model.DSConfig',
@@ -723,9 +723,9 @@ export class MissionDetailsPage {
 
 					};
 					this.missionService.signEndOfMission(bean).then(signatureData=>{
-						debugger;
+						//debugger;
 						this.financeService.checkInvoice(this.contract.pk_user_contrat).then(invoice=>{
-							debugger;
+							//debugger;
 							if(invoice){
 								this.invoiceId = invoice.pk_user_facture_voj;
 
