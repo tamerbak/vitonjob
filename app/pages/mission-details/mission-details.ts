@@ -721,7 +721,7 @@ export class MissionDetailsPage {
 						idInvoice : idInvoice,
                         idDocument : idInvoice
 
-					}
+					};
 					this.missionService.signEndOfMission(bean).then(signatureData=>{
 						//debugger;
 						this.financeService.checkInvoice(this.contract.pk_user_contrat).then(invoice=>{
