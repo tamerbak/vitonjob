@@ -122,7 +122,15 @@ class JobyerConfigs implements AbstractConfigs {
 }
 
 
+
 export class Configs {
+/*    public static calloutURL:string = 'http://localhost:8080/prometheus/api/business';
+    public static sqlURL:string = 'http://localhost:8080/prometheus/api/sql';
+    public static yousignURL:string = 'http://localhost:8080/prometheus/api/business';
+    public static smsURL:string = 'http://localhost:8080/prometheus/api/envoisms';
+    public static emailURL:string = 'http://localhost:8080/prometheus/api/envoimail';
+    public static fssURL:string = 'http://localhost:8080/prometheus/api/fssjs';
+*/
     public static calloutURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
     public static sqlURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql';
     public static yousignURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
@@ -130,14 +138,22 @@ export class Configs {
     public static emailURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoimail';
     public static fssURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/fssjs';
 
-    /*
+/*
      public static calloutURL:string = 'https://app.vitonjob.com/api/business';
      public static sqlURL:string = 'https://app.vitonjob.com/api/sql';
      public static yousignURL:string = 'https://app.vitonjob.com/api/business';
-     public static smsURL:string = 'https://app.vitonjob.com/api/sms';
-     public static emailURL:string = 'https://app.vitonjob.com/api/email';
+     public static smsURL:string = 'https://app.vitonjob.com/api/envoisms';
+     public static emailURL:string = 'https://app.vitonjob.com/api/envoimail';
      public static fssURL:string = 'https://app.vitonjob.com/api/fssjs';
-     */
+
+
+   /* public static calloutURL:string = 'http://vitonjobprod.nmeza4epib.us-west-2.elasticbeanstalk.com/api/business';
+    public static sqlURL:string = 'http://vitonjobprod.nmeza4epib.us-west-2.elasticbeanstalk.com/api/sql';
+    public static yousignURL:string = 'http://vitonjobprod.nmeza4epib.us-west-2.elasticbeanstalk.com/api/business';
+    public static smsURL:string = 'http://vitonjobprod.nmeza4epib.us-west-2.elasticbeanstalk.com/api/envoisms';
+    public static emailURL:string = 'http://vitonjobprod.nmeza4epib.us-west-2.elasticbeanstalk.com/api/envoimail';
+    public static fssURL:string = 'http://vitonjobprod.nmeza4epib.us-west-2.elasticbeanstalk.com/api/fssjs';
+*/
 
     public static getHttpJsonHeaders() {
         let headers = new Headers();
@@ -145,8 +161,7 @@ export class Configs {
         //headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
         return headers;
     }
-
-    public static getHttpTextHeaders() {
+    public static getHttpTextHeaders(){
         let headers = new Headers();
         headers.append("Content-Type", 'text/plain');
         //headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
