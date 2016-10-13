@@ -181,7 +181,7 @@ export class ContractService {
             +"'"+ employerEntrepriseId +"',"
             +"'"+ jobyerId +"',"
             +"'"+this.sqlfyText(yousignJobyerLink)+"',"
-            +"'OUI',"
+            +"'NON',"
             +"'NON',"
             +"10,"
             +"10,"
@@ -447,7 +447,7 @@ export class ContractService {
             let headers = new Headers();
             headers.append("Content-Type", 'application/json');
 
-            this.http.post('http://ns389914.ovh.net:8080/vitonjobv1/api/business', JSON.stringify(payload), {headers:headers})
+            this.http.post(Configs.yousignURL, JSON.stringify(payload), {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
                    //debugger;
