@@ -30,13 +30,14 @@ export class FinanceService {
             idOffre : id,
             mode : 'VALEURS',
             preContract : true,
-            documentType : 'QUOTE'
+            documentType : 'PREV',
+            env : 'DEV'
         };
         console.log(JSON.stringify(bean));
         let encodedArg = btoa(JSON.stringify(bean));
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 5,
+            'id': 302,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -72,13 +73,14 @@ export class FinanceService {
             idOffre : id,
             mode : 'VALEURS',
             preContract : true,
-            documentType : 'QUOTE'
+            documentType : 'QUOTE',
+            env : 'DEV'
         };
         console.log(JSON.stringify(bean));
         let encodedArg = btoa(JSON.stringify(bean));
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 5,
+            'id': 302,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -111,17 +113,19 @@ export class FinanceService {
 
     loadInvoice(idContrat, id, rate){
         let bean = {
-            'class' : 'com.vitonjob.callouts.finance.DocumentQuery',
+            'class' : 'com.vitonjob.api.CalloutConfiguration',
+            idContrat:idContrat,
             idOffre : id,
-            idContrat : idContrat,
+            mode : 'VALEURS',
+            preContract : false,
             documentType : 'INVOICE',
-            appliedHourRate : rate
+            env : 'DEV'
         };
         console.log(JSON.stringify(bean));
         let encodedArg = btoa(JSON.stringify(bean));
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 6,
+            'id': 302,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
