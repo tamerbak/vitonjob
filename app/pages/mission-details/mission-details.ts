@@ -703,9 +703,7 @@ export class MissionDetailsPage {
 				let idContrat = data.id;
 				let idOffre = data.offerId;
 				let rate = data.rate;
-				//debugger;
 				this.financeService.loadInvoice(idContrat, idOffre, rate).then(invoiceData=>{
-					//debugger;
 					let idInvoice = invoiceData.invoiceId;
 					let bean = {
 						"class":'com.vitonjob.docusign.model.DSConfig',
@@ -719,7 +717,8 @@ export class MissionDetailsPage {
 						jobyerPhone : data.jobyerPhone,
 						idContract : idContrat,
 						idInvoice : idInvoice,
-                        idDocument : idInvoice
+                        idDocument : idInvoice,
+                        environnement:'DEV'
 
 					};
 					this.missionService.signEndOfMission(bean).then(signatureData=>{
