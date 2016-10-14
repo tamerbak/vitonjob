@@ -292,9 +292,23 @@ export class HomePage implements OnChanges{
 		}
 		for(var i = 0; i < this.autoSearchOffers.length; i++){
 			let offer = this.autoSearchOffers[i];
-			this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
-				offer.correspondantsCount = data.length;
-			});
+            let searchFields = {
+                class : 'com.vitonjob.callouts.recherche.SearchQuery',
+                job : offer.jobData.job,
+                metier : '',
+                lieu : '',
+                nom : '',
+                entreprise : '',
+                date : '',
+                table : this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer',
+                idOffre :'0'
+            };
+            this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
+                offer.correspondantsCount = data.length;
+                this.globalOfferList[0].list.sort((a, b) => {
+                    return b.correspondantsCount - a.correspondantsCount;
+                })
+            });
 		}
 	}
 	

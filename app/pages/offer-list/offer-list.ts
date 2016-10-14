@@ -112,14 +112,25 @@ export class OfferListPage {
 					} 
                     
 					this.globalOfferList[0].list.push(offer);
-                    this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
-                        console.log('getCorrespondingOffers result : ' + data);
+                    let searchFields = {
+                        class : 'com.vitonjob.callouts.recherche.SearchQuery',
+                        job : offer.jobData.job,
+                        metier : '',
+                        lieu : '',
+                        nom : '',
+                        entreprise : '',
+                        date : '',
+                        table : this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer',
+                        idOffre :'0'
+                    };
+                    this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
                         offer.correspondantsCount = data.length;
-                        // Sort offers corresponding to their search results :
                         this.globalOfferList[0].list.sort((a, b) => {
                             return b.correspondantsCount - a.correspondantsCount;
                         })
                     });
+
+
                 } else {
                     offer.color = 'grey';
                     offer.correspondantsCount = -1;
