@@ -149,59 +149,67 @@ export class PhonePage {
 		//debugger;
 		if(this.email == null || this.email == 'null')
 			this.email = '';
-		this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget, this.isRecruteur).then(data => {
-			console.log(data);
-			//case of authentication failure : server unavailable or connection probleme 
-			if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
-				console.log(data);
-				loading.dismiss();
-				this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
-				return;
-			}
-			//case of authentication failure : incorrect password 
-			if (data.id == 0 && data.status == "passwordError") {
-				console.log("Password error");
-				loading.dismiss();
-				if(!this.showEmailField){
-					this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe est incorrect.");
-				}else{
-					console.log("used email error");
-					this.globalService.showAlertValidation("VitOnJob", "Cette adresse email a été déjà utilisé. Veuillez en choisir une autre.");
-				}
-				return;
-			}
-			this.afterAuthSuccess(data);
-			loading.dismiss();
-			//if user is connected for the first time, redirect him to the page 'civility' after removing phone page from the nav stack, otherwise redirect him to the home page
-			var isNewUser = data.newAccount;
-			var connexion = {
-				'etat': true,
-				'libelle': 'Se déconnecter',
-				'employeID' : (this.projectTarget == 'jobyer' ? data.jobyerId : data.employerId)
-			};
-			this.storage.set('connexion', JSON.stringify(connexion)).then(() => {
-				if (isNewUser || this.isNewRecruteur) {
-					 if(this.platform.is('ios')){
-						console.log("plateform ios : no back button, just menu button");
-						this.nav.setRoot(CivilityPage, {currentUser: data});
-					 }else{
-						this.nav.push(CivilityPage, {currentUser: data}).then(() => {
-							console.log("plateform android : no menu button, just back button");
-							// first we find the index of the current view controller:
-							const index = this.viewCtrl.index;
-							// then we remove it from the navigation stack
-							this.nav.remove(index);
-						});
-					 }
-				 } else {
-					if(this.fromPage == "Search"){
-						this.nav.pop();
-					}else{
-						this.nav.rootNav.setRoot(HomePage, {currentUser: data});
-					}
-				}
-			});
-		});
+        var reverseRole = this.projectTarget == "jobyer" ? "employer" : "jobyer";
+        this.authService.getUserByPhoneAndRole("+"+indPhone, reverseRole).then(data0 => {
+                if(data0 && data0.data.length !=0 && (data0.data[0].mot_de_passe !== pwd)){
+                    this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe est incorrect.");
+                    loading.dismiss();
+                    return;
+                }
+                this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget, this.isRecruteur).then(data => {
+                console.log(data);
+                //case of authentication failure : server unavailable or connection probleme 
+                if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
+                    console.log(data);
+                    loading.dismiss();
+                    this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                    return;
+                }
+                //case of authentication failure : incorrect password 
+                if (data.id == 0 && data.status == "passwordError") {
+                    console.log("Password error");
+                    loading.dismiss();
+                    if(!this.showEmailField){
+                        this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe est incorrect.");
+                    }else{
+                        console.log("used email error");
+                        this.globalService.showAlertValidation("VitOnJob", "Cette adresse email a été déjà utilisé. Veuillez en choisir une autre.");
+                    }
+                    return;
+                }
+                this.afterAuthSuccess(data);
+                loading.dismiss();
+                //if user is connected for the first time, redirect him to the page 'civility' after removing phone page from the nav stack, otherwise redirect him to the home page
+                var isNewUser = data.newAccount;
+                var connexion = {
+                    'etat': true,
+                    'libelle': 'Se déconnecter',
+                    'employeID' : (this.projectTarget == 'jobyer' ? data.jobyerId : data.employerId)
+                };
+                this.storage.set('connexion', JSON.stringify(connexion)).then(() => {
+                    if (isNewUser || this.isNewRecruteur) {
+                        if(this.platform.is('ios')){
+                            console.log("plateform ios : no back button, just menu button");
+                            this.nav.setRoot(CivilityPage, {currentUser: data});
+                        }else{
+                            this.nav.push(CivilityPage, {currentUser: data}).then(() => {
+                                console.log("plateform android : no menu button, just back button");
+                                // first we find the index of the current view controller:
+                                const index = this.viewCtrl.index;
+                                // then we remove it from the navigation stack
+                                this.nav.remove(index);
+                            });
+                        }
+                    } else {
+                        if(this.fromPage == "Search"){
+                            this.nav.pop();
+                        }else{
+                            this.nav.rootNav.setRoot(HomePage, {currentUser: data});
+                        }
+                    }
+                });
+            });
+        });
 	}
 	
 	afterAuthSuccess(data){
