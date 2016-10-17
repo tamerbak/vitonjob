@@ -50,7 +50,7 @@ export class SettingPasswordPage {
       if(value){
         this.currentUser = JSON.parse(value);
         let pwd = md5(this.password1);
-        this.authService.updatePasswd(pwd, this.currentUser.id)
+        this.authService.updatePasswordByPhone( this.currentUser.tel,pwd)
             .then(data => {
               console.log(data);
               //case of authentication failure : server unavailable or connection probleme
