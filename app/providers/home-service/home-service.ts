@@ -25,18 +25,17 @@ export class HomeService {
         let query = {
             "class":"com.vitonjob.model.Query",
             dateReference:null,
-            resultCapacity:10,
-            resultCapacityOffers:10,
+            resultCapacity:6,
+            resultCapacityOffers:6,
             startIndex:0,
             startIndexOffers:0,
             type:projectType
         };
 
-        console.log(JSON.stringify(query));
-        let encodedArg = btoa(JSON.stringify(query));
+       let encodedArg = btoa(JSON.stringify(query));
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 308,
+            'id': 316,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -56,7 +55,6 @@ export class HomeService {
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
-                    //debugger;
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;
@@ -70,18 +68,17 @@ export class HomeService {
         let query = {
             "class":"com.vitonjob.model.Query",
             dateReference:null,
-            resultCapacity:10,
-            resultCapacityOffers:10,
+            resultCapacity:3,
+            resultCapacityOffers:3,
             startIndex:offset,
             startIndexOffers:offersOffset,
             type:projectType
         };
 
-        console.log(JSON.stringify(query));
         let encodedArg = btoa(JSON.stringify(query));
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 308,
+            'id': 316,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -101,7 +98,6 @@ export class HomeService {
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
-                    //debugger;
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;
