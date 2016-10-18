@@ -138,6 +138,8 @@ export class Configs {
     public static emailURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoimail';
     public static fssURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/fssjs';
 
+    public static env: string = 'DEV';
+
 /*
      public static calloutURL:string = 'https://app.vitonjob.com/api/business';
      public static sqlURL:string = 'https://app.vitonjob.com/api/sql';
