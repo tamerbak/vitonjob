@@ -37,7 +37,7 @@ export class FinanceService {
         let encodedArg = btoa(JSON.stringify(bean));
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 302,
+            'id': 317,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -80,7 +80,7 @@ export class FinanceService {
         let encodedArg = btoa(JSON.stringify(bean));
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 302,
+            'id': 317,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -125,7 +125,7 @@ export class FinanceService {
         let encodedArg = btoa(JSON.stringify(bean));
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 302,
+            'id': 317,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
