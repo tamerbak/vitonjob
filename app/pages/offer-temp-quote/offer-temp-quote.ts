@@ -8,6 +8,10 @@ import { FinanceService } from '../../providers/finance-service/finance-service'
 })
 export class OfferTempQuotePage {
     quote : any;
+    taxeRate: number = 0.2;
+    amountBeforeTaxes: number  = 0;
+    taxes:number = 0;
+    total:number = 0;
     constructor(private nav: NavController,
                 private service : FinanceService,
                 navParams : NavParams) {
@@ -15,6 +19,11 @@ export class OfferTempQuotePage {
         let id = navParams.data.idOffer;
         this.service.loadPrevQuote(id).then(data=>{
             this.quote = data;
+            for (let i=0; i< this.quote.lignes.length; i++) {
+                this.amountBeforeTaxes += parseFloat(this.quote.lignes[i].valeur);
+            }
+            this.taxes = this.amountBeforeTaxes * this.taxeRate;
+            this.total = this.amountBeforeTaxes + this.taxes;
             console.log(JSON.stringify(this.quote));
         });
         this.initQuote();
@@ -47,5 +56,9 @@ export class OfferTempQuotePage {
 
     closeModal(){
         this.nav.pop();
+    }
+
+    notNullValue(r) {
+        return !(parseInt(r.valeur) == 0);
     }
 }

@@ -122,6 +122,7 @@ class JobyerConfigs implements AbstractConfigs {
 }
 
 
+
 export class Configs {
     /*
      public static calloutURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
@@ -139,8 +140,9 @@ export class Configs {
     public static smsURL:string = 'https://app.vitonjob.com/api/envoisms';
     public static emailURL:string = 'https://app.vitonjob.com/api/envoimail';
     public static fssURL:string = 'https://app.vitonjob.com/api/fssjs';
-
-
+    
+    public static env: string = 'PROD';
+    
     public static getHttpJsonHeaders() {
         let headers = new Headers();
         headers.append("Content-Type", 'application/json');

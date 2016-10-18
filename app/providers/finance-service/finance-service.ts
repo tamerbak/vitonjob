@@ -23,20 +23,21 @@ export class FinanceService {
         this.data = null;
     }
 
-    loadPrevQuote(id){
+    loadPrevQuote(id) {
         let bean = {
-            'class' : 'com.vitonjob.api.CalloutConfiguration',
-            idContrat:0,
-            idOffre : id,
-            mode : 'VALEURS',
-            preContract : true,
-            documentType : 'QUOTE'
+            'class': 'com.vitonjob.api.CalloutConfiguration',
+            idContrat: 0,
+            idOffre: id,
+            mode: 'VALEURS',
+            preContract: true,
+            documentType: 'NONE',
+            env: Configs.env
         };
-        console.log(JSON.stringify(bean));
+
         let encodedArg = btoa(JSON.stringify(bean));
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 5,
+            'id': 307,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -47,22 +48,20 @@ export class FinanceService {
         };
 
         return new Promise(resolve => {
-            // We're using Angular Http provider to request the data,
-            // then on the response it'll map the JSON data to a parsed JS object.
-            // Next we process the data and resolve the promise with the new data.
             let headers = new Headers();
             headers = Configs.getHttpJsonHeaders();
 
-            this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers:headers})
+            this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
-                    //debugger;
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;
                     resolve(this.data);
+
                 });
         });
+
     }
 
     loadQuote(id, rate){
@@ -72,13 +71,14 @@ export class FinanceService {
             idOffre : id,
             mode : 'VALEURS',
             preContract : true,
-            documentType : 'QUOTE'
+            documentType : 'QUOTE',
+            env : 'DEV'
         };
         console.log(JSON.stringify(bean));
         let encodedArg = btoa(JSON.stringify(bean));
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 5,
+            'id': 302,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -111,17 +111,19 @@ export class FinanceService {
 
     loadInvoice(idContrat, id, rate){
         let bean = {
-            'class' : 'com.vitonjob.callouts.finance.DocumentQuery',
+            'class' : 'com.vitonjob.api.CalloutConfiguration',
+            idContrat:idContrat,
             idOffre : id,
-            idContrat : idContrat,
+            mode : 'VALEURS',
+            preContract : false,
             documentType : 'INVOICE',
-            appliedHourRate : rate
+            env : 'DEV'
         };
         console.log(JSON.stringify(bean));
         let encodedArg = btoa(JSON.stringify(bean));
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 6,
+            'id': 302,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',

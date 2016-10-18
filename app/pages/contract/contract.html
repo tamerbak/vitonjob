@@ -197,20 +197,6 @@
             </ion-item>
 
             <ion-item>
-                <ion-label>HS au-dela de 35H</ion-label><ion-input type="text" [(ngModel)]="contractData.salarySH35"></ion-input>
-            </ion-item>
-
-            <ion-item>
-                <ion-label>HS au-dela de 43H</ion-label><ion-input type="text" [(ngModel)]="contractData.salarySH43"></ion-input>
-
-            </ion-item>
-
-            <ion-item>
-                <ion-label>Droit au repos compensateur</ion-label><ion-input type="text" [(ngModel)]="contractData.restRight" ></ion-input>
-
-            </ion-item>
-
-            <ion-item>
                 <ion-label>Ind. fin de mission</ion-label><ion-input type="text" [(ngModel)]="contractData.indemniteFinMission" disabled="true" ></ion-input>
 
             </ion-item>
@@ -262,7 +248,15 @@
                 <ion-label>Contenu de la mission</ion-label><ion-input type="text" [(ngModel)]="contractData.missionContent"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label>Catégorie</ion-label><ion-input type="text" [(ngModel)]="contractData.category"></ion-input>
+                <ion-label>Catégorie</ion-label>
+                <ion-select [(ngModel)]="contractData.category" >
+                    <ion-option value="Employé" >Employé</ion-option>
+                    <ion-option value="Ouvrier" >Ouvrier</ion-option>
+                    <ion-option value="Technicien" >Technicien</ion-option>
+                    <ion-option value="AM" >AM</ion-option>
+                    <ion-option value="Cadre" >Cadre</ion-option>
+                </ion-select>
+
             </ion-item>
             <ion-item>
                 <ion-label>Filière</ion-label><ion-input type="text" [(ngModel)]="contractData.sector"></ion-input>

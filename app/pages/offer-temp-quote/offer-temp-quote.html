@@ -9,81 +9,55 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-    <ion-card>
-        <ion-card-content>
-            Le présent devis est à titre estimatif et sera révisé en fonction des conventions collectives applicables et de la nature des heures de travail.
-
-        </ion-card-content>
-    </ion-card>
+<ion-content padding class="offer-temp-quote">
     <ion-grid>
         <ion-row>
-            <ion-col width-40><strong>Rubrique</strong></ion-col>
-            <ion-col width-20><strong>Taux</strong></ion-col>
-            <ion-col width-20><strong>NBH</strong></ion-col>
-            <ion-col width-20><strong>Montant</strong></ion-col>
+            <ion-col width-40 text-center><strong>Rubrique</strong></ion-col>
+            <ion-col width-20 text-center><strong>Nbr</strong></ion-col>
+            <ion-col width-20 text-center><strong>Unité</strong></ion-col>
+            <ion-col width-20 style="padding-left: 0;padding-right: 0;" text-center><strong>Montant (€)</strong></ion-col>
         </ion-row>
-        <ion-row *ngFor="let h of quote.hours">
-            <ion-col width-40>{{h.type}}</ion-col>
-            <ion-col width-20>{{h.coeff | number:'1.2-2'}}</ion-col>
-            <ion-col width-20>{{formatHour(h.nbHours)}}</ion-col>
-            <ion-col width-20>{{h.amount | number:'1.2-2'}}</ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col width-40>
-                Frais de mission
-            </ion-col>
-            <ion-col width-20>
-
-            </ion-col>
-            <ion-col width-20>
-
-            </ion-col>
-            <ion-col width-20>
-                {{quote.fixCharges | number:'1.2-2'}}
-            </ion-col>
+        <ion-row *ngFor="let r of quote.lignes">
+            <ion-col width-40 *ngIf="notNullValue(r)">{{r.libelleRubrique}}</ion-col>
+            <ion-col width-20 *ngIf="notNullValue(r)" text-center>{{r.nbUnite}}</ion-col>
+            <ion-col width-20 *ngIf="notNullValue(r)" text-center>{{r.unite}}</ion-col>
+            <ion-col width-20 *ngIf="notNullValue(r)" text-right>{{r.valeur | number:'1.2-2'}}</ion-col>
         </ion-row>
         <ion-row>
-            <ion-col width-40>
+            <ion-col width-40 offset-33>
                 Total HT
             </ion-col>
-            <ion-col width-20>
-
-            </ion-col>
-            <ion-col width-20>
-
-            </ion-col>
-            <ion-col width-20>
-                {{quote.amountBeforeTaxes | number:'1.2-2'}}
+            <ion-col width-20 text-right>
+                {{amountBeforeTaxes | number:'1.2-2'}}
             </ion-col>
         </ion-row>
         <ion-row>
-            <ion-col width-40>
-                TVA {{formatPercent(quote.taxeRate)}}
+            <ion-col width-40 offset-33>
+                TVA{{formatPercent(taxeRate)}}
             </ion-col>
-            <ion-col width-20>
 
-            </ion-col>
-            <ion-col width-20>
-
-            </ion-col>
-            <ion-col width-20>
-                {{quote.taxes | number:'1.2-2'}}
+            <ion-col width-20 text-right>
+                {{taxes | number:'1.2-2'}}
             </ion-col>
         </ion-row>
         <ion-row>
-            <ion-col width-40>
-                Total TTC
+            <ion-col width-40 offset-33>
+                <strong>Total TTC</strong>
             </ion-col>
-            <ion-col width-20>
-
-            </ion-col>
-            <ion-col width-20>
-
-            </ion-col>
-            <ion-col width-20>
-                {{quote.total | number:'1.2-2'}}
+            <ion-col width-20 text-right>
+                <strong>{{total | number:'1.2-2'}}</strong>
             </ion-col>
         </ion-row>
     </ion-grid>
+    <ion-item class="labelInItem" text-wrap no-lines>
+        <h3 style="margin-top: 0">
+            <ion-icon name="ios-information-circle-outline"></ion-icon>
+            Informations :
+        </h3>
+        <p>
+            Le présent devis est estimé en fonction du relevé d'heures prévues. La facture sera calculée en fonction du
+            relevé d'heures réalisées
+
+        </p>
+    </ion-item>
 </ion-content>
