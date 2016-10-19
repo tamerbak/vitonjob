@@ -43,8 +43,11 @@
             </ion-item>
         </ion-list>
     </ion-item>
-	<div [hidden]="isSectorFound" 
-            style="color:red"><ion-icon name="md-arrow-dropup"></ion-icon> Veuillez saisir un secteur valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus</div>
+    <div [hidden]="isSectorFound"
+         style="color:red">
+        <ion-icon name="md-arrow-dropup"></ion-icon>
+        Veuillez saisir un secteur valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus
+    </div>
     <ion-item>
         <ion-label floating>Job</ion-label>
         <ion-input [(ngModel)]="job" (keyup)="watchJob($event)"></ion-input>
@@ -59,8 +62,11 @@
             </ion-item>
         </ion-list>
     </ion-item>
-	<div [hidden]="isJobFound" 
-            style="color:red"><ion-icon name="md-arrow-dropup"></ion-icon> Veuillez saisir un job valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus</div>
+    <div [hidden]="isJobFound"
+         style="color:red">
+        <ion-icon name="md-arrow-dropup"></ion-icon>
+        Veuillez saisir un job valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus
+    </div>
     <ion-item style="margin-top: 15px;" [hidden]="isAndroid4">
         <ion-label floating>Date de disponibilité</ion-label>
         <ion-datetime [(ngModel)]="availabilityDate" displayFormat="DD/MM/YYYY"></ion-datetime>

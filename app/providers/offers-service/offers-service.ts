@@ -1,9 +1,8 @@
-import {Storage, SqlStorage} from 'ionic-angular';
-import {Injectable} from '@angular/core';
-import {Http, Headers} from '@angular/http';
-import 'rxjs/add/operator/map';
-import {Configs} from '../../configurations/configs';
-import {isUndefined} from "ionic-angular/util";
+import {Storage, SqlStorage} from "ionic-angular";
+import {Injectable} from "@angular/core";
+import {Http, Headers} from "@angular/http";
+import "rxjs/add/operator/map";
+import {Configs} from "../../configurations/configs";
 
 /**
  * @author jakjoud abdeslam
@@ -14,21 +13,21 @@ import {isUndefined} from "ionic-angular/util";
 export class OffersService {
     configuration;
     count;
-    offersList:any = null;
-    db:any;
-    listSectors:any;
-    listJobs:any;
-    listLanguages:any;
-    listQualities:any;
-    data:any;
-    offerJob:any;
-    offerLangs:any;
-    offerQuelities:any;
-    offerList:any;
-    addedOffer:any;
-    lienVideo : string;
+    offersList: any = null;
+    db: any;
+    listSectors: any;
+    listJobs: any;
+    listLanguages: any;
+    listQualities: any;
+    data: any;
+    offerJob: any;
+    offerLangs: any;
+    offerQuelities: any;
+    offerList: any;
+    addedOffer: any;
+    lienVideo: string;
 
-    constructor(public http:Http) {
+    constructor(public http: Http) {
         this.count = 0;
         this.db = new Storage(SqlStorage);
     }
@@ -39,7 +38,7 @@ export class OffersService {
      * @param projectTarget Identifying if it is the jobyer version of the employer version
      * @return {Promise<T>|Promise<R>|Promise}
      */
-    getBadgeCount(jobId:number, projectTarget:string) {
+    getBadgeCount(jobId: number, projectTarget: string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
@@ -71,7 +70,7 @@ export class OffersService {
      * @Author TEL
      * @Description Loading offer list according to user type
      */
-    loadOfferList(projectTarget:string) {
+    loadOfferList(projectTarget: string) {
 
         /*Returning a promise*/
         return new Promise(resolve => {
@@ -105,14 +104,14 @@ export class OffersService {
      * @param projectTarget : project target (jobyer/employer)
      *
      */
-    setOfferInLocal(offerData:any, projectTarget:string) {
+    setOfferInLocal(offerData: any, projectTarget: string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
-        let offers:any;
-        let result:any;
-		let currentUserVar = this.configuration.currentUserVar;
+        let offers: any;
+        let result: any;
+        let currentUserVar = this.configuration.currentUserVar;
         return this.db.get(currentUserVar).then(data => {
-            
+
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -128,7 +127,7 @@ export class OffersService {
                     }
                 } else { // jobyer
                     let rawData = data.jobyer;
-                    if(rawData)
+                    if (rawData)
                         offerData.identity = rawData.id;
                     if (rawData && rawData.offers) {
                         //adding userId for remote storing
@@ -141,8 +140,7 @@ export class OffersService {
             }
         });
     };
-	
-	
+
 
     /**
      * @Author TEL
@@ -151,7 +149,7 @@ export class OffersService {
      * @param offerData
      * @caution ALWAYS CALLED AFTER setOfferInLocal()!
      */
-    setOfferInRemote(offerData:any, projectTarget:string) {
+    setOfferInRemote(offerData: any, projectTarget: string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
@@ -173,11 +171,11 @@ export class OffersService {
         delete offerData['identity'];
         delete offerData.jobData['idLevel'];
 
-        
+
         // store in remote database
         let stringData = JSON.stringify(offerData);
-        console.log('Adding offer payload : '+stringData);
-        
+        console.log('Adding offer payload : ' + stringData);
+
         let encoded = btoa(stringData);
 
         let payload = {
@@ -200,8 +198,8 @@ export class OffersService {
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
             let headers = new Headers();
-            
-            console.log('offer payload : '+JSON.stringify(payload));
+
+            console.log('offer payload : ' + JSON.stringify(payload));
             headers = Configs.getHttpJsonHeaders();
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
 
@@ -209,20 +207,20 @@ export class OffersService {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.addedOffer = data;
-					//save the video link
-					var idOffer = JSON.parse(data._body).idOffer;
-					this.updateVideoLink(idOffer, offerData.videolink, projectTarget);
-					//attach id offer to the offer in local
-					offerData.idOffer = idOffer;
-					this.attachIdOfferInLocal(offerData, projectTarget);
-					console.log('ADDED OFFER IN SERVER : ' + JSON.stringify(this.addedOffer));
-					resolve(this.addedOffer);
+                    //save the video link
+                    var idOffer = JSON.parse(data._body).idOffer;
+                    this.updateVideoLink(idOffer, offerData.videolink, projectTarget);
+                    //attach id offer to the offer in local
+                    offerData.idOffer = idOffer;
+                    this.attachIdOfferInLocal(offerData, projectTarget);
+                    console.log('ADDED OFFER IN SERVER : ' + JSON.stringify(this.addedOffer));
+                    resolve(this.addedOffer);
                 });
         });
 
     }
-	
-	attachIdOfferInLocal(offer, projectTarget){
+
+    attachIdOfferInLocal(offer, projectTarget) {
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
         this.db.get(currentUserVar).then(data => {
@@ -231,9 +229,9 @@ export class OffersService {
                 if (projectTarget === 'employer') {
                     let rawData = data.employer;
                     //console.log(rawData.entreprises);
-                    if (rawData && rawData.entreprises && rawData.entreprises[0].offers){
-                        for(let i = data.employer.entreprises[0].offers.length - 1 ; i >= 0 ; i--){
-							if(!data.employer.entreprises[0].offers[i].idOffer){
+                    if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
+                        for (let i = data.employer.entreprises[0].offers.length - 1; i >= 0; i--) {
+                            if (!data.employer.entreprises[0].offers[i].idOffer) {
                                 data.employer.entreprises[0].offers[i] = offer;
                                 break;
                             }
@@ -244,8 +242,8 @@ export class OffersService {
                 } else { // jobyer
                     let rawData = data.jobyer;
                     if (rawData && rawData.offers) {
-                        for(let i = data.jobyer.offers.length - 1; i >= 0; i--){
-                            if(!data.jobyer.offers[i].idOffer){
+                        for (let i = data.jobyer.offers.length - 1; i >= 0; i--) {
+                            if (!data.jobyer.offers[i].idOffer) {
                                 data.jobyer.offers[i] = offer;
                                 break;
                             }
@@ -263,7 +261,7 @@ export class OffersService {
      * @param offerData delete Offer from local
      * @param projectTarget
      */
-    deleteOfferFromLocal(offerData:any, projectTarget:string) {
+    deleteOfferFromLocal(offerData: any, projectTarget: string) {
         switch (projectTarget) {
             case 'employer' :
 
@@ -279,7 +277,7 @@ export class OffersService {
      * @param offerData
      * @param projectTarget
      */
-    deleteOfferFromRemote(offerData:any, projectTarget: string) {
+    deleteOfferFromRemote(offerData: any, projectTarget: string) {
         switch (projectTarget) {
             case 'employer' :
 
@@ -297,7 +295,7 @@ export class OffersService {
      * @param projectTarget the project target configuration (jobyer/employer)
      * @return {Promise<T>|Promise<R>|Promise} a promise of returning the candidates
      */
-    getCorrespondingOffers(offer:any, projectTarget:string) {
+    getCorrespondingOffers(offer: any, projectTarget: string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
@@ -305,7 +303,7 @@ export class OffersService {
         let job = offer.jobData.job;
 
         let table = (projectTarget === 'jobyer') ? 'user_offre_entreprise' : 'user_offre_jobyer';
-        let sql = "select pk_"+table+" from "+table+" where dirty='N' and pk_"+table+" in (select fk_"+table+" from user_pratique_job where fk_user_job in ( select pk_user_job from user_job where lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(job)+"')))";
+        let sql = "select pk_" + table + " from " + table + " where dirty='N' and pk_" + table + " in (select fk_" + table + " from user_pratique_job where fk_user_job in ( select pk_user_job from user_job where lower_unaccent(libelle) % lower_unaccent('" + this.sqlfyText(job) + "')))";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -326,20 +324,20 @@ export class OffersService {
         });
 
     }
-	
-	countCorrespondingOffers(offers, projectTarget){
-		//  Init project parameters
+
+    countCorrespondingOffers(offers, projectTarget) {
+        //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
         let table = (projectTarget === 'jobyer') ? 'user_offre_entreprise' : 'user_offre_jobyer';
-		let sql = "";
-		for(var i = 0; i < offers.length; i++){
-			var offer = offers[i];
-			//  Get job and offer reference
-			let job = offer.jobData.job;
+        let sql = "";
+        for (var i = 0; i < offers.length; i++) {
+            var offer = offers[i];
+            //  Get job and offer reference
+            let job = offer.jobData.job;
 
-			sql = sql + " select count(*) from "+table+" where pk_"+table+" in (select fk_"+table+" from user_pratique_job where fk_user_job in ( select pk_user_job from user_job where lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(job)+"')));";
-		}
+            sql = sql + " select count(*) from " + table + " where pk_" + table + " in (select fk_" + table + " from user_pratique_job where fk_user_job in ( select pk_user_job from user_job where lower_unaccent(libelle) % lower_unaccent('" + this.sqlfyText(job) + "')));";
+        }
         return new Promise(resolve => {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
@@ -350,19 +348,19 @@ export class OffersService {
                     resolve(data);
                 });
         });
-	}
+    }
 
     /**
      * @description     Returning the persisted offers list from the local data base
      * @return {any}    A promise of getting serialized data from SQLite phone database
      */
     loadCurrentUser(projectTarget) {
-		this.configuration = Configs.setConfigs(projectTarget);
+        this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
         return this.db.get(currentUserVar);
     }
 
-    loadSectorsToLocal(){
+    loadSectorsToLocal() {
         let sql = 'select pk_user_metier as id, libelle as libelle from user_metier order by libelle asc';
         console.log(sql);
         return new Promise(resolve => {
@@ -377,13 +375,13 @@ export class OffersService {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.listSectors = data.data;
-                    this.db.set('SECTOR_LIST',JSON.stringify(this.listSectors));
+                    this.db.set('SECTOR_LIST', JSON.stringify(this.listSectors));
                     resolve(this.listSectors);
                 });
         });
     }
 
-    loadJobsToLocal(){
+    loadJobsToLocal() {
         let sql = 'select pk_user_job as id, libelle as libelle, fk_user_metier as idSector from user_job order by libelle asc';
         console.log(sql);
         return new Promise(resolve => {
@@ -398,7 +396,7 @@ export class OffersService {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.listJobs = data.data;
-                    this.db.set('JOB_LIST',JSON.stringify(this.listJobs));
+                    this.db.set('JOB_LIST', JSON.stringify(this.listJobs));
                     resolve(this.listJobs);
                 });
         });
@@ -408,7 +406,7 @@ export class OffersService {
      * @description     loading sector list
      * @return sector list in the format {id : X, libelle : X}
      */
-    loadSectors(projectTarget:string) {
+    loadSectors(projectTarget: string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
@@ -436,7 +434,7 @@ export class OffersService {
      * loading jobs list from server
      * @return jobs list in the format {id : X, idsector : X, libelle : X}
      */
-    loadJobs(projectTarget:string, idSector:number) {
+    loadJobs(projectTarget: string, idSector: number) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
@@ -474,7 +472,7 @@ export class OffersService {
      * loading sector by its Id
      * @return sector in the format {id : X, libelle : X}
      */
-    loadSectorById(projectTarget:string, idSector:number) {
+    loadSectorById(projectTarget: string, idSector: number) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
@@ -508,7 +506,7 @@ export class OffersService {
      * @description     loading languages list
      * @return languages list in the format {id : X, libelle : X}
      */
-    loadLanguages(projectTarget:string) {
+    loadLanguages(projectTarget: string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
         var sql = 'select pk_user_langue as \"idLanguage\", libelle as libelle, \'junior\' as level from user_langue';
@@ -537,11 +535,11 @@ export class OffersService {
      * @description     loading qualities list
      * @return qualities list in the format {id : X, libelle : X}
      */
-    loadQualities(projectTarget:string) {
+    loadQualities(projectTarget: string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
-        let type = (projectTarget != "jobyer")?'jobyer':'employeur';
-        var sql = "select pk_user_indispensable as \"idQuality\", libelle as libelle from user_indispensable where type='"+type+"'";
+        let type = (projectTarget != "jobyer") ? 'jobyer' : 'employeur';
+        var sql = "select pk_user_indispensable as \"idQuality\", libelle as libelle from user_indispensable where type='" + type + "'";
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -567,8 +565,8 @@ export class OffersService {
      * @param offerTable as user_offre_jobyer or user_offre_entreprise
      * @return the promise of job propositions
      */
-    getOffersJob(idOffer:number, offerTable:string) {
-        
+    getOffersJob(idOffer: number, offerTable: string) {
+
         var sql = "select job.pk_user_job as id, job.libelle as libellejob, metier.pk_user_metier as idmetier, metier.libelle as libellemetier " +
             "from user_job job, user_metier metier where job.fk_user_metier = metier.pk_user_metier and " +
             "job.pk_user_job in (select fk_user_job from user_pratique_job where fk_" + offerTable + " = " + idOffer + ")";
@@ -598,7 +596,7 @@ export class OffersService {
      * @param offerTable offerTable as user_offre_jobyer or user_offre_entreprise
      * @return the proposition of grouped languages
      */
-    getOffersLanguages(idOffers:any, offerTable:string) {
+    getOffersLanguages(idOffers: any, offerTable: string) {
         let ids = '(' + idOffers[0];
         for (var i = 1; i < idOffers.length; i++)
             ids = ids + ',' + idOffers[i];
@@ -631,7 +629,7 @@ export class OffersService {
      * @param offerTable offerTable as user_offre_jobyer or user_offre_entreprise
      * @return the proposition of grouped qualities
      */
-    getOffersQualities(idOffers:any, offerTable:string) {
+    getOffersQualities(idOffers: any, offerTable: string) {
         let ids = '(' + idOffers[0];
         for (var i = 1; i < idOffers.length; i++)
             ids = ids + ',' + idOffers[i];
@@ -662,27 +660,27 @@ export class OffersService {
      *  Update offer statut, job and title
      */
 
-	updateOfferStatut(offerId, statut, projectTarget){
-		//  Init project parameters
+    updateOfferStatut(offerId, statut, projectTarget) {
+        //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
         //  Constructing the query
         var table = projectTarget == "jobyer" ? 'user_offre_jobyer' : 'user_offre_entreprise';
-		var sql = "update " + table + " set publiee = '" + statut + "' where pk_" + table + " = '" + offerId + "';";
+        var sql = "update " + table + " set publiee = '" + statut + "' where pk_" + table + " = '" + offerId + "';";
 
-	    return new Promise(resolve => {
-			let headers = new Headers();
-			headers = Configs.getHttpTextHeaders();
-			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
-			.map(res => res.json())
-			.subscribe(
-			data => resolve(data),
-			err => console.log(err)
-			)
-		});
-	}
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(
+                    data => resolve(data),
+                    err => console.log(err)
+                )
+        });
+    }
 
-    updateOfferInLocal(offer, projectTarget){
+    updateOfferInLocal(offer, projectTarget) {
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
         this.db.get(currentUserVar).then(data => {
@@ -693,8 +691,8 @@ export class OffersService {
                     //console.log(rawData.entreprises);
                     if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
                         //adding userId for remote storing
-                        for(let i = 0 ; i < data.employer.entreprises[0].offers.length ; i++){
-                            if(data.employer.entreprises[0].offers[i].idOffer == offer.idOffer){
+                        for (let i = 0; i < data.employer.entreprises[0].offers.length; i++) {
+                            if (data.employer.entreprises[0].offers[i].idOffer == offer.idOffer) {
                                 data.employer.entreprises[0].offers[i] = offer;
                                 break;
                             }
@@ -705,8 +703,8 @@ export class OffersService {
                 } else { // jobyer
                     let rawData = data.jobyer;
                     if (rawData && rawData.offers) {
-                        for(let i = 0; i < data.jobyer.offers.length ; i++){
-                            if(data.jobyer.offers[i].idOffer == offer.idOffer){
+                        for (let i = 0; i < data.jobyer.offers.length; i++) {
+                            if (data.jobyer.offers[i].idOffer == offer.idOffer) {
                                 data.jobyer.offers[i] = offer;
                                 break;
                             }
@@ -718,9 +716,9 @@ export class OffersService {
             }
         });
     }
-	
-	updateOfferJob(offer, projectTarget){
-		this.configuration = Configs.setConfigs(projectTarget);
+
+    updateOfferJob(offer, projectTarget) {
+        this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
         this.db.get(currentUserVar).then(data => {
             if (data) {
@@ -730,8 +728,8 @@ export class OffersService {
                     //console.log(rawData.entreprises);
                     if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
                         //adding userId for remote storing
-                        for(let i = 0 ; i < data.employer.entreprises[0].offers.length ; i++){
-                            if(data.employer.entreprises[0].offers[i].idOffer == offer.idOffer){
+                        for (let i = 0; i < data.employer.entreprises[0].offers.length; i++) {
+                            if (data.employer.entreprises[0].offers[i].idOffer == offer.idOffer) {
                                 data.employer.entreprises[0].offers[i] = offer;
                                 break;
                             }
@@ -744,8 +742,8 @@ export class OffersService {
                     let rawData = data.jobyer;
                     if (rawData && rawData.offers) {
 
-                        for(let i = 0; i < data.jobyer.offers.length ; i++){
-                            if(data.jobyer.offers[i].idOffer == offer.idOffer){
+                        for (let i = 0; i < data.jobyer.offers.length; i++) {
+                            if (data.jobyer.offers[i].idOffer == offer.idOffer) {
                                 data.jobyer.offers[i] = offer;
                                 break;
                             }
@@ -758,7 +756,7 @@ export class OffersService {
             }
         });
 
-        if(projectTarget == 'jobyer'){
+        if (projectTarget == 'jobyer') {
             this.updateOfferJobyerJob(offer).then(data => {
                 this.updateOfferJobyerTitle(offer);
             });
@@ -770,9 +768,9 @@ export class OffersService {
         }
     }
 
-    updateOfferJobyerJob(offer){
-        let sql = "update user_pratique_job set fk_user_job="+offer.jobData.idJob+", fk_user_niveau="+(offer.jobData.level=='junior'?1:2)+" " +
-            "where fk_user_offre_jobyer="+offer.idOffer;
+    updateOfferJobyerJob(offer) {
+        let sql = "update user_pratique_job set fk_user_job=" + offer.jobData.idJob + ", fk_user_niveau=" + (offer.jobData.level == 'junior' ? 1 : 2) + " " +
+            "where fk_user_offre_jobyer=" + offer.idOffer;
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -791,9 +789,9 @@ export class OffersService {
         });
     }
 
-    updateOfferJobyerTitle(offer){
-        let sql = "update user_offre_jobyer set titre='"+offer.title.replace("'", "''")+"', tarif_a_l_heure='"+offer.jobData.remuneration+"' where pk_user_offre_jobyer="+offer.idOffer;
-		
+    updateOfferJobyerTitle(offer) {
+        let sql = "update user_offre_jobyer set titre='" + offer.title.replace("'", "''") + "', tarif_a_l_heure='" + offer.jobData.remuneration + "' where pk_user_offre_jobyer=" + offer.idOffer;
+
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -812,9 +810,9 @@ export class OffersService {
         });
     }
 
-    updateOfferEntrepriseJob(offer){
-        let sql = "update user_pratique_job set fk_user_job="+offer.jobData.idJob+", fk_user_niveau="+(offer.jobData.level=='junior'?1:2)+" " +
-            "where fk_user_offre_entreprise="+offer.idOffer;
+    updateOfferEntrepriseJob(offer) {
+        let sql = "update user_pratique_job set fk_user_job=" + offer.jobData.idJob + ", fk_user_niveau=" + (offer.jobData.level == 'junior' ? 1 : 2) + " " +
+            "where fk_user_offre_entreprise=" + offer.idOffer;
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -833,9 +831,9 @@ export class OffersService {
         });
     }
 
-    updateOfferEntrepriseTitle(offer){
-       //debugger;
-        let sql = "update user_offre_entreprise set titre='"+this.sqlfyText(offer.title)+"', tarif_a_l_heure='"+offer.jobData.remuneration+"' where pk_user_offre_entreprise="+offer.idOffer;
+    updateOfferEntrepriseTitle(offer) {
+
+        let sql = "update user_offre_entreprise set titre='" + this.sqlfyText(offer.title) + "', tarif_a_l_heure='" + offer.jobData.remuneration + "' where pk_user_offre_entreprise=" + offer.idOffer;
 
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -859,8 +857,8 @@ export class OffersService {
      *  Update offer qualities
      */
 
-    updateOfferQualities(offer, projectTarget){
-        let table = projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise';
+    updateOfferQualities(offer, projectTarget) {
+        let table = projectTarget == 'jobyer' ? 'user_offre_jobyer' : 'user_offre_entreprise';
         this.deleteQualities(offer, table);
         this.attachQualities(offer, table);
         this.configuration = Configs.setConfigs(projectTarget);
@@ -873,8 +871,8 @@ export class OffersService {
                     //console.log(rawData.entreprises);
                     if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
                         //adding userId for remote storing
-                        for(let i = 0 ; i < data.employer.entreprises[0].offers.length ; i++){
-                            if(data.employer.entreprises[0].offers[i].idOffer == offer.idOffer){
+                        for (let i = 0; i < data.employer.entreprises[0].offers.length; i++) {
+                            if (data.employer.entreprises[0].offers[i].idOffer == offer.idOffer) {
                                 data.employer.entreprises[0].offers[i] = offer;
                                 break;
                             }
@@ -887,8 +885,8 @@ export class OffersService {
                     let rawData = data.jobyer;
                     if (rawData && rawData.offers) {
 
-                        for(let i = 0; i < data.jobyer.offers.length ; i++){
-                            if(data.jobyer.offers[i].idOffer == offer.idOffer){
+                        for (let i = 0; i < data.jobyer.offers.length; i++) {
+                            if (data.jobyer.offers[i].idOffer == offer.idOffer) {
                                 data.jobyer.offers[i] = offer;
                                 break;
                             }
@@ -902,8 +900,8 @@ export class OffersService {
         });
     }
 
-    deleteQualities(offer, table){
-        let sql = "delete from user_pratique_indispensable where fk_"+table+"="+offer.idOffer;
+    deleteQualities(offer, table) {
+        let sql = "delete from user_pratique_indispensable where fk_" + table + "=" + offer.idOffer;
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -922,15 +920,15 @@ export class OffersService {
         });
     }
 
-    attachQualities(offer, table){
-        for(let i = 0 ; i < offer.qualityData.length ; i++){
+    attachQualities(offer, table) {
+        for (let i = 0; i < offer.qualityData.length; i++) {
             let q = offer.qualityData[i];
             this.attacheQuality(offer.idOffer, table, q.idQuality);
         }
     }
 
-    attacheQuality(idOffer, table, idQuality){
-        let sql = "insert into user_pratique_indispensable (fk_"+table+", fk_user_indispensable) values ("+idOffer+", "+idQuality+")";
+    attacheQuality(idOffer, table, idQuality) {
+        let sql = "insert into user_pratique_indispensable (fk_" + table + ", fk_user_indispensable) values (" + idOffer + ", " + idQuality + ")";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -953,12 +951,12 @@ export class OffersService {
      *  Update Offer languages
      */
 
-    updateOfferLanguages(offer, projectTarget){
-        let table = projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise';
+    updateOfferLanguages(offer, projectTarget) {
+        let table = projectTarget == 'jobyer' ? 'user_offre_jobyer' : 'user_offre_entreprise';
         this.deleteLanguages(offer, table);
         this.attacheLanguages(offer, table);
-		
-		this.configuration = Configs.setConfigs(projectTarget);
+
+        this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
         this.db.get(currentUserVar).then(data => {
             if (data) {
@@ -968,8 +966,8 @@ export class OffersService {
                     //console.log(rawData.entreprises);
                     if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
                         //adding userId for remote storing
-                        for(let i = 0 ; i < data.employer.entreprises[0].offers.length ; i++){
-                            if(data.employer.entreprises[0].offers[i].idOffer == offer.idOffer){
+                        for (let i = 0; i < data.employer.entreprises[0].offers.length; i++) {
+                            if (data.employer.entreprises[0].offers[i].idOffer == offer.idOffer) {
                                 data.employer.entreprises[0].offers[i] = offer;
                                 break;
                             }
@@ -982,8 +980,8 @@ export class OffersService {
                     let rawData = data.jobyer;
                     if (rawData && rawData.offers) {
 
-                        for(let i = 0; i < data.jobyer.offers.length ; i++){
-                            if(data.jobyer.offers[i].idOffer == offer.idOffer){
+                        for (let i = 0; i < data.jobyer.offers.length; i++) {
+                            if (data.jobyer.offers[i].idOffer == offer.idOffer) {
                                 data.jobyer.offers[i] = offer;
                                 break;
                             }
@@ -997,8 +995,8 @@ export class OffersService {
         });
     }
 
-    deleteLanguages(offer, table){
-        let sql = "delete from user_pratique_langue where fk_"+table+"="+offer.idOffer;
+    deleteLanguages(offer, table) {
+        let sql = "delete from user_pratique_langue where fk_" + table + "=" + offer.idOffer;
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -1017,15 +1015,15 @@ export class OffersService {
         });
     }
 
-    attacheLanguages(offer, table){
-        for(let i = 0 ; i < offer.languageData.length ; i++){
+    attacheLanguages(offer, table) {
+        for (let i = 0; i < offer.languageData.length; i++) {
             let l = offer.languageData[i];
             this.attacheLanguage(offer.idOffer, table, l.idLanguage, l.level);
         }
     }
 
-    attacheLanguage(idOffer, table, idLanguage, level){
-        let sql = "insert into user_pratique_langue (fk_"+table+", fk_user_langue, fk_user_niveau) values ("+idOffer+", "+idLanguage+", "+((level=='junior')?1:2)+")";
+    attacheLanguage(idOffer, table, idLanguage, level) {
+        let sql = "insert into user_pratique_langue (fk_" + table + ", fk_user_langue, fk_user_niveau) values (" + idOffer + ", " + idLanguage + ", " + ((level == 'junior') ? 1 : 2) + ")";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -1047,12 +1045,12 @@ export class OffersService {
     /*
      *  Update offer calendar
      */
-    updateOfferCalendar(offer, projectTarget){
-        let table = projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise';
+    updateOfferCalendar(offer, projectTarget) {
+        let table = projectTarget == 'jobyer' ? 'user_offre_jobyer' : 'user_offre_entreprise';
         this.deleteCalendar(offer, table);
         this.attacheCalendar(offer, table);
-		
-		this.configuration = Configs.setConfigs(projectTarget);
+
+        this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
         this.db.get(currentUserVar).then(data => {
             if (data) {
@@ -1062,8 +1060,8 @@ export class OffersService {
                     //console.log(rawData.entreprises);
                     if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
                         //adding userId for remote storing
-                        for(let i = 0 ; i < data.employer.entreprises[0].offers.length ; i++){
-                            if(data.employer.entreprises[0].offers[i].idOffer == offer.idOffer){
+                        for (let i = 0; i < data.employer.entreprises[0].offers.length; i++) {
+                            if (data.employer.entreprises[0].offers[i].idOffer == offer.idOffer) {
                                 data.employer.entreprises[0].offers[i] = offer;
                                 break;
                             }
@@ -1076,8 +1074,8 @@ export class OffersService {
                     let rawData = data.jobyer;
                     if (rawData && rawData.offers) {
 
-                        for(let i = 0; i < data.jobyer.offers.length ; i++){
-                            if(data.jobyer.offers[i].idOffer == offer.idOffer){
+                        for (let i = 0; i < data.jobyer.offers.length; i++) {
+                            if (data.jobyer.offers[i].idOffer == offer.idOffer) {
                                 data.jobyer.offers[i] = offer;
                                 break;
                             }
@@ -1091,8 +1089,8 @@ export class OffersService {
         });
     }
 
-    deleteCalendar(offer, table){
-        let sql = "delete from user_disponibilites_des_offres where fk_"+table+"="+offer.idOffer;
+    deleteCalendar(offer, table) {
+        let sql = "delete from user_disponibilites_des_offres where fk_" + table + "=" + offer.idOffer;
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -1111,18 +1109,18 @@ export class OffersService {
         });
     }
 
-    attacheCalendar(offer, table){
-        for(let i = 0 ; i < offer.calendarData.length ; i++){
+    attacheCalendar(offer, table) {
+        for (let i = 0; i < offer.calendarData.length; i++) {
             let l = offer.calendarData[i];
             this.attacheDay(offer.idOffer, table, l);
         }
     }
 
-    attacheDay(idOffer, table, day){
+    attacheDay(idOffer, table, day) {
         let d = new Date(day.date);
-        
+
         let sdate = this.sqlfy(d);
-        let sql = "insert into user_disponibilites_des_offres (fk_"+table+", jour, heure_debut, heure_fin) values ("+idOffer+", '"+sdate+"', "+day.startHour+", "+day.endHour+")";
+        let sql = "insert into user_disponibilites_des_offres (fk_" + table + ", jour, heure_debut, heure_fin) values (" + idOffer + ", '" + sdate + "', " + day.startHour + ", " + day.endHour + ")";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -1145,8 +1143,8 @@ export class OffersService {
      * Delete offer
      * @param offer to be deleted
      */
-    deleteOffer(offer, projectTarget){
-		this.configuration = Configs.setConfigs(projectTarget);
+    deleteOffer(offer, projectTarget) {
+        this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
         this.db.get(currentUserVar).then(data => {
             if (data) {
@@ -1157,14 +1155,14 @@ export class OffersService {
                     if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
                         //adding userId for remote storing
                         let index = -1;
-                        for(let i = 0 ; i < data.employer.entreprises[0].offers.length ; i++){
-                            if(data.employer.entreprises[0].offers[i].idOffer == offer.idOffer){
+                        for (let i = 0; i < data.employer.entreprises[0].offers.length; i++) {
+                            if (data.employer.entreprises[0].offers[i].idOffer == offer.idOffer) {
                                 index = i;
                                 break;
                             }
                         }
-                        if(index>=0){
-                            data.employer.entreprises[0].offers.splice(index,1);
+                        if (index >= 0) {
+                            data.employer.entreprises[0].offers.splice(index, 1);
                         }
 
                         // Save new offer list in SqlStorage :
@@ -1175,14 +1173,14 @@ export class OffersService {
                     if (rawData && rawData.offers) {
 
                         let index = -1;
-                        for(let i = 0; i < data.jobyer.offers.length ; i++){
-                            if(data.jobyer.offers[i].idOffer == offer.idOffer){
+                        for (let i = 0; i < data.jobyer.offers.length; i++) {
+                            if (data.jobyer.offers[i].idOffer == offer.idOffer) {
                                 index = i;
                                 break;
                             }
                         }
-                        if(index>=0){
-                            data.jobyer.offers.splice(index,1);
+                        if (index >= 0) {
+                            data.jobyer.offers.splice(index, 1);
                         }
 
                         // Save new offer list in SqlStorage :
@@ -1193,9 +1191,9 @@ export class OffersService {
         });
 
 
-        let table = projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise';
-        let sql = "update "+table+" set dirty='Y' where pk_"+table+"="+offer.idOffer;
-		console.log(sql);
+        let table = projectTarget == 'jobyer' ? 'user_offre_jobyer' : 'user_offre_entreprise';
+        let sql = "update " + table + " set dirty='Y' where pk_" + table + "=" + offer.idOffer;
+        console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -1214,8 +1212,8 @@ export class OffersService {
         });
     }
 
-    getOfferVideo(idOffre, table){
-        let sql = "select lien_video as video from "+table+" where pk_"+table+"="+idOffre;
+    getOfferVideo(idOffre, table) {
+        let sql = "select lien_video as video from " + table + " where pk_" + table + "=" + idOffre;
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -1229,7 +1227,7 @@ export class OffersService {
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
                     this.lienVideo = null;
-                    if(data.data && data.data.length>0)
+                    if (data.data && data.data.length > 0)
                         this.lienVideo = data.data[0];
 
                     resolve(this.lienVideo);
@@ -1237,9 +1235,9 @@ export class OffersService {
         });
     }
 
-    updateVideoLink(idOffer, youtubeLink, projectTarget){
-        let table = projectTarget == 'jobyer' ? "user_offre_jobyer":"user_offre_entreprise";
-        let sql = "update "+table+" set lien_video='"+this.sqlfyText(youtubeLink)+"' where pk_"+table+"="+idOffer;
+    updateVideoLink(idOffer, youtubeLink, projectTarget) {
+        let table = projectTarget == 'jobyer' ? "user_offre_jobyer" : "user_offre_entreprise";
+        let sql = "update " + table + " set lien_video='" + this.sqlfyText(youtubeLink) + "' where pk_" + table + "=" + idOffer;
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -1258,11 +1256,11 @@ export class OffersService {
         });
     }
 
-	saveAutoSearchMode(projectTarget, idOffer, mode){
-		let table = projectTarget == 'jobyer' ? "user_offre_jobyer":"user_offre_entreprise";
-		let sql = "update "+table+" set recherche_automatique='"+ mode +"' where pk_"+table+"="+idOffer;
+    saveAutoSearchMode(projectTarget, idOffer, mode) {
+        let table = projectTarget == 'jobyer' ? "user_offre_jobyer" : "user_offre_entreprise";
+        let sql = "update " + table + " set recherche_automatique='" + mode + "' where pk_" + table + "=" + idOffer;
         console.log(sql);
-		return new Promise(resolve => {
+        return new Promise(resolve => {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -1272,19 +1270,19 @@ export class OffersService {
                     resolve(data);
                 });
         });
-	}
-	
-	sqlfy(d){
-        return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" 00:00:00+00";
     }
 
-    sqlfyText(text){
-        if(!text || text.length == 0)
-            return "";
-        return text.replace(/'/g , "''")
+    sqlfy(d) {
+        return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " 00:00:00+00";
     }
-	
-	convertToFormattedHour(value) {
+
+    sqlfyText(text) {
+        if (!text || text.length == 0)
+            return "";
+        return text.replace(/'/g, "''")
+    }
+
+    convertToFormattedHour(value) {
         var hours = Math.floor(value / 60);
         var minutes = value % 60;
         if (!hours && !minutes) {

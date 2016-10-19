@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {Configs} from '../../configurations/configs';
-import {GlobalConfigs} from '../../configurations/globalConfigs';
-import {Http, Headers} from '@angular/http';
-import {Storage, SqlStorage} from 'ionic-angular';
-import {LocalNotifications} from 'ionic-native';
+import {Injectable} from "@angular/core";
+import {Configs} from "../../configurations/configs";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
+import {Http, Headers} from "@angular/http";
+import {Storage, SqlStorage} from "ionic-angular";
+import {LocalNotifications} from "ionic-native";
 
 /**
  * @author daoudi amine
@@ -12,11 +12,11 @@ import {LocalNotifications} from 'ionic-native';
  */
 @Injectable()
 export class MissionService {
-    configuration:any;
-    projectTarget:string;
-    db:any;
+    configuration: any;
+    projectTarget: string;
+    db: any;
 
-    constructor(public http:Http, public gc:GlobalConfigs) {
+    constructor(public http: Http, public gc: GlobalConfigs) {
         this.db = new Storage(SqlStorage);
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -149,7 +149,7 @@ export class MissionService {
     }
 
     endOfMission(idContrat) {
-		let payload = {
+        let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
             'id': 234,
             'args': [
@@ -174,7 +174,7 @@ export class MissionService {
                 .map(res => res.json())
                 .subscribe(data => {
 
-                    //debugger;
+
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;
@@ -211,7 +211,7 @@ export class MissionService {
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
-                   //debugger;
+
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;
@@ -273,9 +273,9 @@ export class MissionService {
         });
     }
 
-	updateDefaultOptionMission(selectedOption, accountId, entrepriseId) {
+    updateDefaultOptionMission(selectedOption, accountId, entrepriseId) {
         var sql = "update user_account set option_mission = '" + selectedOption + "' where pk_user_account = '" + accountId + "'; ";
-		console.log(sql);
+        console.log(sql);
 
         return new Promise(resolve => {
             let headers = new Headers();
@@ -288,6 +288,7 @@ export class MissionService {
                 });
         });
     }
+
     schedulePointeuse(contract, missionHours, missionPauses) {
         var notifArray = [];
         var j = missionHours.length;
@@ -573,7 +574,7 @@ export class MissionService {
         });
     }
 
-    signEndOfMission(bean){
+    signEndOfMission(bean) {
         let dataSign = JSON.stringify(bean);
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
@@ -594,10 +595,10 @@ export class MissionService {
             let headers = new Headers();
             headers.append("Content-Type", 'application/json');
 
-            this.http.post(Configs.yousignURL, JSON.stringify(payload), {headers:headers})
+            this.http.post(Configs.yousignURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
-                    //debugger;
+
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;
@@ -636,7 +637,7 @@ export class MissionService {
     getCosignersNames(contract) {
         var sql = "select nom_ou_raison_sociale as enterprise, prenom as jobyer " +
             "from user_entreprise, user_jobyer " +
-            "where pk_user_entreprise = "+contract.fk_user_entreprise+" and pk_user_jobyer = "+contract.fk_user_jobyer+" ";
+            "where pk_user_entreprise = " + contract.fk_user_entreprise + " and pk_user_jobyer = " + contract.fk_user_jobyer + " ";
         console.log(sql);
 
         return new Promise(resolve => {
@@ -651,9 +652,9 @@ export class MissionService {
         });
 
     }
-	
-	saveEndMission(id){
-		//  Init project parameters
+
+    saveEndMission(id) {
+        //  Init project parameters
         var sql = "update user_contrat set accompli = 'Oui' where pk_user_contrat = '" + id + "'; ";
         console.log(sql);
 
@@ -667,10 +668,10 @@ export class MissionService {
                     resolve(this.data);
                 });
         });
-	}
-	
-	getOptionMission(id){
-		var sql = "select option_mission from user_account where pk_user_account = '" + id + "'; ";
+    }
+
+    getOptionMission(id) {
+        var sql = "select option_mission from user_account where pk_user_account = '" + id + "'; ";
         console.log(sql);
 
         return new Promise(resolve => {
@@ -682,6 +683,6 @@ export class MissionService {
                     this.data = data;
                     resolve(this.data);
                 });
-        });	
-	}
+        });
+    }
 }

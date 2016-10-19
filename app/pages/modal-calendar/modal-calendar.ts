@@ -1,7 +1,6 @@
-import {NavController, ViewController, Alert, Modal, NavParams} from 'ionic-angular';
+import {NavController, ViewController, Alert, Modal, NavParams} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
-import {DatePicker} from "ionic-native/dist/index";
 import {DatePickerOptions} from "ionic-native/dist/plugins/datepicker";
 import {ModalSlotPage} from "../modal-slot/modal-slot";
 import {Component} from "@angular/core";
@@ -17,20 +16,20 @@ import {Component} from "@angular/core";
 })
 export class ModalCalendarPage {
 
-    slots:Array<{
-        'class':"com.vitonjob.callouts.auth.model.CalendarData",
-        idCalendar:number,
-        type:string,
-        date:number,
-        startHour:number,
-        endHour:number
+    slots: Array<{
+        'class': "com.vitonjob.callouts.auth.model.CalendarData",
+        idCalendar: number,
+        type: string,
+        date: number,
+        startHour: number,
+        endHour: number
     }>;
 
-    dateOptions:DatePickerOptions;
-    timeOptions:DatePickerOptions;
-	isObsolete = false;
+    dateOptions: DatePickerOptions;
+    timeOptions: DatePickerOptions;
+    isObsolete = false;
 
-    constructor(public nav:NavController, gc:GlobalConfigs, viewCtrl:ViewController, private navParams: NavParams) {
+    constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController, private navParams: NavParams) {
         // Set global configs
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -43,11 +42,11 @@ export class ModalCalendarPage {
         this.viewCtrl = viewCtrl;
         this.calendarTheme = config.calendarTheme;
         this.nav = nav;
-		this.navParams = navParams;
+        this.navParams = navParams;
         this.slots = this.navParams.get("slots");
-		if(!this.slots){
-			this.slots = [];
-		}
+        if (!this.slots) {
+            this.slots = [];
+        }
         this.dateOptions = {
             weekday: "long", year: "numeric", month: "long",
             day: "numeric"//, hour: "2-digit", minute: "2-digit"
@@ -56,11 +55,11 @@ export class ModalCalendarPage {
         this.timeOptions = {
             hour: "2-digit", minute: "2-digit"
         };
-		
-		this.verifySlotsValidity();
-		if(this.isObsolete){
-			
-		}
+
+        this.verifySlotsValidity();
+        if (this.isObsolete) {
+
+        }
     }
 
     /**
@@ -74,25 +73,25 @@ export class ModalCalendarPage {
      * @Description : Validating quality modal
      */
     validateCalendar() {
-		this.viewCtrl.dismiss({slots: this.slots, isObsolete: this.isObsolete});
+        this.viewCtrl.dismiss({slots: this.slots, isObsolete: this.isObsolete});
     }
-	
-	verifySlotsValidity(){
-		//verify if slots are obsolete
-		this.isObsolete = false;
-		for(var i = 0; i < this.slots.length; i++){
-			var slotDate = this.slots[i].date;
-			var startH = this.convertToFormattedHour(this.slots[i].startHour);
-			slotDate = new Date(slotDate).setHours(startH.split(':')[0], startH.split(':')[1]);
-			var dateNow = new Date().getTime();
-			if(slotDate < dateNow){
-				this.isObsolete = true;
-				return;
-			}else{
-				this.isObsolete = false;
-			}
-		}
-	}
+
+    verifySlotsValidity() {
+        //verify if slots are obsolete
+        this.isObsolete = false;
+        for (var i = 0; i < this.slots.length; i++) {
+            var slotDate = this.slots[i].date;
+            var startH = this.convertToFormattedHour(this.slots[i].startHour);
+            slotDate = new Date(slotDate).setHours(startH.split(':')[0], startH.split(':')[1]);
+            var dateNow = new Date().getTime();
+            if (slotDate < dateNow) {
+                this.isObsolete = true;
+                return;
+            } else {
+                this.isObsolete = false;
+            }
+        }
+    }
 
     /**
      * @Description : Show date picker component
@@ -133,7 +132,7 @@ export class ModalCalendarPage {
      * @param item to be removed
      */
     removeSlot(item) {
-        //debugger;
+
 
         let confirm = Alert.create({
             title: 'Êtes-vous sûr?',
@@ -150,7 +149,7 @@ export class ModalCalendarPage {
                     handler: () => {
                         console.log('Agree clicked');
                         this.slots.splice(this.slots.indexOf(item), 1);
-						this.verifySlotsValidity();
+                        this.verifySlotsValidity();
                     }
                 }
             ]
@@ -164,13 +163,13 @@ export class ModalCalendarPage {
      * @param date : a timestamp date
      * @param options Date options
      */
-    toDateString(date:number, options:any) {
+    toDateString(date: number, options: any) {
         options = (options) ? options : '';
         //console.log(JSON.stringify(this.slots));
         //console.log('Calendar slot in ms: ' + date);
         //console.log('Calendar slot in date format: ' + new Date(date));
         let d = new Date(date);
-        return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+        return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
     }
 
 
@@ -178,13 +177,13 @@ export class ModalCalendarPage {
      * @Description Converts a timeStamp to date string
      * @param time : a timestamp date
      */
-    toHourString(time:number) {
+    toHourString(time: number) {
         let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
         let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
         return hours + ":" + minutes;
     }
-	
-	convertToFormattedHour(value) {
+
+    convertToFormattedHour(value) {
         var hours = Math.floor(value / 60);
         var minutes = value % 60;
         if (!hours && !minutes) {

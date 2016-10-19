@@ -1,11 +1,11 @@
 <ion-header>
-<ion-navbar  [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-    <button menuToggle>
-        <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>Coordonnées bancaires</ion-title>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+        <button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>Coordonnées bancaires</ion-title>
 
-</ion-navbar>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding class="bank-account">
@@ -19,17 +19,20 @@
     </ion-item>
     <ion-item>
         <ion-label floating>IBAN</ion-label>
-        <ion-input type="text" [(ngModel)]="bank.iban" ></ion-input>
+        <ion-input type="text" [(ngModel)]="bank.iban"></ion-input>
     </ion-item>
     <div *ngIf="showIBANError()"
-         class="error-box">* Le format de l'IBAN est incorrect</div>
+         class="error-box">* Le format de l'IBAN est incorrect
+    </div>
     <ion-item>
         <ion-label floating>BIC</ion-label>
         <ion-input type="text" [(ngModel)]="bank.bic"></ion-input>
     </ion-item>
     <div *ngIf="showBICError()"
-         class="error-box">* Le format du BIC est incorrect</div>
-    <button block (click)="updateBankData()" [style.backgroundColor]="themeColor" type="submit" [disabled]="isUpdateDisabled()">
+         class="error-box">* Le format du BIC est incorrect
+    </div>
+    <button block (click)="updateBankData()" [style.backgroundColor]="themeColor" type="submit"
+            [disabled]="isUpdateDisabled()">
         <ion-icon name="done-all"></ion-icon>
         Valider
     </button>

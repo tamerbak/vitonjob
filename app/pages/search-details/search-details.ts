@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {NavController, NavParams, Alert, Storage, SqlStorage, Platform, Modal} from 'ionic-angular';
+import {Component, OnInit} from "@angular/core";
+import {NavController, NavParams, Alert, Storage, SqlStorage, Platform, Modal} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {isUndefined} from "ionic-angular/util";
 import {ContractPage} from "../contract/contract";
@@ -14,51 +14,51 @@ import {Configs} from "../../configurations/configs";
 import {ModalOffersPage} from "../modal-offers/modal-offers";
 import {OfferAddPage} from "../offer-add/offer-add";
 
-declare var google:any;
+declare var google: any;
 
 @Component({
     templateUrl: 'build/pages/search-details/search-details.html',
     providers: [GlobalService, OffersService, AddressService, NotationService]
 })
 export class SearchDetailsPage implements OnInit {
-    isEmployer:boolean = false;
-    fullTitle:string = '';
-    fullName:string = '';
-    matching:string = '';
-    telephone:string = '';
-    email:string = '';
-    projectTarget:any;
-    result:any;
-    userService:UserService;
-    isUserAuthenticated:boolean;
-    employer:any;
-    contratsAttente:any = [];
-    db:Storage;
-    offersService:OffersService;
-    languages:any[];
-    qualities:any[];
-    map:any;
-    availability:any;
-    addressService:AddressService;
-    videoPresent:boolean = false;
-    videoLink:string;
-    starsText:string = '';
-    rating:number = 0;
-    platform:any;
-    isRecruteur:boolean = false;
-    avatar:string;
-    backgroundImage:string;
-    themeColor:string;
+    isEmployer: boolean = false;
+    fullTitle: string = '';
+    fullName: string = '';
+    matching: string = '';
+    telephone: string = '';
+    email: string = '';
+    projectTarget: any;
+    result: any;
+    userService: UserService;
+    isUserAuthenticated: boolean;
+    employer: any;
+    contratsAttente: any = [];
+    db: Storage;
+    offersService: OffersService;
+    languages: any[];
+    qualities: any[];
+    map: any;
+    availability: any;
+    addressService: AddressService;
+    videoPresent: boolean = false;
+    videoLink: string;
+    starsText: string = '';
+    rating: number = 0;
+    platform: any;
+    isRecruteur: boolean = false;
+    avatar: string;
+    backgroundImage: string;
+    themeColor: string;
 
-    constructor(public nav:NavController,
-                public params:NavParams,
-                public globalConfig:GlobalConfigs,
-                userService:UserService,
-                private globalService:GlobalService,
-                platform:Platform,
-                offersService:OffersService,
-                addressService:AddressService,
-                private notationService:NotationService) {
+    constructor(public nav: NavController,
+                public params: NavParams,
+                public globalConfig: GlobalConfigs,
+                userService: UserService,
+                private globalService: GlobalService,
+                platform: Platform,
+                offersService: OffersService,
+                addressService: AddressService,
+                private notationService: NotationService) {
 
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
@@ -70,7 +70,7 @@ export class SearchDetailsPage implements OnInit {
         this.isEmployer = this.projectTarget == 'employer';
         this.platform = platform;
         this.result = params.data.searchResult;
-        this.avatar = (this.result.avatar)? this.result.avatar : configInversed.avatars[0].url;
+        this.avatar = (this.result.avatar) ? this.result.avatar : configInversed.avatars[0].url;
         if (this.result.titreOffre)
             this.fullTitle = this.result.titreOffre;
         if (this.result.titreoffre)
@@ -95,7 +95,7 @@ export class SearchDetailsPage implements OnInit {
         this.userService.getCurrentUser(this.projectTarget).then(results => {
 
             if (results && !isUndefined(results)) {
-                //debugger;
+
                 let currentEmployer = JSON.parse(results);
                 if (currentEmployer) {
                     this.employer = currentEmployer;
@@ -149,7 +149,7 @@ export class SearchDetailsPage implements OnInit {
         let resultType = !this.isEmployer;
         let id = this.result.idOffre;
         this.notationService.loadSearchNotation(resultType, id).then(score=> {
-            //debugger;
+
             this.rating = score;
             this.starsText = this.writeStars(this.rating);
         });
@@ -170,7 +170,7 @@ export class SearchDetailsPage implements OnInit {
         });
     }
 
-    writeStars(number:number):string {
+    writeStars(number: number): string {
         let starText = '';
         for (let i = 0; i < number; i++) {
             starText += '\u2605'
@@ -230,7 +230,7 @@ export class SearchDetailsPage implements OnInit {
         });
     }
 
-    addMarkers(addresses:any, bounds:any) {
+    addMarkers(addresses: any, bounds: any) {
 
         for (let i = 0; i < addresses.length; i++) {
             let marker = new google.maps.Marker({
@@ -421,7 +421,7 @@ export class SearchDetailsPage implements OnInit {
              };*/
             this.contratsAttente.push(this.result);
         } else {
-            //debugger;
+
             this.contratsAttente.splice(this.contratsAttente.findIndex((element) => {
                 return (element.email === this.result.email) && (element.tel === this.result.tel);
             }), 1);

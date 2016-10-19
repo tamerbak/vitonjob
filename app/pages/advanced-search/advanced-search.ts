@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import {NavController, PickerColumnOption, Picker, SqlStorage, Storage, Platform} from 'ionic-angular';
+import {Component} from "@angular/core";
+import {NavController, PickerColumnOption, Picker, SqlStorage, Storage, Platform} from "ionic-angular";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {DatePicker} from "ionic-native/dist/index";
@@ -15,23 +15,23 @@ import {DatePicker} from "ionic-native/dist/index";
     providers: [OffersService]
 })
 export class AdvancedSearchPage {
-    private slot:any;
-    showedSlot:any;
-    private db:any;
-    private service:any;
-    private listSectors:any;
-    private listJobs:any;
-    private projectTarget:any;
-    private idSector:number;
-    private sector:string;
-    private job:string;
-    private idJob:number;
-    private dateEvent:any;
-    isAndroid4:boolean;
-    platform:any;
+    private slot: any;
+    showedSlot: any;
+    private db: any;
+    private service: any;
+    private listSectors: any;
+    private listJobs: any;
+    private projectTarget: any;
+    private idSector: number;
+    private sector: string;
+    private job: string;
+    private idJob: number;
+    private dateEvent: any;
+    isAndroid4: boolean;
+    platform: any;
 
 
-    constructor(private nav:NavController, _service:OffersService, gc:GlobalConfigs, platform:Platform) {
+    constructor(private nav: NavController, _service: OffersService, gc: GlobalConfigs, platform: Platform) {
         this.service = _service;
         this.db = new Storage(SqlStorage);
         this.projectTarget = gc.getProjectTarget();
@@ -62,7 +62,6 @@ export class AdvancedSearchPage {
                 date: new Date().toISOString()
             };
         }
-        
 
 
     }
@@ -71,7 +70,7 @@ export class AdvancedSearchPage {
     setSectorsPicker() {
         let rating = 0;
         let picker = Picker.create();
-        let options:PickerColumnOption[] = new Array<PickerColumnOption>();
+        let options: PickerColumnOption[] = new Array<PickerColumnOption>();
         this.db.get('listSectors').then(listSectors => {
             if (listSectors) {
                 listSectors = JSON.parse(listSectors);
@@ -112,7 +111,7 @@ export class AdvancedSearchPage {
     setJobsPicker() {
         let rating = 0;
         let picker = Picker.create();
-        let options:PickerColumnOption[] = new Array<PickerColumnOption>();
+        let options: PickerColumnOption[] = new Array<PickerColumnOption>();
 
 
         this.db.get('listJobs').then(
@@ -231,7 +230,7 @@ export class AdvancedSearchPage {
      * @param date : a timestamp date
      * @param options Date options
      */
-    toDateString(date:number, options:any) {
+    toDateString(date: number, options: any) {
         let d = new Date(date);
         return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
     }

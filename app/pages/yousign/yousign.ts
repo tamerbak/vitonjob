@@ -1,15 +1,10 @@
-import {Storage, SqlStorage} from 'ionic-angular';
-import { NavController, NavParams, Loading,ActionSheet,Alert} from 'ionic-angular';
-import {Configs} from '../../configurations/configs';
-import {GlobalConfigs} from '../../configurations/globalConfigs';
-import {ContractService} from '../../providers/contract-service/contract-service';
+import {NavController, NavParams, Loading} from "ionic-angular";
+import {Configs} from "../../configurations/configs";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
+import {ContractService} from "../../providers/contract-service/contract-service";
 import {SmsService} from "../../providers/sms-service/sms-service";
 import {UserService} from "../../providers/user-service/user-service";
-import {PaymentPage} from "../payment/payment";
-import {CivilityPage} from '../civility/civility';
-import {JobAddressPage} from '../job-address/job-address';
-import {PersonalAddressPage} from '../personal-address/personal-address';
-import {MissionListPage} from '../mission-list/mission-list';
+import {MissionListPage} from "../mission-list/mission-list";
 import {Component} from "@angular/core";
 import {isUndefined} from "ionic-angular/util";
 import {PushNotificationService} from "../../providers/push-notification-service/push-notification-service";
@@ -24,94 +19,94 @@ import {InAppBrowser} from "ionic-native/dist/index";
  * @module Contract
  */
 @Component({
-  templateUrl: 'build/pages/yousign/yousign.html',
-    providers : [PushNotificationService, FinanceService]
+    templateUrl: 'build/pages/yousign/yousign.html',
+    providers: [PushNotificationService, FinanceService]
 })
 export class YousignPage {
-    
-    projectTarget:string;
-    isEmployer:boolean;
-    themeColor:string;
-    
-    employer:any;
-    currentUser:any;
-    jobyer:any;
-    yousignTitle:string;
-    dataObject:any;
-    contractData:any;
 
-    currentOffer : any = null;
-    pushNotificationService:PushNotificationService;
+    projectTarget: string;
+    isEmployer: boolean;
+    themeColor: string;
 
-    
-    constructor(public gc: GlobalConfigs, 
-                public nav: NavController, 
-                private navParams:NavParams,
-                private contractService:ContractService,
-                private userService:UserService,
-                private smsService:SmsService,
-                private financeService : FinanceService,
-                pushNotificationService : PushNotificationService ) {
-        
+    employer: any;
+    currentUser: any;
+    jobyer: any;
+    yousignTitle: string;
+    dataObject: any;
+    contractData: any;
+
+    currentOffer: any = null;
+    pushNotificationService: PushNotificationService;
+
+
+    constructor(public gc: GlobalConfigs,
+                public nav: NavController,
+                private navParams: NavParams,
+                private contractService: ContractService,
+                private userService: UserService,
+                private smsService: SmsService,
+                private financeService: FinanceService,
+                pushNotificationService: PushNotificationService) {
+
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
-        
+
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
-        
+
         // Set local variables and messages
         //get the currentEmployer & call youssign service
         this.pushNotificationService = pushNotificationService;
-        userService.getCurrentUser(this.projectTarget).then(results =>{
+        userService.getCurrentUser(this.projectTarget).then(results => {
             this.currentUser = JSON.parse(results);
             let currentEmployer = this.currentUser.employer;
-            
-            if(currentEmployer){
+
+            if (currentEmployer) {
                 this.employer = currentEmployer;
                 this.callYousign();
             }
             console.log(currentEmployer);
         });
-        
+
         this.themeColor = config.themeColor;
         this.yousignTitle = "Contrat de Mission";
-        this.isEmployer = (this.projectTarget=='employer');
+        this.isEmployer = (this.projectTarget == 'employer');
         this.jobyer = navParams.get('jobyer');
         this.contractData = navParams.get('contractData');
-        if(navParams.get("currentOffer") && !isUndefined(navParams.get("currentOffer"))){
+        if (navParams.get("currentOffer") && !isUndefined(navParams.get("currentOffer"))) {
             this.currentOffer = navParams.get("currentOffer");
         }
     }
-    
+
     goToPayment() {
         this.nav.push(WalletCreatePage);
     }
-    
+
     goToMissionsList() {
         this.nav.push(MissionListPage);
     }
-    
+
     /**
      * @author daoudi amine
      * @description call yousign service and send sms to the jobyer
      */
-    callYousign(){
+    callYousign() {
         let loading = Loading.create({
             content: ` 
                 <div>
                     <img src='img/loading.gif' />
                 </div>
                 `,
-            spinner : 'hide'
+            spinner: 'hide'
         });
         this.nav.present(loading);
-        this.financeService.loadQuote(this.currentOffer.idOffer, this.contractData.baseSalary).then(data =>{
-            this.contractService.callYousign(this.currentUser, this.employer, this.jobyer,this.contractData, this.projectTarget, this.currentOffer, data.quoteId).then((data) => {
+        this.financeService.loadQuote(this.currentOffer.idOffer, this.contractData.baseSalary).then(data => {
+            this.contractService.callYousign(this.currentUser, this.employer, this.jobyer, this.contractData, this.projectTarget, this.currentOffer, data.quoteId).then((data) => {
 
                 loading.dismiss();
                 console.clear();
                 console.log(data);
-                debugger;
+
                 console.log(JSON.stringify(this.employer));
                 if (data == null || data.length == 0) {
                     console.log("Yousign result is null");
@@ -131,16 +126,16 @@ export class YousignPage {
 
                 //Create to Iframe to show the contract in the NavPage
                 /*let iframe = document.createElement('iframe');
-                iframe.frameBorder = "0";
-                iframe.width = "100%";
-                iframe.height = "100%";
-                iframe.id = "youSign";
-                iframe.style.overflow = "hidden";
-                iframe.style.height = "100%";
-                iframe.style.width = "100%";
-                iframe.setAttribute("src", yousignEmployerLink);
+                 iframe.frameBorder = "0";
+                 iframe.width = "100%";
+                 iframe.height = "100%";
+                 iframe.id = "youSign";
+                 iframe.style.overflow = "hidden";
+                 iframe.style.height = "100%";
+                 iframe.style.width = "100%";
+                 iframe.setAttribute("src", yousignEmployerLink);
 
-                document.getElementById("iframPlaceHolder").appendChild(iframe);*/
+                 document.getElementById("iframPlaceHolder").appendChild(iframe);*/
 
                 // TEL:23082016 : Using inappbrowser plugin :
                 InAppBrowser.open(yousignEmployerLink, '_blank');
@@ -156,39 +151,39 @@ export class YousignPage {
                 this.nav.push(WalletCreatePage);
 
                 // Send sms to jobyer
-                //debugger;
-                this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : '+this.contractData.numero).then((dataSms) => {
-                    //debugger;
+
+                this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : ' + this.contractData.numero).then((dataSms) => {
+
                     console.log("The message was sent successfully");
-                }).catch(function(err) {
-                    //debugger;
+                }).catch(function (err) {
+
                     console.log(err);
                 });
                 // send notification to jobyer
-                console.log('jobyer id : '+this.jobyer.id);
+                console.log('jobyer id : ' + this.jobyer.id);
 
 
                 //save contract in Database
-                this.contractService.getJobyerId(this.jobyer,this.projectTarget).then(
+                this.contractService.getJobyerId(this.jobyer, this.projectTarget).then(
                     (jobyerData) => {
-                        this.contractService.saveContract(this.contractData,jobyerData.data[0].pk_user_jobyer,this.employer.entreprises[0].id,this.projectTarget, yousignJobyerLink, yousignEmployerLink, this.currentUser.id).then(
+                        this.contractService.saveContract(this.contractData, jobyerData.data[0].pk_user_jobyer, this.employer.entreprises[0].id, this.projectTarget, yousignJobyerLink, yousignEmployerLink, this.currentUser.id).then(
                             (data) => {
-                                if(this.currentOffer && this.currentOffer != null){
+                                if (this.currentOffer && this.currentOffer != null) {
                                     let idContract = 0;
-                                    if(data && data.data && data.data.length>0)
+                                    if (data && data.data && data.data.length > 0)
                                         idContract = data.data[0].pk_user_contrat;
                                     let contract = {
-                                        pk_user_contrat : idContract
+                                        pk_user_contrat: idContract
                                     };
                                     this.contractService.setOffer(idContract, this.currentOffer.idOffer);
                                     this.pushNotificationService.getToken(this.jobyer.id, "toJobyer").then(token => {
-                                        if(token.data && token.data.length>0){
+                                        if (token.data && token.data.length > 0) {
                                             let tk = token;
                                             var message = "Une demande de signature de contrat vous a été adressée";
-                                            console.log('message notification : '+message);
-                                            console.log('token : '+tk);
+                                            console.log('message notification : ' + message);
+                                            console.log('token : ' + tk);
                                             this.pushNotificationService.sendPushNotification(tk, message, contract, "MissionDetailsPage").then(data => {
-                                                console.log('Notification sent : '+JSON.stringify(data));
+                                                console.log('Notification sent : ' + JSON.stringify(data));
                                             });
                                         }
 
@@ -203,12 +198,12 @@ export class YousignPage {
                     (err) => {
                         console.log(err);
                     })
-            }).catch(function(err) {
+            }).catch(function (err) {
                 console.log(err);
             });
         });
 
     }
-    
-    
+
+
 }

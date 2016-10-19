@@ -1,8 +1,6 @@
-import { Component } from '@angular/core';
-import {NavController, NavParams} from 'ionic-angular';
+import {Component} from "@angular/core";
+import {NavController, NavParams} from "ionic-angular";
 import {FinanceService} from "../../providers/finance-service/finance-service";
-import {MissionEndRelevePage} from "../mission-end-releve/mission-end-releve";
-import {MissionListPage} from "../mission-list/mission-list";
 
 /*
  Generated class for the MissionEndInvoicePage page.
@@ -12,32 +10,33 @@ import {MissionListPage} from "../mission-list/mission-list";
  */
 @Component({
     templateUrl: 'build/pages/mission-end-invoice/mission-end-invoice.html',
-    providers : [FinanceService]
+    providers: [FinanceService]
 })
 export class MissionEndInvoicePage {
-    invoice : any;
-    idInvoice : number;
-    unSigned : boolean = false;
+    invoice: any;
+    idInvoice: number;
+    unSigned: boolean = false;
+
     constructor(private nav: NavController,
-                private navParams : NavParams,
-                private service : FinanceService) {
+                private navParams: NavParams,
+                private service: FinanceService) {
 
         this.idInvoice = navParams.data.idInvoice;
         this.invoice = {
-            url_signature_de_facture : '',
-            demande_de_signature_de_facture : ''
+            url_signature_de_facture: '',
+            demande_de_signature_de_facture: ''
         };
 
-        this.service.loadInvoiceSignature(this.idInvoice).then(data=>{
-            //debugger;
+        this.service.loadInvoiceSignature(this.idInvoice).then(data=> {
+
             this.invoice = data;
             this.unSigned = (this.invoice.facture_signee == "Non");
-            if(this.unSigned)
+            if (this.unSigned)
                 this.initYousign();
         });
     }
 
-    initYousign(){
+    initYousign() {
         //get the link yousign of the contract for the employer
         let yousignEmployerLink = this.invoice.url_signature_de_facture;
 
@@ -55,7 +54,7 @@ export class MissionEndInvoicePage {
         document.getElementById("iframPlaceHolder").appendChild(iframe);
     }
 
-    getBackToMissions(){
+    getBackToMissions() {
         this.nav.pop();
     }
 

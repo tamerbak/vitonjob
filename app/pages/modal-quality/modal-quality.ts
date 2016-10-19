@@ -1,4 +1,4 @@
-import { NavController, Modal, ViewController, NavParams, Alert} from 'ionic-angular';
+import {NavController, Modal, ViewController, NavParams, Alert} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalSelectionPage} from "../modal-selection/modal-selection";
@@ -17,16 +17,16 @@ import {Component} from "@angular/core";
 })
 export class ModalQualityPage {
 
-    qualities:Array<{
+    qualities: Array<{
         'class': "com.vitonjob.callouts.auth.model.LanguageData",
-        idQuality:number,
-        libelle:string
+        idQuality: number,
+        libelle: string
     }>;
 
-    constructor(public nav:NavController,
-                gc:GlobalConfigs,
-                viewCtrl:ViewController,
-                params:NavParams,
+    constructor(public nav: NavController,
+                gc: GlobalConfigs,
+                viewCtrl: ViewController,
+                params: NavParams,
                 os: OffersService) {
         // Set global configs
         // Get target to determine configs
@@ -47,7 +47,7 @@ export class ModalQualityPage {
     /**
      * @Description : Initializing qualities list
      */
-    initializeQualityList(params:NavParams) {
+    initializeQualityList(params: NavParams) {
         let qualities = params.get('qualities');
         if (qualities && qualities.length > 0)
             this.qualities = qualities;
@@ -61,7 +61,7 @@ export class ModalQualityPage {
     showQualityList() {
 
         /*if (this.qualityList && this.qualityList.length > 0)
-            return;*/
+         return;*/
         this.offerService.loadQualities(this.projectTarget).then(data => {
             this.qualityList = data;
             let selectionModel = Modal.create(ModalSelectionPage,
@@ -86,7 +86,7 @@ export class ModalQualityPage {
     }
 
     /**
-     * @Description : removing slected quality 
+     * @Description : removing slected quality
      */
     removeQuality(item) {
 
@@ -104,7 +104,7 @@ export class ModalQualityPage {
                     text: 'Oui',
                     handler: () => {
                         console.log('Agree clicked');
-                        this.qualities.splice(this.qualities.indexOf(item),1);
+                        this.qualities.splice(this.qualities.indexOf(item), 1);
                     }
                 }
             ]

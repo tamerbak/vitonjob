@@ -1,4 +1,4 @@
-import {NavController, Storage, SqlStorage, Toast, Loading} from 'ionic-angular';
+import {NavController, Storage, SqlStorage, Toast, Loading} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SearchService} from "../../providers/search-service/search-service";
 import {Configs} from "../../configurations/configs";
@@ -23,23 +23,23 @@ import {SearchResultsPage} from "../search-results/search-results";
 export class OfferListPage {
 
     offerList = [];
-    offerService:OffersService;
-    projectTarget:string;
-    backgroundImage:any;
-    db:Storage;
+    offerService: OffersService;
+    projectTarget: string;
+    backgroundImage: any;
+    db: Storage;
     isNewUser = true;
     globalOfferList = [];
-    globalService:any;
-    showPublishedOffers= false;
+    globalService: any;
+    showPublishedOffers = false;
     showUnpublishedOffers = false;
-    detailsIconName1:string = "add";
-    detailsIconName2:string = "add";
+    detailsIconName1: string = "add";
+    detailsIconName2: string = "add";
     searchService: any;
 
-    constructor(public nav:NavController,
-                public gc:GlobalConfigs,
-                public search:SearchService,
-                public offersService:OffersService, private globalService:GlobalService, private searchService: SearchService) {
+    constructor(public nav: NavController,
+                public gc: GlobalConfigs,
+                public search: SearchService,
+                public offersService: OffersService, private globalService: GlobalService, private searchService: SearchService) {
 
         // Set global configs
         // Get target to determine configs
@@ -96,32 +96,32 @@ export class OfferListPage {
                     offer.color = 'black';//'darkgreen';
                     offer.correspondantsCount = -1;
                     //publishedList.push(offer);
-					
-					//verify if offer is obsolete
-					for(var j = 0; j < offer.calendarData.length; j++){
-						var slotDate = offer.calendarData[j].date;
-						var startH = this.offersService.convertToFormattedHour(offer.calendarData[j].startHour);
-						slotDate = new Date(slotDate).setHours(startH.split(':')[0], startH.split(':')[1]);						
-						var dateNow = new Date().getTime();
-						if(slotDate <= dateNow){
-							offer.obsolete = true;
-							break;
-						}else{
-							offer.obsolete = false;
-						}
-					} 
-                    
-					this.globalOfferList[0].list.push(offer);
+
+                    //verify if offer is obsolete
+                    for (var j = 0; j < offer.calendarData.length; j++) {
+                        var slotDate = offer.calendarData[j].date;
+                        var startH = this.offersService.convertToFormattedHour(offer.calendarData[j].startHour);
+                        slotDate = new Date(slotDate).setHours(startH.split(':')[0], startH.split(':')[1]);
+                        var dateNow = new Date().getTime();
+                        if (slotDate <= dateNow) {
+                            offer.obsolete = true;
+                            break;
+                        } else {
+                            offer.obsolete = false;
+                        }
+                    }
+
+                    this.globalOfferList[0].list.push(offer);
                     let searchFields = {
-                        class : 'com.vitonjob.callouts.recherche.SearchQuery',
-                        job : offer.jobData.job,
-                        metier : '',
-                        lieu : '',
-                        nom : '',
-                        entreprise : '',
-                        date : '',
-                        table : this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer',
-                        idOffre :'0'
+                        class: 'com.vitonjob.callouts.recherche.SearchQuery',
+                        job: offer.jobData.job,
+                        metier: '',
+                        lieu: '',
+                        nom: '',
+                        entreprise: '',
+                        date: '',
+                        table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
+                        idOffre: '0'
                     };
                     this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
                         offer.correspondantsCount = data.length;
@@ -197,7 +197,7 @@ export class OfferListPage {
         });
     }
 
-    presentToast(message:string, duration:number) {
+    presentToast(message: string, duration: number) {
         let toast = Toast.create({
             message: message,
             duration: duration * 1000
@@ -218,15 +218,15 @@ export class OfferListPage {
         });
     }
 
-    showOfferList (type) {
+    showOfferList(type) {
 
         if (type == 'Mes offres en ligne') {
             this.showPublishedOffers = !(this.showPublishedOffers);
-            this.detailsIconName1 = (this.showPublishedOffers)? 'remove' : 'add';
+            this.detailsIconName1 = (this.showPublishedOffers) ? 'remove' : 'add';
 
-        } else if (type == 'Mes brouillons'){
+        } else if (type == 'Mes brouillons') {
             this.showUnpublishedOffers = !(this.showUnpublishedOffers);
-            this.detailsIconName2 = (this.showUnpublishedOffers)? 'remove' : 'add';
+            this.detailsIconName2 = (this.showUnpublishedOffers) ? 'remove' : 'add';
         }
 
 
@@ -249,21 +249,21 @@ export class OfferListPage {
         });
         this.nav.present(loading);
         let searchFields = {
-            class : 'com.vitonjob.callouts.recherche.SearchQuery',
-            job : offer.jobData.job,
-            metier : '',
-            lieu : '',
-            nom : '',
-            entreprise : '',
-            date : '',
-            table : this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer',
-            idOffre :'0'
+            class: 'com.vitonjob.callouts.recherche.SearchQuery',
+            job: offer.jobData.job,
+            metier: '',
+            lieu: '',
+            nom: '',
+            entreprise: '',
+            date: '',
+            table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
+            idOffre: '0'
         };
         this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
             console.log(data);
             this.searchService.persistLastSearch(data);
             loading.dismiss();
-            this.nav.push(SearchResultsPage, {currentOffer : offer});
+            this.nav.push(SearchResultsPage, {currentOffer: offer});
         });
     }
 }

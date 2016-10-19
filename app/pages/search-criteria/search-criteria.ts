@@ -1,8 +1,14 @@
 import {
-    NavController, ViewController, Loading, Slides, Picker, PickerColumnOption, Storage, SqlStorage,
-    Modal, Platform
-} from 'ionic-angular';
-import {GlobalConfigs} from '../../configurations/globalConfigs';
+    NavController,
+    ViewController,
+    Loading,
+    Picker,
+    PickerColumnOption,
+    Storage,
+    SqlStorage,
+    Platform
+} from "ionic-angular";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SearchService} from "../../providers/search-service/search-service";
 import {SearchResultsPage} from "../search-results/search-results";
 import {Component} from "@angular/core";
@@ -24,33 +30,33 @@ declare var require: any
 })
 export class SearchCriteriaPage {
 
-    filters:any = [];
-    projectTarget:string;
-    activeCount:number = 0;
-    themeColor:string;
+    filters: any = [];
+    projectTarget: string;
+    activeCount: number = 0;
+    themeColor: string;
 
-    sectors : any = [];
-    sectorList : any = [];
-    jobs : any = [];
-    jobList : any = [];
-    sector : any;
-    idSector : any;
-    job : any;
-    idJob : any;
-    db : Storage;
-    availabilityDate : any;
-    city : any;
-    cities : any = [];
-    cityList : any = [];
-    isAndroid4:boolean;
-	isSectorFound = true;
-	isJobFound = true;
+    sectors: any = [];
+    sectorList: any = [];
+    jobs: any = [];
+    jobList: any = [];
+    sector: any;
+    idSector: any;
+    job: any;
+    idJob: any;
+    db: Storage;
+    availabilityDate: any;
+    city: any;
+    cities: any = [];
+    cityList: any = [];
+    isAndroid4: boolean;
+    isSectorFound = true;
+    isJobFound = true;
 
-    constructor(private viewCtrl:ViewController,
-                public globalConfig:GlobalConfigs,
-                private searchService:SearchService,
-                private cityServices : CommunesService,
-                private nav:NavController, platform: Platform) {
+    constructor(private viewCtrl: ViewController,
+                public globalConfig: GlobalConfigs,
+                private searchService: SearchService,
+                private cityServices: CommunesService,
+                private nav: NavController, platform: Platform) {
         this.viewCtrl = viewCtrl;
         this.projectTarget = globalConfig.getProjectTarget();
         let config = Configs.setConfigs(this.projectTarget);
@@ -214,41 +220,41 @@ export class SearchCriteriaPage {
 
         //  check first if there are any criteria with value
         /*var voidQuery = true;
-        for (var i = 0; i < this.filters.length; i++) {
-            var f = this.filters[i];
-            console.log(f);
-            if (f.activated && f.value != '') {
-                voidQuery = false;
-                break;
-            }
-        }
+         for (var i = 0; i < this.filters.length; i++) {
+         var f = this.filters[i];
+         console.log(f);
+         if (f.activated && f.value != '') {
+         voidQuery = false;
+         break;
+         }
+         }
 
-        if (voidQuery) {
-            //  Nothing to do here
-            console.log('No search criteria given');
-            this.viewCtrl.dismiss();
-            return;
-        }*/
+         if (voidQuery) {
+         //  Nothing to do here
+         console.log('No search criteria given');
+         this.viewCtrl.dismiss();
+         return;
+         }*/
 
         // Construct the search query in the correct format then summon search service
         // TEL05082016 : fixes #628
         let ignoreSector: boolean = false;
-        if(isUndefined(this.sector) || (this.job && this.job.length>0))
+        if (isUndefined(this.sector) || (this.job && this.job.length > 0))
             ignoreSector = true;
-        if(isUndefined(this.job))
+        if (isUndefined(this.job))
             this.job = '';
-        if(isUndefined(this.city))
+        if (isUndefined(this.city))
             this.city = '';
 
         let date = '';
-        if(this.availabilityDate){
-            date = this.availabilityDate.split('-')[2]+'/'+this.availabilityDate.split('-')[1]+'/'+this.availabilityDate.split('-')[0];
+        if (this.availabilityDate) {
+            date = this.availabilityDate.split('-')[2] + '/' + this.availabilityDate.split('-')[1] + '/' + this.availabilityDate.split('-')[0];
         }
 
         var searchFields = {
             class: 'com.vitonjob.callouts.recherche.SearchQuery',
             job: this.job,
-            metier: (ignoreSector)? '' : this.sector,
+            metier: (ignoreSector) ? '' : this.sector,
             lieu: this.city,
             nom: this.filters[2].value,
             entreprise: this.projectTarget == 'jobyer' ? this.filters[5].value : '',
@@ -257,7 +263,7 @@ export class SearchCriteriaPage {
             idOffre: '0'
         };
         console.log(JSON.stringify(searchFields));
-       //debugger;
+
         let loading = Loading.create({
             content: ` 
                 <div>
@@ -292,55 +298,53 @@ export class SearchCriteriaPage {
     }
 
 
-
-
-    watchSector(e){
+    watchSector(e) {
         let val = e.target.value;
-        if(val.length<3){
-			this.isSectorFound = true;			
+        if (val.length < 3) {
+            this.isSectorFound = true;
             this.sectors = [];
             return;
         }
 
         this.sectors = [];
-		var removeDiacritics = require('diacritics').remove;
-        for(let i = 0 ; i < this.sectorList.length ; i++){
+        var removeDiacritics = require('diacritics').remove;
+        for (let i = 0; i < this.sectorList.length; i++) {
             let s = this.sectorList[i];
-            if(removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase())>-1){
+            if (removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase()) > -1) {
                 this.sectors.push(s);
             }
         }
-		if(this.sectors.length == 0){
-			this.isSectorFound = false;
-		}else{
-			this.isSectorFound = true;
-		}
+        if (this.sectors.length == 0) {
+            this.isSectorFound = false;
+        } else {
+            this.isSectorFound = true;
+        }
     }
 
-    watchJob(e){
+    watchJob(e) {
         let val = e.target.value;
-        if(val.length<3){
-			this.isJobFound = true;
+        if (val.length < 3) {
+            this.isJobFound = true;
             this.jobs = [];
             return;
         }
 
         this.jobs = [];
-		var removeDiacritics = require('diacritics').remove;
-        for(let i = 0 ; i < this.jobList.length ; i++){
+        var removeDiacritics = require('diacritics').remove;
+        for (let i = 0; i < this.jobList.length; i++) {
             let s = this.jobList[i];
-            if(removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase())>-1){
+            if (removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase()) > -1) {
                 this.jobs.push(s);
             }
         }
-		if(this.jobs.length == 0){
-			this.isJobFound = false;
-		}else{
-			this.isJobFound = true;
-		}
+        if (this.jobs.length == 0) {
+            this.isJobFound = false;
+        } else {
+            this.isJobFound = true;
+        }
     }
 
-    jobSelected(job){
+    jobSelected(job) {
         this.job = job.libelle;
         this.idJob = job.id;
         this.jobs = [];
@@ -349,7 +353,7 @@ export class SearchCriteriaPage {
 
     setSectorsPicker() {
         let picker = Picker.create();
-        let options:PickerColumnOption[] = new Array<PickerColumnOption>();
+        let options: PickerColumnOption[] = new Array<PickerColumnOption>();
 
         this.db.get('SECTOR_LIST').then(listSectors => {
             if (listSectors) {
@@ -371,8 +375,8 @@ export class SearchCriteriaPage {
             picker.addButton({
                 text: 'Valider',
                 handler: data => {
-					this.isSectorFound = true;
-					this.isJobFound = true;
+                    this.isSectorFound = true;
+                    this.isJobFound = true;
                     this.sector = data.undefined.text;
                     this.idSector = data.undefined.value;
                     this.filterJobList();
@@ -411,7 +415,7 @@ export class SearchCriteriaPage {
 
     setJobsPicker() {
         let picker = Picker.create();
-        let options:PickerColumnOption[] = new Array<PickerColumnOption>();
+        let options: PickerColumnOption[] = new Array<PickerColumnOption>();
 
 
         this.db.get('JOB_LIST').then(
@@ -445,7 +449,7 @@ export class SearchCriteriaPage {
                     picker.addButton({
                         text: 'Valider',
                         handler: data => {
-							this.isJobFound = true;
+                            this.isJobFound = true;
                             this.job = data.undefined.text;
                             this.idJob = data.undefined.value;
                             /*this.enterpriseCard.offer.job = data.undefined.text;
@@ -462,45 +466,45 @@ export class SearchCriteriaPage {
 
     }
 
-    sectorSelected(sector){
-		this.isJobFound = true;
+    sectorSelected(sector) {
+        this.isJobFound = true;
         this.sector = sector.libelle;
         this.idSector = sector.id;
-		this.job = '';
-		this.sectors = [];
+        this.job = '';
+        this.sectors = [];
 
         this.db.get("JOB_LIST").then(data => {
 
             this.jobList = JSON.parse(data);
-            this.jobList = this.jobList.filter((v)=>{
+            this.jobList = this.jobList.filter((v)=> {
                 return (v.idsector == sector.id);
-            }) ;
+            });
 
         });
     }
 
-    watchCity(e){
+    watchCity(e) {
         let val = e.target.value;
-        if(val.length<3){
+        if (val.length < 3) {
             this.cities = [];
             return;
         }
 
         this.cities = [];
-		this.cityServices.autocompleteCity(val).then(data=>{
-            if(data)
+        this.cityServices.autocompleteCity(val).then(data=> {
+            if (data)
                 this.cities = data;
         });
     }
 
-    citySelected(job){
+    citySelected(job) {
         this.city = job.nom;
         this.cities = [];
     }
 
     setCitiesPicker() {
         let picker = Picker.create();
-        let options:PickerColumnOption[] = new Array<PickerColumnOption>();
+        let options: PickerColumnOption[] = new Array<PickerColumnOption>();
 
         this.db.get('CITIES_LIST').then(listCities => {
             if (listCities) {
@@ -531,7 +535,7 @@ export class SearchCriteriaPage {
         });
     }
 
-    showGuideModal(){
+    showGuideModal() {
 
         this.nav.push(SearchGuidePage);
     }
@@ -560,7 +564,7 @@ export class SearchCriteriaPage {
      * @Description Converts a timeStamp to date string :
      * @param date : a timestamp date
      */
-    toDateString(date:number) {
+    toDateString(date: number) {
         let d = new Date(date);
         return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
     }

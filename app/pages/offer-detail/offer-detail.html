@@ -1,34 +1,39 @@
 <ion-header>
-<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-    <ion-title>Détail</ion-title>
-    <ion-buttons end>
-        <button (click)="showPopover($event)" [hidden]="fromPage == 'ModalOffers'">
-            <ion-icon name="more"></ion-icon>
-        </button>
-    </ion-buttons>
-</ion-navbar>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+        <ion-title>Détail</ion-title>
+        <ion-buttons end>
+            <button (click)="showPopover($event)" [hidden]="fromPage == 'ModalOffers'">
+                <ion-icon name="more"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
 </ion-header>
 
-<ion-content padding class="offer-detail" >
+<ion-content padding class="offer-detail">
 
     <!--Offer title-->
     <h5 style="text-align: center;">{{offer.title}} {{offer.obsolete ? '(Obsolète)' : ''}}</h5>
 
     <ion-list>
 
-        <ion-card >
+        <ion-card>
             <ion-card-header>Vidéo</ion-card-header>
             <ion-card-content>
-                <ion-input placeholder="Lien de vidéo Youtube" [(ngModel)]="youtubeLink" [hidden]="videoAvailable"></ion-input>
+                <ion-input placeholder="Lien de vidéo Youtube" [(ngModel)]="youtubeLink"
+                           [hidden]="videoAvailable"></ion-input>
 
                 <div *ngIf="videoAvailable">
-                    <iframe width="100%" height="200" style="display:{{videoAvailable?'block':'none'}}" target="_parent" [src]="videoUrl()">
+                    <iframe width="100%" height="200" style="display:{{videoAvailable?'block':'none'}}" target="_parent"
+                            [src]="videoUrl()">
                     </iframe>
                 </div>
             </ion-card-content>
-			<div [hidden]="isLinkValid" class="error-box"><ion-icon name="md-arrow-dropup"></ion-icon> Le lien de la vidéo est non valide</div>
-            
-			<div class="button-footer">
+            <div [hidden]="isLinkValid" class="error-box">
+                <ion-icon name="md-arrow-dropup"></ion-icon>
+                Le lien de la vidéo est non valide
+            </div>
+
+            <div class="button-footer">
                 <button clear [style.color]="themeColor" (click)="updateVideo(false)" [hidden]="videoAvailable">
                     <ion-icon name="videocam"></ion-icon>
                     <div>Modifier</div>
@@ -50,13 +55,14 @@
             </ion-list-header>
             <button outline small style="position: relative; top: 0;"
                     [style.color]="jobStyle.buttonColor"
-                    [style.borderColor] = "jobStyle.fontColor"
-                     (click)="showJobCard()">
-                <ion-icon [name]="jobIconName"></ion-icon> Détails
+                    [style.borderColor]="jobStyle.fontColor"
+                    (click)="showJobCard()">
+                <ion-icon [name]="jobIconName"></ion-icon>
+                Détails
             </button>
         </div>
 
-        <ion-card [hidden] = "!showJob">
+        <ion-card [hidden]="!showJob">
             <div class="img-header">
                 <img src="img/job.png"/>
                 <ion-icon name="euro"></ion-icon>
@@ -66,7 +72,9 @@
                 <ul>
                     <li><span style="font-weight: bold">Secteur </span>: {{offer.jobData.sector}}</li>
                     <li><span style="font-weight: bold">Job </span>: {{offer.jobData.job}}</li>
-                    <li><span style="font-weight: bold">Niveau </span>: {{(offer.jobData.level ==='senior')? 'Expérimenté':'Débutant'}}</li>
+                    <li><span style="font-weight: bold">Niveau </span>: {{(offer.jobData.level ==='senior')?
+                        'Expérimenté':'Débutant'}}
+                    </li>
                     <li><span style="font-weight: bold">Rémunération </span>: {{offer.jobData.remuneration}} €/h</li>
                 </ul>
             </div>
@@ -87,13 +95,14 @@
                              [style.fontWeight]="calendarStyle.fontWeight">
                 Disponibilité
             </ion-list-header>
-            <button  outline small style="position: relative; top: 0" (click)="showCalendarCard()"
-                     [style.color]="calendarStyle.buttonColor"
-                     [style.borderColor] = "calendarStyle.fontColor">
-                <ion-icon [name]="calendarIconName"></ion-icon>Détails
+            <button outline small style="position: relative; top: 0" (click)="showCalendarCard()"
+                    [style.color]="calendarStyle.buttonColor"
+                    [style.borderColor]="calendarStyle.fontColor">
+                <ion-icon [name]="calendarIconName"></ion-icon>
+                Détails
             </button>
         </div>
-        <ion-card [hidden] = "!showCalendar">
+        <ion-card [hidden]="!showCalendar">
             <div class="img-header">
                 <img src="img/calendar.png"/>
                 <div class="card-title">Disponibilité</div>
@@ -129,14 +138,15 @@
                              [style.fontWeight]="qualityStyle.fontWeight">
                 Qualités
             </ion-list-header>
-            <button  outline small style="position: relative; top: 0"
-                     [style.color]="qualityStyle.buttonColor"
-                     [style.borderColor] = "qualityStyle.fontColor"
-                     (click)="showQualityCard()">
-                <ion-icon [name]="qualityIconName"></ion-icon> Détails
+            <button outline small style="position: relative; top: 0"
+                    [style.color]="qualityStyle.buttonColor"
+                    [style.borderColor]="qualityStyle.fontColor"
+                    (click)="showQualityCard()">
+                <ion-icon [name]="qualityIconName"></ion-icon>
+                Détails
             </button>
         </div>
-        <ion-card [hidden] = "!showQuality">
+        <ion-card [hidden]="!showQuality">
             <div class="img-header">
                 <img src="img/quality.png"/>
                 <div class="card-title" style="color: white">Qualités</div>
@@ -164,13 +174,14 @@
                              [style.fontWeight]="languageStyle.fontWeight">
                 Langues
             </ion-list-header>
-            <button  outline small style="position: relative; top: 0" (click)="showLanguageCard()"
-                     [style.color]="languageStyle.buttonColor"
-                     [style.borderColor] = "languageStyle.fontColor">
-                <ion-icon [name]="languageIconName"></ion-icon> Détails
+            <button outline small style="position: relative; top: 0" (click)="showLanguageCard()"
+                    [style.color]="languageStyle.buttonColor"
+                    [style.borderColor]="languageStyle.fontColor">
+                <ion-icon [name]="languageIconName"></ion-icon>
+                Détails
             </button>
         </div>
-        <ion-card [hidden] = "!showLanguage">
+        <ion-card [hidden]="!showLanguage">
             <div class="img-header">
                 <img src="img/language.png"/>
                 <div class="card-title">Langues</div>
@@ -178,7 +189,8 @@
             <div>
                 <ul>
                     <li *ngFor="let item of offer.languageData">
-                        <span style="font-weight: bold">{{item.libelle}}</span> : {{item.level == 'junior' ? 'Débutant' : 'Courant'}}
+                        <span style="font-weight: bold">{{item.libelle}}</span> : {{item.level == 'junior' ? 'Débutant'
+                        : 'Courant'}}
                     </li>
                 </ul>
             </div>
