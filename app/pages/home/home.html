@@ -1,8 +1,5 @@
-
-
-
 <ion-content class="home" [ngStyle]="backgroundImage">
-    <button style="background-color: transparent;"menuToggle>
+    <button style="background-color: transparent;" menuToggle>
         <ion-icon style="color: #808080;" name="menu"></ion-icon>
     </button>
     <!--div>
@@ -13,20 +10,20 @@
     </div-->
 
     <button fab fab-bottom fab-center (click)="stopRecognition()"
-            [style.backgroundColor]="themeColor" [hidden]= "!recording">
+            [style.backgroundColor]="themeColor" [hidden]="!recording">
         <ion-spinner name="dots"></ion-spinner>
     </button>
     <ion-row>&nbsp;</ion-row>
     <ion-row>&nbsp;</ion-row>
     <ion-row id="logo-position">
 
-        <ion-col text-center><img id="logo"[src]="imageURL"/></ion-col>
+        <ion-col text-center><img id="logo" [src]="imageURL"/></ion-col>
 
     </ion-row>
 
     <ion-row id="home-text">
         <ion-col width-10></ion-col>
-        <ion-col text-center> <h6 primary class="searchHighlight"> {{highlightSentence}} </h6></ion-col>
+        <ion-col text-center><h6 primary class="searchHighlight"> {{highlightSentence}} </h6></ion-col>
         <ion-col width-10></ion-col>
     </ion-row>
 
@@ -58,12 +55,12 @@
     <ion-card text-wrap [hidden]="autoSearchOffers.length == 0" class="cardOpacity">
         <ion-list text-wrap>
             <ion-item *ngFor="let offer of autoSearchOffers" class="itemOpacity" (click)="launchSearch(offer, false)">
-                <h3>{{offer.title}}</h3><!--ion-icon name="{{offer.arrowLabel}}" item-right (click)="launchSearch(offer, true)"></ion-icon-->
+                <h3>{{offer.title}}</h3>
+                <!--ion-icon name="{{offer.arrowLabel}}" item-right (click)="launchSearch(offer, true)"></ion-icon-->
                 <ion-badge [style.backgroundColor]="themeColor" item-right>
                     <ion-spinner name="crescent" [hidden]="(offer.correspondantsCount >= 0)"></ion-spinner>
                     {{(offer.correspondantsCount < 0) ? '' : offer.correspondantsCount}}
                 </ion-badge>
-
 
 
             </ion-item>
@@ -79,8 +76,10 @@
                 </ion-list-header>
                 <ion-card text-wrap [hidden]="autoSearchOffers.length == 0" class="cardOpacity">
                     <ion-list text-wrap>
-                        <ion-item *ngFor="let offer of autoSearchOffers" class="itemOpacity" (click)="launchSearch(offer, false)">
-                            <h3>{{offer.title}}</h3><!--ion-icon name="{{offer.arrowLabel}}" item-right (click)="launchSearch(offer, true)"></ion-icon-->
+                        <ion-item *ngFor="let offer of autoSearchOffers" class="itemOpacity"
+                                  (click)="launchSearch(offer, false)">
+                            <h3>{{offer.title}}</h3>
+                            <!--ion-icon name="{{offer.arrowLabel}}" item-right (click)="launchSearch(offer, true)"></ion-icon-->
                             <ion-badge [style.backgroundColor]="themeColor" item-right>
                                 <ion-spinner name="crescent" [hidden]="(offer.correspondantsCount >= 0)"></ion-spinner>
                                 {{(offer.correspondantsCount < 0) ? '' : offer.correspondantsCount}}
@@ -95,7 +94,8 @@
                 <h2> Offres récemment crées</h2>
                 <ion-card text-wrap [hidden]="recentOffers.length == 0" class="cardOpacity">
                     <ion-list text-wrap style="height:200px;overflow: scroll;">
-                        <ion-item [hidden]="previousRecentOffers.length == 0" primary style="text-align: center;" (click)="previousOffers()">
+                        <ion-item [hidden]="previousRecentOffers.length == 0" primary style="text-align: center;"
+                                  (click)="previousOffers()">
                             <h1>Offres précédentes</h1>
                         </ion-item>
                         <ion-item *ngFor="let offer of recentOffers" class="itemOpacity">
@@ -103,7 +103,8 @@
                             <span>Créée le</span>{{simplifyDate(offer.creationDate)}}<br/>
                             <span>Disponible à partir du</span>{{simplifyDate(offer.startAvailability)}}<br/>
                         </ion-item>
-                        <ion-item [hidden]="nextRecentOffers.length == 0" primary style="text-align: center;" (click)="nextOffers()">
+                        <ion-item [hidden]="nextRecentOffers.length == 0" primary style="text-align: center;"
+                                  (click)="nextOffers()">
                             <h1>Offres suivantes</h1>
                         </ion-item>
                     </ion-list>
@@ -112,9 +113,10 @@
 
             <ion-slide [hidden]="upcomingOffers.length == 0">
                 <h2>Offres imminentes</h2>
-                <ion-card text-wrap [hidden]="upcomingOffers.length == 0" class="cardOpacity" >
+                <ion-card text-wrap [hidden]="upcomingOffers.length == 0" class="cardOpacity">
                     <ion-list text-wrap style="height:200px;overflow: scroll;">
-                        <ion-item [hidden]="previousUpcomingOffers.length == 0" primary style="text-align: center;" (click)="previousOffers()">
+                        <ion-item [hidden]="previousUpcomingOffers.length == 0" primary style="text-align: center;"
+                                  (click)="previousOffers()">
                             <h1>Offres précédentes</h1>
                         </ion-item>
                         <ion-item *ngFor="let offer of upcomingOffers" class="itemOpacity">
@@ -122,7 +124,8 @@
                             <span>Créée le</span>{{simplifyDate(offer.creationDate)}}<br/>
                             <span>Disponible à partir du</span>{{simplifyDate(offer.startAvailability)}}<br/>
                         </ion-item>
-                        <ion-item [hidden]="nextUpcomingOffers.length == 0" primary style="text-align: center;" (click)="nextOffers()">
+                        <ion-item [hidden]="nextUpcomingOffers.length == 0" primary style="text-align: center;"
+                                  (click)="nextOffers()">
                             <h1>Offres suivantes</h1>
                         </ion-item>
                     </ion-list>
@@ -131,16 +134,18 @@
 
             <ion-slide [hidden]="recentUsers.length == 0">
                 <h2>{{projectTarget == 'employers'?'Nouveaux Jobyers':'Nouvelles entreprises'}}</h2>
-                <ion-card text-wrap [hidden]="recentUsers.length == 0" class="cardOpacity" >
+                <ion-card text-wrap [hidden]="recentUsers.length == 0" class="cardOpacity">
                     <ion-list text-wrap style="height:200px;overflow: scroll;">
-                        <ion-item [hidden]="previousRecentUsers.length == 0" primary style="text-align: center;" (click)="previousUsers()" >
+                        <ion-item [hidden]="previousRecentUsers.length == 0" primary style="text-align: center;"
+                                  (click)="previousUsers()">
                             <h1>{{projectTarget == 'employers'?'Jobyers suivants':'Entreprises suivantes'}}</h1>
                         </ion-item>
                         <ion-item *ngFor="let u of recentUsers" class="itemOpacity">
                             <h2>{{u.name}}</h2>
                             <span>A rejoint Vitojob le </span>{{simplifyDate(u.creationDate)}}<br/>
                         </ion-item>
-                        <ion-item [hidden]="nextRecentUsers.length == 0" primary style="text-align: center;" (click)="nextUsers()" >
+                        <ion-item [hidden]="nextRecentUsers.length == 0" primary style="text-align: center;"
+                                  (click)="nextUsers()">
                             <h1>{{projectTarget == 'employers'?'Jobyers suivants':'Entreprises suivantes'}}</h1>
                         </ion-item>
                     </ion-list>
@@ -149,7 +154,6 @@
 
         </ion-slides>
     </div>
-
 
 
     <!--ion-list-header [hidden]="upcomingOffers.length == 0">
@@ -192,7 +196,8 @@
     <ion-row id="btn-login">
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <button class="deconnexionButton" [style.backgroundColor]="themeColor"  (click)="openLoginsPage()" [hidden]="cnxBtnName === 'Déconnexion'" dark>
+            <button class="deconnexionButton" [style.backgroundColor]="themeColor" (click)="openLoginsPage()"
+                    [hidden]="cnxBtnName === 'Déconnexion'" dark>
                 <ion-icon name="log-in" class="buttonLeftOnly"></ion-icon>
                 {{cnxBtnName}}
             </button>
@@ -201,7 +206,6 @@
     </ion-row>
     <ion-row>&nbsp;</ion-row>
     <ion-row>&nbsp;</ion-row>
-
 
 
     <!--div class="draggable ui-widget-content">

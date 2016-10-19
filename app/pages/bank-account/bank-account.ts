@@ -1,25 +1,25 @@
-import {Component} from '@angular/core';
-import {NavController, NavParams} from 'ionic-angular';
+import {Component} from "@angular/core";
+import {NavController, NavParams} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {BankService} from "../../providers/bank-service/bank-service";
 
 @Component({
     templateUrl: 'build/pages/bank-account/bank-account.html',
-    providers : [GlobalConfigs, BankService]
+    providers: [GlobalConfigs, BankService]
 })
 export class BankAccountPage {
-    bank : any;
-    isEmployer : boolean;
-    themeColor : string;
-    projectTarget : any;
-    service : BankService;
-    voidAccount : boolean = true;
+    bank: any;
+    isEmployer: boolean;
+    themeColor: string;
+    projectTarget: any;
+    service: BankService;
+    voidAccount: boolean = true;
 
     constructor(public nav: NavController,
                 public gc: GlobalConfigs,
-                service : BankService,
-                public navParams : NavParams) {
+                service: BankService,
+                public navParams: NavParams) {
         this.projectTarget = gc.getProjectTarget();
         let config = Configs.setConfigs(this.projectTarget);
         this.themeColor = config.themeColor;
@@ -28,24 +28,24 @@ export class BankAccountPage {
         this.service = service;
 
         this.bank = {
-            nom_de_banque : '',
-            detenteur_du_compte : '',
-            iban : '',
-            bic : ''
+            nom_de_banque: '',
+            detenteur_du_compte: '',
+            iban: '',
+            bic: ''
         };
 
         let id = 0;
         let table = '';
-        if(this.projectTarget == 'jobyer'){
+        if (this.projectTarget == 'jobyer') {
             id = this.navParams.data.currentUser.jobyer.id;
             table = 'fk_user_jobyer';
-        }else{
+        } else {
             id = this.navParams.data.currentUser.employer.entreprises[0].id;
             table = 'fk_user_entreprise';
         }
 
-        this.service.loadBankAccount(id, table, this.projectTarget).then(data=>{
-            if(data && data.length>0) {
+        this.service.loadBankAccount(id, table, this.projectTarget).then(data=> {
+            if (data && data.length > 0) {
                 this.bank = data[0];
                 this.voidAccount = false;
             } else
@@ -53,17 +53,17 @@ export class BankAccountPage {
         });
     }
 
-    updateBankData(){
+    updateBankData() {
         let id = 0;
         let table = '';
-        if(this.projectTarget == 'jobyer'){
+        if (this.projectTarget == 'jobyer') {
             id = this.navParams.data.currentUser.jobyer.id;
             table = 'fk_user_jobyer';
-        }else{
+        } else {
             id = this.navParams.data.currentUser.employer.entreprises[0].id;
             table = 'fk_user_entreprise';
         }
-        this.service.saveBankAccount(id, table, this.voidAccount, this.bank).then(data=>{
+        this.service.saveBankAccount(id, table, this.voidAccount, this.bank).then(data=> {
             this.nav.pop();
         });
     }
@@ -93,7 +93,7 @@ export class BankAccountPage {
         return this.mod97(digits);
     }
 
-    letterProcessing(letter){
+    letterProcessing(letter) {
         return letter.charCodeAt(0) - 55;
     }
 
@@ -106,36 +106,36 @@ export class BankAccountPage {
         return checksum;
     }
 
-    showIBANError(){
-        if(!this.bank.iban || this.bank.iban.length==0)
+    showIBANError() {
+        if (!this.bank.iban || this.bank.iban.length == 0)
             return false;
         let check = this.isValidIBANNumber(this.bank.iban);
-        if(check == false)
+        if (check == false)
             return true;
-        return  check != 1;
+        return check != 1;
     }
 
-    showBICError(){
-        if(!this.bank.bic || this.bank.bic.length==0)
+    showBICError() {
+        if (!this.bank.bic || this.bank.bic.length == 0)
             return false;
         let regSWIFT = /^([a-zA-Z]){4}([a-zA-Z]){2}([0-9a-zA-Z]){2}([0-9a-zA-Z]{3})?$/;
         return !regSWIFT.test(this.bank.bic);
     }
 
-    isUpdateDisabled(){
+    isUpdateDisabled() {
 
-        if(!this.bank)
+        if (!this.bank)
             return true;
-        if(!this.bank.detenteur_du_compte)
+        if (!this.bank.detenteur_du_compte)
             return true;
-        if(!this.bank.nom_de_banque)
+        if (!this.bank.nom_de_banque)
             return true;
-        if(this.bank.nom_de_banque == '')
+        if (this.bank.nom_de_banque == '')
             return true;
 
-        if(this.showBICError())
+        if (this.showBICError())
             return true;
-        if(this.showIBANError())
+        if (this.showIBANError())
             return true;
 
         return false;

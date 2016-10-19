@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import {NavController, NavParams, Alert, Storage, SqlStorage, Platform} from 'ionic-angular';
+import {Component} from "@angular/core";
+import {NavController, NavParams, Alert, Platform} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {isUndefined} from "ionic-angular/util";
 import {ContractPage} from "../contract/contract";
@@ -20,25 +20,25 @@ import {PendingContractsPage} from "../pending-contracts/pending-contracts";
     providers: [GlobalService]
 })
 export class PendingContratDetailsPage {
-    isEmployer : boolean = false;
-    fullTitle : string = '';
-    fullName : string = '';
-    matching : string = '';
-    telephone : string = '';
-    email : string = '';
-    projectTarget : any;
-    result : any;
-    userService : UserService;
-    isUserAuthenticated : boolean;
-    employer : any;
-    delegate : PendingContractsPage;
-    deleteFlag : boolean = false;
-    isRecruteur : boolean = false;
+    isEmployer: boolean = false;
+    fullTitle: string = '';
+    fullName: string = '';
+    matching: string = '';
+    telephone: string = '';
+    email: string = '';
+    projectTarget: any;
+    result: any;
+    userService: UserService;
+    isUserAuthenticated: boolean;
+    employer: any;
+    delegate: PendingContractsPage;
+    deleteFlag: boolean = false;
+    isRecruteur: boolean = false;
 
     constructor(public nav: NavController,
-                public params : NavParams,
+                public params: NavParams,
                 public globalConfig: GlobalConfigs,
-                userService : UserService,
+                userService: UserService,
                 private globalService: GlobalService,
                 platform: Platform) {
         // Get target to determine configs
@@ -47,29 +47,29 @@ export class PendingContratDetailsPage {
         this.platform = platform;
         this.result = params.data.searchResult;
         this.delegate = params.data.delegate;
-        if(this.result.titreOffre)
+        if (this.result.titreOffre)
             this.fullTitle = this.result.titreOffre;
-        if(this.result.titreoffre)
-            this.fullTitle = this.fullTitle+this.result.titreoffre;
+        if (this.result.titreoffre)
+            this.fullTitle = this.fullTitle + this.result.titreoffre;
 
-        if(!this.isEmployer)
+        if (!this.isEmployer)
             this.fullName = this.result.entreprise;
         else
-            this.fullName = this.result.titre+' '+this.result.prenom+' '+this.result.nom;
+            this.fullName = this.result.titre + ' ' + this.result.prenom + ' ' + this.result.nom;
         this.email = this.result.email;
         this.telephone = this.result.tel;
-        this.matching = this.result.matching+"%";
+        this.matching = this.result.matching + "%";
 
         //get the currentEmployer
         this.userService = userService;
-        this.userService.getCurrentUser(this.projectTarget).then(results =>{
+        this.userService.getCurrentUser(this.projectTarget).then(results => {
 
-            if(results && !isUndefined(results)){
+            if (results && !isUndefined(results)) {
 
                 let currentEmployer = JSON.parse(results);
-                if(currentEmployer){
+                if (currentEmployer) {
                     this.employer = currentEmployer;
-                    if(this.employer.estRecruteur)
+                    if (this.employer.estRecruteur)
                         this.isRecruteur = this.employer.estRecruteur;
                 }
                 console.log(currentEmployer);
@@ -78,12 +78,12 @@ export class PendingContratDetailsPage {
         });
 
         //get the connexion object and define if the there is a user connected
-        userService.getConnexionObject().then(results =>{
-            if(results && !isUndefined(results)){
+        userService.getConnexionObject().then(results => {
+            if (results && !isUndefined(results)) {
                 let connexion = JSON.parse(results);
-                if(connexion && connexion.etat){
+                if (connexion && connexion.etat) {
                     this.isUserAuthenticated = true;
-                }else{
+                } else {
                     this.isUserAuthenticated = false;
                 }
                 console.log(connexion);
@@ -93,17 +93,17 @@ export class PendingContratDetailsPage {
         console.log(JSON.stringify(this.result));
     }
 
-    call(){
+    call() {
 
-        window.location = 'tel:'+ this.telephone;
+        window.location = 'tel:' + this.telephone;
     }
 
-    sendEmail(){
+    sendEmail() {
 
-        window.location = 'mailto:'+ this.email;
+        window.location = 'mailto:' + this.email;
     }
 
-    sendSMS(){
+    sendSMS() {
         var number = this.telephone;
         var options = {
             replaceLineBreaks: false, // true to replace \n by a new line, false by default
@@ -111,16 +111,21 @@ export class PendingContratDetailsPage {
                 intent: 'INTENT'  // send SMS with the native android SMS messaging
             }
         };
-        var success = function () { console.log('Message sent successfully'); };
-        var error = function (e) { console.log('Message Failed:' + e); };
+        var success = function () {
+            console.log('Message sent successfully');
+        };
+        var error = function (e) {
+            console.log('Message Failed:' + e);
+        };
 
         sms.send(number, "", options, success, error);
     }
-    skype(){
+
+    skype() {
         var sApp;
-        if(this.platform.is('ios')){
+        if (this.platform.is('ios')) {
             sApp = startApp.set("skype://" + this.telephone);
-        }else{
+        } else {
             sApp = startApp.set({
                 "action": "ACTION_VIEW",
                 "uri": "skype:" + this.telephone
@@ -133,10 +138,10 @@ export class PendingContratDetailsPage {
         });
     }
 
-    googleHangout(){
+    googleHangout() {
         var sApp = startApp.set({
             "action": "ACTION_VIEW",
-            "uri": "gtalk:"+this.telephone
+            "uri": "gtalk:" + this.telephone
         });
         sApp.check((values) => { /* success */
             console.log("OK");
@@ -150,9 +155,9 @@ export class PendingContratDetailsPage {
         });
     }
 
-    contract(){
+    contract() {
 
-        if(this.isUserAuthenticated){
+        if (this.isUserAuthenticated) {
 
             let currentEmployer = this.employer.employer;
             console.log(currentEmployer);
@@ -166,7 +171,7 @@ export class PendingContratDetailsPage {
             (currentEmployer.entreprises[0].siret == "") ||
             (currentEmployer.entreprises[0].naf == "") ||
             (currentEmployer.entreprises[0].siegeAdress.id == 0) ||
-            (currentEmployer.entreprises[0].workAdress.id == 0): true;
+            (currentEmployer.entreprises[0].workAdress.id == 0) : true;
 
             let isDataValid = !redirectToCivility;
 
@@ -174,9 +179,9 @@ export class PendingContratDetailsPage {
                 //navigate to contract page
 
                 let o = this.params.get('currentOffer');
-                if(o && !isUndefined(o)){
-                    this.nav.push(ContractPage, {jobyer: this.result, currentOffer : o});
-                }else{
+                if (o && !isUndefined(o)) {
+                    this.nav.push(ContractPage, {jobyer: this.result, currentOffer: o});
+                } else {
                     this.nav.push(ContractPage, {jobyer: this.result});
                 }
 
@@ -188,15 +193,14 @@ export class PendingContratDetailsPage {
                     subTitle: "Veuillez compléter votre profil avant d'établir votre premier contrat",
                     buttons: ['OK']
                 });
-                alert.onDismiss(()=>{
+                alert.onDismiss(()=> {
                     this.nav.push(CivilityPage, {currentUser: this.employer});
                 });
                 this.nav.present(alert);
 
             }
         }
-        else
-        {
+        else {
             let alert = Alert.create({
                 title: 'Attention',
                 message: 'Pour contacter ce jobyer, vous devez être connectés.',
@@ -217,7 +221,7 @@ export class PendingContratDetailsPage {
         }
     }
 
-    delete(){
+    delete() {
         this.deleteFlag = false;
         let alert = Alert.create({
             title: 'Attention',
@@ -237,13 +241,13 @@ export class PendingContratDetailsPage {
             ]
         });
         this.nav.present(alert);
-        alert.onDismiss(()=>{
-           if(this.deleteFlag)
-               this.nav.pop();
+        alert.onDismiss(()=> {
+            if (this.deleteFlag)
+                this.nav.pop();
         });
     }
 
-    close(){
+    close() {
         this.nav.pop();
     }
 }

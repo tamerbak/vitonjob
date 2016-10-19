@@ -1,7 +1,7 @@
 <ion-header>
-<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-    <ion-title>Options</ion-title>
-</ion-navbar>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+        <ion-title>Options</ion-title>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding class="settings">
@@ -23,14 +23,14 @@
             Modifier votre mot de passe
         </ion-item>
 
-		<ion-list-header [hidden]="!isEmployer">
+        <ion-list-header [hidden]="!isEmployer">
             Mission
         </ion-list-header>
         <ion-item (click)="changeOption()" [hidden]="!isEmployer" text-wrap>
             <ion-icon name="clipboard" item-left></ion-icon>
             Modifier l'option suivi de mission
         </ion-item>
-		
+
         <ion-list-header>
             Sécurité
         </ion-list-header>

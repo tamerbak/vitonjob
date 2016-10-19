@@ -1,15 +1,13 @@
-import {Component} from '@angular/core';
-import {Alert, NavController, NavParams, Loading, Events, Modal, Platform} from 'ionic-angular';
+import {Component, NgZone} from "@angular/core";
+import {Alert, NavController, NavParams, Loading, Events, Modal, Platform, Storage, SqlStorage} from "ionic-angular";
 import {LoadListService} from "../../providers/load-list.service";
-import {Configs} from '../../configurations/configs';
-import {GlobalConfigs} from '../../configurations/globalConfigs';
+import {Configs} from "../../configurations/configs";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SqlStorageService} from "../../providers/sql-storage.service";
 import {PersonalAddressPage} from "../personal-address/personal-address";
 import {AuthenticationService} from "../../providers/authentication.service";
-import {Storage, SqlStorage} from 'ionic-angular';
 import {GlobalService} from "../../providers/global.service";
-import {Camera, DatePicker} from 'ionic-native';
-import {NgZone} from '@angular/core';
+import {Camera, DatePicker} from "ionic-native";
 import {CommunesService} from "../../providers/communes-service/communes-service";
 import {ModalGalleryPage} from "../modal-gallery/modal-gallery";
 import {HomePage} from "../home/home";
@@ -28,91 +26,91 @@ import {ProfileService} from "../../providers/profile-service/profile-service";
 })
 export class CivilityPage {
     //tabs:Tabs;
-    title:string;
-    lastname:string;
-    firstname:string;
+    title: string;
+    lastname: string;
+    firstname: string;
     birthdate;
-    birthplace:string;
-    cni:string;
-    numSS:string;
+    birthplace: string;
+    cni: string;
+    numSS: string;
     nationality;
     nationalities = [];
     currentUser;
-    companyname:string;
-    siret:string;
-    ape:string;
-    scanUri:string;
-    scanTitle:string;
-    titlePage:string;
+    companyname: string;
+    siret: string;
+    ape: string;
+    scanUri: string;
+    scanTitle: string;
+    titlePage: string;
     isAPEValid = true;
     isSIRETValid = true;
-    fromPage:string;
-    codesPostaux : any = [];
-    birthcp : any;
-    selectedCP : number = 0;
-    communes : any = [];
-    selectedCommune:any;
-    communesService:CommunesService;
-    numSSMessage:string = '';
-    checkSS:boolean = false;
+    fromPage: string;
+    codesPostaux: any = [];
+    birthcp: any;
+    selectedCP: number = 0;
+    communes: any = [];
+    selectedCommune: any;
+    communesService: CommunesService;
+    numSSMessage: string = '';
+    checkSS: boolean = false;
     uploadVerb = "Charger ";
     isRecruiter = false;
-    medecineTravail:any;
-    medecineId:number;
-    medecines:any = [];
-    currentUserVar:string;
-    isValideLastName:boolean = true;
-    isValideFirstName:boolean = true;
-    titlestyle:any;
-    nationalitiesstyle:any;
-    calendarTheme:string;
-    isAndroid4:boolean;
+    medecineTravail: any;
+    medecineId: number;
+    medecines: any = [];
+    currentUserVar: string;
+    isValideLastName: boolean = true;
+    isValideFirstName: boolean = true;
+    titlestyle: any;
+    nationalitiesstyle: any;
+    calendarTheme: string;
+    isAndroid4: boolean;
     platform: any;
-	isBirthdateValid = true;
+    isBirthdateValid = true;
 
-    isFrench : boolean = true;
-    isEU : boolean = true;
-    idnationality : number = 40;
-    tsejProvideDate:any;
-    tsejFromDate:any;
-    tsejToDate:any;
-    prefecture : any;
-    prefectures : any = [];
+    isFrench: boolean = true;
+    isEU: boolean = true;
+    idnationality: number = 40;
+    tsejProvideDate: any;
+    tsejFromDate: any;
+    tsejToDate: any;
+    prefecture: any;
+    prefectures: any = [];
 
-    maxtsejProvideDate : any;
-    mintsejProvideDate : any;
-    maxtsejFromDate : any;
-    mintsejFromDate : any;
-    maxtsejToDate : any;
-    mintsejToDate : any;
-    tsMessage : string = "";
+    maxtsejProvideDate: any;
+    mintsejProvideDate: any;
+    maxtsejFromDate: any;
+    mintsejFromDate: any;
+    maxtsejToDate: any;
+    mintsejToDate: any;
+    tsMessage: string = "";
 
 
     /*
      Gestion des conventions collectives
      */
-    convention : any;
-    conventionId : any;
-    conventions : any = [];
-    convObject : any;
-    
+    convention: any;
+    conventionId: any;
+    conventions: any = [];
+    convObject: any;
+
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
      */
-    constructor(public nav:NavController,
-                private authService:AuthenticationService,
-                public gc:GlobalConfigs,
-                private loadListService:LoadListService,
-                private sqlStorageService:SqlStorageService,
-                params:NavParams,
-                private globalService:GlobalService,
-                private zone:NgZone,
-                public events:Events,
-                private attachementService:AttachementsService,
-                private medecineService:MedecineService,
-                communesService:CommunesService,
-                platform:Platform,
-				private profileService: ProfileService) {
+    constructor(public nav: NavController,
+                private authService: AuthenticationService,
+                public gc: GlobalConfigs,
+                private loadListService: LoadListService,
+                private sqlStorageService: SqlStorageService,
+                params: NavParams,
+                private globalService: GlobalService,
+                private zone: NgZone,
+                public events: Events,
+                private attachementService: AttachementsService,
+                private medecineService: MedecineService,
+                communesService: CommunesService,
+                platform: Platform,
+                private profileService: ProfileService) {
         // Set global configs
         // Get target to determine configs
 
@@ -142,7 +140,7 @@ export class CivilityPage {
                 //initialize nationality with (9 = francais)
                 this.nationality = 9;
                 this.scanTitle = " de votre CNI";
-				this.nationalitiesstyle = {'font-size': '1.4rem'};
+                this.nationalitiesstyle = {'font-size': '1.4rem'};
             });
         } else {
             this.scanTitle = " de votre extrait k-bis";
@@ -154,39 +152,39 @@ export class CivilityPage {
             nom: '',
             code_insee: ''
         };
-        this.communesService.loadPrefectures().then(data=>{
+        this.communesService.loadPrefectures().then(data=> {
             this.prefectures = data;
         });
         let today = new Date();
-        let m = (today.getMonth()+1)<10?"0"+(today.getMonth()+1):""+(today.getMonth()+1);
-        let d = (today.getDate())<10?"0"+(today.getDate()):""+(today.getDate());
-        this.maxtsejProvideDate = today.getFullYear()+"-"+m+"-"+d;
-        this.mintsejProvideDate = (today.getFullYear()-70)+"-01-01";
+        let m = (today.getMonth() + 1) < 10 ? "0" + (today.getMonth() + 1) : "" + (today.getMonth() + 1);
+        let d = (today.getDate()) < 10 ? "0" + (today.getDate()) : "" + (today.getDate());
+        this.maxtsejProvideDate = today.getFullYear() + "-" + m + "-" + d;
+        this.mintsejProvideDate = (today.getFullYear() - 70) + "-01-01";
 
-        this.maxtsejFromDate = today.getFullYear()+"-"+m+"-"+d;
-        this.mintsejFromDate = (today.getFullYear()-70)+"-01-01";
+        this.maxtsejFromDate = today.getFullYear() + "-" + m + "-" + d;
+        this.mintsejFromDate = (today.getFullYear() - 70) + "-01-01";
 
-        this.mintsejToDate = today.getFullYear()+"-"+m+"-"+d;
-        this.maxtsejToDate = (today.getFullYear()+70)+"-12-31";
+        this.mintsejToDate = today.getFullYear() + "-" + m + "-" + d;
+        this.maxtsejToDate = (today.getFullYear() + 70) + "-12-31";
     }
 
-    watchConvention(e){
+    watchConvention(e) {
         this.conventionId = 0;
         let val = e.target.value;
-        if(val.length < 4){
+        if (val.length < 4) {
             this.conventions = [];
             return;
         }
 
-        this.loadListService.loadConventions(val).then(data=>{
-           this.conventions = data;
+        this.loadListService.loadConventions(val).then(data=> {
+            this.conventions = data;
         });
     }
-    
-    watchBirthCP(e){
+
+    watchBirthCP(e) {
         this.selectedCP = 0;
         let val = e.target.value;
-        if(val.length < 4){
+        if (val.length < 4) {
             this.codesPostaux = [];
             return;
         }
@@ -213,7 +211,7 @@ export class CivilityPage {
         this.communes = [];
 
         this.communesService.getCommunesExact(val, this.selectedCP).then(data=> {
-            if(!data || data.length == 0)
+            if (!data || data.length == 0)
                 this.communesService.getCommunes(val, this.selectedCP).then(data=> {
                     this.communes = data;
                     console.log(JSON.stringify(this.communes));
@@ -224,14 +222,14 @@ export class CivilityPage {
         });
     }
 
-    convSelected(c){
+    convSelected(c) {
         this.convObject = c;
         this.conventionId = c.id;
-        this.convention = c.code+" - "+c.libelle;
+        this.convention = c.code + " - " + c.libelle;
         this.conventions = [];
     }
 
-    cpSelected(c){
+    cpSelected(c) {
         this.selectedCP = c.id;
         this.birthcp = c.code;
         this.codesPostaux = [];
@@ -276,7 +274,7 @@ export class CivilityPage {
             if (value && value != "null") {
                 this.currentUser = JSON.parse(value);
                 this.title = this.currentUser.titre;
-                if (this.title) this.titlestyle = { 'font-size': '1.4rem' };
+                if (this.title) this.titlestyle = {'font-size': '1.4rem'};
                 else this.titlestyle = {'font-size': '2rem', 'position': 'absolute', 'top': '0.2em'};
                 this.lastname = this.currentUser.nom;
                 this.firstname = this.currentUser.prenom;
@@ -291,9 +289,9 @@ export class CivilityPage {
                         }
 
                     });
-                    if(this.currentUser.employer.entreprises[0].conventionCollective &&
-                        this.currentUser.employer.entreprises[0].conventionCollective.id>0){
-                        this.convention =this.currentUser.employer.entreprises[0].conventionCollective.code+" - "+
+                    if (this.currentUser.employer.entreprises[0].conventionCollective &&
+                        this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
+                        this.convention = this.currentUser.employer.entreprises[0].conventionCollective.code + " - " +
                             this.currentUser.employer.entreprises[0].conventionCollective.libelle;
                         this.conventionId = this.currentUser.employer.entreprises[0].conventionCollective.id;
                     }
@@ -319,35 +317,35 @@ export class CivilityPage {
                     }
 
                     let jobyer = this.currentUser.jobyer;
-                    if(jobyer.auTS && jobyer.auTS!='null'){
+                    if (jobyer.auTS && jobyer.auTS != 'null') {
                         let d = new Date(jobyer.auTS);
-                        let month = (d.getMonth()+1)<10?"0"+(d.getMonth()+1):""+(d.getMonth()+1);
-                        let day = d.getDate()<10?"0"+d.getDate():d.getDate();
-                        this.tsejToDate = d.getFullYear()+"-"+month+"-"+day;
+                        let month = (d.getMonth() + 1) < 10 ? "0" + (d.getMonth() + 1) : "" + (d.getMonth() + 1);
+                        let day = d.getDate() < 10 ? "0" + d.getDate() : d.getDate();
+                        this.tsejToDate = d.getFullYear() + "-" + month + "-" + day;
                     }
-                    if(jobyer.duTS && jobyer.duTS!='null'){
+                    if (jobyer.duTS && jobyer.duTS != 'null') {
                         let d = new Date(jobyer.duTS);
-                        let month = (d.getMonth()+1)<10?"0"+(d.getMonth()+1):""+(d.getMonth()+1);
-                        let day = d.getDate()<10?"0"+d.getDate():d.getDate();
-                        this.tsejFromDate = d.getFullYear()+"-"+month+"-"+day;
+                        let month = (d.getMonth() + 1) < 10 ? "0" + (d.getMonth() + 1) : "" + (d.getMonth() + 1);
+                        let day = d.getDate() < 10 ? "0" + d.getDate() : d.getDate();
+                        this.tsejFromDate = d.getFullYear() + "-" + month + "-" + day;
                     }
-                    if(jobyer.delivranceTS && jobyer.delivranceTS!='null'){
+                    if (jobyer.delivranceTS && jobyer.delivranceTS != 'null') {
                         let d = new Date(jobyer.delivranceTS);
-                        let month = (d.getMonth()+1)<10?"0"+(d.getMonth()+1):""+(d.getMonth()+1);
-                        let day = d.getDate()<10?"0"+d.getDate():d.getDate();
-                        this.tsejProvideDate = d.getFullYear()+"-"+month+"-"+day;
+                        let month = (d.getMonth() + 1) < 10 ? "0" + (d.getMonth() + 1) : "" + (d.getMonth() + 1);
+                        let day = d.getDate() < 10 ? "0" + d.getDate() : d.getDate();
+                        this.tsejProvideDate = d.getFullYear() + "-" + month + "-" + day;
                     }
-                    if(jobyer.identifiantNationalite && jobyer.identifiantNationalite>0){
+                    if (jobyer.identifiantNationalite && jobyer.identifiantNationalite > 0) {
                         this.idnationality = jobyer.identifiantNationalite;
-                        if(jobyer.identifiantNationalite>40){
+                        if (jobyer.identifiantNationalite > 40) {
                             this.isFrench = false;
                         }
-                        if(jobyer.identifiantNationalite>41){
+                        if (jobyer.identifiantNationalite > 41) {
                             this.isEU = false;
                         }
 
                     }
-                    if(jobyer.idPrefecture && jobyer.idPrefecture>0){
+                    if (jobyer.idPrefecture && jobyer.idPrefecture > 0) {
                         this.prefecture = jobyer.idPrefecture;
                     }
                 }
@@ -366,7 +364,7 @@ export class CivilityPage {
 
                     if (data && data.length > 0) {
                         this.selectedCommune = data[0];
-                        if(this.selectedCommune.fk_user_code_postal && this.selectedCommune.fk_user_code_postal != "null"){
+                        if (this.selectedCommune.fk_user_code_postal && this.selectedCommune.fk_user_code_postal != "null") {
                             this.selectedCP = parseInt(this.selectedCommune.fk_user_code_postal);
                             this.birthcp = this.selectedCommune.code;
                         } else {
@@ -459,7 +457,7 @@ export class CivilityPage {
             spinner: 'hide'
         });
         this.nav.present(loading);
-		if (this.isRecruiter) {
+        if (this.isRecruiter) {
             this.authService.updateRecruiterCivility(this.title, this.lastname, this.firstname, this.currentUser.id).then((data) => {
                 if (!data || data.status == "failure") {
                     console.log(data.error);
@@ -484,48 +482,48 @@ export class CivilityPage {
         }
         if (this.isEmployer) {
             //get the role id
-			var employerId = this.currentUser.employer.id;
-			//get entreprise id of the current employer
-			var entrepriseId = this.currentUser.employer.entreprises[0].id;
-			// update employer
-			this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget, this.medecineId, this.conventionId).then((data) => {
-				if (!data || data.status == "failure") {
-					console.log(data.error);
-					loading.dismiss();
-					this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
-					return;
-				} else {
-					// data saved
-					console.log("response update civility : " + data.status);
-					this.currentUser.titre = this.title;
-					this.currentUser.nom = this.lastname;
-					this.currentUser.prenom = this.firstname;
-					this.currentUser.employer.entreprises[0].nom = this.companyname;
-					this.currentUser.employer.entreprises[0].siret = this.siret;
-					this.currentUser.employer.entreprises[0].naf = this.ape;
+            var employerId = this.currentUser.employer.id;
+            //get entreprise id of the current employer
+            var entrepriseId = this.currentUser.employer.entreprises[0].id;
+            // update employer
+            this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget, this.medecineId, this.conventionId).then((data) => {
+                if (!data || data.status == "failure") {
+                    console.log(data.error);
+                    loading.dismiss();
+                    this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+                    return;
+                } else {
+                    // data saved
+                    console.log("response update civility : " + data.status);
+                    this.currentUser.titre = this.title;
+                    this.currentUser.nom = this.lastname;
+                    this.currentUser.prenom = this.firstname;
+                    this.currentUser.employer.entreprises[0].nom = this.companyname;
+                    this.currentUser.employer.entreprises[0].siret = this.siret;
+                    this.currentUser.employer.entreprises[0].naf = this.ape;
                     this.currentUser.employer.entreprises[0].conventionCollective = this.convObject;
-					//upload scan
-					this.updateScan(employerId);
-					// PUT IN SESSION
-					this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
-					this.events.publish('user:civility', this.currentUser);
-					loading.dismiss();
-					if (this.fromPage == "profil") {
-						this.nav.pop();
-					} else {
-						//redirecting to personal address tab
-						//this.tabs.select(1);
-						this.nav.push(PersonalAddressPage);
-					}
-				}
-			});
+                    //upload scan
+                    this.updateScan(employerId);
+                    // PUT IN SESSION
+                    this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
+                    this.events.publish('user:civility', this.currentUser);
+                    loading.dismiss();
+                    if (this.fromPage == "profil") {
+                        this.nav.pop();
+                    } else {
+                        //redirecting to personal address tab
+                        //this.tabs.select(1);
+                        this.nav.push(PersonalAddressPage);
+                    }
+                }
+            });
         } else {
             if (!this.isRecruiter) {
                 //get the role id
                 var jobyerId = this.currentUser.jobyer.id;
                 // update jobyer
                 this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni, this.nationality, jobyerId, this.birthdate, this.birthplace,
-                                                        this.idnationality, this.prefecture, this.tsejProvideDate, this.tsejFromDate, this.tsejToDate).then((data) => {
+                    this.idnationality, this.prefecture, this.tsejProvideDate, this.tsejFromDate, this.tsejToDate).then((data) => {
                     if (!data || data.status == "failure") {
                         console.log(data.error);
                         loading.dismiss();
@@ -542,22 +540,22 @@ export class CivilityPage {
                         this.currentUser.jobyer.natId = this.nationality;
 
 
-                        if(this.idnationality>0)
+                        if (this.idnationality > 0)
                             this.currentUser.jobyer.identifiantNationalite = this.idnationality;
-                        if(this.prefecture>0)
+                        if (this.prefecture > 0)
                             this.currentUser.jobyer.idPrefecture = this.prefecture;
-                        if(this.tsejFromDate)
+                        if (this.tsejFromDate)
                             this.currentUser.jobyer.duTS = (new Date(this.tsejFromDate)).getTime();
-                        if(this.tsejToDate)
+                        if (this.tsejToDate)
                             this.currentUser.jobyer.auTS = (new Date(this.tsejToDate)).getTime();
-                        if(this.tsejProvideDate)
+                        if (this.tsejProvideDate)
                             this.currentUser.jobyer.delivranceTS = (new Date(this.tsejProvideDate)).getTime();
 
 
                         //this.currentUser.jobyer.natLibelle = this.nationality;
                         //
                         if (this.platform.version('android').major < 5) {
-                            let birth = new Date (this.birthdate.split('/')[1] + '-' +
+                            let birth = new Date(this.birthdate.split('/')[1] + '-' +
                                 this.birthdate.split('/')[0] + '-' +
                                 this.birthdate.split('/')[2]);
                             this.currentUser.jobyer.dateNaissance = birth.toISOString();
@@ -583,7 +581,7 @@ export class CivilityPage {
                 });
             }
         }
-        
+
 
     }
 
@@ -628,8 +626,8 @@ export class CivilityPage {
             return (!this.title || !this.firstname || !this.lastname || !this.companyname || (this.siret && this.siret.length < 17) || (this.ape && (this.ape.length < 5 || !this.isAPEValid)) || !this.isValideFirstName || !this.isValideLastName);
         } else {
 
-            if(!this.isFrench && !this.isEU){
-                if(!this.tsejToDate || !this.tsejFromDate || !this.tsejProvideDate || !this.prefecture || this.prefecture.length == 0){
+            if (!this.isFrench && !this.isEU) {
+                if (!this.tsejToDate || !this.tsejFromDate || !this.tsejProvideDate || !this.prefecture || this.prefecture.length == 0) {
                     this.tsMessage = "* Veuillez vérifier les informations du Titre de séjour pour pouvoir enregistrer vos données";
                     return true;
                 } else {
@@ -660,13 +658,13 @@ export class CivilityPage {
         if (s.length > 15) {
             s = s.substring(0, 15);
             e.target.value = s;
-			this.numSS = e.target.value;
+            this.numSS = e.target.value;
             return;
         }
         if (s.indexOf('.') != -1) {
             s = s.replace('.', '');
             e.target.value = s;
-			this.numSS = e.target.value;
+            this.numSS = e.target.value;
             return;
         }
         if (e.keyCode < 48 || e.keyCode > 57) {
@@ -686,7 +684,7 @@ export class CivilityPage {
         if (s.length > 12) {
             s = s.substring(0, 12);
             e.target.value = s;
-			this.cni = e.target.value;
+            this.cni = e.target.value;
             return;
         }
         if (s.indexOf('.') != -1) {
@@ -696,9 +694,9 @@ export class CivilityPage {
             return;
         }
         /*if (e.keyCode < 48 || e.keyCode > 57) {
-            e.preventDefault();
-            return;
-        }*/
+         e.preventDefault();
+         return;
+         }*/
     }
 
     /**
@@ -778,7 +776,7 @@ export class CivilityPage {
         this.isValideFirstName = CivilityPage.isValidName(name);
     }
 
-    static isValidName(name:string) {
+    static isValidName(name: string) {
         let regEx = /^[A-Za-zÀ-ú.' \-\p{L}\p{Zs}\p{Lu}\p{Ll}']+$/;
         return name.match(regEx);
     }
@@ -835,7 +833,7 @@ export class CivilityPage {
             return true;
         }
 
-        
+
         let correct = this.checkGender();
         if (!correct) {
             this.numSSMessage = '* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles';
@@ -909,18 +907,17 @@ export class CivilityPage {
         else {
             this.nationalitiesstyle = {'font-size': '2rem', 'position': 'absolute', 'top': '0.2em'};
         }
-        if (this.nationality == 9){
+        if (this.nationality == 9) {
             this.scanTitle = " de votre CNI";
             this.isFrench = true;
             this.idnationality = 40;
         }
-        else{
+        else {
             this.scanTitle = " de votre titre de séjour";
             this.isFrench = false;
             this.isEU = true;
             this.idnationality = 41;
         }
-
 
 
     }
@@ -929,8 +926,8 @@ export class CivilityPage {
      * Changed the id nationality
      * @param e event
      */
-    onChangeIDNationality(e){
-        if(this.idnationality>41)
+    onChangeIDNationality(e) {
+        if (this.idnationality > 41)
             this.isEU = false;
     }
 
@@ -1005,133 +1002,133 @@ export class CivilityPage {
             err => console.log("Error occurred while getting date:", err)
         );
     }
-	
-	IsCompanyExist(e, field){
-		//verify if company exists
-		if(field == "companyname"){
-			this.profileService.countEntreprisesByRaisonSocial(this.companyname).then(data => {
-				if(data.data[0].count != 0 && this.companyname != this.currentUser.employer.entreprises[0].nom){
-					if (!this.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
-						this.globalService.showAlertValidation("VitOnJob", "L'entreprise " + this.companyname + " existe déjà. Veuillez saisir une autre raison sociale.");
-						this.companyname = this.currentUser.employer.entreprises[0].nom;
-					}else{
-						this.displayCompanyAlert('companyname');
-					}
-				}else{
-					return;
-				}	
-			})	
-		}else{
-			this.profileService.countEntreprisesBySIRET(this.siret).then(data => {
-				if(data.data[0].count != 0 && this.siret != this.currentUser.employer.entreprises[0].siret){
-					if (!this.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
-						this.globalService.showAlertValidation("VitOnJob", "Le SIRET " + this.siret + " existe déjà. Veuillez en saisir un autre.");
-						this.siret = this.currentUser.employer.entreprises[0].siret;
-					}else{
-						this.displayCompanyAlert('siret');
-					}
-				}else{
-					return;
-				}	
-			})
-		}
-	}
-	
-	displayCompanyAlert(field){
-		let confirm = Alert.create({
-			title: "VitOnJob",
-			message: (field == "siret" ? ("Le SIRET " + this.siret) : ("La raison sociale " + this.companyname)) + " existe déjà. Si vous continuez, ce compte sera bloqué, \n sinon veuillez en saisir " + (field == "siret" ? "un " : "une ") + "autre. \n Voulez vous continuez?",
-			buttons: [
-				{
-					text: 'Non',
-					handler: () => {
-						(field == "siret" ? (this.siret = this.currentUser.employer.entreprises[0].siret) : (this.companyname = this.currentUser.employer.entreprises[0].nom));
-						console.log('No clicked');
-					}
-				},
-				{
-					text: 'Oui',
-					handler: () => {
-						console.log('Yes clicked');	
-						confirm.dismiss().then(() => {
-							this.displayCompanyLastAlert(field);	
-						})
-					}
-				}
-			]
-		});
-		this.nav.present(confirm);
-	}
-	
-	displayCompanyLastAlert(field){
-		let confirm = Alert.create({
-			title: "VitOnJob",
-			message: "Votre compte sera bloqué. \n Voulez vous vraiment continuez?",
-			buttons: [
-				{
-					text: 'Non',
-					handler: () => {
-						(field == "siret" ? (this.siret = this.currentUser.employer.entreprises[0].siret) : (this.companyname = this.currentUser.employer.entreprises[0].nom));
-						console.log('No clicked');
-					}
-				},
-				{
-					text: 'Oui',
-					handler: () => {
-						console.log('Yes clicked');	
-						confirm.dismiss().then(() => {
-							this.profileService.deleteEmployerAccount(this.currentUser.id, this.currentUser.employer.id).then(data => {
-								this.storage.set(this.currentUserVar, null);
-								this.storage.set("RECRUITER_LIST", null);
-								this.events.publish('user:logout');
-								this.nav.setRoot(HomePage);
-							});	
-						})
-					}
-				}
-			]
-		});
-		this.nav.present(confirm);
-	}
-	
-	watchBirthdate(e){
-		this.isBirthdateValid = true;	
-		var ageDifMs = Date.now() - new Date(this.birthdate).getTime();
-		var ageDate = new Date(ageDifMs); // miliseconds from epoch
-		var diff = Math.abs(ageDate.getUTCFullYear() - 1970);
-		if(diff < 18){
-			this.isBirthdateValid = false;
-		}
-	}
 
-    watchTsejProvideDate(e){
+    IsCompanyExist(e, field) {
+        //verify if company exists
+        if (field == "companyname") {
+            this.profileService.countEntreprisesByRaisonSocial(this.companyname).then(data => {
+                if (data.data[0].count != 0 && this.companyname != this.currentUser.employer.entreprises[0].nom) {
+                    if (!this.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
+                        this.globalService.showAlertValidation("VitOnJob", "L'entreprise " + this.companyname + " existe déjà. Veuillez saisir une autre raison sociale.");
+                        this.companyname = this.currentUser.employer.entreprises[0].nom;
+                    } else {
+                        this.displayCompanyAlert('companyname');
+                    }
+                } else {
+                    return;
+                }
+            })
+        } else {
+            this.profileService.countEntreprisesBySIRET(this.siret).then(data => {
+                if (data.data[0].count != 0 && this.siret != this.currentUser.employer.entreprises[0].siret) {
+                    if (!this.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
+                        this.globalService.showAlertValidation("VitOnJob", "Le SIRET " + this.siret + " existe déjà. Veuillez en saisir un autre.");
+                        this.siret = this.currentUser.employer.entreprises[0].siret;
+                    } else {
+                        this.displayCompanyAlert('siret');
+                    }
+                } else {
+                    return;
+                }
+            })
+        }
+    }
+
+    displayCompanyAlert(field) {
+        let confirm = Alert.create({
+            title: "VitOnJob",
+            message: (field == "siret" ? ("Le SIRET " + this.siret) : ("La raison sociale " + this.companyname)) + " existe déjà. Si vous continuez, ce compte sera bloqué, \n sinon veuillez en saisir " + (field == "siret" ? "un " : "une ") + "autre. \n Voulez vous continuez?",
+            buttons: [
+                {
+                    text: 'Non',
+                    handler: () => {
+                        (field == "siret" ? (this.siret = this.currentUser.employer.entreprises[0].siret) : (this.companyname = this.currentUser.employer.entreprises[0].nom));
+                        console.log('No clicked');
+                    }
+                },
+                {
+                    text: 'Oui',
+                    handler: () => {
+                        console.log('Yes clicked');
+                        confirm.dismiss().then(() => {
+                            this.displayCompanyLastAlert(field);
+                        })
+                    }
+                }
+            ]
+        });
+        this.nav.present(confirm);
+    }
+
+    displayCompanyLastAlert(field) {
+        let confirm = Alert.create({
+            title: "VitOnJob",
+            message: "Votre compte sera bloqué. \n Voulez vous vraiment continuez?",
+            buttons: [
+                {
+                    text: 'Non',
+                    handler: () => {
+                        (field == "siret" ? (this.siret = this.currentUser.employer.entreprises[0].siret) : (this.companyname = this.currentUser.employer.entreprises[0].nom));
+                        console.log('No clicked');
+                    }
+                },
+                {
+                    text: 'Oui',
+                    handler: () => {
+                        console.log('Yes clicked');
+                        confirm.dismiss().then(() => {
+                            this.profileService.deleteEmployerAccount(this.currentUser.id, this.currentUser.employer.id).then(data => {
+                                this.storage.set(this.currentUserVar, null);
+                                this.storage.set("RECRUITER_LIST", null);
+                                this.events.publish('user:logout');
+                                this.nav.setRoot(HomePage);
+                            });
+                        })
+                    }
+                }
+            ]
+        });
+        this.nav.present(confirm);
+    }
+
+    watchBirthdate(e) {
+        this.isBirthdateValid = true;
+        var ageDifMs = Date.now() - new Date(this.birthdate).getTime();
+        var ageDate = new Date(ageDifMs); // miliseconds from epoch
+        var diff = Math.abs(ageDate.getUTCFullYear() - 1970);
+        if (diff < 18) {
+            this.isBirthdateValid = false;
+        }
+    }
+
+    watchTsejProvideDate(e) {
 
         let provDate = new Date(this.tsejProvideDate);
-        let d = provDate.getDate()<10?"0"+provDate.getDate():""+provDate.getDate();
-        let m = (provDate.getMonth()+1)<10?"0"+(provDate.getMonth()+1):""+(provDate.getMonth()+1);
-        this.mintsejFromDate = provDate.getFullYear()+"-"+m+"-"+d;
+        let d = provDate.getDate() < 10 ? "0" + provDate.getDate() : "" + provDate.getDate();
+        let m = (provDate.getMonth() + 1) < 10 ? "0" + (provDate.getMonth() + 1) : "" + (provDate.getMonth() + 1);
+        this.mintsejFromDate = provDate.getFullYear() + "-" + m + "-" + d;
         let minD = new Date(this.mintsejFromDate);
-        this.maxtsejFromDate = (provDate.getFullYear())+"-12-31";
+        this.maxtsejFromDate = (provDate.getFullYear()) + "-12-31";
         let maxD = new Date(this.maxtsejFromDate);
-        if(this.tsejFromDate){
-            if(this.tsejFromDate.getFullYear() <  minD.getFullYear() || this.tsejFromDate.getFullYear() >  maxD.getFullYear()){
+        if (this.tsejFromDate) {
+            if (this.tsejFromDate.getFullYear() < minD.getFullYear() || this.tsejFromDate.getFullYear() > maxD.getFullYear()) {
                 this.tsejFromDate = null;
             }
         }
 
         this.mintsejToDate = this.mintsejFromDate;
-        this.maxtsejToDate = (provDate.getFullYear()+73)+"-12-31";
+        this.maxtsejToDate = (provDate.getFullYear() + 73) + "-12-31";
 
         this.tsejFromDate = this.tsejProvideDate;
     }
 
-    watchTsejFromDate(e){
+    watchTsejFromDate(e) {
         let fromDate = new Date(this.tsejFromDate);
-        let d = fromDate.getDate()<10?"0"+fromDate.getDate():""+fromDate.getDate();
-        let m = (fromDate.getMonth()+1)<10?"0"+(fromDate.getMonth()+1):""+(fromDate.getMonth()+1);
+        let d = fromDate.getDate() < 10 ? "0" + fromDate.getDate() : "" + fromDate.getDate();
+        let m = (fromDate.getMonth() + 1) < 10 ? "0" + (fromDate.getMonth() + 1) : "" + (fromDate.getMonth() + 1);
 
-        this.mintsejToDate = (fromDate.getFullYear())+"-"+m+"-"+d;
-        this.maxtsejToDate = (fromDate.getFullYear()+73)+"-12-31";
+        this.mintsejToDate = (fromDate.getFullYear()) + "-" + m + "-" + d;
+        this.maxtsejToDate = (fromDate.getFullYear() + 73) + "-12-31";
 
         this.tsejToDate = this.tsejFromDate;
     }
@@ -1141,16 +1138,16 @@ export class CivilityPage {
      * @param date : a timestamp date
      * @param options Date options
      */
-    toDateString(date:number, options:any) {
+    toDateString(date: number, options: any) {
         let d = new Date(date);
-        return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+        return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
     }
-	
-	isEmpty(str){
-		if(str == '' || str == 'null' || !str)
-			return true;
-		else
-			return false;
-	}
-	
+
+    isEmpty(str) {
+        if (str == '' || str == 'null' || !str)
+            return true;
+        else
+            return false;
+    }
+
 }

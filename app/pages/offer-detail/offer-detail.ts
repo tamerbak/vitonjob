@@ -1,4 +1,4 @@
-import {NavController, NavParams, Loading, Modal, Alert, Popover} from 'ionic-angular';
+import {NavController, NavParams, Loading, Modal, Alert, Popover} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {SearchResultsPage} from "../../pages/search-results/search-results";
@@ -11,9 +11,8 @@ import {ModalLanguagePage} from "../modal-language/modal-language";
 import {ModalCalendarPage} from "../modal-calendar/modal-calendar";
 import {OfferListPage} from "../offer-list/offer-list";
 import {Component} from "@angular/core";
-import {OfferQuotePage} from "../offer-quote/offer-quote";
 import {PopoverOfferDetailPage} from "../popover-offer-detail/popover-offer-detail";
-import {DomSanitizationService} from '@angular/platform-browser';
+import {DomSanitizationService} from "@angular/platform-browser";
 import {GlobalService} from "../../providers/global.service";
 import {OfferTempQuotePage} from "../offer-temp-quote/offer-temp-quote";
 
@@ -28,15 +27,15 @@ import {OfferTempQuotePage} from "../offer-temp-quote/offer-temp-quote";
     providers: [GlobalConfigs, OffersService, SearchService, GlobalService]
 })
 export class OfferDetailPage {
-    offer:any;
-    dateOptions:DatePickerOptions;
+    offer: any;
+    dateOptions: DatePickerOptions;
     offerService: OffersService;
-    videoAvailable : boolean = false;
-    youtubeLink : string = '';
-	isLinkValid = true;
-	fromPage: string;
+    videoAvailable: boolean = false;
+    youtubeLink: string = '';
+    isLinkValid = true;
+    fromPage: string;
 
-    constructor(public nav:NavController, gc:GlobalConfigs, params:NavParams, public offersService:OffersService, public searchService:SearchService, private sanitizer: DomSanitizationService, private globalService: GlobalService) {
+    constructor(public nav: NavController, gc: GlobalConfigs, params: NavParams, public offersService: OffersService, public searchService: SearchService, private sanitizer: DomSanitizationService, private globalService: GlobalService) {
 
         // Set global configs
         // Get target to determine configs
@@ -49,12 +48,12 @@ export class OfferDetailPage {
         this.inversedThemeColor = config.inversedThemeColor;
         this.backgroundImage = config.backgroundImage;
         this.isEmployer = (this.projectTarget === 'employer');
-		this.sanitizer = sanitizer;  
-		this.offerService = offersService;
-        
-		// Get Offer passed in NavParams
+        this.sanitizer = sanitizer;
+        this.offerService = offersService;
+
+        // Get Offer passed in NavParams
         this.offer = params.get('selectedOffer');
-		this.fromPage = params.get('fromPage');
+        this.fromPage = params.get('fromPage');
         this.showJob = false;
         this.jobIconName = 'add';
         this.showQuality = false;
@@ -65,7 +64,7 @@ export class OfferDetailPage {
         this.calendarIconName = 'add';
 
         this.modified = {
-            isJob : false,
+            isJob: false,
             isQuality: false,
             isLanguage: false,
             isCalendar: false
@@ -106,27 +105,27 @@ export class OfferDetailPage {
         };
 
         //let table = !this.isEmployer?'user_offre_jobyer':'user_offre_entreprise';
-        if(!this.offer.videolink){
-			this.videoAvailable = false;
-		}else{
-			this.videoAvailable = true;
-			this.youtubeLink = this.offer.videolink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");            
-		}
-		 /*this.offerService.getOfferVideo(this.offer.idOffer, table).then(data=>{
+        if (!this.offer.videolink) {
             this.videoAvailable = false;
-            if(data && data != null && data.video && data.video != "null"){
-                this.videoAvailable = true;
-                this.youtubeLink = data.video;
-            }
+        } else {
+            this.videoAvailable = true;
+            this.youtubeLink = this.offer.videolink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");
+        }
+        /*this.offerService.getOfferVideo(this.offer.idOffer, table).then(data=>{
+         this.videoAvailable = false;
+         if(data && data != null && data.video && data.video != "null"){
+         this.videoAvailable = true;
+         this.youtubeLink = data.video;
+         }
 
-		 });*/
+         });*/
     }
 
     /**
-     * @Description Converts a timeStamp to date string : 
+     * @Description Converts a timeStamp to date string :
      * @param date : a timestamp date
      */
-    toDateString(date:number) {
+    toDateString(date: number) {
         return new Date(date).toLocaleDateString('fr-FR', this.dateOptions);
     }
 
@@ -134,7 +133,7 @@ export class OfferDetailPage {
      * @Description Converts a timeStamp to date string
      * @param time : a timestamp date
      */
-    toHourString(time:number) {
+    toHourString(time: number) {
         let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
         let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
         return hours + ":" + minutes;
@@ -157,28 +156,28 @@ export class OfferDetailPage {
         });
         this.nav.present(loading);
         let searchFields = {
-            class : 'com.vitonjob.callouts.recherche.SearchQuery',
-            job : this.offer.jobData.job,
-            metier : '',
-            lieu : '',
-            nom : '',
-            entreprise : '',
-            date : '',
-            table : this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer',
-            idOffre :'0'
+            class: 'com.vitonjob.callouts.recherche.SearchQuery',
+            job: this.offer.jobData.job,
+            metier: '',
+            lieu: '',
+            nom: '',
+            entreprise: '',
+            date: '',
+            table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
+            idOffre: '0'
         };
         this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
             console.log(data);
             this.searchService.persistLastSearch(data);
             loading.dismiss();
-            this.nav.push(SearchResultsPage, {currentOffer : this.offer});
+            this.nav.push(SearchResultsPage, {currentOffer: this.offer});
         });
     }
 
-    showQuote(){
+    showQuote() {
         /*let modal = Modal.create(OfferQuotePage, {currentOffer: this.offer});
-        this.nav.present(modal);*/
-        this.nav.push(OfferTempQuotePage, {idOffer : this.offer.idOffer});
+         this.nav.present(modal);*/
+        this.nav.push(OfferTempQuotePage, {idOffer: this.offer.idOffer});
     }
 
     /**
@@ -293,9 +292,9 @@ export class OfferDetailPage {
             this.modified.isJob = data.validated;
             //this.steps.isCalendar = this.validated.isJob;
             //this.localOffer.set('jobData', JSON.stringify(data));
-            if (this.modified.isJob){
+            if (this.modified.isJob) {
                 this.offer.jobData = data;
-                this.offer.title = this.offer.jobData.job+' '+((this.offer.jobData.level != 'junior')?'Expérimenté':'Débutant');
+                this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
                 this.offerService.updateOfferJob(this.offer, this.projectTarget);
             }
 
@@ -312,9 +311,9 @@ export class OfferDetailPage {
         modal.onDismiss(data => {
             //this.modified.isQuality = (data.length) ? data.length > 0 : false;
             //if (this.modified.isQuality){
-                this.offer.qualityData = data;
-                this.offerService.updateOfferQualities(this.offer, this.projectTarget);
-		//}
+            this.offer.qualityData = data;
+            this.offerService.updateOfferQualities(this.offer, this.projectTarget);
+            //}
 
         })
     }
@@ -329,9 +328,9 @@ export class OfferDetailPage {
         modal.onDismiss(data => {
             //this.modified.isLanguage = (data.length) ? data.length > 0 : false;
             //if (this.modified.isLanguage){
-                this.offer.languageData = data;
-                this.offerService.updateOfferLanguages(this.offer, this.projectTarget);
-			//}
+            this.offer.languageData = data;
+            this.offerService.updateOfferLanguages(this.offer, this.projectTarget);
+            //}
 
         })
     }
@@ -343,19 +342,19 @@ export class OfferDetailPage {
         let modal = Modal.create(ModalCalendarPage, {slots: this.offer.calendarData});
         this.nav.present(modal);
         modal.onDismiss(data => {
-           // this.modified.isCalendar = (data.length) ? data.length > 0 : false;
+            // this.modified.isCalendar = (data.length) ? data.length > 0 : false;
             //if (this.modified.isCalendar){
-                this.offer.calendarData = data.slots;
-				this.offer.obsolete = data.isObsolete;
-                this.offerService.updateOfferCalendar(this.offer, this.projectTarget);
-			//}
+            this.offer.calendarData = data.slots;
+            this.offer.obsolete = data.isObsolete;
+            this.offerService.updateOfferCalendar(this.offer, this.projectTarget);
+            //}
 
         })
     }
 
     /**
      * @description Delete offer
-     * 
+     *
      */
     deleteOffer() {
         let confirm = Alert.create({
@@ -400,18 +399,18 @@ export class OfferDetailPage {
                     handler: () => {
                         console.log('Agree clicked');
                         let loading = Loading.create({
-							content: ` 
+                            content: ` 
 								<div>
 									<img src='img/loading.gif' />
 								</div>
 								`,
-							spinner: 'hide',
-							duration: 10000
-						});
-						this.nav.present(loading);
-						let offer = this.offer;
+                            spinner: 'hide',
+                            duration: 10000
+                        });
+                        this.nav.present(loading);
+                        let offer = this.offer;
                         offer.title = this.offer.title + " (Copie)";
-						offer.idOffer = "";
+                        offer.idOffer = "";
                         this.offerService.setOfferInLocal(offer, this.projectTarget)
                             .then(()=> {
                                 console.log('••• Adding offer : local storing success!');
@@ -420,7 +419,7 @@ export class OfferDetailPage {
                                     .then(data => {
                                         console.log('••• Adding offer : remote storing success!');
 
-										loading.dismiss();
+                                        loading.dismiss();
                                         this.nav.setRoot(OfferListPage);
                                     })
                             });
@@ -430,15 +429,15 @@ export class OfferDetailPage {
         });
         this.nav.present(confirm);
     }
-	
-	changePrivacy(){
-		var statut = this.offer.visible ? 'Non' : 'Oui';
-		this.offerService.updateOfferStatut(this.offer.idOffer, statut, this.projectTarget).then(()=> {
-			console.log('offer status changed successfuly');
-			this.offer.visible = (statut == 'Non' ? false : true);
-			this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
-		});
-	}
+
+    changePrivacy() {
+        var statut = this.offer.visible ? 'Non' : 'Oui';
+        this.offerService.updateOfferStatut(this.offer.idOffer, statut, this.projectTarget).then(()=> {
+            console.log('offer status changed successfuly');
+            this.offer.visible = (statut == 'Non' ? false : true);
+            this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
+        });
+    }
 
     /**
      * @author TEL
@@ -446,15 +445,18 @@ export class OfferDetailPage {
      * @param ev
      */
     showPopover(ev) {
-        let popover = Popover.create(PopoverOfferDetailPage, {visibility:this.offer.visible, autoSearch:this.offer.rechercheAutomatique});
+        let popover = Popover.create(PopoverOfferDetailPage, {
+            visibility: this.offer.visible,
+            autoSearch: this.offer.rechercheAutomatique
+        });
         this.nav.present(popover, {
             ev: ev
         });
 
-        popover.onDismiss( data => {
-            if(!data)
-				return;
-			switch (data.option) {
+        popover.onDismiss(data => {
+            if (!data)
+                return;
+            switch (data.option) {
                 case 1:
                     // Launch copy function
                     this.copyOffer();
@@ -467,7 +469,7 @@ export class OfferDetailPage {
                     // launch search option
                     this.launchSearch();
                     break;
-				case 4:
+                case 4:
                     // launch search option
                     this.autoSearchMode();
                     break;
@@ -484,44 +486,44 @@ export class OfferDetailPage {
 
     }
 
-    updateVideo(deleteLink){
-		this.isLinkValid = true;
-		if(deleteLink){
-			this.youtubeLink = "";
-		}else{
-			if(this.youtubeLink == "" || (this.youtubeLink.indexOf("youtu.be") == -1 && this.youtubeLink.indexOf("www.youtube.com") == -1)){
-				this.youtubeLink = "";
-				this.isLinkValid = false;
-				return;	
-			}
-			this.youtubeLink = this.youtubeLink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");   
-		}
-        this.offerService.updateVideoLink(this.offer.idOffer, this.youtubeLink, this.projectTarget).then(()=>{
-           if(deleteLink){
-				this.videoAvailable = false;
-			}else{
-				this.videoAvailable = true;
-			}
-			console.log('offer youtube link updated successfuly');
-			this.offer.videolink = this.youtubeLink;
-			this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
+    updateVideo(deleteLink) {
+        this.isLinkValid = true;
+        if (deleteLink) {
+            this.youtubeLink = "";
+        } else {
+            if (this.youtubeLink == "" || (this.youtubeLink.indexOf("youtu.be") == -1 && this.youtubeLink.indexOf("www.youtube.com") == -1)) {
+                this.youtubeLink = "";
+                this.isLinkValid = false;
+                return;
+            }
+            this.youtubeLink = this.youtubeLink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");
+        }
+        this.offerService.updateVideoLink(this.offer.idOffer, this.youtubeLink, this.projectTarget).then(()=> {
+            if (deleteLink) {
+                this.videoAvailable = false;
+            } else {
+                this.videoAvailable = true;
+            }
+            console.log('offer youtube link updated successfuly');
+            this.offer.videolink = this.youtubeLink;
+            this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
         });
     }
-	
-	videoUrl(){
-		return this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLink);
-	}
-	
-	autoSearchMode(){
-		var mode = this.offer.rechercheAutomatique ? "Non" : "Oui";
-		this.offerService.saveAutoSearchMode(this.projectTarget, this.offer.idOffer, mode).then(data => {
-			if(data && data.status == "success"){
-				this.offer.rechercheAutomatique = !this.offer.rechercheAutomatique;
-				this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
-				this.nav.pop();
-			}else{
-				this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
-			}
-		});
-	}
+
+    videoUrl() {
+        return this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLink);
+    }
+
+    autoSearchMode() {
+        var mode = this.offer.rechercheAutomatique ? "Non" : "Oui";
+        this.offerService.saveAutoSearchMode(this.projectTarget, this.offer.idOffer, mode).then(data => {
+            if (data && data.status == "success") {
+                this.offer.rechercheAutomatique = !this.offer.rechercheAutomatique;
+                this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
+                this.nav.pop();
+            } else {
+                this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
+            }
+        });
+    }
 }

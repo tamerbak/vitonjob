@@ -6,23 +6,24 @@
 -->
 
 <ion-content padding class="notification-contract" [ngStyle]="backgroundImage">
-  <button [style.color]="themeColor" clear nav-pop>
-    <ion-icon name="arrow-back"></ion-icon>
-    Retour
-  </button>
-  <ion-card>
-    <ion-card-header>Attention</ion-card-header>
-    <ion-card-content>
-      <p>Vous êtes sur le point de procéder à la validation, complétion et éventuellement modifications
-        des informations qui vont être installées sur votre <span *ngIf="!isEmployer">contrat de mission</span>
-        <span *ngIf="isEmployer">contrat de mise à disposition</span>. </p>
-        <p>Cette étape exige toute votre attention pour éviter la signature d'un contrat avec des informations erronées.</p>
-      <p>Nous avons apporté un soin particulier pour vous aider à réussir cette étape.</p>
-    </ion-card-content>
+    <button [style.color]="themeColor" clear nav-pop>
+        <ion-icon name="arrow-back"></ion-icon>
+        Retour
+    </button>
+    <ion-card>
+        <ion-card-header>Attention</ion-card-header>
+        <ion-card-content>
+            <p>Vous êtes sur le point de procéder à la validation, complétion et éventuellement modifications
+                des informations qui vont être installées sur votre <span *ngIf="!isEmployer">contrat de mission</span>
+                <span *ngIf="isEmployer">contrat de mise à disposition</span>. </p>
+            <p>Cette étape exige toute votre attention pour éviter la signature d'un contrat avec des informations
+                erronées.</p>
+            <p>Nous avons apporté un soin particulier pour vous aider à réussir cette étape.</p>
+        </ion-card-content>
 
-    <ion-item>
-      <button item-right outline (click)="gotoContractForm()">Je confirme avoir lu et compris</button>
-    </ion-item>
-  </ion-card>
+        <ion-item>
+            <button item-right outline (click)="gotoContractForm()">Je confirme avoir lu et compris</button>
+        </ion-item>
+    </ion-card>
 
 </ion-content>

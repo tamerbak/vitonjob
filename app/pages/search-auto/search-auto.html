@@ -1,58 +1,71 @@
 <ion-header>
-	<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" >
-		<button menuToggle>
-			<ion-icon name="menu"></ion-icon>
-		</button>
-		<ion-title>Recherche automatique</ion-title>
-	</ion-navbar>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+        <button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>Recherche automatique</ion-title>
+    </ion-navbar>
 </ion-header>
 
 <ion-content>
-	<ion-list text-wrap>
-		<ion-list-header>
-			Offres en mode recherche automatique
-		</ion-list-header>
-		<ion-item *ngFor="let offer of autoSearchOffers">
-			<ion-row (click)="launchSearch(offer, true)">
-				<ion-col><h3>{{offer.title}}</h3></ion-col>			
-				<ion-col width-10><ion-icon name="{{offer.arrowLabel}}" item-right></ion-icon></ion-col>
-			</ion-row>
-			<ion-card [hidden]="offer.isResultHidden">
-			  <ion-card-header>
-				Offres correspondantes
-			  </ion-card-header>
-			  <ion-list text-wrap>
-				  <ion-card *ngFor="let item of searchResults, let i=index">
-					  <ion-item no-lines text-wrap style="background-color: lightcyan">
-						  <ion-avatar item-left>
-							  <img [src]="item.avatar">
-						  </ion-avatar>
-						  <h2>{{isEmployer ? item.prenom + ' ' + item.nom.substring(0,1) + '.' : item.entreprise}}</h2>
-						  <h4>{{item.titreOffre}}</h4>
-						  <p><ion-icon name="ios-timer" [style.color]="availability" style="font-size: large;"></ion-icon> &nbsp; Disponible</p>
-						  <ion-badge item-right secondary>{{(item.matching.toString().indexOf('.') < 0) ? item.matching:item.matching.toString().split('.')[0]}}%</ion-badge>
-					  </ion-item>
+    <ion-list text-wrap>
+        <ion-list-header>
+            Offres en mode recherche automatique
+        </ion-list-header>
+        <ion-item *ngFor="let offer of autoSearchOffers">
+            <ion-row (click)="launchSearch(offer, true)">
+                <ion-col><h3>{{offer.title}}</h3></ion-col>
+                <ion-col width-10>
+                    <ion-icon name="{{offer.arrowLabel}}" item-right></ion-icon>
+                </ion-col>
+            </ion-row>
+            <ion-card [hidden]="offer.isResultHidden">
+                <ion-card-header>
+                    Offres correspondantes
+                </ion-card-header>
+                <ion-list text-wrap>
+                    <ion-card *ngFor="let item of searchResults, let i=index">
+                        <ion-item no-lines text-wrap style="background-color: lightcyan">
+                            <ion-avatar item-left>
+                                <img [src]="item.avatar">
+                            </ion-avatar>
+                            <h2>{{isEmployer ? item.prenom + ' ' + item.nom.substring(0,1) + '.' :
+                                item.entreprise}}</h2>
+                            <h4>{{item.titreOffre}}</h4>
+                            <p>
+                                <ion-icon name="ios-timer" [style.color]="availability"
+                                          style="font-size: large;"></ion-icon>
+                                &nbsp; Disponible
+                            </p>
+                            <ion-badge item-right secondary>{{(item.matching.toString().indexOf('.') < 0) ?
+                                item.matching:item.matching.toString().split('.')[0]}}%
+                            </ion-badge>
+                        </ion-item>
 
-					  <ion-row><ion-col text-center style="padding-top: 0; padding-bottom: 0;">
-						  <button clear small (click)="itemSelected(item)" style="text-decoration: underline;">Voir plus de détails</button>
-					  </ion-col></ion-row>
-				  </ion-card>
-				</ion-list>
-			</ion-card>
-		</ion-item>
-	</ion-list>
-	
-	<ion-list text-wrap>
-		<ion-list-header>
-			Offres publiques
-		</ion-list-header>
-		<ion-item *ngFor="let publicOffer of publicOffers " (click)="launchSearch(publicOffer, false)">
-			<h3 class="h3-margintop">{{publicOffer.title}}</h3>
-			<p>Cliquer pour voir plus de détail</p>
-			<ion-badge [style.backgroundColor]="themeColor" item-right>
-				<ion-spinner name="crescent" [hidden]="(publicOffer.correspondantsCount >= 0)"></ion-spinner>
-				{{(publicOffer.correspondantsCount < 0) ? '' : publicOffer.correspondantsCount}}
-			</ion-badge>
-		</ion-item>
-	</ion-list>
+                        <ion-row>
+                            <ion-col text-center style="padding-top: 0; padding-bottom: 0;">
+                                <button clear small (click)="itemSelected(item)" style="text-decoration: underline;">
+                                    Voir plus de détails
+                                </button>
+                            </ion-col>
+                        </ion-row>
+                    </ion-card>
+                </ion-list>
+            </ion-card>
+        </ion-item>
+    </ion-list>
+
+    <ion-list text-wrap>
+        <ion-list-header>
+            Offres publiques
+        </ion-list-header>
+        <ion-item *ngFor="let publicOffer of publicOffers " (click)="launchSearch(publicOffer, false)">
+            <h3 class="h3-margintop">{{publicOffer.title}}</h3>
+            <p>Cliquer pour voir plus de détail</p>
+            <ion-badge [style.backgroundColor]="themeColor" item-right>
+                <ion-spinner name="crescent" [hidden]="(publicOffer.correspondantsCount >= 0)"></ion-spinner>
+                {{(publicOffer.correspondantsCount < 0) ? '' : publicOffer.correspondantsCount}}
+            </ion-badge>
+        </ion-item>
+    </ion-list>
 </ion-content>		

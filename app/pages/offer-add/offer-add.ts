@@ -1,4 +1,14 @@
-import { NavController, NavParams, Toast, Modal, LocalStorage, Storage, Loading, Alert, ViewController} from 'ionic-angular';
+import {
+    NavController,
+    NavParams,
+    Toast,
+    Modal,
+    LocalStorage,
+    Storage,
+    Loading,
+    Alert,
+    ViewController
+} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalJobPage} from "../modal-job/modal-job";
@@ -7,9 +17,8 @@ import {ModalLanguagePage} from "../modal-language/modal-language";
 import {ModalCalendarPage} from "../modal-calendar/modal-calendar";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {OfferListPage} from "../offer-list/offer-list";
-import {isUndefined} from "ionic-angular/util";
 import {Component} from "@angular/core";
-import {ContractPage} from '../contract/contract';
+import {ContractPage} from "../contract/contract";
 
 /*
  Generated class for the OfferAddPage page.
@@ -23,30 +32,30 @@ import {ContractPage} from '../contract/contract';
 })
 export class OfferAddPage {
 
-    themeColor:string;
-    inversedThemeColor:string;
-    isEmployer:boolean;
-    steps:{
-        isJob:boolean,
-        isQuality:boolean,
-        isLanguage:boolean,
-        isCalendar:boolean
+    themeColor: string;
+    inversedThemeColor: string;
+    isEmployer: boolean;
+    steps: {
+        isJob: boolean,
+        isQuality: boolean,
+        isLanguage: boolean,
+        isCalendar: boolean
     };
-    validated:{
-        isJob:boolean,
-        isQuality:boolean,
-        isLanguage:boolean,
-        isCalendar:boolean
+    validated: {
+        isJob: boolean,
+        isQuality: boolean,
+        isLanguage: boolean,
+        isCalendar: boolean
     };
     nav: NavController;
-    localOffer:Storage;
-    offerService:OffersService;
-    visibleOffer:boolean;
-    offerToBeAdded:{jobData:any, calendarData:any, qualityData:any, languageData:any,
-        visible:boolean, title:string, status:string};
-    backgroundImage:any;
+    localOffer: Storage;
+    offerService: OffersService;
+    visibleOffer: boolean;
+    offerToBeAdded: {jobData: any, calendarData: any, qualityData: any, languageData: any,
+        visible: boolean, title: string, status: string};
+    backgroundImage: any;
 
-    constructor(public nav:NavController, private gc:GlobalConfigs, private os:OffersService, navParams : NavParams, private viewCtrl: ViewController) {
+    constructor(public nav: NavController, private gc: GlobalConfigs, private os: OffersService, navParams: NavParams, private viewCtrl: ViewController) {
 
         // Set global configs
         // Get target to determine configs
@@ -58,8 +67,8 @@ export class OfferAddPage {
         //Initializing PAGE:
         this.initializePage(config);
         this.offerService = os;
-		this.nav = nav;
-		this.navParams = navParams;
+        this.nav = nav;
+        this.navParams = navParams;
     }
 
 
@@ -104,7 +113,7 @@ export class OfferAddPage {
     /**
      * @description Initializing local storage dara
      */
-    initLocalStorageOffer(){
+    initLocalStorageOffer() {
         // --> Job state
         this.localOffer.get('jobData').then(value => {
             value = JSON.parse(value);
@@ -152,7 +161,7 @@ export class OfferAddPage {
      * @param message
      * @param duration
      */
-    presentToast(message:string, duration:number) {
+    presentToast(message: string, duration: number) {
         let toast = Toast.create({
             message: message,//"Agenda bien insérée, Votre offre est valide",
             duration: duration * 1000
@@ -246,7 +255,7 @@ export class OfferAddPage {
 			<img src='img/loading.gif' />
 			</div>
 			`,
-            spinner : 'hide'
+            spinner: 'hide'
         });
         this.nav.present(loading);
         this.offerService.setOfferInLocal(this.offerToBeAdded, this.projectTarget)
@@ -259,57 +268,60 @@ export class OfferAddPage {
 
                         this.localOffer.clear();
                         loading.dismiss();
-						//decide to which page redirect to
-						let fromPage = this.navParams.get('fromPage');
-						let searchRes = this.navParams.get('jobyer');
-						if(fromPage == "Search"){
-							this.nav.push(ContractPage, {jobyer: searchRes, currentOffer : this.offerToBeAdded}).then(() => {
-								// first we find the index of the current view controller:
-								const index = this.viewCtrl.index;
-								// then we remove it from the navigation stack
-								this.nav.remove(index);
-							});
-						}else{
-							this.nav.setRoot(OfferListPage);	
-						}
+                        //decide to which page redirect to
+                        let fromPage = this.navParams.get('fromPage');
+                        let searchRes = this.navParams.get('jobyer');
+                        if (fromPage == "Search") {
+                            this.nav.push(ContractPage, {
+                                jobyer: searchRes,
+                                currentOffer: this.offerToBeAdded
+                            }).then(() => {
+                                // first we find the index of the current view controller:
+                                const index = this.viewCtrl.index;
+                                // then we remove it from the navigation stack
+                                this.nav.remove(index);
+                            });
+                        } else {
+                            this.nav.setRoot(OfferListPage);
+                        }
                     })
 
             });
     }
-	
-	showVideoAlert(){
-		let prompt = Alert.create({
-		  title: 'Attacher une vidéo',
-		  message: "<div id='alertDiv'><ol><li>Ouvrez l'application Youtube </li>" +
-          "<li>Appuyez sur l'icône de <b>caméra</b> <img src='../img/youtube.png'></li>" +
-          "<li>Enregistrez une nouvelle vidéo ou sélectionnez-en une existante</li>" +
-          "<li>Renseignez le titre, la description et choisissez l'option '<b>Non répertoriée</b>' dans la confidentialité</li>" +
-          "<li>Appuyez sur <img src='../img/youtube2.png'> pour mettre en ligne votre vidéo</li>" +
-          "<li>Appuyez sur <img src='../img/youtube3.png'><b> > Partager > Copier le lien</b></li>" +
-          "<li>Coller le lien dans la zone ci-dessous:</li></ol></div>",
-		  inputs: [
-			{
-			  name: 'videolink',
-			  placeholder: 'Lien youtube'
-			},
-		  ],
-		  buttons: [
-			{
-			  text: 'Annuler',
-			  handler: data => {
-				console.log('Cancel clicked');
-			  }
-			},
-			{
-			  text: 'Ajouter',
-			  handler: data => {
-				console.log('Saved clicked');
-				this.localOffer.set('videolink', data["videolink"]);
-				this.offerToBeAdded.videolink = data["videolink"];
-			  }
-			}
-		  ]
-		});
-		this.nav.present(prompt);
-	}
+
+    showVideoAlert() {
+        let prompt = Alert.create({
+            title: 'Attacher une vidéo',
+            message: "<div id='alertDiv'><ol><li>Ouvrez l'application Youtube </li>" +
+            "<li>Appuyez sur l'icône de <b>caméra</b> <img src='../img/youtube.png'></li>" +
+            "<li>Enregistrez une nouvelle vidéo ou sélectionnez-en une existante</li>" +
+            "<li>Renseignez le titre, la description et choisissez l'option '<b>Non répertoriée</b>' dans la confidentialité</li>" +
+            "<li>Appuyez sur <img src='../img/youtube2.png'> pour mettre en ligne votre vidéo</li>" +
+            "<li>Appuyez sur <img src='../img/youtube3.png'><b> > Partager > Copier le lien</b></li>" +
+            "<li>Coller le lien dans la zone ci-dessous:</li></ol></div>",
+            inputs: [
+                {
+                    name: 'videolink',
+                    placeholder: 'Lien youtube'
+                },
+            ],
+            buttons: [
+                {
+                    text: 'Annuler',
+                    handler: data => {
+                        console.log('Cancel clicked');
+                    }
+                },
+                {
+                    text: 'Ajouter',
+                    handler: data => {
+                        console.log('Saved clicked');
+                        this.localOffer.set('videolink', data["videolink"]);
+                        this.offerToBeAdded.videolink = data["videolink"];
+                    }
+                }
+            ]
+        });
+        this.nav.present(prompt);
+    }
 }

@@ -1,13 +1,13 @@
-import {NavController, Loading, Alert, Storage, SqlStorage} from 'ionic-angular';
-import {Configs} from '../../configurations/configs';
-import {GlobalConfigs} from '../../configurations/globalConfigs';
+import {NavController, Loading, Alert, Storage, SqlStorage} from "ionic-angular";
+import {Configs} from "../../configurations/configs";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Component} from "@angular/core";
 import {PaylineServices} from "../../providers/payline-services/payline-services";
 import {MissionListPage} from "../mission-list/mission-list";
 
 @Component({
     templateUrl: 'build/pages/wallet-create/wallet-create.html',
-    providers : [PaylineServices]
+    providers: [PaylineServices]
 })
 export class WalletCreatePage {
 
@@ -16,21 +16,21 @@ export class WalletCreatePage {
     mangoPayTitle: string;
     themeColor: string;
 
-    cardNumber:string;
-    cardExpirationDate:number;
-    cardCvv:string;
-    cardType : string = "CB";
+    cardNumber: string;
+    cardExpirationDate: number;
+    cardCvv: string;
+    cardType: string = "CB";
 
-    service : PaylineServices;
-    storage : Storage;
+    service: PaylineServices;
+    storage: Storage;
 
-    existingWallet : boolean = false;
-    walletMsg : string = '';
-	currentUserVar: string;
+    existingWallet: boolean = false;
+    walletMsg: string = '';
+    currentUserVar: string;
 
     constructor(public nav: NavController,
                 gc: GlobalConfigs,
-                service : PaylineServices) {
+                service: PaylineServices) {
 
         // Set global configs
         // Get target to determine configs
@@ -42,30 +42,30 @@ export class WalletCreatePage {
         this.service = service;
         this.storage = new Storage(SqlStorage);
         // Set local variables and messages
-        this.isEmployer = (this.projectTarget=='employer');
+        this.isEmployer = (this.projectTarget == 'employer');
         this.mangoPayTitle = "Prise d'empreinte";
         this.themeColor = config.themeColor;
-		this.currentUserVar = config.currentUserVar;
+        this.currentUserVar = config.currentUserVar;
         this.nav = nav;
         this.storage.get(this.currentUserVar).then(data => {
             let user = JSON.parse(data);
             this.service.checkWallet(user).then(walletId => {
-                if(walletId && walletId != 'null' && walletId.length>0){
+                if (walletId && walletId != 'null' && walletId.length > 0) {
                     this.existingWallet = true;
                     let cnum = walletId.substring(walletId.length - 4);
-                    this.walletMsg = "Si vous désirez utiliser la même carte bancaire que vous avez renseigné au préalable (XXXXXXXXXXXX"+cnum+") vous pouvez passer cette étape.";
+                    this.walletMsg = "Si vous désirez utiliser la même carte bancaire que vous avez renseigné au préalable (XXXXXXXXXXXX" + cnum + ") vous pouvez passer cette étape.";
                 }
             });
         });
 
     }
 
-    openWallet(){
+    openWallet() {
         let card = {
-            cardNumber : this.cardNumber,
-            cardType : this.cardType,
-            expireDate : this.cardExpirationDate,
-            cvx : this.cardCvv
+            cardNumber: this.cardNumber,
+            cardType: this.cardType,
+            expireDate: this.cardExpirationDate,
+            cvx: this.cardCvv
         };
         let loading = Loading.create({
             content: ` 
@@ -73,7 +73,7 @@ export class WalletCreatePage {
 			<img src='img/loading.gif' />
 			</div>
 			`,
-            spinner : 'hide'
+            spinner: 'hide'
         });
 
         this.nav.present(loading);
@@ -97,7 +97,7 @@ export class WalletCreatePage {
         });
     }
 
-    gotomissions(){
+    gotomissions() {
         this.nav.setRoot(MissionListPage);
     }
 }

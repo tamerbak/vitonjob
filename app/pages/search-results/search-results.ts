@@ -1,12 +1,11 @@
-import {NavController, ActionSheet, Platform, Slides, Alert, Modal, NavParams, Toast} from 'ionic-angular';
-import {Storage, SqlStorage, LocalStorage} from 'ionic-angular';
-import {GlobalConfigs} from '../../configurations/globalConfigs';
-import {ViewChild, Component, OnInit} from '@angular/core'
+import {NavController, Platform, Alert, Modal, NavParams, Toast, Storage, SqlStorage} from "ionic-angular";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
+import {Component, OnInit} from "@angular/core";
 import {SearchService} from "../../providers/search-service/search-service";
 import {UserService} from "../../providers/user-service/user-service";
-import {ContractPage} from '../contract/contract';
-import {CivilityPage} from '../civility/civility';
-import {PhonePage} from '../phone/phone';
+import {ContractPage} from "../contract/contract";
+import {CivilityPage} from "../civility/civility";
+import {PhonePage} from "../phone/phone";
 import {isUndefined} from "ionic-angular/util";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {OfferAddPage} from "../offer-add/offer-add";
@@ -22,7 +21,7 @@ import {NotificationContractPage} from "../notification-contract/notification-co
  * @description search results view
  * @module Search
  */
-declare var google:any;
+declare var google: any;
 
 @Component({
     templateUrl: 'build/pages/search-results/search-results.html',
@@ -30,54 +29,54 @@ declare var google:any;
 })
 export class SearchResultsPage implements OnInit {
 
-    searchResults:any;
-    listView:boolean = false;
-    cardView:boolean = false;
-    mapView:string;
-    platform:Platform;
-    map:any;
-    currentCardIndex:number = 0;
-    projectTarget:any;
-    avatar:string;
-    resultsCount:number = 0;
-    isUserAuthenticated:boolean;
-    employer:any;
-    isEmployer:boolean;
+    searchResults: any;
+    listView: boolean = false;
+    cardView: boolean = false;
+    mapView: string;
+    platform: Platform;
+    map: any;
+    currentCardIndex: number = 0;
+    projectTarget: any;
+    avatar: string;
+    resultsCount: number = 0;
+    isUserAuthenticated: boolean;
+    employer: any;
+    isEmployer: boolean;
 
     //  Attributes for offer creation proposition
-    proposedJob:any;
-    proposedLanguages:any = [];
-    proposedQualities:any = [];
-    offerProposition:boolean = false;
-    offersService:any;
-    navParams:NavParams;
+    proposedJob: any;
+    proposedLanguages: any = [];
+    proposedQualities: any = [];
+    offerProposition: boolean = false;
+    offersService: any;
+    navParams: NavParams;
 
-    toast:Toast;
-    showingToast:boolean = false;
+    toast: Toast;
+    showingToast: boolean = false;
 
-    db:Storage;
-    contratsAttente:any = [];
-    availability:string = "green";
-    backgroundImage:string;
-    themeColor:string;
-    searchService:any;
+    db: Storage;
+    contratsAttente: any = [];
+    availability: string = "green";
+    backgroundImage: string;
+    themeColor: string;
+    searchService: any;
 
-    iconName:string;
-    isMapView:boolean;
+    iconName: string;
+    isMapView: boolean;
 
     /**
      * @description While constructing the view we get the last results of the search from the user
      * @param nav Navigation controller of the application
      * @param searchService the provider that allows us to get data from search service
      */
-    constructor(public globalConfig:GlobalConfigs,
-                public nav:NavController,
-                navParams:NavParams,
-                private searchService:SearchService,
-                private userService:UserService,
-                offersService:OffersService,
-                platform:Platform,
-                private profileService:ProfileService) {
+    constructor(public globalConfig: GlobalConfigs,
+                public nav: NavController,
+                navParams: NavParams,
+                private searchService: SearchService,
+                private userService: UserService,
+                offersService: OffersService,
+                platform: Platform,
+                private profileService: ProfileService) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
         let configInversed = this.projectTarget != 'jobyer' ? Configs.setConfigs('jobyer') : Configs.setConfigs('employer');
@@ -236,7 +235,7 @@ export class SearchResultsPage implements OnInit {
             let latlng = new google.maps.LatLng(r.latitude, r.longitude);
             locatedResults.push(r);
             addresses.push(latlng);
-            let matching:string = (r.matching.toString().indexOf('.') < 0) ? r.matching : r.matching.toString().split('.')[0];
+            let matching: string = (r.matching.toString().indexOf('.') < 0) ? r.matching : r.matching.toString().split('.')[0];
             if (this.isEmployer) {
                 contentTable.push("<h4>" + r.prenom + ' ' + r.nom.substring(0, 1) + ". <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;" + matching + "%&nbsp;</span></h4>" +
                     "<p>" + r.titreOffre + "</p>" +
@@ -255,7 +254,7 @@ export class SearchResultsPage implements OnInit {
 
     }
 
-    addMarkers(addresses:any, bounds:any, contentTable:any, locatedResults:any) {
+    addMarkers(addresses: any, bounds: any, contentTable: any, locatedResults: any) {
 
 
         for (let i = 0; i < addresses.length; i++) {

@@ -1,89 +1,88 @@
-import {Component} from '@angular/core';
-import {NavController, Loading} from 'ionic-angular';
+import {Component} from "@angular/core";
+import {NavController, Loading, Storage, SqlStorage} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {AuthenticationService} from "../../providers/authentication.service";
-import {Storage, SqlStorage} from 'ionic-angular';
 import {GlobalService} from "../../providers/global.service";
 
 /*
-  Generated class for the SettingPasswordPage page.
+ Generated class for the SettingPasswordPage page.
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
+ See http://ionicframework.com/docs/v2/components/#navigation for more info on
+ Ionic pages and navigation.
+ */
 @Component({
-  templateUrl: 'build/pages/setting-password/setting-password.html',
-  providers: [AuthenticationService, GlobalService]
+    templateUrl: 'build/pages/setting-password/setting-password.html',
+    providers: [AuthenticationService, GlobalService]
 })
 export class SettingPasswordPage {
-  options:any;
-  projectTarget:string;
-  isEmployer:boolean;
-  password1: string;
-  password2: string;
-  currentUser;
-  currentUserVar: string;
+    options: any;
+    projectTarget: string;
+    isEmployer: boolean;
+    password1: string;
+    password2: string;
+    currentUser;
+    currentUserVar: string;
 
 
-  constructor(public nav: NavController, gc: GlobalConfigs, private authService: AuthenticationService, private globalService: GlobalService) {
-    this.projectTarget = gc.getProjectTarget();
-    let config = Configs.setConfigs(this.projectTarget);
-    this.options = config.options;
-    this.isEmployer = (this.projectTarget === 'employer');
-	this.themeColor = config.themeColor;
-	this.currentUserVar = config.currentUserVar;
-    this.storage = new Storage(SqlStorage);
-  }
+    constructor(public nav: NavController, gc: GlobalConfigs, private authService: AuthenticationService, private globalService: GlobalService) {
+        this.projectTarget = gc.getProjectTarget();
+        let config = Configs.setConfigs(this.projectTarget);
+        this.options = config.options;
+        this.isEmployer = (this.projectTarget === 'employer');
+        this.themeColor = config.themeColor;
+        this.currentUserVar = config.currentUserVar;
+        this.storage = new Storage(SqlStorage);
+    }
 
-  modifyPasswd() {
-    let loading = Loading.create({
-      content: ` 
+    modifyPasswd() {
+        let loading = Loading.create({
+            content: ` 
 			<div>
 			<img src='img/loading.gif' />
 			</div>
 			`,
-      spinner : 'hide'
-    });
-    this.nav.present(loading);
-    this.storage.get(this.currentUserVar).then((value) => {
-      if(value){
-        this.currentUser = JSON.parse(value);
-        let pwd = md5(this.password1);
-        this.authService.updatePasswordByPhone( this.currentUser.tel,pwd)
-            .then(data => {
-              console.log(data);
-              //case of authentication failure : server unavailable or connection probleme
-              if (!data || data.length == 0 || data.status == "failure") {
-                console.log(data);
-                loading.dismiss();
-                this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
-                return;
-              }
-              loading.dismiss();
-              this.nav.pop();
-            });
-      }
-    });
-  }
+            spinner: 'hide'
+        });
+        this.nav.present(loading);
+        this.storage.get(this.currentUserVar).then((value) => {
+            if (value) {
+                this.currentUser = JSON.parse(value);
+                let pwd = md5(this.password1);
+                this.authService.updatePasswordByPhone(this.currentUser.tel, pwd)
+                    .then(data => {
+                        console.log(data);
+                        //case of authentication failure : server unavailable or connection probleme
+                        if (!data || data.length == 0 || data.status == "failure") {
+                            console.log(data);
+                            loading.dismiss();
+                            this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                            return;
+                        }
+                        loading.dismiss();
+                        this.nav.pop();
+                    });
+            }
+        });
+    }
 
-  /**
-   * @description show error msg if password is not valid
-   */
-  showPassword1Error(){
-    if(this.password1)
-      return this.password1.length < 6;
-  }
+    /**
+     * @description show error msg if password is not valid
+     */
+    showPassword1Error() {
+        if (this.password1)
+            return this.password1.length < 6;
+    }
 
-  /**
-   * @description check if the password and its confirmation are the same
-   */
-  showPassword2Error(){
-    if(this.password2)
-      return this.password2 != this.password1;
-  }
+    /**
+     * @description check if the password and its confirmation are the same
+     */
+    showPassword2Error() {
+        if (this.password2)
+            return this.password2 != this.password1;
+    }
 
-  isBtnDisabled() {
-    return (!this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error())
-  }
+    isBtnDisabled() {
+        return (!this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error())
+    }
 }

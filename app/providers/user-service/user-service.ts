@@ -1,5 +1,5 @@
-import {Storage, SqlStorage} from 'ionic-angular';
-import {Injectable} from '@angular/core';
+import {Storage, SqlStorage} from "ionic-angular";
+import {Injectable} from "@angular/core";
 import {Configs} from "../../configurations/configs";
 
 /**
@@ -9,9 +9,9 @@ import {Configs} from "../../configurations/configs";
  */
 @Injectable()
 export class UserService {
-    data:any = null;
-    db:any;
-	
+    data: any = null;
+    db: any;
+
 
     constructor() {
         this.db = new Storage(SqlStorage);
@@ -30,7 +30,7 @@ export class UserService {
      * @return promise
      */
     getCurrentUser(projectTarget) {
-		this.configuration = Configs.setConfigs(projectTarget);
+        this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
         return this.db.get(currentUserVar);
     }

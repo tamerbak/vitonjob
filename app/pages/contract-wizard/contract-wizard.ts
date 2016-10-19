@@ -1,5 +1,5 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
-import {NavController} from 'ionic-angular';
+import {Component, ElementRef, ViewChild} from "@angular/core";
+import {NavController} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 
@@ -16,38 +16,38 @@ declare var myCol;
     providers: [GlobalConfigs]
 })
 export class ContractWizardPage {
-    @ViewChild('myCanvas') myCanvas:ElementRef;
-    @ViewChild('myCol') myCol:ElementRef;
-    projectTarget:string;
-    themeColor:string;
-    isEmployer:boolean;
-    backgroundImage:any;
-    isDisabled:boolean;
-    systemColor:{
-        validated:string,
-        inProgress:string,
-        nextStep:string
+    @ViewChild('myCanvas') myCanvas: ElementRef;
+    @ViewChild('myCol') myCol: ElementRef;
+    projectTarget: string;
+    themeColor: string;
+    isEmployer: boolean;
+    backgroundImage: any;
+    isDisabled: boolean;
+    systemColor: {
+        validated: string,
+        inProgress: string,
+        nextStep: string
     };
-    stepStyle:{
-        interviewColor:string,
-        validationColor:string,
-        signatureColor:string,
-        ArchiveColor:string
+    stepStyle: {
+        interviewColor: string,
+        validationColor: string,
+        signatureColor: string,
+        ArchiveColor: string
     };
-    step:{
-        employer:{
-            isValidated:boolean,
-            isSigned:boolean,
-            isCBRIB:boolean
+    step: {
+        employer: {
+            isValidated: boolean,
+            isSigned: boolean,
+            isCBRIB: boolean
         }
-        jobyer:{
-            isValidated:boolean,
-            isSigned:boolean,
-            isCBRIB:boolean
+        jobyer: {
+            isValidated: boolean,
+            isSigned: boolean,
+            isCBRIB: boolean
         }
     };
 
-    constructor(private nav:NavController, gc:GlobalConfigs) {
+    constructor(private nav: NavController, gc: GlobalConfigs) {
 
         this.projectTarget = gc.getProjectTarget();
         let config = Configs.setConfigs(this.projectTarget);
@@ -100,7 +100,7 @@ export class ContractWizardPage {
     initContractState() {
 
         // todo: get contract informations from backend
-        
+
         //test part :
         this.step.employer = {
             isValidated: false,

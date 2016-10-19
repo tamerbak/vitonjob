@@ -1,22 +1,22 @@
 <ion-header>
-<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
-  <ion-title>Sélection</ion-title>
-  <ion-buttons end>
-    <button (click)="closeModal()">
-      <ion-icon name="close-circle" style="font-size: xx-large;"> </ion-icon>
-    </button>
-  </ion-buttons>
-</ion-navbar>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
+        <ion-title>Sélection</ion-title>
+        <ion-buttons end>
+            <button (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding class="modal-selection">
-  <ion-searchbar [(ngModel)]="searchQuery"
-                 (ionInput)="getItems($event)"
-                 [placeholder]="searchPlaceholder"
-                 [cancelButtonText]="cancelButtonText"></ion-searchbar>
-  <ion-list text-wrap>
-    <ion-item *ngFor="let item of list" (click)="validateModal(item)">
-      {{ item.libelle }}
-    </ion-item>
-  </ion-list>
+    <ion-searchbar [(ngModel)]="searchQuery"
+                   (ionInput)="getItems($event)"
+                   [placeholder]="searchPlaceholder"
+                   [cancelButtonText]="cancelButtonText"></ion-searchbar>
+    <ion-list text-wrap>
+        <ion-item *ngFor="let item of list" (click)="validateModal(item)">
+            {{ item.libelle }}
+        </ion-item>
+    </ion-list>
 </ion-content>

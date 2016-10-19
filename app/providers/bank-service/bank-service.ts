@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {Http, Headers} from '@angular/http';
-import 'rxjs/add/operator/map';
+import {Injectable} from "@angular/core";
+import {Http} from "@angular/http";
+import "rxjs/add/operator/map";
 import {Configs} from "../../configurations/configs";
 
 /*
@@ -13,11 +13,12 @@ import {Configs} from "../../configurations/configs";
 export class BankService {
     data: any = null;
 
-    constructor(public http: Http) {}
+    constructor(public http: Http) {
+    }
 
-    loadBankAccount(id, table, projectTarget){
+    loadBankAccount(id, table, projectTarget) {
         let sql = "select nom_de_banque, detenteur_du_compte, iban, bic " +
-            "from user_coordonnees_bancaires where "+table+"="+id;
+            "from user_coordonnees_bancaires where " + table + "=" + id;
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -34,14 +35,14 @@ export class BankService {
         });
     }
 
-    saveBankAccount(id, table, voidAccount, bank){
+    saveBankAccount(id, table, voidAccount, bank) {
         let sql = "";
-        let estEmployeur = table == "fk_user_jobyer"?"NON":"OUI";
-        if(voidAccount)
-            sql = "insert into user_coordonnees_bancaires (iban, bic, nom_de_banque, detenteur_du_compte, est_employeur, "+table+") values " +
-                "('"+bank.iban+"', '"+bank.bic+"', '"+bank.nom_de_banque+"', '"+bank.detenteur_du_compte+"', '"+estEmployeur+"', "+id+")";
+        let estEmployeur = table == "fk_user_jobyer" ? "NON" : "OUI";
+        if (voidAccount)
+            sql = "insert into user_coordonnees_bancaires (iban, bic, nom_de_banque, detenteur_du_compte, est_employeur, " + table + ") values " +
+                "('" + bank.iban + "', '" + bank.bic + "', '" + bank.nom_de_banque + "', '" + bank.detenteur_du_compte + "', '" + estEmployeur + "', " + id + ")";
         else
-            sql = "update user_coordonnees_bancaires set iban='"+bank.iban+"', bic='"+bank.bic+"', nom_de_banque='"+bank.nom_de_banque+"', detenteur_du_compte='"+bank.detenteur_du_compte+"' where "+table+"="+id;
+            sql = "update user_coordonnees_bancaires set iban='" + bank.iban + "', bic='" + bank.bic + "', nom_de_banque='" + bank.nom_de_banque + "', detenteur_du_compte='" + bank.detenteur_du_compte + "' where " + table + "=" + id;
 
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,

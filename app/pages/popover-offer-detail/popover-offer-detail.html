@@ -1,40 +1,40 @@
 <ion-header>
-<ion-navbar >
-  <ion-title>popover-offer-detail</ion-title>
-</ion-navbar>
+    <ion-navbar>
+        <ion-title>popover-offer-detail</ion-title>
+    </ion-navbar>
 </ion-header>
 
 <ion-content class="popover-offer-detail">
 
-  <ion-list no-lines>
-    <ion-item (click)="copyOffer()">
-      <!--ion-icon name="copy"></ion-icon-->
-      Copier l'offre
-    </ion-item>
+    <ion-list no-lines>
+        <ion-item (click)="copyOffer()">
+            <!--ion-icon name="copy"></ion-icon-->
+            Copier l'offre
+        </ion-item>
 
-    <ion-item (click)="changePrivacy()">
-      <!--ion-icon [name]="visibility ? 'eye' : 'eye-off'"></ion-icon-->
-      Rendre l'offre {{visibility ? 'privée' : 'publique'}}
-    </ion-item>
+        <ion-item (click)="changePrivacy()">
+            <!--ion-icon [name]="visibility ? 'eye' : 'eye-off'"></ion-icon-->
+            Rendre l'offre {{visibility ? 'privée' : 'publique'}}
+        </ion-item>
 
-    <ion-item (click)="launchSearch()">
-      <!--ion-icon name="search"></ion-icon-->
-      Lancer une recherche
-    </ion-item>
-	
-	 <ion-item (click)="autoSearchMode()">
-      {{autoSearch ? 'Désactiver' : 'Activer'}} la recherche auto
-    </ion-item>
+        <ion-item (click)="launchSearch()">
+            <!--ion-icon name="search"></ion-icon-->
+            Lancer une recherche
+        </ion-item>
 
-    <ion-item (click)="showQuote()" *ngIf="isEmployer">
-      <!--ion-icon name="cash"></ion-icon-->
-      Consulter le devis
-    </ion-item>
+        <ion-item (click)="autoSearchMode()">
+            {{autoSearch ? 'Désactiver' : 'Activer'}} la recherche auto
+        </ion-item>
 
-    <ion-item (click)="deleteOffer()">
-      <!--ion-icon name="cash"></ion-icon-->
-      Supprimer l'offre
-    </ion-item>
-  </ion-list>
+        <ion-item (click)="showQuote()" *ngIf="isEmployer">
+            <!--ion-icon name="cash"></ion-icon-->
+            Consulter le devis
+        </ion-item>
+
+        <ion-item (click)="deleteOffer()">
+            <!--ion-icon name="cash"></ion-icon-->
+            Supprimer l'offre
+        </ion-item>
+    </ion-list>
 
 </ion-content>

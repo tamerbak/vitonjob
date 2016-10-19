@@ -1,6 +1,6 @@
-$offer-button-size : 120px;
-$horizontal-align : calc(10% - 1px);
-$vertical-align : calc(20% - 1px);
+$offer-button-size: 120px;
+$horizontal-align: calc(10% - 1px);
+$vertical-align: calc(20% - 1px);
 
 .offer-add {
 
@@ -31,12 +31,12 @@ $vertical-align : calc(20% - 1px);
     width: $offer-button-size;
     height: $offer-button-size;
   }
-  
-  .video-bottom-center{
-	position: absolute;
-	bottom: 20px;
+
+  .video-bottom-center {
+    position: absolute;
+    bottom: 20px;
     right: 0;
-	//left: 20%;
+    //left: 20%;
   }
 
   .icon-top-left {

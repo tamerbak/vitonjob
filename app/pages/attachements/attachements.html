@@ -10,7 +10,7 @@
 
 <ion-content padding class="attachements" [ngStyle]="backgroundImage">
 
-    <button menuToggle  style="background-color: transparent; box-shadow: none" [style.color]="themeColor">
+    <button menuToggle style="background-color: transparent; box-shadow: none" [style.color]="themeColor">
         <ion-icon name="menu"></ion-icon>
         &nbsp;&nbsp;Coffre numérique
     </button>
@@ -21,7 +21,7 @@
     </button>
     <ion-list>
         <ion-item-sliding *ngFor="let a of attachments">
-            <ion-item  (click)="downloadAttachement(a)">
+            <ion-item (click)="downloadAttachement(a)">
                 <h2>{{a.fileName}}</h2>
                 <h3>{{a.uploadDate}}</h3>
             </ion-item>

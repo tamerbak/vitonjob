@@ -81,12 +81,13 @@
     </ion-grid-->
 
 
-
     <ion-card>
-        <ion-item >
+        <ion-item>
             <ion-avatar item-left><img [src]="avatar"></ion-avatar>
             <h3 style="margin-top: 2px;">{{fullName}}</h3>
-            <ion-badge item-right style="margin: 0px 8px 9px 0;">{{(matching.toString().indexOf('.') < 0) ? matching:matching.toString().split('.')[0]}}%</ion-badge>
+            <ion-badge item-right style="margin: 0px 8px 9px 0;">{{(matching.toString().indexOf('.') < 0) ?
+                matching:matching.toString().split('.')[0]}}%
+            </ion-badge>
             <p style="color: yellowgreen">{{starsText}}</p>
         </ion-item>
         <div id="map_canvas" style="height:200px;">
@@ -133,7 +134,8 @@
             </ion-col>
         </ion-row>
 
-        <ion-row style="padding-left: 16px; padding-top: 5px"><span style="font-size: small">Entretien :</span></ion-row>
+        <ion-row style="padding-left: 16px; padding-top: 5px"><span style="font-size: small">Entretien :</span>
+        </ion-row>
         <ion-item>
             <!--button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
                     *ngIf="isEmployer && !result.checkedContract && !isRecruteur"
@@ -146,7 +148,7 @@
                 <ion-icon name="logo-skype"></ion-icon>
             </button>
             <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
-                    (click)="call()"  item-right>
+                    (click)="call()" item-right>
                 <ion-icon name="call"></ion-icon>
             </button>
             <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"

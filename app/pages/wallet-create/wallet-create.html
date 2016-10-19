@@ -1,11 +1,11 @@
 <ion-header>
-<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-  <button menuToggle>
-    <ion-icon name="menu"></ion-icon>
-  </button>
-  <ion-title>Empreinte de carte bancaire</ion-title>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+        <button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>Empreinte de carte bancaire</ion-title>
 
-</ion-navbar>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding class="mangoPay">
@@ -50,28 +50,28 @@
         </ion-col>
 
     </ion-row>
-    
+
     <ion-row>
         <ion-col width-30>
             <ion-item>
                 <ion-label floating>MMAA</ion-label>
-                <ion-input type="text" 
-                        [(ngModel)]="cardExpirationDate"></ion-input>
+                <ion-input type="text"
+                           [(ngModel)]="cardExpirationDate"></ion-input>
             </ion-item>
         </ion-col>
-		
+
         <ion-col width-70>
             <ion-item>
                 <ion-label floating>Code Sécurité</ion-label>
-                <ion-input type="text" 
-                        [(ngModel)]="cardCvv"></ion-input>
+                <ion-input type="text"
+                           [(ngModel)]="cardCvv"></ion-input>
             </ion-item>
         </ion-col>
     </ion-row>
-    
+
     <button [style.backgroundColor]="themeColor" block (click)="openWallet()">
         <ion-icon name="profile"></ion-icon>
-            Enregistrer
+        Enregistrer
     </button>
-  
+
 </ion-content>

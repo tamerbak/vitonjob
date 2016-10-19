@@ -7,10 +7,10 @@
   button .button-outline .button-clear {
     color: black;
   }
-.error-box{
-  color: red;
-  text-align: right;
-}
+  .error-box {
+    color: red;
+    text-align: right;
+  }
   /*#btn-co{
     bottom: 11em;
     position: absolute;
@@ -25,8 +25,8 @@
     bottom: 3em;
   }*/
 
-  .button{
-    box-shadow: none!important;
+  .button {
+    box-shadow: none !important;
   }
 
   ion-item {
@@ -44,6 +44,6 @@
     left: 0.5em;
   }*/
   .text-input {
-    margin-left: 1em!important;
+    margin-left: 1em !important;
   }
 }

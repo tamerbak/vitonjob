@@ -1,77 +1,75 @@
 <ion-header>
-<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-  <ion-title>Nouvelle offre</ion-title>
-</ion-navbar>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+        <ion-title>Nouvelle offre</ion-title>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding class="offer-add" [ngStyle]="backgroundImage">
 
-  <!--video-->
-  <ion-row>
-    <ion-col text-center>
-      <button [style.backgroundColor]="themeColor" (click)="showVideoAlert()"
-              [disabled] = "!validated.isCalendar || !validated.isJob">
-        <ion-icon name="videocam" is-active="false"></ion-icon>
-        Je me valorise avec une vidéo
-      </button>
-    </ion-col>
-  </ion-row>
+    <!--video-->
+    <ion-row>
+        <ion-col text-center>
+            <button [style.backgroundColor]="themeColor" (click)="showVideoAlert()"
+                    [disabled]="!validated.isCalendar || !validated.isJob">
+                <ion-icon name="videocam" is-active="false"></ion-icon>
+                Je me valorise avec une vidéo
+            </button>
+        </ion-col>
+    </ion-row>
 
-  <!-- Job -->
-  <ion-label class="text-top-left">Job</ion-label>
-  <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
-            class="icon-top-left" [hidden]="!validated.isJob"></ion-icon>
-  <ion-icon name="warning" style="color: orange;"
-            class="icon-top-left" [hidden]="validated.isJob || !steps.isJob"></ion-icon>
-  <button fab class = "offer-top-left" [disabled] = "!steps.isJob"
-          [style.backgroundColor]="themeColor" (click)="showJobModal()">
-    <ion-icon name="briefcase" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
-  </button>
+    <!-- Job -->
+    <ion-label class="text-top-left">Job</ion-label>
+    <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
+              class="icon-top-left" [hidden]="!validated.isJob"></ion-icon>
+    <ion-icon name="warning" style="color: orange;"
+              class="icon-top-left" [hidden]="validated.isJob || !steps.isJob"></ion-icon>
+    <button fab class="offer-top-left" [disabled]="!steps.isJob"
+            [style.backgroundColor]="themeColor" (click)="showJobModal()">
+        <ion-icon name="briefcase" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
+    </button>
 
-  <!-- Calendar -->
-  <ion-label class="text-top-right">Agenda</ion-label>
-  <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
-            class="icon-top-right" [hidden]="!validated.isCalendar"></ion-icon>
-  <ion-icon name="warning" style="color: orange;"
-            class="icon-top-right" [hidden]="validated.isCalendar || !steps.isCalendar"></ion-icon>
-  <button fab class = "offer-top-right" [disabled] = "!steps.isCalendar && !validated.isJob"
-          [style.backgroundColor]="themeColor" (click)="showCalendarModal()">
-    <ion-icon name="calendar" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
-  </button>
+    <!-- Calendar -->
+    <ion-label class="text-top-right">Agenda</ion-label>
+    <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
+              class="icon-top-right" [hidden]="!validated.isCalendar"></ion-icon>
+    <ion-icon name="warning" style="color: orange;"
+              class="icon-top-right" [hidden]="validated.isCalendar || !steps.isCalendar"></ion-icon>
+    <button fab class="offer-top-right" [disabled]="!steps.isCalendar && !validated.isJob"
+            [style.backgroundColor]="themeColor" (click)="showCalendarModal()">
+        <ion-icon name="calendar" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
+    </button>
 
-  <!-- Quality -->
-  <ion-label class="text-bottom-left">Qualités</ion-label>
-  <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
-            class="icon-bottom-left" [hidden]="!validated.isQuality"></ion-icon>
-  <button fab class = "offer-bottom-left" [disabled] = "!validated.isCalendar || !validated.isJob"
-          [style.backgroundColor]="themeColor" (click)="showQualityModal()">
-    <ion-icon name="happy" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
-  </button>
+    <!-- Quality -->
+    <ion-label class="text-bottom-left">Qualités</ion-label>
+    <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
+              class="icon-bottom-left" [hidden]="!validated.isQuality"></ion-icon>
+    <button fab class="offer-bottom-left" [disabled]="!validated.isCalendar || !validated.isJob"
+            [style.backgroundColor]="themeColor" (click)="showQualityModal()">
+        <ion-icon name="happy" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
+    </button>
 
-  <!-- Languages -->
-  <ion-label class="text-bottom-right">Langues</ion-label>
-  <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
-            class="icon-bottom-right" [hidden]="!validated.isLanguage"></ion-icon>
-  <button fab class = "offer-bottom-right" [disabled] = "!validated.isCalendar || !validated.isJob"
-          [style.backgroundColor]="themeColor" (click)="showLanguageModal()">
-    <ion-icon name="globe" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
-  </button>
+    <!-- Languages -->
+    <ion-label class="text-bottom-right">Langues</ion-label>
+    <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
+              class="icon-bottom-right" [hidden]="!validated.isLanguage"></ion-icon>
+    <button fab class="offer-bottom-right" [disabled]="!validated.isCalendar || !validated.isJob"
+            [style.backgroundColor]="themeColor" (click)="showLanguageModal()">
+        <ion-icon name="globe" color="themeColor" style="font-size: -webkit-xxx-large;"></ion-icon>
+    </button>
 
-  <!-- Validate Offer -->
-  <ion-row class="video-bottom-center">
-    <ion-col text-center>
-      <button [style.backgroundColor]="themeColor" (click)="addOffer()"
-              [disabled] = "!(validated.isJob && validated.isCalendar)" >
-        <ion-icon name="add-circle" is-active="false"></ion-icon>
-        Ajouter l'offre
-      </button>
-    </ion-col>
-  </ion-row>
-
-
+    <!-- Validate Offer -->
+    <ion-row class="video-bottom-center">
+        <ion-col text-center>
+            <button [style.backgroundColor]="themeColor" (click)="addOffer()"
+                    [disabled]="!(validated.isJob && validated.isCalendar)">
+                <ion-icon name="add-circle" is-active="false"></ion-icon>
+                Ajouter l'offre
+            </button>
+        </ion-col>
+    </ion-row>
 
 
-  <div class="bar-footer"></div>
+    <div class="bar-footer"></div>
 
 
 </ion-content>

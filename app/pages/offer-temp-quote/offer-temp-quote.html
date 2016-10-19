@@ -1,12 +1,12 @@
 <ion-header>
-  <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
-    <ion-title>Devis estimatif</ion-title>
-    <ion-buttons end>
-      <button (click)="closeModal()">
-        <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
-      </button>
-    </ion-buttons>
-  </ion-navbar>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
+        <ion-title>Devis estimatif</ion-title>
+        <ion-buttons end>
+            <button (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding class="offer-temp-quote">
@@ -15,7 +15,8 @@
             <ion-col width-40 text-center><strong>Rubrique</strong></ion-col>
             <ion-col width-20 text-center><strong>Nbr</strong></ion-col>
             <ion-col width-20 text-center><strong>Unité</strong></ion-col>
-            <ion-col width-20 style="padding-left: 0;padding-right: 0;" text-center><strong>Montant (€)</strong></ion-col>
+            <ion-col width-20 style="padding-left: 0;padding-right: 0;" text-center><strong>Montant (€)</strong>
+            </ion-col>
         </ion-row>
         <ion-row *ngFor="let r of quote.lignes">
             <ion-col width-40 *ngIf="notNullValue(r)">{{r.libelleRubrique}}</ion-col>

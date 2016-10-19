@@ -1,8 +1,6 @@
-import { Component } from '@angular/core';
-import {NavController, NavParams} from 'ionic-angular';
-import {MissionListPage} from "../mission-list/mission-list";
+import {Component} from "@angular/core";
+import {NavController, NavParams} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
-import {MissionEndInvoicePage} from "../mission-end-invoice/mission-end-invoice";
 import {FinanceService} from "../../providers/finance-service/finance-service";
 
 /*
@@ -13,35 +11,36 @@ import {FinanceService} from "../../providers/finance-service/finance-service";
  */
 @Component({
     templateUrl: 'build/pages/mission-end-releve/mission-end-releve.html',
-    providers:[GlobalConfigs, FinanceService]
+    providers: [GlobalConfigs, FinanceService]
 })
 export class MissionEndRelevePage {
-    invoice : any;
-    isEmployer : boolean;
-    idInvoice : number;
-    unSigned : boolean = false;
+    invoice: any;
+    isEmployer: boolean;
+    idInvoice: number;
+    unSigned: boolean = false;
+
     constructor(private nav: NavController,
                 public globalConfig: GlobalConfigs,
-                private navParams : NavParams,
-                private service : FinanceService) {
+                private navParams: NavParams,
+                private service: FinanceService) {
         this.idInvoice = navParams.data.idInvoice;
-        this.isEmployer = globalConfig.getProjectTarget()=='employer';
+        this.isEmployer = globalConfig.getProjectTarget() == 'employer';
         this.invoice = {
-            url_signature_de_releve_employeur : '',
-            url_signature_de_releve_jobyer : ''
+            url_signature_de_releve_employeur: '',
+            url_signature_de_releve_jobyer: ''
         };
 
-        this.service.loadInvoiceSignature(this.idInvoice).then(data=>{
+        this.service.loadInvoiceSignature(this.idInvoice).then(data=> {
 
             this.invoice = data;
 
-            if(this.isEmployer){
+            if (this.isEmployer) {
                 this.unSigned = (this.invoice.releve_signe_employeur == "Non");
-                if(this.unSigned)
+                if (this.unSigned)
                     this.initEmployerYousign();
-            }else {
+            } else {
                 this.unSigned = (this.invoice.releve_signe_jobyer == "Non");
-                if(this.unSigned)
+                if (this.unSigned)
                     this.initJobyerYousign();
             }
         });
@@ -49,7 +48,7 @@ export class MissionEndRelevePage {
 
     }
 
-    initEmployerYousign(){
+    initEmployerYousign() {
         //get the link yousign of the contract for the employer
         let yousignEmployerLink = this.invoice.url_signature_de_releve_employeur;
 
@@ -67,7 +66,7 @@ export class MissionEndRelevePage {
         document.getElementById("iframPlaceHolder").appendChild(iframe);
     }
 
-    initJobyerYousign(){
+    initJobyerYousign() {
         //get the link yousign of the contract for the employer
         let yousignEmployerLink = this.invoice.url_signature_de_releve_jobyer;
 
@@ -85,7 +84,7 @@ export class MissionEndRelevePage {
         document.getElementById("iframPlaceHolder").appendChild(iframe);
     }
 
-    gotoInvoice(){
+    gotoInvoice() {
         this.nav.pop();
     }
 }

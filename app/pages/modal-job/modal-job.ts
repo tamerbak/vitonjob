@@ -1,7 +1,16 @@
 import {
-    NavController, ViewController, Modal, NavParams, Storage, SqlStorage, PickerColumnOption,
-    Picker, Popover, Alert, Platform
-} from 'ionic-angular';
+    NavController,
+    ViewController,
+    Modal,
+    NavParams,
+    Storage,
+    SqlStorage,
+    PickerColumnOption,
+    Picker,
+    Popover,
+    Alert,
+    Platform
+} from "ionic-angular";
 import {FormBuilder, Validators} from "@angular/common";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
@@ -22,32 +31,32 @@ import {PopoverAutocompletePage} from "../popover-autocomplete/popover-autocompl
 })
 export class ModalJobPage {
 
-    public jobData:{
-        'class':"com.vitonjob.callouts.auth.model.JobData",
-        idJob:string,
-        job:number,
-        idSector:number,
-        sector:string,
-        level:string,
-        remuneration:number,
-        currency:string,
-        validated:boolean
+    public jobData: {
+        'class': "com.vitonjob.callouts.auth.model.JobData",
+        idJob: string,
+        job: number,
+        idSector: number,
+        sector: string,
+        level: string,
+        remuneration: number,
+        currency: string,
+        validated: boolean
     };
-    offerService:any;
-    db:Storage;
-    sectors:any = [];
-    jobs:any = [];
-    platform:any;
-	isSectorFound = true;
-	isJobFound = true;
+    offerService: any;
+    db: Storage;
+    sectors: any = [];
+    jobs: any = [];
+    platform: any;
+    isSectorFound = true;
+    isJobFound = true;
 
 
-    constructor(public nav:NavController,
-                viewCtrl:ViewController,
-                fb:FormBuilder,
-                gc:GlobalConfigs,
-                os:OffersService,
-                params:NavParams, platform:Platform) {
+    constructor(public nav: NavController,
+                viewCtrl: ViewController,
+                fb: FormBuilder,
+                gc: GlobalConfigs,
+                os: OffersService,
+                params: NavParams, platform: Platform) {
 
         // Set global configs
         // Get target to determine configs
@@ -97,7 +106,7 @@ export class ModalJobPage {
     /**
      * @Description : Initializing job form
      */
-    initializeJobForm(params:any) {
+    initializeJobForm(params: any) {
 
         let jobData = params.get('jobData');
 
@@ -172,7 +181,7 @@ export class ModalJobPage {
      * @Description : loads sector list
      */
     showSectorList() {
-		this.db.get("SECTOR_LIST").then(data => {
+        this.db.get("SECTOR_LIST").then(data => {
             this.sectorList = JSON.parse(data);
             let selectionModel = Modal.create(ModalSelectionPage,
                 {type: 'secteur', items: this.sectorList, selection: this});
@@ -184,36 +193,36 @@ export class ModalJobPage {
     watchSector(e) {
         let val = e.target.value;
         if (val.length < 3) {
-			this.isSectorFound = true;
+            this.isSectorFound = true;
             this.sectors = [];
             return;
         }
 
         this.sectors = [];
-		var removeDiacritics = require('diacritics').remove;
-		//console.log(removeDiacritics("Iлｔèｒｎåｔïｏｎɑｌíƶａｔï߀ԉ"));
-		for (let i = 0; i < this.sectorList.length; i++) {
-			let s = this.sectorList[i];
-			if (removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase()) > -1) {
-				this.sectors.push(s);
-			}
-		}
-		if(this.sectors.length == 0){
-			this.isSectorFound = false;
-		}else{
-			this.isSectorFound = true;
-		}
+        var removeDiacritics = require('diacritics').remove;
+        //console.log(removeDiacritics("Iлｔèｒｎåｔïｏｎɑｌíƶａｔï߀ԉ"));
+        for (let i = 0; i < this.sectorList.length; i++) {
+            let s = this.sectorList[i];
+            if (removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase()) > -1) {
+                this.sectors.push(s);
+            }
+        }
+        if (this.sectors.length == 0) {
+            this.isSectorFound = false;
+        } else {
+            this.isSectorFound = true;
+        }
     }
 
     sectorSelected(sector) {
-		this.isJobFound = true;
+        this.isJobFound = true;
 
-		this.jobData.sector = sector.libelle;
+        this.jobData.sector = sector.libelle;
         this.jobData.idSector = sector.id;
-		this.jobData.job = '';
-		this.jobData.idJob = 0;
-		this.sectors = [];
-						
+        this.jobData.job = '';
+        this.jobData.idJob = 0;
+        this.sectors = [];
+
         this.db.get("JOB_LIST").then(data => {
 
             this.jobList = JSON.parse(data);
@@ -227,24 +236,24 @@ export class ModalJobPage {
     watchJob(e) {
         let val = e.target.value;
         if (val.length < 3) {
-			this.isJobFound = true;
+            this.isJobFound = true;
             this.jobs = [];
             return;
         }
 
         this.jobs = [];
-		var removeDiacritics = require('diacritics').remove;
-		for (let i = 0; i < this.jobList.length; i++) {
-			let s = this.jobList[i];
-			if (removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase()) > -1) {
-				this.jobs.push(s);
-			}
-		}
-		if(this.jobs.length == 0){
-			this.isJobFound = false;
-		}else{
-			this.isJobFound = true;
-		}
+        var removeDiacritics = require('diacritics').remove;
+        for (let i = 0; i < this.jobList.length; i++) {
+            let s = this.jobList[i];
+            if (removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase()) > -1) {
+                this.jobs.push(s);
+            }
+        }
+        if (this.jobs.length == 0) {
+            this.isJobFound = false;
+        } else {
+            this.isJobFound = true;
+        }
     }
 
     jobSelected(job) {
@@ -262,7 +271,7 @@ export class ModalJobPage {
 
         if (this.platform.version('android').major >= 5) {
             let picker = Picker.create();
-            let options:PickerColumnOption[] = new Array<PickerColumnOption>();
+            let options: PickerColumnOption[] = new Array<PickerColumnOption>();
 
             this.db.get('SECTOR_LIST').then(listSectors => {
                 if (listSectors) {
@@ -284,8 +293,8 @@ export class ModalJobPage {
                 picker.addButton({
                     text: 'Valider',
                     handler: data => {
-						this.isSectorFound = true;
-						this.isJobFound = true;
+                        this.isSectorFound = true;
+                        this.isJobFound = true;
                         this.jobData.sector = data.undefined.text;
                         this.jobData.idSector = data.undefined.value;
                         this.filterJobList();
@@ -334,7 +343,7 @@ export class ModalJobPage {
     setJobsPicker() {
 
         let picker = Picker.create();
-        let options:PickerColumnOption[] = new Array<PickerColumnOption>();
+        let options: PickerColumnOption[] = new Array<PickerColumnOption>();
         if (this.platform.version('android').major >= 5) {
             this.db.get('JOB_LIST').then(
                 list => {
@@ -367,7 +376,7 @@ export class ModalJobPage {
                         picker.addButton({
                             text: 'Valider',
                             handler: data => {
-								this.isJobFound = true;
+                                this.isJobFound = true;
                                 this.jobData.job = data.undefined.text;
                                 this.jobData.idJob = data.undefined.value;
                                 /*this.enterpriseCard.offer.job = data.undefined.text;

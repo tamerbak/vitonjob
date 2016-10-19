@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {Http, Headers} from '@angular/http';
-import 'rxjs/add/operator/map';
+import {Injectable} from "@angular/core";
+import {Http} from "@angular/http";
+import "rxjs/add/operator/map";
 import {Configs} from "../../configurations/configs";
 
 
@@ -8,14 +8,15 @@ import {Configs} from "../../configurations/configs";
 export class AddressService {
     data: any = null;
 
-    constructor(public http: Http) {}
+    constructor(public http: Http) {
+    }
 
     /**
      * get latitude and langitude of a string address
      * @param address
      * @returns {Promise<T>}
      */
-    getLatLng(address:string) {
+    getLatLng(address: string) {
         /*if (this.data) {
          // already loaded data
          return Promise.resolve(this.data);
@@ -26,7 +27,7 @@ export class AddressService {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
-            this.http.get('https://maps.googleapis.com/maps/api/geocode/json?address='+address+'&key=AIzaSyD6de5QuqKPECTwNSkmBfeRmiTb9147S_Y')
+            this.http.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=AIzaSyD6de5QuqKPECTwNSkmBfeRmiTb9147S_Y')
                 .map(res => res.json())
                 .subscribe(data => {
                     // we've got back the raw data, now generate the core schedule data
@@ -37,11 +38,11 @@ export class AddressService {
         });
     }
 
-    getDistance(origine, destination){
+    getDistance(origine, destination) {
         let bean = {
-            'class' : 'com.vitonjob.callouts.recherche.SearchQuery',
-            adresseOrigine : origine,
-            adresseDest : destination
+            'class': 'com.vitonjob.callouts.recherche.SearchQuery',
+            adresseOrigine: origine,
+            adresseDest: destination
         };
         console.log(JSON.stringify(bean));
         let encodedArg = btoa(JSON.stringify(bean));
@@ -64,7 +65,7 @@ export class AddressService {
             let headers = Configs.getHttpJsonHeaders();
 
 
-            this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers:headers})
+            this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
 

@@ -1,9 +1,13 @@
-<ion-tabs [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" [selectedIndex]="selectedTab">
+<ion-tabs [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''"
+          [selectedIndex]="selectedTab">
 
-    <ion-tab [root]="civilityRoot" [rootParams]="dataParams" tabTitle="{{civilityTabTitle}}" tabIcon="clipboard"></ion-tab>
+    <ion-tab [root]="civilityRoot" [rootParams]="dataParams" tabTitle="{{civilityTabTitle}}"
+             tabIcon="clipboard"></ion-tab>
 
-    <ion-tab [root]="pAddressRoot" [rootParams]="dataParams" tabTitle="{{pAddressTabTitle}}" tabIcon="contact"></ion-tab>
-    
-    <ion-tab [root]="jAddressRoot" [rootParams]="dataParams" tabTitle="{{jAddressTabTitle}}" tabIcon="briefcase"></ion-tab>
-  
-  </ion-tabs>
+    <ion-tab [root]="pAddressRoot" [rootParams]="dataParams" tabTitle="{{pAddressTabTitle}}"
+             tabIcon="contact"></ion-tab>
+
+    <ion-tab [root]="jAddressRoot" [rootParams]="dataParams" tabTitle="{{jAddressTabTitle}}"
+             tabIcon="briefcase"></ion-tab>
+
+</ion-tabs>

@@ -29,11 +29,11 @@
   }
 
   table {
-    width:100%;
+    width: 100%;
   }
   table, th, td {
     /*border: 1px solid black;*/
-    padding : 1px;
+    padding: 1px;
     border-collapse: collapse;
   }
   th, td {
@@ -46,7 +46,7 @@
     background-color: #eee;
   }
   table#t01 tr:nth-child(odd) {
-    background-color:#fff;
+    background-color: #fff;
   }
   table#t01 th {
     color: white;
