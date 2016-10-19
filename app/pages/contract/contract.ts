@@ -182,7 +182,7 @@ export class ContractPage {
                 this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
                 this.medecineService.getMedecine(this.employer.entreprises[0].id).then(data=>{
                     if(data && data !=null){
-                       //debugger;
+
                         this.contractData.centreMedecineEntreprise = data.libelle;
                         this.contractData.adresseCentreMedecineEntreprise = data.adresse+' '+data.code_postal;
                     }
@@ -195,7 +195,7 @@ export class ContractPage {
             if(navParams.get("currentOffer") && !isUndefined(navParams.get("currentOffer"))){
                 this.currentOffer = navParams.get("currentOffer");
                 this.service.getRates().then(data =>{
-                   //debugger;
+
                     for(let i = 0 ; i < data.length ; i++){
                         if(this.currentOffer.jobData.remuneration < data[i].taux_horaire){
                             this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
@@ -214,7 +214,7 @@ export class ContractPage {
     }
 
     recoursSelected(evt){
-        //debugger;
+
         let selectedRecoursLib = evt;
         let id = 40;
         for(let i = 0 ; i < this.recours.length ; i++)
@@ -285,14 +285,14 @@ export class ContractPage {
     }
 
     selectOffer(){
-       //debugger;
+
         let m = new Modal(ModalOffersPage);
         m.onDismiss(data => {
             this.currentOffer = data;
             console.log(JSON.stringify(data));
-           //debugger;
+
             this.service.getRates().then(data =>{
-               //debugger;
+
                 for(let i = 0 ; i < data.length ; i++){
                     if(this.currentOffer.jobData.remuneration < data[i].taux_horaire){
                         this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
@@ -314,7 +314,7 @@ export class ContractPage {
         let calendar = this.currentOffer.calendarData;
         let minDay = new Date(calendar[0].date);
         let maxDay = new Date(calendar[0].date);
-        debugger;
+
         for(let i=1 ; i <calendar.length;i++){
             let date = new Date(calendar[i].date);
             if(minDay.getTime()>date.getTime())
@@ -398,10 +398,10 @@ export class ContractPage {
             titre : this.currentOffer.title
         };
         console.log(JSON.stringify(this.contractData));
-       //debugger;
+
         this.medecineService.getMedecine(this.employer.entreprises[0].id).then(data=>{
             if(data && data !=null){
-               //debugger;
+
                 this.contractData.centreMedecineEntreprise = data.libelle;
                 this.contractData.adresseCentreMedecineEntreprise = data.adresse+' '+data.code_postal;
             }
@@ -430,7 +430,7 @@ export class ContractPage {
     }
 
     goToYousignPage() {
-       //debugger;
+
         this.contractService.getNumContract().then(data =>{
             
             if(data && data.length>0){

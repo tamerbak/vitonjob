@@ -133,7 +133,7 @@ export class ModalCalendarPage {
      * @param item to be removed
      */
     removeSlot(item) {
-        //debugger;
+
 
         let confirm = Alert.create({
             title: 'Êtes-vous sûr?',

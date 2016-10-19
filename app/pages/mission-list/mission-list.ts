@@ -78,7 +78,7 @@ export class MissionListPage {
 				}
 				this.contractService.getContracts(id, this.projectTarget).then(data => {
 					if(data.data){
-                        //debugger;
+
 						this.contractList = data.data;
                         for (let i=0; i<this.contractList.length; i++) {
                             let item = this.contractList[i];

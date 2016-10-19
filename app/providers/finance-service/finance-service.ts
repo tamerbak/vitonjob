@@ -89,7 +89,7 @@ export class FinanceService {
         };
         console.clear();
         console.log(JSON.stringify(payload));
-        debugger;
+
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -100,7 +100,7 @@ export class FinanceService {
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
-                    //debugger;
+
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;
@@ -143,7 +143,7 @@ export class FinanceService {
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers:headers})
                 .map(res => res.json())
                 .subscribe(data => {
-                    //debugger;
+
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;

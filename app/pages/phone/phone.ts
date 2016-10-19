@@ -146,7 +146,7 @@ export class PhonePage {
 		this.nav.present(loading);
 		//call the service of autentication
 		let pwd = md5(this.password1);
-		//debugger;
+
 		if(this.email == null || this.email == 'null')
 			this.email = '';
         var reverseRole = this.projectTarget == "jobyer" ? "employer" : "jobyer";
@@ -288,7 +288,7 @@ export class PhonePage {
 		* @description function called when the phone input is valid to decide if the form is for inscription or authentication
 	*/
 	isRegistration(index, phone) {
-		//debugger;
+
 		if (this.isPhoneValid(phone)) {
 			//On teste si le tél existe dans la base
 			var tel = "+" + index + phone;

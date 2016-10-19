@@ -95,7 +95,7 @@ export class SearchDetailsPage implements OnInit {
         this.userService.getCurrentUser(this.projectTarget).then(results => {
 
             if (results && !isUndefined(results)) {
-                //debugger;
+
                 let currentEmployer = JSON.parse(results);
                 if (currentEmployer) {
                     this.employer = currentEmployer;
@@ -149,7 +149,7 @@ export class SearchDetailsPage implements OnInit {
         let resultType = !this.isEmployer;
         let id = this.result.idOffre;
         this.notationService.loadSearchNotation(resultType, id).then(score=> {
-            //debugger;
+
             this.rating = score;
             this.starsText = this.writeStars(this.rating);
         });
@@ -421,7 +421,7 @@ export class SearchDetailsPage implements OnInit {
              };*/
             this.contratsAttente.push(this.result);
         } else {
-            //debugger;
+
             this.contratsAttente.splice(this.contratsAttente.findIndex((element) => {
                 return (element.email === this.result.email) && (element.tel === this.result.tel);
             }), 1);

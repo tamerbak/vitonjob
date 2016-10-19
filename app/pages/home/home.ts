@@ -93,7 +93,7 @@ export class HomePage implements OnChanges{
         let config = Configs.setConfigs(this.projectTarget);
         // page push 
         this.push = SearchCriteriaPage;
-        //debugger;
+
         //menu.enable(true, 'rightOnMenu');
 
         //Initialize controller variables :
@@ -439,7 +439,7 @@ export class HomePage implements OnChanges{
     }
 
     ngOnChanges() {
-       //debugger;
+
     }
 
     /**

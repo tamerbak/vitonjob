@@ -111,7 +111,7 @@ export class YousignPage {
                 loading.dismiss();
                 console.clear();
                 console.log(data);
-                debugger;
+
                 console.log(JSON.stringify(this.employer));
                 if (data == null || data.length == 0) {
                     console.log("Yousign result is null");
@@ -156,12 +156,12 @@ export class YousignPage {
                 this.nav.push(WalletCreatePage);
 
                 // Send sms to jobyer
-                //debugger;
+
                 this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : '+this.contractData.numero).then((dataSms) => {
-                    //debugger;
+
                     console.log("The message was sent successfully");
                 }).catch(function(err) {
-                    //debugger;
+
                     console.log(err);
                 });
                 // send notification to jobyer

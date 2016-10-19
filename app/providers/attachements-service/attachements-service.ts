@@ -47,7 +47,7 @@ export class AttachementsService {
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
-                   //debugger;
+
                     this.attachement = null;
                     if(data.data){
                         this.attachement = {
@@ -65,7 +65,7 @@ export class AttachementsService {
     }
 
     updateAttachements(user, idAttachment, fileName, scanUri){
-        debugger;
+
         if(user.estRecruteur || user.estEmployeur)
             return;
         let today = this.sqlfyDate(new Date());
@@ -135,7 +135,7 @@ export class AttachementsService {
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
-                    //debugger;
+
 
                     resolve(this.data);
                 });
@@ -158,7 +158,7 @@ export class AttachementsService {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(Configs.fssURL, stringData, {headers:headers})
                 .subscribe(data => {
-                   //debugger;
+
                     resolve(data);
                 });
         });

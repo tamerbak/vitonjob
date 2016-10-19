@@ -28,7 +28,7 @@ export class ModalAttachementPage {
                 private zone: NgZone,
                 public gc: GlobalConfigs,
                 private service : AttachementsService, private params : NavParams) {
-       //debugger;
+       
         this.projectTarget = gc.getProjectTarget();
 
         // get config of selected target

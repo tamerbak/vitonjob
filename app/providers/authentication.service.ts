@@ -32,7 +32,7 @@ export class AuthenticationService {
      * @return JSON results in the form of user accounts
      */
     authenticate(email: string, phone: number, password, projectTarget: string, isRecruteur){
-       //debugger;
+
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
@@ -60,7 +60,7 @@ export class AuthenticationService {
         let body = JSON.stringify(dataLog);
         console.clear();
         console.log(body);
-        debugger;
+
         return new Promise(resolve => {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, body, {headers:headers})
@@ -69,7 +69,7 @@ export class AuthenticationService {
                     this.data = data;
                     console.clear();
                     console.log(JSON.stringify(data));
-                    //debugger;
+
                     resolve(this.data);
                 });
         })
@@ -188,7 +188,7 @@ export class AuthenticationService {
     }
 
     sqlfyDate(date){
-        //debugger;
+
         let sqldate = date.getFullYear()+"-"+(date.getMonth()-1)+"-"+date.getDate();
         return sqldate;
     }
@@ -205,10 +205,10 @@ export class AuthenticationService {
         siret = (!siret ? "" : siret);
 		sql = sql + " , siret='" + siret + "' ";
         //sql = sql + "urssaf='" + numUrssaf + "', ";
-       //debugger;
+
         if(medecineId && medecineId>0)
             sql = sql + " , fk_user_medecine_de_travail='" + medecineId+ "' ";
-        debugger;
+
         if(conventionId && conventionId>0)
             sql = sql + " , fk_user_convention_collective="+conventionId;
         ape = (!ape ? "" : ape);

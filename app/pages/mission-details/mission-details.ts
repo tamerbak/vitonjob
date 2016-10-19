@@ -105,13 +105,13 @@ export class MissionDetailsPage {
         //get missions
         this.contract = navParams.get('contract');
         console.log(JSON.stringify(this.contract));
-        //debugger;
+
         //verify if the mission has already pauses
         this.isNewMission = this.contract.vu.toUpperCase() == 'Oui'.toUpperCase() ? false : true;
         var forPointing = this.contract.option_mission != "1.0" ? true : false;
         this.missionService.listMissionHours(this.contract, forPointing).then((data) => {
             if(data.data){
-                //debugger;
+
                 this.initialMissionHours = data.data;
                 //initiate pauses array
                 var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
@@ -141,10 +141,10 @@ export class MissionDetailsPage {
             this.starsText = this.writeStars(this.rating);
         });
 
-        //debugger;
+
         console.log(JSON.stringify(this.contract));
         this.financeService.checkInvoice(this.contract.pk_user_contrat).then(invoice=>{
-            //debugger;
+
             if(invoice){
                 this.invoiceId = invoice.pk_user_facture_voj;
 
@@ -685,7 +685,7 @@ export class MissionDetailsPage {
         */
         this.missionService.saveEndMission(this.contract.pk_user_contrat).then( val => {
 			this.missionService.endOfMission(this.contract.pk_user_contrat).then(data=>{
-				//debugger;
+
 				let confirm = Alert.create({
 					title: "VitOnJob",
 					message: "Les détails de cette missions sont en cours de traitements, vous serez contacté par SMS une fois la facturation effectuée",
@@ -722,9 +722,9 @@ export class MissionDetailsPage {
 
 					};
 					this.missionService.signEndOfMission(bean).then(signatureData=>{
-						//debugger;
+
 						this.financeService.checkInvoice(this.contract.pk_user_contrat).then(invoice=>{
-							//debugger;
+
 							if(invoice){
 								this.invoiceId = invoice.pk_user_facture_voj;
 
@@ -855,7 +855,7 @@ export class MissionDetailsPage {
         picker.addButton({
             text: 'OK',
             handler: data => {
-                //debugger;
+
                 this.rating = data.undefined.value;
                 this.starsText = this.writeStars(this.rating);
                 this.notationService.saveContractNotation(this.contract, this.projectTarget, this.rating);

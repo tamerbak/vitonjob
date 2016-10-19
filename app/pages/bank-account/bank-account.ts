@@ -33,7 +33,7 @@ export class BankAccountPage {
             iban : '',
             bic : ''
         };
-       //debugger;
+
         let id = 0;
         let table = '';
         if(this.projectTarget == 'jobyer'){

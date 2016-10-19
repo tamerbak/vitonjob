@@ -257,7 +257,7 @@ export class SearchResultsPage implements OnInit {
 
     addMarkers(addresses:any, bounds:any, contentTable:any, locatedResults:any) {
 
-        //debugger;
+
         for (let i = 0; i < addresses.length; i++) {
             let marker = new google.maps.Marker({
                 map: this.map,
@@ -289,7 +289,7 @@ export class SearchResultsPage implements OnInit {
 
 
         /*google.maps.event.addListener(infoWindow,'domready',function() {
-         //debugger;
+
          document.getElementById('myInfoWinDiv').click(function () {
          //Do your thing
          this.itemSelected(r);
@@ -405,7 +405,7 @@ export class SearchResultsPage implements OnInit {
         let storage = new Storage(SqlStorage);
 
         if (this.isUserAuthenticated) {
-            //debugger;
+
             let currentEmployer = this.employer.employer;
             console.log(currentEmployer);
 
@@ -622,7 +622,7 @@ export class SearchResultsPage implements OnInit {
         if (item.checkedContract) {
             this.contratsAttente.push({jobyer: item, offer: o});
         } else {
-            //debugger;
+
             this.contratsAttente.splice(this.contratsAttente.findIndex((element) => {
                 return (element.jobyer.email === item.jobyer.email) && (element.jobyer.tel === item.jobyer.tel);
             }), 1);
@@ -739,7 +739,7 @@ export class SearchResultsPage implements OnInit {
     }
 
     contract(index) {
-        //debugger;
+
         if (this.isUserAuthenticated) {
 
             let currentEmployer = this.employer.employer;

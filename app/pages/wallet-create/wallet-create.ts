@@ -75,13 +75,13 @@ export class WalletCreatePage {
 			`,
             spinner : 'hide'
         });
-       //debugger;
+
         this.nav.present(loading);
         this.storage.get(this.currentUserVar).then(data => {
             let user = JSON.parse(data);
             this.service.empreinteCarte(card, user).then(data=> {
                 loading.dismiss();
-               //debugger;
+
                 if (data.code == '02500') {
                     this.nav.setRoot(MissionListPage);
                 } else {

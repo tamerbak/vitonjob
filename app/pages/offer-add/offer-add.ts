@@ -252,11 +252,11 @@ export class OfferAddPage {
         this.offerService.setOfferInLocal(this.offerToBeAdded, this.projectTarget)
             .then(()=> {
                 console.log('••• Adding offer : local storing success!');
-               //debugger;
+
                 this.offerService.setOfferInRemote(this.offerToBeAdded, this.projectTarget)
                     .then(data => {
                         console.log('••• Adding offer : remote storing success!');
-                       //debugger;
+
                         this.localOffer.clear();
                         loading.dismiss();
 						//decide to which page redirect to

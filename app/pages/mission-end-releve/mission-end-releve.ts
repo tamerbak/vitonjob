@@ -32,7 +32,7 @@ export class MissionEndRelevePage {
         };
 
         this.service.loadInvoiceSignature(this.idInvoice).then(data=>{
-            //debugger;
+
             this.invoice = data;
 
             if(this.isEmployer){

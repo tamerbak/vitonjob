@@ -61,7 +61,7 @@ export class ProfilePage implements OnInit {
 				private imageService: ImageService,
 				public events: Events) {
 
-       //debugger;
+
         this.projectTarget = gc.getProjectTarget();
 		this.storage = new Storage(SqlStorage);
 		
@@ -123,7 +123,7 @@ export class ProfilePage implements OnInit {
         //Get User information
         this.storage.get(this.currentUserVar).then(data => {
             if (data) {
-               //debugger;
+
                 this.userData = JSON.parse(data);
 				this.isRecruiter = this.userData.estRecruteur;
 				if(!this.isRecruiter)
@@ -178,7 +178,7 @@ export class ProfilePage implements OnInit {
 					this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
 					this.noMainAddress = false;
 					if(secondaryAddress){
-						//debugger;
+
 						this.addrService.getLatLng(secondaryAddress).then(gData => {
 							if (gData && gData.results && gData.results.length > 0) {
 								let latLng2 = new google.maps.LatLng(gData.results[0].geometry.location.lat,

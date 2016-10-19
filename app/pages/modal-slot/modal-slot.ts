@@ -129,7 +129,7 @@ export class ModalSlotPage {
 			});
             return;
 		}
-        //debugger;
+
 		
         console.log(JSON.stringify( 'JSON returned: ' + this.slot));
         this.viewCtrl.dismiss(this.slot);
@@ -145,7 +145,7 @@ export class ModalSlotPage {
 	}
 	
     /*isoToDateString(date:Date) {
-        //debugger;
+
         //let date = new Date(this.showedSlot.date);
         let options = {
 		formatMatcher: 'day, month year'
