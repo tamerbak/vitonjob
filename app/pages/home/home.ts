@@ -17,10 +17,11 @@ import {AdvancedSearchPage} from "../advanced-search/advanced-search";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {SearchDetailsPage} from "../search-details/search-details";
 import {ProfileService} from "../../providers/profile-service/profile-service";
+import {HomeService} from "../../providers/home-service/home-service";
 
 @Component({
     templateUrl: 'build/pages/home/home.html',
-    providers: [GlobalConfigs, ProfileService]
+    providers: [GlobalConfigs, ProfileService, HomeService]
 })
 export class HomePage implements OnChanges{
     private projectName:string;
@@ -49,10 +50,29 @@ export class HomePage implements OnChanges{
 	contratsAttente : any = [];
 	private offerService: any;
 	private profilService: any;
-	
+
+    /*
+     *  HOME SCREEN LISTS
+     */
+    recentOffers : any = [];
+    upcomingOffers : any = [];
+    recentUsers : any = [];
+    previousRecentOffers : any = [];
+    previousUpcomingOffers : any = [];
+    previousRecentUsers : any = [];
+    nextRecentOffers : any = [];
+    nextUpcomingOffers : any = [];
+    nextRecentUsers : any = [];
+    homeServiceData : any = [];
+    maxLines : number = 3;
+    slideOptions = {
+        loop : true,
+        pager : false
+    };
+
     static get parameters() {
         return [[GlobalConfigs], [App], [NavController], [NavParams], [SearchService],
-		[NetworkService], [Events], [Keyboard], [MenuController], [OffersService], [ProfileService]];
+		[NetworkService], [Events], [Keyboard], [MenuController], [OffersService], [ProfileService], [HomeService]];
     }
 
     constructor(public globalConfig: GlobalConfigs,
@@ -63,7 +83,8 @@ export class HomePage implements OnChanges{
                 public networkService: NetworkService,
                 public events: Events, private kb:Keyboard, menu: MenuController,
 				private offersService : OffersService,
-				private profileService: ProfileService) {
+				private profileService: ProfileService,
+                private homeService : HomeService) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
         this.storage = new Storage(SqlStorage);
@@ -92,8 +113,184 @@ export class HomePage implements OnChanges{
 		this.search = searchService;
 		this.offerService = offersService;
 		this.profilService = profileService;
+
+        this.homeService.loadHomeData(this.projectTarget).then(data=>{
+           this.homeServiceData = data;
+           this.initHomeList();
+        });
     }
-	
+
+    initHomeList(){
+        if(!this.homeServiceData || this.homeServiceData.length==0)
+            return;
+
+        //  Let us start with recent offers
+
+        let data = this.homeServiceData.recentOffers;
+        let max = data.length>this.maxLines?this.maxLines:data.length;
+        for(let i = 0 ; i < max ; i++){
+            this.recentOffers.push(data[i]);
+        }
+
+        for(let i = this.maxLines ; i < data.length ; i++){
+            this.nextRecentOffers.push(data[i]);
+        }
+
+        //  Now we deal with upcoming offers
+
+        let data = this.homeServiceData.upcomingOffers;
+        let max = data.length>this.maxLines?this.maxLines:data.length;
+        for(let i = 0 ; i < max ; i++){
+            this.upcomingOffers.push(data[i]);
+        }
+
+        for(let i = this.maxLines ; i < data.length ; i++){
+            this.nextUpcomingOffers.push(data[i]);
+        }
+
+        //  Finally new users
+
+        data = this.homeServiceData.users;
+        max = data.length>this.maxLines?this.maxLines:data.length;
+        for(let i = 0 ; i < max ; i++){
+            this.recentUsers.push(data[i]);
+        }
+
+        for(let i = this.maxLines ; i < data.length ; i++){
+            this.nextRecentUsers.push(data[i]);
+        }
+    }
+
+    previousUsers(){
+        this.nextRecentUsers= [];
+        for(let i = 0 ; i < this.recentUsers.length ; i++)
+            this.nextRecentUsers.push(this.recentUsers[i]);
+
+        this.recentUsers = [];
+        for(let i = 0 ; i < this.previousRecentUsers.lnegth ; i++){
+            this.recentUsers.push(this.previousRecentUsers[i]);
+        }
+
+        this.previousRecentUsers = [];
+        let offset = this.homeServiceData.query.startIndex-this.homeServiceData.query.resultCapacity;
+
+        if(offset<=0){
+            offset = 0;
+            this.homeServiceData.query.startIndex = offset;
+            return;
+        }
+
+        this.homeServiceData.query.startIndex = offset;
+        this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then(data=>{
+            let newData = data.users;
+            let max = newData.length>this.maxLines?this.maxLines:newData.length;
+            for(let i = 0 ; i < max ; i++){
+                this.previousRecentUsers.push(newData[i]);
+            }
+        });
+
+    }
+
+    nextUsers(){
+        this.previousRecentUsers= [];
+        for(let i = 0 ; i < this.recentUsers.length ; i++)
+            this.previousRecentUsers.push(this.recentUsers[i]);
+
+        this.recentUsers = [];
+        for(let i = 0 ; i < this.nextRecentUsers.lnegth ; i++){
+            this.recentUsers.push(this.nextRecentUsers[i]);
+        }
+
+        this.nextRecentUsers = [];
+        let offset = this.homeServiceData.query.startIndex+this.homeServiceData.query.resultCapacity;
+        this.homeServiceData.query.startIndex = offset;
+        this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then(data=>{
+            let newData = data.users;
+            let max = newData.length>this.maxLines?this.maxLines:newData.length;
+            for(let i = 0 ; i < max ; i++){
+                this.nextRecentUsers.push(newData[i]);
+            }
+        });
+
+    }
+
+    nextOffers(){
+
+        this.previousRecentOffers = [];
+        for(let i = 0 ; i < this.recentOffers.length ; i++)
+            this.previousRecentOffers.push(this.recentOffers[i]);
+
+        this.recentOffers = [];
+        for(let i = 0 ; i < this.nextRecentOffers.length ; i++)
+            this.recentOffers.push(this.nextRecentOffers[i]);
+
+        this.previousUpcomingOffers = [];
+        for(let i = 0 ; i < this.upcomingOffers.length ; i++)
+            this.previousUpcomingOffers.push(this.upcomingOffers[i]);
+
+        this.upcomingOffers = [];
+        for(let i = 0 ; i < this.nextUpcomingOffers.length ; i++)
+            this.upcomingOffers.push(this.nextUpcomingOffers[i]);
+
+        this.nextRecentOffers = [];
+        this.nextUpcomingOffers = [];
+        let offset = this.homeServiceData.query.startIndexOffers+this.homeServiceData.query.resultCapacityOffers;
+        this.homeServiceData.query.startIndexOffers = offset;
+        this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then(data=>{
+            let newData = data.recentOffers;
+            let max = newData.length>this.maxLines?this.maxLines:newData.length;
+            for(let i = 0 ; i < max ; i++){
+                this.nextRecentOffers.push(newData[i]);
+            }
+            newData = data.upcomingOffers;
+            max = newData.length>this.maxLines?this.maxLines:newData.length;
+            for(let i = 0 ; i < max ; i++){
+                this.nextUpcomingOffers.push(newData[i]);
+            }
+        });
+    }
+
+    previousOffers(){
+        this.nextRecentOffers = [];
+        for(let i = 0 ; i < this.recentOffers.length ; i++)
+            this.nextRecentOffers.push(this.recentOffers[i]);
+
+        this.recentOffers = [];
+        for(let i = 0 ; i < this.previousRecentOffers.length ; i++)
+            this.recentOffers.push(this.previousRecentOffers[i]);
+
+        this.nextUpcomingOffers = [];
+        for(let i = 0 ; i < this.upcomingOffers.length ; i++)
+            this.nextUpcomingOffers.push(this.upcomingOffers[i]);
+
+        this.upcomingOffers = [];
+        for(let i = 0 ; i < this.previousUpcomingOffers.length ; i++)
+            this.upcomingOffers.push(this.previousUpcomingOffers[i]);
+
+        this.previousRecentOffers = [];
+        this.previousUpcomingOffers = [];
+        let offset = this.homeServiceData.query.startIndexOffers-this.homeServiceData.query.resultCapacityOffers;
+        if(offset<=0){
+            offset = 0;
+            this.homeServiceData.query.startIndexOffers = offset;
+            return;
+        }
+
+        this.homeServiceData.query.startIndexOffers = offset;
+        this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then(data=>{
+            let newData = data.recentOffers;
+            let max = newData.length>this.maxLines?this.maxLines:newData.length;
+            for(let i = 0 ; i < max ; i++){
+                this.previousRecentOffers.push(newData[i]);
+            }
+            newData = data.upcomingOffers;
+            max = newData.length>this.maxLines?this.maxLines:newData.length;
+            for(let i = 0 ; i < max ; i++){
+                this.previousUpcomingOffers.push(newData[i]);
+            }
+        });
+    }
+
 	onPageWillEnter() {
          this.autoSearchOffers = [];
 		 this.publicOffers = [];
@@ -403,4 +600,12 @@ export class HomePage implements OnChanges{
 		else
 			return false;
 	}
+
+	simplifyDate(time){
+	    let d = new Date(time);
+        let str = d.getDate()+"/";
+        str = str + (d.getMonth()+1)+"/";
+        str = str + d.getFullYear();
+        return str;
+    }
 }
