@@ -26,6 +26,7 @@ import {OffersService} from "../../providers/offers-service/offers-service";
 import {SearchDetailsPage} from "../search-details/search-details";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {HomeService} from "../../providers/home-service/home-service";
+import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
 
 @Component({
     templateUrl: 'build/pages/home/home.html',
@@ -121,7 +122,7 @@ export class HomePage implements OnChanges {
         this.search = searchService;
         this.offerService = offersService;
         this.profilService = profileService;
-
+        
         this.homeService.loadHomeData(this.projectTarget).then(data=> {
             this.homeServiceData = data;
             this.initHomeList();
@@ -298,7 +299,7 @@ export class HomePage implements OnChanges {
             }
         });
     }
-
+    
     onPageWillEnter() {
         this.autoSearchOffers = [];
         this.publicOffers = [];
@@ -316,6 +317,10 @@ export class HomePage implements OnChanges {
                 isConnected = true;
             }
             if (isConnected) {
+                var data0 = this.currentUser;
+                if(data0.mot_de_passe_reinitialise==="Oui"){
+                    this.showResetPasswordModal();
+                }
                 this.cnxBtnName = "Déconnexion";
                 this.isConnected = true;
                 this.getOffers();
@@ -597,7 +602,13 @@ export class HomePage implements OnChanges {
             }
         });
     }
-
+    
+    
+    showResetPasswordModal(){
+        let m = new Modal(ModalUpdatePassword,{enableBackdropDismiss: false,showBackdrop:false});
+        this.nav.present(m);
+    }
+    
     itemSelected(item, offer) {
         this.nav.push(SearchDetailsPage, {searchResult: item, currentOffer: offer});
     }

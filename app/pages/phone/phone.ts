@@ -187,36 +187,41 @@ export class PhonePage {
                     }
                     return;
                 }
-                this.afterAuthSuccess(data);
-                loading.dismiss();
-                //if user is connected for the first time, redirect him to the page 'civility' after removing phone page from the nav stack, otherwise redirect him to the home page
-                var isNewUser = data.newAccount;
-                var connexion = {
-                    'etat': true,
-                    'libelle': 'Se déconnecter',
-                    'employeID': (this.projectTarget == 'jobyer' ? data.jobyerId : data.employerId)
-                };
-                this.storage.set('connexion', JSON.stringify(connexion)).then(() => {
-                    if (isNewUser || this.isNewRecruteur) {
-                        if (this.platform.is('ios')) {
-                            console.log("plateform ios : no back button, just menu button");
-                            this.nav.setRoot(CivilityPage, {currentUser: data});
+                this.authService.getPasswordStatus("+" + indPhone,this.projectTarget).then((dataPwd: any) => {
+                    
+                    data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
+                    this.afterAuthSuccess(data);
+                    
+                    loading.dismiss();
+                    //if user is connected for the first time, redirect him to the page 'civility' after removing phone page from the nav stack, otherwise redirect him to the home page
+                    var isNewUser = data.newAccount;
+                    var connexion = {
+                        'etat': true,
+                        'libelle': 'Se déconnecter',
+                        'employeID': (this.projectTarget == 'jobyer' ? data.jobyerId : data.employerId)
+                    };
+                    this.storage.set('connexion', JSON.stringify(connexion)).then(() => {
+                        if (isNewUser || this.isNewRecruteur) {
+                            if (this.platform.is('ios')) {
+                                console.log("plateform ios : no back button, just menu button");
+                                this.nav.setRoot(CivilityPage, {currentUser: data});
+                            } else {
+                                this.nav.push(CivilityPage, {currentUser: data}).then(() => {
+                                    console.log("plateform android : no menu button, just back button");
+                                    // first we find the index of the current view controller:
+                                    const index = this.viewCtrl.index;
+                                    // then we remove it from the navigation stack
+                                    this.nav.remove(index);
+                                });
+                            }
                         } else {
-                            this.nav.push(CivilityPage, {currentUser: data}).then(() => {
-                                console.log("plateform android : no menu button, just back button");
-                                // first we find the index of the current view controller:
-                                const index = this.viewCtrl.index;
-                                // then we remove it from the navigation stack
-                                this.nav.remove(index);
-                            });
+                            if (this.fromPage == "Search") {
+                                this.nav.pop();
+                            } else {                          
+                                this.nav.rootNav.setRoot(HomePage, {currentUser: data});
+                            }
                         }
-                    } else {
-                        if (this.fromPage == "Search") {
-                            this.nav.pop();
-                        } else {
-                            this.nav.rootNav.setRoot(HomePage, {currentUser: data});
-                        }
-                    }
+                    });
                 });
             });
         });
@@ -234,7 +239,8 @@ export class PhonePage {
                 console.log("insertion du token : " + token);
                 this.authService.insertToken(token, accountId, this.projectTarget);
             }
-        });
+        });        
+        
         this.storage.set(this.currentUserVar, JSON.stringify(data));
         this.events.publish('user:login', data);
 
@@ -251,6 +257,7 @@ export class PhonePage {
         });
         //user is connected, then change the name of connexion btn to deconnection
         this.gc.setCnxBtnName("Déconnexion");
+        
     }
 
     /**
@@ -462,7 +469,7 @@ export class PhonePage {
             if (data && data.password.length != 0) {
                 let newPasswd = data.password;
                 if (canal == 'sms') {
-                    this.authService.updatePasswordByPhone(tel, md5(newPasswd)).then((data) => {
+                    this.authService.updatePasswordByPhone(tel, md5(newPasswd),"Oui").then((data) => {
                         if (!data) {
                             loading.dismiss();
                             this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
@@ -480,7 +487,7 @@ export class PhonePage {
                     });
                 }
                 else {
-                    this.authService.updatePasswordByMail(email, md5(newPasswd)).then((data) => {
+                    this.authService.updatePasswordByMail(email, md5(newPasswd),"Oui").then((data) => {
                         if (!data) {
                             loading.dismiss();
                             this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");

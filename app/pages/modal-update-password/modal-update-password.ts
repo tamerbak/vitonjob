@@ -5,18 +5,13 @@ import {Configs} from "../../configurations/configs";
 import {AuthenticationService} from "../../providers/authentication.service";
 import {GlobalService} from "../../providers/global.service";
 
-/*
- Generated class for the SettingPasswordPage page.
 
- See http://ionicframework.com/docs/v2/components/#navigation for more info on
- Ionic pages and navigation.
- */
 @Component({
-    templateUrl: 'build/pages/setting-password/setting-password.html',
+    templateUrl: 'build/pages/modal-update-password/modal-update-password.html',
     providers: [AuthenticationService, GlobalService]
 })
-export class SettingPasswordPage {
-    options: any;
+export class ModalUpdatePassword {
+        options: any;
     projectTarget: string;
     isEmployer: boolean;
     password1: string;

@@ -74,6 +74,20 @@ export class AuthenticationService {
                 });
         })
     }
+    
+      getPasswordStatus(tel,projectTarget) {
+        this.configuration = Configs.setConfigs(projectTarget);
+        
+        var sql = "select mot_de_passe_reinitialise from user_account where telephone = '" + tel + "'";
+        return new Promise(resolve => {
+        let headers = Configs.getHttpTextHeaders();
+        this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+            .map(res => res.json())
+            .subscribe(data => {
+            resolve(data);
+            });
+        })
+    }
 
     getUserByPhoneAndRole(tel, role) {
         //  Init project parameters
@@ -620,8 +634,8 @@ export class AuthenticationService {
         });
     }
 
-    updatePasswordByMail(email, password) {
-        let sql = "update user_account set mot_de_passe = '" + password + "' where email = '" + email + "';";
+    updatePasswordByMail(email, password,reset) {
+        let sql = "update user_account set mot_de_passe = '" + password + "' , mot_de_passe_reinitialise = '" + reset + "' where email = '" + email + "';";
 
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
@@ -634,9 +648,10 @@ export class AuthenticationService {
                 });
         })
     }
+    
 
-    updatePasswordByPhone(tel, password) {
-        let sql = "update user_account set mot_de_passe = '" + password + "' where telephone = '" + tel + "';";
+    updatePasswordByPhone(tel, passwd,reset) {
+        let sql ="update user_account set mot_de_passe = '" + passwd + "' , mot_de_passe_reinitialise = '" + reset + "' where telephone = '" + tel + "';";
 
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
