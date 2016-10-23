@@ -61,8 +61,8 @@ export class LoadListService {
         })
     }
 
-    loadConventions(kw) {
-        let sql = "select pk_user_convention_collective as id, code, libelle from user_convention_collective where lower_unaccent(libelle) % lower_unaccent('" + kw + "') or lower_unaccent(code) % lower_unaccent('" + kw + "') or lower_unaccent(libelle)=lower_unaccent('%" + kw + "%') limit 10";
+    loadConventions() {
+        let sql = "select pk_user_convention_collective as id, code, libelle from user_convention_collective";
         console.clear();
         console.log(sql);
         return new Promise(resolve => {
@@ -74,7 +74,6 @@ export class LoadListService {
                     this.data = [];
                     if (data.data)
                         this.data = data.data;
-                    console.log(this.data);
                     resolve(this.data);
                 });
         });
