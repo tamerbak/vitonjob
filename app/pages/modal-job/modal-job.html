@@ -73,7 +73,12 @@
         <ion-col>
             <ion-item style="padding-left: 0;">
                 <ion-label floating>Taux horaire</ion-label>
-                <ion-input type="number" [(ngModel)]="jobData.remuneration"></ion-input>
+                <ion-input
+                        type="number"
+                        min="0"
+                        [(ngModel)]="jobData.remuneration"
+                        (keyup)="checkHourRate()"
+                ></ion-input>
             </ion-item>
         </ion-col>
 
@@ -92,6 +97,69 @@
 
     </ion-row>
 
+    <ion-row *ngIf="invalidHourRate && jobData.remuneration"
+         style="color:red">
+        <ion-icon name="md-arrow-dropup"></ion-icon>
+        Le taux horaire devrait être supérieur ou égal à {{ invalidHourRateMessage }}
+    </ion-row>
+
+
+    <div *ngFor="let conventionFilter of conventionFilters">
+
+        <ion-item *ngIf="conventionFilter.list.length > 0">
+            <ion-label floating>{{ conventionFilter.labelle }}</ion-label>
+            <ion-input
+                    [(ngModel)]="conventionFilter.selected"
+                    (keyup)="watchConvFilter(conventionFilter, $event)"
+            ></ion-input>
+            <button
+                    small class="text-size"
+                    item-right (click)="setConvNivPicker(conventionFilter)"
+            >
+                <ion-icon name="list"></ion-icon>
+            </button>
+        </ion-item>
+
+        <ion-item *ngIf="conventionFilter.filteredList.length > 0">
+            <ion-list>
+                <ion-item
+                        *ngFor="let elementFiltered of conventionFilter.filteredList"
+                        [value]="elementFiltered.id"
+                        (click)="updateHourRateThreshold(conventionFilter, elementFiltered)"
+                >
+                    {{elementFiltered.libelle}}
+                </ion-item>
+            </ion-list>
+        </ion-item>
+
+        <div [hidden]="conventionFilter.isFound"
+             style="color:red">
+            <ion-icon name="md-arrow-dropup"></ion-icon>
+            Veuillez saisir un niveau valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus
+        </div>
+    </div>
+
+    <fieldset *ngIf="convParametersVisible()">
+        <legend><strong>Avantages en nature</strong></legend>
+        <ion-grid>
+            <ion-row>
+                <ion-col width-25>Code</ion-col>
+                <ion-col width-75>Avantage</ion-col>
+            </ion-row>
+            <ion-row *ngFor="let item of categoriesHeure">
+                <ion-col width-25>{{item.code}}</ion-col>
+                <ion-col width-75>{{item.libelle}}</ion-col>
+            </ion-row>
+            <ion-row *ngFor="let item of majorationsHeure">
+                <ion-col width-25>{{item.code}}</ion-col>
+                <ion-col width-75>{{item.libelle}}</ion-col>
+            </ion-row>
+            <ion-row *ngFor="let item of indemnites">
+                <ion-col width-25>{{item.code}}</ion-col>
+                <ion-col width-75>{{item.libelle}}</ion-col>
+            </ion-row>
+        </ion-grid>
+    </fieldset>
 
     <ion-row>
         <ion-col text-center>
