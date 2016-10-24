@@ -34,6 +34,7 @@ export class OfferDetailPage {
     youtubeLink: string = '';
     isLinkValid = true;
     fromPage: string;
+    originalJobData: any;
 
     constructor(public nav: NavController, gc: GlobalConfigs, params: NavParams, public offersService: OffersService, public searchService: SearchService, private sanitizer: DomSanitizationService, private globalService: GlobalService) {
 
@@ -284,10 +285,8 @@ export class OfferDetailPage {
      * Create Job modal
      */
     showJobModal() {
-
-        //console.log(value);
+        let originalJobData = this.copyJobDataObjectByValue(this.offer.jobData);
         let modal = Modal.create(ModalJobPage, {jobData: this.offer.jobData});
-        this.nav.present(modal);
         modal.onDismiss(data => {
             this.modified.isJob = data.validated;
             //this.steps.isCalendar = this.validated.isJob;
@@ -296,9 +295,11 @@ export class OfferDetailPage {
                 this.offer.jobData = data;
                 this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
                 this.offerService.updateOfferJob(this.offer, this.projectTarget);
+            }else{
+                this.offer.jobData = this.copyJobDataObjectByValue(originalJobData);
             }
-
         });
+        this.nav.present(modal);
     }
 
     /**
@@ -525,5 +526,17 @@ export class OfferDetailPage {
                 this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
             }
         });
+    }
+    copyJobDataObjectByValue(originalJobData){
+      let copyedJobData = {idJob: originalJobData.idJob,
+        job: originalJobData.job,
+        idSector: originalJobData.idSector,
+        sector: originalJobData.sector,
+        level: originalJobData.level,
+        remuneration: originalJobData.remuneration,
+        currency: originalJobData.currency,
+        validated: originalJobData.validated
+      };
+      return copyedJobData;
     }
 }
