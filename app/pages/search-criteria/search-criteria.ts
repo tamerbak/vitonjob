@@ -6,7 +6,8 @@ import {
     PickerColumnOption,
     Storage,
     SqlStorage,
-    Platform
+    Platform,
+    Toast
 } from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SearchService} from "../../providers/search-service/search-service";
@@ -67,7 +68,6 @@ export class SearchCriteriaPage {
         this.db.get("SECTOR_LIST").then(data => {
             this.sectorList = JSON.parse(data);
         });
-
     }
 
 
@@ -236,6 +236,11 @@ export class SearchCriteriaPage {
          return;
          }*/
 
+        ///availability date must be greater than today
+        if(new Date(new Date(this.availabilityDate).setHours(0, 0, 0)).getTime() <= new Date(new Date().setHours(0, 0, 0)).getTime()){
+            this.presentToast("Veuillez saisir une date supérieure à la date du jour", 1);
+            return;
+        }
         // Construct the search query in the correct format then summon search service
         // TEL05082016 : fixes #628
         let ignoreSector: boolean = false;
@@ -567,5 +572,13 @@ export class SearchCriteriaPage {
     toDateString(date: number) {
         let d = new Date(date);
         return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
+    }
+
+    presentToast(message: string, duration: number) {
+        let toast = Toast.create({
+            message: message,
+            duration: duration * 1000
+        });
+        this.nav.present(toast);
     }
 }
