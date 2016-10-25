@@ -276,7 +276,7 @@ export class ModalJobPage {
     closeModal() {
         //this.jobData.validated = false;
 
-        this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === '') && !(this.jobData.remuneration == 0));
+        this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === '') && !(this.jobData.remuneration <= 0) && !this.isEmpty(this.jobData.remuneration));
         this.viewCtrl.dismiss(this.jobData);
     }
 
@@ -294,7 +294,16 @@ export class ModalJobPage {
             this.nav.present(alert);
             return;
         }
-        this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === '') && !(this.jobData.remuneration == 0));
+        if ((this.jobData.remuneration <= 0) || this.isEmpty(this.jobData.remuneration)) {
+            let alert = Alert.create({
+                title: 'Erreur',
+                subTitle: "Veuillez saisir une rémunération valide",
+                buttons: ['OK']
+            });
+            this.nav.present(alert);
+            return;
+        }
+        this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === '') && !(this.jobData.remuneration <= 0) && !this.isEmpty(this.jobData.remuneration));
         //this.jobData.level = 'senior';
         this.viewCtrl.dismiss(this.jobData);
     }
@@ -772,5 +781,12 @@ export class ModalJobPage {
             }
         });
 
+    }
+
+    isEmpty(str) {
+        if (str == '' || str == 'null' || !str)
+            return true;
+        else
+            return false;
     }
 }
