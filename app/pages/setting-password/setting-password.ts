@@ -19,8 +19,10 @@ export class SettingPasswordPage {
     options: any;
     projectTarget: string;
     isEmployer: boolean;
+    oldPassword: string;
     password1: string;
     password2: string;
+    isOldPasswordCorrect:boolean;
     currentUser;
     currentUserVar: string;
 
@@ -33,6 +35,7 @@ export class SettingPasswordPage {
         this.themeColor = config.themeColor;
         this.currentUserVar = config.currentUserVar;
         this.storage = new Storage(SqlStorage);
+        this.isOldPasswordCorrect = true;
     }
 
     modifyPasswd() {
@@ -45,11 +48,32 @@ export class SettingPasswordPage {
             spinner: 'hide'
         });
         this.nav.present(loading);
+        
         this.storage.get(this.currentUserVar).then((value) => {
             if (value) {
                 this.currentUser = JSON.parse(value);
                 let pwd = md5(this.password1);
-                this.authService.updatePasswordByPhone(this.currentUser.tel, pwd)
+                let oldPwd = md5(this.oldPassword);
+                this.authService.authenticate(this.currentUser.email,this.currentUser.tel,oldPwd,this.projectTarget,false).then(data0 => {
+                    if (!data0 || data0.length == 0 || (data0.id == 0 && data0.status == "failure")) {
+                        console.log(data0);
+                        loading.dismiss();
+                        this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                        return;
+                    }
+                    //case of authentication failure : incorrect password 
+                    if (data0.id == 0 && data0.status == "passwordError") {
+                        console.log("Password error");
+                        loading.dismiss();
+                        this.isOldPasswordCorrect = false;
+                        this.showOldPasswordError();
+                        return;
+                    }
+                    
+                    this.isOldPasswordCorrect = true;
+                    this.showOldPasswordError();
+                    
+                    this.authService.updatePasswordByPhone(this.currentUser.tel, pwd)
                     .then(data => {
                         console.log(data);
                         //case of authentication failure : server unavailable or connection probleme
@@ -62,8 +86,16 @@ export class SettingPasswordPage {
                         loading.dismiss();
                         this.nav.pop();
                     });
+                });
             }
         });
+    }
+    
+    /**
+     * @description show error msg if password is not valid
+     */
+    showOldPasswordError() {
+        return !this.isOldPasswordCorrect;
     }
 
     /**
@@ -83,6 +115,6 @@ export class SettingPasswordPage {
     }
 
     isBtnDisabled() {
-        return (!this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error())
+        return (!this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.oldPassword)
     }
 }
