@@ -23,6 +23,7 @@ import {HomePage} from "../home/home";
 import {CivilityPage} from "../civility/civility";
 import {SMS} from "ionic-native";
 import {ProfileService} from "../../providers/profile-service/profile-service";
+import {GeneralConditionsPage} from "../general-conditions/general-conditions";
 //import {InfoUserPage} from "../info-user/info-user";
 enableProdMode();
 
@@ -202,18 +203,7 @@ export class PhonePage {
                     };
                     this.storage.set('connexion', JSON.stringify(connexion)).then(() => {
                         if (isNewUser || this.isNewRecruteur) {
-                            if (this.platform.is('ios')) {
-                                console.log("plateform ios : no back button, just menu button");
-                                this.nav.setRoot(CivilityPage, {currentUser: data});
-                            } else {
-                                this.nav.push(CivilityPage, {currentUser: data}).then(() => {
-                                    console.log("plateform android : no menu button, just back button");
-                                    // first we find the index of the current view controller:
-                                    const index = this.viewCtrl.index;
-                                    // then we remove it from the navigation stack
-                                    this.nav.remove(index);
-                                });
-                            }
+                            this.nav.push(GeneralConditionsPage, {currentUser: data});
                         } else {
                             if (this.fromPage == "Search") {
                                 this.nav.pop();
@@ -257,7 +247,6 @@ export class PhonePage {
         });
         //user is connected, then change the name of connexion btn to deconnection
         this.gc.setCnxBtnName("Déconnexion");
-        
     }
 
     /**
