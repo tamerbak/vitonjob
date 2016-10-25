@@ -422,7 +422,7 @@ export class Vitonjob {
 
     displayInfoUser(data) {
         if (data.titre) {
-            this.userName = data.titre + ' ' + data.nom + ' ' + data.prenom;
+            this.userName = data.titre + ' ' + data.nom + ' ' + data.prenom + (data.estEmployeur && data.employer.entreprises.length > 0 ? (' - ' + data.employer.entreprises[0].nom):'');
         } else {
             this.userName = data.estRecruteur ? 'Recruteur' : (this.isEmployer ? 'Employeur' : 'Jobyer');
         }
