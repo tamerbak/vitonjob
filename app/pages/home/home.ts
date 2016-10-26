@@ -202,6 +202,43 @@ export class HomePage implements OnChanges {
         this.loadFirstCard();
     }
 
+    searchOffer(o){
+        let jobTitle = o.jobTitle;
+        let searchFields = {
+            class: 'com.vitonjob.callouts.recherche.SearchQuery',
+            job: jobTitle,
+            metier: '',
+            lieu: '',
+            nom: '',
+            entreprise: '',
+            date: '',
+            table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
+            idOffre: '0'
+        };
+
+        let loading = Loading.create({
+            content: ` 
+                <div>
+                    <img src='img/loading.gif' />
+                </div>
+                `,
+            spinner: 'hide'
+        });
+        this.nav.present(loading);
+        this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data) => {
+            debugger;
+            console.log(data);
+            loading.dismiss();
+            for(let i = 0 ; i < data.length ; i++){
+                let r = data[i];
+                if(r.idOffre==o.idOffer){
+                    this.nav.push(SearchDetailsPage, {searchResult: r});
+                    break;
+                }
+            }
+        });
+    }
+
     rollingCards() {
 
         let index = 0;
