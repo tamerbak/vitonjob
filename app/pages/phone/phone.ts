@@ -203,14 +203,12 @@ export class PhonePage {
                         'employeID': (this.projectTarget == 'jobyer' ? data.jobyerId : data.employerId)
                     };
                     this.storage.set('connexion', JSON.stringify(connexion)).then(() => {
+                        let jobyer = this.params.data.jobyer;
+                        let searchIndex = this.params.data.searchIndex;
                         if (isNewUser || this.isNewRecruteur) {
-                          let jobyer = this.params.data.jobyer;
-                          let searchIndex = this.params.data.searchIndex;
                           this.nav.push(GeneralConditionsPage, {currentUser: data, jobyer: jobyer, obj: "forRecruitment", searchIndex: searchIndex});
                         } else {
                             if (this.fromPage == "Search") {
-                                let jobyer = this.params.data.jobyer;
-                                let searchIndex = this.params.data.searchIndex;
                                 this.nav.push(SearchResultsPage, {jobyer: jobyer, fromPage: "phone", searchIndex: searchIndex}).then(() => {
                                     // first we find the index of the current view controller:
                                     const index = this.viewCtrl.index;
