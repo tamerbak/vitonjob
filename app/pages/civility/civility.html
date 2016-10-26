@@ -119,7 +119,7 @@
         </ion-item>
 
         <ion-item [hidden]="isEmployer">
-            <ion-label floating>CNI</ion-label>
+            <ion-label floating>Carte nationale d'identité</ion-label>
             <ion-input type="text" [(ngModel)]="cni" (keyup)="watchCNI($event)" maxlength="12"></ion-input>
         </ion-item>
         <div *ngIf="showCNIError()"

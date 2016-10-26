@@ -163,9 +163,11 @@ export class CivilityPage {
         let d = (today.getDate()) < 10 ? "0" + (today.getDate()) : "" + (today.getDate());
         this.maxtsejProvideDate = today.getFullYear() + "-" + m + "-" + d;
         this.mintsejProvideDate = (today.getFullYear() - 70) + "-01-01";
-        if (this.currentUser.employer.entreprises[0].conventionCollective &&
-            this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
-            this.conventionId = this.currentUser.employer.entreprises[0].conventionCollective.id;
+        if (this.currentUser.employer.enterprises && this.currentUser.employer.enterprises.length > 0){
+            if (this.currentUser.employer.entreprises[0].conventionCollective &&
+                this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
+                this.conventionId = this.currentUser.employer.entreprises[0].conventionCollective.id;
+            }
         }
 
         this.maxtsejFromDate = today.getFullYear() + "-" + m + "-" + d;
