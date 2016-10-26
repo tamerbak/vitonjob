@@ -14,10 +14,10 @@
             Vous n'avez créer aucune offre pour le moment.
         </ion-card-content>
     </ion-card>
-    <!--<button button block (click)="goToNewOffer()">
+    <button button block (click)="goToNewOffer()">
         <ion-icon name="add-circle" style="font-size: xx-large;"></ion-icon>
         Créer une nouvelle offre
-    </button>-->
+    </button>
     <ion-list text-wrap *ngIf="!voidOffers">
         <ion-list-header>Offres disponibles</ion-list-header>
         <ion-item *ngFor="let item of offerList " text-wrap>

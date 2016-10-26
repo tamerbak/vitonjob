@@ -255,7 +255,8 @@ export class OfferAddPage {
 			<img src='img/loading.gif' />
 			</div>
 			`,
-            spinner: 'hide'
+            spinner: 'hide',
+            duration: 10000
         });
         this.nav.present(loading);
         this.offerService.setOfferInLocal(this.offerToBeAdded, this.projectTarget)
@@ -269,8 +270,8 @@ export class OfferAddPage {
                         this.localOffer.clear();
                         loading.dismiss();
                         //decide to which page redirect to
-                        let fromPage = this.navParams.get('fromPage');
-                        let searchRes = this.navParams.get('jobyer');
+                        let fromPage = this.navParams.data.fromPage;
+                        let searchRes = this.navParams.data.jobyer;
                         if (fromPage == "Search") {
                             this.nav.push(NotificationContractPage, {
                                 jobyer: searchRes,

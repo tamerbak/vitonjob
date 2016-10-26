@@ -170,11 +170,14 @@ export class SearchResultsPage implements OnInit {
             });
         });
         //if redirected from auth page
-        if(this.navParams.data.fromPage == "phone"){
-            this.selectOffer().then(offer => {
+        let fromPage = this.navParams.data.fromPage;
+        let index = this.navParams.data.searchIndex;
+        let jobyer = this.navParams.data.jobyer;
+        if(fromPage == "phone" && index != -1){
+            this.selectOffer(jobyer).then(offer => {
                 if (offer) {
                     this.nav.push(NotificationContractPage, {
-                        jobyer: this.navParams.data.jobyer,
+                        jobyer: jobyer,
                         currentOffer: offer
                     });
                 } else {
@@ -655,7 +658,7 @@ export class SearchResultsPage implements OnInit {
                     {
                         text: 'Connexion',
                         handler: () => {
-                            this.nav.push(PhonePage, {fromPage: "Search"});
+                            this.nav.push(PhonePage, {fromPage: "Search", searchIndex: -1});
                         }
                     }
                 ]
@@ -816,12 +819,13 @@ export class SearchResultsPage implements OnInit {
         }
     }
 
-    selectOffer() {
+    selectOffer(jobyer) {
         return new Promise(resolve => {
-            let m = new Modal(ModalOffersPage);
+            let m = new Modal(ModalOffersPage, {fromPage: "Search", jobyer: jobyer});
             m.onDismiss(data => {
-                //return selected offer
-                resolve(data);
+                if(data)
+                    //return selected offer
+                    resolve(data);
             });
             this.nav.present(m);
         });
@@ -846,7 +850,7 @@ export class SearchResultsPage implements OnInit {
         let listOfferButton = {
             text: 'Liste des offres',
             handler: () => {
-                this.selectOffer().then(offer => {
+                this.selectOffer(this.searchResults[index]).then(offer => {
                     if (offer) {
                         this.nav.push(NotificationContractPage, {
                             jobyer: this.searchResults[index],
