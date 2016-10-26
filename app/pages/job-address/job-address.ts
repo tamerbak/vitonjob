@@ -7,6 +7,8 @@ import {AuthenticationService} from "../../providers/authentication.service";
 import {GlobalService} from "../../providers/global.service";
 import {Geolocation} from "ionic-native";
 import {OfferListPage} from "../offer-list/offer-list";
+import {SearchResultsPage} from "../search-results/search-results";
+import {OfferAddPage} from "../offer-add/offer-add";
 
 /**
  * @author Amal ROCHD
@@ -287,7 +289,7 @@ export class JobAddressPage {
 			</div>
 			`,
             spinner: 'hide',
-            duration: 15000
+            duration: 1000
         });
         this.nav.present(loading).then(() => {
             if (this.isEmployer) {
@@ -317,10 +319,17 @@ export class JobAddressPage {
                             if (this.fromPage == "profil") {
                                 this.nav.pop();
                             } else {
-                                //redirecting to offer list page
-                                this.nav.setRoot(OfferListPage).then(() => {
-                                    this.presentToast("Félicitations, vous venez de créer votre compte avec succès. Vous pouvez maintenant créer vos offres de service.", 3);
-                                });
+                                let jobyer = this.params.data.jobyer;
+                                let searchIndex = this.params.data.searchIndex;
+                                let obj = this.params.data.obj;
+                                if(obj == "forRecruitment"){
+                                    this.nav.push(OfferAddPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex})
+                                }else {
+                                    //redirecting to offer list page
+                                    this.nav.setRoot(OfferListPage).then(() => {
+                                        this.presentToast("Félicitations, vous venez de créer votre compte avec succès. Vous pouvez maintenant créer vos offres de service.", 3);
+                                    });
+                                }
                             }
                         }
                     });

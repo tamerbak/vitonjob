@@ -1048,12 +1048,17 @@ export class GeneralConditionsPage {
 
     connect() {
         let data:any =  this.params.get('currentUser');
+        let jobyer = this.params.data.jobyer;
+        let searchIndex = this.params.data.searchIndex;
+        let obj = this.params.data.obj;
         this.userService.updateGCStatus("Oui", "Non", data.id).then((response) => {
             if (this.platform.is('ios')) {
                 console.log("plateform ios : no back button, just menu button");
-                this.nav.setRoot(CivilityPage, {currentUser: data});
+                this.nav.setRoot(CivilityPage, {currentUser: data, jobyer: jobyer, obj: obj, searchIndex: searchIndex
+                });
             } else {
-                this.nav.push(CivilityPage, {currentUser: data}).then(() => {
+                this.nav.push(CivilityPage, {currentUser: data, jobyer: jobyer, obj: obj, searchIndex: searchIndex
+                }).then(() => {
                     console.log("plateform android : no menu button, just back button");
                     // first we find the index of the current view controller:
                     const index = this.viewCtrl.index;

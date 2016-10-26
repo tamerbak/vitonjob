@@ -173,7 +173,8 @@ export class SearchResultsPage implements OnInit {
         let fromPage = this.navParams.data.fromPage;
         let index = this.navParams.data.searchIndex;
         let jobyer = this.navParams.data.jobyer;
-        if(fromPage == "phone" && index != -1){
+        let obj = this.navParams.data.obj;
+        if((fromPage == "phone" && index != -1) || (obj == "forRecruitment")){
             this.selectOffer(jobyer).then(offer => {
                 if (offer) {
                     this.nav.push(NotificationContractPage, {
