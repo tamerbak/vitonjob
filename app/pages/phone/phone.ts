@@ -24,6 +24,7 @@ import {CivilityPage} from "../civility/civility";
 import {SMS} from "ionic-native";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {GeneralConditionsPage} from "../general-conditions/general-conditions";
+import {SearchResultsPage} from "../search-results/search-results";
 //import {InfoUserPage} from "../info-user/info-user";
 enableProdMode();
 
@@ -206,7 +207,14 @@ export class PhonePage {
                             this.nav.push(GeneralConditionsPage, {currentUser: data});
                         } else {
                             if (this.fromPage == "Search") {
-                                this.nav.pop();
+                                let jobyer = this.params.data.jobyer;
+                                let searchIndex = this.params.data.searchIndex;
+                                this.nav.push(SearchResultsPage, {jobyer: jobyer, fromPage: "phone", searchIndex: searchIndex}).then(() => {
+                                    // first we find the index of the current view controller:
+                                    const index = this.viewCtrl.index;
+                                    // then we remove it from the navigation stack
+                                    this.nav.remove(index);
+                                })
                             } else {                          
                                 this.nav.rootNav.setRoot(HomePage, {currentUser: data});
                             }
