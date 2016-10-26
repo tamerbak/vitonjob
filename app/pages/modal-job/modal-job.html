@@ -161,6 +161,42 @@
         </ion-grid>
     </fieldset>
 
+    <fieldset>
+        <legend>Prérequis obligatoires</legend>
+        <ion-list>
+            <ion-item>
+                <ion-label floating>Prérequis</ion-label>
+                <ion-input type="text" [(ngModel)]="prerequisOb" (keyup)="watchPrerequisOb($event)"></ion-input>
+                <button small item-right (click)="addPrerequis()" [disabled]="!prerequisOb || prerequisOb.length==0">
+                    <ion-icon name="add-circle"></ion-icon>
+                </button>
+            </ion-item>
+        </ion-list>
+        <ion-grid>
+
+            <ion-row [hidden]="!isEmployer || prerequisObList.length == 0">
+                <ion-col width-100>
+                    <ion-list>
+                        <ion-item *ngFor="let p of prerequisObList" (click)="preqOSelected(p)">
+
+                            {{p.libelle}}
+
+                        </ion-item>
+                    </ion-list>
+                </ion-col>
+
+            </ion-row>
+        </ion-grid>
+        <ion-list>
+            <ion-item style="font-size:small" *ngFor="let p of prerequisObligatoires">
+                <button (click)="removePrerequis(p)" >
+                    <ion-icon name="remove-circle"></ion-icon>
+                </button>
+                &nbsp;<span >{{p}}</span>
+            </ion-item>
+        </ion-list>
+    </fieldset>
+
     <ion-row>
         <ion-col text-center>
             <button [style.backgroundColor]="themeColor"

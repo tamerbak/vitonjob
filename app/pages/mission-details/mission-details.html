@@ -11,7 +11,7 @@
     </button>
 
     <ion-card>
-        <ion-card-header (click)="setStarPicker()" style="background-color: aliceblue;">
+        <ion-item text-wrap (click)="setStarPicker()" style="background-color: aliceblue;">
             {{contract.titre}}
             <h3>
                 <!--span>{{(starsText == '')? '': 'Note: '}}</span-->
@@ -21,10 +21,19 @@
                 <span>{{(starsText=='')? 'Cliquer pour attribuer une note' : ''}}</span>
             </p>
 
-        </ion-card-header>
+        </ion-item>
         <!--[hidden]="!isEmployer || !missionHours || missionHours.length == 0"-->
         <ion-card
                 [hidden]="isEmployer ||upperCase(contract.signature_jobyer) == 'OUI' || (!missionHours || missionHours.length == 0)">
+            <ion-list text-wrap [hidden]="prerequisObligatoires.length == 0">
+                <ion-list-header>
+                    <p>En signant ce contrat vous vous engager à vous présenter à la mission munis des prérequis suivants</p>
+                </ion-list-header>
+                <ion-item *ngFor="let p of prerequisObligatoires">
+                    <label >{{p.libelle}}</label>
+                </ion-item>
+
+            </ion-list>
             <ion-row>
                 <ion-col text-center>
                     <ion-item>
