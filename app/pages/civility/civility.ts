@@ -144,6 +144,9 @@ export class CivilityPage {
             });
         } else {
             this.scanTitle = " de votre extrait k-bis";
+            this.loadListService.loadConventions().then((response: any) => {
+                this.conventions = response;
+            });
         }
 
         this.communesService = communesService;
@@ -160,6 +163,10 @@ export class CivilityPage {
         let d = (today.getDate()) < 10 ? "0" + (today.getDate()) : "" + (today.getDate());
         this.maxtsejProvideDate = today.getFullYear() + "-" + m + "-" + d;
         this.mintsejProvideDate = (today.getFullYear() - 70) + "-01-01";
+        if (this.currentUser.employer.entreprises[0].conventionCollective &&
+            this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
+            this.conventionId = this.currentUser.employer.entreprises[0].conventionCollective.id;
+        }
 
         this.maxtsejFromDate = today.getFullYear() + "-" + m + "-" + d;
         this.mintsejFromDate = (today.getFullYear() - 70) + "-01-01";
@@ -314,6 +321,12 @@ export class CivilityPage {
                         this.nationality = parseInt(this.currentUser.jobyer.natId);
                         if (this.nationality) this.nationalitiesstyle = {'font-size': '1.4rem'};
                         else this.nationalitiesstyle = {'font-size': '2rem', 'position': 'absolute', 'top': '0.2em'};
+
+                        if(this.currentUser.employer.entreprises[0].conventionCollective &&
+                            this.currentUser.employer.entreprises[0].conventionCollective.id>0) {
+                            this.conventionId = this.currentUser.employer.entreprises[0].conventionCollective.id;
+                        }
+
                     }
 
                     let jobyer = this.currentUser.jobyer;
@@ -502,6 +515,23 @@ export class CivilityPage {
                     this.currentUser.employer.entreprises[0].siret = this.siret;
                     this.currentUser.employer.entreprises[0].naf = this.ape;
                     this.currentUser.employer.entreprises[0].conventionCollective = this.convObject;
+                    // Convention
+                    let code = '';
+                    let libelle = '';
+                    if (this.conventionId && this.conventionId > 0) {
+                        for (let i = 0; i < this.conventions.length; i++)
+                            if (this.conventions[i].id == this.conventionId) {
+                                code = this.conventions[i].code;
+                                libelle = this.conventions[i].libelle;
+                                break;
+                            }
+                    }
+
+                    this.currentUser.employer.entreprises[0].conventionCollective = {
+                        id: this.conventionId,
+                        code: code,
+                        libelle: libelle
+                    };
                     //upload scan
                     this.updateScan(employerId);
                     // PUT IN SESSION

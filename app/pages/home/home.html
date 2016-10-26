@@ -49,33 +49,23 @@
         </ion-col>
 
     </ion-row>
-    <ion-list-header [hidden]="autoSearchOffers.length == 0">
-        Alertes enregistrées
-    </ion-list-header>
-    <ion-card text-wrap [hidden]="autoSearchOffers.length == 0" class="cardOpacity">
-        <ion-list text-wrap>
-            <ion-item *ngFor="let offer of autoSearchOffers" class="itemOpacity" (click)="launchSearch(offer, false)">
-                <h3>{{offer.title}}</h3>
-                <!--ion-icon name="{{offer.arrowLabel}}" item-right (click)="launchSearch(offer, true)"></ion-icon-->
-                <ion-badge [style.backgroundColor]="themeColor" item-right>
-                    <ion-spinner name="crescent" [hidden]="(offer.correspondantsCount >= 0)"></ion-spinner>
-                    {{(offer.correspondantsCount < 0) ? '' : offer.correspondantsCount}}
-                </ion-badge>
-
-
-            </ion-item>
-        </ion-list>
-    </ion-card>
 
     <div style="width:100%; background-color: transparent">
-        <ion-slides [options]="slideOptions">
 
-            <ion-slide [hidden]="autoSearchOffers.length == 0">
-                <ion-list-header [hidden]="autoSearchOffers.length == 0">
-                    Alertes enregistrées
-                </ion-list-header>
-                <ion-card text-wrap [hidden]="autoSearchOffers.length == 0" class="cardOpacity">
-                    <ion-list text-wrap>
+            <div>
+                <ion-card text-wrap class="cardOpacity">
+                    <ion-list *ngFor="let card of cards">
+                        <ion-item style="background-color: azure" *ngIf="card.isShowed && card.isActive">
+                            <ion-icon [name]="card.icon" item-left></ion-icon>
+                            <h3>{{card.title}}</h3>
+                            <button (click)="rollingCards()" item-right clear>
+                                Découvrez
+                                <ion-icon name="arrow-forward"></ion-icon>
+                            </button>
+                        </ion-item>
+                    </ion-list>
+
+                    <ion-list text-wrap style="overflow: scroll;" *ngIf="cards[0].isShowed && cards[0].isActive">
                         <ion-item *ngFor="let offer of autoSearchOffers" class="itemOpacity"
                                   (click)="launchSearch(offer, false)">
                             <h3>{{offer.title}}</h3>
@@ -87,98 +77,52 @@
 
                         </ion-item>
                     </ion-list>
-                </ion-card>
-            </ion-slide>
 
-            <ion-slide [hidden]="recentOffers.length == 0">
-                <h2> Offres récemment crées</h2>
-                <ion-card text-wrap [hidden]="recentOffers.length == 0" class="cardOpacity">
-                    <ion-list text-wrap style="height:200px;overflow: scroll;">
-                        <ion-item [hidden]="previousRecentOffers.length == 0" primary style="text-align: center;"
-                                  (click)="previousOffers()">
-                            <h1>Offres précédentes</h1>
+                    <ion-list text-wrap style="height:200px;overflow: scroll;" *ngIf="cards[2].isShowed && cards[2].isActive">
+                        <ion-item *ngFor="let offer of upcomingOffers" class="itemOpacity">
+                            <h3>{{offer.title}}</h3>
+                            <p>
+                                <span>Créée le </span>{{simplifyDate(offer.creationDate)}}<br/>
+                                <span>Disponible à partir du </span>{{simplifyDate(offer.startAvailability)}}<br/>
+                            </p>
                         </ion-item>
+                    </ion-list>
+
+                    <ion-list text-wrap style="height:200px;overflow: scroll;" *ngIf="cards[1].isShowed && cards[1].isActive">
                         <ion-item *ngFor="let offer of recentOffers" class="itemOpacity">
                             <h2>{{offer.title}}</h2>
-                            <span>Créée le</span>{{simplifyDate(offer.creationDate)}}<br/>
-                            <span>Disponible à partir du</span>{{simplifyDate(offer.startAvailability)}}<br/>
-                        </ion-item>
-                        <ion-item [hidden]="nextRecentOffers.length == 0" primary style="text-align: center;"
-                                  (click)="nextOffers()">
-                            <h1>Offres suivantes</h1>
+                            <p>
+                                <span>Créée le </span>{{simplifyDate(offer.creationDate)}}<br/>
+                                <span>Disponible à partir du </span>{{simplifyDate(offer.startAvailability)}}<br/>
+                            </p>
                         </ion-item>
                     </ion-list>
-                </ion-card>
-            </ion-slide>
 
-            <ion-slide [hidden]="upcomingOffers.length == 0">
-                <h2>Offres imminentes</h2>
-                <ion-card text-wrap [hidden]="upcomingOffers.length == 0" class="cardOpacity">
-                    <ion-list text-wrap style="height:200px;overflow: scroll;">
-                        <ion-item [hidden]="previousUpcomingOffers.length == 0" primary style="text-align: center;"
-                                  (click)="previousOffers()">
-                            <h1>Offres précédentes</h1>
-                        </ion-item>
-                        <ion-item *ngFor="let offer of upcomingOffers" class="itemOpacity">
-                            <h2>{{offer.title}}</h2>
-                            <span>Créée le</span>{{simplifyDate(offer.creationDate)}}<br/>
-                            <span>Disponible à partir du</span>{{simplifyDate(offer.startAvailability)}}<br/>
-                        </ion-item>
-                        <ion-item [hidden]="nextUpcomingOffers.length == 0" primary style="text-align: center;"
-                                  (click)="nextOffers()">
-                            <h1>Offres suivantes</h1>
-                        </ion-item>
-                    </ion-list>
-                </ion-card>
-            </ion-slide>
-
-            <ion-slide [hidden]="recentUsers.length == 0">
-                <h2>{{projectTarget == 'employers'?'Nouveaux Jobyers':'Nouvelles entreprises'}}</h2>
-                <ion-card text-wrap [hidden]="recentUsers.length == 0" class="cardOpacity">
-                    <ion-list text-wrap style="height:200px;overflow: scroll;">
-                        <ion-item [hidden]="previousRecentUsers.length == 0" primary style="text-align: center;"
-                                  (click)="previousUsers()">
-                            <h1>{{projectTarget == 'employers'?'Jobyers suivants':'Entreprises suivantes'}}</h1>
-                        </ion-item>
+                    <ion-list text-wrap style="height:200px;overflow: scroll;" *ngIf="cards[3].isShowed && cards[3].isActive">
                         <ion-item *ngFor="let u of recentUsers" class="itemOpacity">
-                            <h2>{{u.name}}</h2>
-                            <span>A rejoint Vitojob le </span>{{simplifyDate(u.creationDate)}}<br/>
-                        </ion-item>
-                        <ion-item [hidden]="nextRecentUsers.length == 0" primary style="text-align: center;"
-                                  (click)="nextUsers()">
-                            <h1>{{projectTarget == 'employers'?'Jobyers suivants':'Entreprises suivantes'}}</h1>
+                            <h3>{{u.name}}</h3>
+                            <p>
+                                <span>A rejoint Vitojob le </span>{{simplifyDate(u.creationDate)}}<br/>
+                            </p>
                         </ion-item>
                     </ion-list>
+
+                    <ion-list *ngFor="let card of cards">
+                        <ion-item style="background-color: azure" *ngIf="card.isShowed && card.isActive && !(card.id === 0)">
+                            <button clear (click)="generalNext()" *ngIf="generalNextCondition()" item-right>
+                                Suivant
+                                <ion-icon name="arrow-dropright-circle"></ion-icon>
+                            </button>
+                            <button clear (click)="generalPrevious()" *ngIf="generalPreviousCondition()" item-left>
+                                <ion-icon name="arrow-dropleft-circle"></ion-icon>
+                                Précédent
+                            </button>
+                        </ion-item>
+                    </ion-list>
+
                 </ion-card>
-            </ion-slide>
-
-        </ion-slides>
+            </div>
     </div>
-
-
-    <!--ion-list-header [hidden]="upcomingOffers.length == 0">
-        Offres imminentes
-    </ion-list-header>
-
-    <ion-list-header [hidden]="recentUsers.length == 0">
-        {{projectTarget == 'employers'?'Nouveaux jobyers':'Nouvelles entreprises'}}
-    </ion-list-header>
-
-    <!--ion-card text-wrap [hidden]="publicOffers.length == 0" class="cardOpacity">
-		<ion-card-header style = "text-align: center;">
-			Offres publiques
-		</ion-card-header>
-		<ion-list text-wrap>
-		<ion-item *ngFor="let publicOffer of publicOffers " (click)="launchSearch(publicOffer, false)" class="itemOpacity">
-			<h3 class="h3-margintop">{{publicOffer.title}}</h3>
-			<p>Cliquer pour voir plus de détail</p>
-			<ion-badge [style.backgroundColor]="themeColor" item-right>
-				<ion-spinner name="crescent" [hidden]="(publicOffer.correspondantsCount >= 0)"></ion-spinner>
-				{{(publicOffer.correspondantsCount < 0) ? '' : publicOffer.correspondantsCount}}
-			</ion-badge>
-		</ion-item>
-		</ion-list>
-	</ion-card-->
 
     <!--/div-->
 

@@ -18,6 +18,7 @@ export class AttachementsPage {
     isEmployer: boolean;
     backgroundImage: string;
     themeColor: string;
+    emptySafe:boolean;
 
     constructor(private nav: NavController,
                 private service: AttachementsService,
@@ -29,11 +30,15 @@ export class AttachementsPage {
         this.themeColor = config.themeColor;
         this.backgroundImage = config.backgroundImage;
         let currentUserVar = config.currentUserVar;
+        this.emptySafe  = false;
         this.db.get(currentUserVar).then(usr => {
             if (usr) {
                 this.user = JSON.parse(usr);
                 this.service.loadAttachements(this.user).then(data=> {
                     this.attachments = data;
+                    if(!this.attachments || this.attachments.length == 0){
+                        this.emptySafe = true;
+                    }
                 });
             }
         });

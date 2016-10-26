@@ -2,6 +2,7 @@ import {NavController, NavParams, ViewController, Toast} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {Component} from "@angular/core";
+import {ModalJobPage} from "../modal-job/modal-job";
 
 /*
  Generated class for the ModalSelectionPage page.
@@ -16,10 +17,20 @@ export class ModalSelectionPage {
 
     list: any = [];
 
-    constructor(public nav: NavController,
-                gc: GlobalConfigs,
-                params: NavParams,
-                viewCtrl: ViewController) {
+
+    projectTarget: any;
+    themeColor: string;
+    isJobValidated: boolean;
+    isOfferValidated: boolean;
+    isEmployer: boolean;
+    searchQuery: string;
+    searchPlaceholder: string;
+    cancelButtonText: string;
+
+    constructor(private nav: NavController,
+                private gc: GlobalConfigs,
+                private params: NavParams,
+                private viewCtrl: ViewController) {
 
 
         // Set global configs
@@ -81,7 +92,30 @@ export class ModalSelectionPage {
                     this.params.get('selection').jobData.idSector = item.idsector;
                 }
                 break;
-
+            case 'niveau' :
+                this.params.get('selection').updateHourRateThreshold(
+                    this.params.get('selection').conventionFilters[ModalJobPage.CONV_FILTER_NIV],
+                    item
+                );
+                break;
+            case 'echelon' :
+                this.params.get('selection').updateHourRateThreshold(
+                    this.params.get('selection').conventionFilters[ModalJobPage.CONV_FILTER_ECH],
+                    item
+                );
+                break;
+            case 'catégorie' :
+                this.params.get('selection').updateHourRateThreshold(
+                    this.params.get('selection').conventionFilters[ModalJobPage.CONV_FILTER_CAT],
+                    item
+                );
+                break;
+            case 'coéfficient' :
+                this.params.get('selection').updateHourRateThreshold(
+                    this.params.get('selection').conventionFilters[ModalJobPage.CONV_FILTER_COEF],
+                    item
+                );
+                break;
             case 'qualité' :
                 if (this.params.get('selection').qualities.filter((v) => {
                         return (v.libelle.toLowerCase().indexOf(item.libelle.toLowerCase()) > -1)
