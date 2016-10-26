@@ -1,4 +1,4 @@
-import {NavController, ViewController} from "ionic-angular";
+import {NavController, ViewController, NavParams} from "ionic-angular";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {SearchService} from "../../providers/search-service/search-service";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
@@ -22,12 +22,14 @@ export class ModalOffersPage {
     offerService: any;
     voidOffers: boolean = false;
     isEmployer: boolean;
+    params: NavParams;
 
-    constructor(private viewCtrl: ViewController,
+  constructor(private viewCtrl: ViewController,
                 public nav: NavController,
                 public gc: GlobalConfigs,
                 public search: SearchService,
-                public offerService: OffersService) {
+                public offerService: OffersService,
+                params: NavParams) {
 
         // Set global configs
         // Get target to determine configs
@@ -58,6 +60,7 @@ export class ModalOffersPage {
             }
             this.voidOffers = this.offerList.length == 0;
         });
+        this.params = params;
     }
 
     /**
@@ -72,7 +75,11 @@ export class ModalOffersPage {
      * @description There are no available offers redirect user to add a new offer
      */
     goToNewOffer() {
-        this.nav.push(OfferAddPage);
+        let jobyer = this.params.get('jobyer');
+        let fromPage = this.params.get('fromPage');
+        this.nav.push(OfferAddPage, {fromPage: fromPage, jobyer: jobyer}).then(() => {
+          this.viewCtrl.dismiss();
+        })
     }
 
     goToOfferDetails(offer) {
