@@ -159,7 +159,7 @@ export class MailPage {
                 //if user is connected for the first time, redirect him to the page 'civility', else redirect him to the home page
                 var isNewUser = data.newAccount;
                 if (isNewUser) {
-                    this.globalService.showAlertValidation("VitOnJob", "Bienvenue dans votre espace VitOnJob!");
+                    this.globalService.showAlertValidation("Vit-On-Job", "Bienvenue dans votre espace Vit-On-Job!");
                     this.nav.push(InfoUserPage, {
                         currentUser: data
                     });

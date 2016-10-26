@@ -986,7 +986,7 @@ export class GeneralConditionsPage {
             "comprendre votre refus.";
 
         let confirm = Alert.create({
-            title: "VitOnJob",
+            title: "Vit-On-Job",
             message: message,
             buttons: [
                 {

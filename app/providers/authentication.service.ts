@@ -688,7 +688,7 @@ export class AuthenticationService {
         let url = Configs.emailURL;
         let payload = "<fr.protogen.connector.model.MailModel>"
             + "<sendTo>" + email + "</sendTo>"
-            + "<title>VitOnJob - Mot de passe réinitialisé</title>"
+            + "<title>Vit-On-Job - Mot de passe réinitialisé</title>"
             + "<content>"
             + "Suite à votre requête nous avons procédé à une rénitialisation de votre mot de passe."
             + " Votre nouveau mot de passe est : " + passwd

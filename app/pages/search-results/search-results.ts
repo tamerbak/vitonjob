@@ -394,7 +394,7 @@ export class SearchResultsPage implements OnInit {
             }
             let toast = Toast.create({
 
-                message: 'Vitonjob a trouvé ' + message,
+                message: 'Vit-On-Job a trouvé ' + message,
                 showCloseButton: true,
                 closeButtonText: 'Ok',
                 position: 'top'
