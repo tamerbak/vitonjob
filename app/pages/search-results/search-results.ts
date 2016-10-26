@@ -169,7 +169,7 @@ export class SearchResultsPage implements OnInit {
                 }
             });
         });
-        //if redirected from auth page
+        //if redirected from another page
         let fromPage = this.navParams.data.fromPage;
         let index = this.navParams.data.searchIndex;
         let jobyer = this.navParams.data.jobyer;
@@ -790,7 +790,7 @@ export class SearchResultsPage implements OnInit {
                 if (o && !isUndefined(o)) {
                     this.nav.push(NotificationContractPage, {jobyer: this.searchResults[index], currentOffer: o});
                 } else {
-                    this.showAlertForOffers(index)
+                    this.showAlertForOffers(index);
                     //this.nav.push(ContractPage, {jobyer: this.searchResults[index]});
                 }
             } else {
