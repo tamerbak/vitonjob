@@ -320,7 +320,11 @@ export class PersonalAddressPage {
                             } else {
                                 //redirecting to job address tab
                                 //this.tabs.select(2);
-                                this.nav.push(JobAddressPage);
+                                let jobyer = this.params.data.jobyer;
+                                let searchIndex = this.params.data.searchIndex;
+                                let obj = this.params.data.obj;
+                                this.nav.push(JobAddressPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex
+                                });
                             }
                         }
                     });

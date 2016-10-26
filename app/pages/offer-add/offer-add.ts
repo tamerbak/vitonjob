@@ -272,7 +272,8 @@ export class OfferAddPage {
                         //decide to which page redirect to
                         let fromPage = this.navParams.data.fromPage;
                         let searchRes = this.navParams.data.jobyer;
-                        if (fromPage == "Search") {
+                        let obj = this.navParams.data.obj;
+                        if (fromPage == "Search" || obj == "forRecruitment") {
                             this.nav.push(NotificationContractPage, {
                                 jobyer: searchRes,
                                 currentOffer: this.offerToBeAdded
