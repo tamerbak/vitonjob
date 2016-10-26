@@ -18,7 +18,7 @@ import {ModalCalendarPage} from "../modal-calendar/modal-calendar";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {OfferListPage} from "../offer-list/offer-list";
 import {Component} from "@angular/core";
-import {ContractPage} from "../contract/contract";
+import {NotificationContractPage} from "../notification-contract/notification-contract";
 
 /*
  Generated class for the OfferAddPage page.
@@ -272,7 +272,7 @@ export class OfferAddPage {
                         let fromPage = this.navParams.get('fromPage');
                         let searchRes = this.navParams.get('jobyer');
                         if (fromPage == "Search") {
-                            this.nav.push(ContractPage, {
+                            this.nav.push(NotificationContractPage, {
                                 jobyer: searchRes,
                                 currentOffer: this.offerToBeAdded
                             }).then(() => {
