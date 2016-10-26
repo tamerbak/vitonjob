@@ -133,6 +133,14 @@ export class ModalJobPage {
     indemnites: any = [];
     dataValidation: boolean = false;
 
+    /*
+     * PREREQUIS
+     */
+    prerequisOb : string = '';
+    prerequisObList : any = [];
+    prerequisObligatoires : any = [];
+
+
     constructor(public nav: NavController,
                 viewCtrl: ViewController,
                 fb: FormBuilder,
@@ -244,6 +252,44 @@ export class ModalJobPage {
     }
 
 
+    watchPrerequisOb(event){
+        let kw = event.target.value;
+        if(kw.length<3){
+            this.prerequisObList = [];
+            return;
+        }
+
+        this.offerService.selectPrerequis(kw).then(data=>{
+            this.prerequisObList = data;
+        });
+    }
+
+    preqOSelected(p){
+        this.prerequisOb = p.libelle;
+        this.prerequisObList = [];
+    }
+
+    addPrerequis(){
+        for(let i = 0 ; i < this.prerequisObligatoires.length ; i++)
+            if(this.prerequisObligatoires[i].toLowerCase() == this.prerequisOb.toLocaleLowerCase())
+                return;
+        this.prerequisObligatoires.push(this.prerequisOb);
+        this.prerequisOb = '';
+    }
+
+    removePrerequis(p){
+
+        let index = -1;
+        for(let i = 0 ; i < this.prerequisObligatoires.length ; i++)
+            if(this.prerequisObligatoires[i] == p){
+                index = i;
+                break;
+            }
+        if(index<0)
+            return;
+        this.prerequisObligatoires.splice(index,1);
+    }
+
     /**
      * @Description : Initializing job form
      */
@@ -254,6 +300,8 @@ export class ModalJobPage {
         if (jobData) {
 
             this.jobData = jobData;
+            if(this.jobData.prerequisObligatoires)
+                this.prerequisObligatoires =this.jobData.prerequisObligatoires;
         } else {
             this.jobData = {
                 'class': "com.vitonjob.callouts.auth.model.JobData",
@@ -264,7 +312,8 @@ export class ModalJobPage {
                 level: 'junior',
                 remuneration: null,
                 currency: 'euro',
-                validated: false
+                validated: false,
+                prerequisObligatoires : []
             }
         }
     }
@@ -302,6 +351,11 @@ export class ModalJobPage {
             });
             this.nav.present(alert);
             return;
+        }
+        if(this.prerequisObligatoires && this.prerequisObligatoires.length>0){
+            this.jobData.prerequisObligatoires = this.prerequisObligatoires;
+        }else{
+            this.jobData.prerequisObligatoires = [];
         }
         this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === '') && !(this.jobData.remuneration <= 0) && !this.isEmpty(this.jobData.remuneration));
         //this.jobData.level = 'senior';
