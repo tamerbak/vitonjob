@@ -47,9 +47,14 @@ export class ContractPage {
     rate: number = 0.0;
     recours: any;
     justificatifs: any;
+    periodicites : any = [];
+    embaucheAutorise : boolean;
+    rapatriement : boolean;
 
 
     dateFormat(d) {
+        if(!d || isUndefined(d))
+            return '';
         let m = d.getMonth() + 1;
         let da = d.getDate();
         let sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
@@ -84,15 +89,6 @@ export class ContractPage {
         this.jobyer.numSS = '';
         this.jobyer.nationaliteLibelle = '';
 
-        this.contractService.getJobyerComplementData(this.jobyer, this.projectTarget).then((data)=> {
-            if (data && !isUndefined(data)) {
-                let datum = data[0];
-                this.jobyer.id = datum.id;
-                this.jobyer.numSS = datum.numss;
-                this.jobyer.nationaliteLibelle = datum.nationalite;
-            }
-        });
-
         // initialize contract data
         this.contractData = {
             num: "",
@@ -113,7 +109,7 @@ export class ContractPage {
             finSouplesse: "",
             equipements: "",
 
-            interim: "TEMPO'AIR",
+            interim: "Groupe 3S",
             missionStartDate: this.getStartDate(),
             missionEndDate: this.getEndDate(),
             trialPeriod: 5,
@@ -131,7 +127,7 @@ export class ContractPage {
             workHourVariable: "",
             postRisks: "",
             medicalSurv: "",
-            epi: "",
+            epi: false,
             baseSalary: 0,
             MonthlyAverageDuration: "0",
             salaryNHours: "00,00€ B/H",
@@ -140,7 +136,7 @@ export class ContractPage {
             restRight: "00%",
             interimAddress: "",
             customer: "",
-            primes: "",
+            primes: 0,
             headOffice: "",
             missionContent: "",
             category: "Employé",
@@ -151,21 +147,49 @@ export class ContractPage {
             risques: '',
             elementsCotisation: 0.0,
             elementsNonCotisation: 10.0,
-            titre: ''
+            titre: '',
+            periodicite : ''
+
         };
 
-        /*this.contractService.getNumContract().then(data =>{
+        this.contractService.getJobyerComplementData(this.jobyer, this.projectTarget).then((data)=> {
+            if (data && !isUndefined(data)) {
+                let datum = data[0];
+                this.jobyer.id = datum.id;
+                this.jobyer.numSS = datum.numss;
+                this.jobyer.nationaliteLibelle = datum.nationalite;
+                this.jobyer.titreTravail = '';
+                this.jobyer.debutTitreTravail = new Date();
+                this.jobyer.finTitreTravail = new Date();
+                if(datum.cni && datum.cni.length>0 && datum.cni != "null")
+                    this.jobyer.titreTravail = datum.cni;
+                else if (datum.numero_titre_sejour && datum.numero_titre_sejour.length>0 && datum.numero_titre_sejour != "null")
+                    this.jobyer.titreTravail = datum.numero_titre_sejour;
+                if(datum.debut_validite && datum.debut_validite.length>0 && datum.debut_validite != "null"){
+                    let d = new Date(datum.debut_validite);
+                    this.jobyer.debutTitreTravail = d;
+                }
+                if(datum.fin_validite && datum.debut_validite.length>0 && datum.fin_validite != "null"){
+                    let d = new Date(datum.debut_validite);
+                    this.jobyer.finTitreTravail = d;
+                }
 
-         if(data && data.length>0){
-         this.numContrat = this.formatNumContrat(data[0].numct);
-         this.contractData.num = this.numContrat;
-         }
+                this.contractData.numeroTitreTravail = this.jobyer.titreTravail;
+                this.contractData.debutTitreTravail = this.dateFormat(this.jobyer.debutTitreTravail);
+                this.contractData.finTitreTravail = this.dateFormat(this.jobyer.finTitreTravail);
+            }
+        });
 
-         });*/
+
+
 
         //  Load recours list
         this.contractService.loadRecoursList().then(data=> {
             this.recours = data;
+        });
+
+        this.contractService.loadPeriodicites().then(data=>{
+            this.periodicites = data;
         });
 
         // get the currentEmployer
@@ -193,6 +217,34 @@ export class ContractPage {
 
             if (navParams.get("currentOffer") && !isUndefined(navParams.get("currentOffer"))) {
                 this.currentOffer = navParams.get("currentOffer");
+                this.contractData.qualification = this.currentOffer.title;
+
+                let calendar = this.currentOffer.calendarData;
+                let minDay = new Date(calendar[0].date);
+                let maxDay = new Date(calendar[0].date);
+
+                for (let i = 1; i < calendar.length; i++) {
+                    let date = new Date(calendar[i].date);
+                    if (minDay.getTime() > date.getTime())
+                        minDay = date;
+                    if (maxDay.getTime() < date.getTime())
+                        maxDay = date;
+                }
+
+                let trial = 2;
+                let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
+                let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                if (contractLength <= 1)
+                    trial = 0;
+                else if (contractLength < 30)
+                    trial = 2;
+                else if (contractLength < 60)
+                    trial = 3;
+                else
+                    trial = 5;
+                this.contractData.trialPeriod = trial;
+
                 this.service.getRates().then(data => {
 
                     for (let i = 0; i < data.length; i++) {
@@ -347,9 +399,9 @@ export class ContractPage {
             indemniteFinMission: "10.00 %",
             indemniteCongesPayes: "10.00 %",
             moyenAcces: "",
-            numeroTitreTravail: "",
-            debutTitreTravail: "",
-            finTitreTravail: "",
+            numeroTitreTravail: this.jobyer.titreTravail,
+            debutTitreTravail: this.dateFormat(this.jobyer.debutTitreTravail),
+            finTitreTravail: this.dateFormat(this.jobyer.finTitreTravail),
             periodesNonTravaillees: "",
             debutSouplesse: "",
             finSouplesse: "",
@@ -372,7 +424,7 @@ export class ContractPage {
             workHourVariable: "",
             postRisks: "",
             medicalSurv: "",
-            epi: "",
+            epi: false,
             baseSalary: this.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2),
             MonthlyAverageDuration: "0",
             salaryNHours: this.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2) + " € B/H",
@@ -381,7 +433,7 @@ export class ContractPage {
             restRight: "00%",
             interimAddress: "",
             customer: "",
-            primes: "",
+            primes: 0,
             headOffice: this.hqAdress,
             missionContent: "",
             category: 'Employé',
@@ -394,8 +446,10 @@ export class ContractPage {
             risques: '',
             elementsCotisation: this.rate,
             elementsNonCotisation: 10.0,
-            titre: this.currentOffer.title
+            titre: this.currentOffer.title,
+            periodicite : ''
         };
+
         console.log(JSON.stringify(this.contractData));
 
         this.medecineService.getMedecine(this.employer.entreprises[0].id).then(data=> {
@@ -437,6 +491,7 @@ export class ContractPage {
                 this.contractData.num = this.numContrat;
                 this.contractData.numero = this.numContrat;
                 this.contractData.adresseInterim = this.workAdress;
+                this.contractData.workAdress = this.workAdress;
             }
             this.nav.push(YousignPage, { //ContractualisationPage
                 jobyer: this.jobyer,
@@ -487,4 +542,46 @@ export class ContractPage {
         this.nav.present(actionSheet);
     };
 
+    mandatoryDataMissing(){
+        if(!this.contractData.motif || this.contractData.motif.length == 0
+            || typeof this.contractData.motif === 'object')
+            return true;
+
+        if(!this.contractData.justification || this.contractData.justification.length == 0
+            || typeof this.contractData.justification === 'object')
+            return true;
+
+
+        if(!this.contractData.qualification || this.contractData.qualification.length == 0)
+            return true;
+
+        if(!this.contractData.characteristics || this.contractData.characteristics.length == 0)
+            return true;
+
+        if(!this.workAdress || this.workAdress.length == 0)
+            return true;
+
+        if(!this.contractData.workTimeHours || this.contractData.workTimeHours.length == 0)
+            return true;
+
+        if(!this.contractData.usualWorkTimeHours || this.contractData.usualWorkTimeHours.length == 0)
+            return true;
+
+        if(!this.contractData.baseSalary || this.contractData.baseSalary == 0)
+            return true;
+
+        if(!this.contractData.salaryNHours || this.contractData.salaryNHours.length == 0)
+            return true;
+
+        if(!this.contractData.periodicite || this.contractData.periodicite.length == 0)
+            return true;
+
+        if(this.contractData.trialPeriod<0)
+            return true;
+
+        if(!this.companyName || this.companyName.length == 0)
+            return true;
+
+        return !this.embaucheAutorise || !this.rapatriement;
+    }
 }
