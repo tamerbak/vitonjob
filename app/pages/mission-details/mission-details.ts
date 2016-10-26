@@ -82,6 +82,11 @@ export class MissionDetailsPage {
     isInvoiceAvailable: boolean = false;
     isReleveAvailable: boolean = false;
 
+    /*
+     * PREREQUIS
+     */
+    prerequisObligatoires : any = [];
+
     constructor(private platform: Platform,
                 public gc: GlobalConfigs,
                 public nav: NavController,
@@ -163,6 +168,17 @@ export class MissionDetailsPage {
                 this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
             }
         });
+        
+        /*
+         * Prerequis
+         */
+        if(this.isNewMission){
+            this.missionService.getPrerequisObligatoires(this.contract.pk_user_contrat).then(data=>{
+               this.prerequisObligatoires = data;
+            });
+        } else {
+            this.prerequisObligatoires = [];
+        }
     }
 
     onCardClick(dayIndex) {
