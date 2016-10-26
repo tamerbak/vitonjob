@@ -14,7 +14,7 @@
         <ion-icon name="menu"></ion-icon>
         &nbsp;&nbsp;Coffre numérique
     </button>
-
+    <div *ngIf="emptySafe"><p class="bg-info attachments-info-box">Vous pouvez installer dès maintenant un document dans votre coffre numérique sécurisé</p></div>
     <button block (click)="newAttachement()" [style.backgroundColor]="themeColor">
         <ion-icon name="add-circle"></ion-icon>
         Nouveau document

@@ -8,6 +8,7 @@ import {
     Keyboard,
     Popover,
     Toast,
+    Slides,
     Storage,
     SqlStorage,
     Events
@@ -20,79 +21,87 @@ import {SearchCriteriaPage} from "../search-criteria/search-criteria";
 import {SearchGuidePage} from "../search-guide/search-guide";
 import {NetworkService} from "../../providers/network-service/network-service";
 import {PhonePage} from "../phone/phone";
-import {Component, OnChanges} from "@angular/core";
+import {Component, OnChanges, ViewChild, ElementRef} from "@angular/core";
 import {PopoverSearchPage} from "../popover-search/popover-search";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {SearchDetailsPage} from "../search-details/search-details";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {HomeService} from "../../providers/home-service/home-service";
+import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
 
 @Component({
     templateUrl: 'build/pages/home/home.html',
     providers: [GlobalConfigs, ProfileService, HomeService]
 })
 export class HomePage implements OnChanges {
-    private projectName: string;
-    private themeColor: string;
-    private isEmployer: string;
-    private imageURL: string;
-    private searchPlaceHolder: string;
-    private projectTarget: string;
-    private highlightSentence: string;
-    private search: any;
-    private selectedItem: any;
-    private cnxBtnName: string;
-    private scQuery: string;
-    private popinCrietria: boolean = false;
-    private isConnected: boolean;
-    private recording: boolean;
-    private recognition: any;
-    private menu: any;
-    private backgroundImage: string;
-    private push: any;
-    private currentUserVar: string;
-    currentUser: any;
+
+    @ViewChild('mySlider')
+    private _slider:Slides;
+
+    private projectName:string;
+    private themeColor:string;
+    private isEmployer:string;
+    private imageURL:string;
+    private searchPlaceHolder:string;
+    private projectTarget:string;
+    private highlightSentence:string;
+    private search:any;
+    private selectedItem:any;
+    private cnxBtnName:string;
+    private scQuery:string;
+    private popinCrietria:boolean = false;
+    private isConnected:boolean;
+    private recording:boolean;
+    private recognition:any;
+    private menu:any;
+    private backgroundImage:string;
+    private push:any;
+    private currentUserVar:string;
+    currentUser:any;
     publicOffers = [];
     autoSearchOffers = [];
-    searchResults: any;
-    contratsAttente: any = [];
-    private offerService: any;
-    private profilService: any;
+    searchResults:any;
+    contratsAttente:any = [];
+    private offerService:any;
+    private profilService:any;
+    private elementRef:ElementRef;
 
     /*
      *  HOME SCREEN LISTS
      */
-    recentOffers: any = [];
-    upcomingOffers: any = [];
-    recentUsers: any = [];
-    previousRecentOffers: any = [];
-    previousUpcomingOffers: any = [];
-    previousRecentUsers: any = [];
-    nextRecentOffers: any = [];
-    nextUpcomingOffers: any = [];
-    nextRecentUsers: any = [];
-    homeServiceData: any = [];
-    maxLines: number = 3;
+    recentOffers:any = [];
+    upcomingOffers:any = [];
+    recentUsers:any = [];
+    previousRecentOffers:any = [];
+    previousUpcomingOffers:any = [];
+    previousRecentUsers:any = [];
+    nextRecentOffers:any = [];
+    nextUpcomingOffers:any = [];
+    nextRecentUsers:any = [];
+    homeServiceData:any = [];
+    maxLines:number = 3;
     slideOptions = {
-        loop: true,
+        //loop : true,
         pager: false
     };
+    cards:Array<{id:number, title:string, icon:string, isShowed:boolean, isActive:boolean}> = [];
 
     static get parameters() {
         return [[GlobalConfigs], [App], [NavController], [NavParams], [SearchService],
             [NetworkService], [Events], [Keyboard], [MenuController], [OffersService], [ProfileService], [HomeService]];
     }
 
-    constructor(public globalConfig: GlobalConfigs,
-                private app: App,
-                private nav: NavController,
-                private navParams: NavParams,
-                private searchService: SearchService,
-                public networkService: NetworkService,
-                public events: Events, private kb: Keyboard, menu: MenuController,
-                private offersService: OffersService,
-                private profileService: ProfileService,
-                private homeService: HomeService) {
+    constructor(public globalConfig:GlobalConfigs,
+                private app:App,
+                private nav:NavController,
+                private navParams:NavParams,
+                private searchService:SearchService,
+                public networkService:NetworkService,
+                public events:Events, private kb:Keyboard, menu:MenuController,
+                private offersService:OffersService,
+                private profileService:ProfileService,
+                private homeService:HomeService,
+                private _elementRef:ElementRef) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
         this.storage = new Storage(SqlStorage);
@@ -111,7 +120,7 @@ export class HomePage implements OnChanges {
         this.backgroundImage = config.backgroundImage;
         this.highlightSentence = config.highlightSentence;
         this.currentUserVar = config.currentUserVar;
-        this.isEmployer = this.projectTarget == 'employer';
+        this.isEmployer = this.projectTarget === 'employer';
         this.searchPlaceHolder = "Veuillez saisir votre recherche...";
         this.recording = false;
         this.nav = nav;
@@ -121,6 +130,21 @@ export class HomePage implements OnChanges {
         this.search = searchService;
         this.offerService = offersService;
         this.profilService = profileService;
+
+        let card = {id: 0, title: "Alertes enregistrées", icon: "megaphone", isShowed: false, isActive: false};
+        this.cards.push(card);
+        card = {id: 1, title: "Offres récemment crées", icon: "megaphone", isShowed: false, isActive: false};
+        this.cards.push(card);
+        card = {id: 2, title: "Offres imminentes", icon: "megaphone", isShowed: false, isActive: false};
+        this.cards.push(card);
+        card = {
+            id: 3,
+            title: this.projectTarget === 'employer' ? 'Nouveaux jobyers' : 'Nouvelles entreprises',
+            icon: "megaphone",
+            isShowed: false,
+            isActive: false
+        };
+        this.cards.push(card);
 
         this.homeService.loadHomeData(this.projectTarget).then(data=> {
             this.homeServiceData = data;
@@ -140,6 +164,8 @@ export class HomePage implements OnChanges {
             this.recentOffers.push(data[i]);
         }
 
+        this.cards[1].isShowed = this.recentOffers.length > 0;
+
         for (let i = this.maxLines; i < data.length; i++) {
             this.nextRecentOffers.push(data[i]);
         }
@@ -151,6 +177,8 @@ export class HomePage implements OnChanges {
         for (let i = 0; i < max; i++) {
             this.upcomingOffers.push(data[i]);
         }
+
+        this.cards[2].isShowed = this.upcomingOffers.length > 0;
 
         for (let i = this.maxLines; i < data.length; i++) {
             this.nextUpcomingOffers.push(data[i]);
@@ -164,8 +192,104 @@ export class HomePage implements OnChanges {
             this.recentUsers.push(data[i]);
         }
 
+        this.cards[3].isShowed = this.recentUsers.length > 0;
+
         for (let i = this.maxLines; i < data.length; i++) {
             this.nextRecentUsers.push(data[i]);
+        }
+
+        // load first card:
+        this.loadFirstCard();
+    }
+
+    rollingCards() {
+
+        let index = 0;
+        for (index; index < this.cards.length; index++) {
+            if (this.cards[index].isShowed) {
+                if (this.cards[index].isActive) {
+                    this.cards[index].isActive = false;
+                    break;
+                }
+            }
+        }
+        index = index + 1;
+        if (index === this.cards.length)
+            index = 0;
+        for (index; index <= this.cards.length; index++) {
+            if (index === this.cards.length) {
+                index = 0
+            }
+            if (this.cards[index].isShowed) {
+                this.cards[index].isActive = true;
+                break;
+            }
+            else 
+                continue;
+        }
+
+    }
+
+    loadFirstCard() {
+        for (let i=0; i< this.cards.length; i++) {
+            if (this.cards[i].isShowed) {
+                this.cards[i].isActive = true;
+                break;
+            }
+        }
+    }
+
+    generalNext() {
+        for(let i=0; i<this.cards.length;i++){
+            if (this.cards[i].isShowed && this.cards[i].isActive) {
+                switch (i){
+                    case 0 : return;
+                    case 1 : {this.nextOffers(); break;}
+                    case 2 : {this.nextOffers(); break;}
+                    case 3 : {this.nextUsers(); break;}
+                }
+
+            }
+        }
+    }
+
+    generalPrevious() {
+        for(let i=0; i<this.cards.length;i++){
+            if (this.cards[i].isShowed && this.cards[i].isActive) {
+                switch (i){
+                    case 0 : return;
+                    case 1 : {this.previousOffers(); break;}
+                    case 2 : {this.previousOffers(); break;}
+                    case 3 : {this.previousUsers(); break;}
+                }
+
+            }
+        }
+    }
+
+    generalNextCondition() {
+        for(let i=0; i<this.cards.length;i++){
+            if (this.cards[i].isShowed && this.cards[i].isActive) {
+                switch (i){
+                    case 0 : return false;
+                    case 1 : return !(this.nextRecentOffers.length === 0);
+                    case 2 : return !(this.nextUpcomingOffers.length === 0);
+                    case 3 : return !(this.nextRecentUsers.length === 0);
+                }
+            }
+        }
+    }
+
+    generalPreviousCondition() {
+        for(let i=0; i<this.cards.length;i++){
+            if (this.cards[i].isShowed && this.cards[i].isActive) {
+                switch (i){
+                    case 0 : return false;
+                    case 1 : return !(this.previousRecentOffers.length === 0);
+                    case 2 : return !(this.previousUpcomingOffers.length === 0);
+                    case 3 : return !(this.previousRecentUsers.length === 0);
+                }
+            }
         }
     }
 
@@ -298,7 +422,7 @@ export class HomePage implements OnChanges {
             }
         });
     }
-
+    
     onPageWillEnter() {
         this.autoSearchOffers = [];
         this.publicOffers = [];
@@ -316,6 +440,10 @@ export class HomePage implements OnChanges {
                 isConnected = true;
             }
             if (isConnected) {
+                var data0 = this.currentUser;
+                if(data0.mot_de_passe_reinitialise==="Oui"){
+                    this.showResetPasswordModal();
+                }
                 this.cnxBtnName = "Déconnexion";
                 this.isConnected = true;
                 this.getOffers();
@@ -471,7 +599,7 @@ export class HomePage implements OnChanges {
 
     }
 
-    presentToast(message: string, duration: number) {
+    presentToast(message:string, duration:number) {
         let toast = Toast.create({
             message: message,
             duration: duration * 1000
@@ -495,6 +623,9 @@ export class HomePage implements OnChanges {
              this.publicOffers.push(offer);
              }*/
         }
+
+        this.cards[0].isShowed = this.autoSearchOffers.length > 0;
+
         for (var i = 0; i < this.autoSearchOffers.length; i++) {
             let offer = this.autoSearchOffers[i];
             let searchFields = {
@@ -597,7 +728,13 @@ export class HomePage implements OnChanges {
             }
         });
     }
-
+    
+    
+    showResetPasswordModal(){
+        let m = new Modal(ModalUpdatePassword,{enableBackdropDismiss: false,showBackdrop:false});
+        this.nav.present(m);
+    }
+    
     itemSelected(item, offer) {
         this.nav.push(SearchDetailsPage, {searchResult: item, currentOffer: offer});
     }

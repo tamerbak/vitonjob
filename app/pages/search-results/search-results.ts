@@ -169,6 +169,19 @@ export class SearchResultsPage implements OnInit {
                 }
             });
         });
+        //if redirected from auth page
+        if(this.navParams.data.fromPage == "phone"){
+            this.selectOffer().then(offer => {
+                if (offer) {
+                    this.nav.push(NotificationContractPage, {
+                        jobyer: this.navParams.data.jobyer,
+                        currentOffer: offer
+                    });
+                } else {
+                    return;
+                }
+            });
+        }
     }
 
     onPageWillEnter() {
@@ -764,42 +777,7 @@ export class SearchResultsPage implements OnInit {
                 if (o && !isUndefined(o)) {
                     this.nav.push(NotificationContractPage, {jobyer: this.searchResults[index], currentOffer: o});
                 } else {
-                    //redirect employer to select or create an offer
-                    let alert = Alert.create({
-                        title: 'Sélection de l\'offre',
-                        subTitle: "Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer",
-                        buttons: [
-                            {
-                                text: 'Liste des offres',
-                                handler: () => {
-                                    this.selectOffer().then(offer => {
-                                        if (offer) {
-                                            this.nav.push(NotificationContractPage, {
-                                                jobyer: this.searchResults[index],
-                                                currentOffer: offer
-                                            });
-                                        } else {
-                                            return;
-                                        }
-                                    });
-                                }
-                            },
-                            {
-                                text: 'Nouvelle offre',
-                                handler: () => {
-                                    this.nav.push(OfferAddPage, {
-                                        jobyer: this.searchResults[index],
-                                        fromPage: "Search"
-                                    });
-                                }
-                            },
-                            {
-                                text: 'Annuler',
-                                role: 'cancel',
-                            }
-                        ]
-                    });
-                    this.nav.present(alert);
+                    this.showAlertForOffers(index)
                     //this.nav.push(ContractPage, {jobyer: this.searchResults[index]});
                 }
             } else {
@@ -828,7 +806,8 @@ export class SearchResultsPage implements OnInit {
                     {
                         text: 'Connexion',
                         handler: () => {
-                            this.nav.push(PhonePage, {fromPage: "Search"});
+                            this.nav.push(PhonePage, {fromPage: "Search",
+                                jobyer: this.searchResults[index], searchIndex: index});
                         }
                     }
                 ]
@@ -846,6 +825,48 @@ export class SearchResultsPage implements OnInit {
             });
             this.nav.present(m);
         });
+    }
+
+    showAlertForOffers(index){
+        //redirect employer to select or create an offer
+        let employerOffers = this.employer.employer.entreprises[0].offers;
+        let buttons = [{
+            text: 'Nouvelle offre',
+            handler: () => {
+                this.nav.push(OfferAddPage, {
+                    jobyer: this.searchResults[index],
+                    fromPage: "Search"
+                });
+            }
+        },
+            {
+                text: 'Annuler',
+                role: 'cancel',
+            }];
+        let listOfferButton = {
+            text: 'Liste des offres',
+            handler: () => {
+                this.selectOffer().then(offer => {
+                    if (offer) {
+                        this.nav.push(NotificationContractPage, {
+                            jobyer: this.searchResults[index],
+                            currentOffer: offer
+                        });
+                    } else {
+                        return;
+                    }
+                });
+            }
+        }
+        if(employerOffers && employerOffers.length > 0){
+            buttons.splice(0, 0, listOfferButton);
+        }
+        let alert = Alert.create({
+            title: 'Sélection de l\'offre',
+            subTitle: (employerOffers && employerOffers.length > 0 ? "Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer" : "Veuillez créer une nouvelle offre pour pouvoir recruter ce jobyer"),
+            buttons: buttons
+        });
+        this.nav.present(alert);
     }
 
     isEmpty(str) {
