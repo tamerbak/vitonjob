@@ -322,8 +322,13 @@ export class JobAddressPage {
                                 let jobyer = this.params.data.jobyer;
                                 let searchIndex = this.params.data.searchIndex;
                                 let obj = this.params.data.obj;
+                                let offer = this.params.data.currentOffer;
+                                if(obj == "profileInompleted"){
+                                    this.nav.push(SearchResultsPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex, currentOffer: offer});
+                                    return;
+                                }
                                 if(obj == "forRecruitment"){
-                                    this.nav.push(OfferAddPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex})
+                                    this.nav.push(OfferAddPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex});
                                 }else {
                                     //redirecting to offer list page
                                     this.nav.setRoot(OfferListPage).then(() => {

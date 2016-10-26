@@ -174,13 +174,22 @@ export class SearchResultsPage implements OnInit {
         let index = this.navParams.data.searchIndex;
         let jobyer = this.navParams.data.jobyer;
         let obj = this.navParams.data.obj;
-        if((fromPage == "phone" && index != -1) || (obj == "forRecruitment")){
+        let currentOffer = this.navParams.data.currentOffer;
+        if(currentOffer && obj == "profileInompleted"){
+            this.nav.push(NotificationContractPage, {
+                jobyer: jobyer,
+                currentOffer: currentOffer
+            });
+            return;
+        }
+        if((fromPage == "phone" && index != -1) || (obj == "forRecruitment") || (!currentOffer && obj == "profileInompleted")){
             this.selectOffer(jobyer).then(offer => {
                 if (offer) {
                     this.nav.push(NotificationContractPage, {
                         jobyer: jobyer,
                         currentOffer: offer
                     });
+                    return;
                 } else {
                     return;
                 }
@@ -775,8 +784,8 @@ export class SearchResultsPage implements OnInit {
 
             let isDataValid = !redirectToCivility;
 
+            let o = this.navParams.get('currentOffer');
             if (isDataValid) {
-                let o = this.navParams.get('currentOffer');
                 //navigate to contract page
                 if (o && !isUndefined(o)) {
                     this.nav.push(NotificationContractPage, {jobyer: this.searchResults[index], currentOffer: o});
@@ -792,10 +801,15 @@ export class SearchResultsPage implements OnInit {
                     buttons: ['OK']
                 });
                 alert.onDismiss(()=> {
-                    this.nav.push(CivilityPage, {currentUser: this.employer});
+                    this.nav.push(CivilityPage, {
+                        currentUser: this.employer,
+                        fromPage: "Search",
+                        jobyer: this.searchResults[index],
+                        obj: "profileInompleted",
+                        currentOffer: o
+                    });
                 });
                 this.nav.present(alert);
-
             }
         }
         else {

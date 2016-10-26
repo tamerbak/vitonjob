@@ -546,8 +546,8 @@ export class CivilityPage {
                         let jobyer = this.params.data.jobyer;
                         let searchIndex = this.params.data.searchIndex;
                         let obj = this.params.data.obj;
-                        this.nav.push(PersonalAddressPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex
-                        });
+                        let offer = this.params.data.currentOffer;
+                        this.nav.push(PersonalAddressPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex, currentOffer: offer});
                     }
                 }
             });
