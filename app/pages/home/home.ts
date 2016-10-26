@@ -226,7 +226,6 @@ export class HomePage implements OnChanges {
         });
         this.nav.present(loading);
         this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data) => {
-            debugger;
             console.log(data);
             loading.dismiss();
             for(let i = 0 ; i < data.length ; i++){
