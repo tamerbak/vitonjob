@@ -1,12 +1,9 @@
 // http://ionicframework.com/docs/v2/theming/
-
-
 // App Shared Imports
 // --------------------------------------------------
 // These are the imports which make up the design of this app.
 // By default each design mode includes these shared imports.
 // App Shared Sass variables belong in app.variables.scss.
-
 @import '../pages/home/home';
 @import '../pages/phone/phone.scss';
 @import '../pages/mail/mail.scss';
@@ -44,6 +41,8 @@
 @import "../pages/contractualisation/contractualisation.scss";
 @import "../pages/contract-wizard/contract-wizard.scss";
 @import "../pages/offer-temp-quote/offer-temp-quote.scss";
+@import "../pages/general-conditions/general-conditions.scss";
+@import "../pages/contract/contract.scss";
 
 /*.picker-opt .button-inner{
 	white-space: normal !important;

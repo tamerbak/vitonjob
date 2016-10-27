@@ -23,212 +23,219 @@
         <ion-input type="text" [(ngModel)]="lastname" (keyup)="watchLastName($event)"></ion-input>
     </ion-item>
     <div [hidden]="isValideLastName"
-         class="error-box">* Saisissez un nom valide</div>
+         class="error-box">* Saisissez un nom valide
+    </div>
 
     <ion-item>
         <ion-label floating>Prénom</ion-label>
         <ion-input type="text" [(ngModel)]="firstname" (keyup)="watchFirstName($event)"></ion-input>
     </ion-item>
     <div [hidden]="isValideFirstName"
-         class="error-box">* Saisissez un prénom valide</div>
+         class="error-box">* Saisissez un prénom valide
+    </div>
 
     <div [hidden]="isRecruiter">
-		<ion-item [hidden]="!isEmployer">
-			<ion-label floating >Raison sociale</ion-label>
-			<ion-input type="text" [(ngModel)]="companyname" (change)="IsCompanyExist($event, 'companyname')"></ion-input>
-		</ion-item>
+        <ion-item [hidden]="!isEmployer">
+            <ion-label floating>Raison sociale</ion-label>
+            <ion-input type="text" [(ngModel)]="companyname"
+                       (change)="IsCompanyExist($event, 'companyname')"></ion-input>
+        </ion-item>
 
-		<ion-item [hidden]="!isEmployer">
-			<ion-label floating>SIRET: 999 999 999 99999</ion-label>
-			<ion-input type="tel" [(ngModel)]="siret" (keyup)="watchSIRET($event)" maxlength="17" (change)="IsCompanyExist($event, 'siret')"></ion-input>
-		</ion-item>
-		<div [hidden]="isSIRETValid"
-			 class="error-box">* Saisissez les 14 chiffres du SIRET</div>
+        <ion-item [hidden]="!isEmployer">
+            <ion-label floating>SIRET: 999 999 999 99999</ion-label>
+            <ion-input type="tel" [(ngModel)]="siret" (keyup)="watchSIRET($event)" maxlength="17"
+                       (change)="IsCompanyExist($event, 'siret')"></ion-input>
+        </ion-item>
+        <div [hidden]="isSIRETValid"
+             class="error-box">* Saisissez les 14 chiffres du SIRET
+        </div>
 
-		<ion-item [hidden]="!isEmployer">
-			<ion-label floating>NAF: 9999A</ion-label>
-			<ion-input type="text" [(ngModel)]="ape" (keyup)="watchAPE($event)" maxlength="5"></ion-input>
-		</ion-item>
-		<div [hidden]="isAPEValid"
-			 class="error-box">* Saisissez les 4 chiffres suivis d'une lettre</div>
+        <ion-item [hidden]="!isEmployer">
+            <ion-label floating>NAF: 9999A</ion-label>
+            <ion-input type="text" [(ngModel)]="ape" (keyup)="watchAPE($event)" maxlength="5"></ion-input>
+        </ion-item>
+        <div [hidden]="isAPEValid"
+             class="error-box">* Saisissez les 4 chiffres suivis d'une lettre
+        </div>
 
-		<ion-item [hidden]="!isEmployer">
-			<ion-label floating>Convention collective</ion-label>
-			<ion-input type="text" [(ngModel)]="convention" (keyup)="watchConvention($event)"></ion-input>
-		</ion-item>
-		<ion-item [hidden]="!isEmployer || conventions.length==0">
-			<ion-list>
-				<ion-item *ngFor="let c of conventions" (click)="convSelected(c)">
-					{{c.code}} - {{c.libelle}}
-				</ion-item>
-			</ion-list>
-		</ion-item>
+        <ion-item [hidden]="!isEmployer">
+            <ion-label floating>Convention collective</ion-label>
+            <ion-select id="in-select" [(ngModel)]="conventionId" (ionChange)="watchConvention()">
+                <ion-option *ngFor="let c of conventions" (click)="convSelected(c)" value="{{c.id}}">
+                    {{c.code}} - {{c.libelle}}
+                </ion-option>
+            </ion-select>
+        </ion-item>
 
-		<ion-item style="margin-top: 1.5em" [hidden]="isEmployer || isAndroid4">
-			<ion-label>Date de naissance</ion-label>
-			<ion-datetime [(ngModel)]="birthdate"  displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" (ionChange)="watchBirthdate($event)"></ion-datetime>
-		</ion-item>
-		<div [hidden]="isBirthdateValid"
-			 class="error-box">* Vous devez avoir plus de 18 ans pour pouvoir valider votre profil</div>
+        <ion-item style="margin-top: 1.5em" [hidden]="isEmployer || isAndroid4">
+            <ion-label>Date de naissance</ion-label>
+            <ion-datetime [(ngModel)]="birthdate" displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok"
+                          (ionChange)="watchBirthdate($event)"></ion-datetime>
+        </ion-item>
+        <div [hidden]="isBirthdateValid"
+             class="error-box">* Vous devez avoir plus de 18 ans pour pouvoir valider votre profil
+        </div>
 
-		<ion-item [hidden]="isEmployer || !isAndroid4">
-			<ion-label floating>Date</ion-label>
-			<ion-input type="text" [(ngModel)] = "birthdate"
-					   (focus)="launchDateTimePicker('date')" readonly></ion-input>
-		</ion-item>
+        <ion-item [hidden]="isEmployer || !isAndroid4">
+            <ion-label floating>Date</ion-label>
+            <ion-input type="text" [(ngModel)]="birthdate"
+                       (focus)="launchDateTimePicker('date')" readonly></ion-input>
+        </ion-item>
 
-		<ion-item [hidden]="isEmployer">
-			<ion-label floating>Code postal du lieu de naissance</ion-label>
-			<ion-input type="text" [(ngModel)]="birthcp" (keyup)="watchBirthCP($event)"></ion-input>
-		</ion-item>
-		<ion-item [hidden]="isEmployer || codesPostaux.length==0">
-			<ion-list>
-				<ion-item *ngFor="let c of codesPostaux" (click)="cpSelected(c)">
-					{{c.code}}
-				</ion-item>
-			</ion-list>
-		</ion-item>
+        <ion-item [hidden]="isEmployer">
+            <ion-label floating>Code postal du lieu de naissance</ion-label>
+            <ion-input type="text" [(ngModel)]="birthcp" (keyup)="watchBirthCP($event)"></ion-input>
+        </ion-item>
+        <ion-item [hidden]="isEmployer || codesPostaux.length==0">
+            <ion-list>
+                <ion-item *ngFor="let c of codesPostaux" (click)="cpSelected(c)">
+                    {{c.code}}
+                </ion-item>
+            </ion-list>
+        </ion-item>
 
-		<ion-item [hidden]="isEmployer">
-			<ion-label floating>Lieu de naissance (ex :Palaiseau (91))</ion-label>
-			<ion-input type="text" [(ngModel)]="birthplace" (keyup)="watchBirthPlace($event)"></ion-input>
-		</ion-item>
-		<ion-item [hidden]="isEmployer || communes.length==0">
-			<ion-list>
-				<ion-item *ngFor="let c of communes" (click)="communeSelected(c)">
-					{{c.nom}}
-				</ion-item>
-			</ion-list>
-		</ion-item>
+        <ion-item [hidden]="isEmployer">
+            <ion-label floating>Lieu de naissance (ex :Palaiseau (91))</ion-label>
+            <ion-input type="text" [(ngModel)]="birthplace" (keyup)="watchBirthPlace($event)"></ion-input>
+        </ion-item>
+        <ion-item [hidden]="isEmployer || communes.length==0">
+            <ion-list>
+                <ion-item *ngFor="let c of communes" (click)="communeSelected(c)">
+                    {{c.nom}}
+                </ion-item>
+            </ion-list>
+        </ion-item>
 
-		<ion-item [hidden]="!isEmployer">
-			<ion-label floating>Organisme de médecine de travail</ion-label>
-			<ion-input type="text" [(ngModel)]="medecineTravail" (keyup)="watchMedecineTravail($event)"></ion-input>
-		</ion-item>
-		<ion-item [hidden]="!isEmployer || medecines.length==0">
-			<ion-list>
-				<ion-item *ngFor="let c of medecines" (click)="medecineSelected(c)">
-					{{c.libelle}}
-				</ion-item>
-			</ion-list>
-		</ion-item>
+        <ion-item [hidden]="!isEmployer">
+            <ion-label floating>Organisme de médecine de travail</ion-label>
+            <ion-input type="text" [(ngModel)]="medecineTravail" (keyup)="watchMedecineTravail($event)"></ion-input>
+        </ion-item>
+        <ion-item [hidden]="!isEmployer || medecines.length==0">
+            <ion-list>
+                <ion-item *ngFor="let c of medecines" (click)="medecineSelected(c)">
+                    {{c.libelle}}
+                </ion-item>
+            </ion-list>
+        </ion-item>
 
-		<ion-item [hidden]="isEmployer">
-			<ion-label floating>CNI</ion-label>
-			<ion-input type="text" [(ngModel)]="cni" (keyup)="watchCNI($event)" maxlength="12" ></ion-input>
-		</ion-item>
-		<div *ngIf="showCNIError()"
-			 class="error-box">* Saisissez les 12 chiffres du CNI</div>
+        <ion-item [hidden]="isEmployer">
+            <ion-label floating>Carte nationale d'identité</ion-label>
+            <ion-input type="text" [(ngModel)]="cni" (keyup)="watchCNI($event)" maxlength="12"></ion-input>
+        </ion-item>
+        <div *ngIf="showCNIError()"
+             class="error-box">* Saisissez les 12 chiffres du CNI
+        </div>
 
-		<ion-item [hidden]="isEmployer">
-			<ion-label floating>N° de sécurité sociale</ion-label>
-			<ion-input type="number" [(ngModel)]="numSS" (keyup)="watchNumSS($event)" maxlength="15"></ion-input>
-		</ion-item>
-		<div *ngIf="showNSSError()" class="error-box">{{numSSMessage}}</div>
+        <ion-item [hidden]="isEmployer">
+            <ion-label floating>N° de sécurité sociale</ion-label>
+            <ion-input type="number" [(ngModel)]="numSS" (keyup)="watchNumSS($event)" maxlength="15"></ion-input>
+        </ion-item>
+        <div *ngIf="showNSSError()" class="error-box">{{numSSMessage}}</div>
 
-		<ion-item [hidden]="isEmployer">
-			<ion-label [ngStyle]="nationalitiesstyle" floating>Nationalité</ion-label>
-			<ion-select [(ngModel)]="nationality" (ionChange)="onChangeNationality($event)">
-				<ion-option *ngFor="let n of nationalities" value="{{n.pk_user_nationalite}}">{{n.libelle}}</ion-option>
-			</ion-select>
-		</ion-item>
+        <ion-item [hidden]="isEmployer">
+            <ion-label [ngStyle]="nationalitiesstyle" floating>Nationalité</ion-label>
+            <ion-select [(ngModel)]="nationality" (ionChange)="onChangeNationality($event)">
+                <ion-option *ngFor="let n of nationalities" value="{{n.pk_user_nationalite}}">{{n.libelle}}</ion-option>
+            </ion-select>
+        </ion-item>
 
-		<ion-item [hidden]="isEmployer || isFrench">
-			<ion-label [ngStyle]="nationalitiesstyle" floating>Identifiant de nationalité</ion-label>
-			<ion-select [(ngModel)]="idnationality" (ionChange)="onChangeIDNationality($event)">
-				<ion-option value="41" >UE</ion-option>
-				<ion-option value="43" >EEE</ion-option>
-				<ion-option value="42" >Autre</ion-option>
-			</ion-select>
-		</ion-item>
-		<ion-item [hidden]="isEmployer || isFrench || isEU">
-			<ion-label >Titre séjour délivré le</ion-label>
-			<ion-datetime [(ngModel)]="tsejProvideDate" (ionChange)="watchTsejProvideDate($event)"
-						  displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejProvideDate" [(min)]="mintsejProvideDate"></ion-datetime>
-		</ion-item>
-		<ion-item [hidden]="isEmployer || isFrench || isEU">
-			<ion-label >Titre séjour valable du</ion-label>
-			<ion-datetime [(ngModel)]="tsejFromDate" (ionChange)="watchTsejFromDate($event)"
-						  displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejFromDate" [(min)]="mintsejFromDate"></ion-datetime>
-		</ion-item>
-		<ion-item [hidden]="isEmployer || isFrench || isEU">
-			<ion-label >Titre séjour valable au</ion-label>
-			<ion-datetime [(ngModel)]="tsejToDate"   displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejToDate" [(min)]="mintsejToDate"></ion-datetime>
-		</ion-item>
-		<ion-item [hidden]="isEmployer || isFrench || isEU">
-			<ion-label [ngStyle]="nationalitiesstyle" floating>Délivré par</ion-label>
-			<ion-select [(ngModel)]="prefecture" >
-				<ion-option *ngFor="let n of prefectures" value="{{n.pk_user_prefecture}}">{{n.nom}}</ion-option>
-			</ion-select>
-		</ion-item>
-		<div class="error-box">{{tsMessage}}</div>
+        <ion-item [hidden]="isEmployer || isFrench">
+            <ion-label [ngStyle]="nationalitiesstyle" floating>Identifiant de nationalité</ion-label>
+            <ion-select [(ngModel)]="idnationality" (ionChange)="onChangeIDNationality($event)">
+                <ion-option value="41">UE</ion-option>
+                <ion-option value="43">EEE</ion-option>
+                <ion-option value="42">Autre</ion-option>
+            </ion-select>
+        </ion-item>
+        <ion-item [hidden]="isEmployer || isFrench || isEU">
+            <ion-label>Titre séjour délivré le</ion-label>
+            <ion-datetime [(ngModel)]="tsejProvideDate" (ionChange)="watchTsejProvideDate($event)"
+                          displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejProvideDate"
+                          [(min)]="mintsejProvideDate"></ion-datetime>
+        </ion-item>
+        <ion-item [hidden]="isEmployer || isFrench || isEU">
+            <ion-label>Titre séjour valable du</ion-label>
+            <ion-datetime [(ngModel)]="tsejFromDate" (ionChange)="watchTsejFromDate($event)"
+                          displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejFromDate"
+                          [(min)]="mintsejFromDate"></ion-datetime>
+        </ion-item>
+        <ion-item [hidden]="isEmployer || isFrench || isEU">
+            <ion-label>Titre séjour valable au</ion-label>
+            <ion-datetime [(ngModel)]="tsejToDate" displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok"
+                          [(max)]="maxtsejToDate" [(min)]="mintsejToDate"></ion-datetime>
+        </ion-item>
+        <ion-item [hidden]="isEmployer || isFrench || isEU">
+            <ion-label [ngStyle]="nationalitiesstyle" floating>Délivré par</ion-label>
+            <ion-select [(ngModel)]="prefecture">
+                <ion-option *ngFor="let n of prefectures" value="{{n.pk_user_prefecture}}">{{n.nom}}</ion-option>
+            </ion-select>
+        </ion-item>
+        <div class="error-box">{{tsMessage}}</div>
 
-		<ion-row>
-			<ion-col text-center>
-				<ion-label>{{uploadVerb}} une photo {{scanTitle}}</ion-label>
-				<button [hidden]="scanUri" class="file-upload button-picture" [style.backgroundColor]="themeColor">
-					<input id="fileinput" type="file" class="file-input" (change)="onChangeUpload($event)">
-					<ion-icon name='folder'></ion-icon>
-				</button>
+        <ion-row>
+            <ion-col text-center>
+                <ion-label>{{uploadVerb}} une photo {{scanTitle}}</ion-label>
+                <button [hidden]="scanUri" class="file-upload button-picture" [style.backgroundColor]="themeColor">
+                    <input id="fileinput" type="file" class="file-input" (change)="onChangeUpload($event)">
+                    <ion-icon name='folder'></ion-icon>
+                </button>
 
-				<button [hidden]="scanUri" seconde (click)="takePicture()" [style.backgroundColor]="themeColor" class="button-picture">
-					<ion-icon name="camera"></ion-icon>
-				</button>
-			</ion-col>
-		</ion-row>
-
-
-
-		<ion-card  style="margin: auto;" [hidden]="!scanUri" id="card-file">
-			<img [src]="scanUri"/>
-			<ion-row>
-				<ion-col text-center>
-					<button  style="margin: auto;" clear (click)="showModal()" small>
-						<ion-icon name='expand'></ion-icon>
-					</button>
-				</ion-col>
-				<ion-col text-center>
-					<button style="margin: auto;" clear (click)="onDelete()" small>
-						<ion-icon name='close'></ion-icon>
-					</button>
-				</ion-col>
-			</ion-row>
-		</ion-card>
+                <button [hidden]="scanUri" seconde (click)="takePicture()" [style.backgroundColor]="themeColor"
+                        class="button-picture">
+                    <ion-icon name="camera"></ion-icon>
+                </button>
+            </ion-col>
+        </ion-row>
 
 
+        <ion-card style="margin: auto;" [hidden]="!scanUri" id="card-file">
+            <img [src]="scanUri"/>
+            <ion-row>
+                <ion-col text-center>
+                    <button style="margin: auto;" clear (click)="showModal()" small>
+                        <ion-icon name='expand'></ion-icon>
+                    </button>
+                </ion-col>
+                <ion-col text-center>
+                    <button style="margin: auto;" clear (click)="onDelete()" small>
+                        <ion-icon name='close'></ion-icon>
+                    </button>
+                </ion-col>
+            </ion-row>
+        </ion-card>
 
 
+        <!-- <ion-row>
+            <ion-col text-center>
+                <button class="file-upload button-picture">
+                    <input type="file" class="file-input" (change)="onChangeUpload($event)">
+                    <ion-icon name="download" style="padding-right: .4em;"></ion-icon>
+                     Charger un scan {{scanTitle}}
+                </button>
+            </ion-col>
+        </ion-row>
 
-		<!-- <ion-row>
-			<ion-col text-center>
-				<button class="file-upload button-picture">
-					<input type="file" class="file-input" (change)="onChangeUpload($event)">
-					<ion-icon name="download" style="padding-right: .4em;"></ion-icon>
-					 Charger un scan {{scanTitle}}
-				</button>
-			</ion-col>
-		</ion-row>
+        <ion-row>
+            <ion-col text-center>
+                <button block (click)="takePicture()" [style.backgroundColor]="themeColor" class="button-picture">
+                    <ion-icon name="md-camera"></ion-icon>
+                    Prendre une photo {{scanTitle}}
+                </button>
+            </ion-col>
+        </ion-row>
 
-		<ion-row>
-			<ion-col text-center>
-				<button block (click)="takePicture()" [style.backgroundColor]="themeColor" class="button-picture">
-					<ion-icon name="md-camera"></ion-icon>
-					Prendre une photo {{scanTitle}}
-				</button>
-			</ion-col>
-		</ion-row>
-
-		<ion-card [hidden]="!scanUri">
-			<ion-card-content>
-				<img [src]="scanUri"/>
-			</ion-card-content>
-		</ion-card>
-		-->
-	</div>
+        <ion-card [hidden]="!scanUri">
+            <ion-card-content>
+                <img [src]="scanUri"/>
+            </ion-card-content>
+        </ion-card>
+        -->
+    </div>
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <button block (click)="updateCivility()" [style.backgroundColor]="themeColor" [disabled]="isUpdateDisabled()" type="submit">
+            <button block (click)="updateCivility()" [style.backgroundColor]="themeColor"
+                    [disabled]="isUpdateDisabled()" type="submit">
                 <ion-icon name="done-all"></ion-icon>
                 Valider
             </button>

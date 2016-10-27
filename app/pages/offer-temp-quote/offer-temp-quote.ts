@@ -1,25 +1,26 @@
-import { Component } from '@angular/core';
-import {NavController, NavParams} from 'ionic-angular';
-import { FinanceService } from '../../providers/finance-service/finance-service'
+import {Component} from "@angular/core";
+import {NavController, NavParams} from "ionic-angular";
+import {FinanceService} from "../../providers/finance-service/finance-service";
 
 @Component({
     templateUrl: 'build/pages/offer-temp-quote/offer-temp-quote.html',
-    providers:[FinanceService]
+    providers: [FinanceService]
 })
 export class OfferTempQuotePage {
-    quote : any;
+    quote: any;
     taxeRate: number = 0.2;
-    amountBeforeTaxes: number  = 0;
-    taxes:number = 0;
-    total:number = 0;
+    amountBeforeTaxes: number = 0;
+    taxes: number = 0;
+    total: number = 0;
+
     constructor(private nav: NavController,
-                private service : FinanceService,
-                navParams : NavParams) {
-        //debugger;
+                private service: FinanceService,
+                navParams: NavParams) {
+
         let id = navParams.data.idOffer;
-        this.service.loadPrevQuote(id).then(data=>{
+        this.service.loadPrevQuote(id).then(data=> {
             this.quote = data;
-            for (let i=0; i< this.quote.lignes.length; i++) {
+            for (let i = 0; i < this.quote.lignes.length; i++) {
                 this.amountBeforeTaxes += parseFloat(this.quote.lignes[i].valeur);
             }
             this.taxes = this.amountBeforeTaxes * this.taxeRate;
@@ -29,7 +30,7 @@ export class OfferTempQuotePage {
         this.initQuote();
     }
 
-    initQuote(){
+    initQuote() {
         this.quote = {
             "amountBeforeTaxes": 0.0,
             "class": "com.vitonjob.callouts.finance.Quote",
@@ -42,19 +43,19 @@ export class OfferTempQuotePage {
         }
     }
 
-    formatHour(minutes){
-        let h = Math.floor(minutes/60);
-        let m = minutes%60;
-        let sh = h<10?'0'+h:''+h;
-        let sm = m<10?'0'+m:''+m;
-        return sh+':'+sm;
+    formatHour(minutes) {
+        let h = Math.floor(minutes / 60);
+        let m = minutes % 60;
+        let sh = h < 10 ? '0' + h : '' + h;
+        let sm = m < 10 ? '0' + m : '' + m;
+        return sh + ':' + sm;
     }
 
-    formatPercent(rate){
-        return (rate*100)+' %';
+    formatPercent(rate) {
+        return (rate * 100) + ' %';
     }
 
-    closeModal(){
+    closeModal() {
         this.nav.pop();
     }
 

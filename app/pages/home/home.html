@@ -1,8 +1,5 @@
-
-
-
 <ion-content class="home" [ngStyle]="backgroundImage">
-    <button style="background-color: transparent;"menuToggle>
+    <button style="background-color: transparent;" menuToggle>
         <ion-icon style="color: #808080;" name="menu"></ion-icon>
     </button>
     <!--div>
@@ -13,96 +10,119 @@
     </div-->
 
     <button fab fab-bottom fab-center (click)="stopRecognition()"
-            [style.backgroundColor]="themeColor" [hidden]= "!recording">
+            [style.backgroundColor]="themeColor" [hidden]="!recording">
         <ion-spinner name="dots"></ion-spinner>
     </button>
-	<ion-row>&nbsp;</ion-row>
+    <ion-row>&nbsp;</ion-row>
     <ion-row>&nbsp;</ion-row>
     <ion-row id="logo-position">
 
-        <ion-col text-center><img id="logo"[src]="imageURL"/></ion-col>
+        <ion-col text-center><img id="logo" [src]="imageURL"/></ion-col>
 
     </ion-row>
 
     <ion-row id="home-text">
         <ion-col width-10></ion-col>
-        <ion-col text-center> <h6 primary class="searchHighlight"> {{highlightSentence}} </h6></ion-col>
+        <ion-col text-center><h6 primary class="searchHighlight"> {{highlightSentence}} </h6></ion-col>
         <ion-col width-10></ion-col>
     </ion-row>
 
     <ion-row id="search-position">
-            <ion-item class="itemSearch">
+        <ion-item class="itemSearch">
 
-                <ion-label id="search-label" floating class="withoutOverflow">{{searchPlaceHolder}}</ion-label>
-                <ion-input type="text" (focus)="onFocus($event)"
-                           (blur)="onBlur($event)" (keyup)="checkForEnterKey($event)"
-                           [(ngModel)]="scQuery"></ion-input>
-                <button clear item-right (click)="doSemanticSearch()">
-                    <ion-icon id="icon-search" name="search" class="searchIcon"></ion-icon>
-                </button>
+            <ion-label id="search-label" floating class="withoutOverflow">{{searchPlaceHolder}}</ion-label>
+            <ion-input type="text" (focus)="onFocus($event)"
+                       (blur)="onBlur($event)" (keyup)="checkForEnterKey($event)"
+                       [(ngModel)]="scQuery"></ion-input>
+            <button clear item-right (click)="doSemanticSearch()">
+                <ion-icon id="icon-search" name="search" class="searchIcon"></ion-icon>
+            </button>
 
-            </ion-item>
+        </ion-item>
     </ion-row>
     <!--div id="adv-search"-->
-        <ion-row>
-            <ion-col text-right>
-                <a id="ra" [navPush]="push">
-                    Recherche avancée
-                </a>
-            </ion-col>
+    <ion-row>
+        <ion-col text-right>
+            <a id="ra" [navPush]="push">
+                Recherche avancée
+            </a>
+        </ion-col>
 
-        </ion-row>
-	<ion-list-header [hidden]="autoSearchOffers.length == 0">
-		Alertes enregistrées
-	</ion-list-header>
-		<ion-card text-wrap [hidden]="autoSearchOffers.length == 0" class="cardOpacity">
-		<ion-list text-wrap>
-			<ion-item *ngFor="let offer of autoSearchOffers" class="itemOpacity" (click)="launchSearch(offer, false)">
-			<h3>{{offer.title}}</h3><!--ion-icon name="{{offer.arrowLabel}}" item-right (click)="launchSearch(offer, true)"></ion-icon-->
-				<ion-badge [style.backgroundColor]="themeColor" item-right>
-					<ion-spinner name="crescent" [hidden]="(offer.correspondantsCount >= 0)"></ion-spinner>
-					{{(offer.correspondantsCount < 0) ? '' : offer.correspondantsCount}}
-				</ion-badge>
+    </ion-row>
 
+    <div style="width:100%; background-color: transparent">
 
-				<!--ion-card [hidden]="offer.isResultHidden" class="cardOpacity">
-			  <ion-list text-wrap>
-				  <ion-card *ngFor="let item of searchResults, let i=index" class="cardMargin">
-					  <ion-item no-lines text-wrap style="background-color: lightcyan">
-						  <ion-avatar item-left>
-							  <img [src]="item.avatar">
-						  </ion-avatar>
-						  <h2>{{isEmployer ? item.prenom + ' ' + item.nom.substring(0,1) + '.' : item.entreprise}}</h2>
-						  <h4>{{item.titreOffre}}</h4>
-						  <p><ion-icon name="ios-timer" [style.color]="availability" style="font-size: large;"></ion-icon> &nbsp; Disponible</p>
-						  <ion-badge item-right secondary>{{(item.matching.toString().indexOf('.') < 0) ? item.matching:item.matching.toString().split('.')[0]}}%</ion-badge>
-					  </ion-item>
+            <div>
+                <ion-card text-wrap class="cardOpacity">
+                    <ion-list *ngFor="let card of cards">
+                        <ion-item style="background-color: azure" *ngIf="card.isShowed && card.isActive">
+                            <ion-icon [name]="card.icon" item-left></ion-icon>
+                            <h3>{{card.title}}</h3>
+                            <button (click)="rollingCards()" item-right clear>
+                                Découvrez
+                                <ion-icon name="arrow-forward"></ion-icon>
+                            </button>
+                        </ion-item>
+                    </ion-list>
 
-					  <ion-row><ion-col text-center style="padding-top: 0; padding-bottom: 0;">
-						  <button clear small (click)="itemSelected(item, offer)" style="text-decoration: underline;">Voir plus de détails</button>
-					  </ion-col></ion-row>
-				  </ion-card>
-				</ion-list>
-			</ion-card-->
-		</ion-item>
-	</ion-list>
-	</ion-card>
-	
-	<!--ion-card text-wrap [hidden]="publicOffers.length == 0" class="cardOpacity">
-		<ion-card-header style = "text-align: center;">
-			Offres publiques
-		</ion-card-header>
-		<ion-list text-wrap>
-		<ion-item *ngFor="let publicOffer of publicOffers " (click)="launchSearch(publicOffer, false)" class="itemOpacity">
-			<h3 class="h3-margintop">{{publicOffer.title}}</h3>
-			<p>Cliquer pour voir plus de détail</p>
-			<ion-badge [style.backgroundColor]="themeColor" item-right>
-				<ion-spinner name="crescent" [hidden]="(publicOffer.correspondantsCount >= 0)"></ion-spinner>
-				{{(publicOffer.correspondantsCount < 0) ? '' : publicOffer.correspondantsCount}}
-			</ion-badge>
-		</ion-item>
-		</ion-list>
-	</ion-card-->
+                    <ion-list text-wrap style="overflow: scroll;" *ngIf="cards[0].isShowed && cards[0].isActive">
+                        <ion-item *ngFor="let offer of autoSearchOffers" class="itemOpacity"
+                                  (click)="launchSearch(offer, false)">
+                            <h3>{{offer.title}}</h3>
+                            <!--ion-icon name="{{offer.arrowLabel}}" item-right (click)="launchSearch(offer, true)"></ion-icon-->
+                            <ion-badge [style.backgroundColor]="themeColor" item-right>
+                                <ion-spinner name="crescent" [hidden]="(offer.correspondantsCount >= 0)"></ion-spinner>
+                                {{(offer.correspondantsCount < 0) ? '' : offer.correspondantsCount}}
+                            </ion-badge>
+
+                        </ion-item>
+                    </ion-list>
+
+                    <ion-list text-wrap style="height:200px;overflow: scroll;" *ngIf="cards[2].isShowed && cards[2].isActive">
+                        <ion-item *ngFor="let offer of upcomingOffers" class="itemOpacity" (click)="searchOffer(offer)">
+                            <h3>{{offer.title}}</h3>
+                            <p>
+                                <span>Créée le </span>{{simplifyDate(offer.creationDate)}}<br/>
+                                <span>Disponible à partir du </span>{{simplifyDate(offer.startAvailability)}}<br/>
+                            </p>
+                        </ion-item>
+                    </ion-list>
+
+                    <ion-list text-wrap style="height:200px;overflow: scroll;" *ngIf="cards[1].isShowed && cards[1].isActive">
+                        <ion-item *ngFor="let offer of recentOffers" class="itemOpacity" (click)="searchOffer(offer)">
+                            <h2>{{offer.title}}</h2>
+                            <p>
+                                <span>Créée le </span>{{simplifyDate(offer.creationDate)}}<br/>
+                                <span>Disponible à partir du </span>{{simplifyDate(offer.startAvailability)}}<br/>
+                            </p>
+                        </ion-item>
+                    </ion-list>
+
+                    <ion-list text-wrap style="height:200px;overflow: scroll;" *ngIf="cards[3].isShowed && cards[3].isActive">
+                        <ion-item *ngFor="let u of recentUsers" class="itemOpacity">
+                            <h3>{{u.name}}</h3>
+                            <p>
+                                <span>A rejoint Vitojob le </span>{{simplifyDate(u.creationDate)}}<br/>
+                            </p>
+                        </ion-item>
+                    </ion-list>
+
+                    <ion-list *ngFor="let card of cards">
+                        <ion-item style="background-color: azure" *ngIf="card.isShowed && card.isActive && !(card.id === 0)">
+                            <button clear (click)="generalNext()" *ngIf="generalNextCondition()" item-right>
+                                Suivant
+                                <ion-icon name="arrow-dropright-circle"></ion-icon>
+                            </button>
+                            <button clear (click)="generalPrevious()" *ngIf="generalPreviousCondition()" item-left>
+                                <ion-icon name="arrow-dropleft-circle"></ion-icon>
+                                Précédent
+                            </button>
+                        </ion-item>
+                    </ion-list>
+
+                </ion-card>
+            </div>
+    </div>
 
     <!--/div-->
 
@@ -120,7 +140,8 @@
     <ion-row id="btn-login">
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <button class="deconnexionButton" [style.backgroundColor]="themeColor"  (click)="openLoginsPage()" [hidden]="cnxBtnName === 'Déconnexion'" dark>
+            <button class="deconnexionButton" [style.backgroundColor]="themeColor" (click)="openLoginsPage()"
+                    [hidden]="cnxBtnName === 'Déconnexion'" dark>
                 <ion-icon name="log-in" class="buttonLeftOnly"></ion-icon>
                 {{cnxBtnName}}
             </button>
@@ -131,7 +152,6 @@
     <ion-row>&nbsp;</ion-row>
 
 
-	
     <!--div class="draggable ui-widget-content">
         <ion-list>
             <ion-list-header><ion-icon  name="move"></ion-icon>Recherche</ion-list-header>

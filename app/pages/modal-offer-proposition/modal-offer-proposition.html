@@ -1,40 +1,40 @@
 <ion-header>
-  <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
-    <ion-title>Proposition</ion-title>
-    <ion-buttons end>
-      <button (click)="closeModal()">
-        <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
-      </button>
-    </ion-buttons>
-  </ion-navbar>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
+        <ion-title>Proposition</ion-title>
+        <ion-buttons end>
+            <button (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
 </ion-header>
 <ion-content padding class="modal-offer-proposition">
-  <h2>Proposition</h2>
-  <ion-list >
-    <ion-list-header>Job</ion-list-header>
-    <ion-item>
-      <span>{{proposedJob.libellejob}}</span>
-    </ion-item>
-    <ion-list-header>Langues</ion-list-header>
-    <ion-item *ngFor="let l of proposedLanguages">
-      <span>{{l.libelle}}</span>
-      <button item-right secondary (click)="deleteLanguage(l)" >
-        <ion-icon name="md-trash" ></ion-icon>
-      </button>
-    </ion-item>
-    <ion-list-header>Indispensables</ion-list-header>
-    <ion-item *ngFor="let q of proposedQualities">
-      <span>{{q.libelle}}</span>
-      <button item-right secondary (click)="deleteQuality(q)">
-        <ion-icon name="md-trash"></ion-icon>
-      </button>
-    </ion-item>
+    <h2>Proposition</h2>
+    <ion-list>
+        <ion-list-header>Job</ion-list-header>
+        <ion-item>
+            <span>{{proposedJob.libellejob}}</span>
+        </ion-item>
+        <ion-list-header>Langues</ion-list-header>
+        <ion-item *ngFor="let l of proposedLanguages">
+            <span>{{l.libelle}}</span>
+            <button item-right secondary (click)="deleteLanguage(l)">
+                <ion-icon name="md-trash"></ion-icon>
+            </button>
+        </ion-item>
+        <ion-list-header>Indispensables</ion-list-header>
+        <ion-item *ngFor="let q of proposedQualities">
+            <span>{{q.libelle}}</span>
+            <button item-right secondary (click)="deleteQuality(q)">
+                <ion-icon name="md-trash"></ion-icon>
+            </button>
+        </ion-item>
 
-  </ion-list>
-  <button block secondary (click)="saveProposition()">
-    Enregistrer
-  </button>
-  <button block primary (click)="cancel()">
-    Annuler
-  </button>
+    </ion-list>
+    <button block secondary (click)="saveProposition()">
+        Enregistrer
+    </button>
+    <button block primary (click)="cancel()">
+        Annuler
+    </button>
 </ion-content>

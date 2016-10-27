@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component} from "@angular/core";
 import {AppVersion} from "ionic-native/dist/index";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
@@ -12,17 +12,17 @@ import {Platform} from "ionic-angular/index";
 })
 export class AboutPage {
 
-    releaseDate:string;
-    appName:string;
-    version:string;
-    versionCode:string;
-    versionNumber:string;
-    logo:string;
-    projectName:string;
-    isEmployer:boolean;
-    themeColor:string;
+    releaseDate: string;
+    appName: string;
+    version: string;
+    versionCode: string;
+    versionNumber: string;
+    logo: string;
+    projectName: string;
+    isEmployer: boolean;
+    themeColor: string;
 
-    constructor(gc:GlobalConfigs, platform:Platform) {
+    constructor(gc: GlobalConfigs, platform: Platform) {
         let monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
             "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
         ];

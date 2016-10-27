@@ -1,22 +1,23 @@
-scroll-content{
+scroll-content {
   overflow-y: scroll !important;
 }
+
 .search-results {
   background-size: cover;
 
-  .button{
-    box-shadow: none!important;
+  .button {
+    box-shadow: none !important;
   }
 
 }
 
-.view-toggle{
+.view-toggle {
   position: absolute;
   right: 0px;
   top: 0px;
 }
 
-.candidate-card-header{
+.candidate-card-header {
   background-color: #14baa6;
 }
 
@@ -33,42 +34,42 @@ scroll-content{
 }
 
 .candidate-card-content > h2 {
-  margin-top:7px !important;
-  margin-bottom:7px !important;
+  margin-top: 7px !important;
+  margin-bottom: 7px !important;
   font-size: large;
   font-weight: bold;
 }
 
 .candidate-card-content > ion-row {
-  margin:10px;
+  margin: 10px;
 }
 
-.action-sheet-title{
-  font-size:large;
+.action-sheet-title {
+  font-size: large;
 }
 
-.action-sheet-button > .button-inner > ion-icon{
-  margin-right:10px;
+.action-sheet-button > .button-inner > ion-icon {
+  margin-right: 10px;
 }
 
-.offer-proposition-div{
+.offer-proposition-div {
   position: fixed;
   width: 100%;
   bottom: 0px;
-  right:0px;
+  right: 0px;
   background-color: rgba(black, 0.8);
   color: white;
   box-shadow: #222222;
   font-size: 13px;
-  z-index : 1;
+  z-index: 1;
 }
 
-#card{
+#card {
   position: absolute;
   top: 0;
 }
 
-#btn-r{
+#btn-r {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -76,7 +77,7 @@ scroll-content{
   border-color: #757575;
 }
 
-#btn-rg{
+#btn-rg {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -84,63 +85,63 @@ scroll-content{
   border-color: #757575;
 }
 
-#info-name{
+#info-name {
   position: absolute;
 }
 
-#info-lastname{
+#info-lastname {
   position: absolute;
 }
 
-#info-civility{
+#info-civility {
   position: absolute;
 }
 
-#info-titre{
+#info-titre {
   position: absolute;
 }
 
-#btn-mail{
-  position: absolute;
-  -webkit-border-radius: 50%;
-  background-color: transparent;
-  left: 0;
-}
-
-#btn-call{
-  position: absolute;
-  -webkit-border-radius: 50%;
-  background-color: transparent;
-  right: 0;
-}
-
-#btn-skype{
-  position: absolute;
-  -webkit-border-radius: 50%;
-  background-color: transparent;
-  right: 0;
-}
-
-#btn-google{
+#btn-mail {
   position: absolute;
   -webkit-border-radius: 50%;
   background-color: transparent;
   left: 0;
 }
 
-#div-avatar{
-     position: absolute;
+#btn-call {
+  position: absolute;
+  -webkit-border-radius: 50%;
+  background-color: transparent;
+  right: 0;
 }
 
-#avatar{
+#btn-skype {
+  position: absolute;
+  -webkit-border-radius: 50%;
+  background-color: transparent;
+  right: 0;
+}
+
+#btn-google {
+  position: absolute;
+  -webkit-border-radius: 50%;
+  background-color: transparent;
+  left: 0;
+}
+
+#div-avatar {
+  position: absolute;
+}
+
+#avatar {
   display: initial;
 }
 
-#matching{
+#matching {
   position: absolute;
 }
 
-#d-re{
+#d-re {
   border-color: #757575;
   color: #757575;
   font-size: 12px;
@@ -148,49 +149,49 @@ scroll-content{
   right: 0;
 }
 
-#de{
+#de {
   position: absolute;
 }
 
 //screen size 250px at 550px
 @media screen and (min-height: 250px) and (max-height: 550px) {
 
-  #card{
+  #card {
     height: 24em;
   }
 
-  #btn-r{
+  #btn-r {
     bottom: 0.5em;
     font-size: 11px;
   }
 
-  #btn-rg{
+  #btn-rg {
     font-size: 11px;
     bottom: 0.5em;
   }
 
-  #icon-call{
+  #icon-call {
     color: #757575;
   }
 
-  #icon-mail{
+  #icon-mail {
     color: #757575;
   }
 
-  #btn-mail{
+  #btn-mail {
     top: 8.5em;
   }
 
-  #btn-call{
+  #btn-call {
     top: 8.5em;
   }
 
-  #info-civility{
+  #info-civility {
     top: 14em;
     left: 1em;
   }
 
-  #cover{
+  #cover {
     top: 0;
     left: 0;
     right: 0;
@@ -201,41 +202,41 @@ scroll-content{
     background-color: rgba(#14baa6, 0.3)
   }
 
-  #info-name{
+  #info-name {
     top: 14em;
     left: 3em;
   }
 
-  #info-lastname{
+  #info-lastname {
     top: 15em;
     right: 0;
     left: 0;
   }
 
-  #info-titre{
+  #info-titre {
     top: 3em;
     right: 0;
     left: 0;
     color: white;
   }
 
-  #btn-skype{
+  #btn-skype {
     color: #757575;
     top: 4.5em;
   }
 
-  #btn-google{
+  #btn-google {
     color: #757575;
     top: 4.5em;
   }
 
-  #div-avatar{
+  #div-avatar {
     top: 5.5em;
     left: 0;
     right: 0;
   }
 
-  #avatar{
+  #avatar {
     left: 0;
     right: 0;
     width: 100px;
@@ -244,21 +245,21 @@ scroll-content{
     -webkit-border-radius: 50%;
   }
 
-  #matching{
+  #matching {
     top: 12em;
     right: 0;
     left: 0;
   }
 
-  #text-badge{
+  #text-badge {
     font-size: 15px;
   }
 
-  #text-lastname{
+  #text-lastname {
     font-size: 14px;
   }
 
-  #de{
+  #de {
     left: 0;
     right: 0;
     top: 17.4em;
@@ -268,42 +269,42 @@ scroll-content{
 //screen size 551px at 700px
 @media screen and (min-height: 551px) and (max-height: 660px) {
 
-  #card{
+  #card {
     height: 29em;
   }
 
-  #btn-r{
+  #btn-r {
     bottom: 0.5em;
     font-size: 11px;
   }
 
-  #btn-rg{
+  #btn-rg {
     font-size: 11px;
     bottom: 0.5em;
   }
 
-  #icon-call{
+  #icon-call {
     color: #757575;
   }
 
-  #icon-mail{
+  #icon-mail {
     color: #757575;
   }
 
-  #btn-mail{
+  #btn-mail {
     top: 8.5em;
   }
 
-  #btn-call{
+  #btn-call {
     top: 8.5em;
   }
 
-  #info-civility{
+  #info-civility {
     top: 14em;
     left: 1em;
   }
 
-  #cover{
+  #cover {
     top: 0;
     left: 0;
     right: 0;
@@ -314,41 +315,41 @@ scroll-content{
     background-color: rgba(#14baa6, 0.3)
   }
 
-  #info-name{
+  #info-name {
     top: 14em;
     left: 3em;
   }
 
-  #info-lastname{
+  #info-lastname {
     top: 15em;
     right: 0;
     left: 0;
   }
 
-  #info-titre{
+  #info-titre {
     top: 3em;
     right: 0;
     left: 0;
     color: white;
   }
 
-  #btn-skype{
+  #btn-skype {
     color: #757575;
     top: 4.5em;
   }
 
-  #btn-google{
+  #btn-google {
     color: #757575;
     top: 4.5em;
   }
 
-  #div-avatar{
+  #div-avatar {
     top: 5.5em;
     left: 0;
     right: 0;
   }
 
-  #avatar{
+  #avatar {
     left: 0;
     right: 0;
     width: 100px;
@@ -357,21 +358,21 @@ scroll-content{
     -webkit-border-radius: 50%;
   }
 
-  #matching{
+  #matching {
     top: 12em;
     right: 0;
     left: 0;
   }
 
-  #text-badge{
+  #text-badge {
     font-size: 15px;
   }
 
-  #text-lastname{
+  #text-lastname {
     font-size: 14px;
   }
 
-  #de{
+  #de {
     left: 0;
     right: 0;
     top: 20em;
@@ -381,45 +382,45 @@ scroll-content{
 //screen size 701px at 879px
 @media screen and (min-height: 661px) and (max-height: 879px) {
 
-  #card{
+  #card {
     height: 36em;
   }
 
-  #btn-r{
+  #btn-r {
     bottom: 1em;
     font-size: 12px;
     left: 1em;
   }
 
-  #btn-rg{
+  #btn-rg {
     font-size: 12px;
     bottom: 1em;
     right: 1em;
 
   }
 
-  #icon-call{
+  #icon-call {
     color: #757575;
   }
 
-  #icon-mail{
+  #icon-mail {
     color: #757575;
   }
 
-  #btn-mail{
+  #btn-mail {
     top: 11em;
   }
 
-  #btn-call{
+  #btn-call {
     top: 11em;
   }
 
-  #info-civility{
+  #info-civility {
     top: 14em;
     left: 1em;
   }
 
-  #cover{
+  #cover {
     top: 0;
     left: 0;
     right: 0;
@@ -430,43 +431,42 @@ scroll-content{
     background-color: rgba(#14baa6, 0.3)
   }
 
-  #info-name{
+  #info-name {
     top: 14em;
     left: 3em;
   }
 
-  #info-lastname{
+  #info-lastname {
     top: 19em;
     right: 0;
     left: 0;
   }
 
-  #info-titre{
+  #info-titre {
     top: 3em;
     right: 0;
     left: 0;
     color: white;
   }
 
-  #btn-skype{
+  #btn-skype {
     color: #757575;
     top: 4.5em;
   }
 
-  #btn-google{
+  #btn-google {
     color: #757575;
     top: 4.5em;
   }
 
-  #div-avatar{
-  position: absolute;
+  #div-avatar {
+    position: absolute;
     text-align: center;
     top: 5.5em;
     width: 100%;
   }
 
-
-  #avatar{
+  #avatar {
     left: 0;
     right: 0;
     display: initial;
@@ -476,22 +476,22 @@ scroll-content{
     -webkit-border-radius: 50%;
   }
 
-  #matching{
+  #matching {
     top: 15.5em;
     right: 0;
     left: 0;
   }
 
-  #text-badge{
+  #text-badge {
     font-size: 17px;
   }
 
-  #text-lastname{
+  #text-lastname {
     font-size: 17px;
 
   }
 
-  #de{
+  #de {
     left: 0;
     right: 0;
     top: 22em;
@@ -501,47 +501,47 @@ scroll-content{
 //screen size 880px and more (tablet)
 @media screen and (min-height: 880px) {
 
-  #card{
+  #card {
     height: 62em;
   }
 
-  #btn-r{
+  #btn-r {
     bottom: 1em;
     font-size: 20px;
     left: 1em;
   }
 
-  #btn-rg{
+  #btn-rg {
     font-size: 20px;
     bottom: 1em;
     right: 1em;
 
   }
 
-  #icon-call{
+  #icon-call {
     color: #757575;
   }
 
-  #icon-mail{
+  #icon-mail {
     color: #757575;
   }
 
-  #btn-mail{
+  #btn-mail {
     top: 11em;
     font-size: 30px;
   }
 
-  #btn-call{
+  #btn-call {
     top: 11em;
     font-size: 30px;
   }
 
-  #info-civility{
+  #info-civility {
     top: 14em;
     left: 1em;
   }
 
-  #cover{
+  #cover {
     top: 0;
     left: 0;
     right: 0;
@@ -552,45 +552,44 @@ scroll-content{
     background-color: rgba(#14baa6, 0.3)
   }
 
-  #info-name{
+  #info-name {
     top: 14em;
     left: 3em;
   }
 
-  #info-lastname{
+  #info-lastname {
     top: 28em;
     right: 0;
     left: 0;
   }
 
-  #info-titre{
+  #info-titre {
     top: 3em;
     right: 0;
     left: 0;
     color: white;
   }
 
-  #btn-skype{
+  #btn-skype {
     color: #757575;
     top: 2em;
     font-size: 30px;
   }
 
-  #btn-google{
+  #btn-google {
     color: #757575;
     top: 2em;
     font-size: 30px;
   }
 
-  #div-avatar{
+  #div-avatar {
     position: absolute;
     text-align: center;
     top: 8em;
     width: 100%;
   }
 
-
-  #avatar{
+  #avatar {
     left: 0;
     right: 0;
     display: initial;
@@ -600,37 +599,37 @@ scroll-content{
     -webkit-border-radius: 50%;
   }
 
-  #matching{
+  #matching {
     top: 25em;
     right: 0;
     left: 0;
 
   }
 
-  #text-badge{
+  #text-badge {
     font-size: 25px;
   }
 
-  #text-lastname{
+  #text-lastname {
     font-size: 20px;
 
   }
 
-  #de{
+  #de {
     left: 0;
     right: 0;
     top: 35em;
   }
 
-  #d-re{
+  #d-re {
     font-size: 20px;
   }
 
-  #match-bdg{
+  #match-bdg {
     font-size: 18px;
   }
 
-  .offer-proposition-div{
+  .offer-proposition-div {
     font-size: 18px;
   }
 }

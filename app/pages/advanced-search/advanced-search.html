@@ -37,7 +37,7 @@
 
     <ion-item [hidden]="!isAndroid4">
         <ion-label floating>Date</ion-label>
-        <ion-input type="text" [(ngModel)] = "showedSlot.date"
+        <ion-input type="text" [(ngModel)]="showedSlot.date"
                    (focus)="launchDateTimePicker('date')" readonly></ion-input>
     </ion-item>
     <ion-item>

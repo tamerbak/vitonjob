@@ -1,41 +1,41 @@
 <ion-header>
-<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
-  <ion-title>Qualités</ion-title>
-  <ion-buttons end>
-    <button (click)="closeModal()">
-      <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
-    </button>
-  </ion-buttons>
-</ion-navbar>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
+        <ion-title>Qualités</ion-title>
+        <ion-buttons end>
+            <button (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding class="modal-quality">
-  <ion-row>
-    <ion-col text-center>
-      <button [style.backgroundColor]="themeColor" (click)="showQualityList()">
-        <ion-icon name="add-circle"></ion-icon>
-        Ajouter une qualité
-      </button>
-    </ion-col>
-  </ion-row>
+    <ion-row>
+        <ion-col text-center>
+            <button [style.backgroundColor]="themeColor" (click)="showQualityList()">
+                <ion-icon name="add-circle"></ion-icon>
+                Ajouter une qualité
+            </button>
+        </ion-col>
+    </ion-row>
 
-  <ion-list text-wrap>
-    <ion-item *ngFor="let item of qualities">
-      {{ item.libelle }}
-      <button item-right clear (click)="removeQuality(item)">
-        <ion-icon name="close-circle" [style.color]="themeColor"></ion-icon>
-      </button>
-    </ion-item>
-  </ion-list>
+    <ion-list text-wrap>
+        <ion-item *ngFor="let item of qualities">
+            {{ item.libelle }}
+            <button item-right clear (click)="removeQuality(item)">
+                <ion-icon name="close-circle" [style.color]="themeColor"></ion-icon>
+            </button>
+        </ion-item>
+    </ion-list>
 
-  <ion-row>
-    <ion-col text-center>
-      <button [hidden]="(qualities.length == 0)"
-              [style.backgroundColor]="themeColor" (click)="validateQuality()">
-        Valider
-        <ion-icon name="checkmark-circle"></ion-icon>
-      </button>
-    </ion-col>
-  </ion-row>
+    <ion-row>
+        <ion-col text-center>
+            <button [hidden]="(qualities.length == 0)"
+                    [style.backgroundColor]="themeColor" (click)="validateQuality()">
+                Valider
+                <ion-icon name="checkmark-circle"></ion-icon>
+            </button>
+        </ion-col>
+    </ion-row>
 
 </ion-content>

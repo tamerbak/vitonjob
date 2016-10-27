@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {NavController, NavParams, Alert, Storage, SqlStorage, Platform, Modal} from 'ionic-angular';
+import {Component, OnInit} from "@angular/core";
+import {NavController, NavParams, Alert, Storage, SqlStorage, Platform, Modal} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {isUndefined} from "ionic-angular/util";
 import {ContractPage} from "../contract/contract";
@@ -13,52 +13,53 @@ import {NotationService} from "../../providers/notation-service/notation-service
 import {Configs} from "../../configurations/configs";
 import {ModalOffersPage} from "../modal-offers/modal-offers";
 import {OfferAddPage} from "../offer-add/offer-add";
+import {NotificationContractPage} from "../notification-contract/notification-contract";
 
-declare var google:any;
+declare var google: any;
 
 @Component({
     templateUrl: 'build/pages/search-details/search-details.html',
     providers: [GlobalService, OffersService, AddressService, NotationService]
 })
 export class SearchDetailsPage implements OnInit {
-    isEmployer:boolean = false;
-    fullTitle:string = '';
-    fullName:string = '';
-    matching:string = '';
-    telephone:string = '';
-    email:string = '';
-    projectTarget:any;
-    result:any;
-    userService:UserService;
-    isUserAuthenticated:boolean;
-    employer:any;
-    contratsAttente:any = [];
-    db:Storage;
-    offersService:OffersService;
-    languages:any[];
-    qualities:any[];
-    map:any;
-    availability:any;
-    addressService:AddressService;
-    videoPresent:boolean = false;
-    videoLink:string;
-    starsText:string = '';
-    rating:number = 0;
-    platform:any;
-    isRecruteur:boolean = false;
-    avatar:string;
-    backgroundImage:string;
-    themeColor:string;
+    isEmployer: boolean = false;
+    fullTitle: string = '';
+    fullName: string = '';
+    matching: string = '';
+    telephone: string = '';
+    email: string = '';
+    projectTarget: any;
+    result: any;
+    userService: UserService;
+    isUserAuthenticated: boolean;
+    employer: any;
+    contratsAttente: any = [];
+    db: Storage;
+    offersService: OffersService;
+    languages: any[];
+    qualities: any[];
+    map: any;
+    availability: any;
+    addressService: AddressService;
+    videoPresent: boolean = false;
+    videoLink: string;
+    starsText: string = '';
+    rating: number = 0;
+    platform: any;
+    isRecruteur: boolean = false;
+    avatar: string;
+    backgroundImage: string;
+    themeColor: string;
 
-    constructor(public nav:NavController,
-                public params:NavParams,
-                public globalConfig:GlobalConfigs,
-                userService:UserService,
-                private globalService:GlobalService,
-                platform:Platform,
-                offersService:OffersService,
-                addressService:AddressService,
-                private notationService:NotationService) {
+    constructor(public nav: NavController,
+                public params: NavParams,
+                public globalConfig: GlobalConfigs,
+                userService: UserService,
+                private globalService: GlobalService,
+                platform: Platform,
+                offersService: OffersService,
+                addressService: AddressService,
+                private notationService: NotationService) {
 
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
@@ -70,7 +71,7 @@ export class SearchDetailsPage implements OnInit {
         this.isEmployer = this.projectTarget == 'employer';
         this.platform = platform;
         this.result = params.data.searchResult;
-        this.avatar = (this.result.avatar)? this.result.avatar : configInversed.avatars[0].url;
+        this.avatar = (this.result.avatar) ? this.result.avatar : configInversed.avatars[0].url;
         if (this.result.titreOffre)
             this.fullTitle = this.result.titreOffre;
         if (this.result.titreoffre)
@@ -95,7 +96,7 @@ export class SearchDetailsPage implements OnInit {
         this.userService.getCurrentUser(this.projectTarget).then(results => {
 
             if (results && !isUndefined(results)) {
-                //debugger;
+
                 let currentEmployer = JSON.parse(results);
                 if (currentEmployer) {
                     this.employer = currentEmployer;
@@ -149,10 +150,37 @@ export class SearchDetailsPage implements OnInit {
         let resultType = !this.isEmployer;
         let id = this.result.idOffre;
         this.notationService.loadSearchNotation(resultType, id).then(score=> {
-            //debugger;
+
             this.rating = score;
             this.starsText = this.writeStars(this.rating);
         });
+
+        //if redirected from another page
+        let fromPage = this.params.data.fromPage;
+        let index = this.params.data.searchIndex;
+        let jobyer = this.params.data.jobyer ?  this.params.data.jobyer: this.params.data.searchResult
+        let obj = this.params.data.obj;
+        let currentOffer = this.params.data.currentOffer;
+        if(currentOffer && obj == "profileInompleted"){
+            this.nav.push(NotificationContractPage, {
+                jobyer: jobyer,
+                currentOffer: currentOffer
+            });
+            return;
+        }
+        if((fromPage == "phone" && index != -1) || (obj == "forRecruitment") || (!currentOffer && obj == "profileInompleted")){
+            this.selectOffer(jobyer).then(offer => {
+                if (offer) {
+                    this.nav.push(NotificationContractPage, {
+                        jobyer: jobyer,
+                        currentOffer: offer
+                    });
+                    return;
+                } else {
+                    return;
+                }
+            });
+        }
     }
 
     onPageWillEnter() {
@@ -170,7 +198,7 @@ export class SearchDetailsPage implements OnInit {
         });
     }
 
-    writeStars(number:number):string {
+    writeStars(number: number): string {
         let starText = '';
         for (let i = 0; i < number; i++) {
             starText += '\u2605'
@@ -230,7 +258,7 @@ export class SearchDetailsPage implements OnInit {
         });
     }
 
-    addMarkers(addresses:any, bounds:any) {
+    addMarkers(addresses: any, bounds: any) {
 
         for (let i = 0; i < addresses.length; i++) {
             let marker = new google.maps.Marker({
@@ -333,43 +361,14 @@ export class SearchDetailsPage implements OnInit {
             (currentEmployer.entreprises[0].workAdress.id == 0) : true;
 
             let isDataValid = !redirectToCivility;
+            let o = this.params.get('currentOffer');
 
             if (isDataValid) {
-                let o = this.params.get('currentOffer');
                 //navigate to contract page
                 if (o && !isUndefined(o)) {
-                    this.nav.push(ContractPage, {jobyer: this.result, currentOffer: o});
+                    this.nav.push(NotificationContractPage, {jobyer: this.result, currentOffer: o});
                 } else {
-                    //redirect employer to select or create an offer
-                    let alert = Alert.create({
-                        title: 'Séléction de l\'offre',
-                        subTitle: "Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer",
-                        buttons: [
-                            {
-                                text: 'Annuler',
-                                role: 'cancel',
-                            },
-                            {
-                                text: 'Liste des offres',
-                                handler: () => {
-                                    this.selectOffer().then(offer => {
-                                        if (offer) {
-                                            this.nav.push(ContractPage, {jobyer: this.result, currentOffer: offer});
-                                        } else {
-                                            return;
-                                        }
-                                    });
-                                }
-                            },
-                            {
-                                text: 'Nouvelle offre',
-                                handler: () => {
-                                    this.nav.push(OfferAddPage, {jobyer: this.result, fromPage: "Search"});
-                                }
-                            }
-                        ]
-                    });
-                    this.nav.present(alert);
+                    this.showAlertForOffers();
                     //this.nav.push(ContractPage, {jobyer: this.result});
                 }
             } else {
@@ -380,7 +379,13 @@ export class SearchDetailsPage implements OnInit {
                     buttons: ['OK']
                 });
                 alert.onDismiss(()=> {
-                    this.nav.push(CivilityPage, {currentUser: this.employer});
+                    this.nav.push(CivilityPage, {
+                        currentUser: this.employer,
+                        fromPage: "Search",
+                        jobyer: this.result,
+                        obj: "profileInompleted",
+                        currentOffer: o
+                    });
                 });
                 this.nav.present(alert);
 
@@ -398,7 +403,8 @@ export class SearchDetailsPage implements OnInit {
                     {
                         text: 'Connexion',
                         handler: () => {
-                            this.nav.push(PhonePage, {fromPage: "Search"});
+                            this.nav.push(PhonePage, {fromPage: "Search",
+                                jobyer: this.result});
                         }
                     }
                 ]
@@ -421,7 +427,7 @@ export class SearchDetailsPage implements OnInit {
              };*/
             this.contratsAttente.push(this.result);
         } else {
-            //debugger;
+
             this.contratsAttente.splice(this.contratsAttente.findIndex((element) => {
                 return (element.email === this.result.email) && (element.tel === this.result.tel);
             }), 1);
@@ -443,7 +449,7 @@ export class SearchDetailsPage implements OnInit {
                     {
                         text: 'Connexion',
                         handler: () => {
-                            this.nav.push(PhonePage, {fromPage: "Search"});
+                            this.nav.push(PhonePage, {fromPage: "Search", searchIndex: -1});
                         }
                     }
                 ]
@@ -452,14 +458,57 @@ export class SearchDetailsPage implements OnInit {
         }
     }
 
-    selectOffer() {
+    selectOffer(jobyer) {
         return new Promise(resolve => {
-            let m = new Modal(ModalOffersPage);
+            let m = new Modal(ModalOffersPage, {fromPage: "Search", jobyer: jobyer});
             m.onDismiss(data => {
+                if(data)
                 //return selected offer
-                resolve(data);
+                    resolve(data);
             });
             this.nav.present(m);
         });
+    }
+
+    showAlertForOffers(){
+        //redirect employer to select or create an offer
+        let employerOffers = this.employer.employer.entreprises[0].offers;
+        let buttons = [{
+            text: 'Nouvelle offre',
+            handler: () => {
+                this.nav.push(OfferAddPage, {
+                    jobyer: this.result,
+                    fromPage: "Search"
+                });
+            }
+        },
+            {
+                text: 'Annuler',
+                role: 'cancel',
+            }];
+        let listOfferButton = {
+            text: 'Liste des offres',
+            handler: () => {
+                this.selectOffer(this.result).then(offer => {
+                    if (offer) {
+                        this.nav.push(NotificationContractPage, {
+                            jobyer: this.result,
+                            currentOffer: offer
+                        });
+                    } else {
+                        return;
+                    }
+                });
+            }
+        }
+        if(employerOffers && employerOffers.length > 0){
+            buttons.splice(0, 0, listOfferButton);
+        }
+        let alert = Alert.create({
+            title: 'Sélection de l\'offre',
+            subTitle: (employerOffers && employerOffers.length > 0 ? "Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer" : "Veuillez créer une nouvelle offre pour pouvoir recruter ce jobyer"),
+            buttons: buttons
+        });
+        this.nav.present(alert);
     }
 }

@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import {NavController, Modal} from 'ionic-angular';
+import {Component} from "@angular/core";
+import {NavController, Modal} from "ionic-angular";
 import {SearchCriteriaPage} from "../search-criteria/search-criteria";
 import {SearchGuidePage} from "../search-guide/search-guide";
 
@@ -14,16 +14,15 @@ import {SearchGuidePage} from "../search-guide/search-guide";
 })
 export class PopoverSearchPage {
 
-    popInCriteria:boolean = false;
+    popInCriteria: boolean = false;
 
-    constructor(public nav:NavController) {
+    constructor(public nav: NavController) {
     }
 
     /**
      * @description this method allows to render the multicriteria modal component
      */
-    showCriteriaModal()
-    {
+    showCriteriaModal() {
         var dismissedModal = function () {
             this.popInCriteria = false;
         };
@@ -39,8 +38,7 @@ export class PopoverSearchPage {
     /**
      * @description this method allows to render the guided search modal component
      */
-    showGuideModal()
-    {
+    showGuideModal() {
         var dismissedModal = function () {
             this.popInCriteria = false;
         };

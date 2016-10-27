@@ -9,7 +9,8 @@
 
 <ion-content padding class="offer" [ngStyle]="backgroundImage">
     <button menuToggle style="background-color: transparent; box-shadow: none" [style.color]="themeColor">
-        <ion-icon name="menu" primary></ion-icon>&nbsp;&nbsp;Mes offres
+        <ion-icon name="menu" primary></ion-icon>
+        &nbsp;&nbsp;Mes offres
     </button>
 
     <ion-row>
@@ -17,55 +18,69 @@
             <button small (click)="goToNewOffer()" [style.backgroundColor]="themeColor">
                 <ion-icon name="add-circle"></ion-icon>
                 Créer une offre {{isEmployer? " d'emploi":" de service"}}
-                </button>
+            </button>
         </ion-col>
     </ion-row>
 
-	<!--ion-card [hidden]="!listMode">
+    <!--ion-card [hidden]="!listMode">
         <!--ion-card-header style = "text-align: center;">
             Ma liste des offres :
         </ion-card-header-->
 
-        <ion-list text-wrap *ngFor="let globalList of globalOfferList">
-            <div style="display: flex;" *ngIf="globalList.list.length >0">
-                <ion-list-header style="color: #757575">{{globalList.header}}</ion-list-header>
-                <button outline small style="position: relative; top: 0;" (click)="showOfferList(globalList.header)">
-                    <ion-icon [name]="detailsIconName1" *ngIf="globalList.header == 'Mes offres en ligne'"></ion-icon>
-                    <ion-icon [name]="detailsIconName2" *ngIf="globalList.header != 'Mes offres en ligne'"></ion-icon>
-                    Détails
-                </button>
-            </div>
-            <div *ngFor="let item of globalList.list " no-border-bottom>
-                <ion-item (click)="goToDetailOffer(item)" [style.color]="item.color" no-lines *ngIf="item.visible && showPublishedOffers">
-                    <h2 [style.color]="item.color" class="h3-margintop">{{item.title}}</h2>
-                    <h4 [style.color]="item.color"><ion-icon [style.color]="item.color" [name]="item.visible ? 'eye' : 'eye-off'"></ion-icon> {{(isEmployer) ? 'Les jobyers peuvent voir cette offre dans leurs recherches' : 'Les employeurs peuvent voir cette offre dans leurs recherches'}}</h4>
-                    <p [style.color]="item.color">Cliquer pour voir plus de détail</p>
-                    <ion-badge [style.backgroundColor]="themeColor" item-right *ngIf="item.visible">
-                        <ion-spinner name="crescent" [hidden]="(item.correspondantsCount >= 0)"></ion-spinner>
-                        {{(item.correspondantsCount < 0) ? '' : item.correspondantsCount}}
-                    </ion-badge>
-                </ion-item>
-                <ion-item (click)="goToDetailOffer(item)" [style.color]="item.color" *ngIf="!item.visible && showUnpublishedOffers">
-                    <h2 [style.color]="item.color" class="h3-margintop">{{item.title}}</h2>
-                    <h4 [style.color]="item.color"><ion-icon [style.color]="item.color" [name]="item.visible ? 'eye' : 'eye-off'"></ion-icon> {{(isEmployer) ? 'Les jobyers ne voient pas cette offre dans leurs recherches' : 'Les employeurs ne voient pas cette offre dans leurs recherches'}}</h4>
-                    <p [style.color]="item.color">Cliquer pour voir plus de détail</p>
-                    <ion-badge [style.backgroundColor]="themeColor" item-right *ngIf="item.visible">
-                        <ion-spinner name="crescent" [hidden]="(item.correspondantsCount >= 0)"></ion-spinner>
-                        {{(item.correspondantsCount < 0) ? '' : item.correspondantsCount}}
-                    </ion-badge>
-                </ion-item>
-                <ion-item no-lines *ngIf="item.visible && showPublishedOffers">
-                    <ion-label style="text-align: right;">Activer l'alerte</ion-label>
-                    <ion-toggle secondary [checked]="item.rechercheAutomatique" (ionChange)="autoSearchMode(item)"></ion-toggle>
-                </ion-item>
-				<ion-item no-lines *ngIf="item.obsolete && showPublishedOffers">
-                    <ion-label style="color: red;">Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité</ion-label>
-                </ion-item>
-                <ion-item style="border-bottom: 0;margin-top: 0;margin-bottom: 0;text-align: center;" *ngIf="item.visible && showPublishedOffers">
-                    <button secondary small (click)="launchSearch(item)">Lancer la recherche</button>
-                </ion-item>
-            </div>
-        </ion-list>
+    <ion-list text-wrap *ngFor="let globalList of globalOfferList">
+        <div style="display: flex;" *ngIf="globalList.list.length >0">
+            <ion-list-header style="color: #757575">{{globalList.header}}</ion-list-header>
+            <button outline small style="position: relative; top: 0;" (click)="showOfferList(globalList.header)">
+                <ion-icon [name]="detailsIconName1" *ngIf="globalList.header == 'Mes offres en ligne'"></ion-icon>
+                <ion-icon [name]="detailsIconName2" *ngIf="globalList.header != 'Mes offres en ligne'"></ion-icon>
+                Détails
+            </button>
+        </div>
+        <div *ngFor="let item of globalList.list " no-border-bottom>
+            <ion-item (click)="goToDetailOffer(item)" [style.color]="item.color" no-lines
+                      *ngIf="item.visible && showPublishedOffers">
+                <h2 [style.color]="item.color" class="h3-margintop">{{item.title}}</h2>
+                <h4 [style.color]="item.color">
+                    <ion-icon [style.color]="item.color" [name]="item.visible ? 'eye' : 'eye-off'"></ion-icon>
+                    {{(isEmployer) ? 'Les jobyers peuvent voir cette offre dans leurs recherches' : 'Les employeurs
+                    peuvent voir cette offre dans leurs recherches'}}
+                </h4>
+                <p [style.color]="item.color">Cliquer pour voir plus de détail</p>
+                <ion-badge [style.backgroundColor]="themeColor" item-right *ngIf="item.visible">
+                    <ion-spinner name="crescent" [hidden]="(item.correspondantsCount >= 0)"></ion-spinner>
+                    {{(item.correspondantsCount < 0) ? '' : item.correspondantsCount}}
+                </ion-badge>
+            </ion-item>
+            <ion-item (click)="goToDetailOffer(item)" [style.color]="item.color"
+                      *ngIf="!item.visible && showUnpublishedOffers">
+                <h2 [style.color]="item.color" class="h3-margintop">{{item.title}}</h2>
+                <h4 [style.color]="item.color">
+                    <ion-icon [style.color]="item.color" [name]="item.visible ? 'eye' : 'eye-off'"></ion-icon>
+                    {{(isEmployer) ? 'Les jobyers ne voient pas cette offre dans leurs recherches' : 'Les employeurs ne
+                    voient pas cette offre dans leurs recherches'}}
+                </h4>
+                <p [style.color]="item.color">Cliquer pour voir plus de détail</p>
+                <ion-badge [style.backgroundColor]="themeColor" item-right *ngIf="item.visible">
+                    <ion-spinner name="crescent" [hidden]="(item.correspondantsCount >= 0)"></ion-spinner>
+                    {{(item.correspondantsCount < 0) ? '' : item.correspondantsCount}}
+                </ion-badge>
+            </ion-item>
+            <ion-item no-lines *ngIf="item.visible && showPublishedOffers">
+                <ion-label style="text-align: right;">Activer l'alerte</ion-label>
+                <ion-toggle secondary [checked]="item.rechercheAutomatique"
+                            (ionChange)="autoSearchMode(item)"></ion-toggle>
+            </ion-item>
+            <ion-item no-lines *ngIf="item.obsolete && showPublishedOffers">
+                <ion-label style="color: red;">Cette offre est obsolète. Veuillez mettre à jour les créneaux de
+                    disponibilité
+                </ion-label>
+            </ion-item>
+            <ion-item style="border-bottom: 0;margin-top: 0;margin-bottom: 0;text-align: center;"
+                      *ngIf="item.visible && showPublishedOffers">
+                <button secondary small (click)="launchSearch(item)">Lancer la recherche</button>
+            </ion-item>
+        </div>
+    </ion-list>
     <!--/ion-card>
 
 

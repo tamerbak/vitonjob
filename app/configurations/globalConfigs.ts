@@ -12,13 +12,13 @@ export class GlobalConfigs {
     //Name of the connexion button : Connexion or Deconnexion
     private cnxBtnName:string;
     // Avatars :
-    private avatars:any;
+    private avatars: any;
     // 3rd Color for backgrounds
-    private thirdThemeColor:string;
+    private thirdThemeColor: string;
     // Instabug object
-    private instabug:any;
+    private instabug: any;
     // mission mode
-    private missionOption:any;
+    private missionOption: any;
 
     constructor() {
         this.projectTarget = "employer";

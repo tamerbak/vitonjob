@@ -10,12 +10,12 @@
 
 <ion-content padding class="profile" [ngStyle]="backgroundImage">
 
-    <button menuToggle  style="background-color: transparent; box-shadow: none" [style.color]="themeColor">
+    <button menuToggle style="background-color: transparent; box-shadow: none" [style.color]="themeColor">
         <ion-icon name="menu"></ion-icon>
         &nbsp;&nbsp;Mon profil
     </button>
 
-    <button fab fab-top fab-right  [style.backgroundColor]="themeColor" style="margin-top:50px"
+    <button fab fab-top fab-right [style.backgroundColor]="themeColor" style="margin-top:50px"
             (click)="goToSettings()">
         <ion-icon name="settings"></ion-icon>
     </button>
@@ -33,10 +33,12 @@
     <!-- CIVILITY-->
 
     <ion-card style="margin-top: 110px">
-        <ion-item-divider light>{{isEmployer ? (isRecruiter ? 'Profil' : 'Fiche entreprise') : 'Profil'}}</ion-item-divider>
+        <ion-item-divider light>{{isEmployer ? (isRecruiter ? 'Profil' : 'Fiche entreprise') : 'Profil'}}
+        </ion-item-divider>
         <ion-card-content [hidden]="!userData.titre">
             <ion-item text-wrap>
-                <h5>{{userData.titre ? userData.titre : ''}} {{userData.nom ? userData.nom : ''}} {{userData.prenom ? userData.prenom : ''}}</h5>
+                <h5>{{userData.titre ? userData.titre : ''}} {{userData.nom ? userData.nom : ''}} {{userData.prenom ?
+                    userData.prenom : ''}}</h5>
                 <!--p *ngIf="!isEmployer && userData.jobyer.lieuNaissance"> {{(userData.titre==='M.') ? 'né' : 'née'}} à
                     {{userData.jobyer.lieuNaissance}} le {{userData.jobyer.dateNaissance}}</p-->
                 <ul *ngIf="!isEmployer && userData.jobyer.cni" style="font-size: 1.3rem;">
@@ -49,7 +51,9 @@
                 <p></p>
                 <ul style="font-size: 1.3rem;">
                     <li>SIRET: {{userData.employer.entreprises[0].siret}}</li>
-                    <li>NAF: {{userData.employer.entreprises[0].naf ? userData.employer.entreprises[0].naf.toUpperCase() : ''}}</li>
+                    <li>NAF: {{userData.employer.entreprises[0].naf ? userData.employer.entreprises[0].naf.toUpperCase()
+                        : ''}}
+                    </li>
                 </ul>
             </ion-item>
         </ion-card-content>
@@ -60,35 +64,41 @@
             </button>
         </div>
     </ion-card>
-	<div [hidden]="isRecruiter">
-		<ion-card style="margin-bottom: 0;">
-			<ion-item-divider light>Adresses</ion-item-divider>
-		</ion-card>
+    <div [hidden]="isRecruiter">
+        <ion-card style="margin-bottom: 0;">
+            <ion-item-divider light>Adresses</ion-item-divider>
+        </ion-card>
 
-		<div id="map" ></div>
-		<ion-card class="adv-map" style="margin-top: 0;">
-			<ion-item text-wrap>
-				<ion-icon subtle large item-left name='pin' style="color: #14baa6"></ion-icon>
-				<h5 *ngIf="!isEmployer">Adresse personnelle</h5>
-				<h5 *ngIf="isEmployer">Adresse du siège</h5>
-				<p *ngIf="!isEmployer">{{userData.jobyer.personnalAdress.fullAdress}}</p>
-				<p *ngIf="isEmployer && userData.employer.entreprises.length != 0">{{userData.employer.entreprises[0].siegeAdress.fullAdress}}</p>
-				<button clear item-right (click)="goToPersonalAddressTab()"><ion-icon name="create"></ion-icon></button>
-			</ion-item>
-			<ion-item text-wrap>
-				<ion-icon subtle large item-left name='pin' style="color: #757575"></ion-icon>
-				<h5 *ngIf="!isEmployer">Adresse départ au travail</h5>
-				<h5 *ngIf="isEmployer">Adresse lieu de travail</h5>
-				<p *ngIf="!isEmployer">{{userData.jobyer.workAdress.fullAdress}}</p>
-				<p *ngIf="isEmployer  && userData.employer.entreprises.length != 0">{{userData.employer.entreprises[0].workAdress.fullAdress}}</p>
-				<button clear item-right (click)="goToJobAddressTab()"><ion-icon name="create"></ion-icon></button>
-			</ion-item>
-			<!--div class="button-footer">
-				<button clear [style.color]="themeColor">
-					<ion-icon name="create"></ion-icon>
-					<div>Modifier</div>
-				</button>
-			</div-->
-		</ion-card>
-	</div>
+        <div id="map"></div>
+        <ion-card class="adv-map" style="margin-top: 0;">
+            <ion-item text-wrap>
+                <ion-icon subtle large item-left name='pin' style="color: #14baa6"></ion-icon>
+                <h5 *ngIf="!isEmployer">Adresse personnelle</h5>
+                <h5 *ngIf="isEmployer">Adresse du siège</h5>
+                <p *ngIf="!isEmployer">{{userData.jobyer.personnalAdress.fullAdress}}</p>
+                <p *ngIf="isEmployer && userData.employer.entreprises.length != 0">
+                    {{userData.employer.entreprises[0].siegeAdress.fullAdress}}</p>
+                <button clear item-right (click)="goToPersonalAddressTab()">
+                    <ion-icon name="create"></ion-icon>
+                </button>
+            </ion-item>
+            <ion-item text-wrap>
+                <ion-icon subtle large item-left name='pin' style="color: #757575"></ion-icon>
+                <h5 *ngIf="!isEmployer">Adresse départ au travail</h5>
+                <h5 *ngIf="isEmployer">Adresse lieu de travail</h5>
+                <p *ngIf="!isEmployer">{{userData.jobyer.workAdress.fullAdress}}</p>
+                <p *ngIf="isEmployer  && userData.employer.entreprises.length != 0">
+                    {{userData.employer.entreprises[0].workAdress.fullAdress}}</p>
+                <button clear item-right (click)="goToJobAddressTab()">
+                    <ion-icon name="create"></ion-icon>
+                </button>
+            </ion-item>
+            <!--div class="button-footer">
+                <button clear [style.color]="themeColor">
+                    <ion-icon name="create"></ion-icon>
+                    <div>Modifier</div>
+                </button>
+            </div-->
+        </ion-card>
+    </div>
 </ion-content>

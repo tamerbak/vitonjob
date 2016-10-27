@@ -1,13 +1,13 @@
 <ion-header>
-<ion-navbar [attr.primary]="isEmployer ? '' : null"
-            [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
-    <ion-title>Agenda</ion-title>
-    <ion-buttons end>
-        <button (click)="closeModal()">
-            <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
-        </button>
-    </ion-buttons>
-</ion-navbar>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null"
+                [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
+        <ion-title>Agenda</ion-title>
+        <ion-buttons end>
+            <button (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding class="modal-calendar">
@@ -17,7 +17,8 @@
                 <ion-icon name="add-circle"></ion-icon>
                 Ajouter un créneau
             </button>
-			<p [hidden]="!isObsolete" style="color:red">Cette offre contient des créneaux qui sont dépassés. Veuillez les mettre à jour.</p>
+            <p [hidden]="!isObsolete" style="color:red">Cette offre contient des créneaux qui sont dépassés. Veuillez
+                les mettre à jour.</p>
         </ion-col>
     </ion-row>
 

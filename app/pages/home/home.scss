@@ -1,7 +1,7 @@
 .home {
-.button{
-  box-shadow: none!important;
-}
+  .button {
+    box-shadow: none !important;
+  }
   background-size: cover;
   //font-family: 'Quicksand', sans-serif;
   font-family: 'Maven Pro', sans-serif;
@@ -18,30 +18,28 @@
     }
 
     #home-text {
-      color: #808080!important;
+      color: #808080 !important;
       position: absolute;
       top: 5.5em;
     }
 
-
     h6 {
       font-size: 14px;
-      color: #808080!important;
+      color: #808080 !important;
     }
 
-
-    #adv-search{
+    #adv-search {
       position: absolute;
-      right: 1.5em!important;
+      right: 1.5em !important;
       top: 15.5em;
       font-size: 12px;
     }
 
-    #search-position{
+    #search-position {
       margin-top: 3em;
 
     }
-    #search-label{
+    #search-label {
       font-size: 11px;
 
     }
@@ -52,14 +50,12 @@
       color: #757575;
     }
     #btn-login {
-      position: absolute;
-      bottom: 1.5em;
+
     }
 
     #btn-login, button {
       font-size: 12px;
     }
-
 
   }
 
@@ -69,7 +65,7 @@
       width: 10em;
     }
 
-    #search-position{
+    #search-position {
       margin-top: -1em;
 
     }
@@ -80,35 +76,33 @@
     }
 
     #home-text {
-      color: #808080!important;
+      color: #808080 !important;
       margin-top: 2em;
     }
 
     h6 {
       font-size: 14px;
-      color: #808080!important;
+      color: #808080 !important;
     }
 
     #btn-login {
-      position: absolute;
-      bottom: 1.5em;
+
     }
 
     #btn-login, button {
       font-size: 13px;
     }
 
-    #adv-search{
+    #adv-search {
       position: absolute;
       right: 1.5em;
       top: 18em;
       font-size: 13px;
     }
 
-
   }
 
-//smartphone size 701px at 879px
+  //smartphone size 701px at 879px
   @media screen and (min-height: 701px) and (max-height: 879px) {
     #logo {
       width: 13em;
@@ -120,13 +114,13 @@
     }
 
     #home-text {
-      color: #808080!important;
+      color: #808080 !important;
       margin-top: 4em;
     }
 
     h6 {
       font-size: 16px;
-      color: #808080!important;
+      color: #808080 !important;
     }
 
     .searchIcon {
@@ -135,7 +129,7 @@
       color: #757575;
     }
 
-    #adv-search{
+    #adv-search {
       position: absolute;
       right: 1.5em;
       top: 21em;
@@ -143,14 +137,11 @@
     }
 
     #btn-login {
-      position: absolute;
-      bottom: 1.5em;
     }
 
     #btn-login, button {
       font-size: 14px;
     }
-
 
   }
 
@@ -166,16 +157,16 @@
     }
 
     #home-text {
-      color: #808080!important;
+      color: #808080 !important;
       margin-top: 13em;
     }
 
     h6 {
       font-size: 20px;
-      color: #808080!important;
+      color: #808080 !important;
     }
 
-    #adv-search{
+    #adv-search {
       position: absolute;
       top: 24em;
       right: 1.5em;
@@ -189,15 +180,14 @@
     }
 
     #btn-login {
-      position: absolute;
-      bottom: 1.5em;
+
     }
 
     #btn-login, button {
       font-size: 18px;
     }
 
-    #search-label{
+    #search-label {
       font-size: 20px;
     }
 
@@ -211,14 +201,12 @@
   .searchHighlight {
     color: black;
   }
-  
+
   .withoutOverflow {
     overflow: visible !important;
     font-size: small;
     color: #757575;
   }
-
-
 
   .draggable {
     top: 500px;
@@ -260,13 +248,8 @@
 
     text-align: center;
 
-    text-decoration : underline;
+    text-decoration: underline;
   }
-
-
-
-
-
 
   /** body{
     margin: 0;
@@ -345,12 +328,12 @@
   *::-webkit-scrollbar {
     display: none;
   }
-  
-  .bottomButton{
-	position: fixed;
+
+  .bottomButton {
+    position: fixed;
     bottom: 0;
     background-color: transparent !important;
-    border-width : 2px;
+    border-width: 2px;
     //color: #757575;
     //border-color: white;
     border-style: solid;
@@ -373,21 +356,21 @@
     background: url(http://www.w3schools.com/tags/movie.mp4) no-repeat;
     background-size: cover;
   }
-  
-  .itemOpacity{
-		background: rgba(225,225,225,0.7);;
+
+  .itemOpacity {
+    background: rgba(240, 255, 255, 0.5);;
   }
-  
-  .cardOpacity{
-		background: rgba(225,225,225,0.7);;
+
+  .cardOpacity {
+    background: rgba(225, 225, 225, 0.7);;
   }
-  
-  .cardMargin{
-	    margin: 5px 0px 0px 0px;
-		width: 100%;
+
+  .cardMargin {
+    margin: 5px 0px 0px 0px;
+    width: 100%;
   }
-  
-  .h3-margintop{
-	margin-top: 0px!important;	
+
+  .h3-margintop {
+    margin-top: 0px !important;
   }
 }

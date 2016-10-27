@@ -1,65 +1,67 @@
 <ion-header>
-	<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-		<ion-title>Photo de profil</ion-title>
-		<ion-buttons end>
-			<button (click)="closeModal()">
-				<ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
-			</button>
-		</ion-buttons>
-	</ion-navbar>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+        <ion-title>Photo de profil</ion-title>
+        <ion-buttons end>
+            <button (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding class="modal-picture">
-	<ion-item-group style="border: 1px solid #dedede;">
-		<ion-item-divider light>Photo de profil
-			<button item-right clear small (click)="deletePicture()" [style.backgroundColor]="inversedTemeColor">
-				<ion-icon name="trash"></ion-icon>
-			</button>
-		</ion-item-divider>
-		<div id="profile-picture" style="padding: 0px!important"></div>
-		<ion-card>
-			<img [src]="pictureUri" [hidden]="isEmpty(pictureUri) || pictureUri == defaultImage"/>
-			<ion-row no-padding="">
-				<ion-col>
-					<button clear small (click)="uploadPicture()" class="file-upload button-picture" [style.backgroundColor]="inversedTemeColor">
-						<input id="fileinput" type="file" class="file-input" (change)="onChangeUpload($event)">
-						<ion-icon name="arrow-round-up" style="margin-right: 5px; padding-left: 0px;"></ion-icon>
-						Charger
-					</button>
-				</ion-col>
-				<ion-col text-right>
-					<button clear small (click)="takePicture()" [style.backgroundColor]="inversedTemeColor">
-						<ion-icon name="camera"></ion-icon>
-						Photo
-					</button>
-				</ion-col>
-			</ion-row>
-		</ion-card>
-	</ion-item-group>
-	<br/>
-	<div [hidden]="hideCropBtn">Faites glisser l'image pour la repositionner dans le cadre.</div>
-	<ion-row>
-		<ion-col width-10></ion-col>
-		<ion-col text-center>
-			<button block (click)="validateCrop()" [style.backgroundColor]="themeColor" [hidden]="hideCropBtn" type="submit">
-				<ion-icon name="done"></ion-icon>
-				Valider
-			</button>
-		</ion-col>
-		<ion-col width-10></ion-col>
-	</ion-row>
-	<!--<ion-item-group style="border: 1px solid #dedede;">
-		<ion-item-divider light>Avatar</ion-item-divider>
-		<ion-grid text-center>
-			<ion-row wrap>
-				<ion-col *ngFor="let item of avatars">
-					<button fab class="img-button" style="position: inherit; width: 100px;height: 100px"
-					[style.backgroundColor]="thirdThemeColor" (click)="validateModal(item)">
-						<img [src]="item.url">
-					</button>
-				</ion-col>
-			</ion-row>
-		</ion-grid>
-	</ion-item-group>-->
-	
+    <ion-item-group style="border: 1px solid #dedede;">
+        <ion-item-divider light>Photo de profil
+            <button item-right clear small (click)="deletePicture()" [style.backgroundColor]="inversedTemeColor">
+                <ion-icon name="trash"></ion-icon>
+            </button>
+        </ion-item-divider>
+        <div id="profile-picture" style="padding: 0px!important"></div>
+        <ion-card>
+            <img [src]="pictureUri" [hidden]="isEmpty(pictureUri) || pictureUri == defaultImage"/>
+            <ion-row no-padding="">
+                <ion-col>
+                    <button clear small (click)="uploadPicture()" class="file-upload button-picture"
+                            [style.backgroundColor]="inversedTemeColor">
+                        <input id="fileinput" type="file" class="file-input" (change)="onChangeUpload($event)">
+                        <ion-icon name="arrow-round-up" style="margin-right: 5px; padding-left: 0px;"></ion-icon>
+                        Charger
+                    </button>
+                </ion-col>
+                <ion-col text-right>
+                    <button clear small (click)="takePicture()" [style.backgroundColor]="inversedTemeColor">
+                        <ion-icon name="camera"></ion-icon>
+                        Photo
+                    </button>
+                </ion-col>
+            </ion-row>
+        </ion-card>
+    </ion-item-group>
+    <br/>
+    <div [hidden]="hideCropBtn">Faites glisser l'image pour la repositionner dans le cadre.</div>
+    <ion-row>
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button block (click)="validateCrop()" [style.backgroundColor]="themeColor" [hidden]="hideCropBtn"
+                    type="submit">
+                <ion-icon name="done"></ion-icon>
+                Valider
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+    <!--<ion-item-group style="border: 1px solid #dedede;">
+        <ion-item-divider light>Avatar</ion-item-divider>
+        <ion-grid text-center>
+            <ion-row wrap>
+                <ion-col *ngFor="let item of avatars">
+                    <button fab class="img-button" style="position: inherit; width: 100px;height: 100px"
+                    [style.backgroundColor]="thirdThemeColor" (click)="validateModal(item)">
+                        <img [src]="item.url">
+                    </button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-item-group>-->
+
 </ion-content>
