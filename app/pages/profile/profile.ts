@@ -357,7 +357,7 @@ export class ProfilePage implements OnInit {
                  }*/
                 this.profileService.uploadProfilePictureInServer(params.uri, this.userData.id).then(data => {
                     if (!data || data.status == "failure") {
-                        this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                         return;
                     } else {
                         //display new img

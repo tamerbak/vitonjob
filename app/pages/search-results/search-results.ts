@@ -716,7 +716,7 @@ export class SearchResultsPage implements OnInit {
             sApp.start(() => {
                 console.log('starting skype');
             }, (error) => {
-                this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
+                this.globalService.showAlertValidation("Vit-On-Job", "Erreur lors du lancement de Skype. Vérifiez que l'application est bien installée.");
             });
         }
     }
@@ -735,12 +735,12 @@ export class SearchResultsPage implements OnInit {
             sApp.check((values) => { /* success */
                 console.log("OK");
             }, (error) => { /* fail */
-                this.globalService.showAlertValidation("VitOnJob", "Hangout n'est pas installé.");
+                this.globalService.showAlertValidation("Vit-On-Job", "Hangout n'est pas installé.");
             });
             sApp.start(() => {
                 console.log('starting hangout');
             }, (error) => {
-                this.globalService.showAlertValidation("VitOnJob", "Erreur lors du lancement de Hangout.");
+                this.globalService.showAlertValidation("Vit-On-Job", "Erreur lors du lancement de Hangout.");
             });
         }
     }

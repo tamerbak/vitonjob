@@ -75,7 +75,7 @@ export class SettingsPage {
                             this.storage.set('OPTION_MISSION', selectedOption).then(() => {
                                 this.missionService.updateDefaultOptionMission(selectedOption, this.currentUser.id, this.currentUser.employer.entreprises[0].id).then((data) => {
                                     if (!data || data.status == 'failure') {
-                                        this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
+                                        this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
                                     } else {
                                         console.log("default option mission saved successfully");
                                     }

@@ -65,7 +65,7 @@ export class ModalRecruiterRepertoryPage {
             this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data) => {
                 if (!data || data.status == "failure") {
                     console.log(data);
-                    this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                     return;
                 }
                 if (!data || data.data.length == 0) {

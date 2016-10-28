@@ -58,7 +58,7 @@ export class SettingPasswordPage {
                     if (!data0 || data0.length == 0 || (data0.id == 0 && data0.status == "failure")) {
                         console.log(data0);
                         loading.dismiss();
-                        this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                         return;
                     }
                     //case of authentication failure : incorrect password 
@@ -80,7 +80,7 @@ export class SettingPasswordPage {
                         if (!data || data.length == 0 || data.status == "failure") {
                             console.log(data);
                             loading.dismiss();
-                            this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                            this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                             return;
                         }
                         this.currentUser.mot_de_passe_reinitialise = "Non";
