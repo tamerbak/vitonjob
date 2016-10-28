@@ -1,5 +1,12 @@
 .contract {
+  background-size: cover;
+  .labelInItem {
+    background-color: lightyellow;
+  }
 
+  ion-list-header {
+    background-color: lightcyan;
+  }
 }
 .contract-item{
   font-size: small;
@@ -7,4 +14,10 @@
 
 .contract-validation-button{
   width:100%;
+}
+
+.info-box {
+  background-color: aquamarine;
+  color: blue;
+  text-align: center;
 }

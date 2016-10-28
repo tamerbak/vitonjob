@@ -50,6 +50,7 @@ export class ContractPage {
     periodicites : any = [];
     embaucheAutorise : boolean;
     rapatriement : boolean;
+    backgroundImage:any;
 
 
     dateFormat(d) {
@@ -77,6 +78,7 @@ export class ContractPage {
 
 
         this.themeColor = config.themeColor;
+        this.backgroundImage = config.backgroundImage;
         this.contractTitle = "Contrat de Mission";
         this.isEmployer = (this.projectTarget == 'employer');
 
