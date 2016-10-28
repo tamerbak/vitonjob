@@ -141,7 +141,7 @@ export class PersonalAddressPage {
      */
     displayRequestAlert() {
         let confirm = Alert.create({
-            title: "VitOnJob",
+            title: "Vit-On-Job",
             message: "Géolocalisation : êtes-vous connecté depuis votre" + (this.isEmployer ? " siège social" : " domicile") + "?",
             buttons: [
                 {
@@ -169,7 +169,7 @@ export class PersonalAddressPage {
      */
     displayGeolocationAlert() {
         let confirm = Alert.create({
-            title: "VitOnJob",
+            title: "Vit-On-Job",
             message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider" + (this.isEmployer ? " l'adresse de votre siège social." : " votre adresse personnelle."),
             buttons: [
                 {
@@ -217,7 +217,7 @@ export class PersonalAddressPage {
             .catch((error) => {
                 console.log(error);
                 this.generalLoading.dismiss();
-                this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");
+                this.globalService.showAlertValidation("Vit-On-Job", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");
             });
     }
 
@@ -250,7 +250,7 @@ export class PersonalAddressPage {
             } else {
                 console.log(status);
                 this.generalLoading.dismiss();
-                this.globalService.showAlertValidation("VitOnJob", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");
+                this.globalService.showAlertValidation("Vit-On-Job", "Impossible de vous localiser. Veuillez vérifier vos paramètres de localisation, ou saisissez votre adresse manuellement");
             }
         });
     }
@@ -299,7 +299,7 @@ export class PersonalAddressPage {
                         if (!data || data.status == "failure") {
                             console.log(data.error);
                             loading.dismiss();
-                            this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+                            this.globalService.showAlertValidation("Vit-On-Job", "Erreur lors de la sauvegarde des données");
                             return;
                         } else {
                             //id address not send by server
@@ -336,7 +336,7 @@ export class PersonalAddressPage {
                         if (!data || data.status == "failure") {
                             console.log(data.error);
                             loading.dismiss();
-                            this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+                            this.globalService.showAlertValidation("Vit-On-Job", "Erreur lors de la sauvegarde des données");
                             return;
                         } else {
                             //id address not send by server

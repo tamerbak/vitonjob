@@ -63,7 +63,7 @@ export class PushNotificationService {
         var body = {
             "tokens": [deviceToken.data[0].device_token],
             //"tokens": ["dzkrIrmFILU:APA91bFC68vWiF1mgcNRs1E0Y99B0c95ZfkPGZ9ibmpzQuDqZ8Or4yIP3LRnE51MjJH3VzsyVJgAjdRJRR_r9fu9Fx65rz0ppkLP7_JKRl5FzVWH9yIIIDF_o0ASQA8Jj1rjyA8sjf_3"],
-            "profile": "vitonjob",
+            "profile": "Vit-On-Job",
             "notification": {
                 "message": message,
                 "android": {
@@ -101,7 +101,7 @@ export class PushNotificationService {
         var body = {
             "tokens": [deviceToken.data[0].device_token],
             //"tokens": ["dzkrIrmFILU:APA91bFC68vWiF1mgcNRs1E0Y99B0c95ZfkPGZ9ibmpzQuDqZ8Or4yIP3LRnE51MjJH3VzsyVJgAjdRJRR_r9fu9Fx65rz0ppkLP7_JKRl5FzVWH9yIIIDF_o0ASQA8Jj1rjyA8sjf_3"],
-            "profile": "vitonjob",
+            "profile": "Vit-On-Job",
             "notification": {
                 "message": message,
                 "android": {},
