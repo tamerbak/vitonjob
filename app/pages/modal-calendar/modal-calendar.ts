@@ -28,6 +28,7 @@ export class ModalCalendarPage {
     dateOptions: DatePickerOptions;
     timeOptions: DatePickerOptions;
     isObsolete = false;
+    obj: string;
 
     constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController, private navParams: NavParams) {
         // Set global configs
@@ -43,6 +44,7 @@ export class ModalCalendarPage {
         this.calendarTheme = config.calendarTheme;
         this.nav = nav;
         this.navParams = navParams;
+        this.obj = this.navParams.get("obj");
         this.slots = this.navParams.get("slots");
         if (!this.slots) {
             this.slots = [];
@@ -132,8 +134,6 @@ export class ModalCalendarPage {
      * @param item to be removed
      */
     removeSlot(item) {
-
-
         let confirm = Alert.create({
             title: 'Êtes-vous sûr?',
             message: 'Voulez-vous supprimer ce créneau?',
@@ -156,6 +156,10 @@ export class ModalCalendarPage {
         });
 
         this.nav.present(confirm);
+    }
+
+    isDeleteSlotDisabled() {
+        return (this.obj != "add" && this.slots && this.slots.length == 1);
     }
 
     /**
@@ -199,6 +203,4 @@ export class ModalCalendarPage {
             return hourArray[0] * 60 + parseInt(hourArray[1]);
         }
     }
-
-
 }

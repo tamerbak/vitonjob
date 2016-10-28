@@ -232,7 +232,7 @@ export class OfferAddPage {
      */
     showCalendarModal() {
         this.localOffer.get('slots').then(value => {
-            let modal = Modal.create(ModalCalendarPage, {slots: JSON.parse(value)});
+            let modal = Modal.create(ModalCalendarPage, {slots: JSON.parse(value), obj: "add"});
             this.nav.present(modal);
             modal.onDismiss(data => {
                 this.validated.isCalendar = (data.slots.length) ? data.slots.length > 0 : false;

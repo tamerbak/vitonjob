@@ -33,7 +33,7 @@
 
                     <ion-col style="text-align: right;">
                         <button outline small text-right (click)="removeSlot(item)"
-                                class="delete-button">
+                                class="delete-button" [disabled]="isDeleteSlotDisabled()">
                             Retirer
                             <!--ion-icon name="close-circle"></ion-icon-->
                         </button>
