@@ -477,7 +477,7 @@ export class CivilityPage {
                 if (!data || data.status == "failure") {
                     console.log(data.error);
                     loading.dismiss();
-                    this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+                    this.globalService.showAlertValidation("Vit-On-Job", "Erreur lors de la sauvegarde des données");
                     return;
                 } else {
                     // data saved
@@ -505,7 +505,7 @@ export class CivilityPage {
                 if (!data || data.status == "failure") {
                     console.log(data.error);
                     loading.dismiss();
-                    this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+                    this.globalService.showAlertValidation("Vit-On-Job", "Erreur lors de la sauvegarde des données");
                     return;
                 } else {
                     // data saved
@@ -563,7 +563,7 @@ export class CivilityPage {
                     if (!data || data.status == "failure") {
                         console.log(data.error);
                         loading.dismiss();
-                        this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+                        this.globalService.showAlertValidation("Vit-On-Job", "Erreur lors de la sauvegarde des données");
                         return;
                     } else {
                         // data saved
@@ -1045,7 +1045,7 @@ export class CivilityPage {
             this.profileService.countEntreprisesByRaisonSocial(this.companyname).then(data => {
                 if (data.data[0].count != 0 && this.companyname != this.currentUser.employer.entreprises[0].nom) {
                     if (!this.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
-                        this.globalService.showAlertValidation("VitOnJob", "L'entreprise " + this.companyname + " existe déjà. Veuillez saisir une autre raison sociale.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "L'entreprise " + this.companyname + " existe déjà. Veuillez saisir une autre raison sociale.");
                         this.companyname = this.currentUser.employer.entreprises[0].nom;
                     } else {
                         this.displayCompanyAlert('companyname');
@@ -1058,7 +1058,7 @@ export class CivilityPage {
             this.profileService.countEntreprisesBySIRET(this.siret).then(data => {
                 if (data.data[0].count != 0 && this.siret != this.currentUser.employer.entreprises[0].siret) {
                     if (!this.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
-                        this.globalService.showAlertValidation("VitOnJob", "Le SIRET " + this.siret + " existe déjà. Veuillez en saisir un autre.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "Le SIRET " + this.siret + " existe déjà. Veuillez en saisir un autre.");
                         this.siret = this.currentUser.employer.entreprises[0].siret;
                     } else {
                         this.displayCompanyAlert('siret');
@@ -1072,7 +1072,7 @@ export class CivilityPage {
 
     displayCompanyAlert(field) {
         let confirm = Alert.create({
-            title: "VitOnJob",
+            title: "Vit-On-Job",
             message: (field == "siret" ? ("Le SIRET " + this.siret) : ("La raison sociale " + this.companyname)) + " existe déjà. Si vous continuez, ce compte sera bloqué, \n sinon veuillez en saisir " + (field == "siret" ? "un " : "une ") + "autre. \n Voulez vous continuez?",
             buttons: [
                 {
@@ -1098,7 +1098,7 @@ export class CivilityPage {
 
     displayCompanyLastAlert(field) {
         let confirm = Alert.create({
-            title: "VitOnJob",
+            title: "Vit-On-Job",
             message: "Votre compte sera bloqué. \n Voulez vous vraiment continuez?",
             buttons: [
                 {

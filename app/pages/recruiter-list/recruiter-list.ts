@@ -67,7 +67,7 @@ export class RecruiterListPage {
             if (contacts) {
                 this.recruiterService.insertRecruiters(contacts, this.currentUser.employer.id, 'repertory').then((data) => {
                     if (!data || data.status == 'failure') {
-                        this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
                     } else {
                         console.log("recruiter saved successfully");
                         this.recruiterService.updateRecruiterListInLocal(data).then(() => {
@@ -138,7 +138,7 @@ export class RecruiterListPage {
         this.recruiterService.generatePasswd(accountid).then((passwd) => {
             this.recruiterService.sendNotificationBySMS(tel, this.currentUser, passwd).then((data) => {
                 if (!data || data.status != 200) {
-                    this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                     return;
                 }
             });

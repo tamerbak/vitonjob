@@ -51,7 +51,7 @@ export class ModalUpdatePassword {
                         if (!data || data.length == 0 || data.status == "failure") {
                             console.log(data);
                             loading.dismiss();
-                            this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                            this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                             return;
                         }
                         this.currentUser.mot_de_passe_reinitialise = "Non";

@@ -123,7 +123,7 @@ export class ModalRecruiterManualPage {
             this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data) => {
                 if (!data || data.status == "failure") {
                     console.log(data);
-                    this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                     return;
                 }
                 if (!data || data.data.length == 0) {
@@ -213,7 +213,7 @@ export class ModalRecruiterManualPage {
 
     deleteRecruiter() {
         let confirm = Alert.create({
-            title: "VitOnJob",
+            title: "Vit-On-Job",
             message: "Etes-vous sûr de vouloir supprimer ce recruteur?",
             buttons: [
                 {
@@ -228,7 +228,7 @@ export class ModalRecruiterManualPage {
                         console.log('Yes selected');
                         this.recruiterService.deleteRecruiter(this.recruiter.accountid).then(data => {
                             if (!data || data.status == "failure") {
-                                this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                                this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                                 return;
                             } else {
                                 this.recruiterService.deleteRecruiterFromLocal(this.recruiter).then(data => {
