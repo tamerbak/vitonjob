@@ -79,7 +79,7 @@
                     </ion-list>
 
                     <ion-list text-wrap style="height:200px;overflow: scroll;" *ngIf="cards[2].isShowed && cards[2].isActive">
-                        <ion-item *ngFor="let offer of upcomingOffers" class="itemOpacity">
+                        <ion-item *ngFor="let offer of upcomingOffers" class="itemOpacity" (click)="searchOffer(offer)">
                             <h3>{{offer.title}}</h3>
                             <p>
                                 <span>Créée le </span>{{simplifyDate(offer.creationDate)}}<br/>
@@ -89,7 +89,7 @@
                     </ion-list>
 
                     <ion-list text-wrap style="height:200px;overflow: scroll;" *ngIf="cards[1].isShowed && cards[1].isActive">
-                        <ion-item *ngFor="let offer of recentOffers" class="itemOpacity">
+                        <ion-item *ngFor="let offer of recentOffers" class="itemOpacity" (click)="searchOffer(offer)">
                             <h2>{{offer.title}}</h2>
                             <p>
                                 <span>Créée le </span>{{simplifyDate(offer.creationDate)}}<br/>

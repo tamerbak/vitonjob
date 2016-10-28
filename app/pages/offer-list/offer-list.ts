@@ -213,7 +213,7 @@ export class OfferListPage {
                 this.offerService.updateOfferInLocal(offer, this.projectTarget);
                 //this.nav.pop();
             } else {
-                this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
+                this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
             }
         });
     }

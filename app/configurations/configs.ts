@@ -29,12 +29,12 @@ interface AbstractConfigs {
 class EmployerConfigs implements AbstractConfigs {
 
     // Application title
-    projectName: string = 'VitOnJob Employeur';
+    projectName: string = 'Vit-On-Job Employeur';
     // Application theme color
     themeColor: string = '#757575';
     // Application opposite theme color
     inversedThemeColor: string = '#14baa6';
-    // VitOnJob Employer image
+    // Vit-On-Job Employer image
     imageURL: string = 'img/logo_employeur.png';
     // User employer image
     userImageURL = 'img/employer.png';
@@ -75,12 +75,12 @@ class EmployerConfigs implements AbstractConfigs {
 class JobyerConfigs implements AbstractConfigs {
 
     // Application title
-    projectName: string = "VitOnJob Jobyer";
+    projectName: string = "Vit-On-Job Jobyer";
     // Application theme color
     themeColor: string = "#14baa6";
     // Application opposite theme color
     inversedThemeColor: string = '#757575';
-    // VitOnJob Jobyer image
+    // Vit-On-Job Jobyer image
     imageURL: string = "img/logo_jobyer.png";
     fontColor: string = '#757575';
     // User employer image

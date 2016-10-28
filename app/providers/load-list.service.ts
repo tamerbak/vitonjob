@@ -46,7 +46,7 @@ export class LoadListService {
     loadNationalities(projectTarget) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
-        var sql = "select pk_user_nationalite, libelle from user_nationalite where dirty='N'";
+        var sql = "select pk_user_nationalite, libelle from user_nationalite where dirty='N' order by libelle asc";
 
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();

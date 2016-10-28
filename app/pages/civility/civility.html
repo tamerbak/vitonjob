@@ -9,7 +9,7 @@
 
 <ion-content padding>
     <ion-item>
-        <ion-label id="label-civi" [ngStyle]="titlestyle" floating>Civilité</ion-label>
+        <ion-label id="label-civi" [ngStyle]="titlestyle" floating>Titre de civilité</ion-label>
         <ion-select id="in-select" [(ngModel)]="title" (ionChange)="titleChange()">
             <ion-option value="Mme">Mme</ion-option>
             <ion-option value="Mlle">Mlle</ion-option>
@@ -119,7 +119,7 @@
         </ion-item>
 
         <ion-item [hidden]="isEmployer">
-            <ion-label floating>CNI</ion-label>
+            <ion-label floating>Carte nationale d'identité</ion-label>
             <ion-input type="text" [(ngModel)]="cni" (keyup)="watchCNI($event)" maxlength="12"></ion-input>
         </ion-item>
         <div *ngIf="showCNIError()"
