@@ -87,6 +87,8 @@ export class MissionDetailsPage {
      */
     prerequisObligatoires : any = [];
 
+    isSignContractClicked: boolean = false;
+
     constructor(private platform: Platform,
                 public gc: GlobalConfigs,
                 public nav: NavController,
@@ -180,6 +182,7 @@ export class MissionDetailsPage {
             this.prerequisObligatoires = [];
         }
     }
+
 
     onCardClick(dayIndex) {
         if (!this.isNewMission || !this.isEmployer || this.contract.signature_jobyer.toUpperCase() == 'Non'.toUpperCase()) {
@@ -807,6 +810,7 @@ export class MissionDetailsPage {
     }
 
     launchContractPage() {
+        this.isSignContractClicked = true;
         this.platform.ready().then(() => {
             cordova.InAppBrowser.open(this.contract.lien_jobyer, "_system", "location=true");
         });
@@ -1196,6 +1200,15 @@ export class MissionDetailsPage {
         } else {
             this.optionMission = "Mode de suivi de mission n°" + this.contract.option_mission.substring(0, 1);
         }
+    }
+
+    refreshSignatureStatus(){
+        this.missionService.getContract(this.contract.pk_user_contrat).then(data => {
+            this.contract = data.data[0];
+            if(this.upperCase(this.contract.signature_jobyer) == 'NON'){
+                this.isSignContractClicked = false;
+            }
+        })
     }
 
     upperCase(str) {
