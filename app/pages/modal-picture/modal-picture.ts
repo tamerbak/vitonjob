@@ -56,7 +56,7 @@ export class ModalPicturePage {
     closeModal() {
         if (this.isPictureChanged && !this.hideCropBtn) {
             let confirm = Alert.create({
-                title: "VitOnJob",
+                title: "Vit-On-Job",
                 message: "Voulez-vous valider votre photo de profil?",
                 buttons: [
                     {

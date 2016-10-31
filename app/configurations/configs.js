@@ -8,7 +8,7 @@ define(["require", "exports"], function (require, exports) {
     class EmployerConfigs {
         constructor() {
             // Application title
-            this.projectName = 'VitOnJob Employeur';
+            this.projectName = 'Vit-On-Job Employeur';
             // Application theme color
             this.themeColor = '#757575';
             // VitOnJob Employer image
@@ -23,7 +23,7 @@ define(["require", "exports"], function (require, exports) {
     class JobyerConfigs {
         constructor() {
             // Application title
-            this.projectName = "VitOnJob Jobyer";
+            this.projectName = "Vit-On-Job Jobyer";
             // Application theme color
             this.themeColor = "#14baa6";
             // VitOnJob Jobyer image
