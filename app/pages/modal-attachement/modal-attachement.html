@@ -43,7 +43,7 @@
             </ion-col>
         </ion-row>
     </ion-card>
-    <button block (click)="saveFile()">
+    <button block (click)="saveFile()" [disabled]="isEmpty(fileName) || isEmpty(scanUri)">
         <ion-icon name="cloud-upload"></ion-icon>
         Ajouter
     </button>
