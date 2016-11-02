@@ -189,12 +189,19 @@ export class PhonePage {
                     }
                     return;
                 }
+
                 this.authService.getPasswordStatus("+" + indPhone,this.projectTarget).then((dataPwd: any) => {
                     
                     data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
                     this.afterAuthSuccess(data);
+                    let toast = Toast.create({
+                            message: "Bienvenue "+ data.prenom +" vous venez de vous connecter !",
+                            duration: 2000,
+                         });
+                        
+                    loading.dismiss().then(() => { this.nav.present(toast);});;
                     
-                    loading.dismiss();
+                    
                     //if user is connected for the first time, redirect him to the page 'civility' after removing phone page from the nav stack, otherwise redirect him to the home page
                     var isNewUser = data.newAccount;
                     var connexion = {
@@ -203,6 +210,7 @@ export class PhonePage {
                         'employeID': (this.projectTarget == 'jobyer' ? data.jobyerId : data.employerId)
                     };
                     this.storage.set('connexion', JSON.stringify(connexion)).then(() => {
+                        
                         let jobyer = this.params.data.jobyer;
                         let searchIndex = this.params.data.searchIndex;
                         let obj = this.params.data.obj;
