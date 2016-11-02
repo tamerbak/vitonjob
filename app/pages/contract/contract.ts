@@ -12,6 +12,7 @@ import {ContractService} from "../../providers/contract-service/contract-service
 import {Component} from "@angular/core";
 import {MedecineService} from "../../providers/medecine-service/medecine-service";
 import {ParametersService} from "../../providers/parameters-service/parameters-service";
+import {OffersService} from "../../providers/offers-service/offers-service";
 
 
 /**
@@ -21,7 +22,7 @@ import {ParametersService} from "../../providers/parameters-service/parameters-s
  */
 @Component({
     templateUrl: 'build/pages/contract/contract.html',
-    providers: [UserService, ContractService, MedecineService, ParametersService]
+    providers: [UserService, ContractService, MedecineService, ParametersService, OffersService]
 })
 export class ContractPage {
 
@@ -67,7 +68,8 @@ export class ContractPage {
                 private userService: UserService,
                 private contractService: ContractService,
                 private medecineService: MedecineService,
-                private service: ParametersService) {
+                private service: ParametersService,
+                private offersService : OffersService) {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -159,8 +161,6 @@ export class ContractPage {
                 this.jobyer.numSS = datum.numss;
                 this.jobyer.nationaliteLibelle = datum.nationalite;
                 this.jobyer.titreTravail = '';
-                this.jobyer.debutTitreTravail = new Date();
-                this.jobyer.finTitreTravail = new Date();
                 if(datum.cni && datum.cni.length>0 && datum.cni != "null")
                     this.jobyer.titreTravail = datum.cni;
                 else if (datum.numero_titre_sejour && datum.numero_titre_sejour.length>0 && datum.numero_titre_sejour != "null")
@@ -169,8 +169,8 @@ export class ContractPage {
                     let d = new Date(datum.debut_validite);
                     this.jobyer.debutTitreTravail = d;
                 }
-                if(datum.fin_validite && datum.debut_validite.length>0 && datum.fin_validite != "null"){
-                    let d = new Date(datum.debut_validite);
+                if(datum.fin_validite && datum.fin_validite.length>0 && datum.fin_validite != "null"){
+                    let d = new Date(datum.fin_validite);
                     this.jobyer.finTitreTravail = d;
                 }
 
@@ -199,7 +199,7 @@ export class ContractPage {
             if (this.currentUser) {
                 this.employer = this.currentUser.employer;
                 this.companyName = this.employer.entreprises[0].nom;
-                this.workAdress = this.employer.entreprises[0].workAdress.fullAdress;
+                //this.workAdress = this.employer.entreprises[0].workAdress.fullAdress;
                 this.hqAdress = this.employer.entreprises[0].siegeAdress.fullAdress;
                 let civility = this.currentUser.titre;
                 this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
@@ -257,6 +257,9 @@ export class ContractPage {
 
 
                 });
+
+
+
                 this.initContract();
             }
         });
@@ -459,6 +462,10 @@ export class ContractPage {
                 this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
             }
 
+        });
+
+        this.offersService.loadOfferAdress(this.currentOffer.idOffer, 'employer').then(adr=>{
+            this.workAdress = adr
         });
     }
 
