@@ -335,7 +335,7 @@ export class HomePage implements OnChanges {
             this.nextRecentUsers.push(this.recentUsers[i]);
 
         this.recentUsers = [];
-        for (let i = 0; i < this.previousRecentUsers.lnegth; i++) {
+        for (let i = 0; i < this.previousRecentUsers.length; i++) {
             this.recentUsers.push(this.previousRecentUsers[i]);
         }
 
@@ -360,12 +360,13 @@ export class HomePage implements OnChanges {
     }
 
     nextUsers() {
+        
         this.previousRecentUsers = [];
         for (let i = 0; i < this.recentUsers.length; i++)
             this.previousRecentUsers.push(this.recentUsers[i]);
 
         this.recentUsers = [];
-        for (let i = 0; i < this.nextRecentUsers.lnegth; i++) {
+        for (let i = 0; i < this.nextRecentUsers.length; i++) {
             this.recentUsers.push(this.nextRecentUsers[i]);
         }
 
@@ -373,6 +374,7 @@ export class HomePage implements OnChanges {
         let offset = this.homeServiceData.query.startIndex + this.homeServiceData.query.resultCapacity;
         this.homeServiceData.query.startIndex = offset;
         this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then(data=> {
+            
             let newData = data.users;
             let max = newData.length > this.maxLines ? this.maxLines : newData.length;
             for (let i = 0; i < max; i++) {
