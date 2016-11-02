@@ -16,8 +16,12 @@ import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {ModalSelectionPage} from "../modal-selection/modal-selection";
 import {OffersService} from "../../providers/offers-service/offers-service";
-import {Component} from "@angular/core";
+import {Component, NgZone} from "@angular/core";
 import {PopoverAutocompletePage} from "../popover-autocomplete/popover-autocomplete";
+
+import {Geolocation} from "ionic-native";
+import {GooglePlaces} from "../../components/google-places/google-places";
+import {AuthenticationService} from "../../providers/authentication.service";
 
 declare var require: any;
 
@@ -28,8 +32,9 @@ declare var require: any;
  Ionic pages and navigation.
  */
 @Component({
+    directives: [GooglePlaces],
     templateUrl: 'build/pages/modal-job/modal-job.html',
-    providers: [OffersService]
+    providers: [OffersService, AuthenticationService]
 })
 export class ModalJobPage {
 
@@ -141,6 +146,20 @@ export class ModalJobPage {
     prerequisObligatoires : any = [];
 
 
+    /*
+     * ADRESSE OFFRE
+     */
+    searchData: string='';
+    geolocAddress: string='';
+    geolocResult: string='';
+    selectedPlace:any;
+    name : string;
+    streetNumber : string;
+    street : string;
+    zipCode : string;
+    city : string;
+    country:string;
+
     constructor(public nav: NavController,
                 viewCtrl: ViewController,
                 fb: FormBuilder,
@@ -148,6 +167,8 @@ export class ModalJobPage {
                 os: OffersService,
                 params: NavParams,
                 platform: Platform,
+                private zone: NgZone,
+                private authService: AuthenticationService,
                 public offersService: OffersService) {
 
         // Set global configs
@@ -251,6 +272,22 @@ export class ModalJobPage {
         //this.jobData.sector = this.jobForm.controls['password'];
     }
 
+    showResults(place) {
+        
+        this.selectedPlace = place;
+        this.geolocAddress = "";
+        this.geolocResult = null;
+        var adrObj = this.authService.decorticateGeolocAddress(this.selectedPlace);
+        this.zone.run(()=> {
+            this.name = !adrObj.name ? '' : adrObj.name.replace("&#39;", "'");
+            this.streetNumber = adrObj.streetNumber.replace("&#39;", "'");
+            this.street = adrObj.street.replace("&#39;", "'");
+            this.zipCode = adrObj.zipCode;
+            this.city = adrObj.city.replace("&#39;", "'");
+            this.country = (adrObj.country.replace("&#39;", "'") == "" ? 'France' : adrObj.country.replace("&#39;", "'"));
+
+        });
+    }
 
     watchPrerequisOb(event){
         let kw = event.target.value;
@@ -302,6 +339,17 @@ export class ModalJobPage {
             this.jobData = jobData;
             if(this.jobData.prerequisObligatoires)
                 this.prerequisObligatoires =this.jobData.prerequisObligatoires;
+            if(this.jobData.adress){
+                
+                this.searchData = this.jobData.adress.fullAdress;
+                this.name = this.jobData.adress.name;
+                this.street = this.jobData.adress.street;
+                this.streetNumber = this.jobData.adress.streetNumber;
+                this.zipCode = this.jobData.adress.zipCode;
+                this.city = this.jobData.adress.city;
+                this.country = this.jobData.adress.country;
+            }
+
         } else {
             this.jobData = {
                 'class': "com.vitonjob.callouts.auth.model.JobData",
@@ -313,7 +361,16 @@ export class ModalJobPage {
                 remuneration: null,
                 currency: 'euro',
                 validated: false,
-                prerequisObligatoires : []
+                prerequisObligatoires : [],
+                adress : {
+                    fullAdress : '',
+                    name : '',
+                    street : '',
+                    streetNumber : '',
+                    zipCode : '',
+                    city : '',
+                    country : ''
+                }
             }
         }
     }
@@ -358,8 +415,38 @@ export class ModalJobPage {
             this.jobData.prerequisObligatoires = [];
         }
         this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === '') && !(this.jobData.remuneration <= 0) && !this.isEmpty(this.jobData.remuneration));
-        //this.jobData.level = 'senior';
+        this.jobData.adress = {
+          fullAdress : this.constructFullAdress(),
+            name : this.name,
+            street : this.street,
+            streetNumber : this.streetNumber,
+            zipCode : this.zipCode,
+            city : this.city,
+            country : this.country
+        };
         this.viewCtrl.dismiss(this.jobData);
+    }
+
+    constructFullAdress(){
+        let fa = '';
+        if(this.name && this.name.length>0){
+            fa = this.name;
+        }
+        if(this.streetNumber && this.streetNumber.length>0){
+            fa = fa+ ' '+ this.streetNumber;
+        }
+        if(this.street && this.street.length>0){
+            fa = fa+ ' '+ this.street;
+        }
+        if(this.city && this.city.length>0){
+            fa = fa+ ' '+ this.city;
+        }
+
+        if(this.country && this.country.length>0){
+            fa = fa+ ' '+ this.country;
+        }
+
+        return fa.trim();
     }
 
     /**

@@ -102,7 +102,14 @@
         <ion-icon name="md-arrow-dropup"></ion-icon>
         Le taux horaire devrait être supérieur ou égal à {{ invalidHourRateMessage }}
     </ion-row>
-
+    <ion-row>
+        <ion-col width-33>
+            <span style="font-size:1.5rem;position:relative;top:calc(50% - 0.75rem)">{{isEmployer?'Lieu de mission':'Départ au travail'}}</span>
+        </ion-col>
+        <ion-col width-64>
+            <google-places [(bindModelData)]="searchData" (onPlaceChanged)='showResults($event)'></google-places>
+        </ion-col>
+    </ion-row>
 
     <div *ngFor="let conventionFilter of conventionFilters">
 
@@ -200,7 +207,7 @@
     <ion-row>
         <ion-col text-center>
             <button [style.backgroundColor]="themeColor"
-                    [disabled]="!jobData.job || !jobData.sector || !jobData.remuneration || !isSectorFound || !isJobFound || jobs.length > 0 || sectors.length > 0"
+                    [disabled]="!jobData.job || !jobData.sector || !jobData.remuneration || !isSectorFound || !isJobFound || jobs.length > 0 || sectors.length > 0 || !searchData || searchData.length ==0"
                     (click)="validateJob()">
                 Valider
                 <ion-icon name="checkmark-circle"></ion-icon>
