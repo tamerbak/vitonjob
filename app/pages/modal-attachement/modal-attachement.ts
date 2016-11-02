@@ -6,6 +6,7 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Camera} from "ionic-native/dist/index";
 import {AttachementsService} from "../../providers/attachements-service/attachements-service";
 import {AttachementsPage} from "../attachements/attachements";
+import {Utils} from "../../utils/utils";
 
 
 @Component({
@@ -95,7 +96,9 @@ export class ModalAttachementPage {
             this.handler.appendFile(data);
             this.nav.pop();
         });
+    }
 
-
+    isEmpty(str){
+        return Utils.isEmpty(str);
     }
 }

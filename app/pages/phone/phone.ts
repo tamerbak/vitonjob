@@ -205,8 +205,9 @@ export class PhonePage {
                     this.storage.set('connexion', JSON.stringify(connexion)).then(() => {
                         let jobyer = this.params.data.jobyer;
                         let searchIndex = this.params.data.searchIndex;
+                        let obj = this.params.data.obj;
                         if (isNewUser || this.isNewRecruteur) {
-                          this.nav.push(GeneralConditionsPage, {currentUser: data, jobyer: jobyer, obj: "forRecruitment", searchIndex: searchIndex});
+                                this.nav.push(GeneralConditionsPage, {currentUser: data, jobyer: jobyer, obj: obj, searchIndex: searchIndex});
                         } else {
                             if (this.fromPage == "Search") {
                                 this.nav.push(SearchResultsPage, {jobyer: jobyer, fromPage: "phone", searchIndex: searchIndex}).then(() => {
