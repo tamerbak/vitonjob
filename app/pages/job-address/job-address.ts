@@ -9,6 +9,7 @@ import {Geolocation} from "ionic-native";
 import {OfferListPage} from "../offer-list/offer-list";
 import {SearchResultsPage} from "../search-results/search-results";
 import {OfferAddPage} from "../offer-add/offer-add";
+import {HomePage} from "../home/home";
 
 /**
  * @author Amal ROCHD
@@ -331,7 +332,7 @@ export class JobAddressPage {
                                     this.nav.push(OfferAddPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex});
                                 }else {
                                     //redirecting to offer list page
-                                    this.nav.setRoot(OfferListPage).then(() => {
+                                    this.nav.setRoot(HomePage).then(() => {
                                         this.presentToast("Félicitations, vous venez de créer votre compte avec succès. Vous pouvez maintenant créer vos offres de service.", 3);
                                     });
                                 }
