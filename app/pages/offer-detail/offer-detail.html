@@ -136,7 +136,7 @@
              [ngStyle]="qualityStyle.backgroundImage">
             <ion-list-header style="width: 100%" [style.color]="qualityStyle.fontColor"
                              [style.fontWeight]="qualityStyle.fontWeight">
-                Qualités
+                Mon {{ isEmployer ? 'jobyer' : 'employeur' }} idéal
             </ion-list-header>
             <button outline small style="position: relative; top: 0"
                     [style.color]="qualityStyle.buttonColor"
@@ -149,7 +149,7 @@
         <ion-card [hidden]="!showQuality">
             <div class="img-header">
                 <img src="img/quality.png"/>
-                <div class="card-title" style="color: white">Qualités</div>
+                <div class="card-title" style="color: white">Mon {{ isEmployer ? 'jobyer' : 'employeur' }} idéal</div>
                 <div class="card-subtitle" style="color: white">indispensables</div>
             </div>
             <div>
