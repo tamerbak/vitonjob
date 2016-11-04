@@ -199,7 +199,11 @@ export class PhonePage {
                             duration: 2000,
                          });
                         
-                    loading.dismiss().then(() => { this.nav.present(toast);});
+                    loading.dismiss().then(() => { 
+                        if(data.titre != null && data.titre !== "" ){
+                            this.nav.present(toast);
+                        }
+                    });
                     
                     
                     //if user is connected for the first time, redirect him to the page 'civility' after removing phone page from the nav stack, otherwise redirect him to the home page
