@@ -164,7 +164,7 @@ export class PhonePage {
         var reverseRole = this.projectTarget == "jobyer" ? "employer" : "jobyer";
         this.authService.getUserByPhoneAndRole("+" + indPhone, reverseRole).then(data0 => {
             if (data0 && data0.data.length != 0 && (data0.data[0].mot_de_passe !== pwd)) {
-                this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe est incorrect.");
+                this.globalService.showAlertValidation("Vit-On-Job", "Votre mot de passe est incorrect.");
                 loading.dismiss();
                 return;
             }
@@ -174,7 +174,7 @@ export class PhonePage {
                 if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
                     console.log(data);
                     loading.dismiss();
-                    this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                     return;
                 }
                 //case of authentication failure : incorrect password 
@@ -182,19 +182,26 @@ export class PhonePage {
                     console.log("Password error");
                     loading.dismiss();
                     if (!this.showEmailField) {
-                        this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe est incorrect.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "Votre mot de passe est incorrect.");
                     } else {
                         console.log("used email error");
-                        this.globalService.showAlertValidation("VitOnJob", "Cette adresse email a été déjà utilisé. Veuillez en choisir une autre.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "Cette adresse email a été déjà utilisé. Veuillez en choisir une autre.");
                     }
                     return;
                 }
+
                 this.authService.getPasswordStatus("+" + indPhone,this.projectTarget).then((dataPwd: any) => {
                     
                     data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
                     this.afterAuthSuccess(data);
+                    let toast = Toast.create({
+                            message: "Bienvenue "+ data.prenom +" vous venez de vous connecter !",
+                            duration: 2000,
+                         });
+                        
+                    loading.dismiss().then(() => { this.nav.present(toast);});
                     
-                    loading.dismiss();
+                    
                     //if user is connected for the first time, redirect him to the page 'civility' after removing phone page from the nav stack, otherwise redirect him to the home page
                     var isNewUser = data.newAccount;
                     var connexion = {
@@ -203,10 +210,12 @@ export class PhonePage {
                         'employeID': (this.projectTarget == 'jobyer' ? data.jobyerId : data.employerId)
                     };
                     this.storage.set('connexion', JSON.stringify(connexion)).then(() => {
+                        
                         let jobyer = this.params.data.jobyer;
                         let searchIndex = this.params.data.searchIndex;
+                        let obj = this.params.data.obj;
                         if (isNewUser || this.isNewRecruteur) {
-                          this.nav.push(GeneralConditionsPage, {currentUser: data, jobyer: jobyer, obj: "forRecruitment", searchIndex: searchIndex});
+                                this.nav.push(GeneralConditionsPage, {currentUser: data, jobyer: jobyer, obj: obj, searchIndex: searchIndex});
                         } else {
                             if (this.fromPage == "Search") {
                                 this.nav.push(SearchResultsPage, {jobyer: jobyer, fromPage: "phone", searchIndex: searchIndex}).then(() => {
@@ -309,7 +318,7 @@ export class PhonePage {
             this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data) => {
                 if (!data || data.status == "failure") {
                     console.log(data);
-                    this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                     return;
                 }
                 if (!data || data.data.length == 0) {
@@ -395,7 +404,7 @@ export class PhonePage {
         this.dataProviderService.getUserByMail(this.email, this.projectTarget).then((data) => {
             if (!data || data.status == "failure") {
                 console.log(data);
-                this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                 return;
             }
             if (data && data.data.length != 0) {
@@ -460,7 +469,7 @@ export class PhonePage {
         this.authService.setNewPassword(tel).then((data) => {
             if (!data) {
                 loading.dismiss();
-                this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                 return;
             }
             if (data && data.password.length != 0) {
@@ -469,17 +478,17 @@ export class PhonePage {
                     this.authService.updatePasswordByPhone(tel, md5(newPasswd),"Oui").then((data) => {
                         if (!data) {
                             loading.dismiss();
-                            this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                            this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                             return;
                         }
                         this.authService.sendPasswordBySMS(tel, newPasswd).then((data) => {
                             if (!data || data.status != 200) {
                                 loading.dismiss();
-                                this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                                this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                                 return;
                             }
                             loading.dismiss();
-                            //this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été réinitialisé. Vous allez le recevoir par SMS.");
+                            //this.globalService.showAlertValidation("Vit-On-Job", "Votre mot de passe a été réinitialisé. Vous allez le recevoir par SMS.");
                         });
                     });
                 }
@@ -487,17 +496,17 @@ export class PhonePage {
                     this.authService.updatePasswordByMail(email, md5(newPasswd),"Oui").then((data) => {
                         if (!data) {
                             loading.dismiss();
-                            this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                            this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                             return;
                         }
                         this.authService.sendPasswordByEmail(email, newPasswd).then((data) => {
                             if (!data || data.status != 200) {
                                 loading.dismiss();
-                                this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                                this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                                 return;
                             }
                             loading.dismiss();
-                            //this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été réinitialisé. Vous allez le recevoir par email.");
+                            //this.globalService.showAlertValidation("Vit-On-Job", "Votre mot de passe a été réinitialisé. Vous allez le recevoir par email.");
                         });
                     });
                 }
@@ -517,16 +526,16 @@ export class PhonePage {
 
     displayPasswordAlert() {
         if (!this.phone || !this.isPhoneValid(this.phone)) {
-            this.globalService.showAlertValidation("VitOnJob", "Veuillez saisir un numéro de téléphone valide.");
+            this.globalService.showAlertValidation("Vit-On-Job", "Veuillez saisir un numéro de téléphone valide.");
             return;
         }
         if (this.phone && this.isPhoneValid(this.phone) && this.showEmailField) {
-            this.globalService.showAlertValidation("VitOnJob", "Le numéro que vous avez saisi ne correspond à aucun compte enregistré. Veuillez créer un compte.");
+            this.globalService.showAlertValidation("Vit-On-Job", "Le numéro que vous avez saisi ne correspond à aucun compte enregistré. Veuillez créer un compte.");
             return;
         }
         if (this.isRecruteur) {
             let confirm = Alert.create({
-                title: "VitOnJob",
+                title: "Vit-On-Job",
                 message: "Votre mot de passe est sur le point d'être réinitialisé. Voulez-vous continuer?",
                 buttons: [
                     {
@@ -546,7 +555,7 @@ export class PhonePage {
             this.nav.present(confirm);
         } else {
             let confirm = Alert.create({
-                title: "VitOnJob",
+                title: "Vit-On-Job",
                 message: "Votre mot de passe est sur le point d'être réinitialisé. Voulez-vous le recevoir par SMS ou par email?",
                 buttons: [
                     {

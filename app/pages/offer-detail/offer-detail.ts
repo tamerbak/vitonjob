@@ -1,4 +1,4 @@
-import {NavController, NavParams, Loading, Modal, Alert, Popover} from "ionic-angular";
+import {NavController, NavParams, Loading, Modal, Alert, Popover, SqlStorage, Storage} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {SearchResultsPage} from "../../pages/search-results/search-results";
@@ -35,6 +35,10 @@ export class OfferDetailPage {
     isLinkValid = true;
     fromPage: string;
     originalJobData: any;
+    adressData : any;
+    fullAdress : string;
+    idTiers : number;
+    storage : any;
 
     constructor(public nav: NavController, gc: GlobalConfigs, params: NavParams, public offersService: OffersService, public searchService: SearchService, private sanitizer: DomSanitizationService, private globalService: GlobalService) {
 
@@ -112,6 +116,19 @@ export class OfferDetailPage {
             this.videoAvailable = true;
             this.youtubeLink = this.offer.videolink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");
         }
+
+        this.offerService.loadOfferAdress(this.offer.idOffer, this.projectTarget).then(adr=>{
+            this.fullAdress = adr;
+        });
+
+        this.storage = new Storage(SqlStorage);
+        this.storage.get(config.currentUserVar).then((value) => {
+            if (value) {
+                let currentUser = JSON.parse(value);
+                this.idTiers = this.projectTarget == 'employer'?currentUser.employer.entreprises[0].id:currentUser.jobyer.id;
+            }
+        });
+
         /*this.offerService.getOfferVideo(this.offer.idOffer, table).then(data=>{
          this.videoAvailable = false;
          if(data && data != null && data.video && data.video != "null"){
@@ -286,6 +303,16 @@ export class OfferDetailPage {
      */
     showJobModal() {
         let originalJobData = this.copyJobDataObjectByValue(this.offer.jobData);
+        
+        this.offer.jobData.adress = {
+            fullAdress : this.fullAdress,
+            name : '',
+            street : '',
+            streetNumber : '',
+            zipCode : '',
+            city : '',
+            country : ''
+        };
         let modal = Modal.create(ModalJobPage, {jobData: this.offer.jobData});
         modal.onDismiss(data => {
             this.modified.isJob = data.validated;
@@ -295,6 +322,11 @@ export class OfferDetailPage {
                 this.offer.jobData = data;
                 this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
                 this.offerService.updateOfferJob(this.offer, this.projectTarget);
+                if(this.offer.jobData.adress && this.offer.jobData.adress.zipCode && this.offer.jobData.adress.zipCode.length>0){
+                    this.fullAdress = data.adress.fullAdress;
+                    this.offerService.saveOfferAdress(this.offer, this.offer.jobData.adress, this.offer.jobData.adress.streetNumber, this.offer.jobData.adress.street,
+                        this.offer.jobData.adress.city, this.offer.jobData.adress.zipCode, this.offer.jobData.adress.name, this.offer.jobData.adress.country, this.idTiers, this.projectTarget);
+                }
             }else{
                 this.offer.jobData = this.copyJobDataObjectByValue(originalJobData);
             }
@@ -523,7 +555,7 @@ export class OfferDetailPage {
                 this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
                 this.nav.pop();
             } else {
-                this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
+                this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
             }
         });
     }

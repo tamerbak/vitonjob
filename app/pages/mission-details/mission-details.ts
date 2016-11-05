@@ -87,6 +87,8 @@ export class MissionDetailsPage {
      */
     prerequisObligatoires : any = [];
 
+    isSignContractClicked: boolean = false;
+
     constructor(private platform: Platform,
                 public gc: GlobalConfigs,
                 public nav: NavController,
@@ -181,6 +183,7 @@ export class MissionDetailsPage {
         }
     }
 
+
     onCardClick(dayIndex) {
         if (!this.isNewMission || !this.isEmployer || this.contract.signature_jobyer.toUpperCase() == 'Non'.toUpperCase()) {
             return;
@@ -258,7 +261,7 @@ export class MissionDetailsPage {
             if (this.missionPauses[i]) {
                 for (var j = 0; j < this.missionPauses[i].length; j++) {
                     if (this.isEmpty(this.missionPauses[i][j].pause_debut) || this.isEmpty(this.missionPauses[i][j].pause_fin)) {
-                        this.globalService.showAlertValidation("VitOnJob", "Veuillez renseigner toutes les heures de pauses avant de valider.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "Veuillez renseigner toutes les heures de pauses avant de valider.");
                         return;
                     }
                 }
@@ -277,7 +280,7 @@ export class MissionDetailsPage {
                 if (!data || data.status == "failure") {
                     console.log(data.error);
                     loading.dismiss();
-                    this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+                    this.globalService.showAlertValidation("Vit-On-Job", "Erreur lors de la sauvegarde des données");
                     return;
                 } else {
                     // data saved
@@ -300,7 +303,7 @@ export class MissionDetailsPage {
         var id = (who == "toJobyer" ? this.contract.fk_user_jobyer : this.contract.fk_user_entreprise);
         this.pushNotificationService.getToken(id, who).then(token => {
             this.pushNotificationService.sendPushNotification(token, message, this.contract, objectifNotif).then(data => {
-                this.globalService.showAlertValidation("VitOnJob", "Notification envoyée.");
+                this.globalService.showAlertValidation("Vit-On-Job", "Notification envoyée.");
             });
         });
     }
@@ -328,17 +331,17 @@ export class MissionDetailsPage {
         if (isStartPause) {
             if (startMission >= startPause) {
                 this.missionPauses[i][j].pause_debut = "";
-                this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure à l'heure de début de travail.");
+                this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être supérieure à l'heure de début de travail.");
                 return;
             }
             if (endMission <= startPause) {
                 this.missionPauses[i][j].pause_debut = "";
-                this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure à l'heure de fin de travail.");
+                this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être inférieure à l'heure de fin de travail.");
                 return;
             }
             if (endPause <= startPause && endPause != "") {
                 this.missionPauses[i][j].pause_debut = "";
-                this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure à l'heure de fin de pause.");
+                this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être inférieure à l'heure de fin de pause.");
                 return;
             }
             for (var k = 0; k < this.missionPauses[i].length; k++) {
@@ -346,12 +349,12 @@ export class MissionDetailsPage {
                 var endOtherPause = this.missionPauses[i][k].pause_fin;
                 if (j < k && ((startPause >= startOtherPause && startOtherPause != "") || (startPause >= endOtherPause && endOtherPause != ""))) {
                     this.missionPauses[i][j].pause_debut = "";
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure aux heures de pauses postérieurs.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être inférieure aux heures de pauses postérieurs.");
                     return;
                 }
                 if (j > k && ((startPause <= startOtherPause && startOtherPause != "") || (startPause <= endOtherPause && endOtherPause != ""))) {
                     this.missionPauses[i][j].pause_debut = "";
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure aux heures de pauses antérieurs.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être supérieure aux heures de pauses antérieurs.");
                     return;
                 }
             }
@@ -359,17 +362,17 @@ export class MissionDetailsPage {
             if (j >= 0) {
                 if (startMission >= endPause && startMission != "") {
                     this.missionPauses[i][j].pause_fin = "";
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure à l'heure de début de travail.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être supérieure à l'heure de début de travail.");
                     return;
                 }
                 if (endMission <= endPause && endMission != "") {
                     this.missionPauses[i][j].pause_fin = "";
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieure à l'heure de fin de travail.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être inférieure à l'heure de fin de travail.");
                     return;
                 }
                 if (endPause <= startPause && startPause != "") {
                     this.missionPauses[i][j].pause_fin = "";
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure à l'heure de début de pause.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être supérieure à l'heure de début de pause.");
                     return;
                 }
                 for (var k = 0; k < this.missionPauses[i].length; k++) {
@@ -377,12 +380,12 @@ export class MissionDetailsPage {
                     var endOtherPause = this.missionPauses[i][k].pause_fin;
                     if (j < k && ((endPause >= startOtherPause && startOtherPause != "") || (endPause >= endOtherPause && endOtherPause != ""))) {
                         this.missionPauses[i][j].pause_fin = "";
-                        this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieure aux heures de pauses postérieurs.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être inférieure aux heures de pauses postérieurs.");
                         return;
                     }
                     if (j > k && ((endPause <= startOtherPause && startOtherPause != "") || (endPause <= endOtherPause && endOtherPause != ""))) {
                         this.missionPauses[i][j].pause_fin = "";
-                        this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure aux heures de pauses antérieurs.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être supérieure aux heures de pauses antérieurs.");
                         return;
                     }
                 }
@@ -401,17 +404,17 @@ export class MissionDetailsPage {
         if (isStartPause) {
             if (startMission >= startPause && startMission != "") {
                 this.missionPauses[i][j].pause_debut_pointe = "";
-                this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure à l'heure de début de travail.");
+                this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être supérieure à l'heure de début de travail.");
                 return;
             }
             if (endMission <= startPause && endMission != "") {
                 this.missionPauses[i][j].pause_debut_pointe = "";
-                this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure à l'heure de fin de travail.");
+                this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être inférieure à l'heure de fin de travail.");
                 return;
             }
             if (endPause <= startPause && endPause != "") {
                 this.missionPauses[i][j].pause_debut_pointe = "";
-                this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure à l'heure de fin de pause.");
+                this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être inférieure à l'heure de fin de pause.");
                 return;
             }
             for (var k = 0; k < this.missionPauses[i].length; k++) {
@@ -419,12 +422,12 @@ export class MissionDetailsPage {
                 var endOtherPause = this.missionPauses[i][k].pause_fin_pointe;
                 if (j < k && ((startPause >= startOtherPause && startOtherPause != "") || (startPause >= endOtherPause && endOtherPause != ""))) {
                     this.missionPauses[i][j].pause_debut_pointe = "";
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure aux heures de pauses postérieurs.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être inférieure aux heures de pauses postérieurs.");
                     return;
                 }
                 if (j > k && ((startPause <= startOtherPause && startOtherPause != "") || (startPause <= endOtherPause && endOtherPause != ""))) {
                     this.missionPauses[i][j].pause_debut_pointe = "";
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure aux heures de pauses antérieurs.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être supérieure aux heures de pauses antérieurs.");
                     return;
                 }
             }
@@ -432,17 +435,17 @@ export class MissionDetailsPage {
             if (j >= 0) {
                 if (startMission >= endPause && startMission != "") {
                     this.missionPauses[i][j].pause_fin_pointe = "";
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure à l'heure de début de travail.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être supérieure à l'heure de début de travail.");
                     return;
                 }
                 if (endMission <= endPause && endMission != "") {
                     this.missionPauses[i][j].pause_fin_pointe = "";
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieure à l'heure de fin de travail.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être inférieure à l'heure de fin de travail.");
                     return;
                 }
                 if (endPause <= startPause && startPause != "") {
                     this.missionPauses[i][j].pause_fin_pointe = "";
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure à l'heure de début de pause.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être supérieure à l'heure de début de pause.");
                     return;
                 }
                 for (var k = 0; k < this.missionPauses[i].length; k++) {
@@ -450,12 +453,12 @@ export class MissionDetailsPage {
                     var endOtherPause = this.missionPauses[i][k].pause_fin_pointe;
                     if (j < k && ((endPause >= startOtherPause && startOtherPause != "") || (endPause >= endOtherPause && endOtherPause != ""))) {
                         this.missionPauses[i][j].pause_fin_pointe = "";
-                        this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieure aux heures de pauses postérieurs.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être inférieure aux heures de pauses postérieurs.");
                         return;
                     }
                     if (j > k && ((endPause <= startOtherPause && startOtherPause != "") || (endPause <= endOtherPause && endOtherPause != ""))) {
                         this.missionPauses[i][j].pause_fin_pointe = "";
-                        this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure aux heures de pauses antérieurs.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être supérieure aux heures de pauses antérieurs.");
                         return;
                     }
                 }
@@ -464,7 +467,7 @@ export class MissionDetailsPage {
         if (isStartMission) {
             if (startMission >= endMission && endMission != "") {
                 this.missionHours[i].heure_debut_pointe = "";
-                this.globalService.showAlertValidation("VitOnJob", "L'heure de début de travail doit être inférieure à l'heure de fin de travail.");
+                this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de travail doit être inférieure à l'heure de fin de travail.");
                 return;
             }
             for (var k = 0; k < this.missionPauses[i].length; k++) {
@@ -472,7 +475,7 @@ export class MissionDetailsPage {
                 var endOtherPause = this.missionPauses[i][k].pause_fin_pointe;
                 if ((startMission >= startOtherPause && startOtherPause != "") || (startMission >= endOtherPause && endOtherPause != "")) {
                     this.missionHours[i].heure_debut_pointe = "";
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de début de travail doit être inférieure aux heures de pauses.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de travail doit être inférieure aux heures de pauses.");
                     return;
                 }
             }
@@ -480,7 +483,7 @@ export class MissionDetailsPage {
             if ((!j && j != 0) || j < 0) {
                 if (startMission >= endMission && startMission != "") {
                     this.missionHours[i].heure_fin_pointe = "";
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de travail doit être supérieure à l'heure de début de travail.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de travail doit être supérieure à l'heure de début de travail.");
                     return;
                 }
                 for (var k = 0; k < this.missionPauses[i].length; k++) {
@@ -488,7 +491,7 @@ export class MissionDetailsPage {
                     var endOtherPause = this.missionPauses[i][k].pause_fin_pointe;
                     if ((endMission <= startOtherPause && startOtherPause != "") || (endMission <= endOtherPause && endOtherPause != "")) {
                         this.missionHours[i].heure_fin_pointe = "";
-                        this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de travail doit être supérieure aux heures de pauses.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de travail doit être supérieure aux heures de pauses.");
                         return;
                     }
                 }
@@ -506,52 +509,52 @@ export class MissionDetailsPage {
 
         if (isStartPause) {
             if (startMission >= newHour && startMission != "") {
-                this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure à l'heure de début de travail.");
+                this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être supérieure à l'heure de début de travail.");
                 return false;
             }
             if (endMission <= newHour && endMission != "") {
-                this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure à l'heure de fin de travail.");
+                this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être inférieure à l'heure de fin de travail.");
                 return false;
             }
             if (endPause <= newHour && endPause != "") {
-                this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure à l'heure de fin de pause.");
+                this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être inférieure à l'heure de fin de pause.");
                 return false;
             }
             for (var k = 0; k < this.missionPauses[i].length; k++) {
                 var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut) : this.missionPauses[i][k].pause_debut_new;
                 var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin) : this.missionPauses[i][k].pause_fin_new;
                 if (j < k && ((newHour >= startOtherPause && startOtherPause != "") || (newHour >= endOtherPause && endOtherPause != ""))) {
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure aux heures de pauses postérieurs.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être inférieure aux heures de pauses postérieurs.");
                     return false;
                 }
                 if (j > k && ((newHour <= startOtherPause && startOtherPause != "") || (newHour <= endOtherPause && endOtherPause != ""))) {
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure aux heures de pauses antérieurs.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être supérieure aux heures de pauses antérieurs.");
                     return false;
                 }
             }
         } else {
             if (j >= 0) {
                 if (startMission >= newHour && startMission != "") {
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure à l'heure de début de travail.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être supérieure à l'heure de début de travail.");
                     return false;
                 }
                 if (endMission <= newHour && endMission != "") {
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieure à l'heure de fin de travail.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être inférieure à l'heure de fin de travail.");
                     return false;
                 }
                 if (newHour <= startPause && startPause != "") {
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure à l'heure de début de pause.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être supérieure à l'heure de début de pause.");
                     return false;
                 }
                 for (var k = 0; k < this.missionPauses[i].length; k++) {
                     var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut) : this.missionPauses[i][k].pause_debut_new;
                     var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin) : this.missionPauses[i][k].pause_fin_new;
                     if (j < k && ((newHour >= startOtherPause && startOtherPause != "") || (newHour >= endOtherPause && endOtherPause != ""))) {
-                        this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieure aux heures de pauses postérieurs.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être inférieure aux heures de pauses postérieurs.");
                         return false;
                     }
                     if (j > k && ((newHour <= startOtherPause && startOtherPause != "") || (newHour <= endOtherPause && endOtherPause != ""))) {
-                        this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure aux heures de pauses antérieurs.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être supérieure aux heures de pauses antérieurs.");
                         return false;
                     }
                 }
@@ -560,7 +563,7 @@ export class MissionDetailsPage {
 
         if (isStartMission) {
             if (newHour >= endMission && endMission != "") {
-                this.globalService.showAlertValidation("VitOnJob", "L'heure de début de travail doit être inférieure à l'heure de fin de travail.");
+                this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de travail doit être inférieure à l'heure de fin de travail.");
                 return false;
             }
             if (this.missionPauses[i]) {
@@ -568,7 +571,7 @@ export class MissionDetailsPage {
                     var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut) : this.missionPauses[i][k].pause_debut_new;
                     var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin) : this.missionPauses[i][k].pause_fin_new;
                     if ((newHour >= startOtherPause && startOtherPause != "") || (newHour >= endOtherPause && endOtherPause != "")) {
-                        this.globalService.showAlertValidation("VitOnJob", "L'heure de début de travail doit être inférieure aux heures de pauses.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de travail doit être inférieure aux heures de pauses.");
                         return false;
                     }
                 }
@@ -576,7 +579,7 @@ export class MissionDetailsPage {
         } else {
             if ((!j && j != 0) || j < 0) {
                 if (startMission >= newHour && startMission != "") {
-                    this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de travail doit être supérieure à l'heure de début de travail.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de travail doit être supérieure à l'heure de début de travail.");
                     return false;
                 }
                 if (this.missionPauses[i]) {
@@ -584,7 +587,7 @@ export class MissionDetailsPage {
                         var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut) : this.missionPauses[i][k].pause_debut_new;
                         var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin) : this.missionPauses[i][k].pause_fin_new;
                         if ((newHour <= startOtherPause && startOtherPause != "") || (newHour <= endOtherPause && endOtherPause != "")) {
-                            this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de travail doit être supérieure aux heures de pauses.");
+                            this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de travail doit être supérieure aux heures de pauses.");
                             return false;
                         }
                     }
@@ -658,7 +661,7 @@ export class MissionDetailsPage {
                 if (!data || data.status == "failure") {
                     console.log(data.error);
                     loading.dismiss();
-                    this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+                    this.globalService.showAlertValidation("Vit-On-Job", "Erreur lors de la sauvegarde des données");
                     return;
                 } else {
                     // data saved
@@ -678,7 +681,7 @@ export class MissionDetailsPage {
 
     displaySignAlert() {
         let confirm = Alert.create({
-            title: "VitOnJob",
+            title: "Vit-On-Job",
             message: "Signature fin de mission",
             buttons: [
                 {
@@ -710,7 +713,7 @@ export class MissionDetailsPage {
             this.missionService.endOfMission(this.contract.pk_user_contrat).then(data=> {
 
                 let confirm = Alert.create({
-                    title: "VitOnJob",
+                    title: "Vit-On-Job",
                     message: "Les détails de cette missions sont en cours de traitements, vous serez contacté par SMS une fois la facturation effectuée",
                     buttons: [
                         {
@@ -791,7 +794,7 @@ export class MissionDetailsPage {
                 if (!data || data.status == "failure") {
                     console.log(data.error);
                     loading.dismiss();
-                    this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+                    this.globalService.showAlertValidation("Vit-On-Job", "Erreur lors de la sauvegarde des données");
                     return;
                 } else {
                     // data saved
@@ -807,6 +810,7 @@ export class MissionDetailsPage {
     }
 
     launchContractPage() {
+        this.isSignContractClicked = true;
         this.platform.ready().then(() => {
             cordova.InAppBrowser.open(this.contract.lien_jobyer, "_system", "location=true");
         });
@@ -844,7 +848,7 @@ export class MissionDetailsPage {
             if (selectedOption) {
                 this.missionService.updateOptionMission(selectedOption, this.contract.pk_user_contrat).then((data) => {
                     if (!data || data.status == 'failure') {
-                        this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
                     } else {
                         console.log("option mission saved successfully");
                         this.contract.option_mission = selectedOption;
@@ -1196,6 +1200,15 @@ export class MissionDetailsPage {
         } else {
             this.optionMission = "Mode de suivi de mission n°" + this.contract.option_mission.substring(0, 1);
         }
+    }
+
+    refreshSignatureStatus(){
+        this.missionService.getContract(this.contract.pk_user_contrat).then(data => {
+            this.contract = data.data[0];
+            if(this.upperCase(this.contract.signature_jobyer) == 'NON'){
+                this.isSignContractClicked = false;
+            }
+        })
     }
 
     upperCase(str) {

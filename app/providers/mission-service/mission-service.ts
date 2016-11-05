@@ -578,7 +578,7 @@ export class MissionService {
         let dataSign = JSON.stringify(bean);
         var payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 306,
+            'id': 339,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -704,6 +704,19 @@ export class MissionService {
                         d = data.data;
                     resolve(d);
                 });
+        });
+    }
+
+    getContract(id){
+        let sql = "SELECT * FROM user_contrat where pk_user_contrat ='" + id + "'";
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe(data => {
+                  resolve(data);
+              });
         });
     }
 }

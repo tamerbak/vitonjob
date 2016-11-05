@@ -37,18 +37,16 @@
             <ion-row>
                 <ion-col text-center>
                     <ion-item>
-                        <button block (click)="launchContractPage()" [style.backgroundColor]="themeColor">
+                        <button block (click)="launchContractPage()" [style.backgroundColor]="themeColor" *ngIf="!isEmployer && upperCase(contract.signature_jobyer) == 'NON' && !(upperCase(contract.signature_jobyer) == 'NON' && isSignContractClicked)">
                             <ion-icon name="create"></ion-icon>
                             Signer votre contrat
                         </button>
+                        <button block (click)="refreshSignatureStatus()" [style.backgroundColor]="themeColor" *ngIf="!isEmployer && upperCase(contract.signature_jobyer) == 'NON' && isSignContractClicked">
+                            <ion-icon name="refresh"></ion-icon>
+                            Rafraîchir
+                        </button>
                     </ion-item>
                 </ion-col>
-            </ion-row>
-            <ion-row>
-                <ion-item>
-                    <ion-label>Signé</ion-label>
-                    <ion-toggle (ionChange)="watchSignedToggle($event)"></ion-toggle>
-                </ion-item>
             </ion-row>
         </ion-card>
         <ion-card-header>Relevé d'heures de travail</ion-card-header>

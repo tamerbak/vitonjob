@@ -7,7 +7,7 @@ import {
     Storage,
     Loading,
     Alert,
-    ViewController
+    ViewController, SqlStorage
 } from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
@@ -54,6 +54,10 @@ export class OfferAddPage {
     offerToBeAdded: {jobData: any, calendarData: any, qualityData: any, languageData: any,
         visible: boolean, title: string, status: string};
     backgroundImage: any;
+    jobData : any;
+    idTiers : number;
+    storage :any;
+    projectTarget:any;
 
     constructor(public nav: NavController, private gc: GlobalConfigs, private os: OffersService, navParams: NavParams, private viewCtrl: ViewController) {
 
@@ -69,6 +73,14 @@ export class OfferAddPage {
         this.offerService = os;
         this.nav = nav;
         this.navParams = navParams;
+
+        this.storage = new Storage(SqlStorage);
+        this.storage.get(config.currentUserVar).then((value) => {
+            if (value) {
+                let currentUser = JSON.parse(value);
+                this.idTiers = this.projectTarget == 'employer'?currentUser.employer.entreprises[0].id:currentUser.jobyer.id;
+            }
+        });
     }
 
 
@@ -101,8 +113,9 @@ export class OfferAddPage {
         this.visibleOffer = false;
 
         this.offerToBeAdded = {
-            jobData: "", calendarData: [], qualityData: [], languageData: [],
+            jobData: {}, calendarData: [], qualityData: [], languageData: [],
             visible: this.visibleOffer, title: "", status: "open", videolink: ""
+
         };
 
         this.initLocalStorageOffer();
@@ -180,12 +193,14 @@ export class OfferAddPage {
     /**
      * Create Job modal
      */
+
     showJobModal() {
         this.localOffer.get('jobData').then(value => {
             console.log(value);
             let modal = Modal.create(ModalJobPage, {jobData: JSON.parse(value)});
             this.nav.present(modal);
             modal.onDismiss(data => {
+                this.jobData = data;
                 this.validated.isJob = data.validated;
                 this.steps.isCalendar = this.validated.isJob;
                 this.localOffer.set('jobData', JSON.stringify(data));
@@ -232,7 +247,7 @@ export class OfferAddPage {
      */
     showCalendarModal() {
         this.localOffer.get('slots').then(value => {
-            let modal = Modal.create(ModalCalendarPage, {slots: JSON.parse(value)});
+            let modal = Modal.create(ModalCalendarPage, {slots: JSON.parse(value), obj: "add"});
             this.nav.present(modal);
             modal.onDismiss(data => {
                 this.validated.isCalendar = (data.slots.length) ? data.slots.length > 0 : false;
@@ -266,9 +281,15 @@ export class OfferAddPage {
                 this.offerService.setOfferInRemote(this.offerToBeAdded, this.projectTarget)
                     .then(data => {
                         console.log('••• Adding offer : remote storing success!');
-
+                        let offer = JSON.parse(data._body);
+                        debugger;
+                        if(this.jobData && this.jobData.adress){
+                            this.offerService.saveOfferAdress(offer, this.jobData.adress, this.jobData.adress.streetNumber, this.jobData.adress.street,
+                                this.jobData.adress.city, this.jobData.adress.zipCode, this.jobData.adress.name, this.jobData.adress.country, this.idTiers, this.projectTarget);
+                        }
                         this.localOffer.clear();
                         loading.dismiss();
+
                         //decide to which page redirect to
                         let fromPage = this.navParams.data.fromPage;
                         let searchRes = this.navParams.data.jobyer;
@@ -286,7 +307,9 @@ export class OfferAddPage {
                         } else {
                             this.nav.setRoot(OfferListPage);
                         }
-                    })
+
+
+                    });
 
             });
     }

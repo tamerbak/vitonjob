@@ -190,6 +190,9 @@ export class OffersService {
         offerData.idOffer = 0;
         offerData.jobyerId = 0;
         offerData.entrepriseId = 0;
+        offerData.status = "OUI";
+        offerData.visible = true;
+        offerData.publiee = "OUI";
 
         switch (projectTarget) {
             case 'employer' :
@@ -213,7 +216,7 @@ export class OffersService {
 
         let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            id: 169,
+            id: 332,
             args: [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'creation offre',
@@ -256,6 +259,102 @@ export class OffersService {
                 });
         });
 
+    }
+
+    saveOfferAdress(offer, offerAddress, streetNumberOA, streetOA,
+                    cityOA, zipCodeOA, nameOA, countryOA, idTiers, type) {
+
+        let addressData = {
+            'class': 'com.vitonjob.localisation.AdressToken',
+            'street': streetOA,
+            'cp': zipCodeOA,
+            'ville': cityOA,
+            'pays': countryOA,
+            'name': nameOA,
+            'streetNumber': streetNumberOA,
+            'role': type,
+            'id': ""+idTiers,
+            'type': 'travaille'
+        };
+
+        let addressDataStr = JSON.stringify(addressData);
+        let encodedAddress = btoa(addressDataStr);
+        let data = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            'id': 239,
+            'args': [{
+                'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                label: 'Adresse',
+                value: encodedAddress
+            }]
+        };
+        var stringData = JSON.stringify(data);
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(Configs.calloutURL, stringData, {headers: headers})
+                .map(res => res.json())
+                .subscribe((data: any) => {
+
+                    let id = data.id;
+                    this.updateOfferAdress(id, offer.idOffer, type);
+                    resolve(data);
+                });
+        });
+
+    }
+
+    updateOfferAdress(id, idOffer, type){
+        let table = type =='jobyer'?'user_offre_jobyer':'user_offre_entreprise';
+        let field = type =='jobyer'?'fk_user_adresse_jobyer':'fk_user_adresse_entreprise';
+
+        let sql = "update "+table+" set "+field+"="+id+" where pk_"+table+"="+idOffer;
+
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+
+                    resolve(data);
+                });
+        });
+    }
+
+    loadOfferAdress(idOffer, type){
+        let to = type =='jobyer'?'user_offre_jobyer':'user_offre_entreprise';
+        let table = type =='jobyer'?'user_adresse_jobyer':'user_adresse_entreprise';
+        let sql = "select adresse_google_maps from user_adresse where pk_user_adresse in (" +
+            "select fk_user_adresse from "+table+" where pk_"+table+" in (" +
+            "select fk_"+table+" from "+to+" where pk_"+to+"="+idOffer+"" +
+            ")" +
+            ")";
+
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe((data : any) => {
+
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    let adr = '';
+                    if(data && data.data && data.data.length>0)
+                        adr = data.data[0].adresse_google_maps;
+                    resolve(adr);
+                });
+        });
     }
 
     updatePrerequisObligatoires(idOffer,plist){
@@ -1069,6 +1168,7 @@ export class OffersService {
                 this.updateOfferEntrepriseTitle(offer);
             });
         }
+
     }
 
     updateOfferJobyerJob(offer) {

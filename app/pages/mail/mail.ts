@@ -112,7 +112,7 @@ export class MailPage {
                 if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
                     console.log(data);
                     loading.dismiss();
-                    this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                    this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                     return;
                 }
                 //case of authentication failure : incorrect password
@@ -120,10 +120,10 @@ export class MailPage {
                     console.log("Password error");
                     loading.dismiss();
                     if (!this.showPhoneField) {
-                        this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe est incorrect.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "Votre mot de passe est incorrect.");
                     } else {
                         console.log("used phone error");
-                        this.globalService.showAlertValidation("VitOnJob", "Ce numéro de téléphone a été déjà utilisé. Veuillez choisir un autre.");
+                        this.globalService.showAlertValidation("Vit-On-Job", "Ce numéro de téléphone a été déjà utilisé. Veuillez choisir un autre.");
                     }
                     return;
                 }
@@ -226,7 +226,7 @@ export class MailPage {
         this.dataProviderService.getUserByMail(this.email, this.projectTarget).then((data) => {
             if (!data || data.status == "failure") {
                 console.log(data);
-                this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                 return;
             }
             if (!data || data.data.length == 0) {
@@ -309,7 +309,7 @@ export class MailPage {
         this.authService.setNewPassword(this.email).then((data) => {
             if (!data) {
                 loading.dismiss();
-                this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+                this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                 return;
             }
             if (data && data.password.length != 0) {
@@ -318,7 +318,7 @@ export class MailPage {
                 var message = "Votre nouveau mot de passe est: " + data.password;
                 this.sendSMS(this.retrievedPhone, message);
                 loading.dismiss();
-                this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par SMS.");
+                this.globalService.showAlertValidation("Vit-On-Job", "Votre mot de passe a été rénitialisé. Vous allez le recevoir par SMS.");
             }
         });
     }
@@ -335,15 +335,15 @@ export class MailPage {
 
     displayPasswordAlert() {
         if (!this.email || this.showEmailError()) {
-            this.globalService.showAlertValidation("VitOnJob", "Veuillez saisir une adresse email valide.");
+            this.globalService.showAlertValidation("Vit-On-Job", "Veuillez saisir une adresse email valide.");
             return;
         }
         if (this.email && !this.showEmailError() && this.showPhoneField) {
-            this.globalService.showAlertValidation("VitOnJob", "Aucun compte ne correspond à cet adresse email.");
+            this.globalService.showAlertValidation("Vit-On-Job", "Aucun compte ne correspond à cet adresse email.");
             return;
         }
         let confirm = Alert.create({
-            title: "VitOnJob",
+            title: "Vit-On-Job",
             message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez vous continuer?",
             buttons: [
                 {
