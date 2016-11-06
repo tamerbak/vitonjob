@@ -324,11 +324,6 @@ export class CivilityPage {
                         if (this.nationality) this.nationalitiesstyle = {'font-size': '1.4rem'};
                         else this.nationalitiesstyle = {'font-size': '2rem', 'position': 'absolute', 'top': '0.2em'};
 
-                        if(this.currentUser.employer.entreprises[0].conventionCollective &&
-                            this.currentUser.employer.entreprises[0].conventionCollective.id>0) {
-                            this.conventionId = this.currentUser.employer.entreprises[0].conventionCollective.id;
-                        }
-
                     }
 
                     let jobyer = this.currentUser.jobyer;
@@ -857,12 +852,12 @@ export class CivilityPage {
      * @description show error msg for num ss field
      */
     showNSSError() {
-        if (this.isEmployer)
+        this.numSSMessage = '';
+
+        if (this.isEmployer || !this.checkSS || this.numSS.length == 0) {
+            this.numSSMessage = '';
             return false;
-        if (!this.checkSS)
-            return false;
-        if (this.numSS && this.numSS.length == 0)
-            return false;
+        }
 
         if (!this.numSS || this.numSS.length != 15) {
             this.numSSMessage = '* Saisissez les 15 chiffres du n° SS';
