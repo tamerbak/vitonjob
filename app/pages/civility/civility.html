@@ -9,7 +9,7 @@
 
 <ion-content padding>
     <ion-item>
-        <ion-label id="label-civi" [ngStyle]="titlestyle" floating>Titre de civilité</ion-label>
+        <ion-label id="label-civi" [ngStyle]="titlestyle" floating>Titre de civilité <span class="asterisk">*</span></ion-label>
         <ion-select id="in-select" [(ngModel)]="title" (ionChange)="titleChange()">
             <ion-option value="Mme">Mme</ion-option>
             <ion-option value="Mlle">Mlle</ion-option>
@@ -19,7 +19,7 @@
 
 
     <ion-item>
-        <ion-label floating>Nom</ion-label>
+        <ion-label floating>Nom <span class="asterisk">*</span></ion-label>
         <ion-input type="text" [(ngModel)]="lastname" (keyup)="watchLastName($event)"></ion-input>
     </ion-item>
     <div [hidden]="isValideLastName"
@@ -27,7 +27,7 @@
     </div>
 
     <ion-item>
-        <ion-label floating>Prénom</ion-label>
+        <ion-label floating>Prénom <span class="asterisk">*</span></ion-label>
         <ion-input type="text" [(ngModel)]="firstname" (keyup)="watchFirstName($event)"></ion-input>
     </ion-item>
     <div [hidden]="isValideFirstName"
