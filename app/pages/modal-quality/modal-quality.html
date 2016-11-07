@@ -1,6 +1,6 @@
 <ion-header>
     <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
-        <ion-title>Qualités</ion-title>
+        <ion-title>Mon {{ isEmployer ? 'jobyer' : 'employeur' }} idéal</ion-title>
         <ion-buttons end>
             <button (click)="closeModal()">
                 <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
