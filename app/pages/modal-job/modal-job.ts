@@ -585,13 +585,15 @@ export class ModalJobPage {
      */
     validateRate(rate) {
         let r = parseFloat(rate);
-        if (r >= this.minHourRate) {
+        let roundMin = (Math.round(this.minHourRate * 100) / 100);
+
+        if (r >= roundMin) {
             this.invalidHourRateMessage = '0.00';
             this.invalidHourRate = false;
             return true;
         }
 
-        this.invalidHourRateMessage = (Math.round(this.minHourRate * 100) / 100) + '';
+        this.invalidHourRateMessage = roundMin + '';
         this.invalidHourRate = true;
         return false;
     }
