@@ -139,23 +139,6 @@ export class Configs {
 
     public static env: string = 'DEV';
 
-    /*
-     public static calloutURL:string = 'https://app.vitonjob.com/api/business';
-     public static sqlURL:string = 'https://app.vitonjob.com/api/sql';
-     public static yousignURL:string = 'https://app.vitonjob.com/api/business';
-     public static smsURL:string = 'https://app.vitonjob.com/api/envoisms';
-     public static emailURL:string = 'https://app.vitonjob.com/api/envoimail';
-     public static fssURL:string = 'https://app.vitonjob.com/api/fssjs';
-
-
-     /* public static calloutURL:string = 'http://vitonjobprod.nmeza4epib.us-west-2.elasticbeanstalk.com/api/business';
-     public static sqlURL:string = 'http://vitonjobprod.nmeza4epib.us-west-2.elasticbeanstalk.com/api/sql';
-     public static yousignURL:string = 'http://vitonjobprod.nmeza4epib.us-west-2.elasticbeanstalk.com/api/business';
-     public static smsURL:string = 'http://vitonjobprod.nmeza4epib.us-west-2.elasticbeanstalk.com/api/envoisms';
-     public static emailURL:string = 'http://vitonjobprod.nmeza4epib.us-west-2.elasticbeanstalk.com/api/envoimail';
-     public static fssURL:string = 'http://vitonjobprod.nmeza4epib.us-west-2.elasticbeanstalk.com/api/fssjs';
-     */
-
     public static getHttpJsonHeaders() {
         let headers = new Headers();
         headers.append("Content-Type", 'application/json');
