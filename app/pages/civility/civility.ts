@@ -383,11 +383,14 @@ export class CivilityPage {
                             if (this.index == 33) {
                                 this.isFrench = true;
                                 this.communesService.getDepartmentById(data.fk_user_departement).then(deps => {
+                                    this.selectedBirthDep = deps[0];
                                     this.birthdep =deps[0].numero
                                 }) ;
                             } else {
                                 this.isFrench = false;
                             }
+
+                            this.prefecture = data.instance_delivrance;
                         });
 
 
@@ -438,10 +441,6 @@ export class CivilityPage {
                             this.isEU = false;
                         }
 
-                    }
-
-                    if (jobyer.idPrefecture && jobyer.idPrefecture > 0) {
-                        this.prefecture = jobyer.idPrefecture;
                     }
                 }
                 if (!this.isRecruiter) {
