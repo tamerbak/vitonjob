@@ -15,6 +15,7 @@ import {AttachementsService} from "../../providers/attachements-service/attachem
 import {MedecineService} from "../../providers/medecine-service/medecine-service";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {Utils} from "../../utils/utils";
+import {AccountConstraints} from "../../validators/account-constraints";
 
 /**
  * @author Amal ROCHD
@@ -943,10 +944,21 @@ export class CivilityPage {
      * @description show error msg for cni field
      */
     showCNIError() {
-        if (this.cni && this.cni.length < 12) {
+        if (!Utils.isEmpty(this.cni) && !this.isValidCni) {
             return true;
         }
     }
+
+    /**
+     * Watches National identity card / passport number
+     * @param e
+     */
+    watchOfficialDocument(e) {
+        let officialDocChecked = AccountConstraints.checkOfficialDocument(e);
+        this.isValidCni = officialDocChecked.isValid;
+        this.cniHint = officialDocChecked.hint;
+    }
+
 
     /**
      * @description show error msg for num ss field

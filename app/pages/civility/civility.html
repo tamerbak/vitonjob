@@ -135,10 +135,6 @@
             <ion-input type="text" [(ngModel)]="cni" (keyup)="watchCNI($event)" maxlength="12"></ion-input>
         </ion-item>-->
 
-        <div *ngIf="showCNIError()"
-             class="error-box">* Saisissez les 12 chiffres du CNI
-        </div>
-
         <ion-item [hidden]="isEmployer">
             <ion-label floating>N° de sécurité sociale</ion-label>
             <ion-input type="number" [(ngModel)]="numSS" (keyup)="watchNumSS($event)" maxlength="15"></ion-input>
@@ -191,8 +187,11 @@
 
         <ion-item [hidden]="isEmployer || isEuropean == 1 || isCIN == '0'">
             <ion-label floating> N° de la CNI ou Passeport </ion-label>
-            <ion-input type="text" [(ngModel)]="cni"></ion-input>
+            <ion-input type="text" [(ngModel)]="cni" (keyup)="watchOfficialDocument($event)" maxlength="13"></ion-input>
         </ion-item>
+        <div *ngIf="showCNIError()"
+             class="error-box">{{cniHint}}
+        </div>
 
         <ion-item [hidden]="isEmployer || isEuropean == 1 || isCIN == '1'">
             <ion-label floating> N° de la carte de ressortissant </ion-label>
