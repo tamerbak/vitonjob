@@ -110,8 +110,8 @@ export class CivilityPage {
     isResident: string;
     isCIN: string;
     numStay: string;
-
-
+    //flags for field validation
+    isValidCni: boolean;
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
      */
@@ -383,8 +383,10 @@ export class CivilityPage {
                             if (this.index == 33) {
                                 this.isFrench = true;
                                 this.communesService.getDepartmentById(data.fk_user_departement).then(deps => {
-                                    this.selectedBirthDep = deps[0];
-                                    this.birthdep =deps[0].numero
+                                    if(deps && deps.length > 0) {
+                                        this.selectedBirthDep = deps[0];
+                                        this.birthdep = deps[0].numero
+                                    }
                                 }) ;
                             } else {
                                 this.isFrench = false;
@@ -407,7 +409,7 @@ export class CivilityPage {
                         this.birthplace = this.currentUser.jobyer.lieuNaissance;
                         this.cni = this.currentUser.jobyer.cni;
                         this.numSS = this.currentUser.jobyer.numSS;
-                        this.nationality = parseInt(this.currentUser.jobyer.natId);
+                        this.nationality = this.currentUser.jobyer.natId == 0 ? 91 : parseInt(this.currentUser.jobyer.natId);
                         if (this.nationality) this.nationalitiesstyle = {'font-size': '1.4rem'};
                         else this.nationalitiesstyle = {'font-size': '2rem', 'position': 'absolute', 'top': '0.2em'};
                     }
@@ -756,23 +758,10 @@ export class CivilityPage {
         if (this.isEmployer) {
             return (!this.title || !this.firstname || !this.lastname || !this.companyname || (this.siret && this.siret.length < 17) || (this.ape && (this.ape.length < 5 || !this.isAPEValid)) || !this.isValideFirstName || !this.isValideLastName);
         } else {
-
-            if (!this.isFrench && !this.isEU) {
-                if (!this.tsejToDate || !this.tsejFromDate || !this.tsejProvideDate || !this.prefecture || this.prefecture.length == 0) {
-                    this.tsMessage = "* Veuillez vérifier les informations du Titre de séjour pour pouvoir enregistrer vos données";
-                    return true;
-                } else {
-                    this.tsMessage = "";
-                }
-
-            }
-
-            if ((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length != 0) || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.isValideFirstName || !this.isValideLastName || !this.isBirthdateValid)) {
+            if (!this.title || !this.firstname || !this.lastname || (!this.isValidCni && this.cni) || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.isValideFirstName || !this.isValideLastName) {
                 return true;
             }
-            if (!this.numSS || this.numSS.length == 0)
-                return false;
-            if (!this.checkGender() || !this.checkBirthYear() || !this.checkBirthMonth() || !this.checkINSEE() || !this.checkModKey()) {
+            if (this.numSS && (!this.checkGender() || !this.checkBirthYear() || !this.checkBirthMonth() || !this.checkINSEE() || !this.checkModKey())) {
                 return true;
             }
             return false;
@@ -964,7 +953,7 @@ export class CivilityPage {
      */
     showNSSError() {
 		this.numSSMessage = '';
-        if (this.isEmployer || !this.checkSS || this.numSS.length == 0) {
+        if (this.isEmployer || !this.checkSS || (this.numSS && this.numSS.length == 0)) {
             this.numSSMessage = '';
 
             return false;
