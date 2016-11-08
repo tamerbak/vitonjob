@@ -25,7 +25,7 @@ export class LoadListService {
     loadCountries(projectTarget) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
-        var sql = "SELECT nom, indicatif_telephonique FROM user_pays ORDER BY nom";
+        var sql = "SELECT pk_user_pays as id, nom, indicatif_telephonique FROM user_pays ORDER BY nom";
 
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();

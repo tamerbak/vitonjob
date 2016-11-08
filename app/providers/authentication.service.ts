@@ -152,42 +152,33 @@ export class AuthenticationService {
      * @description update jobyer information
      * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
      */
-    updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace,
-                         idnationality, prefecture, tsejProvideDate, tsejFromDate, tsejToDate) {
-        var sql = "";
+    updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, prefecture, dateStay, dateFromStay, dateToStay, birthdepId, numStay, birthCountryId, regionId, isStay) {
+        let sql = "";
         //building the sql request
-        if (nationalityId) {
-            sql = "update user_jobyer set  " +
-                "titre='" + title + "', " +
-                "nom='" + lastname + "', " +
-                "prenom='" + firstname + "', " +
-                "numero_securite_sociale='" + numSS + "', " +
-                "cni='" + cni + "', " +
-                (!birthdate ? " " : "date_de_naissance ='" + birthdate + "', ") +
-                (idnationality == 0 ? " " : "fk_user_identifiants_nationalite='" + idnationality + "', ") +
-                (prefecture == 0 || isUndefined(prefecture) ? " " : "fk_user_prefecture='" + prefecture + "', ") +
-                (isUndefined(tsejProvideDate) ? " " : "date_de_delivrance='" + (tsejProvideDate) + "', ") +
-                (isUndefined(tsejFromDate) ? " " : "debut_validite='" + (tsejFromDate) + "', ") +
-                (isUndefined(tsejToDate) ? " " : "fin_validite='" + (tsejToDate) + "', ") +
-                "lieu_de_naissance ='" + birthplace + "', " +
-                "fk_user_nationalite ='" + nationalityId + "' " +
-                "where pk_user_jobyer ='" + roleId + "';";
-        } else {
-            sql = "update user_jobyer set  " +
-                "titre='" + title + "', " +
-                "nom='" + lastname + "', " +
-                "prenom='" + firstname + "', " +
-                "numero_securite_sociale='" + numSS + "', " +
-                "cni='" + cni + "', " +
-                (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',") +
-                (idnationality == 0 ? " " : "fk_user_identifiants_nationalite='" + idnationality + "', ") +
-                (prefecture == 0 ? " " : "fk_user_prefecture='" + prefecture + "', ") +
-                (isUndefined(tsejProvideDate) ? " " : "date_de_delivrance='" + (tsejProvideDate) + "', ") +
-                (isUndefined(tsejFromDate) ? " " : "debut_validite='" + (tsejFromDate) + "', ") +
-                (isUndefined(tsejToDate) ? " " : "fin_validite='" + (tsejToDate) + "', ") +
-                "lieu_de_naissance ='" + birthplace + "' " +
-                "where pk_user_jobyer ='" + roleId + "';";
-        }
+        sql = "update user_jobyer set  " +
+          "titre='" + title + "', " +
+          "nom='" + lastname + "', " +
+          "prenom='" + firstname + "', " +
+
+          (!this.isEmpty(numSS) ? ("numero_securite_sociale ='" + numSS + "', ") : ("numero_securite_sociale ='', ")) +
+          (!this.isEmpty(cni) ? ("cni ='" + cni + "', ") : ("cni ='', ")) +
+          (!this.isEmpty(birthdate) ? ("date_de_naissance ='" + birthdate + "', ") : ("date_de_naissance =" + null + ", ")) +
+
+          (!this.isEmpty(numStay) ? (" numero_titre_sejour='" + numStay + "', ") : ("numero_titre_sejour='', ")) +
+          (!this.isEmpty(dateStay) ? (" date_de_delivrance='" + dateStay + "', ") : ("date_de_delivrance=" + null + ", ")) +
+          (!this.isEmpty(dateFromStay) ? (" debut_validite='" + dateFromStay + "', ") : (" debut_validite=" + null + ", ")) +
+          (!this.isEmpty(dateToStay) ? (" fin_validite='" + dateToStay + "', ") : (" fin_validite=" + null + ", ")) +
+          (!this.isEmpty(isStay) ? ("est_resident='" + isStay + "', ") : (" est_resident='', ")) +
+          (!this.isEmpty(prefecture) ? ("instance_delivrance='" + this.sqlfyText(prefecture) + "', ") : (" instance_delivrance='', ")) +
+
+          (!this.isEmpty(nationalityId) ? (" fk_user_nationalite='" + nationalityId + "', ") : ("fk_user_nationalite='', ")) +
+          (!this.isEmpty(birthCountryId) ? ("fk_user_pays ='" + birthCountryId + "', ") : ("fk_user_pays='', ")) +
+          (!this.isEmpty(regionId) ? (" fk_user_identifiants_nationalite='" + regionId + "', ") : ("fk_user_identifiants_nationalite='', ")) +
+
+          (!this.isEmpty(birthplace) ? (" lieu_de_naissance='" + birthplace + "', ") : ("lieu_de_naissance='', ")) +
+          (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "' ") : ("fk_user_departement = " + null + " " )) +
+
+          " where pk_user_jobyer ='" + roleId + "';";
 
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
@@ -726,6 +717,12 @@ export class AuthenticationService {
                 resolve(this.data);
             });
         }
+    }
+
+    sqlfyText(txt) {
+        if (!txt || txt.length == 0)
+            return "";
+        return txt.replace("'", "''");
     }
 
     isEmpty(str) {
