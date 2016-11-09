@@ -14,6 +14,8 @@ import {HomePage} from "../home/home";
 import {AttachementsService} from "../../providers/attachements-service/attachements-service";
 import {MedecineService} from "../../providers/medecine-service/medecine-service";
 import {ProfileService} from "../../providers/profile-service/profile-service";
+import {Utils} from "../../utils/utils";
+import {AccountConstraints} from "../../validators/account-constraints";
 
 /**
  * @author Amal ROCHD
@@ -25,7 +27,7 @@ import {ProfileService} from "../../providers/profile-service/profile-service";
     providers: [GlobalConfigs, LoadListService, SqlStorageService, AuthenticationService, GlobalService, CommunesService, AttachementsService, MedecineService, ProfileService]
 })
 export class CivilityPage {
-    //tabs:Tabs;
+    projectTarget: string;
     title: string;
     lastname: string;
     firstname: string;
@@ -33,7 +35,7 @@ export class CivilityPage {
     birthplace: string;
     cni: string;
     numSS: string;
-    nationality;
+    nationality = 91;
     nationalities = [];
     currentUser;
     companyname: string;
@@ -94,6 +96,22 @@ export class CivilityPage {
     conventions: any = [];
     convObject: any;
 
+    //birth country and department
+    pays: any = [];
+    index: string = "33";
+    selectedBirthCountry: any;
+    isEuropean: number;
+    indexForForeigner: string;
+    birthdep: string;
+    departments: any = [];
+    selectedBirthDep: any;
+    //nationality and docs
+    idNationaliteLabel: string;
+    isResident: string;
+    isCIN: string;
+    numStay: string;
+    //flags for field validation
+    isValidCni: boolean;
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
      */
@@ -138,7 +156,6 @@ export class CivilityPage {
             this.loadListService.loadNationalities(this.projectTarget).then((data) => {
                 this.nationalities = data.data;
                 //initialize nationality with (9 = francais)
-                this.nationality = 9;
                 this.scanTitle = " de votre CNI";
                 this.nationalitiesstyle = {'font-size': '1.4rem'};
             });
@@ -175,6 +192,12 @@ export class CivilityPage {
 
         this.mintsejToDate = today.getFullYear() + "-" + m + "-" + d;
         this.maxtsejToDate = (today.getFullYear() + 70) + "-12-31";
+
+        //load data for birth country
+        this.loadListService.loadCountries(this.projectTarget).then((data) => {
+            this.pays = data.data;
+        });
+
     }
 
     watchConvention(e) {
@@ -212,23 +235,57 @@ export class CivilityPage {
             code_insee: ''
         };
         let val = e.target.value;
-        if (val.length < 3) {
+        if (val.length  == 0) {
             this.communes = [];
             return;
         }
-        console.log(val);
         this.communes = [];
 
-        this.communesService.getCommunesExact(val, this.selectedCP).then(data=> {
-            if (!data || data.length == 0)
-                this.communesService.getCommunes(val, this.selectedCP).then(data=> {
-                    this.communes = data;
-                    console.log(JSON.stringify(this.communes));
-                });
-            else
-                this.communes = data;
-            console.log(JSON.stringify(this.communes));
+        this.communesService.getCommunesByTerm(val, this.selectedBirthDep).then(data=> {
+            this.communes = data;
         });
+    }
+
+    watchBirthCountry() {
+        this.isFrench = this.index == "33" ? true : false;
+        this.indexForForeigner = "99" + " " + this.index;
+        this.selectedBirthDep = null;
+        this.departments = [];
+        this.selectedCommune = null;
+        this.communes = [];
+        this.isCIN = this.isEuropean == 0 ? true : false;
+    }
+
+    watchBirthDep(e){
+        this.selectedBirthDep = {
+            id: 0,
+            nom: '',
+            numero: ''
+        };
+        let val = e.target.value;
+        if (val.length == 0) {
+            this.departments = [];
+            return;
+        }
+        this.departments = [];
+
+        this.communesService.getDepartmentsByTerm(val).then(data=> {
+            this.departments = data;
+        });
+    }
+
+    departmentSelected(dep){
+        this.birthdep = dep.numero;
+        this.selectedBirthDep = dep;
+        this.departments = [];
+
+        this.communes = [];
+        this.birthplace = '';
+        this.selectedCommune = {
+            id: 0,
+            nom: '',
+            code_insee: ''
+        };
     }
 
     convSelected(c) {
@@ -306,7 +363,39 @@ export class CivilityPage {
                     }
                 } else {
                     if (!this.isRecruiter) {
-                        //
+                        this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
+                            data = data.data[0];
+                            if (!Utils.isEmpty(data.fk_user_pays)) {
+                                this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
+                                this.indexForForeigner = "99" + " " + this.index;
+                            }
+                            this.regionId = data.fk_user_identifiants_nationalite;
+                            this.isEuropean = this.regionId == "42" ? 1 : 0;
+                            if (this.isEuropean == 0) {
+                                this.idNationaliteLabel = "EU, EEE";
+                            }
+                            if (this.isEuropean == 1) {
+                                this.idNationaliteLabel = "Autre";
+                            }
+                            this.isResident = (data.est_resident == 'Oui' ? "1" : "0");
+                            this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? "0" : "1";
+                            this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
+                            if (this.index == 33) {
+                                this.isFrench = true;
+                                this.communesService.getDepartmentById(data.fk_user_departement).then(deps => {
+                                    if(deps && deps.length > 0) {
+                                        this.selectedBirthDep = deps[0];
+                                        this.birthdep = deps[0].numero
+                                    }
+                                }) ;
+                            } else {
+                                this.isFrench = false;
+                            }
+
+                            this.prefecture = data.instance_delivrance;
+                        });
+
+
                         if (this.currentUser.jobyer.dateNaissance) {
                             if (this.platform.version('android').major < 5) {
                                 this.birthdate = new Date(this.currentUser.jobyer.dateNaissance).toLocaleDateString('fr-FR');
@@ -320,10 +409,9 @@ export class CivilityPage {
                         this.birthplace = this.currentUser.jobyer.lieuNaissance;
                         this.cni = this.currentUser.jobyer.cni;
                         this.numSS = this.currentUser.jobyer.numSS;
-                        this.nationality = parseInt(this.currentUser.jobyer.natId);
+                        this.nationality = this.currentUser.jobyer.natId == 0 ? 91 : parseInt(this.currentUser.jobyer.natId);
                         if (this.nationality) this.nationalitiesstyle = {'font-size': '1.4rem'};
                         else this.nationalitiesstyle = {'font-size': '2rem', 'position': 'absolute', 'top': '0.2em'};
-
                     }
 
                     let jobyer = this.currentUser.jobyer;
@@ -345,6 +433,7 @@ export class CivilityPage {
                         let day = d.getDate() < 10 ? "0" + d.getDate() : d.getDate();
                         this.tsejProvideDate = d.getFullYear() + "-" + month + "-" + day;
                     }
+
                     if (jobyer.identifiantNationalite && jobyer.identifiantNationalite > 0) {
                         this.idnationality = jobyer.identifiantNationalite;
                         if (jobyer.identifiantNationalite > 40) {
@@ -354,9 +443,6 @@ export class CivilityPage {
                             this.isEU = false;
                         }
 
-                    }
-                    if (jobyer.idPrefecture && jobyer.idPrefecture > 0) {
-                        this.prefecture = jobyer.idPrefecture;
                     }
                 }
                 if (!this.isRecruiter) {
@@ -371,7 +457,6 @@ export class CivilityPage {
             if (this.birthplace && this.birthplace != 'null' && !this.isRecruiter) {
 
                 this.communesService.getCommune(this.birthplace).then(data => {
-
                     if (data && data.length > 0) {
                         this.selectedCommune = data[0];
                         if (this.selectedCommune.fk_user_code_postal && this.selectedCommune.fk_user_code_postal != "null") {
@@ -553,8 +638,25 @@ export class CivilityPage {
                 //get the role id
                 var jobyerId = this.currentUser.jobyer.id;
                 // update jobyer
-                this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni, this.nationality, jobyerId, this.birthdate, this.birthplace,
-                    this.idnationality, this.prefecture, this.tsejProvideDate, this.tsejFromDate, this.tsejToDate).then((data) => {
+                let birthCountryId;
+                if (this.index)
+                    birthCountryId = this.profileService.getCountryByIndex(this.index, this.pays).id;
+                let isResident = (this.isResident == 0 ? 'Non' : 'Oui');
+                let regionId;
+                if (!this.regionId) {
+                    if (this.isEuropean == 1) {
+                        //etranger
+                        regionId = 42;
+                    } else {
+                        regionId = 41;
+                    }
+                } else {
+                    regionId = this.regionId;
+                }
+                let birthdepId = !Utils.isEmpty(this.selectedBirthDep) ? this.selectedBirthDep.id : null;
+                this.cni = this.isCIN == 0 ? "" : this.cni;
+                this.numStay = this.isCIN == 0 ? this.numStay : "";
+                this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni, this.nationality, jobyerId, this.birthdate, this.birthplace, this.prefecture, this.tsejProvideDate, this.tsejFromDate, this.tsejToDate, birthdepId, this.numStay, birthCountryId, regionId, isResident).then((data) => {
                     if (!data || data.status == "failure") {
                         console.log(data.error);
                         loading.dismiss();
@@ -656,23 +758,10 @@ export class CivilityPage {
         if (this.isEmployer) {
             return (!this.title || !this.firstname || !this.lastname || !this.companyname || (this.siret && this.siret.length < 17) || (this.ape && (this.ape.length < 5 || !this.isAPEValid)) || !this.isValideFirstName || !this.isValideLastName);
         } else {
-
-            if (!this.isFrench && !this.isEU) {
-                if (!this.tsejToDate || !this.tsejFromDate || !this.tsejProvideDate || !this.prefecture || this.prefecture.length == 0) {
-                    this.tsMessage = "* Veuillez vérifier les informations du Titre de séjour pour pouvoir enregistrer vos données";
-                    return true;
-                } else {
-                    this.tsMessage = "";
-                }
-
-            }
-
-            if ((!this.title || !this.firstname || !this.lastname || (this.cni && this.cni.length != 12 && this.cni.length != 0) || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.isValideFirstName || !this.isValideLastName || !this.isBirthdateValid)) {
+            if (!this.title || !this.firstname || !this.lastname || (!this.isValidCni && this.cni) || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.isValideFirstName || !this.isValideLastName) {
                 return true;
             }
-            if (!this.numSS || this.numSS.length == 0)
-                return false;
-            if (!this.checkGender() || !this.checkBirthYear() || !this.checkBirthMonth() || !this.checkINSEE() || !this.checkModKey()) {
+            if (this.numSS && (!this.checkGender() || !this.checkBirthYear() || !this.checkBirthMonth() || !this.checkINSEE() || !this.checkModKey())) {
                 return true;
             }
             return false;
@@ -843,19 +932,30 @@ export class CivilityPage {
      * @description show error msg for cni field
      */
     showCNIError() {
-        if (this.cni && this.cni.length < 12) {
+        if (!Utils.isEmpty(this.cni) && !this.isValidCni) {
             return true;
         }
     }
 
     /**
+     * Watches National identity card / passport number
+     * @param e
+     */
+    watchOfficialDocument(e) {
+        let officialDocChecked = AccountConstraints.checkOfficialDocument(e);
+        this.isValidCni = officialDocChecked.isValid;
+        this.cniHint = officialDocChecked.hint;
+    }
+
+
+    /**
      * @description show error msg for num ss field
      */
     showNSSError() {
-        this.numSSMessage = '';
-
-        if (this.isEmployer || !this.checkSS || this.numSS.length == 0) {
+		this.numSSMessage = '';
+        if (this.isEmployer || !this.checkSS || (this.numSS && this.numSS.length == 0)) {
             this.numSSMessage = '';
+
             return false;
         }
 
@@ -863,7 +963,6 @@ export class CivilityPage {
             this.numSSMessage = '* Saisissez les 15 chiffres du n° SS';
             return true;
         }
-
 
         let correct = this.checkGender();
         if (!correct) {
@@ -929,28 +1028,26 @@ export class CivilityPage {
      * @description change the title of the scan buttton according to the selected nationality
      */
     onChangeNationality(e) {
+        this.profileService.getIdentifiantNationalityByNationality(e).then((data: any)=> {
+            this.isEuropean = data.data[0].pk_user_identifiants_nationalite == "42" ? 1 : 0;
+            this.regionId = data.data[0].pk_user_identifiants_nationalite;
+            if (this.isEuropean == 0) {
+                this.idNationaliteLabel = "EU, EEE";
+                this.scanTitle = " de votre CNI ou Passeport";
+            }
+            if (this.isEuropean == 1) {
+                this.idNationaliteLabel = "Autre";
+                this.scanTitle = " de votre titre de séjour";
+            }
+        });
 
         if (this.nationality) {
             this.nationalitiesstyle = {
                 'font-size': '1.4rem'
             }
-        }
-        else {
+        } else {
             this.nationalitiesstyle = {'font-size': '2rem', 'position': 'absolute', 'top': '0.2em'};
         }
-        if (this.nationality == 9) {
-            this.scanTitle = " de votre CNI";
-            this.isFrench = true;
-            this.idnationality = 40;
-        }
-        else {
-            this.scanTitle = " de votre titre de séjour";
-            this.isFrench = false;
-            this.isEU = true;
-            this.idnationality = 41;
-        }
-
-
     }
 
     /**

@@ -137,6 +137,48 @@ export class ProfileService {
         this.storage.set(this.profilPictureVar, imgUri);
     }
 
+    getIdentifiantNationalityByNationality(natId) {
+        let sql = "select i.* from user_identifiants_nationalite as i, user_nationalite as n where i.pk_user_identifiants_nationalite = n.fk_user_identifiants_nationalite and n.pk_user_nationalite = '" + natId + "'";
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe((data: any)=> {
+                  resolve(data);
+              });
+        })
+    }
+
+    loadAdditionalUserInformations(id) {
+        let sql = "select j.* from user_jobyer as j where j.pk_user_jobyer = '" + id + "';";
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe(data => {
+                  resolve(data);
+              });
+        });
+    }
+
+    getCountryById(id, countries) {
+        for (let i = 0; i < countries.length; i++) {
+            if (countries[i].id == id) {
+                return countries[i];
+            }
+        }
+    }
+
+    getCountryByIndex(index, countries) {
+        for (let i = 0; i < countries.length; i++) {
+            if (countries[i].indicatif_telephonique == index) {
+                return countries[i];
+            }
+        }
+    }
+
     /*
      Qualities management
      */

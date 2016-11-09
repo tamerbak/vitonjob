@@ -167,5 +167,58 @@ export class CommunesService {
                 });
         });
     }
-}
 
+    getDepartmentsByTerm(term) {
+        let sql = "select pk_user_departement as id, nom, numero from user_departement where numero like '%" + term + "%'";
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe(data => {
+                  this.data = [];
+                  if (data.data)
+                      this.data = data.data;
+                  resolve(this.data);
+              });
+        });
+    }
+
+  getDepartmentById(id){
+    let sql = "select pk_user_departement as id, nom, numero from user_departement where pk_user_departement = '" + id + "';";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          this.data = [];
+          if (data.data)
+            this.data = data.data;
+          resolve(this.data);
+        });
+    });
+  }
+
+    getCommunesByTerm(term, birthdep) {
+        let sql = "";
+        if (!birthdep || birthdep.id == 0) {
+            sql = "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%" + term + "%') UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('" + term + "') limit 5";
+        } else {
+            sql = "select c.pk_user_commune as id, c.nom, c.code_insee, cp.code from user_commune as c, user_code_postal as cp " +
+              " where lower_unaccent(c.nom) like  lower_unaccent('%" + term + "%') and c.fk_user_code_postal = cp.pk_user_code_postal and CAST(cp.code as text) like '" + birthdep.numero + "%' " +
+              "UNION select c.pk_user_commune as id, c.nom, c.code_insee, cp.code from user_commune as c, user_code_postal as cp " +
+              " where lower_unaccent(c.nom) like lower_unaccent('" + term + "') and c.fk_user_code_postal = cp.pk_user_code_postal and CAST(cp.code as text) like '" + birthdep.numero + "%'";
+        }
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe(data => {
+                  this.data = [];
+                  if (data.data)
+                      this.data = data.data;
+                  resolve(this.data);
+              });
+        });
+    }
+}
