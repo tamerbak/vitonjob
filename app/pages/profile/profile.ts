@@ -16,6 +16,7 @@ import {ProfileService} from "../../providers/profile-service/profile-service";
 import {GlobalService} from "../../providers/global.service";
 import {ImageService} from "../../providers/image-service/image-service";
 import {ProfileQualitiesPage} from "../profile-qualities/profile-qualities";
+import {ProfileLanguagesPage} from "../profile-languages/profile-languages";
 //import {InfoUserPage} from "../info-user/info-user"
 
 /*
@@ -404,7 +405,7 @@ export class ProfilePage implements OnInit {
     }
 
     showProfileLanguages(){
-
+        this.nav.push(ProfileLanguagesPage,  {currentUser: this.userData, isEmployer : this.isEmployer});
     }
 
     showProfileSlots(){
