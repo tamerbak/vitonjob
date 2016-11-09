@@ -78,4 +78,29 @@ export class LoadListService {
                 });
         });
     }
+
+    loadQualities(type: string) {
+        //  Init project parameters
+        var sql = "select pk_user_indispensable as id, libelle as libelle from user_indispensable where UPPER(dirty) ='N' and type='" + type + "'";
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    resolve(data);
+                });
+        });
+    }
+
+    loadLanguages(){
+        var sql = "select pk_user_langue as id, libelle from user_langue where UPPER(dirty) ='N'";
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    resolve(data);
+                });
+        });
+    }
 }
