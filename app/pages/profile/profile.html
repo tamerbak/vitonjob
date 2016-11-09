@@ -70,7 +70,7 @@
         </ion-card>
 
         <div id="map"></div>
-        <ion-card class="adv-map" style="margin-top: 0;">
+        <ion-card class="adv-map" style="margin-top: 0;margin-bottom: 1px">
             <ion-item text-wrap>
                 <ion-icon subtle large item-left name='pin' style="color: #14baa6"></ion-icon>
                 <h5 *ngIf="!isEmployer">Adresse personnelle</h5>
@@ -101,4 +101,20 @@
             </div-->
         </ion-card>
     </div>
+
+    <button fab fab-bottom style="bottom:0px; position: relative;left:2%" [style.backgroundColor]="themeColor"
+            (click)="showProfileQualities()">
+        <ion-icon name="happy"></ion-icon>
+    </button>
+
+    <button fab fab-bottom [style.backgroundColor]="themeColor" style="bottom:0px; position: relative;left:2%"
+            (click)="showProfileLanguages()" disabled>
+        <ion-icon name="globe"></ion-icon>
+    </button>
+
+    <button fab fab-bottom [style.backgroundColor]="themeColor" style="bottom:0px;  position: relative;left:2%"
+            (click)="showProfileSlots()" *ngIf="!isEmployer" disabled>
+        <ion-icon name="calendar"></ion-icon>
+    </button>
+
 </ion-content>

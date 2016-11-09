@@ -15,6 +15,7 @@ import {BankAccountPage} from "../bank-account/bank-account";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {GlobalService} from "../../providers/global.service";
 import {ImageService} from "../../providers/image-service/image-service";
+import {ProfileQualitiesPage} from "../profile-qualities/profile-qualities";
 //import {InfoUserPage} from "../info-user/info-user"
 
 /*
@@ -396,6 +397,18 @@ export class ProfilePage implements OnInit {
 
     goToJobAddressTab() {
         this.nav.push(JobAddressPage, {currentUser: this.userData, fromPage: "profil", selectedTab: 2});
+    }
+
+    showProfileQualities(){
+        this.nav.push(ProfileQualitiesPage,  {currentUser: this.userData, isEmployer : this.isEmployer});
+    }
+
+    showProfileLanguages(){
+
+    }
+
+    showProfileSlots(){
+
     }
 
     isMapHidden() {
