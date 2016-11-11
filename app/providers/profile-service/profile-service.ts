@@ -286,6 +286,65 @@ export class ProfileService {
         });
     }
 
+    deleteDisponibilites(id){
+        let sql = "update user_disponibilite_du_jobyer " +
+          "set dirty='Y' " +
+          "where fk_user_jobyer="+id;
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe((data: any)=> {
+                  resolve(data);
+              });
+        });
+    }
+
+    saveDisponibilites(jobyerId, disponibilite){
+        let sql="";
+        for(let i = 0; i < disponibilite.length; i++){
+            let interval = (disponibilite[i].startDate == disponibilite[i].endDate)?'non':'oui';
+            sql = sql + " insert into user_disponibilite_du_jobyer (" +
+              "fk_user_jobyer, " +
+              "jour, " +
+              "date_de_debut," +
+              "date_de_fin," +
+              "heure_de_debut," +
+              "heure_de_fin," +
+              "\"interval\"" +
+              ") values (" +
+              jobyerId+", " +
+              "'"+new Date(disponibilite[i].startDate).toISOString()+"', " +
+              "'"+new Date(disponibilite[i].startDate).toISOString()+"'," +
+              "'"+new Date(disponibilite[i].endDate).toISOString()+"'," +
+              (disponibilite[i].startHour)+"," +
+              (disponibilite[i].endHour)+"," +
+              "'"+interval+"'" +
+              "); ";
+        }
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe((data: any)=> {
+                  resolve(data);
+              });
+        });
+    }
+
+    getUserDisponibilite(id: any) {
+        let sql = "select * from user_disponibilite_du_jobyer where dirty='N' and fk_user_jobyer = '" + id + "'";
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe(data => {
+                  resolve(data.data);
+              });
+        });
+    }
+
     isEmpty(str) {
         if (str == '' || str == 'null' || !str)
             return true;

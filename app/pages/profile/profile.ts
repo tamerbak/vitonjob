@@ -17,6 +17,7 @@ import {GlobalService} from "../../providers/global.service";
 import {ImageService} from "../../providers/image-service/image-service";
 import {ProfileQualitiesPage} from "../profile-qualities/profile-qualities";
 import {ProfileLanguagesPage} from "../profile-languages/profile-languages";
+import {ProfileSlotsPage} from "../profile-slots/profile-slots";
 //import {InfoUserPage} from "../info-user/info-user"
 
 /*
@@ -409,6 +410,18 @@ export class ProfilePage implements OnInit {
     }
 
     showProfileSlots(){
+        this.profileService.getUserDisponibilite(this.userData.jobyer.id).then((res: any) =>{
+            let modal = Modal.create(ProfileSlotsPage, {savedSlots: res});
+            this.nav.present(modal);
+            modal.onDismiss(data => {
+                this.slots = data.slots;
+                this.profileService.deleteDisponibilites(this.userData.jobyer.id).then((data: any) => {
+                    if(data.status == 'success'){
+                        this.profileService.saveDisponibilites(this.userData.jobyer.id, this.slots);
+                    }
+                })
+            })
+        })
 
     }
 
