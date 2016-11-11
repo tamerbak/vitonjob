@@ -168,20 +168,27 @@
         </ion-grid>
     </fieldset>
 
-    <fieldset [hidden]="!isEmployer">
-        <legend>Prérequis obligatoires</legend>
+    <fieldset >
+        <legend>{{ isEmployer ? 'Prérequis obligatoires':'liste des documents nécessaires' }}</legend>
         <ion-list>
-            <ion-item>
-                <ion-label floating>Prérequis</ion-label>
+            <ion-item [hidden]="!isEmployer">
+                <ion-label floating>Prérequis obligatoires</ion-label>
                 <ion-input type="text" [(ngModel)]="prerequisOb" (keyup)="watchPrerequisOb($event)"></ion-input>
                 <button small item-right (click)="addPrerequis()" [disabled]="!prerequisOb || prerequisOb.length==0">
+                    <ion-icon name="add-circle"></ion-icon>
+                </button>
+            </ion-item>
+            <ion-item [hidden]="isEmployer">
+                <ion-label floating>Documents nécessaires</ion-label>
+                <ion-input type="text" [(ngModel)]="prerequisOb" (keyup)="watchDocsNecessary($event)"></ion-input>
+                <button small item-right (click)="addPrerequis()" [disabled]="!prerequisOb || prerequisOb.length==0 || !showPrerequisBtn">
                     <ion-icon name="add-circle"></ion-icon>
                 </button>
             </ion-item>
         </ion-list>
         <ion-grid>
 
-            <ion-row [hidden]="!isEmployer || prerequisObList.length == 0">
+            <ion-row [hidden]="prerequisObList.length == 0">
                 <ion-col width-100>
                     <ion-list>
                         <ion-item *ngFor="let p of prerequisObList" (click)="preqOSelected(p)">
