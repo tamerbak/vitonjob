@@ -30,7 +30,7 @@ export class CorporamaService {
         let encodedArgs = btoa(args);
         let dataLog = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 20004,
+            'id': 20005,
             'args': [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 value: encodedArgs
