@@ -50,7 +50,7 @@ export class AuthenticationService {
         var encodedLogin = btoa(login);
         var dataLog = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 283,
+            'id': 10018,//283,
             'args': [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'requete authentification',
@@ -92,7 +92,7 @@ export class AuthenticationService {
     getUserByPhoneAndRole(tel, role) {
         //  Init project parameters
         role = role == "employer" ? "employeur" : role;
-        var sql = "select email, role,mot_de_passe from user_account where role= '" + role + "' and telephone = '" + tel + "'";
+        var sql = "select email, role,mot_de_passe, mot_de_passe_hunter from user_account where role= '" + role + "' and telephone = '" + tel + "'";
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
@@ -651,6 +651,7 @@ export class AuthenticationService {
     
 
     updatePasswordByPhone(tel, passwd,reset) {
+        
         let sql ="update user_account set mot_de_passe = '" + passwd + "' , mot_de_passe_reinitialise = '" + reset + "' where telephone = '" + tel + "';";
 
         return new Promise(resolve => {

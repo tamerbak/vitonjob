@@ -19,9 +19,11 @@ export class GlobalConfigs {
     private instabug: any;
     // mission mode
     private missionOption: any;
+    // HunterMask
+    private isHunter:boolean=false;
 
     constructor() {
-        this.projectTarget = "employer";
+        this.projectTarget = "employer"; 
         this.cnxBtnName = "Se connecter / S'inscrire";
         this.thirdThemeColor = '#f4f4f4';
     }
@@ -72,6 +74,14 @@ export class GlobalConfigs {
 
     getMissionOption() {
         return this.missionOption;
+    }
+
+    setHunterMask(value){
+        this.isHunter = value;
+    }
+
+    getHunterMask(){
+        return this.isHunter;
     }
 
 }

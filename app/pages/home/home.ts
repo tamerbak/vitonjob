@@ -28,10 +28,11 @@ import {SearchDetailsPage} from "../search-details/search-details";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {HomeService} from "../../providers/home-service/home-service";
 import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
+import {OfferAddPage} from "../offer-add/offer-add";
 
 @Component({
     templateUrl: 'build/pages/home/home.html',
-    providers: [GlobalConfigs, ProfileService, HomeService]
+    providers: [ProfileService, HomeService]
 })
 export class HomePage implements OnChanges {
 
@@ -85,6 +86,7 @@ export class HomePage implements OnChanges {
         pager: false
     };
     cards:Array<{id:number, title:string, icon:string, isShowed:boolean, isActive:boolean}> = [];
+    isHunter:boolean=false;
 
     static get parameters() {
         return [[GlobalConfigs], [App], [NavController], [NavParams], [SearchService],
@@ -104,7 +106,8 @@ export class HomePage implements OnChanges {
                 private _elementRef:ElementRef) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
-        this.storage = new Storage(SqlStorage);
+        this.isHunter = globalConfig.getHunterMask();
+            this.storage = new Storage(SqlStorage);
         this.keyboard = kb;
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
@@ -118,7 +121,7 @@ export class HomePage implements OnChanges {
         this.themeColor = config.themeColor;
         this.imageURL = config.imageURL;
         this.backgroundImage = config.backgroundImage;
-        this.highlightSentence = config.highlightSentence;
+        this.highlightSentence = (this.isHunter)? "Vous êtes sur le point de concrétiser l'opportunité que vous avez capturée" : config.highlightSentence;
         this.currentUserVar = config.currentUserVar;
         this.isEmployer = this.projectTarget === 'employer';
         this.searchPlaceHolder = "Veuillez saisir votre recherche...";
@@ -782,6 +785,10 @@ export class HomePage implements OnChanges {
             return true;
         else
             return false;
+    }
+
+    gotoAddOffer() {
+        this.nav.push(OfferAddPage);
     }
 
     simplifyDate(time) {
