@@ -11,6 +11,7 @@ import {DateConverter} from "../../pipes/date-converter/date-converter";
 import {CivilityPage} from "../civility/civility";
 import {PersonalAddressPage} from "../personal-address/personal-address";
 import {JobAddressPage} from "../job-address/job-address";
+import {CorrespondenceAddressPage} from "../correspondence-address/correspondence-address";
 import {BankAccountPage} from "../bank-account/bank-account";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {GlobalService} from "../../providers/global.service";
@@ -112,7 +113,8 @@ export class ProfilePage implements OnInit {
                         siret: "",
                         naf: "",
                         workAdress: {fullAdress: ""},
-                        siegeAdress: {fullAdress: ""}
+                        siegeAdress: {fullAdress: ""},
+                        correspondanceAdress: {fullAdress:""}
                     }
                 ]
             }
@@ -157,9 +159,11 @@ export class ProfilePage implements OnInit {
 
         var mainAddress: string;
         var secondaryAddress: string;
+        var thirdAddress: string;
         if (data.estEmployeur) {
             mainAddress = data.employer.entreprises[0].siegeAdress.fullAdress;
             secondaryAddress = data.employer.entreprises[0].workAdress.fullAdress;
+            thirdAddress = data.employer.entreprises[0].correspondanceAdress.fullAdress;
         } else {
             mainAddress = data.jobyer.personnalAdress.fullAdress;
             secondaryAddress = data.jobyer.workAdress.fullAdress;
@@ -398,6 +402,10 @@ export class ProfilePage implements OnInit {
 
     goToJobAddressTab() {
         this.nav.push(JobAddressPage, {currentUser: this.userData, fromPage: "profil", selectedTab: 2});
+    }
+
+    goToCorrespondenceAddressTab() {
+        this.nav.push(CorrespondenceAddressPage, {currentUser: this.userData, fromPage: "profil", selectedTab: 3});
     }
 
     showProfileQualities(){

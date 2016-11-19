@@ -50,7 +50,7 @@ export class AuthenticationService {
         var encodedLogin = btoa(login);
         var dataLog = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 283,
+            'id': 10018,
             'args': [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'requete authentification',
@@ -330,7 +330,7 @@ export class AuthenticationService {
         var encodedAddress = btoa(addressData);
         var data = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 239,
+            'id': 10017,
             'args': [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'Adresse',
@@ -370,7 +370,48 @@ export class AuthenticationService {
         var encodedAddress = btoa(addressData);
         var data = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 239,
+            'id': 10017,
+            'args': [{
+                'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                label: 'Adresse',
+                value: encodedAddress
+            }]
+        };
+        var stringData = JSON.stringify(data);
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(this.configuration.calloutURL, stringData, {headers: headers})
+                .subscribe(data => {
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });
+    }
+
+    /**
+     * @description update employer correspondence address
+     * @param id  : entreprise id for employer role , address
+     */
+    updateUserCorrespondenceAddress(id: string, name, streetNumber, street, cp, ville, pays) {
+        //  Now we need to save the address
+        var addressData = {
+            'class': 'com.vitonjob.localisation.AdressToken',
+            'street': street,
+            'cp': cp,
+            'ville': ville,
+            'pays': pays,
+            'name': name,
+            'streetNumber': streetNumber,
+            'role': (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget),
+            'id': id,
+            'type': 'correspondance'
+        };
+        addressData = JSON.stringify(addressData);
+        var encodedAddress = btoa(addressData);
+        var data = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            'id': 10017,
             'args': [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'Adresse',

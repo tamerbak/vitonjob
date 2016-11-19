@@ -10,7 +10,6 @@ import {OfferListPage} from "../offer-list/offer-list";
 import {SearchResultsPage} from "../search-results/search-results";
 import {OfferAddPage} from "../offer-add/offer-add";
 import {HomePage} from "../home/home";
-import {CorrespondenceAddressPage} from "../correspondence-address/correspondence-address";
 
 /**
  * @author Amal ROCHD
@@ -19,10 +18,10 @@ import {CorrespondenceAddressPage} from "../correspondence-address/correspondenc
  */
 @Component({
     directives: [GooglePlaces],
-    templateUrl: 'build/pages/job-address/job-address.html',
+    templateUrl: 'build/pages/correspondence-address/correspondence-address.html',
     providers: [AuthenticationService, GlobalService]
 })
-export class JobAddressPage {
+export class CorrespondenceAddressPage {
     searchData: string;
     geolocAddress;
     geolocResult;
@@ -36,6 +35,7 @@ export class JobAddressPage {
     country: string;
     isGooglePlaceHidden = true;
     generalLoading;
+    projectTarget:string;
     //isAdrFormHidden = true;
     currentUserVar: string;
     isZipCodeValid = true;
@@ -66,7 +66,7 @@ export class JobAddressPage {
         this.themeColor = config.themeColor;
         this.currentUserVar = config.currentUserVar;
         this.isEmployer = (this.projectTarget == 'employer');
-        this.titlePage = this.isEmployer ? "Adresse lieu de travail" : "Adresse de départ au travail";
+        this.titlePage = "Adresse de correspondance";
         //this.tabs=tabs;
         this.storage = new Storage(SqlStorage);
         //get current employer data from params passed by phone/mail connection
@@ -77,52 +77,34 @@ export class JobAddressPage {
 
     ionViewDidEnter() {
         //in case of user has already signed up
-        this.initJobAddressForm();
+        this.initCorrespondenceAddressForm();
     }
 
     /**
      * @description initiate the job address form with data of the logged user
      */
-    initJobAddressForm() {
+    initCorrespondenceAddressForm() {
         this.storage.get(this.currentUserVar).then((value) => {
             //if user has already signed up, fill the address field with his data
             if (value) {
                 this.currentUser = JSON.parse(value);
                 if (this.isEmployer) {
-                    this.searchData = this.currentUser.employer.entreprises[0].workAdress.fullAdress;
-                    this.name = this.currentUser.employer.entreprises[0].workAdress.name;
-                    this.streetNumber = this.currentUser.employer.entreprises[0].workAdress.streetNumber;
-                    this.street = this.currentUser.employer.entreprises[0].workAdress.street;
-                    this.zipCode = this.currentUser.employer.entreprises[0].workAdress.zipCode;
-                    this.city = this.currentUser.employer.entreprises[0].workAdress.city;
-                    this.country = this.currentUser.employer.entreprises[0].workAdress.country;
+                    this.searchData = this.currentUser.employer.entreprises[0].correspondanceAdress.fullAdress;
+                    this.name = this.currentUser.employer.entreprises[0].correspondanceAdress.name;
+                    this.streetNumber = this.currentUser.employer.entreprises[0].correspondanceAdress.streetNumber;
+                    this.street = this.currentUser.employer.entreprises[0].correspondanceAdress.street;
+                    this.zipCode = this.currentUser.employer.entreprises[0].correspondanceAdress.zipCode;
+                    this.city = this.currentUser.employer.entreprises[0].correspondanceAdress.city;
+                    this.country = this.currentUser.employer.entreprises[0].correspondanceAdress.country;
                     //for old users, retrieve address components from server bd and stocke them in local db
                     if (!this.country && this.searchData) {
                         this.authService.getAddressByUser(this.currentUser.employer.entreprises[0].id).then((data) => {
-                            this.name = data[1].name;
-                            this.streetNumber = data[1].streetNumber;
-                            this.street = data[1].street;
-                            this.zipCode = data[1].zipCode;
-                            this.city = data[1].city;
-                            this.country = data[1].country;
-                        });
-                    }
-                } else {
-                    this.searchData = this.currentUser.jobyer.workAdress.fullAdress;
-                    this.name = this.currentUser.jobyer.workAdress.name;
-                    this.streetNumber = this.currentUser.jobyer.workAdress.streetNumber;
-                    this.street = this.currentUser.jobyer.workAdress.street;
-                    this.zipCode = this.currentUser.jobyer.workAdress.zipCode;
-                    this.city = this.currentUser.jobyer.workAdress.city;
-                    this.country = this.currentUser.jobyer.workAdress.country;
-                    if (!this.country && this.searchData) {
-                        this.authService.getAddressByUser(this.currentUser.jobyer.id).then((data) => {
-                            this.name = data[1].name;
-                            this.streetNumber = data[1].streetNumber;
-                            this.street = data[1].street;
-                            this.zipCode = data[1].zipCode;
-                            this.city = data[1].city;
-                            this.country = data[1].country;
+                            this.name = data[2].name;
+                            this.streetNumber = data[2].streetNumber;
+                            this.street = data[2].street;
+                            this.zipCode = data[2].zipCode;
+                            this.city = data[2].city;
+                            this.country = data[2].country;
                         });
                     }
                 }
@@ -146,7 +128,7 @@ export class JobAddressPage {
     displayRequestAlert() {
         let confirm = Alert.create({
             title: "Vit-On-Job",
-            message: "Géolocalisation : êtes-vous connecté depuis votre" + (this.isEmployer ? " lieu de travail" : " lieu de départ au travail") + "?",
+            message: "Géolocalisation : êtes-vous connecté depuis votre lieu de correspondance" + "?",
             buttons: [
                 {
                     text: 'Non',
@@ -174,7 +156,7 @@ export class JobAddressPage {
     displayGeolocationAlert() {
         let confirm = Alert.create({
             title: "Vit-On-Job",
-            message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider l'" + (this.isEmployer ? "adresse lieu de travail." : "adresse de départ au travail."),
+            message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider l'adresse de correspondance",
             buttons: [
                 {
                     text: 'Non',
@@ -283,7 +265,7 @@ export class JobAddressPage {
     /**
      * @description function that callsthe service to update job address for employers and jobyers
      */
-    updateJobAddress() {
+    updateCorrespondenceAddress() {
         let loading = Loading.create({
             content: ` 
 			<div>
@@ -298,7 +280,7 @@ export class JobAddressPage {
                 var entreprise = this.currentUser.employer.entreprises[0];
                 var eid = "" + entreprise.id + "";
                 // update job address
-                this.authService.updateUserJobAddress(eid, this.name, this.streetNumber, this.street, this.zipCode, this.city, this.country)
+                this.authService.updateUserCorrespondenceAddress(eid, this.name, this.streetNumber, this.street, this.zipCode, this.city, this.country)
                     .then((data) => {
                         if (!data || data.status == "failure") {
                             console.log(data.error);
@@ -307,14 +289,14 @@ export class JobAddressPage {
                             return;
                         } else {
                             //id address not send by server
-                            entreprise.workAdress.id = JSON.parse(data._body).id;
-                            entreprise.workAdress.fullAdress = (this.name ? this.name + ", " : "") + (this.streetNumber ? this.streetNumber + ", " : "") + (this.street ? this.street + ", " : "") + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
-                            entreprise.workAdress.name = this.name;
-                            entreprise.workAdress.streetNumber = this.streetNumber;
-                            entreprise.workAdress.street = this.street;
-                            entreprise.workAdress.zipCode = this.zipCode;
-                            entreprise.workAdress.city = this.city;
-                            entreprise.workAdress.country = this.country;
+                            entreprise.correspondanceAdress.id = JSON.parse(data._body).id;
+                            entreprise.correspondanceAdress.fullAdress = (this.name ? this.name + ", " : "") + (this.streetNumber ? this.streetNumber + ", " : "") + (this.street ? this.street + ", " : "") + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
+                            entreprise.correspondanceAdress.name = this.name;
+                            entreprise.correspondanceAdress.streetNumber = this.streetNumber;
+                            entreprise.correspondanceAdress.street = this.street;
+                            entreprise.correspondanceAdress.zipCode = this.zipCode;
+                            entreprise.correspondanceAdress.city = this.city;
+                            entreprise.correspondanceAdress.country = this.country;
                             this.currentUser.employer.entreprises[0] = entreprise;
                             this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
                             loading.dismiss();
@@ -332,40 +314,11 @@ export class JobAddressPage {
                                 if(obj == "forRecruitment"){
                                     this.nav.push(OfferAddPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex});
                                 }else {
-                                    this.nav.push(CorrespondenceAddressPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex, currentOffer: offer});
+                                    //redirecting to offer list page
+                                    this.nav.setRoot(HomePage).then(() => {
+                                        this.presentToast("Félicitations, vous venez de créer votre compte avec succès. Vous pouvez maintenant créer vos offres de service.", 3);
+                                    });
                                 }
-                            }
-                        }
-                    });
-            } else {
-                var roleId = "" + this.currentUser.jobyer.id + "";
-                // update job address
-                this.authService.updateUserJobAddress(roleId, this.name, this.streetNumber, this.street, this.zipCode, this.city, this.country)
-                    .then((data) => {
-                        if (!data || data.status == "failure") {
-                            console.log(data.error);
-                            loading.dismiss();
-                            this.globalService.showAlertValidation("Vit-On-Job", "Erreur lors de la sauvegarde des données");
-                            return;
-                        } else {
-                            //id address not send by server
-                            this.currentUser.jobyer.workAdress.id = JSON.parse(data._body).id;
-                            this.currentUser.jobyer.workAdress.fullAdress = (this.name ? this.name + ", " : "") + (this.streetNumber ? this.streetNumber + ", " : "") + (this.street ? this.street + ", " : "") + (this.zipCode ? this.zipCode + ", " : "") + this.city + ", " + this.country;
-                            this.currentUser.jobyer.workAdress.name = this.name;
-                            this.currentUser.jobyer.workAdress.streetNumber = this.streetNumber;
-                            this.currentUser.jobyer.workAdress.street = this.street;
-                            this.currentUser.jobyer.workAdress.zipCode = this.zipCode;
-                            this.currentUser.jobyer.workAdress.city = this.city;
-                            this.currentUser.jobyer.workAdress.country = this.country;
-                            this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
-                            loading.dismiss();
-                            if (this.fromPage == "profil") {
-                                this.nav.pop();
-                            } else {
-                                //redirecting to offer list page
-                                this.nav.setRoot(OfferListPage).then(() => {
-                                    this.presentToast("Félicitations, vous venez de créer votre compte avec succès. Vous pouvez maintenant créer vos offres de service.", 3);
-                                });
                             }
                         }
                     });
@@ -382,14 +335,6 @@ export class JobAddressPage {
             this.zipCode = this.currentUser.employer.entreprises[0].siegeAdress.zipCode;
             this.city = this.currentUser.employer.entreprises[0].siegeAdress.city;
             this.country = this.currentUser.employer.entreprises[0].siegeAdress.country;
-        } else {
-            this.searchData = this.currentUser.jobyer.personnalAdress.fullAdress;
-            this.name = this.currentUser.jobyer.personnalAdress.name;
-            this.streetNumber = this.currentUser.jobyer.personnalAdress.streetNumber;
-            this.street = this.currentUser.jobyer.personnalAdress.street;
-            this.zipCode = this.currentUser.jobyer.personnalAdress.zipCode;
-            this.city = this.currentUser.jobyer.personnalAdress.city;
-            this.country = this.currentUser.jobyer.personnalAdress.country;
         }
         this.isGooglePlaceHidden = true;
         //this.isAdrFormHidden = false;
@@ -398,9 +343,7 @@ export class JobAddressPage {
     isAddressModified() {
         if (this.isEmployer) {
             return (this.searchData != this.currentUser.employer.entreprises[0].workAdress.fullAdress) || (this.selectedPlace != this.currentUser.employer.entreprises[0].workAdress.fullAdress);
-        } else {
-            return (this.searchData != this.currentUser.jobyer.workAdress.fullAdress) || (this.selectedPlace != this.currentUser.jobyer.workAdress.fullAdress);
-        }
+        } 
     }
 
     showGooglePlaceInput() {
