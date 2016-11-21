@@ -69,6 +69,7 @@ export class PersonalAddressPage {
         this.params = params;
         this.currentUser = this.params.data.currentUser;
         this.fromPage = this.params.data.fromPage;
+        this.company = this.params.data.company;
     }
 
     ionViewDidEnter() {
@@ -84,6 +85,16 @@ export class PersonalAddressPage {
             //if user has already signed up, fill the address field with his data
             if (value) {
                 this.currentUser = JSON.parse(value);
+
+                if(this.company){
+                    this.name = this.company.placename;
+                    this.street = this.company.street;
+                    this.zipCode = this.company.zip;
+                    this.city = this.company.city;
+                    this.country = "France";
+                    return;
+                }
+
                 if (this.isEmployer) {
                     this.searchData = this.currentUser.employer.entreprises[0].siegeAdress.fullAdress;
                     this.name = this.currentUser.employer.entreprises[0].siegeAdress.name;
@@ -315,16 +326,15 @@ export class PersonalAddressPage {
                             this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
                             //redirecting to job address tab
                             loading.dismiss();
-                            if (this.fromPage == "profil") {
+                            if (this.fromPage == "profil" && !this.company) {
                                 this.nav.pop();
                             } else {
                                 //redirecting to job address tab
-                                //this.tabs.select(2);
                                 let jobyer = this.params.data.jobyer;
                                 let searchIndex = this.params.data.searchIndex;
                                 let obj = this.params.data.obj;
                                 let offer = this.params.data.currentOffer;
-                                this.nav.push(JobAddressPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex, currentOffer: offer});
+                                this.nav.push(JobAddressPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex, currentOffer: offer, company: this.company, fromPage: this.fromPage});
                             }
                         }
                     });
@@ -354,7 +364,6 @@ export class PersonalAddressPage {
                                 this.nav.pop();
                             } else {
                                 //redirecting to job address tab
-                                //this.tabs.select(2);
                                 this.nav.push(JobAddressPage);
                             }
                         }

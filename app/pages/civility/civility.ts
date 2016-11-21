@@ -16,6 +16,8 @@ import {MedecineService} from "../../providers/medecine-service/medecine-service
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {Utils} from "../../utils/utils";
 import {AccountConstraints} from "../../validators/account-constraints";
+import {ModalCorporamaSearchPage} from "../modal-corporama-search/modal-corporama-search";
+
 
 /**
  * @author Amal ROCHD
@@ -112,6 +114,10 @@ export class CivilityPage {
     numStay: string;
     //flags for field validation
     isValidCni: boolean;
+
+    //returned company from corporama search
+    company: any;
+
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
      */
@@ -620,7 +626,7 @@ export class CivilityPage {
                     this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
                     this.events.publish('user:civility', this.currentUser);
                     loading.dismiss();
-                    if (this.fromPage == "profil") {
+                    if (this.fromPage == "profil" && !this.company) {
                         this.nav.pop();
                     } else {
                         //redirecting to personal address tab
@@ -629,7 +635,7 @@ export class CivilityPage {
                         let searchIndex = this.params.data.searchIndex;
                         let obj = this.params.data.obj;
                         let offer = this.params.data.currentOffer;
-                        this.nav.push(PersonalAddressPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex, currentOffer: offer});
+                        this.nav.push(PersonalAddressPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex, currentOffer: offer, company: this.company, fromPage: this.fromPage});
                     }
                 }
             });
@@ -707,15 +713,12 @@ export class CivilityPage {
                             this.nav.pop();
                         } else {
                             //redirecting to personal address tab
-                            //this.tabs.select(1);
                             this.nav.push(PersonalAddressPage);
                         }
                     }
                 });
             }
         }
-
-
     }
 
     /**
@@ -1259,6 +1262,27 @@ export class CivilityPage {
         this.maxtsejToDate = (fromDate.getFullYear() + 73) + "-12-31";
 
         this.tsejToDate = this.tsejFromDate;
+    }
+
+    openCoporamaModal(){
+        let modal = Modal.create(ModalCorporamaSearchPage);
+        this.nav.present(modal);
+        modal.onDismiss(data => {
+            if(!data){
+                return;
+            }
+            this.company = data;
+            this.title = (this.company.title == "M" ? "M." : this.company.title);
+            this.lastname = this.company.lastname;
+            this.firstname = this.company.firstname;
+            this.companyname = this.company.name;
+            this.siret = Utils.formatSIREN(this.company.siren);
+            this.ape = this.company.naf;
+            //check fields validity
+            this.IsCompanyExist(this.companyname, 'companyname');
+            this.isSIRETValid = false; //because the field is filled with SIREN
+
+         })
     }
 
     /**

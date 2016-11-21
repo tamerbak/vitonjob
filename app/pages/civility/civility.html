@@ -8,6 +8,18 @@
 </ion-header>
 
 <ion-content padding>
+
+    <ion-row>
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button block (click)="openCoporamaModal()" [style.backgroundColor]="themeColor" *ngIf="isEmployer">
+                <ion-icon name="search"></ion-icon>
+                Rechercher une entreprise
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+
     <ion-item>
         <ion-label id="label-civi" [ngStyle]="titlestyle" floating>Titre de civilité <span class="asterisk">*</span></ion-label>
         <ion-select id="in-select" [(ngModel)]="title" (ionChange)="titleChange()">
