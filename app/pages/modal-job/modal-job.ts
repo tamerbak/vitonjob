@@ -99,6 +99,8 @@ export class ModalJobPage {
     niveauxConventionsList: any = [];
     isNiveauxConventionsFound: boolean = true;
 
+    showPrerequisBtn:boolean = false;
+
     public static CONV_FILTER_NIV = 0;
     public static CONV_FILTER_ECH = 1;
     public static CONV_FILTER_CAT = 2;
@@ -301,7 +303,27 @@ export class ModalJobPage {
         });
     }
 
+    watchDocsNecessary(event){
+        this.showPrerequisBtn = false;
+        let kw = event.target.value;
+        if(kw.length<3){
+            this.prerequisObList = [];
+            return;
+        }
+
+        this.offerService.selectPrerequis(kw).then(data=>{
+            this.prerequisObList = data;
+        });
+
+        // this.offerService.isPrerequisExist(kw).then(data=>{
+        //     if(data && data.length > 0){
+        //         this.showPrerequisBtn = true;
+        //     }
+        // });
+    }
+
     preqOSelected(p){
+        this.showPrerequisBtn = true;
         this.prerequisOb = p.libelle;
         this.prerequisObList = [];
     }
