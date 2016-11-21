@@ -133,7 +133,7 @@ export class HomePage implements OnChanges {
 
         let card = {id: 0, title: "Alertes enregistrées", icon: "megaphone", isShowed: false, isActive: false};
         this.cards.push(card);
-        card = {id: 1, title: "Offres récemment crées", icon: "megaphone", isShowed: false, isActive: false};
+        card = {id: 1, title: "Offres récemment créées", icon: "megaphone", isShowed: false, isActive: false};
         this.cards.push(card);
         card = {id: 2, title: "Offres imminentes", icon: "megaphone", isShowed: false, isActive: false};
         this.cards.push(card);
