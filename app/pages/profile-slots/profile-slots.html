@@ -1,18 +1,76 @@
-<!--
-  Generated template for the ProfileSlotsPage page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>profile-slots</ion-title>
-  </ion-navbar>
-
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
+        <ion-title>Saisie des disponibilités</ion-title>
+        <ion-buttons end>
+            <button (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
 </ion-header>
 
+<ion-content padding class="profile-slots">
+    <ion-list>
 
-<ion-content padding>
+        <ion-item text-wrap>
+            <ion-label>Date de début</ion-label>
+            <ion-datetime displayFormat="DD, MMMM YYYY" [(ngModel)]="showedSlot.startDate" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
+        </ion-item>
+
+        <ion-item text-wrap>
+            <ion-label>Daye de fin</ion-label>
+            <ion-datetime displayFormat="DD, MMMM YYYY" [(ngModel)]="showedSlot.endDate" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
+        </ion-item>
+
+        <ion-item text-wrap>
+            <ion-label>Heure de Début</ion-label>
+            <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.startHour"            minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" style="max-width:1"></ion-datetime>
+        </ion-item>
+
+        <ion-item text-wrap>
+            <ion-label>Heure de fin</ion-label>
+            <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.endHour" minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
+        </ion-item>
+    </ion-list>
+
+    <div class="error-box">{{errorMessage}}</div>
+
+    <ion-row>
+        <ion-col text-center>
+            <button [disabled]="isValidateDisabled()"
+                    [style.backgroundColor]="themeColor" (click)="addSlot()">
+                Ajouter
+                <ion-icon name="checkmark-circle"></ion-icon>
+            </button>
+        </ion-col>
+    </ion-row>
+
+    <ion-card>
+        <ion-item-divider light>Disponibilités
+        </ion-item-divider>
+        <ion-card-content>
+            <table id="t01" style="width: 100%;">
+                <tr>
+                    <th [style.backgroundColor]="inversedThemeColor">Du</th>
+                    <th [style.backgroundColor]="inversedThemeColor">Au</th>
+                    <th [style.backgroundColor]="inversedThemeColor">De</th>
+                    <th [style.backgroundColor]="inversedThemeColor">À</th>
+                    <th [style.backgroundColor]="inversedThemeColor"></th>
+                </tr>
+
+                <tr *ngFor="let item of slots">
+                    <td>{{toDateString(item.startDate)}}</td>
+                    <td>{{toDateString(item.endDate)}}</td>
+                    <td>{{toHourString(item.startHour)}}</td>
+                    <td>{{toHourString(item.endHour)}}</td>
+                    <td>
+                        <button clear [style.color]="themeColor" (click)="removeSlot(item)">
+                            <ion-icon name="trash"></ion-icon>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </ion-card-content>
+    </ion-card>
 
 </ion-content>
