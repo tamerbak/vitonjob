@@ -894,4 +894,13 @@ export class SearchResultsPage implements OnInit {
         else
             return false;
     }
+
+    accepteCandidature(item){
+        debugger;
+        if(this.isEmployer)
+            return true;
+        else if(item.accepteCandidature)
+            return true;
+        return false;
+    }
 }
