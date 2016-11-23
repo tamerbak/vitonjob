@@ -90,6 +90,7 @@ export class HomePage implements OnChanges {
     isHunter:boolean = false;
     isHunterList:boolean = false;
     globalConfig:any;
+    storage:any;
 
 
     static get parameters() {
@@ -109,13 +110,21 @@ export class HomePage implements OnChanges {
                 private homeService:HomeService,
                 private _elementRef:ElementRef) {
         // Get target to determine configs
+
         this.projectTarget = globalConfig.getProjectTarget();
-        this.isHunter = globalConfig.getHunterMask();
-        this.storage = new Storage(SqlStorage);
-        this.keyboard = kb;
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
-        // page push 
+        this.storage = new Storage(SqlStorage);
+        this.storage.get(config.currentUserVar).then((value) => {
+            if (value) {
+                let currentUser = JSON.parse(value);
+                this.isHunter = globalConfig.getHunterMask() || currentUser.hunterFlag;
+            }
+        });
+
+        this.storage = new Storage(SqlStorage);
+        this.keyboard = kb;
+        // page push
         this.push = SearchCriteriaPage;
         this.globalConfig = globalConfig;
 
@@ -134,7 +143,8 @@ export class HomePage implements OnChanges {
         this.nav = nav;
         // If we navigated to this page, we will have an item available as a nav param
         this.selectedItem = navParams.get('item');
-        this.currentUser = navParams.get('currentUser');
+        // this.currentUser = navParams.get('currentUser');
+
         this.search = searchService;
         this.offerService = offersService;
         this.profilService = profileService;
