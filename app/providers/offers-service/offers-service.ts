@@ -218,7 +218,7 @@ export class OffersService {
         offerData.entrepriseId = 0;
         offerData.status = "OUI";
         offerData.visible = true;
-        offerData.publiee = "OUI";
+        offerData.publiee = "OUI";//idHunter
 
         switch (projectTarget) {
             case 'employer' :
@@ -242,7 +242,7 @@ export class OffersService {
 
         let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            id: 332,
+            id: 10015,//332,
             args: [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'creation offre',

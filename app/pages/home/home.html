@@ -1,5 +1,5 @@
 <ion-content class="home" [ngStyle]="backgroundImage">
-    <button style="background-color: transparent;" menuToggle>
+    <button style="background-color: transparent;" menuToggle *ngIf="!isHunter">
         <ion-icon style="color: #808080;" name="menu"></ion-icon>
     </button>
     <!--div>
@@ -14,20 +14,21 @@
         <ion-spinner name="dots"></ion-spinner>
     </button>
     <ion-row>&nbsp;</ion-row>
-    <ion-row>&nbsp;</ion-row>
-    <ion-row id="logo-position">
+    <ion-row *ngIf="isHunter">&nbsp;</ion-row>
+    <ion-row *ngIf="isHunter">&nbsp;</ion-row>
+    <ion-row ><!--id="logo-position"-->
 
         <ion-col text-center><img id="logo" [src]="imageURL"/></ion-col>
 
     </ion-row>
 
-    <ion-row id="home-text">
+    <ion-row > <!--id="home-text"-->
         <ion-col width-10></ion-col>
         <ion-col text-center><h6 primary class="searchHighlight"> {{highlightSentence}} </h6></ion-col>
         <ion-col width-10></ion-col>
     </ion-row>
 
-    <ion-row id="search-position">
+    <ion-row id="search-position" *ngIf="!isHunter"> <!--id="search-position"-->
         <ion-item class="itemSearch">
 
             <ion-label id="search-label" floating class="withoutOverflow">{{searchPlaceHolder}}</ion-label>
@@ -41,7 +42,7 @@
         </ion-item>
     </ion-row>
     <!--div id="adv-search"-->
-    <ion-row>
+    <ion-row *ngIf="!isHunter">
         <ion-col text-right>
             <a id="ra" [navPush]="push">
                 Recherche avancée
@@ -50,7 +51,7 @@
 
     </ion-row>
 
-    <div style="width:100%; background-color: transparent">
+    <div style="width:100%; background-color: transparent" *ngIf="!isHunter">
 
             <div>
                 <ion-card text-wrap class="cardOpacity">
@@ -148,9 +149,42 @@
         </ion-col>
         <ion-col width-10></ion-col>
     </ion-row>
-    <ion-row>&nbsp;</ion-row>
-    <ion-row>&nbsp;</ion-row>
 
+    <ion-row *ngIf="isHunter">
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button class="deconnexionButton" (click)="gotoAddOffer()"
+                    [hidden]="!(cnxBtnName === 'Déconnexion')"  style="background-color: #eca713">
+                <ion-icon name="megaphone" class="buttonLeftOnly"></ion-icon>
+                Ajouter une opportunité
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+
+    <!--ion-row *ngIf="isHunter && isHunterList">
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button class="deconnexionButton" (click)="gotoOfferList()"
+                    [hidden]="!(cnxBtnName === 'Déconnexion')"  style="background-color: #eca713">
+                <ion-icon name="list" class="buttonLeftOnly"></ion-icon>
+                Afficher mes opportunités
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row-->
+
+    <ion-row *ngIf="isHunter && isHunterList">
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button (click)="hunterValidation()"
+                    [hidden]="!(cnxBtnName === 'Déconnexion')"  style="background-color: #eca713" fab fab-bottom fab-center>
+                <ion-icon name="checkmark-circle"></ion-icon>
+
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
 
     <!--div class="draggable ui-widget-content">
         <ion-list>

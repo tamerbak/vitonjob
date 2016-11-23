@@ -64,6 +64,7 @@ export class PhonePage {
     showHidePasswdConfirmLabel: string;
     fromPage: string;
     defaultImage: string;
+    globalConfigs: any;
 
     /**
      * @description While constructing the view, we load the list of countries to display their codes
@@ -84,6 +85,7 @@ export class PhonePage {
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
         this.storage = new Storage(SqlStorage);
+        this.globalConfigs = gc;
 
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
@@ -162,12 +164,14 @@ export class PhonePage {
         if (this.email == null || this.email == 'null')
             this.email = '';
         var reverseRole = this.projectTarget == "jobyer" ? "employer" : "jobyer";
-        this.authService.getUserByPhoneAndRole("+" + indPhone, reverseRole).then(data0 => {
-            if (data0 && data0.data.length != 0 && (data0.data[0].mot_de_passe !== pwd)) {
+        this.authService.getUserByPhoneAndRole("+" + indPhone, reverseRole).then((data0: any) => {
+            debugger;   
+            /*if (data0 && data0.data.length != 0 && !(data0.data[0].mot_de_passe === pwd) && !(data0.data[0].mot_de_passe_hunter === pwd)) {
                 this.globalService.showAlertValidation("Vit-On-Job", "Votre mot de passe est incorrect.");
                 loading.dismiss();
                 return;
-            }
+            }*/
+
             this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget, this.isRecruteur).then(data => {
                 console.log(data);
                 //case of authentication failure : server unavailable or connection probleme 
@@ -240,34 +244,44 @@ export class PhonePage {
 
     afterAuthSuccess(data) {
         //case of authentication success
-        this.authService.setObj('connexion', null);
-        this.authService.setObj(this.currentUserVar, null);
-        //load device token to current account
-        var accountId = data.id;
-        var token;
-        this.storage.get("deviceToken").then(token => {
-            if (token) {
-                console.log("insertion du token : " + token);
-                this.authService.insertToken(token, accountId, this.projectTarget);
-            }
-        });        
-        
-        this.storage.set(this.currentUserVar, JSON.stringify(data));
-        this.events.publish('user:login', data);
+        debugger;
+        if (data.hunterFlag) {
+            this.globalConfigs.setHunterMask(true);
+            this.storage.set(this.currentUserVar, JSON.stringify(data));
+            this.events.publish('user:login', data);
+            this.gc.setCnxBtnName("Déconnexion");
+            
+        } else {
+            this.authService.setObj('connexion', null);
+            this.authService.setObj(this.currentUserVar, null);
+            //load device token to current account
+            var accountId = data.id;
+            var token;
+            this.storage.get("deviceToken").then(token => {
+                if (token) {
+                    console.log("insertion du token : " + token);
+                    this.authService.insertToken(token, accountId, this.projectTarget);
+                }
+            });
 
-        //load profile picture
-        this.profileService.loadProfilePicture(data.id).then(pic => {
-            var userImageURL;
-            if (!this.isEmpty(pic.data[0].encode)) {
-                userImageURL = pic.data[0].encode;
-                this.profileService.uploadProfilePictureInLocal(pic.data[0].encode);
-            } else {
-                userImageURL = this.defaultImage;
-            }
-            this.events.publish('picture-change', userImageURL);
-        });
-        //user is connected, then change the name of connexion btn to deconnection
-        this.gc.setCnxBtnName("Déconnexion");
+            this.storage.set(this.currentUserVar, JSON.stringify(data));
+            this.events.publish('user:login', data);
+
+            //load profile picture
+            this.profileService.loadProfilePicture(data.id).then(pic => {
+                var userImageURL;
+                if (!this.isEmpty(pic.data[0].encode)) {
+                    userImageURL = pic.data[0].encode;
+                    this.profileService.uploadProfilePictureInLocal(pic.data[0].encode);
+                } else {
+                    userImageURL = this.defaultImage;
+                }
+                this.events.publish('picture-change', userImageURL);
+            });
+            //user is connected, then change the name of connexion btn to deconnection
+            this.gc.setCnxBtnName("Déconnexion");
+        }
+
     }
 
     /**

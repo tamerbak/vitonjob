@@ -28,10 +28,12 @@ import {SearchDetailsPage} from "../search-details/search-details";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {HomeService} from "../../providers/home-service/home-service";
 import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
+import {OfferAddPage} from "../offer-add/offer-add";
+import {OfferListPage} from "../offer-list/offer-list";
 
 @Component({
     templateUrl: 'build/pages/home/home.html',
-    providers: [GlobalConfigs, ProfileService, HomeService]
+    providers: [ProfileService, HomeService]
 })
 export class HomePage implements OnChanges {
 
@@ -85,6 +87,10 @@ export class HomePage implements OnChanges {
         pager: false
     };
     cards:Array<{id:number, title:string, icon:string, isShowed:boolean, isActive:boolean}> = [];
+    isHunter:boolean = false;
+    isHunterList:boolean = false;
+    globalConfig:any;
+
 
     static get parameters() {
         return [[GlobalConfigs], [App], [NavController], [NavParams], [SearchService],
@@ -104,12 +110,14 @@ export class HomePage implements OnChanges {
                 private _elementRef:ElementRef) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
+        this.isHunter = globalConfig.getHunterMask();
         this.storage = new Storage(SqlStorage);
         this.keyboard = kb;
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
         // page push 
         this.push = SearchCriteriaPage;
+        this.globalConfig = globalConfig;
 
         //menu.enable(true, 'rightOnMenu');
 
@@ -118,7 +126,7 @@ export class HomePage implements OnChanges {
         this.themeColor = config.themeColor;
         this.imageURL = config.imageURL;
         this.backgroundImage = config.backgroundImage;
-        this.highlightSentence = config.highlightSentence;
+        this.highlightSentence = (this.isHunter) ? "Vous êtes sur le point de concrétiser l'opportunité que vous avez capturée" : config.highlightSentence;
         this.currentUserVar = config.currentUserVar;
         this.isEmployer = this.projectTarget === 'employer';
         this.searchPlaceHolder = "Veuillez saisir votre recherche...";
@@ -149,6 +157,26 @@ export class HomePage implements OnChanges {
         this.homeService.loadHomeData(this.projectTarget).then(data=> {
             this.homeServiceData = data;
             this.initHomeList();
+            // TEL 21092016 : Hunter offer management
+            if (this.isHunter) {
+                if (this.projectTarget === 'employer') {
+                    if (this.currentUser.employer &&
+                        this.currentUser.employer.entreprises[0] &&
+                        this.currentUser.employer.entreprises[0].offers.length > 0) {
+                        let hunterOffers:[] = this.currentUser.employer.entreprises[0].offers.filter((o) => {
+                            return !(o.idHunter = 0);
+                        });
+                        this.isHunterList = (hunterOffers.length > 0);
+                    }
+                } else {
+                    if (this.currentUser.jobyer && this.currentUser.jobyer.offers.length > 0) {
+                        let hunterOffers:[] = this.currentUser.offers.offers.filter((o) => {
+                            return !(o.idHunter = 0);
+                        });
+                        this.isHunterList = (hunterOffers.length > 0);
+                    }
+                }
+            }
         });
     }
 
@@ -202,7 +230,7 @@ export class HomePage implements OnChanges {
         this.loadFirstCard();
     }
 
-    searchOffer(o){
+    searchOffer(o) {
         let jobTitle = o.jobTitle;
         let searchFields = {
             class: 'com.vitonjob.callouts.recherche.SearchQuery',
@@ -228,9 +256,9 @@ export class HomePage implements OnChanges {
         this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data) => {
             console.log(data);
             loading.dismiss();
-            for(let i = 0 ; i < data.length ; i++){
+            for (let i = 0; i < data.length; i++) {
                 let r = data[i];
-                if(r.idOffre==o.idOffer){
+                if (r.idOffre == o.idOffer) {
                     this.nav.push(SearchDetailsPage, {searchResult: r});
                     break;
                 }
@@ -260,14 +288,14 @@ export class HomePage implements OnChanges {
                 this.cards[index].isActive = true;
                 break;
             }
-            else 
+            else
                 continue;
         }
 
     }
 
     loadFirstCard() {
-        for (let i=0; i< this.cards.length; i++) {
+        for (let i = 0; i < this.cards.length; i++) {
             if (this.cards[i].isShowed) {
                 this.cards[i].isActive = true;
                 break;
@@ -276,13 +304,26 @@ export class HomePage implements OnChanges {
     }
 
     generalNext() {
-        for(let i=0; i<this.cards.length;i++){
+        for (let i = 0; i < this.cards.length; i++) {
             if (this.cards[i].isShowed && this.cards[i].isActive) {
-                switch (i){
-                    case 0 : return;
-                    case 1 : {this.nextOffers(); break;}
-                    case 2 : {this.nextOffers(); break;}
-                    case 3 : {this.nextUsers(); break;}
+                switch (i) {
+                    case 0 :
+                        return;
+                    case 1 :
+                    {
+                        this.nextOffers();
+                        break;
+                    }
+                    case 2 :
+                    {
+                        this.nextOffers();
+                        break;
+                    }
+                    case 3 :
+                    {
+                        this.nextUsers();
+                        break;
+                    }
                 }
 
             }
@@ -290,13 +331,26 @@ export class HomePage implements OnChanges {
     }
 
     generalPrevious() {
-        for(let i=0; i<this.cards.length;i++){
+        for (let i = 0; i < this.cards.length; i++) {
             if (this.cards[i].isShowed && this.cards[i].isActive) {
-                switch (i){
-                    case 0 : return;
-                    case 1 : {this.previousOffers(); break;}
-                    case 2 : {this.previousOffers(); break;}
-                    case 3 : {this.previousUsers(); break;}
+                switch (i) {
+                    case 0 :
+                        return;
+                    case 1 :
+                    {
+                        this.previousOffers();
+                        break;
+                    }
+                    case 2 :
+                    {
+                        this.previousOffers();
+                        break;
+                    }
+                    case 3 :
+                    {
+                        this.previousUsers();
+                        break;
+                    }
                 }
 
             }
@@ -304,26 +358,34 @@ export class HomePage implements OnChanges {
     }
 
     generalNextCondition() {
-        for(let i=0; i<this.cards.length;i++){
+        for (let i = 0; i < this.cards.length; i++) {
             if (this.cards[i].isShowed && this.cards[i].isActive) {
-                switch (i){
-                    case 0 : return false;
-                    case 1 : return !(this.nextRecentOffers.length === 0);
-                    case 2 : return !(this.nextUpcomingOffers.length === 0);
-                    case 3 : return !(this.nextRecentUsers.length === 0);
+                switch (i) {
+                    case 0 :
+                        return false;
+                    case 1 :
+                        return !(this.nextRecentOffers.length === 0);
+                    case 2 :
+                        return !(this.nextUpcomingOffers.length === 0);
+                    case 3 :
+                        return !(this.nextRecentUsers.length === 0);
                 }
             }
         }
     }
 
     generalPreviousCondition() {
-        for(let i=0; i<this.cards.length;i++){
+        for (let i = 0; i < this.cards.length; i++) {
             if (this.cards[i].isShowed && this.cards[i].isActive) {
-                switch (i){
-                    case 0 : return false;
-                    case 1 : return !(this.previousRecentOffers.length === 0);
-                    case 2 : return !(this.previousUpcomingOffers.length === 0);
-                    case 3 : return !(this.previousRecentUsers.length === 0);
+                switch (i) {
+                    case 0 :
+                        return false;
+                    case 1 :
+                        return !(this.previousRecentOffers.length === 0);
+                    case 2 :
+                        return !(this.previousUpcomingOffers.length === 0);
+                    case 3 :
+                        return !(this.previousRecentUsers.length === 0);
                 }
             }
         }
@@ -360,7 +422,7 @@ export class HomePage implements OnChanges {
     }
 
     nextUsers() {
-        
+
         this.previousRecentUsers = [];
         for (let i = 0; i < this.recentUsers.length; i++)
             this.previousRecentUsers.push(this.recentUsers[i]);
@@ -374,7 +436,7 @@ export class HomePage implements OnChanges {
         let offset = this.homeServiceData.query.startIndex + this.homeServiceData.query.resultCapacity;
         this.homeServiceData.query.startIndex = offset;
         this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then(data=> {
-            
+
             let newData = data.users;
             let max = newData.length > this.maxLines ? this.maxLines : newData.length;
             for (let i = 0; i < max; i++) {
@@ -460,7 +522,7 @@ export class HomePage implements OnChanges {
             }
         });
     }
-    
+
     onPageWillEnter() {
         this.autoSearchOffers = [];
         this.publicOffers = [];
@@ -479,7 +541,7 @@ export class HomePage implements OnChanges {
             }
             if (isConnected) {
                 var data0 = this.currentUser;
-                if(data0.mot_de_passe_reinitialise==="Oui"){
+                if (data0.mot_de_passe_reinitialise === "Oui") {
                     this.showResetPasswordModal();
                 }
                 this.cnxBtnName = "Déconnexion";
@@ -766,13 +828,13 @@ export class HomePage implements OnChanges {
             }
         });
     }
-    
-    
-    showResetPasswordModal(){
-        let m = new Modal(ModalUpdatePassword,{enableBackdropDismiss: false,showBackdrop:false});
+
+
+    showResetPasswordModal() {
+        let m = new Modal(ModalUpdatePassword, {enableBackdropDismiss: false, showBackdrop: false});
         this.nav.present(m);
     }
-    
+
     itemSelected(item, offer) {
         this.nav.push(SearchDetailsPage, {searchResult: item, currentOffer: offer});
     }
@@ -782,6 +844,39 @@ export class HomePage implements OnChanges {
             return true;
         else
             return false;
+    }
+
+    gotoAddOffer() {
+        this.nav.push(OfferAddPage);
+    }
+
+    gotoOfferList() {
+        this.nav.push(OfferListPage);
+    }
+
+    hunterValidation() {
+        this.homeService.validateHunterOperation(this.currentUser.id).then(result => {
+            if (result && result.status === "success") {
+                let toast = Toast.create({
+                    message: 'Votre opération est traitée avec succès, merci de votre collaboration.',
+                    duration: 5000
+                });
+                this.nav.present(toast);
+                this.globalConfig.setHunterMask(false);
+                this.logOut();
+            }
+        })
+    }
+
+    logOut() {
+        this.storage.set('connexion', null);
+        this.storage.set(this.currentUserVar, null);
+        this.storage.set(this.profilPictureVar, null);
+        this.storage.set("RECRUITER_LIST", null);
+        this.storage.set('OPTION_MISSION', null);
+        this.storage.set('PROFIL_PICTURE', null);
+        this.events.publish('user:logout');
+        this.nav.setRoot(HomePage);
     }
 
     simplifyDate(time) {
