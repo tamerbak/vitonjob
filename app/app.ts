@@ -335,7 +335,7 @@ export class Vitonjob {
         this.loggedInPages = [
             {title: "Mon Profil", component: ProfilePage, icon: "person", isBadged: false},
             {title: "Mes offres", component: OfferListPage, icon: "megaphone", isBadged: true},
-            {title: "Mes missions", component: MissionListPage, icon: "paper", isBadged: false},
+            {title: "Mes missions", component: MissionListPage, icon: "paper", isBadged: false}
 
             //{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
         ];
