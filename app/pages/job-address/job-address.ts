@@ -10,6 +10,8 @@ import {OfferListPage} from "../offer-list/offer-list";
 import {SearchResultsPage} from "../search-results/search-results";
 import {OfferAddPage} from "../offer-add/offer-add";
 import {HomePage} from "../home/home";
+import {CorrespondenceAddressPage} from "../correspondence-address/correspondence-address";
+import {ProfilePage} from "../profile/profile";
 
 /**
  * @author Amal ROCHD
@@ -72,6 +74,7 @@ export class JobAddressPage {
         this.params = params;
         this.currentUser = this.params.data.currentUser;
         this.fromPage = this.params.data.fromPage;
+        this.company = this.params.data.company;
     }
 
     ionViewDidEnter() {
@@ -87,6 +90,16 @@ export class JobAddressPage {
             //if user has already signed up, fill the address field with his data
             if (value) {
                 this.currentUser = JSON.parse(value);
+
+                if(this.company){
+                    this.name = this.company.placename;
+                    this.street = this.company.street;
+                    this.zipCode = this.company.zip;
+                    this.city = this.company.city;
+                    this.country = "France";
+                    return;
+                }
+
                 if (this.isEmployer) {
                     this.searchData = this.currentUser.employer.entreprises[0].workAdress.fullAdress;
                     this.name = this.currentUser.employer.entreprises[0].workAdress.name;
@@ -318,7 +331,7 @@ export class JobAddressPage {
                             this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
                             loading.dismiss();
                             if (this.fromPage == "profil") {
-                                this.nav.pop();
+                                this.nav.setRoot(ProfilePage);
                             } else {
                                 let jobyer = this.params.data.jobyer;
                                 let searchIndex = this.params.data.searchIndex;
@@ -331,10 +344,7 @@ export class JobAddressPage {
                                 if(obj == "forRecruitment"){
                                     this.nav.push(OfferAddPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex});
                                 }else {
-                                    //redirecting to offer list page
-                                    this.nav.setRoot(HomePage).then(() => {
-                                        this.presentToast("Félicitations, vous venez de créer votre compte avec succès. Vous pouvez maintenant créer vos offres de service.", 3);
-                                    });
+                                    this.nav.push(CorrespondenceAddressPage, {jobyer: jobyer, obj: obj, searchIndex: searchIndex, currentOffer: offer});
                                 }
                             }
                         }
@@ -361,7 +371,7 @@ export class JobAddressPage {
                             this.currentUser.jobyer.workAdress.country = this.country;
                             this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
                             loading.dismiss();
-                            if (this.fromPage == "profil") {
+                            if (this.fromPage == "profil" ) {
                                 this.nav.pop();
                             } else {
                                 //redirecting to offer list page

@@ -8,6 +8,18 @@
 </ion-header>
 
 <ion-content padding>
+
+    <ion-row>
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button block (click)="openCoporamaModal()" [style.backgroundColor]="themeColor" *ngIf="isEmployer">
+                <ion-icon name="search"></ion-icon>
+                Rechercher une entreprise
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+
     <ion-item>
         <ion-label id="label-civi" [ngStyle]="titlestyle" floating>Titre de civilité <span class="asterisk">*</span></ion-label>
         <ion-select id="in-select" [(ngModel)]="title" (ionChange)="titleChange()">
@@ -83,19 +95,31 @@
         </ion-item>
 
         <ion-item [hidden]="isEmployer">
-            <ion-label floating>Code postal du lieu de naissance</ion-label>
-            <ion-input type="text" [(ngModel)]="birthcp" (keyup)="watchBirthCP($event)"></ion-input>
+            <ion-label floating>Pays de naissance</ion-label>
+            <ion-select [(ngModel)]="index" (ionChange)="watchBirthCountry()">
+                <ion-option *ngFor="let p of pays" [value] = "p.indicatif_telephonique" value="p.nom">{{p.nom}}</ion-option>
+            </ion-select>
         </ion-item>
-        <ion-item [hidden]="isEmployer || codesPostaux.length==0">
+
+        <ion-item *ngIf="!isEmployer && !isFrench">
+            <ion-label floating>Code postal du lieu de naissance</ion-label>
+            <ion-input type="text" [(ngModel)]="indexForForeigner" disabled></ion-input>
+        </ion-item>
+
+        <ion-item [hidden]="isEmployer || !isFrench">
+            <ion-label floating> Département de naissance </ion-label>
+            <ion-input type="text" [(ngModel)]="birthdep" (keyup)="watchBirthDep($event)"></ion-input>
+        </ion-item>
+        <ion-item [hidden]="isEmployer || departments.length==0">
             <ion-list>
-                <ion-item *ngFor="let c of codesPostaux" (click)="cpSelected(c)">
-                    {{c.code}}
+                <ion-item *ngFor="let d of departments" (click)="departmentSelected(d)">
+                    {{d.numero}}
                 </ion-item>
             </ion-list>
         </ion-item>
 
-        <ion-item [hidden]="isEmployer">
-            <ion-label floating>Lieu de naissance (ex :Palaiseau (91))</ion-label>
+        <ion-item [hidden]="isEmployer || !isFrench">
+            <ion-label floating>Lieu de naissance</ion-label>
             <ion-input type="text" [(ngModel)]="birthplace" (keyup)="watchBirthPlace($event)"></ion-input>
         </ion-item>
         <ion-item [hidden]="isEmployer || communes.length==0">
@@ -118,19 +142,16 @@
             </ion-list>
         </ion-item>
 
-        <ion-item [hidden]="isEmployer">
+        <!--<ion-item [hidden]="isEmployer">
             <ion-label floating>Carte nationale d'identité</ion-label>
             <ion-input type="text" [(ngModel)]="cni" (keyup)="watchCNI($event)" maxlength="12"></ion-input>
-        </ion-item>
-        <div *ngIf="showCNIError()"
-             class="error-box">* Saisissez les 12 chiffres du CNI
-        </div>
+        </ion-item>-->
 
         <ion-item [hidden]="isEmployer">
             <ion-label floating>N° de sécurité sociale</ion-label>
             <ion-input type="number" [(ngModel)]="numSS" (keyup)="watchNumSS($event)" maxlength="15"></ion-input>
         </ion-item>
-        <div *ngIf="showNSSError()" class="error-box">{{numSSMessage}}</div>
+		<div *ngIf="showNSSError()" class="error-box">{{numSSMessage}}</div>
 
         <ion-item [hidden]="isEmployer">
             <ion-label [ngStyle]="nationalitiesstyle" floating>Nationalité</ion-label>
@@ -141,30 +162,73 @@
 
         <ion-item [hidden]="isEmployer || isFrench">
             <ion-label [ngStyle]="nationalitiesstyle" floating>Identifiant de nationalité</ion-label>
-            <ion-select [(ngModel)]="idnationality" (ionChange)="onChangeIDNationality($event)">
-                <ion-option value="41">UE</ion-option>
-                <ion-option value="43">EEE</ion-option>
-                <ion-option value="42">Autre</ion-option>
-            </ion-select>
+            <ion-input type="text" [(ngModel)]="idNationaliteLabel" disabled></ion-input>
         </ion-item>
-        <ion-item [hidden]="isEmployer || isFrench || isEU">
-            <ion-label>Titre séjour délivré le</ion-label>
+
+        <ion-list radio-group [(ngModel)]="isResident" style="margin-bottom: 5px;" *ngIf="!isEmployer && isEuropean == 1" >
+            <ion-list-header>
+                Type de document
+            </ion-list-header>
+            <ion-item>
+                <ion-label>Carte de séjour temporaire</ion-label>
+                <ion-radio value="0"></ion-radio>
+            </ion-item>
+            <ion-item>
+                <ion-label>Carte de résident</ion-label>
+                <ion-radio value="1"></ion-radio>
+            </ion-item>
+        </ion-list>
+
+        <ion-list radio-group [(ngModel)]="isCIN" style="margin-bottom: 5px;" *ngIf="!isEmployer && isEuropean == 0" >
+            <ion-list-header>
+                Type de document
+            </ion-list-header>
+            <ion-item>
+                <ion-label>CNI ou passeport</ion-label>
+                <ion-radio value="1"></ion-radio>
+            </ion-item>
+            <ion-item>
+                <ion-label>Carte de ressortissant d'un état membre de l'UE</ion-label>
+                <ion-radio value="0"></ion-radio>
+            </ion-item>
+        </ion-list>
+
+        <ion-item *ngIf="!isEmployer && isEuropean == 1">
+            <ion-label floating> {{isResident == 0 ? 'N° du titre de séjour' : 'N° de la carte résident'}}</ion-label>
+            <ion-input type="text" [(ngModel)]="numStay"></ion-input>
+        </ion-item>
+
+        <ion-item [hidden]="isEmployer || isEuropean == 1 || isCIN == '0'">
+            <ion-label floating> N° de la CNI ou Passeport </ion-label>
+            <ion-input type="text" [(ngModel)]="cni" (keyup)="watchOfficialDocument($event)" maxlength="13"></ion-input>
+        </ion-item>
+        <div *ngIf="showCNIError()"
+             class="error-box">{{cniHint}}
+        </div>
+
+        <ion-item [hidden]="isEmployer || isEuropean == 1 || isCIN == '1'">
+            <ion-label floating> N° de la carte de ressortissant </ion-label>
+            <ion-input type="text" [(ngModel)]="numStay"></ion-input>
+        </ion-item>
+
+            <ion-item [hidden]="isEmployer">
+            <ion-label>Pièce d'identité délivrée le</ion-label>
             <ion-datetime [(ngModel)]="tsejProvideDate" (ionChange)="watchTsejProvideDate($event)"
                           displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejProvideDate"
                           [(min)]="mintsejProvideDate"></ion-datetime>
         </ion-item>
-        <ion-item [hidden]="isEmployer || isFrench || isEU">
-            <ion-label>Titre séjour valable du</ion-label>
+        <ion-item [hidden]="isEmployer">
+            <ion-label>Pièce d'identité valable du</ion-label>
             <ion-datetime [(ngModel)]="tsejFromDate" (ionChange)="watchTsejFromDate($event)"
                           displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejFromDate"
                           [(min)]="mintsejFromDate"></ion-datetime>
         </ion-item>
-        <ion-item [hidden]="isEmployer || isFrench || isEU">
-            <ion-label>Titre séjour valable au</ion-label>
+        <ion-item [hidden]="isEmployer">
+            <ion-label>Pièce d'identité valable au</ion-label>
             <ion-datetime [(ngModel)]="tsejToDate" displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok"
                           [(max)]="maxtsejToDate" [(min)]="mintsejToDate"></ion-datetime>
         </ion-item>
-        <ion-item [hidden]="isEmployer || isFrench || isEU">
+        <ion-item [hidden]="isEmployer">
             <ion-label [ngStyle]="nationalitiesstyle" floating>Délivré par</ion-label>
             <ion-select [(ngModel)]="prefecture">
                 <ion-option *ngFor="let n of prefectures" value="{{n.pk_user_prefecture}}">{{n.nom}}</ion-option>

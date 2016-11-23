@@ -50,7 +50,7 @@ export class AuthenticationService {
         var encodedLogin = btoa(login);
         var dataLog = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 283,
+            'id': 10022,//10018,//283,
             'args': [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'requete authentification',
@@ -152,42 +152,33 @@ export class AuthenticationService {
      * @description update jobyer information
      * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
      */
-    updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace,
-                         idnationality, prefecture, tsejProvideDate, tsejFromDate, tsejToDate) {
-        var sql = "";
+    updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, prefecture, dateStay, dateFromStay, dateToStay, birthdepId, numStay, birthCountryId, regionId, isStay) {
+        let sql = "";
         //building the sql request
-        if (nationalityId) {
-            sql = "update user_jobyer set  " +
-                "titre='" + title + "', " +
-                "nom='" + lastname + "', " +
-                "prenom='" + firstname + "', " +
-                "numero_securite_sociale='" + numSS + "', " +
-                "cni='" + cni + "', " +
-                (!birthdate ? " " : "date_de_naissance ='" + birthdate + "', ") +
-                (idnationality == 0 ? " " : "fk_user_identifiants_nationalite='" + idnationality + "', ") +
-                (prefecture == 0 || isUndefined(prefecture) ? " " : "fk_user_prefecture='" + prefecture + "', ") +
-                (isUndefined(tsejProvideDate) ? " " : "date_de_delivrance='" + (tsejProvideDate) + "', ") +
-                (isUndefined(tsejFromDate) ? " " : "debut_validite='" + (tsejFromDate) + "', ") +
-                (isUndefined(tsejToDate) ? " " : "fin_validite='" + (tsejToDate) + "', ") +
-                "lieu_de_naissance ='" + birthplace + "', " +
-                "fk_user_nationalite ='" + nationalityId + "' " +
-                "where pk_user_jobyer ='" + roleId + "';";
-        } else {
-            sql = "update user_jobyer set  " +
-                "titre='" + title + "', " +
-                "nom='" + lastname + "', " +
-                "prenom='" + firstname + "', " +
-                "numero_securite_sociale='" + numSS + "', " +
-                "cni='" + cni + "', " +
-                (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',") +
-                (idnationality == 0 ? " " : "fk_user_identifiants_nationalite='" + idnationality + "', ") +
-                (prefecture == 0 ? " " : "fk_user_prefecture='" + prefecture + "', ") +
-                (isUndefined(tsejProvideDate) ? " " : "date_de_delivrance='" + (tsejProvideDate) + "', ") +
-                (isUndefined(tsejFromDate) ? " " : "debut_validite='" + (tsejFromDate) + "', ") +
-                (isUndefined(tsejToDate) ? " " : "fin_validite='" + (tsejToDate) + "', ") +
-                "lieu_de_naissance ='" + birthplace + "' " +
-                "where pk_user_jobyer ='" + roleId + "';";
-        }
+        sql = "update user_jobyer set  " +
+          "titre='" + title + "', " +
+          "nom='" + lastname + "', " +
+          "prenom='" + firstname + "', " +
+
+          (!this.isEmpty(numSS) ? ("numero_securite_sociale ='" + numSS + "', ") : ("numero_securite_sociale ='', ")) +
+          (!this.isEmpty(cni) ? ("cni ='" + cni + "', ") : ("cni ='', ")) +
+          (!this.isEmpty(birthdate) ? ("date_de_naissance ='" + birthdate + "', ") : ("date_de_naissance =" + null + ", ")) +
+
+          (!this.isEmpty(numStay) ? (" numero_titre_sejour='" + numStay + "', ") : ("numero_titre_sejour='', ")) +
+          (!this.isEmpty(dateStay) ? (" date_de_delivrance='" + dateStay + "', ") : ("date_de_delivrance=" + null + ", ")) +
+          (!this.isEmpty(dateFromStay) ? (" debut_validite='" + dateFromStay + "', ") : (" debut_validite=" + null + ", ")) +
+          (!this.isEmpty(dateToStay) ? (" fin_validite='" + dateToStay + "', ") : (" fin_validite=" + null + ", ")) +
+          (!this.isEmpty(isStay) ? ("est_resident='" + isStay + "', ") : (" est_resident='', ")) +
+          (!this.isEmpty(prefecture) ? ("instance_delivrance='" + this.sqlfyText(prefecture) + "', ") : (" instance_delivrance='', ")) +
+
+          (!this.isEmpty(nationalityId) ? (" fk_user_nationalite='" + nationalityId + "', ") : ("fk_user_nationalite = " + null + ", ")) +
+          (!this.isEmpty(birthCountryId) ? ("fk_user_pays ='" + birthCountryId + "', ") : ("fk_user_pays='', ")) +
+          (!this.isEmpty(regionId) ? (" fk_user_identifiants_nationalite='" + regionId + "', ") : ("fk_user_identifiants_nationalite = " + null + ", ")) +
+
+          (!this.isEmpty(birthplace) ? (" lieu_de_naissance='" + birthplace + "', ") : ("lieu_de_naissance='', ")) +
+          (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "' ") : ("fk_user_departement = " + null + " " )) +
+
+          " where pk_user_jobyer ='" + roleId + "';";
 
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
@@ -339,7 +330,7 @@ export class AuthenticationService {
         var encodedAddress = btoa(addressData);
         var data = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 239,
+            'id': 10017,
             'args': [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'Adresse',
@@ -379,7 +370,48 @@ export class AuthenticationService {
         var encodedAddress = btoa(addressData);
         var data = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 239,
+            'id': 10017,
+            'args': [{
+                'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                label: 'Adresse',
+                value: encodedAddress
+            }]
+        };
+        var stringData = JSON.stringify(data);
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(this.configuration.calloutURL, stringData, {headers: headers})
+                .subscribe(data => {
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });
+    }
+
+    /**
+     * @description update employer correspondence address
+     * @param id  : entreprise id for employer role , address
+     */
+    updateUserCorrespondenceAddress(id: string, name, streetNumber, street, cp, ville, pays) {
+        //  Now we need to save the address
+        var addressData = {
+            'class': 'com.vitonjob.localisation.AdressToken',
+            'street': street,
+            'cp': cp,
+            'ville': ville,
+            'pays': pays,
+            'name': name,
+            'streetNumber': streetNumber,
+            'role': (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget),
+            'id': id,
+            'type': 'correspondance'
+        };
+        addressData = JSON.stringify(addressData);
+        var encodedAddress = btoa(addressData);
+        var data = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            'id': 10017,
             'args': [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'Adresse',
@@ -726,6 +758,12 @@ export class AuthenticationService {
                 resolve(this.data);
             });
         }
+    }
+
+    sqlfyText(txt) {
+        if (!txt || txt.length == 0)
+            return "";
+        return txt.replace("'", "''");
     }
 
     isEmpty(str) {
