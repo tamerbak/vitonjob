@@ -248,8 +248,8 @@ export class PhonePage {
         if (data.hunterFlag) {
             this.globalConfigs.setHunterMask(true);
             this.storage.set(this.currentUserVar, JSON.stringify(data));
-            this.events.publish('user:login', data);
-            this.gc.setCnxBtnName("Déconnexion");
+            //this.events.publish('user:login', data);
+            //this.gc.setCnxBtnName("Déconnexion");
             
         } else {
             this.authService.setObj('connexion', null);
