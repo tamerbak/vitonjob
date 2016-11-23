@@ -25,7 +25,7 @@ export class LoadListService {
     loadCountries(projectTarget) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
-        var sql = "SELECT nom, indicatif_telephonique FROM user_pays ORDER BY nom";
+        var sql = "SELECT pk_user_pays as id, nom, indicatif_telephonique FROM user_pays ORDER BY nom";
 
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
@@ -75,6 +75,31 @@ export class LoadListService {
                     if (data.data)
                         this.data = data.data;
                     resolve(this.data);
+                });
+        });
+    }
+
+    loadQualities(type: string) {
+        //  Init project parameters
+        var sql = "select pk_user_indispensable as id, libelle as libelle from user_indispensable where UPPER(dirty) ='N' and type='" + type + "'";
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    resolve(data);
+                });
+        });
+    }
+
+    loadLanguages(){
+        var sql = "select pk_user_langue as id, libelle from user_langue where UPPER(dirty) ='N'";
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    resolve(data);
                 });
         });
     }

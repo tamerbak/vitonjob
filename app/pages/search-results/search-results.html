@@ -87,14 +87,18 @@
                     <ion-icon name="logo-skype"></ion-icon>
                 </button>
                 <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+                        *ngIf="isEmployer || item.accepteCandidature=='true'"
                         (click)="call(item)" item-right>
                     <ion-icon name="call"></ion-icon>
                 </button>
                 <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+                        *ngIf="isEmployer || item.accepteCandidature=='true'"
                         (click)="sendSMS(item)" item-right>
                     <ion-icon name="ios-chatboxes"></ion-icon>
                 </button>
                 <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+
+                        *ngIf="isEmployer || item.accepteCandidature=='true'"
                         (click)="sendEmail(item)" item-right>
                     <ion-icon name="mail"></ion-icon>
                 </button>
@@ -174,10 +178,12 @@
                     </div>
 
                     <div>
-                        <button id="btn-call" (click)="dialNumber(item)">
+                        <button id="btn-call" (click)="dialNumber(item)"
+                                *ngIf="isEmployer || item.accepteCandidature">
                             <ion-icon id="icon-call" name="call"></ion-icon>
                         </button>
-                        <button id="btn-mail" (click)="sendSMS(item)">
+                        <button id="btn-mail" (click)="sendSMS(item)"
+                                *ngIf="isEmployer || item.accepteCandidature">
                             <ion-icon id="icon-mail" name="mail"></ion-icon>
                         </button>
                         <button id="btn-google">

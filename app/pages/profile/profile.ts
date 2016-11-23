@@ -11,10 +11,14 @@ import {DateConverter} from "../../pipes/date-converter/date-converter";
 import {CivilityPage} from "../civility/civility";
 import {PersonalAddressPage} from "../personal-address/personal-address";
 import {JobAddressPage} from "../job-address/job-address";
+import {CorrespondenceAddressPage} from "../correspondence-address/correspondence-address";
 import {BankAccountPage} from "../bank-account/bank-account";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {GlobalService} from "../../providers/global.service";
 import {ImageService} from "../../providers/image-service/image-service";
+import {ProfileQualitiesPage} from "../profile-qualities/profile-qualities";
+import {ProfileLanguagesPage} from "../profile-languages/profile-languages";
+import {ProfileSlotsPage} from "../profile-slots/profile-slots";
 //import {InfoUserPage} from "../info-user/info-user"
 
 /*
@@ -110,7 +114,8 @@ export class ProfilePage implements OnInit {
                         siret: "",
                         naf: "",
                         workAdress: {fullAdress: ""},
-                        siegeAdress: {fullAdress: ""}
+                        siegeAdress: {fullAdress: ""},
+                        correspondanceAdress: {fullAdress:""}
                     }
                 ]
             }
@@ -155,9 +160,11 @@ export class ProfilePage implements OnInit {
 
         var mainAddress: string;
         var secondaryAddress: string;
+        var thirdAddress: string;
         if (data.estEmployeur) {
             mainAddress = data.employer.entreprises[0].siegeAdress.fullAdress;
             secondaryAddress = data.employer.entreprises[0].workAdress.fullAdress;
+            thirdAddress = data.employer.entreprises[0].correspondanceAdress.fullAdress;
         } else {
             mainAddress = data.jobyer.personnalAdress.fullAdress;
             secondaryAddress = data.jobyer.workAdress.fullAdress;
@@ -396,6 +403,34 @@ export class ProfilePage implements OnInit {
 
     goToJobAddressTab() {
         this.nav.push(JobAddressPage, {currentUser: this.userData, fromPage: "profil", selectedTab: 2});
+    }
+
+    goToCorrespondenceAddressTab() {
+        this.nav.push(CorrespondenceAddressPage, {currentUser: this.userData, fromPage: "profil", selectedTab: 3});
+    }
+
+    showProfileQualities(){
+        this.nav.push(ProfileQualitiesPage,  {currentUser: this.userData, isEmployer : this.isEmployer});
+    }
+
+    showProfileLanguages(){
+        this.nav.push(ProfileLanguagesPage,  {currentUser: this.userData, isEmployer : this.isEmployer});
+    }
+
+    showProfileSlots(){
+        this.profileService.getUserDisponibilite(this.userData.jobyer.id).then((res: any) =>{
+            let modal = Modal.create(ProfileSlotsPage, {savedSlots: res});
+            this.nav.present(modal);
+            modal.onDismiss(data => {
+                this.slots = data.slots;
+                this.profileService.deleteDisponibilites(this.userData.jobyer.id).then((data: any) => {
+                    if(data.status == 'success'){
+                        this.profileService.saveDisponibilites(this.userData.jobyer.id, this.slots);
+                    }
+                })
+            })
+        })
+
     }
 
     isMapHidden() {

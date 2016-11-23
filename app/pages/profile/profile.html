@@ -70,7 +70,7 @@
         </ion-card>
 
         <div id="map"></div>
-        <ion-card class="adv-map" style="margin-top: 0;">
+        <ion-card class="adv-map" style="margin-top: 0;margin-bottom: 1px">
             <ion-item text-wrap>
                 <ion-icon subtle large item-left name='pin' style="color: #14baa6"></ion-icon>
                 <h5 *ngIf="!isEmployer">Adresse personnelle</h5>
@@ -93,6 +93,15 @@
                     <ion-icon name="create"></ion-icon>
                 </button>
             </ion-item>
+            <ion-item text-wrap *ngIf="isEmployer">
+                <ion-icon subtle large item-left name='pin' style="color: #14baa6"></ion-icon>
+                <h5 *ngIf="isEmployer">Adresse de correspondance</h5>
+                <p *ngIf="isEmployer && userData.employer.entreprises.length != 0">
+                    {{userData.employer.entreprises[0].correspondanceAdress.fullAdress}}</p>
+                <button clear item-right (click)="goToCorrespondenceAddressTab()">
+                    <ion-icon name="create"></ion-icon>
+                </button>
+            </ion-item>
             <!--div class="button-footer">
                 <button clear [style.color]="themeColor">
                     <ion-icon name="create"></ion-icon>
@@ -101,4 +110,20 @@
             </div-->
         </ion-card>
     </div>
+
+    <button fab fab-bottom style="bottom:0px; position: relative;left:2%" [style.backgroundColor]="themeColor"
+            (click)="showProfileQualities()">
+        <ion-icon name="happy"></ion-icon>
+    </button>
+
+    <button fab fab-bottom [style.backgroundColor]="themeColor" style="bottom:0px; position: relative;left:2%"
+            (click)="showProfileLanguages()" >
+        <ion-icon name="globe"></ion-icon>
+    </button>
+
+    <button fab fab-bottom [style.backgroundColor]="themeColor" style="bottom:0px;  position: relative;left:2%"
+            (click)="showProfileSlots()" *ngIf="!isEmployer">
+        <ion-icon name="calendar"></ion-icon>
+    </button>
+
 </ion-content>

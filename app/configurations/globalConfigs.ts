@@ -22,6 +22,13 @@ export class GlobalConfigs {
     // HunterMask
     private isHunter:boolean=false;
 
+    static global = {
+        // strict-cni: force the user the enter the CNI key, the 13th number
+        "strict-cni": false,
+        "electronic-signature": "docusign", // "yousign", "docusign"
+    };
+
+
     constructor() {
         this.projectTarget = "employer"; 
         this.cnxBtnName = "Se connecter / S'inscrire";
