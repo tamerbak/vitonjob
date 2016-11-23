@@ -18,7 +18,7 @@ import {SearchResultsPage} from "../search-results/search-results";
  */
 @Component({
     templateUrl: 'build/pages/offer-list/offer-list.html',
-    providers: [SearchService, GlobalConfigs, OffersService, GlobalService, SearchService]
+    providers: [SearchService, OffersService, GlobalService, SearchService]
 })
 export class OfferListPage {
 
@@ -32,9 +32,12 @@ export class OfferListPage {
     globalService: any;
     showPublishedOffers = false;
     showUnpublishedOffers = false;
+    showHunterOffers = false;
     detailsIconName1: string = "add";
     detailsIconName2: string = "add";
+    detailsIconName3: string = "add";
     searchService: any;
+    isHunter:boolean = false ;
 
     constructor(public nav: NavController,
                 public gc: GlobalConfigs,
@@ -47,6 +50,7 @@ export class OfferListPage {
 
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
+        this.isHunter = gc.getHunterMask();
 
         // Set local variables and messages
         this.isEmployer = (this.projectTarget == 'employer');
@@ -86,6 +90,7 @@ export class OfferListPage {
             this.globalOfferList.length = 0;
             this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
             this.globalOfferList.push({header: 'Mes brouillons', list: []});
+            this.globalOfferList.push({header: 'Mes opportunités capturées', list: []});
             this.offerList = data;
             for (var i = 0; i < this.offerList.length; i++) {
                 let offer = this.offerList[i];
@@ -111,7 +116,12 @@ export class OfferListPage {
                         }
                     }
 
-                    this.globalOfferList[0].list.push(offer);
+                    if (offer.idHunter && !(offer.idHunter = 0)) {
+                        this.globalOfferList[2].list.push(offer);
+                    } else {
+                        this.globalOfferList[0].list.push(offer);
+                    }
+
                     let searchFields = {
                         class: 'com.vitonjob.callouts.recherche.SearchQuery',
                         job: offer.jobData.job,
@@ -227,6 +237,9 @@ export class OfferListPage {
         } else if (type == 'Mes brouillons') {
             this.showUnpublishedOffers = !(this.showUnpublishedOffers);
             this.detailsIconName2 = (this.showUnpublishedOffers) ? 'remove' : 'add';
+        } else if (type == 'Mes opportunités capturées') {
+            this.showHunterOffers = !(this.showHunterOffers);
+            this.detailsIconName3 = (this.showHunterOffers) ? 'remove' : 'add';
         }
 
 

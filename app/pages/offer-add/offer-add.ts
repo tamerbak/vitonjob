@@ -53,7 +53,7 @@ export class OfferAddPage {
     offerService: OffersService;
     visibleOffer: boolean;
     offerToBeAdded: {jobData: any, calendarData: any, qualityData: any, languageData: any,
-        visible: boolean, title: string, status: string, hunterId: number};
+        visible: boolean, title: string, status: string, idHunter: number};
     backgroundImage: any;
     jobData : any;
     idTiers : number;
@@ -85,7 +85,7 @@ export class OfferAddPage {
                 let currentUser = JSON.parse(value);
                 this.idTiers = this.projectTarget == 'employer'?currentUser.employer.entreprises[0].id:currentUser.jobyer.id;
                 this.idHunter = currentUser.hunterId;
-                this.offerToBeAdded.hunterId = this.idHunter;
+                this.offerToBeAdded.idHunter = this.idHunter;
             }
         });
     }
@@ -139,7 +139,7 @@ export class OfferAddPage {
             value = JSON.parse(value);
             if (value) {
                 this.offerToBeAdded.jobData = value;
-                let level = (this.offerToBeAdded.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant'
+                let level = (this.offerToBeAdded.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant';
                 this.offerToBeAdded.title = this.offerToBeAdded.jobData.job + " " + level;
                 this.validated.isJob = value.validated;
                 this.steps.isCalendar = this.validated.isJob;

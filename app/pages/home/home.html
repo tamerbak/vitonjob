@@ -162,6 +162,29 @@
         <ion-col width-10></ion-col>
     </ion-row>
 
+    <!--ion-row *ngIf="isHunter && isHunterList">
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button class="deconnexionButton" (click)="gotoOfferList()"
+                    [hidden]="!(cnxBtnName === 'Déconnexion')"  style="background-color: #eca713">
+                <ion-icon name="list" class="buttonLeftOnly"></ion-icon>
+                Afficher mes opportunités
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row-->
+
+    <ion-row *ngIf="isHunter && isHunterList">
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button (click)="hunterValidation()"
+                    [hidden]="!(cnxBtnName === 'Déconnexion')"  style="background-color: #eca713" fab fab-bottom fab-center>
+                <ion-icon name="checkmark-circle"></ion-icon>
+
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
 
     <!--div class="draggable ui-widget-content">
         <ion-list>
