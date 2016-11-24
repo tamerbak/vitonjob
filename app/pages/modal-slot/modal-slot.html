@@ -1,6 +1,6 @@
 <ion-header>
     <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">
-        <ion-title>Sélection d'un créneau</ion-title>
+        <ion-title style="padding: initial">Sélection d'un créneau</ion-title>
         <ion-buttons end>
             <button (click)="closeModal()">
                 <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
@@ -19,30 +19,30 @@
         </ion-item>
 
         <ion-item text-wrap [hidden]="isAndroid4">
-            <ion-label>Date</ion-label>
+            <ion-label><span style="color: red">* </span>Date</ion-label>
             <ion-datetime id="idt" displayFormat="DD, MMMM YYYY" [(ngModel)]="showedSlot.date"
                           [min]="todayDate" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
         </ion-item>
 
         <ion-item [hidden]="!isAndroid4">
-            <ion-label floating>Heure de début</ion-label>
+            <ion-label floating><span style="color: red">* </span>Heure de début</ion-label>
             <ion-input type="text" [(ngModel)]="showedSlot.startHour"
                        (focus)="launchDateTimePicker('time', 'start')" readonly></ion-input>
         </ion-item>
         <ion-item text-wrap [hidden]="isAndroid4">
-            <ion-label>Heure de Début</ion-label>
+            <ion-label><span style="color: red">* </span>Heure de Début</ion-label>
             <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.startHour" (ionChange)="checkHour(0)"
                           minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"
                           style="max-width:100%;"></ion-datetime>
         </ion-item>
 
         <ion-item [hidden]="!isAndroid4">
-            <ion-label floating>Heure de fin</ion-label>
+            <ion-label floating><span style="color: red">* </span>Heure de fin</ion-label>
             <ion-input type="text" [(ngModel)]="showedSlot.endHour"
                        (focus)="launchDateTimePicker('time', 'end')" readonly></ion-input>
         </ion-item>
         <ion-item text-wrap [hidden]="isAndroid4">
-            <ion-label>Heure de fin</ion-label>
+            <ion-label><span style="color: red">* </span>Heure de fin</ion-label>
             <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.endHour" (ionChange)="checkHour(1)"
                           minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"
                           style="max-width:100%;"></ion-datetime>

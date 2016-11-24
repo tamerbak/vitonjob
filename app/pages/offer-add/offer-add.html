@@ -40,7 +40,7 @@
     </button>
 
     <!-- Quality -->
-    <ion-label class="text-bottom-left">{{ isEmployer ? 'Jobyer' : 'Employeur' }}</ion-label> <!--Mon {{ isEmployer ? 'jobyer' : 'employeur' }} idéal-->
+    <ion-label class="text-bottom-left"><span *ngIf="isEmployer">&nbsp;&nbsp;&nbsp;</span>{{ isEmployer ? 'Jobyer' : 'Employeur' }}</ion-label> <!--Mon {{ isEmployer ? 'jobyer' : 'employeur' }} idéal-->
     <ion-icon name="checkmark-circle" [style.color]="inversedThemeColor"
               class="icon-bottom-left" [hidden]="!validated.isQuality"></ion-icon>
     <button fab class="offer-bottom-left" [disabled]="!validated.isCalendar || !validated.isJob"

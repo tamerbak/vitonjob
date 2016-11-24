@@ -1092,7 +1092,12 @@ export class OffersService {
      *  COLLECTIVE CONVENTIONS ADVANTAGES
      *********************************************************************************************************************/
     getHoursCategories(idConv){
-        let sql = "select chc.pk_user_coefficient_heure_conventionnee as id, chc.libelle as libelle, cat.code as code from user_coefficient_heure_conventionnee chc, user_categorie_heures_conventionnees cat where chc.fk_user_categorie_heures_conventionnees=cat.pk_user_categorie_heures_conventionnees and fk_user_convention_collective="+idConv;
+        let sql = "select cat.pk_user_categorie_heures_conventionnees as \"catId\",  cat.code, " +
+            " chc.pk_user_coefficient_heure_conventionnee as id, chc.libelle, chc.coefficient, chc.coefficient as \"empValue\", chc.type_de_valeur as \"typeValue\" " +
+            "from user_categorie_heures_conventionnees cat " +
+            "LEFT JOIN user_coefficient_heure_conventionnee chc " +
+            "ON chc.fk_user_categorie_heures_conventionnees = cat.pk_user_categorie_heures_conventionnees " +
+            " where chc.fk_user_convention_collective = " + idConv;
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -1107,7 +1112,11 @@ export class OffersService {
     }
 
     getHoursMajoration(idConv){
-        let sql = "select m.pk_user_majoration_heure_conventionnee as id, m.libelle as libelle, c.code as code from user_majoration_heure_conventionnee m, user_categorie_majoration_heure c where m.fk_user_categorie_majoration_heure=c.pk_user_categorie_majoration_heure and fk_user_convention_collective="+idConv;
+        let sql = "select m.pk_user_majoration_heure_conventionnee as id, m.libelle as libelle, m.coefficient , m.coefficient as \"empValue\", m.type_de_valeur as \"typeValue\", " +
+            " c.code as code, c.pk_user_categorie_majoration_heure as \"majId\" " +
+            " from user_majoration_heure_conventionnee m, user_categorie_majoration_heure c " +
+            " where m.fk_user_categorie_majoration_heure = c.pk_user_categorie_majoration_heure " +
+            " and fk_user_convention_collective = " + idConv;
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -1122,7 +1131,11 @@ export class OffersService {
     }
 
     getIndemnites(idConv){
-        let sql = "select pk_user_indemnite_conventionnee as id, i.libelle as libelle, t.code as code from user_indemnite_conventionnee i, user_type_indemnite t where i.fk_user_type_indemnite = t.pk_user_type_indemnite and fk_user_convention_collective="+idConv;
+        let sql = "select i.pk_user_indemnite_conventionnee as id, i.libelle as libelle, i.valeur as coefficient , i.valeur as \"empValue\", i.type_de_valeur as \"typeValue\", " +
+            " t.code as code, t.pk_user_type_indemnite as \"indId\" " +
+            " from user_indemnite_conventionnee i, user_type_indemnite t " +
+            " where i.fk_user_type_indemnite = t.pk_user_type_indemnite " +
+            " and fk_user_convention_collective="+idConv;
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})

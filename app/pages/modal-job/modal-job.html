@@ -13,7 +13,7 @@
     <!--form [ngFormModel]="jobForm">
         <!-- Sector field-->
     <ion-item>
-        <ion-label floating>Secteur</ion-label>
+        <ion-label floating><span style="color: red">* </span>Secteur</ion-label>
         <ion-input [(ngModel)]="jobData.sector" (keyup)="watchSector($event)"></ion-input>
         <button small class="text-size" item-right (click)="setSectorsPicker()">
             <ion-icon name="list"></ion-icon>
@@ -33,7 +33,7 @@
     </div>
 
     <ion-item>
-        <ion-label floating>Job</ion-label>
+        <ion-label floating><span style="color: red">* </span>Job</ion-label>
         <ion-input [(ngModel)]="jobData.job" (keyup)="watchJob($event)"></ion-input>
         <button small item-right (click)="setJobsPicker()">
             <ion-icon name="list"></ion-icon>
@@ -55,7 +55,7 @@
     <!-- Level field-->
     <ion-list radio-group [(ngModel)]="jobData.level" style="margin-bottom: 5px;">
         <ion-list-header>
-            Niveau
+            <span style="color: red">* </span>Niveau d'expérience
         </ion-list-header>
         <ion-item>
             <ion-label>Débutant</ion-label>
@@ -72,7 +72,7 @@
 
         <ion-col>
             <ion-item style="padding-left: 0;">
-                <ion-label floating>Taux horaire brut en €</ion-label>
+                <ion-label floating><span style="color: red">* </span>Taux horaire brut en €</ion-label>
                 <ion-input
                         type="number"
                         min="0"
@@ -103,74 +103,73 @@
         Le taux horaire devrait être supérieur ou égal à {{ invalidHourRateMessage }}
     </ion-row>
     <ion-row>
-        <ion-col width-33>
-            <span style="font-size:1.5rem;position:relative;top:calc(50% - 0.75rem)">{{isEmployer?'Lieu de mission':'Départ au travail'}}</span>
+        <ion-col>
+            <span style=""><span style="color: red">* </span>{{isEmployer?'Adresse de la mission':'Adresse de départ vers le lieu de travail'}}</span>
         </ion-col>
-        <ion-col width-64>
+    </ion-row>
+    <ion-row>
+        <ion-col>
             <google-places [(bindModelData)]="searchData" (onPlaceChanged)='showResults($event)'></google-places>
         </ion-col>
     </ion-row>
 
-    <div *ngFor="let conventionFilter of conventionFilters">
+        <ion-row *ngFor="let conventionFilter of conventionFilters">
 
-        <ion-item *ngIf="conventionFilter.list.length > 0">
-            <ion-label floating>{{ conventionFilter.labelle }}</ion-label>
-            <ion-input
-                    [(ngModel)]="conventionFilter.selected"
-                    (keyup)="watchConvFilter(conventionFilter, $event)"
-            ></ion-input>
-            <button
-                    small class="text-size"
-                    item-right (click)="setConvNivPicker(conventionFilter)"
-            >
-                <ion-icon name="list"></ion-icon>
-            </button>
-        </ion-item>
-
-        <ion-item *ngIf="conventionFilter.filteredList.length > 0">
-            <ion-list>
-                <ion-item
-                        *ngFor="let elementFiltered of conventionFilter.filteredList"
-                        [value]="elementFiltered.id"
-                        (click)="updateHourRateThreshold(conventionFilter, elementFiltered)"
+            <ion-item *ngIf="conventionFilter.list.length > 0">
+                <ion-label floating>{{ conventionFilter.labelle }}</ion-label>
+                <ion-input
+                        [(ngModel)]="conventionFilter.selected"
+                        (keyup)="watchConvFilter(conventionFilter, $event)"
+                ></ion-input>
+                <button
+                        small class="text-size"
+                        item-right (click)="setConvNivPicker(conventionFilter)"
                 >
-                    {{elementFiltered.libelle}}
+                    <ion-icon name="list"></ion-icon>
+                </button>
+            </ion-item>
+
+            <ion-item *ngIf="conventionFilter.filteredList.length > 0">
+                <ion-list>
+                    <ion-item
+                            *ngFor="let elementFiltered of conventionFilter.filteredList"
+                            [value]="elementFiltered.id"
+                            (click)="updateHourRateThreshold(conventionFilter, elementFiltered)"
+                    >
+                        {{elementFiltered.libelle}}
+                    </ion-item>
+                </ion-list>
+            </ion-item>
+
+            <div [hidden]="conventionFilter.isFound"
+                 style="color:red">
+                <ion-icon name="md-arrow-dropup"></ion-icon>
+                Veuillez saisir un niveau valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus
+            </div>
+        </ion-row>
+
+
+        <ion-card *ngIf="convParametersVisible()">
+            <ion-list-header><strong>Avantages salariaux</strong></ion-list-header>
+
+                <ion-item *ngFor="let item of categoriesHeure" text-wrap>
+                    <ion-label stacked>{{item.libelle}}</ion-label>
+                    <ion-input [(ngModel)]="item.empValue" (change)="watchConditionEmp($event, item)"></ion-input>
                 </ion-item>
-            </ion-list>
-        </ion-item>
+                <ion-item *ngFor="let item of majorationsHeure" text-wrap>
+                    <ion-label stacked>{{item.libelle}}</ion-label>
+                    <ion-input [(ngModel)]="item.empValue" (change)="watchConditionEmp($event, item)"></ion-input>
+                </ion-item>
+                <ion-item *ngFor="let item of indemnites" text-wrap>
+                    <ion-label stacked>{{item.libelle}}</ion-label>
+                    <ion-input [(ngModel)]="item.empValue" (change)="watchConditionEmp($event, item)"></ion-input>
+                </ion-item>
+        </ion-card>
 
-        <div [hidden]="conventionFilter.isFound"
-             style="color:red">
-            <ion-icon name="md-arrow-dropup"></ion-icon>
-            Veuillez saisir un niveau valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus
-        </div>
-    </div>
+<ion-card>
 
-    <fieldset *ngIf="convParametersVisible()">
-        <legend><strong>Avantages salariaux</strong></legend>
-        <ion-grid>
-            <ion-row>
-                <ion-col width-25>Code</ion-col>
-                <ion-col width-75>Avantage</ion-col>
-            </ion-row>
-            <ion-row *ngFor="let item of categoriesHeure">
-                <ion-col width-25>{{item.code}}</ion-col>
-                <ion-col width-75>{{item.libelle}}</ion-col>
-            </ion-row>
-            <ion-row *ngFor="let item of majorationsHeure">
-                <ion-col width-25>{{item.code}}</ion-col>
-                <ion-col width-75>{{item.libelle}}</ion-col>
-            </ion-row>
-            <ion-row *ngFor="let item of indemnites">
-                <ion-col width-25>{{item.code}}</ion-col>
-                <ion-col width-75>{{item.libelle}}</ion-col>
-            </ion-row>
-        </ion-grid>
-    </fieldset>
-
-    <fieldset >
-        <legend>{{ isEmployer ? 'Prérequis obligatoires':'liste des documents nécessaires' }}</legend>
-        <ion-list>
+        <ion-list-header text-wrap><strong>{{ isEmployer ? 'Prérequis obligatoires':'Documents nécessaires' }}</strong></ion-list-header>
+        <ion-list text-wrap no-lines>
             <ion-item [hidden]="!isEmployer">
                 <ion-label floating>Prérequis obligatoires</ion-label>
                 <ion-input type="text" [(ngModel)]="prerequisOb" (keyup)="watchPrerequisOb($event)"></ion-input>
@@ -203,13 +202,14 @@
         </ion-grid>
         <ion-list>
             <ion-item style="font-size:small" *ngFor="let p of prerequisObligatoires">
-                <button (click)="removePrerequis(p)" >
+                <button (click)="removePrerequis(p)" clear small>
                     <ion-icon name="remove-circle"></ion-icon>
                 </button>
                 &nbsp;<span >{{p}}</span>
             </ion-item>
         </ion-list>
-    </fieldset>
+</ion-card>
+
 
     <ion-row>
         <ion-col text-center>

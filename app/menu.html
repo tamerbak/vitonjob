@@ -28,11 +28,12 @@
     <ion-toolbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" text-left
                  style="min-height: 70px !important;">
         <ion-title style="padding-left: 0; width:200%;">
-            <ion-item style="background-color: transparent; width:100%" no-lines>
+            <ion-item style="background-color: transparent; width:100%" no-lines text-wrap>
                 <ion-avatar item-left>
                     <img [src]="userImageURL">
                 </ion-avatar>
-                <h2 style="color: white;">{{userName}}</h2>
+                <h2 style="color: white;">{{userName}}{{userName}}{{userName}}</h2>
+                <h2 style="color: white;"><strong>{{enterprise}}</strong></h2>
                 <p style="color: white;">{{userMail}}</p>
                 <p style="color: white;">{{userPhone}}</p>
             </ion-item>

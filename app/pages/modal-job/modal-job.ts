@@ -22,6 +22,7 @@ import {PopoverAutocompletePage} from "../popover-autocomplete/popover-autocompl
 import {Geolocation} from "ionic-native";
 import {GooglePlaces} from "../../components/google-places/google-places";
 import {AuthenticationService} from "../../providers/authentication.service";
+import {Utils} from "../../utils/utils";
 
 declare var require: any;
 
@@ -34,7 +35,7 @@ declare var require: any;
 @Component({
     directives: [GooglePlaces],
     templateUrl: 'build/pages/modal-job/modal-job.html',
-    providers: [OffersService, AuthenticationService]
+    providers: [OffersService, AuthenticationService, Utils]
 })
 export class ModalJobPage {
 
@@ -161,6 +162,7 @@ export class ModalJobPage {
     zipCode : string;
     city : string;
     country:string;
+    isConditionEmpValid:boolean = false;
 
     constructor(public nav: NavController,
                 viewCtrl: ViewController,
@@ -953,5 +955,18 @@ export class ModalJobPage {
             return true;
         else
             return false;
+    }
+
+
+    watchConditionEmp(e, item) {
+        //this.alertsConditionEmp = [];
+        this.isConditionEmpValid = true;
+        if (+e.target.value < item.coefficient || Utils.isEmpty(e.target.value)) {
+
+            //this.addAlert("danger", "Les valeurs définies par l'employeur doivent être supérieures ou égales à celles définies par la convention collective.", "conditionEmp");
+            this.isConditionEmpValid = false;
+            e.target.value = Utils.decimalAdjust('round', item.coefficient, -2).toFixed(2);
+        }
+        e.target.value = Utils.decimalAdjust('round', e.target.value, -2).toFixed(2);//e.target.value.toFixed(2);
     }
 }

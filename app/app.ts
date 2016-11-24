@@ -77,6 +77,7 @@ export class Vitonjob {
     tokens: any;
     currentUserVar: string;
     profilPictureVar: string;
+    enterprise:string;
 
     constructor(private platform: Platform,
                 private app: App,
@@ -123,6 +124,7 @@ export class Vitonjob {
         this.userImageURL = this.config.userImageURL;
         this.userName = this.isEmployer ? 'Employeur' : 'Jobyer';
         this.userMail = "";
+        this.enterprise= "";
         this.themeColor = this.config.themeColor;
         this.menuBackgroundImage = this.config.menuBackgroundImage;
 
@@ -422,10 +424,11 @@ export class Vitonjob {
 
     displayInfoUser(data) {
         if (data.titre) {
-            this.userName = data.titre + ' ' + data.nom + ' ' + data.prenom + (data.estEmployeur && data.employer.entreprises.length > 0 ? (' - ' + data.employer.entreprises[0].nom):'');
+            this.userName = data.titre + ' ' + data.nom + ' ' + data.prenom;
         } else {
             this.userName = data.estRecruteur ? 'Recruteur' : (this.isEmployer ? 'Employeur' : 'Jobyer');
         }
+        this.enterprise = (data.estEmployeur && data.employer.entreprises.length > 0 ? (''+ data.employer.entreprises[0].nom):'');
         this.userMail = data.email;
         this.userPhone = data.tel;
     }

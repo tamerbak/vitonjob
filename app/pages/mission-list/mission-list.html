@@ -19,7 +19,7 @@
 	</ion-row-->
     <ion-list text-wrap>
         <div *ngFor="let m of missionList">
-            <ion-list-header style="color: #757575">{{m.header}}</ion-list-header>
+            <ion-list-header style="color: #757575">{{m.header}} ({{m.list.length}})</ion-list-header>
             <ion-row>
                 <ion-col text-center>
                     <ion-spinner class="spinnerColor" [hidden]="m.loaded"></ion-spinner>
@@ -46,14 +46,14 @@
                             <ion-icon name="document"></ion-icon>
                             &nbsp;Contrat N° {{item.numero}}
                         </h3>
-                        <h3 [style.color]="themeColor" [hidden]="!isEmployer">
-                            <ion-icon name="person"></ion-icon>
-                            &nbsp;Avec {{item.prenom}} {{item.nom}}
-                        </h3>
                         <h3 [style.color]="themeColor">
                             <ion-icon name="md-create"></ion-icon>
                             &nbsp;{{isEmployer ? 'Vous l\'avez signé ' : 'Signé par ' + item.nom + ' '}} le
                             {{item.date_signature | dateConverter:'short'}}
+                        </h3>
+                        <h3 [style.color]="themeColor" [hidden]="!isEmployer">
+                            <ion-icon name="person"></ion-icon>
+                            &nbsp;avec {{item.prenom}} {{item.nom}}
                         </h3>
                     </ion-col>
                 </ion-row>

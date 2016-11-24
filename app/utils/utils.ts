@@ -77,4 +77,24 @@ export class Utils {
     let s3 = siren.substr(6, 3);
     return s1 + " " + s2 + " " + s3 + " ";
   }
+
+  public static decimalAdjust(type, value, exp) {
+    // Si la valeur de exp n'est pas définie ou vaut zéro...
+    if (typeof exp === 'undefined' || +exp === 0) {
+      return Math[type](value);
+    }
+    value = +value;
+    exp = +exp;
+    // Si la valeur n'est pas un nombre
+    // ou si exp n'est pas un entier...
+    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+      return NaN;
+    }
+    // Décalage
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+    // Décalage inversé
+    value = value.toString().split('e');
+    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+  }
 }
