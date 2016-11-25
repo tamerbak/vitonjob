@@ -13,7 +13,7 @@
 <ion-content padding class="modal-calendar">
     <ion-row>
         <ion-col text-center>
-            <button [style.backgroundColor]="themeColor" (click)="showSlotModal()" [disabled]="isObsolete">
+            <button [style.backgroundColor]="themeColor" (click)="showSlotModal()">
                 <ion-icon name="add-circle"></ion-icon>
                 Ajouter un créneau
             </button>
@@ -33,7 +33,7 @@
 
                     <ion-col style="text-align: right;">
                         <button outline small text-right (click)="removeSlot(item)"
-                                class="delete-button" [disabled]="isDeleteSlotDisabled()">
+                                class="delete-button">
                             Retirer
                             <!--ion-icon name="close-circle"></ion-icon-->
                         </button>

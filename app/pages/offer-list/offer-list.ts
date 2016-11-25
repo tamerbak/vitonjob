@@ -23,26 +23,28 @@ import {SearchResultsPage} from "../search-results/search-results";
 export class OfferListPage {
 
     offerList = [];
-    offerService: OffersService;
-    projectTarget: string;
-    backgroundImage: any;
-    db: Storage;
+    offerService:OffersService;
+    projectTarget:string;
+    backgroundImage:any;
+    db:Storage;
     isNewUser = true;
     globalOfferList = [];
-    globalService: any;
+    globalService:any;
     showPublishedOffers = false;
     showUnpublishedOffers = false;
     showHunterOffers = false;
-    detailsIconName1: string = "add";
-    detailsIconName2: string = "add";
-    detailsIconName3: string = "add";
-    searchService: any;
-    isHunter:boolean = false ;
+    showObsoleteOffers:boolean = false;
+    detailsIconName1:string = "add";
+    detailsIconName2:string = "add";
+    detailsIconName3:string = "add";
+    detailsIconName4:string = "add";
+    searchService:any;
+    isHunter:boolean = false;
 
-    constructor(public nav: NavController,
-                public gc: GlobalConfigs,
-                public search: SearchService,
-                public offersService: OffersService, private globalService: GlobalService, private searchService: SearchService) {
+    constructor(public nav:NavController,
+                public gc:GlobalConfigs,
+                public search:SearchService,
+                public offersService:OffersService, private globalService:GlobalService, private searchService:SearchService) {
 
         // Set global configs
         // Get target to determine configs
@@ -84,12 +86,13 @@ export class OfferListPage {
     }
 
     onPageWillEnter() {
-
+        let obsoleteOffers:any = [];
         this.offerService.loadOfferList(this.projectTarget).then(data => {
             // TEL26082016 ref : http://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
             this.globalOfferList.length = 0;
             this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
-            this.globalOfferList.push({header: 'Mes brouillons', list: []});
+            this.globalOfferList.push({header: 'Mes offres obsolètes', list: []});
+            this.globalOfferList.push({header: 'Mes offres privées', list: []});
             this.globalOfferList.push({header: 'Mes opportunités capturées', list: []});
             this.offerList = data;
             for (var i = 0; i < this.offerList.length; i++) {
@@ -117,9 +120,12 @@ export class OfferListPage {
                     }
 
                     if (offer.idHunter && !(offer.idHunter = 0)) {
-                        this.globalOfferList[2].list.push(offer);
+                        this.globalOfferList[3].list.push(offer);
                     } else {
-                        this.globalOfferList[0].list.push(offer);
+                        if (!offer.obsolete)
+                            this.globalOfferList[0].list.push(offer);
+                        else
+                            this.globalOfferList[1].list.push(offer);
                     }
 
                     let searchFields = {
@@ -136,8 +142,13 @@ export class OfferListPage {
                     this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
                         offer.correspondantsCount = data.length;
                         this.globalOfferList[0].list.sort((a, b) => {
-                            return b.correspondantsCount - a.correspondantsCount;
-                        })
+                            return (b.correspondantsCount - a.correspondantsCount);
+                        });
+                        this.globalOfferList[1].list.sort((a, b) => {
+                            return (b.correspondantsCount - a.correspondantsCount);
+                        });
+                        //debugger;
+                        //this.globalOfferList[0].list.concat(obsoleteOffers);
                     });
 
 
@@ -145,7 +156,7 @@ export class OfferListPage {
                     offer.color = 'grey';
                     offer.correspondantsCount = -1;
                     //unpublishedList.push (offer);
-                    this.globalOfferList[1].list.push(offer);
+                    this.globalOfferList[2].list.push(offer);
                     /*this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
                      console.log('getCorrespondingOffers result : ' + data);
                      offer.correspondantsCount = data.length;
@@ -207,7 +218,7 @@ export class OfferListPage {
         });
     }
 
-    presentToast(message: string, duration: number) {
+    presentToast(message:string, duration:number) {
         let toast = Toast.create({
             message: message,
             duration: duration * 1000
@@ -233,13 +244,15 @@ export class OfferListPage {
         if (type == 'Mes offres en ligne') {
             this.showPublishedOffers = !(this.showPublishedOffers);
             this.detailsIconName1 = (this.showPublishedOffers) ? 'remove' : 'add';
-
-        } else if (type == 'Mes brouillons') {
+        } else if (type == 'Mes offres privées') {
             this.showUnpublishedOffers = !(this.showUnpublishedOffers);
             this.detailsIconName2 = (this.showUnpublishedOffers) ? 'remove' : 'add';
         } else if (type == 'Mes opportunités capturées') {
             this.showHunterOffers = !(this.showHunterOffers);
             this.detailsIconName3 = (this.showHunterOffers) ? 'remove' : 'add';
+        } else if (type == 'Mes offres obsolètes') {
+            this.showObsoleteOffers = !(this.showObsoleteOffers);
+            this.detailsIconName4 = (this.showObsoleteOffers) ? 'remove' : 'add';
         }
 
 
