@@ -111,7 +111,7 @@ export class ContractPage {
             finSouplesse: "",
             equipements: "",
 
-            interim: "Groupe 3S",
+            interim: "HubJob",
             missionStartDate: this.getStartDate(),
             missionEndDate: this.getEndDate(),
             trialPeriod: 5,
@@ -409,7 +409,7 @@ export class ContractPage {
             debutSouplesse: "",
             finSouplesse: "",
             equipements: "",
-            interim: "Groupe 3S",
+            interim: "HubJob",
             missionStartDate: this.getStartDate(),
             missionEndDate: this.getEndDate(),
             trialPeriod: trial,
