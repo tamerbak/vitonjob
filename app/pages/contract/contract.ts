@@ -51,7 +51,7 @@ export class ContractPage {
     periodicites : any = [];
     embaucheAutorise : boolean;
     rapatriement : boolean;
-
+    transportMeans = [];
 
     dateFormat(d) {
         if(!d || isUndefined(d))
@@ -264,6 +264,17 @@ export class ContractPage {
             }
         });
 
+        this.transportMeans = [
+            "Véhicule",
+            "Transport en commun Zone 1 à 2",
+            "Transport en commun Zone 1 à 3",
+            "Transport en commun Zone 1 à 4",
+            "Transport en commun Zone 1 à 5",
+            "Transport en commun Zone 2 à 3",
+            "Transport en commun Zone 3 à 4",
+            "Transport en commun Zone 4 à 5",
+            "Transport en commun toutes zones"
+        ];
 
     }
 
