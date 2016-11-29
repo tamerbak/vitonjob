@@ -1,13 +1,13 @@
 <ion-header>
   <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-    <ion-title>Mes qualités</ion-title>
+    <ion-title>{{ isEmployer ? "Nos qualités" : "Mes qualités" }}</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
   <ion-list>
     <ion-item>
-      <ion-label floating>Qualité</ion-label>
+      <ion-label floating>Qualités</ion-label>
       <ion-select [(ngModel)]="selectedQuality">
         <ion-option *ngFor="let q of qualities"
           value="{{q.id}}">
