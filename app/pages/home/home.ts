@@ -30,6 +30,7 @@ import {HomeService} from "../../providers/home-service/home-service";
 import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
 import {OfferAddPage} from "../offer-add/offer-add";
 import {OfferListPage} from "../offer-list/offer-list";
+import {ModalTutorialPage} from "../modal-tutorial/modal-tutorial";
 
 @Component({
     templateUrl: 'build/pages/home/home.html',
@@ -900,5 +901,10 @@ export class HomePage implements OnChanges {
         str = str + (d.getMonth() + 1) + "/";
         str = str + d.getFullYear();
         return str;
+    }
+
+    getHelp() {
+        let helpModal = Modal.create(ModalTutorialPage, {'content' : 'this is tutorial content'});
+        this.nav.present(helpModal);
     }
 }

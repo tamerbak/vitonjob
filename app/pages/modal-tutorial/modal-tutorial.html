@@ -1,0 +1,27 @@
+<!--
+  Generated template for the ModalChoicePage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+
+<div class="modal-tutorial">
+    <div class="content">
+        <ion-list no-lines text-wrap>
+            <ion-item>
+                <ion-icon name="search" item-left></ion-icon>
+                <h2>Title</h2>
+                <p>{{content}}</p>
+            </ion-item>
+        </ion-list>
+    </div>
+</div>
+
+<div class="cancelButton">
+    <button fab fab-bottom fab-center (click)="closeModal()" outline style="color: white">
+        <ion-icon name="close-circle" style="font-size: xx-large"></ion-icon>
+    </button>
+</div>
+
+

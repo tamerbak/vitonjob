@@ -1,0 +1,27 @@
+.modal-tutorial {
+
+  padding: 16px;
+    @media screen and (max-width: 750px) {
+      background: rgba(black, 0.7);
+      position:fixed !important;
+      //position:absolute;
+      top:0;
+      right:0;
+      bottom:0;
+      left:0;
+    }
+    @media screen and (min-width: 755px) {
+      background: rgba(black, 0.7);
+
+    }
+}
+
+.content {
+  width: 100%;
+  //margin-top: 50vh; /* poussé de la moitié de hauteur de viewport */
+  //-webkit-transform: translateY(-50%);
+}
+
+.cancelButton{
+
+}

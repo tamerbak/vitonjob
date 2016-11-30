@@ -103,7 +103,7 @@
                         <ion-item *ngFor="let u of recentUsers" class="itemOpacity">
                             <h3>{{u.name}}</h3>
                             <p>
-                                <span>A rejoint Vitojob le </span>{{simplifyDate(u.creationDate)}}<br/>
+                                <span>A rejoint Vit-On-Job le </span>{{simplifyDate(u.creationDate)}}<br/>
                             </p>
                         </ion-item>
                     </ion-list>
@@ -213,5 +213,9 @@
         <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
         <script src="../../../www/scripts/drag.js"></script>
     </div-->
+
+    <button fab fab-top fab-right style="width: 30px;height: 30px;" (click)="getHelp()">
+        <ion-icon name="help-circle" style="font-size: xx-large"></ion-icon>
+    </button>
 
 </ion-content>
