@@ -1,5 +1,5 @@
 import {Component, NgZone} from "@angular/core";
-import {NavController, NavParams, Alert, Loading, Toast, Storage, SqlStorage} from "ionic-angular";
+import {NavController, NavParams, AlertController, LoadingController, ToastController, Storage, SqlStorage} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {GooglePlaces} from "../../components/google-places/google-places";
@@ -9,9 +9,11 @@ import {Geolocation} from "ionic-native";
 import {OfferListPage} from "../offer-list/offer-list";
 import {SearchResultsPage} from "../search-results/search-results";
 import {OfferAddPage} from "../offer-add/offer-add";
-import {HomePage} from "../home/home";
 import {CorrespondenceAddressPage} from "../correspondence-address/correspondence-address";
 import {ProfilePage} from "../profile/profile";
+
+
+declare var google;
 
 /**
  * @author Amal ROCHD
@@ -40,6 +42,15 @@ export class JobAddressPage {
     //isAdrFormHidden = true;
     currentUserVar: string;
     isZipCodeValid = true;
+    projectTarget: string;
+    themeColor:string;
+    isEmployer:boolean;
+    storage:any;
+    params:any;
+    currentUser:any;
+    company:any;
+    selectedPlace:any;
+
 
     /**
      * @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
@@ -47,9 +58,12 @@ export class JobAddressPage {
     constructor(private authService: AuthenticationService,
                 params: NavParams,
                 public gc: GlobalConfigs,
-                nav: NavController,
+                public nav: NavController,
                 private globalService: GlobalService,
-                private zone: NgZone) {
+                private zone: NgZone,
+                public alert: AlertController,
+                public loading:LoadingController,
+                public toast:ToastController) {
         this.nav = nav;
         //manually entered address
         this.searchData = "";
@@ -110,7 +124,7 @@ export class JobAddressPage {
                     this.country = this.currentUser.employer.entreprises[0].workAdress.country;
                     //for old users, retrieve address components from server bd and stocke them in local db
                     if (!this.country && this.searchData) {
-                        this.authService.getAddressByUser(this.currentUser.employer.entreprises[0].id).then((data) => {
+                        this.authService.getAddressByUser(this.currentUser.employer.entreprises[0].id).then((data:any) => {
                             this.name = data[1].name;
                             this.streetNumber = data[1].streetNumber;
                             this.street = data[1].street;
@@ -128,7 +142,7 @@ export class JobAddressPage {
                     this.city = this.currentUser.jobyer.workAdress.city;
                     this.country = this.currentUser.jobyer.workAdress.country;
                     if (!this.country && this.searchData) {
-                        this.authService.getAddressByUser(this.currentUser.jobyer.id).then((data) => {
+                        this.authService.getAddressByUser(this.currentUser.jobyer.id).then((data:any) => {
                             this.name = data[1].name;
                             this.streetNumber = data[1].streetNumber;
                             this.street = data[1].street;
@@ -156,7 +170,7 @@ export class JobAddressPage {
      * @description display the first request alert for geolocation
      */
     displayRequestAlert() {
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: "Vit-On-Job",
             message: "Géolocalisation : êtes-vous connecté depuis votre" + (this.isEmployer ? " lieu de travail" : " lieu de départ au travail") + "?",
             buttons: [
@@ -177,14 +191,14 @@ export class JobAddressPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     /**
      * @description display the second request alert for geolocation
      */
     displayGeolocationAlert() {
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: "Vit-On-Job",
             message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider l'" + (this.isEmployer ? "adresse lieu de travail." : "adresse de départ au travail."),
             buttons: [
@@ -207,14 +221,14 @@ export class JobAddressPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     /**
      * @description geolocate current user
      */
     geolocate() {
-        this.generalLoading = Loading.create({
+        this.generalLoading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -223,7 +237,7 @@ export class JobAddressPage {
             spinner: 'hide',
             duration: 10000
         });
-        this.nav.present(this.generalLoading);
+        this.generalLoading.present();
         let options = {timeout: 5000, enableHighAccuracy: true, maximumAge: 0};
         Geolocation.getCurrentPosition(options)
             .then((position) => {
@@ -296,7 +310,7 @@ export class JobAddressPage {
      * @description function that callsthe service to update job address for employers and jobyers
      */
     updateJobAddress() {
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -305,13 +319,13 @@ export class JobAddressPage {
             spinner: 'hide',
             duration: 1000
         });
-        this.nav.present(loading).then(() => {
+        loading.present().then(() => {
             if (this.isEmployer) {
                 var entreprise = this.currentUser.employer.entreprises[0];
                 var eid = "" + entreprise.id + "";
                 // update job address
                 this.authService.updateUserJobAddress(eid, this.name, this.streetNumber, this.street, this.zipCode, this.city, this.country)
-                    .then((data) => {
+                    .then((data:{status:string, error:string, _body:any}) => {
                         if (!data || data.status == "failure") {
                             console.log(data.error);
                             loading.dismiss();
@@ -353,7 +367,7 @@ export class JobAddressPage {
                 var roleId = "" + this.currentUser.jobyer.id + "";
                 // update job address
                 this.authService.updateUserJobAddress(roleId, this.name, this.streetNumber, this.street, this.zipCode, this.city, this.country)
-                    .then((data) => {
+                    .then((data:{status:string, error:string, _body:any}) => {
                         if (!data || data.status == "failure") {
                             console.log(data.error);
                             loading.dismiss();
@@ -451,10 +465,10 @@ export class JobAddressPage {
     }
 
     presentToast(message: string, duration: number) {
-        let toast = Toast.create({
+        let toast = this.toast.create({
             message: message,
             duration: duration * 1000
         });
-        this.nav.present(toast);
+        toast.present();
     }
 }

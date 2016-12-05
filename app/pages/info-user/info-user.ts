@@ -22,7 +22,10 @@ export class InfoUserPage {
     pAddressTabTitle: string;
     jAddressTabTitle: string;
     projectTarget: string;
-    selectedTab: int;
+    selectedTab: number;
+    navParams:any;
+    dataParams:any;
+    isEmployer:boolean;
 
     /**
      * @description While constructing the tabs, we bind each tab to its page

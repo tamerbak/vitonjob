@@ -25,6 +25,7 @@ export class ContractualisationPage {
     storage: any;
     currentUser: any;
     contractService: ContractService;
+    currentUserVar: any;
 
     constructor(private nav: NavController, gc: GlobalConfigs, cs: ContractService) {
         this.projectTarget = gc.getProjectTarget();
@@ -62,7 +63,7 @@ export class ContractualisationPage {
                 } else {
                     id = this.currentUser.jobyer.id;
                 }
-                this.contractService.getContracts(id, this.projectTarget).then(data => {
+                this.contractService.getContracts(id, this.projectTarget).then((data: {data:any}) => {
                     if (data.data) {
 
                         this.contractList = data.data;

@@ -11,6 +11,7 @@ export class ModalTrackMissionPage {
     storage: any;
     options;
     initialOpt;
+    isEmployer:boolean;
 
     constructor(public nav: NavController,
                 navParams: NavParams,

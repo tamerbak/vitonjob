@@ -1,5 +1,4 @@
-import {Component} from "@angular/core";
-import {NavController, NavParams, Alert, Platform} from "ionic-angular";
+import {NavController, NavParams, AlertController, Platform} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {isUndefined} from "ionic-angular/util";
 import {ContractPage} from "../contract/contract";
@@ -8,6 +7,10 @@ import {LoginsPage} from "../logins/logins";
 import {UserService} from "../../providers/user-service/user-service";
 import {GlobalService} from "../../providers/global.service";
 import {PendingContractsPage} from "../pending-contracts/pending-contracts";
+import {Component} from "@angular/core";
+
+declare var sms;
+declare var startApp;
 
 /*
  Generated class for the PendingContratDetailsPage page.
@@ -40,11 +43,10 @@ export class PendingContratDetailsPage {
                 public globalConfig: GlobalConfigs,
                 userService: UserService,
                 private globalService: GlobalService,
-                platform: Platform) {
+                public platform: Platform, public alert:AlertController) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
         this.isEmployer = this.projectTarget == 'employer';
-        this.platform = platform;
         this.result = params.data.searchResult;
         this.delegate = params.data.delegate;
         if (this.result.titreOffre)
@@ -95,12 +97,12 @@ export class PendingContratDetailsPage {
 
     call() {
 
-        window.location = 'tel:' + this.telephone;
+        window.location.href = 'tel:' + this.telephone;
     }
 
     sendEmail() {
 
-        window.location = 'mailto:' + this.email;
+        window.location.href = 'mailto:' + this.email;
     }
 
     sendSMS() {
@@ -188,20 +190,20 @@ export class PendingContratDetailsPage {
 
             } else {
                 //redirect employer to fill the missing informations
-                let alert = Alert.create({
+                let alert = this.alert.create({
                     title: 'Informations incomplètes',
                     subTitle: "Veuillez compléter votre profil avant d'établir votre premier contrat",
                     buttons: ['OK']
                 });
-                alert.onDismiss(()=> {
+                alert.onDidDismiss(()=> {
                     this.nav.push(CivilityPage, {currentUser: this.employer});
                 });
-                this.nav.present(alert);
+                alert.present();
 
             }
         }
         else {
-            let alert = Alert.create({
+            let alert = this.alert.create({
                 title: 'Attention',
                 message: 'Pour contacter ce jobyer, vous devez être connectés.',
                 buttons: [
@@ -217,13 +219,13 @@ export class PendingContratDetailsPage {
                     }
                 ]
             });
-            this.nav.present(alert);
+            alert.present();
         }
     }
 
     delete() {
         this.deleteFlag = false;
-        let alert = Alert.create({
+        let alert = this.alert.create({
             title: 'Attention',
             message: 'Êtes-vous sûr de vouloir écarter ce candidat ?',
             buttons: [
@@ -240,8 +242,8 @@ export class PendingContratDetailsPage {
                 }
             ]
         });
-        this.nav.present(alert);
-        alert.onDismiss(()=> {
+        alert.present();
+        alert.onDidDismiss(()=> {
             if (this.deleteFlag)
                 this.nav.pop();
         });

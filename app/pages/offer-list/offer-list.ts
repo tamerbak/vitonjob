@@ -1,4 +1,4 @@
-import {NavController, Storage, SqlStorage, Toast, Loading} from "ionic-angular";
+import {NavController, Storage, SqlStorage, ToastController, LoadingController, AlertController} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SearchService} from "../../providers/search-service/search-service";
 import {Configs} from "../../configurations/configs";
@@ -22,27 +22,33 @@ import {SearchResultsPage} from "../search-results/search-results";
 })
 export class OfferListPage {
 
-    offerList = [];
+    offerList:any;
     offerService: OffersService;
     projectTarget: string;
     backgroundImage: any;
     db: Storage;
     isNewUser = true;
     globalOfferList = [];
-    globalService: any;
     showPublishedOffers = false;
     showUnpublishedOffers = false;
     showHunterOffers = false;
     detailsIconName1: string = "add";
     detailsIconName2: string = "add";
     detailsIconName3: string = "add";
-    searchService: any;
     isHunter:boolean = false ;
+    isEmployer :boolean;
+    phoneTitle :string;
+    themeColor :string;
+    listMode:boolean;
+    okButtonName :string;
+    mode:any;
 
     constructor(public nav: NavController,
                 public gc: GlobalConfigs,
                 public search: SearchService,
-                public offersService: OffersService, private globalService: GlobalService, private searchService: SearchService) {
+                public offersService: OffersService,
+                public globalService: GlobalService,
+                public searchService: SearchService, public loading:LoadingController, public toast:ToastController, public alert:AlertController) {
 
         // Set global configs
         // Get target to determine configs
@@ -65,9 +71,7 @@ export class OfferListPage {
 
         // jQuery code for dragging components
         // console.log($( "#draggable" ).draggable());
-        this.globalService = globalService;
         this.offerService = offersService;
-        this.searchService = searchService;
 
         let currentUserVar = config.currentUserVar;
         this.db.get(currentUserVar).then(value => {
@@ -85,7 +89,7 @@ export class OfferListPage {
 
     onPageWillEnter() {
 
-        this.offerService.loadOfferList(this.projectTarget).then(data => {
+        this.offerService.loadOfferList(this.projectTarget).then((data:any) => {
             // TEL26082016 ref : http://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
             this.globalOfferList.length = 0;
             this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
@@ -106,7 +110,7 @@ export class OfferListPage {
                     for (var j = 0; j < offer.calendarData.length; j++) {
                         var slotDate = offer.calendarData[j].date;
                         var startH = this.offersService.convertToFormattedHour(offer.calendarData[j].startHour);
-                        slotDate = new Date(slotDate).setHours(startH.split(':')[0], startH.split(':')[1]);
+                        slotDate = new Date(slotDate).setHours(Number(startH.split(':')[0]), Number(startH.split(':')[1]));
                         var dateNow = new Date().getTime();
                         if (slotDate <= dateNow) {
                             offer.obsolete = true;
@@ -133,7 +137,7 @@ export class OfferListPage {
                         table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
                         idOffre: '0'
                     };
-                    this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
+                    this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data:Array<any>) => {
                         offer.correspondantsCount = data.length;
                         this.globalOfferList[0].list.sort((a, b) => {
                             return b.correspondantsCount - a.correspondantsCount;
@@ -146,7 +150,7 @@ export class OfferListPage {
                     offer.correspondantsCount = -1;
                     //unpublishedList.push (offer);
                     this.globalOfferList[1].list.push(offer);
-                    /*this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
+                    /*this.offerService.getCorrespondingOffers(offer, this.projectTarget).then((data:any) => {
                      console.log('getCorrespondingOffers result : ' + data);
                      offer.correspondantsCount = data.length;
                      // Sort offers corresponding to their search results :
@@ -162,7 +166,7 @@ export class OfferListPage {
     // Testing a web service call
     /*loadPeople() {
      this.search.load()
-     .then(data => {
+     .then((data:any) => {
      this.people = data.results;
      });
      }*/
@@ -208,16 +212,16 @@ export class OfferListPage {
     }
 
     presentToast(message: string, duration: number) {
-        let toast = Toast.create({
+        let toast = this.toast.create({
             message: message,
             duration: duration * 1000
         });
-        this.nav.present(toast);
+        toast.present();
     }
 
     autoSearchMode(offer) {
         var mode = offer.rechercheAutomatique ? "Non" : "Oui";
-        this.offerService.saveAutoSearchMode(this.projectTarget, offer.idOffer, mode).then(data => {
+        this.offerService.saveAutoSearchMode(this.projectTarget, offer.idOffer, mode).then((data:{status:string}) => {
             if (data && data.status == "success") {
                 offer.rechercheAutomatique = !offer.rechercheAutomatique;
                 this.offerService.updateOfferInLocal(offer, this.projectTarget);
@@ -252,7 +256,7 @@ export class OfferListPage {
         console.log(offer);
         if (!offer)
             return;
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
                 <div>
                     <img src='img/loading.gif' />
@@ -260,7 +264,7 @@ export class OfferListPage {
                 `,
             spinner: 'hide'
         });
-        this.nav.present(loading);
+        loading.present();
         let searchFields = {
             class: 'com.vitonjob.callouts.recherche.SearchQuery',
             job: offer.jobData.job,
@@ -272,7 +276,7 @@ export class OfferListPage {
             table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
             idOffre: '0'
         };
-        this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
+        this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data:any) => {
             console.log(data);
             this.searchService.persistLastSearch(data);
             loading.dismiss();

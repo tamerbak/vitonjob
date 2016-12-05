@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, ViewController, Toast, Platform} from "ionic-angular";
+import {NavController, ViewController, ToastController, Platform} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Contacts} from "ionic-native";
@@ -22,13 +22,15 @@ export class ModalRecruiterRepertoryPage {
     themeColor: string;
     currentUser: any;
     checkedContacts = [];
+    contactsfound = [];
+    search:boolean = false;
 
     constructor(public nav: NavController,
                 public gc: GlobalConfigs,
                 private viewCtrl: ViewController,
                 private dataProviderService: DataProviderService,
                 private globalService: GlobalService,
-                private platform: Platform) {
+                private platform: Platform, public toast:ToastController) {
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
         // get config of selected target
@@ -62,7 +64,7 @@ export class ModalRecruiterRepertoryPage {
             var tel = contact.phoneNumbers[0].value;
             var telArray = this.splitPhoneNumber(tel);
             tel = "+" + telArray[0] + telArray[1];
-            this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data) => {
+            this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data:{status:string, data:Array<any>}) => {
                 if (!data || data.status == "failure") {
                     console.log(data);
                     this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
@@ -75,11 +77,11 @@ export class ModalRecruiterRepertoryPage {
                     phoneExist = true;
                     contact.checked = false;
                     contact.disabled = true;
-                    let toast = Toast.create({
+                    let toast = this.toast.create({
                         message: 'Ce contact existe déjà. Veuillez en choisir un autre.',
                         duration: 5000
                     });
-                    this.nav.present(toast);
+                    toast.present();
                     return;
                 }
             });

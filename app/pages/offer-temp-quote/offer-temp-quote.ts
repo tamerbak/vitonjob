@@ -18,7 +18,7 @@ export class OfferTempQuotePage {
                 navParams: NavParams) {
 
         let id = navParams.data.idOffer;
-        this.service.loadPrevQuote(id).then(data=> {
+        this.service.loadPrevQuote(id).then((data:any) => {
             this.quote = data;
             for (let i = 0; i < this.quote.lignes.length; i++) {
                 this.amountBeforeTaxes += parseFloat(this.quote.lignes[i].valeur);

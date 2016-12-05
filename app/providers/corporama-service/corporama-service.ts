@@ -19,7 +19,7 @@ export class CorporamaService {
     }
 
     searchCompany(type: string, value: String) {
-        let args =
+        let args:any =
         {
             'class': 'com.vitonjob.corporama.search.CorporamaToken',
             'type': type,
@@ -42,7 +42,7 @@ export class CorporamaService {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(Configs.calloutURL, body, {headers: headers})
                 .map(res => res)
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     resolve(data);
                 });
         });

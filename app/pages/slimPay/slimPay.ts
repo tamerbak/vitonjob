@@ -1,7 +1,6 @@
 import {NavController} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
-import {OfferPage} from "../offer/offer";
 import {Component} from "@angular/core";
 
 

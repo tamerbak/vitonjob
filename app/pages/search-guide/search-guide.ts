@@ -1,4 +1,4 @@
-import {NavController, ViewController, Loading} from "ionic-angular";
+import {NavController, ViewController, LoadingController} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SearchService} from "../../providers/search-service/search-service";
 import {SearchResultsPage} from "../search-results/search-results";
@@ -23,7 +23,8 @@ export class SearchGuidePage {
     constructor(private viewCtrl: ViewController,
                 public globalConfig: GlobalConfigs,
                 private searchService: SearchService,
-                private nav: NavController) {
+                private nav: NavController,
+                public loading : LoadingController) {
         this.viewCtrl = viewCtrl;
         this.projectTarget = globalConfig.getProjectTarget();
         let config = Configs.setConfigs(this.projectTarget);
@@ -70,7 +71,7 @@ export class SearchGuidePage {
             idOffre: '0'
         };
         console.log(searchFields);
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
                 <div>
                     <img src='img/loading.gif' />
@@ -78,8 +79,8 @@ export class SearchGuidePage {
                 `,
             spinner: 'hide'
         });
-        this.nav.present(loading);
-        this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data) => {
+        loading.present();
+        this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data:any) => {
             console.log(data);
             this.searchService.persistLastSearch(data);
             loading.dismiss();

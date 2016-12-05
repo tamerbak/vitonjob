@@ -1,5 +1,5 @@
 import {Component, NgZone} from "@angular/core";
-import {NavController, NavParams, Alert, Loading, Toast, Storage, SqlStorage} from "ionic-angular";
+import {NavController, NavParams, AlertController, LoadingController, ToastController, Storage, SqlStorage} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {GooglePlaces} from "../../components/google-places/google-places";
@@ -10,6 +10,8 @@ import {OfferListPage} from "../offer-list/offer-list";
 import {SearchResultsPage} from "../search-results/search-results";
 import {OfferAddPage} from "../offer-add/offer-add";
 import {HomePage} from "../home/home";
+
+declare var google;
 
 /**
  * @author Amal ROCHD
@@ -39,6 +41,16 @@ export class CorrespondenceAddressPage {
     //isAdrFormHidden = true;
     currentUserVar: string;
     isZipCodeValid = true;
+    nav:any;
+    themeColor:string;
+    isEmployer:boolean;
+    storage:any;
+    params:any;
+    currentUser:any;
+    selectedPlace:any;
+    alert:any;
+    loading:any;
+    toast:any;
 
     /**
      * @description While constructing the view, we get the currentEmployer passed as parameter from the connection page
@@ -48,7 +60,7 @@ export class CorrespondenceAddressPage {
                 public gc: GlobalConfigs,
                 nav: NavController,
                 private globalService: GlobalService,
-                private zone: NgZone) {
+                private zone: NgZone, _alert:AlertController, _loading: LoadingController, _toast: ToastController) {
         this.nav = nav;
         //manually entered address
         this.searchData = "";
@@ -56,6 +68,9 @@ export class CorrespondenceAddressPage {
         this.geolocAddress = "";
         //geolocated result
         this.geolocResult = null;
+        this.alert = _alert;
+        this.loading = _loading;
+        this.toast = _toast;
 
         // Set global configs
         // Get target to determine configs
@@ -98,7 +113,7 @@ export class CorrespondenceAddressPage {
                     this.country = this.currentUser.employer.entreprises[0].correspondanceAdress.country;
                     //for old users, retrieve address components from server bd and stocke them in local db
                     if (!this.country && this.searchData) {
-                        this.authService.getAddressByUser(this.currentUser.employer.entreprises[0].id).then((data) => {
+                        this.authService.getAddressByUser(this.currentUser.employer.entreprises[0].id).then((data:any) => {
                             this.name = data[2].name;
                             this.streetNumber = data[2].streetNumber;
                             this.street = data[2].street;
@@ -126,7 +141,7 @@ export class CorrespondenceAddressPage {
      * @description display the first request alert for geolocation
      */
     displayRequestAlert() {
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: "Vit-On-Job",
             message: "Géolocalisation : êtes-vous connecté depuis votre lieu de correspondance" + "?",
             buttons: [
@@ -147,14 +162,14 @@ export class CorrespondenceAddressPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     /**
      * @description display the second request alert for geolocation
      */
     displayGeolocationAlert() {
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: "Vit-On-Job",
             message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider l'adresse de correspondance",
             buttons: [
@@ -177,14 +192,14 @@ export class CorrespondenceAddressPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     /**
      * @description geolocate current user
      */
     geolocate() {
-        this.generalLoading = Loading.create({
+        this.generalLoading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -193,7 +208,7 @@ export class CorrespondenceAddressPage {
             spinner: 'hide',
             duration: 10000
         });
-        this.nav.present(this.generalLoading);
+        this.generalLoading.present();
         let options = {timeout: 5000, enableHighAccuracy: true, maximumAge: 0};
         Geolocation.getCurrentPosition(options)
             .then((position) => {
@@ -266,7 +281,7 @@ export class CorrespondenceAddressPage {
      * @description function that callsthe service to update job address for employers and jobyers
      */
     updateCorrespondenceAddress() {
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -275,13 +290,13 @@ export class CorrespondenceAddressPage {
             spinner: 'hide',
             duration: 1000
         });
-        this.nav.present(loading).then(() => {
+        loading.present().then(() => {
             if (this.isEmployer) {
                 var entreprise = this.currentUser.employer.entreprises[0];
                 var eid = "" + entreprise.id + "";
                 // update job address
                 this.authService.updateUserCorrespondenceAddress(eid, this.name, this.streetNumber, this.street, this.zipCode, this.city, this.country)
-                    .then((data) => {
+                    .then((data:{status:string, error:string, _body:any}) => {
                         if (!data || data.status == "failure") {
                             console.log(data.error);
                             loading.dismiss();
@@ -382,10 +397,10 @@ export class CorrespondenceAddressPage {
     }
 
     presentToast(message: string, duration: number) {
-        let toast = Toast.create({
+        let toast = this.toast.create({
             message: message,
             duration: duration * 1000
         });
-        this.nav.present(toast);
+        toast.present();
     }
 }

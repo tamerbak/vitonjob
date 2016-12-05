@@ -1,5 +1,8 @@
 import {Component, OnInit} from "@angular/core";
-import {NavController, NavParams, Alert, Storage, SqlStorage, Platform, Modal} from "ionic-angular";
+import {
+    NavController, NavParams, AlertController, Storage, SqlStorage, Platform, ModalController,
+    Alert
+} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {isUndefined} from "ionic-angular/util";
 import {ContractPage} from "../contract/contract";
@@ -16,6 +19,8 @@ import {OfferAddPage} from "../offer-add/offer-add";
 import {NotificationContractPage} from "../notification-contract/notification-contract";
 
 declare var google: any;
+declare var sms;
+declare var startApp;
 
 @Component({
     templateUrl: 'build/pages/search-details/search-details.html',
@@ -36,15 +41,15 @@ export class SearchDetailsPage implements OnInit {
     contratsAttente: any = [];
     db: Storage;
     offersService: OffersService;
-    languages: any[];
-    qualities: any[];
+    languages: any = [];
+    qualities: any = [];
     map: any;
     availability: any;
     addressService: AddressService;
     videoPresent: boolean = false;
     videoLink: string;
     starsText: string = '';
-    rating: number = 0;
+    rating: any = 0;
     platform: any;
     isRecruteur: boolean = false;
     avatar: string;
@@ -59,7 +64,9 @@ export class SearchDetailsPage implements OnInit {
                 platform: Platform,
                 offersService: OffersService,
                 addressService: AddressService,
-                private notationService: NotationService) {
+                private notationService: NotationService,
+                public alert:AlertController,
+                public modal:ModalController) {
 
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
@@ -129,15 +136,15 @@ export class SearchDetailsPage implements OnInit {
         idOffers.push(this.result.idOffre);
         this.languages = [];
         this.qualities = [];
-        this.offersService.getOffersLanguages(idOffers, table).then(data=> {
+        this.offersService.getOffersLanguages(idOffers, table).then((data:any) => {
             if (data)
                 this.languages = data;
         });
-        this.offersService.getOffersQualities(idOffers, table).then(data=> {
+        this.offersService.getOffersQualities(idOffers, table).then((data:any) => {
             if (data)
                 this.qualities = data;
         });
-        this.offersService.getOfferVideo(this.result.idOffre, table).then(data=> {
+        this.offersService.getOfferVideo(this.result.idOffre, table).then((data: any)=> {
             this.videoPresent = false;
             if (data && data != null && data.video && data.video != "null") {
                 this.videoPresent = true;
@@ -221,7 +228,7 @@ export class SearchDetailsPage implements OnInit {
                 else
                     addressUser = user.jobyer.workAdress.fullAdress;
 
-                this.addressService.getDistance(addressOffer, addressUser).then(data=> {
+                this.addressService.getDistance(addressOffer, addressUser).then((data:any) => {
                     this.availability = data;
                 });
             }
@@ -275,13 +282,13 @@ export class SearchDetailsPage implements OnInit {
     call() {
         this.isUserConnected();
         if (this.isUserAuthenticated)
-            window.location = 'tel:' + this.telephone;
+            window.location.href = 'tel:' + this.telephone;
     }
 
     sendEmail() {
         this.isUserConnected();
         if (this.isUserAuthenticated)
-            window.location = 'mailto:' + this.email;
+            window.location.href = 'mailto:' + this.email;
     }
 
     sendSMS() {
@@ -373,12 +380,12 @@ export class SearchDetailsPage implements OnInit {
                 }
             } else {
                 //redirect employer to fill the missing informations
-                let alert = Alert.create({
+                let alert = this.alert.create({
                     title: 'Informations incomplètes',
                     subTitle: "Veuillez compléter votre profil avant d'établir votre premier contrat",
                     buttons: ['OK']
                 });
-                alert.onDismiss(()=> {
+                alert.onDidDismiss(()=> {
                     this.nav.push(CivilityPage, {
                         currentUser: this.employer,
                         fromPage: "Search",
@@ -387,12 +394,12 @@ export class SearchDetailsPage implements OnInit {
                         currentOffer: o
                     });
                 });
-                this.nav.present(alert);
+                alert.present();
 
             }
         }
         else {
-            let alert = Alert.create({
+            let alert = this.alert.create({
                 title: 'Attention',
                 message: 'Pour contacter ce profil, vous devez être connecté.',
                 buttons: [
@@ -409,7 +416,7 @@ export class SearchDetailsPage implements OnInit {
                     }
                 ]
             });
-            this.nav.present(alert);
+            alert.present();
         }
     }
 
@@ -438,7 +445,7 @@ export class SearchDetailsPage implements OnInit {
 
     isUserConnected() {
         if (!this.isUserAuthenticated) {
-            let alert = Alert.create({
+            let alert = this.alert.create({
                 title: 'Attention',
                 message: 'Pour contacter ce profil, vous devez être connecté.',
                 buttons: [
@@ -454,19 +461,19 @@ export class SearchDetailsPage implements OnInit {
                     }
                 ]
             });
-            this.nav.present(alert);
+            alert.present();
         }
     }
 
     selectOffer(jobyer) {
         return new Promise(resolve => {
-            let m = new Modal(ModalOffersPage, {fromPage: "Search", jobyer: jobyer});
-            m.onDismiss(data => {
+            let m = this.modal.create(ModalOffersPage, {fromPage: "Search", jobyer: jobyer});
+            m.onDidDismiss((data:any) => {
                 if(data)
                 //return selected offer
                     resolve(data);
             });
-            this.nav.present(m);
+            m.present();
         });
     }
 
@@ -504,11 +511,11 @@ export class SearchDetailsPage implements OnInit {
         if(employerOffers && employerOffers.length > 0){
             buttons.splice(0, 0, listOfferButton);
         }
-        let alert = Alert.create({
+        let alert = this.alert.create({
             title: 'Sélection de l\'offre',
             subTitle: (employerOffers && employerOffers.length > 0 ? "Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer" : "Veuillez créer une nouvelle offre pour pouvoir recruter ce jobyer"),
             buttons: buttons
         });
-        this.nav.present(alert);
+        alert.present();
     }
 }

@@ -14,7 +14,6 @@ export class PaymentPage {
 
     mangoPayRoot: any;
     slimPayRoot: any;
-    nav: any;
     selectedItem: any;
     projectTarget: any;
     isEmployer: boolean;
@@ -28,8 +27,6 @@ export class PaymentPage {
         // set the root pages for each tab
         this.mangoPayRoot = WalletCreatePage;
         this.slimPayRoot = SlimPayPage;
-        this.nav = nav;
-
 
         // Set global configs
         // Get target to determine configs

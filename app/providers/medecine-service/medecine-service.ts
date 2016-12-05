@@ -19,7 +19,7 @@ export class MedecineService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
                     this.data = [];
 
@@ -41,7 +41,7 @@ export class MedecineService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
                     this.med = null;
                     console.log(JSON.stringify(data));

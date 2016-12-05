@@ -45,7 +45,7 @@ export class OfferQuotePage {
             this.nbHours += nbMinutes * 1.0 / 60.0;   //  In order to avoid euclidian division
         }
 
-        this.service.getRates().then(data => {
+        this.service.getRates().then((data:Array<any>) => {
             for (let i = 0; i < data.length; i++) {
                 if (this.offer.jobData.remuneration < data[i].taux_horaire) {
                     this.rate = parseFloat(data[i].coefficient) * this.offer.jobData.remuneration;

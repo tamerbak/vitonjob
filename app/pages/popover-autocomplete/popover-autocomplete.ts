@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, NavParams, ViewController, Alert} from "ionic-angular";
+import {NavController, NavParams, ViewController, Alert, AlertController} from "ionic-angular";
 
 /*
  Generated class for the PopoverAutocompletePage page.
@@ -19,7 +19,7 @@ export class PopoverAutocompletePage {
     label: string;
     nav: any;
 
-    constructor(private navParams: NavParams, viewCtrl: ViewController, nav: NavController) {
+    constructor(private navParams: NavParams, viewCtrl: ViewController, nav: NavController, public alert:AlertController) {
         this.viewCtrl = viewCtrl;
         this.nav = nav;
         this.searchQuery = "";
@@ -47,13 +47,13 @@ export class PopoverAutocompletePage {
                 //this.service.addNewJob(this.searchQuery, this.navParams.data.idSector);
                 this.viewCtrl.dismiss({libelle: this.searchQuery, id: ''});
             } else {
-                let alert = Alert.create({
+                let alert = this.alert.create({
                     title: 'Attention!',
                     subTitle: 'Vous ne pouvez pas créer un job sans préciser le secteur auquel il appartient.',
                     buttons: ['OK']
                 });
-                this.nav.present(alert);
-                alert.onDismiss(() => {
+                alert.present();
+                alert.onDidDismiss(() => {
                     this.viewCtrl.dismiss({libelle: '', id: ''});
                 })
             }

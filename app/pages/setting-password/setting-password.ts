@@ -1,9 +1,11 @@
 import {Component} from "@angular/core";
-import {NavController, Loading, Storage, SqlStorage} from "ionic-angular";
+import {NavController, LoadingController, Storage, SqlStorage} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {AuthenticationService} from "../../providers/authentication.service";
 import {GlobalService} from "../../providers/global.service";
+
+declare var md5;
 
 /*
  Generated class for the SettingPasswordPage page.
@@ -25,9 +27,11 @@ export class SettingPasswordPage {
     isOldPasswordCorrect:boolean;
     currentUser;
     currentUserVar: string;
+    themeColor:string;
+    storage:any;
 
 
-    constructor(public nav: NavController, gc: GlobalConfigs, private authService: AuthenticationService, private globalService: GlobalService) {
+    constructor(public nav: NavController, gc: GlobalConfigs, private authService: AuthenticationService, private globalService: GlobalService, public loading: LoadingController) {
         this.projectTarget = gc.getProjectTarget();
         let config = Configs.setConfigs(this.projectTarget);
         this.options = config.options;
@@ -39,7 +43,7 @@ export class SettingPasswordPage {
     }
 
     modifyPasswd() {
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -47,14 +51,14 @@ export class SettingPasswordPage {
 			`,
             spinner: 'hide'
         });
-        this.nav.present(loading);
+        loading.present();
         
         this.storage.get(this.currentUserVar).then((value) => {
             if (value) {
                 this.currentUser = JSON.parse(value);
                 let pwd = md5(this.password1);
                 let oldPwd = md5(this.oldPassword);
-                this.authService.authenticate(this.currentUser.email,this.currentUser.tel,oldPwd,this.projectTarget,false).then(data0 => {
+                this.authService.authenticate(this.currentUser.email,this.currentUser.tel,oldPwd,this.projectTarget,false).then((data0:any) => {
                     if (!data0 || data0.length == 0 || (data0.id == 0 && data0.status == "failure")) {
                         console.log(data0);
                         loading.dismiss();
@@ -74,7 +78,7 @@ export class SettingPasswordPage {
                     this.showOldPasswordError();
                     
                     this.authService.updatePasswordByPhone(this.currentUser.tel, pwd,"Non")
-                        .then(data => {
+                        .then((data:any) => {
                         console.log(data);
                         //case of authentication failure : server unavailable or connection probleme
                         if (!data || data.length == 0 || data.status == "failure") {

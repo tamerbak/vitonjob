@@ -19,7 +19,7 @@ export class AttachementsService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = [];
                     if (data.data) {
                         for (let i = 0; i < data.data.length; i++) {
@@ -47,7 +47,7 @@ export class AttachementsService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
                     this.attachement = null;
                     if (data.data) {
@@ -135,10 +135,10 @@ export class AttachementsService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
 
-                    resolve(this.data);
+                    resolve(data);
                 });
         });
     }
@@ -158,7 +158,7 @@ export class AttachementsService {
         return new Promise(resolve => {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(Configs.fssURL, stringData, {headers: headers})
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
                     resolve(data);
                 });
@@ -180,7 +180,7 @@ export class AttachementsService {
         return new Promise(resolve => {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(Configs.fssURL, stringData, {headers: headers})
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
                     let v = data._body;
                     v = JSON.parse(v);
@@ -196,7 +196,7 @@ export class AttachementsService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
                     console.log(JSON.stringify(data));
 

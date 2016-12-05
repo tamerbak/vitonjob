@@ -26,7 +26,7 @@ export class BankService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data.data;
@@ -51,7 +51,7 @@ export class BankService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;

@@ -1,10 +1,9 @@
-import {NavController, NavParams, Loading, Modal, Alert, Popover, SqlStorage, Storage} from "ionic-angular";
+import {NavController, NavParams, LoadingController, ModalController, AlertController, PopoverController, SqlStorage, Storage} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {SearchResultsPage} from "../../pages/search-results/search-results";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {SearchService} from "../../providers/search-service/search-service";
-import {DatePickerOptions} from "ionic-native/dist/plugins/datepicker";
 import {ModalJobPage} from "../modal-job/modal-job";
 import {ModalQualityPage} from "../modal-quality/modal-quality";
 import {ModalLanguagePage} from "../modal-language/modal-language";
@@ -28,7 +27,6 @@ import {OfferTempQuotePage} from "../offer-temp-quote/offer-temp-quote";
 })
 export class OfferDetailPage {
     offer: any;
-    dateOptions: DatePickerOptions;
     offerService: OffersService;
     videoAvailable: boolean = false;
     youtubeLink: string = '';
@@ -36,11 +34,40 @@ export class OfferDetailPage {
     fromPage: string;
     originalJobData: any;
     adressData : any;
-    fullAdress : string;
+    fullAdress : any;
     idTiers : number;
     storage : any;
+    projectTarget: string;
+    themeColor:string;
+    inversedThemeColor:string;
+    backgroundImage: any;
+    isEmployer:boolean;
+    sanitizer:any;
+    showJob:boolean;
+    jobIconName:string;
+    showQuality:boolean;
+    qualityIconName:string;
+    showLanguage:boolean;
+    languageIconName: string;
+    showCalendar: boolean;
+    calendarIconName:string;
+    modified:any;
+    jobStyle:any;
+    qualityStyle:any;
+    languageStyle:any;
+    calendarStyle:any;
 
-    constructor(public nav: NavController, gc: GlobalConfigs, params: NavParams, public offersService: OffersService, public searchService: SearchService, private sanitizer: DomSanitizationService, private globalService: GlobalService) {
+    constructor(public nav: NavController,
+                gc: GlobalConfigs,
+                params: NavParams,
+                public offersService: OffersService,
+                public searchService: SearchService,
+                private _sanitizer: DomSanitizationService,
+                private globalService: GlobalService,
+                public alert:AlertController,
+                public loading:LoadingController,
+                public modal:ModalController,
+                public popover:PopoverController) {
 
         // Set global configs
         // Get target to determine configs
@@ -53,7 +80,7 @@ export class OfferDetailPage {
         this.inversedThemeColor = config.inversedThemeColor;
         this.backgroundImage = config.backgroundImage;
         this.isEmployer = (this.projectTarget === 'employer');
-        this.sanitizer = sanitizer;
+        this.sanitizer = _sanitizer;
         this.offerService = offersService;
 
         // Get Offer passed in NavParams
@@ -104,11 +131,6 @@ export class OfferDetailPage {
             fontWeight: "bolder"
         };
 
-        this.dateOptions = {
-            weekday: "long", month: "long", year: "numeric",
-            day: "numeric"//, hour: "2-digit", minute: "2-digit"
-        };
-
         //let table = !this.isEmployer?'user_offre_jobyer':'user_offre_entreprise';
         if (!this.offer.videolink) {
             this.videoAvailable = false;
@@ -129,7 +151,7 @@ export class OfferDetailPage {
             }
         });
 
-        /*this.offerService.getOfferVideo(this.offer.idOffer, table).then(data=>{
+        /*this.offerService.getOfferVideo(this.offer.idOffer, table).then((data:any) =>{
          this.videoAvailable = false;
          if(data && data != null && data.video && data.video != "null"){
          this.videoAvailable = true;
@@ -144,7 +166,7 @@ export class OfferDetailPage {
      * @param date : a timestamp date
      */
     toDateString(date: number) {
-        return new Date(date).toLocaleDateString('fr-FR', this.dateOptions);
+        return new Date(date).toLocaleDateString('fr-FR');
     }
 
     /**
@@ -164,7 +186,7 @@ export class OfferDetailPage {
         console.log(this.offer);
         if (!this.offer)
             return;
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
                 <div>
                     <img src='img/loading.gif' />
@@ -172,7 +194,7 @@ export class OfferDetailPage {
                 `,
             spinner: 'hide'
         });
-        this.nav.present(loading);
+        loading.present();
         let searchFields = {
             class: 'com.vitonjob.callouts.recherche.SearchQuery',
             job: this.offer.jobData.job,
@@ -184,7 +206,7 @@ export class OfferDetailPage {
             table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
             idOffre: '0'
         };
-        this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
+        this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data:any) => {
             console.log(data);
             this.searchService.persistLastSearch(data);
             loading.dismiss();
@@ -313,8 +335,8 @@ export class OfferDetailPage {
             city : '',
             country : ''
         };
-        let modal = Modal.create(ModalJobPage, {jobData: this.offer.jobData});
-        modal.onDismiss(data => {
+        let modal = this.modal.create(ModalJobPage, {jobData: this.offer.jobData});
+        modal.onDidDismiss((data:any) => {
             this.modified.isJob = data.validated;
             //this.steps.isCalendar = this.validated.isJob;
             //this.localOffer.set('jobData', JSON.stringify(data));
@@ -331,7 +353,7 @@ export class OfferDetailPage {
                 this.offer.jobData = this.copyJobDataObjectByValue(originalJobData);
             }
         });
-        this.nav.present(modal);
+        modal.present();
     }
 
     /**
@@ -339,9 +361,9 @@ export class OfferDetailPage {
      */
     showQualityModal() {
 
-        let modal = Modal.create(ModalQualityPage, {qualities: this.offer.qualityData});
-        this.nav.present(modal);
-        modal.onDismiss(data => {
+        let modal = this.modal.create(ModalQualityPage, {qualities: this.offer.qualityData});
+        modal.present();
+        modal.onDidDismiss((data:any) => {
             //this.modified.isQuality = (data.length) ? data.length > 0 : false;
             //if (this.modified.isQuality){
             this.offer.qualityData = data;
@@ -356,9 +378,9 @@ export class OfferDetailPage {
      */
     showLanguageModal() {
 
-        let modal = Modal.create(ModalLanguagePage, {languages: this.offer.languageData});
-        this.nav.present(modal);
-        modal.onDismiss(data => {
+        let modal = this.modal.create(ModalLanguagePage, {languages: this.offer.languageData});
+        modal.present();
+        modal.onDidDismiss((data:any) => {
             //this.modified.isLanguage = (data.length) ? data.length > 0 : false;
             //if (this.modified.isLanguage){
             this.offer.languageData = data;
@@ -372,9 +394,9 @@ export class OfferDetailPage {
      * Create Calendar modal
      */
     showCalendarModal() {
-        let modal = Modal.create(ModalCalendarPage, {slots: this.offer.calendarData});
-        this.nav.present(modal);
-        modal.onDismiss(data => {
+        let modal = this.modal.create(ModalCalendarPage, {slots: this.offer.calendarData});
+        modal.present();
+        modal.onDidDismiss((data:{slots:any, isObsolete:boolean}) => {
             // this.modified.isCalendar = (data.length) ? data.length > 0 : false;
             //if (this.modified.isCalendar){
             this.offer.calendarData = data.slots;
@@ -390,7 +412,7 @@ export class OfferDetailPage {
      *
      */
     deleteOffer() {
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: "Supprimer l'offre",
             message: "Êtes-vous sûr de vouloir supprimer cette offre ?",
             buttons: [
@@ -410,14 +432,14 @@ export class OfferDetailPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     /**
      * Copy current offer
      */
     copyOffer() {
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: "Copie d'offre",
             message: "Voulez-vous ajouter une nouvelle offre à partir de celle-ci?",
             buttons: [
@@ -431,7 +453,7 @@ export class OfferDetailPage {
                     text: 'Oui',
                     handler: () => {
                         console.log('Agree clicked');
-                        let loading = Loading.create({
+                        let loading = this.loading.create({
                             content: ` 
 								<div>
 									<img src='img/loading.gif' />
@@ -440,7 +462,7 @@ export class OfferDetailPage {
                             spinner: 'hide',
                             duration: 10000
                         });
-                        this.nav.present(loading);
+                        loading.present();
                         let offer = this.offer;
                         offer.title = this.offer.title + " (Copie)";
                         offer.idOffer = "";
@@ -449,7 +471,7 @@ export class OfferDetailPage {
                                 console.log('••• Adding offer : local storing success!');
 
                                 this.offerService.setOfferInRemote(offer, this.projectTarget)
-                                    .then(data => {
+                                    .then((data:any) => {
                                         console.log('••• Adding offer : remote storing success!');
 
                                         loading.dismiss();
@@ -460,7 +482,7 @@ export class OfferDetailPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     changePrivacy() {
@@ -478,15 +500,15 @@ export class OfferDetailPage {
      * @param ev
      */
     showPopover(ev) {
-        let popover = Popover.create(PopoverOfferDetailPage, {
+        let popover = this.popover.create(PopoverOfferDetailPage, {
             visibility: this.offer.visible,
             autoSearch: this.offer.rechercheAutomatique
         });
-        this.nav.present(popover, {
+        popover.present( {
             ev: ev
         });
 
-        popover.onDismiss(data => {
+        popover.onDidDismiss((data:any) => {
             if (!data)
                 return;
             switch (data.option) {
@@ -549,7 +571,7 @@ export class OfferDetailPage {
 
     autoSearchMode() {
         var mode = this.offer.rechercheAutomatique ? "Non" : "Oui";
-        this.offerService.saveAutoSearchMode(this.projectTarget, this.offer.idOffer, mode).then(data => {
+        this.offerService.saveAutoSearchMode(this.projectTarget, this.offer.idOffer, mode).then((data:{status:string}) => {
             if (data && data.status == "success") {
                 this.offer.rechercheAutomatique = !this.offer.rechercheAutomatique;
                 this.offerService.updateOfferInLocal(this.offer, this.projectTarget);

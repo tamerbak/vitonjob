@@ -27,7 +27,7 @@ export class MissionEndInvoicePage {
             demande_de_signature_de_facture: ''
         };
 
-        this.service.loadInvoiceSignature(this.idInvoice).then(data=> {
+        this.service.loadInvoiceSignature(this.idInvoice).then((data:any) => {
 
             this.invoice = data;
             this.unSigned = (this.invoice.facture_signee == "Non");

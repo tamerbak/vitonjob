@@ -1,8 +1,10 @@
 import {Component} from "@angular/core";
-import {NavController, PickerColumnOption, Picker, SqlStorage, Storage, Platform} from "ionic-angular";
+import {NavController, Picker, SqlStorage, Storage, Platform} from "ionic-angular";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {DatePicker} from "ionic-native/dist/index";
+import {PickerController} from "ionic-angular/components/picker/picker";
+import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
 
 /*
  Generated class for the AdvancedSearchPage page.
@@ -29,14 +31,17 @@ export class AdvancedSearchPage {
     private dateEvent: any;
     isAndroid4: boolean;
     platform: any;
+    pickerCtrl:any;
+    calendarTheme:any;
 
 
-    constructor(private nav: NavController, _service: OffersService, gc: GlobalConfigs, platform: Platform) {
+    constructor(private nav: NavController, _service: OffersService, gc: GlobalConfigs, _platform: Platform, _pickerCtrl: PickerController) {
         this.service = _service;
         this.db = new Storage(SqlStorage);
         this.projectTarget = gc.getProjectTarget();
-        this.isAndroid4 = (platform.version('android').major < 5);
-        this.platform = platform;
+        this.platform = _platform;
+        this.isAndroid4 = (this.platform.version('android').major < 5);
+        this.pickerCtrl = _pickerCtrl;
         _service.loadSectors(this.projectTarget).then(listSectors => {
             if (listSectors) {
                 this.listSectors = listSectors;
@@ -55,7 +60,7 @@ export class AdvancedSearchPage {
         };
         if (this.isAndroid4) {
             this.showedSlot = {
-                date: this.toDateString(new Date().getTime())
+                date: this.toDateString(new Date().getTime(), null)
             };
         } else {
             this.showedSlot = {
@@ -69,8 +74,9 @@ export class AdvancedSearchPage {
 
     setSectorsPicker() {
         let rating = 0;
-        let picker = Picker.create();
+        let picker = this.pickerCtrl.create();
         let options: PickerColumnOption[] = new Array<PickerColumnOption>();
+        debugger;
         this.db.get('listSectors').then(listSectors => {
             if (listSectors) {
                 listSectors = JSON.parse(listSectors);
@@ -100,8 +106,7 @@ export class AdvancedSearchPage {
                 }
             });
             picker.setCssClass('sectorPicker');
-            this.nav.present(picker);
-
+            picker.present();
         });
     }
 
@@ -110,7 +115,7 @@ export class AdvancedSearchPage {
      */
     setJobsPicker() {
         let rating = 0;
-        let picker = Picker.create();
+        let picker = this.pickerCtrl.create();
         let options: PickerColumnOption[] = new Array<PickerColumnOption>();
 
 
@@ -118,7 +123,7 @@ export class AdvancedSearchPage {
             list => {
                 if (list) {
                     list = JSON.parse(list);
-                    let q = this.idSector;
+                    let q:any = this.idSector;
 
                     // if the value is an empty string don't filter the items
                     if (!(q === '')) {
@@ -149,7 +154,7 @@ export class AdvancedSearchPage {
                         }
                     });
                     picker.setCssClass('jobPicker');
-                    this.nav.present(picker);
+                    picker.present();
 
                 }
             }
@@ -175,7 +180,7 @@ export class AdvancedSearchPage {
             list => {
                 if (list) {
                     list = JSON.parse(list);
-                    let q = this.idSector;
+                    let q:any = this.idSector;
 
                     // if the value is an empty string don't filter the items
                     if (!(q === '')) {
@@ -199,8 +204,7 @@ export class AdvancedSearchPage {
         DatePicker.show({
             date: new Date(),
             mode: type,
-            minuteInterval: 15, androidTheme: this.calendarTheme, is24Hour: true,
-            allowOldDates: false, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+            minuteInterval: 15, androidTheme: this.calendarTheme, is24Hour: true, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
         }).then(
             date => {
                 console.log("Got date: ", date);
@@ -233,6 +237,16 @@ export class AdvancedSearchPage {
     toDateString(date: number, options: any) {
         let d = new Date(date);
         return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
+    }
+
+    /**
+     * @Description Converts a timeStamp to date string
+     * @param time : a timestamp date
+     */
+    toHourString(time: number) {
+        let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+        let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+        return hours + ":" + minutes;
     }
 
 

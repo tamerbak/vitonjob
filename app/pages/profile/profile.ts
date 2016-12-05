@@ -1,7 +1,7 @@
-import {NavController, Picker, PickerColumnOption, Modal, Events, Storage, SqlStorage} from "ionic-angular";
+import {NavController, PickerController, ModalController, Events, Storage, SqlStorage} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
-import {ModelLockScreenPage} from "../model-lock-screen/model-lock-screen";
+//import {ModelLockScreenPage} from "../model-lock-screen/model-lock-screen";
 import {OnInit, Component} from "@angular/core";
 import {SettingsPage} from "../settings/settings";
 import {ModalPicturePage} from "../modal-picture/modal-picture";
@@ -19,6 +19,7 @@ import {ImageService} from "../../providers/image-service/image-service";
 import {ProfileQualitiesPage} from "../profile-qualities/profile-qualities";
 import {ProfileLanguagesPage} from "../profile-languages/profile-languages";
 import {ProfileSlotsPage} from "../profile-slots/profile-slots";
+import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
 //import {InfoUserPage} from "../info-user/info-user"
 
 /*
@@ -34,7 +35,7 @@ declare var google: any;
     providers: [GlobalConfigs, UserService, AddressService, ProfileService, GlobalService, ImageService],
     pipes: [DateConverter],
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage {
     themeColor: string;
     inversedThemeColor: string;
     isEmployer: boolean;
@@ -54,6 +55,7 @@ export class ProfilePage implements OnInit {
     profilPictureVar: string;
     storage: Storage;
     defaultImage: string;
+    slots:any;
 
     constructor(public nav: NavController,
                 public gc: GlobalConfigs,
@@ -62,7 +64,7 @@ export class ProfilePage implements OnInit {
                 private globalService: GlobalService,
                 private profileService: ProfileService,
                 private imageService: ImageService,
-                public events: Events) {
+                public events: Events, public picker:PickerController, public modal:ModalController) {
 
 
         this.projectTarget = gc.getProjectTarget();
@@ -125,7 +127,7 @@ export class ProfilePage implements OnInit {
     onPageWillEnter() {
         console.log('••• On Init');
         //Get User information
-        this.storage.get(this.currentUserVar).then(data => {
+        this.storage.get(this.currentUserVar).then((data:any) => {
             if (data) {
 
                 this.userData = JSON.parse(data);
@@ -134,10 +136,10 @@ export class ProfilePage implements OnInit {
                     this.loadMap(this.userData);
 
                 //load profile picture
-                this.storage.get(this.profilPictureVar).then(data => {
+                this.storage.get(this.profilPictureVar).then((data:any) => {
                     //if profile picture is not stored in local, retrieve it from server
                     if (this.isEmpty(data)) {
-                        this.profileService.loadProfilePicture(this.userData.id).then(pic => {
+                        this.profileService.loadProfilePicture(this.userData.id, '', '').then((pic:{data:Array<any>}) => {
                             if (!this.isEmpty(pic.data[0].encode)) {
                                 this.userImageURL = pic.data[0].encode;
                                 this.profileService.uploadProfilePictureInLocal(pic.data[0].encode);
@@ -296,7 +298,7 @@ export class ProfilePage implements OnInit {
      */
     setStarPicker() {
         let rating = 0;
-        let picker = Picker.create();
+        let picker = this.picker.create();
         let options: PickerColumnOption[] = new Array<PickerColumnOption>();
         for (let i = 1; i <= 5; i++) {
             options.push({
@@ -317,14 +319,14 @@ export class ProfilePage implements OnInit {
                 rating = data;
             }
         });
-        this.nav.present(picker);
+        picker.present();
     }
 
     /**
      * writing stars
      * @param number of stars writed
      */
-    writeStars(number: string): string {
+    writeStars(number: number): string {
         let starText = '';
         for (let i = 0; i < number; i++) {
             starText += '\u2605'
@@ -343,8 +345,8 @@ export class ProfilePage implements OnInit {
         if (this.userImageURL == "img/loading.gif") {
             return;
         }
-        let pictureModel = Modal.create(ModalPicturePage, {picture: this.userImageURL});
-        pictureModel.onDismiss(params => {
+        let pictureModel = this.modal.create(ModalPicturePage, {picture: this.userImageURL});
+        pictureModel.onDidDismiss(params => {
             /*var compressed = this.imageService.compressImage(params.uri);
              var decompressed = this.imageService.decompressImage(compressed);
              return;
@@ -362,7 +364,7 @@ export class ProfilePage implements OnInit {
                  this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
                  return;
                  }*/
-                this.profileService.uploadProfilePictureInServer(params.uri, this.userData.id).then(data => {
+                this.profileService.uploadProfilePictureInServer(params.uri, this.userData.id).then((data:any) => {
                     if (!data || data.status == "failure") {
                         this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                         return;
@@ -385,7 +387,7 @@ export class ProfilePage implements OnInit {
                 this.userImageURL = params.uri;
             }
         });
-        this.nav.present(pictureModel);
+        pictureModel.present();
 
     }
 
@@ -419,9 +421,9 @@ export class ProfilePage implements OnInit {
 
     showProfileSlots(){
         this.profileService.getUserDisponibilite(this.userData.jobyer.id).then((res: any) =>{
-            let modal = Modal.create(ProfileSlotsPage, {savedSlots: res});
-            this.nav.present(modal);
-            modal.onDismiss(data => {
+            let modal = this.modal.create(ProfileSlotsPage, {savedSlots: res});
+            modal.present();
+            modal.onDidDismiss((data:any) => {
                 this.slots = data.slots;
                 this.profileService.deleteDisponibilites(this.userData.jobyer.id).then((data: any) => {
                     if(data.status == 'success'){

@@ -50,7 +50,7 @@ export class SmsService {
 
             this.http.post(Configs.smsURL, soapMessage, {headers: headers})
                 .map(res => res)
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     resolve(data);
                 });
         });

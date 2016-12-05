@@ -1,4 +1,4 @@
-import {NavController, NavParams, ActionSheet, Modal} from "ionic-angular";
+import {NavController, NavParams, ActionSheetController, ModalController} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {UserService} from "../../providers/user-service/user-service";
@@ -42,7 +42,7 @@ export class ContractPage {
     dataObject: any;
     contractData: any;
     currentOffer: any;
-    workAdress: string;
+    workAdress: any;
     jobyerBirthDate: string;
     hqAdress: string;
     rate: number = 0.0;
@@ -51,6 +51,9 @@ export class ContractPage {
     periodicites : any = [];
     embaucheAutorise : boolean;
     rapatriement : boolean;
+    modal:any;
+    actionSheet:any;
+
     transportMeans = [];
 
     dateFormat(d) {
@@ -69,7 +72,7 @@ export class ContractPage {
                 private contractService: ContractService,
                 private medecineService: MedecineService,
                 private service: ParametersService,
-                private offersService : OffersService) {
+                private offersService : OffersService, private _modal: ModalController, private _actionSheet: ActionSheetController) {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -81,6 +84,8 @@ export class ContractPage {
         this.themeColor = config.themeColor;
         this.contractTitle = "Contrat de Mission";
         this.isEmployer = (this.projectTarget == 'employer');
+        this.modal = _modal;
+        this.actionSheet= _actionSheet;
 
         this.jobyer = navParams.get('jobyer');
         this.jobyerFirstName = this.jobyer.prenom;
@@ -111,7 +116,7 @@ export class ContractPage {
             finSouplesse: "",
             equipements: "",
 
-            interim: "HubJob",
+            interim: "HubJob.fr",
             missionStartDate: this.getStartDate(),
             missionEndDate: this.getEndDate(),
             trialPeriod: 5,
@@ -184,11 +189,11 @@ export class ContractPage {
 
 
         //  Load recours list
-        this.contractService.loadRecoursList().then(data=> {
+        this.contractService.loadRecoursList().then((data:any) => {
             this.recours = data;
         });
 
-        this.contractService.loadPeriodicites().then(data=>{
+        this.contractService.loadPeriodicites().then((data:any) =>{
             this.periodicites = data;
         });
 
@@ -203,7 +208,7 @@ export class ContractPage {
                 this.hqAdress = this.employer.entreprises[0].siegeAdress.fullAdress;
                 let civility = this.currentUser.titre;
                 this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
-                this.medecineService.getMedecine(this.employer.entreprises[0].id).then(data=> {
+                this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: {libelle:string,adresse:string,code_postal:any;})=> {
                     if (data && data != null) {
 
                         this.contractData.centreMedecineEntreprise = data.libelle;
@@ -245,7 +250,7 @@ export class ContractPage {
                     trial = 5;
                 this.contractData.trialPeriod = trial;
 
-                this.service.getRates().then(data => {
+                this.service.getRates().then((data: Array<any>) => {
 
                     for (let i = 0; i < data.length; i++) {
                         if (this.currentOffer.jobData.remuneration < data[i].taux_horaire) {
@@ -289,7 +294,7 @@ export class ContractPage {
             }
 
         this.justificatifs = [];
-        this.contractService.loadJustificationsList(id).then(data=> {
+        this.contractService.loadJustificationsList(id).then((data:any) => {
             this.justificatifs = data;
         });
     }
@@ -351,12 +356,12 @@ export class ContractPage {
 
     selectOffer() {
 
-        let m = new Modal(ModalOffersPage);
-        m.onDismiss(data => {
+        let m = this.modal.create(ModalOffersPage);
+        m.onDidDismiss((data:any) => {
             this.currentOffer = data;
             console.log(JSON.stringify(data));
 
-            this.service.getRates().then(data => {
+            this.service.getRates().then((data: Array <any>) => {
 
                 for (let i = 0; i < data.length; i++) {
                     if (this.currentOffer.jobData.remuneration < data[i].taux_horaire) {
@@ -370,7 +375,7 @@ export class ContractPage {
             });
             this.initContract();
         });
-        this.nav.present(m);
+        m.present();
     }
 
     initContract() {
@@ -420,7 +425,7 @@ export class ContractPage {
             debutSouplesse: "",
             finSouplesse: "",
             equipements: "",
-            interim: "HubJob",
+            interim: "HubJob.fr",
             missionStartDate: this.getStartDate(),
             missionEndDate: this.getEndDate(),
             trialPeriod: trial,
@@ -466,7 +471,7 @@ export class ContractPage {
 
         console.log(JSON.stringify(this.contractData));
 
-        this.medecineService.getMedecine(this.employer.entreprises[0].id).then(data=> {
+        this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: {libelle:string, adresse:string, code_postal:string})=> {
             if (data && data != null) {
 
                 this.contractData.centreMedecineEntreprise = data.libelle;
@@ -489,7 +494,7 @@ export class ContractPage {
         }
     }
 
-    calculateOfferHours() {
+    calculateOfferHours():any {
         if (!this.currentOffer || isUndefined(this.currentOffer))
             return 0;
         let h = 0;
@@ -502,7 +507,7 @@ export class ContractPage {
 
     goToYousignPage() {
 
-        this.contractService.getNumContract().then(data => {
+        this.contractService.getNumContract().then((data: Array<any>) => {
 
             if (data && data.length > 0) {
                 this.numContrat = this.formatNumContrat(data[0].numct);
@@ -525,7 +530,7 @@ export class ContractPage {
      * @description show the menu to edit employer's informations
      */
     showMenuToEditContract() {
-        let actionSheet = ActionSheet.create({
+        let actionSheet = this.actionSheet.create({
             title: 'Editer le contrat',
             buttons: [
                 {
@@ -557,7 +562,7 @@ export class ContractPage {
             ]
         });
 
-        this.nav.present(actionSheet);
+        actionSheet.present();
     };
 
     mandatoryDataMissing(){

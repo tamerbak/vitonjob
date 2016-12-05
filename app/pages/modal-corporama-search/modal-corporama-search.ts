@@ -1,8 +1,7 @@
 import {
   NavController,
   ViewController,
-  Modal,
-  Loading
+  LoadingController
 } from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
@@ -21,18 +20,21 @@ declare var require: any;
 export class ModalCorporamaSearchPage{
   typeSearch: string = "company";
   inputSearch: string = '';
-  companies: Company [] = [];
+  companies = [];
   hasToRedirect: boolean = false;
   searchPlaceholder: string = "Nom de l'entreprise";
   viewCtrl: ViewController;
   isSIRENValid: boolean = true;
   noResult: boolean = false;
+  projectTarget:string;
+  themeColor:string;
+  isEmployer:boolean;
 
   constructor(public nav: NavController,
               viewCtrl: ViewController,
               private globalService: GlobalService,
               gc: GlobalConfigs,
-              private corporamaService: CorporamaService) {
+              private corporamaService: CorporamaService, public loading: LoadingController) {
     // Set global configs
     this.projectTarget = gc.getProjectTarget();
     let config = Configs.setConfigs(this.projectTarget);
@@ -64,7 +66,7 @@ export class ModalCorporamaSearchPage{
     }
 
     this.hasToRedirect = false;
-    let loading = Loading.create({
+    let loading = this.loading.create({
       content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -72,7 +74,7 @@ export class ModalCorporamaSearchPage{
 			`,
       spinner: 'hide'
     });
-    this.nav.present(loading);
+    loading.present();
     this.corporamaService.searchCompany(this.typeSearch, this.inputSearch).then((data: any) => {
       if (!data || data.status == "failure" || Utils.isEmpty(data._body)) {
         console.log(data);
@@ -98,7 +100,7 @@ export class ModalCorporamaSearchPage{
   }
 
   takeAction(company) {
-    /*let loading = Loading.create({
+    /*let loading = this.alert.create({
      content: `
      <div>
      <img src='img/loading.gif' />
@@ -106,7 +108,7 @@ export class ModalCorporamaSearchPage{
      `,
      spinner: 'hide',
      });
-     this.nav.present(loading);*/
+     loading.present();*/
     if (this.typeSearch == "siren" || this.hasToRedirect) {
       //loading.dismiss();
       this.viewCtrl.dismiss(company);

@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, Events, Modal, Storage, SqlStorage} from "ionic-angular";
+import {NavController, Events, ModalController, Storage, SqlStorage} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -33,7 +33,7 @@ export class SettingsPage {
     constructor(public nav: NavController, gc: GlobalConfigs,
                 private authService: AuthenticationService,
                 private globalService: GlobalService, events: Events,
-                private missionService: MissionService) {
+                private missionService: MissionService, public modal:ModalController) {
         this.projectTarget = gc.getProjectTarget();
         let config = Configs.setConfigs(this.projectTarget);
         this.options = config.options;
@@ -67,13 +67,13 @@ export class SettingsPage {
         this.storage.get(this.currentUserVar).then((value) => {
             if (value) {
                 this.currentUser = JSON.parse(value);
-                this.missionService.getOptionMission(this.currentUser.id).then((opt) => {
-                    let modal = Modal.create(ModalTrackMissionPage, {optionMission: opt.data[0].option_mission});
-                    this.nav.present(modal);
-                    modal.onDismiss(selectedOption => {
+                this.missionService.getOptionMission(this.currentUser.id).then((opt:any) => {
+                    let modal = this.modal.create(ModalTrackMissionPage, {optionMission: opt.data[0].option_mission});
+                    modal.present();
+                    modal.onDidDismiss(selectedOption => {
                         if (selectedOption) {
                             this.storage.set('OPTION_MISSION', selectedOption).then(() => {
-                                this.missionService.updateDefaultOptionMission(selectedOption, this.currentUser.id, this.currentUser.employer.entreprises[0].id).then((data) => {
+                                this.missionService.updateDefaultOptionMission(selectedOption, this.currentUser.id, this.currentUser.employer.entreprises[0].id).then((data:any) => {
                                     if (!data || data.status == 'failure') {
                                         this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
                                     } else {

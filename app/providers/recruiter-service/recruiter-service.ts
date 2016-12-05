@@ -4,10 +4,15 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Http, Headers} from "@angular/http";
 import {Storage, SqlStorage} from "ionic-angular";
 
+declare var md5;
+
 @Injectable()
 export class RecruiterService {
     configuration: any;
     projectTarget: string;
+    storage:any;
+    data:any;
+
 
     constructor(public http: Http, public gc: GlobalConfigs) {
         // Get target to determine configs
@@ -25,7 +30,7 @@ export class RecruiterService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -36,7 +41,7 @@ export class RecruiterService {
         var sql = "insert into user_account (role, telephone, est_employeur) values ";
         var recruiterList = [];
         for (var i = 0; i < contacts.length; i++) {
-            var recruiter = this.constituteRecruiterObject(contacts[i], fromPage);
+            let recruiter :any= this.constituteRecruiterObject(contacts[i], fromPage);
             recruiterList.push(recruiter);
             var valuesStr = " ('recruteur', '" + recruiter.phone + "', 'non')";
             if (i == 0) {
@@ -53,7 +58,7 @@ export class RecruiterService {
                 .map(res => res.json())
                 .subscribe(values => {
                     this.retrieveRecruitersAccount(recruiterList).then((accounts) => {
-                        this.insertRecruitersInfo(accounts, employerId, recruiterList).then((data) => {
+                        this.insertRecruitersInfo(accounts, employerId, recruiterList).then((data:any) => {
                             this.data = data;
                             resolve(this.data);
                         });
@@ -78,7 +83,7 @@ export class RecruiterService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -102,7 +107,7 @@ export class RecruiterService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     if (!data || data.status != 'success') {
                         this.data = data;
                     } else {
@@ -167,7 +172,7 @@ export class RecruiterService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -187,7 +192,7 @@ export class RecruiterService {
             let headers = new Headers();
             headers.append("Content-Type", 'text/xml');
             this.http.post(url, payload, {headers: headers})
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log(this.data);
                     resolve(this.data);
@@ -205,7 +210,7 @@ export class RecruiterService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = passwd;
                     resolve(this.data);
                 });
@@ -221,7 +226,7 @@ export class RecruiterService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -245,7 +250,7 @@ export class RecruiterService {
                             recruiterList.push(contacts[i]);
                         }
                     }
-                    this.storage.set('RECRUITER_LIST', JSON.stringify(recruiterList)).then(data => {
+                    this.storage.set('RECRUITER_LIST', JSON.stringify(recruiterList)).then((data:any) => {
                         resolve(data);
                     });
                 }
@@ -264,7 +269,7 @@ export class RecruiterService {
                             break;
                         }
                     }
-                    this.storage.set('RECRUITER_LIST', JSON.stringify(recruiterList)).then(data => {
+                    this.storage.set('RECRUITER_LIST', JSON.stringify(recruiterList)).then((data:any) => {
                         resolve(data);
                     });
                 }

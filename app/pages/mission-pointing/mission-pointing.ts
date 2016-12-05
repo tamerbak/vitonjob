@@ -48,7 +48,7 @@ export class MissionPointingPage {
         this.isEmployer = (this.projectTarget == 'employer');
         this.contract = navParams.get('contract');
         //retrieve mission hours of tody
-        this.missionService.listMissionHours(this.contract, true).then((data) => {
+        this.missionService.listMissionHours(this.contract, true).then((data:{data:any}) => {
             if (data.data) {
                 var missionHoursTemp = data.data;
                 var array = this.getTodayMission(missionHoursTemp);
@@ -57,7 +57,7 @@ export class MissionPointingPage {
                 this.disableBtnPointing = this.disablePointing();
                 var autoPointing = navParams.get('autoPointing');
                 if (autoPointing) {
-                    this.nextPointing = navParams.get('nextPointing')
+                    this.nextPointing = navParams.get('nextPointing');
                     this.pointHour(true);
                 }
             }
@@ -72,7 +72,7 @@ export class MissionPointingPage {
                 missionHoursToday.push(missionHoursTemp[i]);
             }
         }
-        var array = this.missionService.constructMissionHoursArray(missionHoursToday, true);
+        let array = this.missionService.constructMissionHoursArray(missionHoursToday);
         return array;
     }
 
@@ -82,9 +82,9 @@ export class MissionPointingPage {
             var m = new Date().getMinutes();
             var minutesNow = this.missionService.convertHoursToMinutes(h + ':' + m);
             this.nextPointing.pointe = minutesNow;
-            this.missionService.savePointing(this.nextPointing).then((data) => {
+            this.missionService.savePointing(this.nextPointing).then((data:any) => {
                 //retrieve mission hours of tody
-                this.missionService.listMissionHours(this.contract, true).then((data) => {
+                this.missionService.listMissionHours(this.contract, true).then((data:{data:any}) => {
                     if (data.data) {
                         var missionHoursTemp = data.data;
                         var array = this.getTodayMission(missionHoursTemp);
@@ -119,8 +119,8 @@ export class MissionPointingPage {
                 var p = this.missionPauses[i][j];
                 var minutesPause;
                 if (this.isEmpty(p.pause_debut_new)) {
-                    var h = (p.pause_debut).split(":")[0];
-                    var m = (p.pause_debut).split(":")[1];
+                    let h:string = (p.pause_debut).split(":")[0];
+                    let m:string = (p.pause_debut).split(":")[1];
                     minutesPause = this.missionService.convertHoursToMinutes(h + ':' + m);
                 } else {
                     minutesPause = p.pause_debut_new;
@@ -131,9 +131,9 @@ export class MissionPointingPage {
                     return disabled;
                 }
                 if (this.isEmpty(p.pause_fin_new)) {
-                    var h = (p.pause_fin).split(":")[0];
-                    var m = (p.pause_fin).split(":")[1];
-                    var minutesPause = this.missionService.convertHoursToMinutes(h + ':' + m);
+                    let h:string = (p.pause_fin).split(":")[0];
+                    let m:string = (p.pause_fin).split(":")[1];
+                    minutesPause = this.missionService.convertHoursToMinutes(h + ':' + m);
                 } else {
                     minutesPause = p.pause_fin_new;
                 }

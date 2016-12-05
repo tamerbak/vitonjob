@@ -1,5 +1,5 @@
 import {Component, NgZone} from "@angular/core";
-import {NavController, Modal, Storage, SqlStorage, NavParams} from "ionic-angular";
+import {NavController, ModalController, Storage, SqlStorage, NavParams} from "ionic-angular";
 import {ModalGalleryPage} from "../modal-gallery/modal-gallery";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
@@ -28,7 +28,7 @@ export class ModalAttachementPage {
     constructor(private nav: NavController,
                 private zone: NgZone,
                 public gc: GlobalConfigs,
-                private service: AttachementsService, private params: NavParams) {
+                private service: AttachementsService, private params: NavParams, public modal:ModalController) {
 
         this.projectTarget = gc.getProjectTarget();
 
@@ -78,8 +78,8 @@ export class ModalAttachementPage {
     }
 
     showModal() {
-        let modal = Modal.create(ModalGalleryPage, {scanUri: this.scanUri});
-        this.nav.present(modal);
+        let modal = this.modal.create(ModalGalleryPage, {scanUri: this.scanUri});
+        modal.present();
     }
 
     onDelete(e) {
@@ -92,7 +92,7 @@ export class ModalAttachementPage {
             return;
         }
 
-        this.service.uploadFile(this.user, this.fileName, this.scanUri).then(data => {
+        this.service.uploadFile(this.user, this.fileName, this.scanUri).then((data:any) => {
             this.handler.appendFile(data);
             this.nav.pop();
         });

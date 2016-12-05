@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, Modal} from "ionic-angular";
+import {NavController, Modal, ModalController} from "ionic-angular";
 import {SearchCriteriaPage} from "../search-criteria/search-criteria";
 import {SearchGuidePage} from "../search-guide/search-guide";
 
@@ -16,7 +16,7 @@ export class PopoverSearchPage {
 
     popInCriteria: boolean = false;
 
-    constructor(public nav: NavController) {
+    constructor(public nav: NavController, public modal:ModalController) {
     }
 
     /**
@@ -29,10 +29,10 @@ export class PopoverSearchPage {
 
         if (this.popInCriteria)
             return;
-        let m = new Modal(SearchCriteriaPage);
-        m.onDismiss(dismissedModal.bind(this));
+        let m = this.modal.create(SearchCriteriaPage);
+        m.onDidDismiss(dismissedModal.bind(this));
         this.popInCriteria = true;
-        this.nav.present(m);
+        m.present();
     }
 
     /**
@@ -43,12 +43,12 @@ export class PopoverSearchPage {
             this.popInCriteria = false;
         };
 
+        let m:any;
         if (this.popInCriteria)
-            return;
-        let m = new Modal(SearchGuidePage);
-        m.onDismiss(dismissedModal.bind(this));
-        this.popinCrietria = true;
-        this.nav.present(m);
+            m = this.modal.create(SearchGuidePage);
+        m.onDidDismiss(dismissedModal.bind(this));
+        this.popInCriteria = true;
+        m.present(m);
     }
 
 

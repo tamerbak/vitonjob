@@ -1,4 +1,4 @@
-import {NavController, Modal, ViewController, NavParams, Alert} from "ionic-angular";
+import {NavController, ModalController, ViewController, NavParams, AlertController} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalSelectionPage} from "../modal-selection/modal-selection";
@@ -22,12 +22,19 @@ export class ModalQualityPage {
         idQuality: number,
         libelle: string
     }>;
+    projectTarget:string;
+    themeColor:string;
+    viewCtrl:any;
+    isEmployer:boolean;
+    params:any;
+    offerService:any;
+    qualityList=[];
 
     constructor(public nav: NavController,
                 gc: GlobalConfigs,
                 viewCtrl: ViewController,
                 params: NavParams,
-                os: OffersService) {
+                os: OffersService, public alert:AlertController, public modal:ModalController) {
         // Set global configs
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -62,11 +69,11 @@ export class ModalQualityPage {
 
         /*if (this.qualityList && this.qualityList.length > 0)
          return;*/
-        this.offerService.loadQualities(this.projectTarget).then(data => {
+        this.offerService.loadQualities(this.projectTarget).then((data:any) => {
             this.qualityList = data;
-            let selectionModel = Modal.create(ModalSelectionPage,
+            let selectionModel = this.modal.create(ModalSelectionPage,
                 {type: 'qualité', items: this.qualityList, selection: this});
-            this.nav.present(selectionModel);
+            selectionModel.present();
         });
     }
 
@@ -90,7 +97,7 @@ export class ModalQualityPage {
      */
     removeQuality(item) {
 
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: 'Êtes-vous sûr?',
             message: 'Voulez-vous supprimer cette qualité?',
             buttons: [
@@ -109,6 +116,6 @@ export class ModalQualityPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 }

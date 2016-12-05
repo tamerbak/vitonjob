@@ -58,7 +58,7 @@ export class PaylineServices {
 
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
@@ -78,7 +78,7 @@ export class PaylineServices {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.walletId = '';
                     if (data.data && data.data.length > 0) {
                         this.walletId = data.data[0].wallet_id;

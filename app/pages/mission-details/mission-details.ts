@@ -1,17 +1,16 @@
 import {
     NavController,
     NavParams,
-    ActionSheet,
-    Loading,
+    ActionSheetController,
+    LoadingController,
     Platform,
-    Modal,
+    ModalController,
     Storage,
     LocalStorage,
-    Picker,
-    PickerColumnOption,
+    PickerController,
     SqlStorage,
-    Alert,
-    Toast
+    AlertController,
+    ToastController
 } from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
@@ -28,6 +27,9 @@ import {isUndefined} from "ionic-angular/util";
 import {FinanceService} from "../../providers/finance-service/finance-service";
 import {MissionEndInvoicePage} from "../mission-end-invoice/mission-end-invoice";
 import {MissionEndRelevePage} from "../mission-end-releve/mission-end-releve";
+import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
+
+declare var cordova;
 
 /*
  Generated class for the MissionDetailsPage page.
@@ -88,6 +90,7 @@ export class MissionDetailsPage {
     prerequisObligatoires : any = [];
 
     isSignContractClicked: boolean = false;
+    missionPauses = [];
 
     constructor(private platform: Platform,
                 public gc: GlobalConfigs,
@@ -98,7 +101,13 @@ export class MissionDetailsPage {
                 private pushNotificationService: PushNotificationService,
                 private notationService: NotationService,
                 private financeService: FinanceService,
-                private zone: NgZone) {
+                private zone: NgZone,
+                public alert:AlertController,
+                public loading:LoadingController,
+                public toast: ToastController,
+                public actionSheet:ActionSheetController,
+                public picker:PickerController,
+                public modal: ModalController) {
 
         this.store = new Storage(LocalStorage);
         this.db = new Storage(SqlStorage);
@@ -123,18 +132,18 @@ export class MissionDetailsPage {
         //verify if the mission has already pauses
         this.isNewMission = this.contract.vu.toUpperCase() == 'Oui'.toUpperCase() ? false : true;
         var forPointing = this.contract.option_mission != "1.0" ? true : false;
-        this.missionService.listMissionHours(this.contract, forPointing).then((data) => {
+        this.missionService.listMissionHours(this.contract, forPointing).then((data:{data:any}) => {
             if (data.data) {
 
                 this.initialMissionHours = data.data;
                 //initiate pauses array
-                var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
+                let array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
                 this.missionHours = array[0];
                 this.missionPauses = array[1];
             }
         });
 
-        this.missionService.getCosignersNames(this.contract).then((data) => {
+        this.missionService.getCosignersNames(this.contract).then((data : {data:Array<any>}) => {
 
             if (data.data) {
                 let cosigners = data.data[0];
@@ -150,14 +159,14 @@ export class MissionDetailsPage {
         this.getOptionMission();
 
         //  Getting contract score
-        this.notationService.loadContractNotation(this.contract, this.projectTarget).then(score=> {
-            this.rating = score;
+        this.notationService.loadContractNotation(this.contract, this.projectTarget).then((score:{value:number})=> {
+            this.rating = score.value;
             this.starsText = this.writeStars(this.rating);
         });
 
 
         console.log(JSON.stringify(this.contract));
-        this.financeService.checkInvoice(this.contract.pk_user_contrat).then(invoice=> {
+        this.financeService.checkInvoice(this.contract.pk_user_contrat).then((invoice:{pk_user_facture_voj:any, releve_signe_employeur:any,releve_signe_jobyer:any,facture_signee:any})=> {
 
             if (invoice) {
                 this.invoiceId = invoice.pk_user_facture_voj;
@@ -175,7 +184,7 @@ export class MissionDetailsPage {
          * Prerequis
          */
         if(this.isNewMission){
-            this.missionService.getPrerequisObligatoires(this.contract.pk_user_contrat).then(data=>{
+            this.missionService.getPrerequisObligatoires(this.contract.pk_user_contrat).then((data:any) =>{
                this.prerequisObligatoires = data;
             });
         } else {
@@ -189,7 +198,7 @@ export class MissionDetailsPage {
             return;
         }
         //open action sheet menu
-        let actionSheet = ActionSheet.create({
+        let actionSheet = this.actionSheet.create({
             title: 'Actions',
             cssClass: 'action-sheets-basic-page',
             buttons: [
@@ -210,7 +219,7 @@ export class MissionDetailsPage {
                 }
             ]
         });
-        this.nav.present(actionSheet);
+        actionSheet.present();
     }
 
     onPauseClick(dayIndex, pauseIndex) {
@@ -218,7 +227,7 @@ export class MissionDetailsPage {
             return;
         }
         //open action sheet menu
-        let actionSheet = ActionSheet.create({
+        let actionSheet = this.actionSheet.create({
             title: 'Actions',
             cssClass: 'action-sheets-basic-page',
             buttons: [
@@ -239,7 +248,7 @@ export class MissionDetailsPage {
                 }
             ]
         });
-        this.nav.present(actionSheet);
+        actionSheet.present();
     }
 
     addPause(dayIndex) {
@@ -267,7 +276,7 @@ export class MissionDetailsPage {
                 }
             }
         }
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -275,8 +284,8 @@ export class MissionDetailsPage {
 			`,
             spinner: 'hide'
         });
-        this.nav.present(loading).then(()=> {
-            this.missionService.addPauses(this.missionHours, this.missionPauses, this.contract.pk_user_contrat).then((data) => {
+        loading.present().then(()=> {
+            this.missionService.addPauses(this.missionHours, this.missionPauses, this.contract.pk_user_contrat).then((data: {status:string,error:string}) => {
                 if (!data || data.status == "failure") {
                     console.log(data.error);
                     loading.dismiss();
@@ -302,7 +311,7 @@ export class MissionDetailsPage {
     sendPushNotification(message, objectifNotif, who) {
         var id = (who == "toJobyer" ? this.contract.fk_user_jobyer : this.contract.fk_user_entreprise);
         this.pushNotificationService.getToken(id, who).then(token => {
-            this.pushNotificationService.sendPushNotification(token, message, this.contract, objectifNotif).then(data => {
+            this.pushNotificationService.sendPushNotification(token, message, this.contract, objectifNotif).then((data:any) => {
                 this.globalService.showAlertValidation("Vit-On-Job", "Notification envoyée.");
             });
         });
@@ -310,11 +319,11 @@ export class MissionDetailsPage {
 
     sendInfoBySMS(message, who) {
         if (who == "toJobyer") {
-            this.missionService.getTelByJobyer(this.contract.fk_user_jobyer).then((data) => {
+            this.missionService.getTelByJobyer(this.contract.fk_user_jobyer).then((data: {data:Array<any>}) => {
                 this.missionService.sendInfoBySMS(data.data[0]["telephone"], message);
             });
         } else {
-            this.missionService.getTelByEmployer(this.contract.fk_user_entreprise).then((data) => {
+            this.missionService.getTelByEmployer(this.contract.fk_user_entreprise).then((data:{data:Array<any>}) => {
                 this.missionService.sendInfoBySMS(data.data[0]["telephone"], message);
             });
         }
@@ -339,7 +348,7 @@ export class MissionDetailsPage {
                 this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être inférieure à l'heure de fin de travail.");
                 return;
             }
-            if (endPause <= startPause && endPause != "") {
+            if (endPause <= startPause && endPause.toString() != "") {
                 this.missionPauses[i][j].pause_debut = "";
                 this.globalService.showAlertValidation("Vit-On-Job", "L'heure de début de pause doit être inférieure à l'heure de fin de pause.");
                 return;
@@ -370,7 +379,7 @@ export class MissionDetailsPage {
                     this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être inférieure à l'heure de fin de travail.");
                     return;
                 }
-                if (endPause <= startPause && startPause != "") {
+                if (endPause <= startPause && startPause.toString() != "") {
                     this.missionPauses[i][j].pause_fin = "";
                     this.globalService.showAlertValidation("Vit-On-Job", "L'heure de fin de pause doit être supérieure à l'heure de début de pause.");
                     return;
@@ -633,7 +642,7 @@ export class MissionDetailsPage {
     }
 
     generateTimesheet() {
-        this.missionService.saveCorrectedMissions(this.contract.pk_user_contrat, this.missionHours, this.missionPauses).then((data) => {
+        this.missionService.saveCorrectedMissions(this.contract.pk_user_contrat, this.missionHours, this.missionPauses).then((data:{status:string}) => {
             if (data && data.status == "success") {
                 console.log("timesheet saved");
                 var message = "Le relevé d'heure du contrat numéro : " + this.contract.numero + "vous a été envoyé";
@@ -646,7 +655,7 @@ export class MissionDetailsPage {
     }
 
     signSchedule() {
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -656,8 +665,8 @@ export class MissionDetailsPage {
             duration: 10000
         });
 
-        this.nav.present(loading).then(()=> {
-            this.missionService.signSchedule(this.contract).then((data) => {
+        loading.present().then(()=> {
+            this.missionService.signSchedule(this.contract).then((data: {status:string, error:string}) => {
                 if (!data || data.status == "failure") {
                     console.log(data.error);
                     loading.dismiss();
@@ -680,7 +689,7 @@ export class MissionDetailsPage {
     }
 
     displaySignAlert() {
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: "Vit-On-Job",
             message: "Signature fin de mission",
             buttons: [
@@ -701,18 +710,32 @@ export class MissionDetailsPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     validateWork() {
-        /*this.store.set('CONTRACT_INVOICE', JSON.stringify(this.contract)).then(data => {
+        /*this.store.set('CONTRACT_INVOICE', JSON.stringify(this.contract)).then((data:any) => {
          this.nav.push(ModalInvoicePage);
          });
          */
         this.missionService.saveEndMission(this.contract.pk_user_contrat).then(val => {
-            this.missionService.endOfMission(this.contract.pk_user_contrat).then(data=> {
+            this.missionService.endOfMission(this.contract.pk_user_contrat)
+                .then((data: {
+                    id:any,
+                    offerId:any,
+                    rate:any,
+                    employerFirstName: string,
+                    employerLastName: string,
+                    employerEmail: string,
+                    employerPhone: string
+                    jobyerFirstName: string,
+                    jobyerLastName: string,
+                    jobyerEmail: string,
+                    jobyerPhone: string,
 
-                let confirm = Alert.create({
+            })=> {
+
+                let confirm = this.alert.create({
                     title: "Vit-On-Job",
                     message: "Les détails de cette missions sont en cours de traitements, vous serez contacté par SMS une fois la facturation effectuée",
                     buttons: [
@@ -724,12 +747,12 @@ export class MissionDetailsPage {
                         }
                     ]
                 });
-                this.nav.present(confirm);
+                confirm.present();
 
                 let idContrat = data.id;
                 let idOffre = data.offerId;
                 let rate = data.rate;
-                this.financeService.loadInvoice(idContrat, idOffre, rate).then(invoiceData=> {
+                this.financeService.loadInvoice(idContrat, idOffre, rate).then((invoiceData : {invoiceId: any})=> {
                     let idInvoice = invoiceData.invoiceId;
                     let bean = {
                         "class": 'com.vitonjob.docusign.model.DSConfig',
@@ -749,7 +772,7 @@ export class MissionDetailsPage {
                     };
                     this.missionService.signEndOfMission(bean).then(signatureData=> {
 
-                        this.financeService.checkInvoice(this.contract.pk_user_contrat).then(invoice=> {
+                        this.financeService.checkInvoice(this.contract.pk_user_contrat).then((invoice:{pk_user_facture_voj:any,releve_signe_employeur:any,releve_signe_jobyer:any, facture_signee:any})=> {
 
                             if (invoice) {
                                 this.invoiceId = invoice.pk_user_facture_voj;
@@ -780,7 +803,7 @@ export class MissionDetailsPage {
     }
 
     watchSignedToggle(e) {
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -789,8 +812,8 @@ export class MissionDetailsPage {
             spinner: 'hide',
             duration: 10000
         });
-        this.nav.present(loading).then(()=> {
-            this.missionService.signContract(this.contract.pk_user_contrat).then((data) => {
+        loading.present().then(()=> {
+            this.missionService.signContract(this.contract.pk_user_contrat).then((data:{status:string, error: string}) => {
                 if (!data || data.status == "failure") {
                     console.log(data.error);
                     loading.dismiss();
@@ -842,11 +865,11 @@ export class MissionDetailsPage {
     }
 
     changeOption() {
-        let modal = Modal.create(ModalTrackMissionPage);
-        this.nav.present(modal);
-        modal.onDismiss(selectedOption => {
+        let modal = this.modal.create(ModalTrackMissionPage);
+        modal.present();
+        modal.onDidDismiss(selectedOption => {
             if (selectedOption) {
-                this.missionService.updateOptionMission(selectedOption, this.contract.pk_user_contrat).then((data) => {
+                this.missionService.updateOptionMission(selectedOption, this.contract.pk_user_contrat).then((data: {status: string}) => {
                     if (!data || data.status == 'failure') {
                         this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
                     } else {
@@ -864,7 +887,7 @@ export class MissionDetailsPage {
      */
     setStarPicker() {
 
-        let picker = Picker.create();
+        let picker = this.picker.create();
         let options: PickerColumnOption[] = new Array<PickerColumnOption>();
         for (let i = 1; i <= 5; i++) {
             options.push({
@@ -888,7 +911,7 @@ export class MissionDetailsPage {
                 this.notationService.saveContractNotation(this.contract, this.projectTarget, this.rating);
             }
         });
-        this.nav.present(picker);
+        picker.present();
     }
 
     /**
@@ -904,11 +927,11 @@ export class MissionDetailsPage {
     }
 
     presentToast(message: string, duration: number) {
-        let toast = Toast.create({
+        let toast = this.toast.create({
             message: message,
             duration: duration * 1000
         });
-        this.nav.present(toast);
+        toast.present();
     }
 
     onPointedHourClick(i, j, isStartMission, isStartPause) {
@@ -934,7 +957,7 @@ export class MissionDetailsPage {
             }
         }
 
-        let actionSheet = ActionSheet.create({
+        let actionSheet = this.actionSheet.create({
             title: 'Actions',
             cssClass: 'action-sheets-basic-page',
             buttons: [
@@ -964,7 +987,7 @@ export class MissionDetailsPage {
                 }
             ]
         });
-        this.nav.present(actionSheet);
+        actionSheet.present();
     }
 
     colorHour(i, j, isStartMission, isStartPause, valid) {
@@ -988,7 +1011,7 @@ export class MissionDetailsPage {
                 id = this.missionHours[i].id;
             }
         }
-        this.missionService.saveIsHourValid(i, j, isStartMission, isStartPause, isCorrected, id).then((data) => {
+        this.missionService.saveIsHourValid(i, j, isStartMission, isStartPause, isCorrected, id).then((data:any) => {
             console.log("is hour valid saved")
         });
     }
@@ -1028,7 +1051,7 @@ export class MissionDetailsPage {
             icon: 'undo',
             handler: () => {
                 console.log('Erase clicked');
-                actionSheet.onDismiss(() => {
+                actionSheet.onDidDismiss(() => {
                     this.undoNewHour(i, j, isStartMission, isStartPause);
                 });
             }
@@ -1065,12 +1088,12 @@ export class MissionDetailsPage {
             }
         }
         //display the action sheet
-        let actionSheet = ActionSheet.create({
+        let actionSheet = this.actionSheet.create({
             title: 'L\'heure initialement prévue : ' + initialHour,
             cssClass: 'action-sheets-basic-page',
             buttons: buttons
         });
-        this.nav.present(actionSheet);
+        actionSheet.present();
     }
 
     modifyScheduledHour(i, j, isStartMission, isStartPause) {
@@ -1079,11 +1102,11 @@ export class MissionDetailsPage {
             mode: 'time',
             minuteInterval: 15,
             is24Hour: true,
-            allowOldDates: true, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+            doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
         }).then(newHour => {
                 console.log("Got date: ", newHour);
-                newHour = newHour.getHours() * 60 + newHour.getMinutes();
-                var isHourValid = this.isHourValid(i, j, isStartPause, isStartMission, newHour);
+                let myNewHour: number = newHour.getHours() * 60 + newHour.getMinutes();
+                var isHourValid = this.isHourValid(i, j, isStartPause, isStartMission, myNewHour);
                 if (!isHourValid) {
                     return;
                 }
@@ -1106,7 +1129,7 @@ export class MissionDetailsPage {
                         id = this.missionHours[i].id;
                     }
                 }
-                this.missionService.saveNewHour(i, j, isStartMission, isStartPause, id, newHour).then((data) => {
+                this.missionService.saveNewHour(i, j, isStartMission, isStartPause, id, newHour).then((data:any) => {
                     console.log("new hour saved")
                 });
             },
@@ -1155,7 +1178,7 @@ export class MissionDetailsPage {
                 this.missionHours[i].heure_fin_new = 'null';
             }
         }
-        this.missionService.deleteNewHour(i, j, isStartMission, isStartPause, id).then((data) => {
+        this.missionService.deleteNewHour(i, j, isStartMission, isStartPause, id).then((data:any) => {
             console.log("new hour deleted")
         });
     }
@@ -1166,11 +1189,11 @@ export class MissionDetailsPage {
             mode: 'time',
             minuteInterval: 15,
             is24Hour: true,
-            allowOldDates: true, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+            doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
         }).then(pauseHour => {
                 //verify if the entered pause hour is valid
-                var pauseHour = pauseHour.getHours() * 60 + pauseHour.getMinutes();
-                var isHourValid = this.isHourValid(i, j, isStartPause, false, pauseHour);
+                let myPauseHour = pauseHour.getHours() * 60 + pauseHour.getMinutes();
+                var isHourValid = this.isHourValid(i, j, isStartPause, false, myPauseHour);
                 if (!isHourValid) {
                     return;
                 }
@@ -1203,7 +1226,7 @@ export class MissionDetailsPage {
     }
 
     refreshSignatureStatus(){
-        this.missionService.getContract(this.contract.pk_user_contrat).then(data => {
+        this.missionService.getContract(this.contract.pk_user_contrat).then((data:{data:Array<any>}) => {
             this.contract = data.data[0];
             if(this.upperCase(this.contract.signature_jobyer) == 'NON'){
                 this.isSignContractClicked = false;

@@ -1,4 +1,4 @@
-import {NavController, NavParams, ViewController, Toast} from "ionic-angular";
+import {NavController, NavParams, ViewController, ToastController} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {Component} from "@angular/core";
@@ -30,7 +30,8 @@ export class ModalSelectionPage {
     constructor(private nav: NavController,
                 private gc: GlobalConfigs,
                 private params: NavParams,
-                private viewCtrl: ViewController) {
+                private viewCtrl: ViewController,
+                public toast: ToastController) {
 
 
         // Set global configs
@@ -141,28 +142,28 @@ export class ModalSelectionPage {
 
         this.viewCtrl.dismiss().then(() => {
             if (isQualityExist) {
-                let toast = Toast.create({
+                let toast = this.toast.create({
                     message: "Vous avez déjà choisi cette qualité! Merci d'en sélectionner une autre.",
                     duration: 3000
                 });
 
-                toast.onDismiss(() => {
+                toast.onDidDismiss(() => {
                     console.log('Dismissed toast');
                 });
 
-                this.nav.present(toast);
+                toast.present();
             }
             if (isLangExist) {
-                let toast = Toast.create({
+                let toast = this.toast.create({
                     message: "Vous avez déjà choisi cette langue! Merci d'en sélectionner une autre.",
                     duration: 3000
                 });
 
-                toast.onDismiss(() => {
+                toast.onDidDismiss(() => {
                     console.log('Dismissed toast');
                 });
 
-                this.nav.present(toast);
+                toast.present();
             }
         });
     }

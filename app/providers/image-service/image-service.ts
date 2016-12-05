@@ -45,10 +45,10 @@ export class ImageService {
      * @param folderpath {String} The folder where the file will be created
      * @param filename {String} The name of the file that will be created
      * @param content {Base64 String} Important : The content can't contain the following string (data:image/png[or any other format];base64,). Only the base64 string is expected.
-     */
+
     savebase64AsImageFile(folderpath, filename, content, contentType) {
         // Convert the base64 string in a Blob
-        var DataBlob = this.b64toBlob(content, contentType);
+        var DataBlob = this.b64toBlob(content, contentType, 0);
 
         console.log("Starting to write the file :3");
 
@@ -67,4 +67,5 @@ export class ImageService {
             });
         });
     }
+     */
 }

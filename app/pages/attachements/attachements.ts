@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, Storage, SqlStorage, Modal, Alert} from "ionic-angular";
+import {NavController, Storage, SqlStorage, ModalController, AlertController} from "ionic-angular";
 import {AttachementsService} from "../../providers/attachements-service/attachements-service";
 import {ModalAttachementPage} from "../modal-attachement/modal-attachement";
 import {ModalGalleryPage} from "../modal-gallery/modal-gallery";
@@ -19,11 +19,15 @@ export class AttachementsPage {
     backgroundImage: string;
     themeColor: string;
     emptySafe:boolean;
+    modal:any;
+    alert:any;
 
     constructor(private nav: NavController,
                 private service: AttachementsService,
-                public globalConfig: GlobalConfigs) {
+                public globalConfig: GlobalConfigs, _modal:ModalController, _alert: AlertController) {
         this.db = new Storage(SqlStorage);
+        this.modal = _modal;
+        this.alert = _alert;
         this.projectTarget = globalConfig.getProjectTarget();
         this.isEmployer = this.projectTarget === 'employer';
         let config = Configs.setConfigs(this.projectTarget);
@@ -34,7 +38,7 @@ export class AttachementsPage {
         this.db.get(currentUserVar).then(usr => {
             if (usr) {
                 this.user = JSON.parse(usr);
-                this.service.loadAttachements(this.user).then(data=> {
+                this.service.loadAttachements(this.user).then((data:any) => {
                     this.attachments = data;
                     if(!this.attachments || this.attachments.length == 0){
                         this.emptySafe = true;
@@ -45,15 +49,15 @@ export class AttachementsPage {
     }
 
     downloadAttachement(a) {
-        this.service.downloadActualFile(a.id, a.fileName).then(data => {
+        this.service.downloadActualFile(a.id, a.fileName).then((data: {stream:any}) => {
             let scan = data.stream;
-            let modal = Modal.create(ModalGalleryPage, {scanUri: scan});
-            this.nav.present(modal);
+            let modal = this.modal.create(ModalGalleryPage, {scanUri: scan});
+            modal.present();
         })
     }
 
     deleteAttachment(a) {
-        let alert = Alert.create({
+        let alert = this.alert.create({
             title: 'Supprimer ce document',
             message: 'Etes-vous sûr de vouloir supprimer ce document ?',
             buttons: [{
@@ -69,7 +73,7 @@ export class AttachementsPage {
                     }
                 }]
         });
-        this.nav.present(alert);
+        alert.present();
     }
 
     newAttachement() {

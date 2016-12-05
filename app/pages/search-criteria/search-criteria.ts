@@ -1,13 +1,12 @@
 import {
     NavController,
     ViewController,
-    Loading,
-    Picker,
-    PickerColumnOption,
+    LoadingController,
+    PickerController,
     Storage,
     SqlStorage,
     Platform,
-    Toast
+    ToastController
 } from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SearchService} from "../../providers/search-service/search-service";
@@ -18,6 +17,7 @@ import {CommunesService} from "../../providers/communes-service/communes-service
 import {isUndefined} from "ionic-angular/util";
 import {SearchGuidePage} from "../search-guide/search-guide";
 import {DatePicker} from "ionic-native/dist/index";
+import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
 
 declare var require: any
 /**
@@ -52,20 +52,22 @@ export class SearchCriteriaPage {
     isAndroid4: boolean;
     isSectorFound = true;
     isJobFound = true;
+    listJobs: any= [];
+    calendarTheme:any;
 
     constructor(private viewCtrl: ViewController,
                 public globalConfig: GlobalConfigs,
                 private searchService: SearchService,
                 private cityServices: CommunesService,
-                private nav: NavController, platform: Platform) {
+                private nav: NavController, platform: Platform, public loading:LoadingController, public toast:ToastController, public picker:PickerController) {
         this.viewCtrl = viewCtrl;
         this.projectTarget = globalConfig.getProjectTarget();
         let config = Configs.setConfigs(this.projectTarget);
-        this.isAndroid4 = (platform.version('android').major < 5);
+        this.isAndroid4 = (platform.is('android')) && (platform.version().major < 5);
         this.themeColor = config.themeColor;
         this.buildFilters();
         this.db = new Storage(SqlStorage);
-        this.db.get("SECTOR_LIST").then(data => {
+        this.db.get("SECTOR_LIST").then((data:any) => {
             this.sectorList = JSON.parse(data);
         });
     }
@@ -269,7 +271,7 @@ export class SearchCriteriaPage {
         };
         console.log(JSON.stringify(searchFields));
 
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
                 <div>
                     <img src='img/loading.gif' />
@@ -277,8 +279,8 @@ export class SearchCriteriaPage {
                 `,
             spinner: 'hide'
         });
-        this.nav.present(loading);
-        this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data) => {
+        loading.present();
+        this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data:any) => {
             console.log(data);
             this.searchService.persistLastSearch(data);
             loading.dismiss();
@@ -357,7 +359,7 @@ export class SearchCriteriaPage {
     }
 
     setSectorsPicker() {
-        let picker = Picker.create();
+        let picker = this.picker.create();
         let options: PickerColumnOption[] = new Array<PickerColumnOption>();
 
         this.db.get('SECTOR_LIST').then(listSectors => {
@@ -390,7 +392,7 @@ export class SearchCriteriaPage {
                 }
             });
             picker.setCssClass('sectorPicker');
-            this.nav.present(picker);
+            picker.present();
 
         });
     }
@@ -419,7 +421,7 @@ export class SearchCriteriaPage {
     }
 
     setJobsPicker() {
-        let picker = Picker.create();
+        let picker = this.picker.create();
         let options: PickerColumnOption[] = new Array<PickerColumnOption>();
 
 
@@ -462,7 +464,7 @@ export class SearchCriteriaPage {
                         }
                     });
                     picker.setCssClass('jobPicker');
-                    this.nav.present(picker);
+                    picker.present();
 
                 }
             }
@@ -478,7 +480,7 @@ export class SearchCriteriaPage {
         this.job = '';
         this.sectors = [];
 
-        this.db.get("JOB_LIST").then(data => {
+        this.db.get("JOB_LIST").then((data:any) => {
 
             this.jobList = JSON.parse(data);
             this.jobList = this.jobList.filter((v)=> {
@@ -496,7 +498,7 @@ export class SearchCriteriaPage {
         }
 
         this.cities = [];
-        this.cityServices.autocompleteCity(val).then(data=> {
+        this.cityServices.autocompleteCity(val).then((data:any) => {
             if (data)
                 this.cities = data;
         });
@@ -508,7 +510,7 @@ export class SearchCriteriaPage {
     }
 
     setCitiesPicker() {
-        let picker = Picker.create();
+        let picker = this.picker.create();
         let options: PickerColumnOption[] = new Array<PickerColumnOption>();
 
         this.db.get('CITIES_LIST').then(listCities => {
@@ -535,7 +537,7 @@ export class SearchCriteriaPage {
                 }
             });
             picker.setCssClass('sectorPicker');
-            this.nav.present(picker);
+            picker.present();
 
         });
     }
@@ -554,11 +556,11 @@ export class SearchCriteriaPage {
             date: new Date(),
             mode: type,
             minuteInterval: 15, androidTheme: this.calendarTheme, is24Hour: true,
-            allowOldDates: false, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+            doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
         }).then(
             date => {
                 console.log("Got date: ", date);
-                this.availabilityDate = this.toDateString(date.getTime(), '');
+                this.availabilityDate = this.toDateString(date.getTime());
                 //this.showedSlot.angular4Date = this.toDateString(this.slot.date.getTime(), '');
             },
             err => console.log("Error occurred while getting date:", err)
@@ -575,10 +577,10 @@ export class SearchCriteriaPage {
     }
 
     presentToast(message: string, duration: number) {
-        let toast = Toast.create({
+        let toast = this.toast.create({
             message: message,
             duration: duration * 1000
         });
-        this.nav.present(toast);
+        toast.present();
     }
 }

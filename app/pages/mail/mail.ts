@@ -1,5 +1,8 @@
 import {Component} from "@angular/core";
-import {Alert, NavController, Events, Loading, Storage, SqlStorage} from "ionic-angular";
+import {
+    AlertController, NavController, Events, LoadingController, Storage, SqlStorage,
+    App
+} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {AuthenticationService} from "../../providers/authentication.service";
@@ -10,6 +13,9 @@ import {ValidationDataService} from "../../providers/validation-data.service";
 import {HomePage} from "../home/home";
 import {InfoUserPage} from "../info-user/info-user";
 import {SMS} from "ionic-native";
+
+declare var md5;
+
 /**
  * @author Amal ROCHD
  * @description authentication by mail view
@@ -40,7 +46,15 @@ export class MailPage {
      * @description While constructing the view, we load the list of countries to display their codes
      */
     constructor(public nav: NavController,
-                public gc: GlobalConfigs, private authService: AuthenticationService, private loadListService: LoadListService, private dataProviderService: DataProviderService, private globalService: GlobalService, private validationDataService: ValidationDataService, public events: Events) {
+                public gc: GlobalConfigs,
+                private authService: AuthenticationService,
+                private loadListService: LoadListService,
+                private dataProviderService: DataProviderService,
+                private globalService: GlobalService,
+                private validationDataService: ValidationDataService,
+                public events: Events,
+                public alert:AlertController,
+                public loading:LoadingController, public app:App) {
         // Set global configs
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -57,7 +71,7 @@ export class MailPage {
         this.libelleButton = "Se connecter";
 
         //load countries list
-        this.loadListService.loadCountries(this.projectTarget).then((data) => {
+        this.loadListService.loadCountries(this.projectTarget).then((data: {data:any}) => {
             this.pays = data.data;
         });
     }
@@ -66,7 +80,7 @@ export class MailPage {
      * @description Display the list of countries in an alert
      */
     doRadioAlert() {
-        let alert = Alert.create();
+        let alert = this.alert.create();
         alert.setTitle('Choisissez votre pays');
         for (let p of this.pays) {
             alert.addInput({
@@ -86,7 +100,7 @@ export class MailPage {
             }
         });
 
-        this.nav.present(alert).then(() => {
+        alert.present().then(() => {
         });
     }
 
@@ -95,7 +109,7 @@ export class MailPage {
      */
     authenticate() {
         var indPhone = this.index + this.phone;
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -103,11 +117,18 @@ export class MailPage {
 			`,
             spinner: 'hide'
         });
-        this.nav.present(loading);
+        loading.present();
         //call the service of autentication
         let pwd = md5(this.password1);
-        this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget)
-            .then(data => {
+        this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget, false) //?????
+            .then((data:{
+                length:number,
+                id:number,
+                status:string,
+                jobyerId: number,
+                employerId:number,
+                newAccount: boolean
+            }) => {
                 //case of authentication failure : server unavailable or connection probleme
                 if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
                     console.log(data);
@@ -164,7 +185,7 @@ export class MailPage {
                         currentUser: data
                     });
                 } else {
-                    this.nav.rootNav.setRoot(HomePage);
+                    this.app.getRootNav().setRoot(HomePage);
                     //this.nav.push(InfoUserPage, {
                     //currentUser: data});
                 }
@@ -223,7 +244,7 @@ export class MailPage {
      */
     isRegistration() {
         //verify if the email exist in the database
-        this.dataProviderService.getUserByMail(this.email, this.projectTarget).then((data) => {
+        this.dataProviderService.getUserByMail(this.email, this.projectTarget).then((data:{status:string,data:Array<any>}) => {
             if (!data || data.status == "failure") {
                 console.log(data);
                 this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
@@ -293,11 +314,11 @@ export class MailPage {
      * @description return to the home page
      */
     goBack() {
-        this.nav.rootNav.setRoot(HomePage)
+        this.app.getRootNav().setRoot(HomePage)
     }
 
     passwordForgotten() {
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -305,15 +326,15 @@ export class MailPage {
 			`,
             spinner: 'hide'
         });
-        this.nav.present(loading);
-        this.authService.setNewPassword(this.email).then((data) => {
+        loading.present();
+        this.authService.setNewPassword(this.email).then((data: {password:string}) => {
             if (!data) {
                 loading.dismiss();
                 this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                 return;
             }
             if (data && data.password.length != 0) {
-                this.authService.updatePasswordByMail(this.email, md5(data.password));
+                this.authService.updatePasswordByMail(this.email, md5(data.password), 'Oui');
                 console.log('Sending SMS');
                 var message = "Votre nouveau mot de passe est: " + data.password;
                 this.sendSMS(this.retrievedPhone, message);
@@ -342,7 +363,7 @@ export class MailPage {
             this.globalService.showAlertValidation("Vit-On-Job", "Aucun compte ne correspond à cet adresse email.");
             return;
         }
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: "Vit-On-Job",
             message: "Votre mot de passe est sur le point d'être rénitialisé. Voulez vous continuer?",
             buttons: [
@@ -361,7 +382,7 @@ export class MailPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 
 }

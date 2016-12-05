@@ -54,7 +54,7 @@ export class FinanceService {
 
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;
@@ -100,7 +100,7 @@ export class FinanceService {
 
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
@@ -143,7 +143,7 @@ export class FinanceService {
 
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
@@ -161,7 +161,7 @@ export class FinanceService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data.data[0];
                     resolve(this.data);
                 });
@@ -176,7 +176,7 @@ export class FinanceService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.invoiceId = 0;
                     this.data = null;
                     if (data && data.data && data.data.length > 0) {

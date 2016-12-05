@@ -29,7 +29,7 @@ export class AddressService {
             // Next we process the data and resolve the promise with the new data.
             this.http.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=AIzaSyD6de5QuqKPECTwNSkmBfeRmiTb9147S_Y')
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;
@@ -67,7 +67,7 @@ export class AddressService {
 
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference

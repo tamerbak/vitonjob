@@ -9,9 +9,9 @@ export class PushNotificationService {
     db: any;
     configuration;
     projectTarget;
+    data:any;
 
-    constructor(http: Http, gc: GlobalConfigs) {
-        this.http = http;
+    constructor(public http: Http, gc: GlobalConfigs) {
         this.db = new Storage(SqlStorage);
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -26,7 +26,7 @@ export class PushNotificationService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log(this.data);
                     resolve(this.data);
@@ -47,7 +47,7 @@ export class PushNotificationService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log(this.data);
                     resolve(this.data);
@@ -83,7 +83,7 @@ export class PushNotificationService {
         console.log('notification body : ' + JSON.stringify(body));
         return new Promise(resolve => {
             this.http.post(url, JSON.stringify(body), {headers: headers}).map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                         console.log('notification body : ' + JSON.stringify(data));
                         this.data = data;
                         console.log("push notification sent", data);
@@ -111,7 +111,7 @@ export class PushNotificationService {
         console.log('notification body : ' + JSON.stringify(body));
         return new Promise(resolve => {
             this.http.post(url, JSON.stringify(body), {headers: headers}).map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                         console.log('notification body : ' + JSON.stringify(data));
                         this.data = data;
                         console.log("push notification sent", data);

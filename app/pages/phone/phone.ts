@@ -1,16 +1,16 @@
 import {Component, enableProdMode} from "@angular/core";
 import {
-	Alert,
-	NavController,
-	NavParams,
-	Events,
-	Loading,
-	Toast,
-	Keyboard,
-	ViewController,
-	Platform,
-	Storage,
-	SqlStorage
+    AlertController,
+    NavController,
+    NavParams,
+    Events,
+    LoadingController,
+    ToastController,
+    Keyboard,
+    ViewController,
+    Platform,
+    Storage,
+    SqlStorage, LoadingOptions, App
 } from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
@@ -27,7 +27,7 @@ import {GeneralConditionsPage} from "../general-conditions/general-conditions";
 import {SearchResultsPage} from "../search-results/search-results";
 //import {InfoUserPage} from "../info-user/info-user";
 enableProdMode();
-
+declare var md5;
 /**
  * @author Amal ROCHD
  * @description authentication by phone view
@@ -65,12 +65,14 @@ export class PhonePage {
     fromPage: string;
     defaultImage: string;
     globalConfigs: any;
+    storage:any;
+    isNewRecruteur:boolean;
 
     /**
      * @description While constructing the view, we load the list of countries to display their codes
      */
     constructor(public nav: NavController,
-                params: NavParams,
+                public params: NavParams,
                 public gc: GlobalConfigs,
                 private authService: AuthenticationService,
                 private loadListService: LoadListService,
@@ -80,7 +82,11 @@ export class PhonePage {
                 public events: Events, keyboard: Keyboard,
                 private viewCtrl: ViewController,
                 private platform: Platform,
-                private profileService: ProfileService) {
+                private profileService: ProfileService,
+                public alert:AlertController,
+                public loading:LoadingController,
+                public toast: ToastController,
+                public app:App) {
         // Set global configs
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -102,12 +108,11 @@ export class PhonePage {
         this.platform = platform;
         this.showHidePasswdLabel = "Afficher le mot de passe";
         this.showHidePasswdConfirmLabel = "Afficher le mot de passe";
-        this.params = params;
-        this.fromPage = this.params.data.fromPage;
+        this.fromPage = params.data.fromPage;
         this.defaultImage = config.userImageURL;
 
         //load countries list
-        this.loadListService.loadCountries(this.projectTarget).then((data) => {
+        this.loadListService.loadCountries(this.projectTarget).then((data:{data:any}) => {
             this.pays = data.data;
         });
     }
@@ -116,7 +121,7 @@ export class PhonePage {
      * @description Display the list of countries in an alert
      */
     doRadioAlert() {
-        let alert = Alert.create();
+        let alert = this.alert.create();
         alert.setTitle('Choisissez votre pays');
         for (let p of this.pays) {
             alert.addInput({
@@ -136,7 +141,7 @@ export class PhonePage {
             }
         });
 
-        this.nav.present(alert).then(() => {
+        alert.present().then(() => {
         });
     }
 
@@ -148,8 +153,8 @@ export class PhonePage {
         if (this.isAuthDisabled()) {
             return;
         }
-        var indPhone = this.index + this.phone;
-        let loading = Loading.create({
+        let indPhone = this.index + this.phone;
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -157,7 +162,7 @@ export class PhonePage {
 			`,
             spinner: 'hide'
         });
-        this.nav.present(loading);
+        loading.present();
         //call the service of autentication
         let pwd = md5(this.password1);
 
@@ -172,7 +177,19 @@ export class PhonePage {
                 return;
             }*/
 
-            this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget, this.isRecruteur).then(data => {
+            this.authService.authenticate(this.email, indPhone, pwd, this.projectTarget, this.isRecruteur)
+                .then((data:{
+                    length:number,
+                    id:number,
+                    status:string,
+                    mot_de_passe_reinitialise:any,
+                    prenom:string,
+                    titre: string,
+                    newAccount:boolean,
+                    jobyerId: number,
+                    employerId: number,
+
+            }) => {
                 console.log(data);
                 //case of authentication failure : server unavailable or connection probleme 
                 if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
@@ -198,14 +215,14 @@ export class PhonePage {
                     
                     data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
                     this.afterAuthSuccess(data);
-                    let toast = Toast.create({
+                    let toast = this.toast.create({
                             message: "Bienvenue "+ data.prenom +" vous venez de vous connecter !",
                             duration: 2000,
                          });
                         
                     loading.dismiss().then(() => { 
                         if(data.titre != null && data.titre !== "" ){
-                            this.nav.present(toast);
+                            toast.present();
                         }
                     });
                     
@@ -233,7 +250,7 @@ export class PhonePage {
                                     this.nav.remove(index);
                                 })
                             } else {                          
-                                this.nav.rootNav.setRoot(HomePage, {currentUser: data});
+                                this.app.getRootNav().setRoot(HomePage, {currentUser: data});
                             }
                         }
                     });
@@ -268,8 +285,8 @@ export class PhonePage {
             this.events.publish('user:login', data);
 
             //load profile picture
-            this.profileService.loadProfilePicture(data.id).then(pic => {
-                var userImageURL;
+            this.profileService.loadProfilePicture(data.id, '','').then((pic: {data:Array<any>}) => {
+                let userImageURL;
                 if (!this.isEmpty(pic.data[0].encode)) {
                     userImageURL = pic.data[0].encode;
                     this.profileService.uploadProfilePictureInLocal(pic.data[0].encode);
@@ -333,7 +350,7 @@ export class PhonePage {
         if (this.isPhoneValid(phone)) {
             //On teste si le tél existe dans la base
             var tel = "+" + index + phone;
-            this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data) => {
+            this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data:{status:string, data:Array<any>}) => {
                 if (!data || data.status == "failure") {
                     console.log(data);
                     this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
@@ -419,7 +436,7 @@ export class PhonePage {
 
     isEmailExist(e) {
         //verify if the email exist in the database
-        this.dataProviderService.getUserByMail(this.email, this.projectTarget).then((data) => {
+        this.dataProviderService.getUserByMail(this.email, this.projectTarget).then((data:{status:string, data:Array<any>}) => {
             if (!data || data.status == "failure") {
                 console.log(data);
                 this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
@@ -470,11 +487,11 @@ export class PhonePage {
      * @description return to the home page
      */
     goBack() {
-        this.nav.rootNav.setRoot(HomePage);
+        this.app.getRootNav().setRoot(HomePage);
     }
 
     passwordForgotten(canal, email) {
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -482,9 +499,9 @@ export class PhonePage {
 			`,
             spinner: 'hide'
         });
-        this.nav.present(loading);
+        loading.present();
         var tel = "+" + this.index + this.phone;
-        this.authService.setNewPassword(tel).then((data) => {
+        this.authService.setNewPassword(tel).then((data:{password:string}) => {
             if (!data) {
                 loading.dismiss();
                 this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
@@ -493,14 +510,14 @@ export class PhonePage {
             if (data && data.password.length != 0) {
                 let newPasswd = data.password;
                 if (canal == 'sms') {
-                    this.authService.updatePasswordByPhone(tel, md5(newPasswd),"Oui").then((data) => {
+                    this.authService.updatePasswordByPhone(tel, md5(newPasswd),"Oui").then((data:any) => {
                         if (!data) {
                             loading.dismiss();
                             this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                             return;
                         }
-                        this.authService.sendPasswordBySMS(tel, newPasswd).then((data) => {
-                            if (!data || data.status != 200) {
+                        this.authService.sendPasswordBySMS(tel, newPasswd).then((data: {status:string}) => {
+                            if (!data || data.status != '200') {
                                 loading.dismiss();
                                 this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                                 return;
@@ -511,14 +528,14 @@ export class PhonePage {
                     });
                 }
                 else {
-                    this.authService.updatePasswordByMail(email, md5(newPasswd),"Oui").then((data) => {
+                    this.authService.updatePasswordByMail(email, md5(newPasswd),"Oui").then((data:any) => {
                         if (!data) {
                             loading.dismiss();
                             this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                             return;
                         }
-                        this.authService.sendPasswordByEmail(email, newPasswd).then((data) => {
-                            if (!data || data.status != 200) {
+                        this.authService.sendPasswordByEmail(email, newPasswd).then((data: {status:string}) => {
+                            if (!data || data.status != '200') {
                                 loading.dismiss();
                                 this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                                 return;
@@ -552,7 +569,7 @@ export class PhonePage {
             return;
         }
         if (this.isRecruteur) {
-            let confirm = Alert.create({
+            let confirm = this.alert.create({
                 title: "Vit-On-Job",
                 message: "Votre mot de passe est sur le point d'être réinitialisé. Voulez-vous continuer?",
                 buttons: [
@@ -560,19 +577,19 @@ export class PhonePage {
                         text: 'Recevoir par SMS',
                         handler: () => {
                             console.log('SMS selected');
-                            this.passwordForgotten("sms");
-                            let toast = Toast.create({
+                            this.passwordForgotten("sms",'');
+                            let toast = this.toast.create({
                                 message: "Votre mot de passe a été réinitialisé. Vous recevrez un SMS avec un nouveau mot de passe d'ici peu.",
                                 duration: 5000
                             });
-                            this.nav.present(toast);
+                            toast.present();
                         }
                     },
                 ]
             });
-            this.nav.present(confirm);
+            confirm.present();
         } else {
-            let confirm = Alert.create({
+            let confirm = this.alert.create({
                 title: "Vit-On-Job",
                 message: "Votre mot de passe est sur le point d'être réinitialisé. Voulez-vous le recevoir par SMS ou par email?",
                 buttons: [
@@ -580,12 +597,12 @@ export class PhonePage {
                         text: 'SMS',
                         handler: () => {
                             console.log('SMS selected');
-                            this.passwordForgotten("sms");
-                            let toast = Toast.create({
+                            this.passwordForgotten("sms",'');
+                            let toast = this.toast.create({
                                 message: "Votre mot de passe a été réinitialisé. Vous recevrez un SMS avec un nouveau mot de passe d'ici peu.",
                                 duration: 5000
                             });
-                            this.nav.present(toast);
+                            toast.present();
                         }
                     },
                     {
@@ -593,16 +610,16 @@ export class PhonePage {
                         handler: () => {
                             console.log('Email selected');
                             this.passwordForgotten("email", this.email);
-                            let toast = Toast.create({
+                            let toast = this.toast.create({
                                 message: "Votre mot de passe a été réinitialisé. Vous recevrez un courrier électronique avec un nouveau mot de passe d'ici peu.",
                                 duration: 5000
                             });
-                            this.nav.present(toast);
+                            toast.present();
                         }
                     }
                 ]
             });
-            this.nav.present(confirm);
+            confirm.present();
         }
 
     }

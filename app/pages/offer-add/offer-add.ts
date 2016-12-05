@@ -1,12 +1,12 @@
 import {
     NavController,
     NavParams,
-    Toast,
-    Modal,
+    ToastController,
+    ModalController,
     LocalStorage,
     Storage,
-    Loading,
-    Alert,
+    LoadingController,
+    AlertController,
     ViewController, SqlStorage
 } from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
@@ -48,12 +48,11 @@ export class OfferAddPage {
         isLanguage: boolean,
         isCalendar: boolean
     };
-    nav: NavController;
     localOffer: Storage;
     offerService: OffersService;
     visibleOffer: boolean;
     offerToBeAdded: {jobData: any, calendarData: any, qualityData: any, languageData: any,
-        visible: boolean, title: string, status: string, idHunter: number};
+        visible: boolean, title: string, status: string, idHunter: number, videolink: string};
     backgroundImage: any;
     jobData : any;
     idTiers : number;
@@ -62,12 +61,19 @@ export class OfferAddPage {
     isHunter:boolean= false;
     idHunter: number = 0;
 
-    constructor(public nav: NavController, private gc: GlobalConfigs, private os: OffersService, navParams: NavParams, private viewCtrl: ViewController) {
+    constructor(public nav: NavController,
+                private gc: GlobalConfigs,
+                private os: OffersService,
+                public navParams: NavParams,
+                private viewCtrl: ViewController,
+                public alert:AlertController,
+                public modal:ModalController,
+                public toast: ToastController,
+                public loading: LoadingController) {
 
         // Set global configs
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
-        debugger;
         this.isHunter = gc.getHunterMask();
 
         // get config of selected target
@@ -76,8 +82,6 @@ export class OfferAddPage {
         //Initializing PAGE:
         this.initializePage(config);
         this.offerService = os;
-        this.nav = nav;
-        this.navParams = navParams;
 
         this.storage = new Storage(SqlStorage);
         this.storage.get(config.currentUserVar).then((value) => {
@@ -121,7 +125,7 @@ export class OfferAddPage {
 
         this.offerToBeAdded = {
             jobData: {}, calendarData: [], qualityData: [], languageData: [],
-            visible: this.visibleOffer, title: "", status: "open", videolink: ""
+            visible: this.visibleOffer, title: "", status: "open", idHunter: 0, videolink: ""
 
         };
 
@@ -182,17 +186,17 @@ export class OfferAddPage {
      * @param duration
      */
     presentToast(message: string, duration: number) {
-        let toast = Toast.create({
+        let toast = this.toast.create({
             message: message,//"Agenda bien insérée, Votre offre est valide",
             duration: duration * 1000
         });
 
-        toast.onDismiss(() => {
+        toast.onDidDismiss(() => {
             console.log('Dismissed toast');
             //this.isOfferValidated = (!this.isOfferValidated);
         });
 
-        this.nav.present(toast);
+        toast.present();
     }
 
     /**########## Modals #############*/
@@ -204,9 +208,9 @@ export class OfferAddPage {
     showJobModal() {
         this.localOffer.get('jobData').then(value => {
             console.log(value);
-            let modal = Modal.create(ModalJobPage, {jobData: JSON.parse(value)});
-            this.nav.present(modal);
-            modal.onDismiss(data => {
+            let modal = this.modal.create(ModalJobPage, {jobData: JSON.parse(value)});
+            modal.present();
+            modal.onDidDismiss((data:{validated:boolean, isJob:boolean}) => {
                 this.jobData = data;
                 this.validated.isJob = data.validated;
                 this.steps.isCalendar = this.validated.isJob;
@@ -221,9 +225,9 @@ export class OfferAddPage {
     showQualityModal() {
 
         this.localOffer.get('qualities').then(value => {
-            let modal = Modal.create(ModalQualityPage, {qualities: JSON.parse(value)});
-            this.nav.present(modal);
-            modal.onDismiss(data => {
+            let modal = this.modal.create(ModalQualityPage, {qualities: JSON.parse(value)});
+            modal.present();
+            modal.onDidDismiss((data:any) => {
                 this.validated.isQuality = (data.length) ? data.length > 0 : false;
                 //this.steps.isLanguage = this.validated.isQuality;
                 this.localOffer.set('qualities', JSON.stringify(data));
@@ -236,9 +240,9 @@ export class OfferAddPage {
      */
     showLanguageModal() {
         this.localOffer.get('languages').then(value => {
-            let modal = Modal.create(ModalLanguagePage, {languages: JSON.parse(value)});
-            this.nav.present(modal);
-            modal.onDismiss(data => {
+            let modal = this.modal.create(ModalLanguagePage, {languages: JSON.parse(value)});
+            modal.present();
+            modal.onDidDismiss((data:any) => {
                 this.validated.isLanguage = (data.length) ? data.length > 0 : false;
                 //this.steps.isCalendar = this.validated.isLanguage;
                 this.localOffer.set('languages', JSON.stringify(data));
@@ -253,9 +257,9 @@ export class OfferAddPage {
      */
     showCalendarModal() {
         this.localOffer.get('slots').then(value => {
-            let modal = Modal.create(ModalCalendarPage, {slots: JSON.parse(value), obj: "add"});
-            this.nav.present(modal);
-            modal.onDismiss(data => {
+            let modal = this.modal.create(ModalCalendarPage, {slots: JSON.parse(value), obj: "add"});
+            modal.present();
+            modal.onDidDismiss((data:any) => {
                 this.validated.isCalendar = (data.slots.length) ? data.slots.length > 0 : false;
                 this.localOffer.set('slots', JSON.stringify(data.slots));
                 if (this.validated.isCalendar && this.validated.isQuality)
@@ -270,7 +274,7 @@ export class OfferAddPage {
      */
     addOffer() {
         this.initLocalStorageOffer();
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -279,13 +283,13 @@ export class OfferAddPage {
             spinner: 'hide',
             duration: 10000
         });
-        this.nav.present(loading);
+        loading.present();
         this.offerService.setOfferInLocal(this.offerToBeAdded, this.projectTarget)
             .then(()=> {
                 console.log('••• Adding offer : local storing success!');
 
                 this.offerService.setOfferInRemote(this.offerToBeAdded, this.projectTarget)
-                    .then(data => {
+                    .then((data:{_body:any}) => {
                         console.log('••• Adding offer : remote storing success!');
                         let offer = JSON.parse(data._body);
                         debugger;
@@ -323,7 +327,7 @@ export class OfferAddPage {
     }
 
     showVideoAlert() {
-        let prompt = Alert.create({
+        let prompt = this.alert.create({
             title: 'Attacher une vidéo',
             message: "<div id='alertDiv'><ol><li>Ouvrez l'application Youtube </li>" +
             "<li>Appuyez sur l'icône de <b>caméra</b> <img src='../img/youtube.png'></li>" +
@@ -355,6 +359,6 @@ export class OfferAddPage {
                 }
             ]
         });
-        this.nav.present(prompt);
+        prompt.present();
     }
 }

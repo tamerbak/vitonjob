@@ -1,5 +1,5 @@
 import {Component, NgZone} from "@angular/core";
-import {Alert, NavController, NavParams, Loading, Events, Modal, Platform, Storage, SqlStorage} from "ionic-angular";
+import {NavController, NavParams, Events, ModalController, Platform, Storage, SqlStorage} from "ionic-angular";
 import {LoadListService} from "../../providers/load-list.service";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
@@ -17,6 +17,8 @@ import {ProfileService} from "../../providers/profile-service/profile-service";
 import {Utils} from "../../utils/utils";
 import {AccountConstraints} from "../../validators/account-constraints";
 import {ModalCorporamaSearchPage} from "../modal-corporama-search/modal-corporama-search";
+import {LoadingController} from "ionic-angular/components/loading/loading";
+import {AlertController} from "ionic-angular/components/alert/alert";
 
 
 /**
@@ -67,7 +69,7 @@ export class CivilityPage {
     isValideFirstName: boolean = true;
     titlestyle: any;
     nationalitiesstyle: any;
-    calendarTheme: string;
+    calendarTheme: number;
     isAndroid4: boolean;
     platform: any;
     isBirthdateValid = true;
@@ -109,8 +111,8 @@ export class CivilityPage {
     selectedBirthDep: any;
     //nationality and docs
     idNationaliteLabel: string;
-    isResident: string;
-    isCIN: string;
+    isResident: any;
+    isCIN: any;
     numStay: string;
     //flags for field validation
     isValidCni: boolean;
@@ -118,13 +120,27 @@ export class CivilityPage {
     //returned company from corporama search
     company: any;
 
+    // Forgotten properties declarations
+    storage:any;
+    themeColor:string;
+    isEmployer:boolean;
+    params:any;
+    loadListService:any;
+    regionId:any;
+    loading:any;
+    cniHint:any;
+    modal:any;
+    slot:any;
+    showedSlot:any;
+    alert:any;
+
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
      */
     constructor(public nav: NavController,
                 private authService: AuthenticationService,
                 public gc: GlobalConfigs,
-                private loadListService: LoadListService,
+                private _loadListService: LoadListService,
                 private sqlStorageService: SqlStorageService,
                 params: NavParams,
                 private globalService: GlobalService,
@@ -133,14 +149,19 @@ export class CivilityPage {
                 private attachementService: AttachementsService,
                 private medecineService: MedecineService,
                 communesService: CommunesService,
-                platform: Platform,
-                private profileService: ProfileService) {
+                _platform: Platform,
+                private profileService: ProfileService,
+                private _loading:LoadingController, private _modal:ModalController, private _alert:AlertController) {
         // Set global configs
         // Get target to determine configs
 
         this.projectTarget = gc.getProjectTarget();
         this.storage = new Storage(SqlStorage);
-
+        this.platform = _platform;
+        this.loadListService = _loadListService;
+        this.loading = _loading;
+        this.modal = _modal;
+        this.alert = _alert;
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
 
@@ -149,8 +170,7 @@ export class CivilityPage {
         this.currentUserVar = config.currentUserVar;
         this.isEmployer = (this.projectTarget == 'employer');
         this.calendarTheme = config.calendarTheme;
-        this.isAndroid4 = (platform.version('android').major < 5);
-        this.platform = platform;
+        this.isAndroid4 = (this.platform.version('android').major < 5);
         //this.tabs=tabs;
         this.params = params;
         this.currentUser = this.params.data.currentUser;
@@ -159,7 +179,7 @@ export class CivilityPage {
         this.titlePage = this.isEmployer ? "Fiche de l'entreprise" : "Profil";
         //load nationality list
         if (!this.isEmployer && !this.isRecruiter) {
-            this.loadListService.loadNationalities(this.projectTarget).then((data) => {
+            this.loadListService.loadNationalities(this.projectTarget).then((data:{data:any}) => {
                 this.nationalities = data.data;
                 //initialize nationality with (9 = francais)
                 this.scanTitle = " de votre CNI";
@@ -178,7 +198,7 @@ export class CivilityPage {
             nom: '',
             code_insee: ''
         };
-        this.communesService.loadPrefectures().then(data=> {
+        this.communesService.loadPrefectures().then((data:any) => {
             this.prefectures = data;
         });
         let today = new Date();
@@ -200,7 +220,7 @@ export class CivilityPage {
         this.maxtsejToDate = (today.getFullYear() + 70) + "-12-31";
 
         //load data for birth country
-        this.loadListService.loadCountries(this.projectTarget).then((data) => {
+        this.loadListService.loadCountries(this.projectTarget).then((data: {data:any}) => {
             this.pays = data.data;
         });
 
@@ -214,7 +234,7 @@ export class CivilityPage {
             return;
         }
 
-        this.loadListService.loadConventions(val).then(data=> {
+        this.loadListService.loadConventions(val).then((data:any) => {
             this.conventions = data;
         });
     }
@@ -229,7 +249,7 @@ export class CivilityPage {
 
         this.codesPostaux = [];
 
-        this.communesService.getCodesPostaux(val).then(data => {
+        this.communesService.getCodesPostaux(val).then((data:any) => {
             this.codesPostaux = data;
         });
     }
@@ -247,7 +267,7 @@ export class CivilityPage {
         }
         this.communes = [];
 
-        this.communesService.getCommunesByTerm(val, this.selectedBirthDep).then(data=> {
+        this.communesService.getCommunesByTerm(val, this.selectedBirthDep).then((data:any) => {
             this.communes = data;
         });
     }
@@ -275,7 +295,7 @@ export class CivilityPage {
         }
         this.departments = [];
 
-        this.communesService.getDepartmentsByTerm(val).then(data=> {
+        this.communesService.getDepartmentsByTerm(val).then((data:any) => {
             this.departments = data;
         });
     }
@@ -354,7 +374,7 @@ export class CivilityPage {
                     this.companyname = this.currentUser.employer.entreprises[0].nom;
                     this.siret = this.currentUser.employer.entreprises[0].siret;
                     this.ape = this.currentUser.employer.entreprises[0].naf;
-                    this.medecineService.getMedecine(this.currentUser.employer.entreprises[0].id).then(data=> {
+                    this.medecineService.getMedecine(this.currentUser.employer.entreprises[0].id).then((data : {id:any, libelle:string})=> {
                         if (data && data != null) {
                             this.medecineId = data.id;
                             this.medecineTravail = data.libelle;
@@ -386,9 +406,9 @@ export class CivilityPage {
                             this.isResident = (data.est_resident == 'Oui' ? "1" : "0");
                             this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? "0" : "1";
                             this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
-                            if (this.index == 33) {
+                            if (this.index === "33") {
                                 this.isFrench = true;
-                                this.communesService.getDepartmentById(data.fk_user_departement).then(deps => {
+                                this.communesService.getDepartmentById(data.fk_user_departement).then((deps: Array<any>) => {
                                     if(deps && deps.length > 0) {
                                         this.selectedBirthDep = deps[0];
                                         this.birthdep = deps[0].numero
@@ -462,7 +482,7 @@ export class CivilityPage {
 
             if (this.birthplace && this.birthplace != 'null' && !this.isRecruiter) {
 
-                this.communesService.getCommune(this.birthplace).then(data => {
+                this.communesService.getCommune(this.birthplace).then((data: Array<any>) => {
                     if (data && data.length > 0) {
                         this.selectedCommune = data[0];
                         if (this.selectedCommune.fk_user_code_postal && this.selectedCommune.fk_user_code_postal != "null") {
@@ -549,7 +569,7 @@ export class CivilityPage {
      * @description update civility information for employer and jobyer
      */
     updateCivility() {
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -557,9 +577,9 @@ export class CivilityPage {
 			`,
             spinner: 'hide'
         });
-        this.nav.present(loading);
+        loading.present(loading);
         if (this.isRecruiter) {
-            this.authService.updateRecruiterCivility(this.title, this.lastname, this.firstname, this.currentUser.id).then((data) => {
+            this.authService.updateRecruiterCivility(this.title, this.lastname, this.firstname, this.currentUser.id).then((data:{status:string, error: string}) => {
                 if (!data || data.status == "failure") {
                     console.log(data.error);
                     loading.dismiss();
@@ -587,7 +607,9 @@ export class CivilityPage {
             //get entreprise id of the current employer
             var entrepriseId = this.currentUser.employer.entreprises[0].id;
             // update employer
-            this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname, this.siret, this.ape, employerId, entrepriseId, this.projectTarget, this.medecineId, this.conventionId).then((data) => {
+            this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname,
+                this.siret, this.ape, employerId, entrepriseId, this.projectTarget, this.medecineId, this.conventionId)
+                .then((data: {status:string, error:string}) => {
                 if (!data || data.status == "failure") {
                     console.log(data.error);
                     loading.dismiss();
@@ -662,7 +684,10 @@ export class CivilityPage {
                 let birthdepId = !Utils.isEmpty(this.selectedBirthDep) ? this.selectedBirthDep.id : null;
                 this.cni = this.isCIN == 0 ? "" : this.cni;
                 this.numStay = this.isCIN == 0 ? this.numStay : "";
-                this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni, this.nationality, jobyerId, this.birthdate, this.birthplace, this.prefecture, this.tsejProvideDate, this.tsejFromDate, this.tsejToDate, birthdepId, this.numStay, birthCountryId, regionId, isResident).then((data) => {
+                this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni,
+                    this.nationality, jobyerId, this.birthdate, this.birthplace, this.prefecture, this.tsejProvideDate,
+                    this.tsejFromDate, this.tsejToDate, birthdepId, this.numStay, birthCountryId, regionId, isResident)
+                    .then((data: {status:string, error:string}) => {
                     if (!data || data.status == "failure") {
                         console.log(data.error);
                         loading.dismiss();
@@ -729,7 +754,7 @@ export class CivilityPage {
             this.currentUser.scanUploaded = true;
             this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
             this.authService.uploadScan(this.scanUri, userId, 'scan', 'upload')
-                .then((data) => {
+                .then((data: {status:string}) => {
                     if (!data || data.status == "failure") {
                         console.log("Scan upload failed !");
                         //this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde du scan");
@@ -901,7 +926,7 @@ export class CivilityPage {
 
     static isValidName(name: string) {
         let regEx = /^[A-Za-zÀ-ú.' \-\p{L}\p{Zs}\p{Lu}\p{Ll}']+$/;
-        return name.match(regEx);
+        return !(name.match(regEx) == null);
     }
 
     isNumeric(n) {
@@ -1068,15 +1093,15 @@ export class CivilityPage {
     onDelete(e) {
         this.scanUri = null;
         var fileinput = document.getElementById('fileinput');
-        fileinput.value = "";
+        (<HTMLInputElement>fileinput).value = "";
     }
 
     /**
      * @description show modal
      */
     showModal() {
-        let modal = Modal.create(ModalGalleryPage, {scanUri: this.scanUri});
-        this.nav.present(modal);
+        let modal = this.modal.create(ModalGalleryPage, {scanUri: this.scanUri});
+        modal.present();
     }
 
     watchMedecineTravail(e) {
@@ -1088,7 +1113,7 @@ export class CivilityPage {
         }
         console.log(val);
         this.medecines = [];
-        this.medecineService.autocomplete(val).then(data=> {
+        this.medecineService.autocomplete(val).then((data:any) => {
             this.medecines = data;
             console.log(JSON.stringify(this.medecines));
         });
@@ -1109,7 +1134,7 @@ export class CivilityPage {
             date: new Date(),
             mode: type,
             minuteInterval: 15, androidTheme: this.calendarTheme, is24Hour: true,
-            allowOldDates: false, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+            doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
         }).then(
             date => {
                 console.log("Got date: ", date);
@@ -1137,7 +1162,7 @@ export class CivilityPage {
     IsCompanyExist(e, field) {
         //verify if company exists
         if (field == "companyname") {
-            this.profileService.countEntreprisesByRaisonSocial(this.companyname).then(data => {
+            this.profileService.countEntreprisesByRaisonSocial(this.companyname).then((data: {data: Array<any>}) => {
                 if (data.data[0].count != 0 && this.companyname != this.currentUser.employer.entreprises[0].nom) {
                     if (!this.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
                         this.globalService.showAlertValidation("Vit-On-Job", "L'entreprise " + this.companyname + " existe déjà. Veuillez saisir une autre raison sociale.");
@@ -1150,7 +1175,7 @@ export class CivilityPage {
                 }
             })
         } else {
-            this.profileService.countEntreprisesBySIRET(this.siret).then(data => {
+            this.profileService.countEntreprisesBySIRET(this.siret).then((data: {data: Array<any>}) => {
                 if (data.data[0].count != 0 && this.siret != this.currentUser.employer.entreprises[0].siret) {
                     if (!this.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
                         this.globalService.showAlertValidation("Vit-On-Job", "Le SIRET " + this.siret + " existe déjà. Veuillez en saisir un autre.");
@@ -1166,7 +1191,7 @@ export class CivilityPage {
     }
 
     displayCompanyAlert(field) {
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: "Vit-On-Job",
             message: (field == "siret" ? ("Le SIRET " + this.siret) : ("La raison sociale " + this.companyname)) + " existe déjà. Si vous continuez, ce compte sera bloqué, \n sinon veuillez en saisir " + (field == "siret" ? "un " : "une ") + "autre. \n Voulez vous continuez?",
             buttons: [
@@ -1188,11 +1213,11 @@ export class CivilityPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     displayCompanyLastAlert(field) {
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: "Vit-On-Job",
             message: "Votre compte sera bloqué. \n Voulez vous vraiment continuez?",
             buttons: [
@@ -1208,7 +1233,7 @@ export class CivilityPage {
                     handler: () => {
                         console.log('Yes clicked');
                         confirm.dismiss().then(() => {
-                            this.profileService.deleteEmployerAccount(this.currentUser.id, this.currentUser.employer.id).then(data => {
+                            this.profileService.deleteEmployerAccount(this.currentUser.id, this.currentUser.employer.id).then((data:any) => {
                                 this.storage.set(this.currentUserVar, null);
                                 this.storage.set("RECRUITER_LIST", null);
                                 this.events.publish('user:logout');
@@ -1219,7 +1244,7 @@ export class CivilityPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     watchBirthdate(e) {
@@ -1265,9 +1290,9 @@ export class CivilityPage {
     }
 
     openCoporamaModal(){
-        let modal = Modal.create(ModalCorporamaSearchPage);
-        this.nav.present(modal);
-        modal.onDismiss(data => {
+        let modal = this.modal.create(ModalCorporamaSearchPage);
+        modal.present();
+        modal.onDidDismiss((data:any) => {
             if(!data){
                 return;
             }
@@ -1300,6 +1325,16 @@ export class CivilityPage {
             return true;
         else
             return false;
+    }
+
+    /**
+     * @Description Converts a timeStamp to date string
+     * @param time : a timestamp date
+     */
+    toHourString(time: number) {
+        let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+        let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+        return hours + ":" + minutes;
     }
 
 }

@@ -19,7 +19,6 @@ import {OfferDetailPage} from "../offer-detail/offer-detail";
 export class ModalOffersPage {
     projectTarget: any;
     offerList: any = [];
-    offerService: any;
     voidOffers: boolean = false;
     isEmployer: boolean;
     params: NavParams;
@@ -38,8 +37,7 @@ export class ModalOffersPage {
         this.isEmployer = (this.projectTarget === 'employer');
 
         // Load offers
-        this.offerService = offerService;
-        this.offerService.loadOfferList(this.projectTarget).then(data => {
+        this.offerService.loadOfferList(this.projectTarget).then((data: Array<any>) => {
             var offers = data;
             //verify if offer is obsolete
             for (var i = 0; i < offers.length; i++) {
@@ -47,7 +45,7 @@ export class ModalOffersPage {
                 for (var j = 0; j < offer.calendarData.length; j++) {
                     var slotDate = offer.calendarData[j].date;
                     var startH = this.offerService.convertToFormattedHour(offer.calendarData[j].startHour);
-                    slotDate = new Date(slotDate).setHours(startH.split(':')[0], startH.split(':')[1]);
+                    slotDate = new Date(slotDate).setHours(Number(startH.split(':')[0]), Number(startH.split(':')[1]));
                     var dateNow = new Date().getTime();
                     if (slotDate <= dateNow) {
                         offer.obsolete = true;

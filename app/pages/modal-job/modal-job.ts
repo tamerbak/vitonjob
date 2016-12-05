@@ -1,14 +1,13 @@
 import {
     NavController,
     ViewController,
-    Modal,
+    ModalController,
     NavParams,
     Storage,
     SqlStorage,
-    PickerColumnOption,
-    Picker,
-    Popover,
-    Alert,
+    PickerController,
+    PopoverController,
+    AlertController,
     Platform
 } from "ionic-angular";
 import {FormBuilder, Validators} from "@angular/common";
@@ -18,10 +17,9 @@ import {ModalSelectionPage} from "../modal-selection/modal-selection";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {Component, NgZone} from "@angular/core";
 import {PopoverAutocompletePage} from "../popover-autocomplete/popover-autocomplete";
-
-import {Geolocation} from "ionic-native";
 import {GooglePlaces} from "../../components/google-places/google-places";
 import {AuthenticationService} from "../../providers/authentication.service";
+import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
 
 declare var require: any;
 
@@ -47,7 +45,9 @@ export class ModalJobPage {
         level: string,
         remuneration: number,
         currency: string,
-        validated: boolean
+        validated: boolean,
+        prerequisObligatoires:any,
+        adress:any
     };
     offerService: any;
     db: Storage;
@@ -161,6 +161,8 @@ export class ModalJobPage {
     zipCode : string;
     city : string;
     country:string;
+    jobForm:any;
+    listSectors=[];
 
     constructor(public nav: NavController,
                 viewCtrl: ViewController,
@@ -171,7 +173,7 @@ export class ModalJobPage {
                 platform: Platform,
                 private zone: NgZone,
                 private authService: AuthenticationService,
-                public offersService: OffersService) {
+                public offersService: OffersService, public modal:ModalController, public picker:PickerController, public popover:PopoverController,public alert:AlertController) {
 
         // Set global configs
         // Get target to determine configs
@@ -202,33 +204,33 @@ export class ModalJobPage {
                         if (c)
                             self.convention = c;
                         if (self.convention.id > 0) {
-                            self.offersService.getConventionNiveaux(self.convention.id).then(data=> {
+                            self.offersService.getConventionNiveaux(self.convention.id).then((data:any) => {
                                 this.conventionFilters[ModalJobPage.CONV_FILTER_NIV].list = data;
                                 this.db.set('CONV_NIV_LIST', JSON.stringify(data));
                             });
-                            self.offersService.getConventionCoefficients(self.convention.id).then(data=> {
+                            self.offersService.getConventionCoefficients(self.convention.id).then((data:any) => {
                                 this.conventionFilters[ModalJobPage.CONV_FILTER_COEF].list = data;
                                 this.db.set('CONV_COEF_LIST', JSON.stringify(data));
                             });
-                            self.offersService.getConventionEchelon(self.convention.id).then(data=> {
+                            self.offersService.getConventionEchelon(self.convention.id).then((data:any) => {
                                 this.conventionFilters[ModalJobPage.CONV_FILTER_ECH].list = data;
                                 this.db.set('CONV_ECH_LIST', JSON.stringify(data));
                             });
-                            self.offersService.getConventionCategory(self.convention.id).then(data=> {
+                            self.offersService.getConventionCategory(self.convention.id).then((data:any) => {
                                 this.conventionFilters[ModalJobPage.CONV_FILTER_CAT].list = data;
                                 this.db.set('CONV_CAT_LIST', JSON.stringify(data));
                             });
-                            self.offersService.getConventionParameters(self.convention.id).then(data=> {
+                            self.offersService.getConventionParameters(self.convention.id).then((data:any) => {
                                 self.parametersConvention = data;
                                 self.checkHourRate();
                             });
-                            self.offersService.getHoursCategories(self.convention.id).then(data=> {
+                            self.offersService.getHoursCategories(self.convention.id).then((data:any) => {
                                 self.categoriesHeure = data;
                             });
-                            self.offersService.getHoursMajoration(self.convention.id).then(data=> {
+                            self.offersService.getHoursMajoration(self.convention.id).then((data:any) => {
                                 self.majorationsHeure = data;
                             });
-                            self.offersService.getIndemnites(self.convention.id).then(data=> {
+                            self.offersService.getIndemnites(self.convention.id).then((data:any) => {
                                 self.indemnites = data;
                             });
 
@@ -263,7 +265,7 @@ export class ModalJobPage {
 
         this.jobList = [];
         this.sectorList = [];
-        this.db.get("SECTOR_LIST").then(data => {
+        this.db.get("SECTOR_LIST").then((data:any) => {
             this.sectorList = JSON.parse(data);
         });
 
@@ -298,7 +300,7 @@ export class ModalJobPage {
             return;
         }
 
-        this.offerService.selectPrerequis(kw).then(data=>{
+        this.offerService.selectPrerequis(kw).then((data:any) =>{
             this.prerequisObList = data;
         });
     }
@@ -311,11 +313,11 @@ export class ModalJobPage {
             return;
         }
 
-        this.offerService.selectPrerequis(kw).then(data=>{
+        this.offerService.selectPrerequis(kw).then((data:any) =>{
             this.prerequisObList = data;
         });
 
-        // this.offerService.isPrerequisExist(kw).then(data=>{
+        // this.offerService.isPrerequisExist(kw).then((data:any) =>{
         //     if(data && data.length > 0){
         //         this.showPrerequisBtn = true;
         //     }
@@ -414,21 +416,21 @@ export class ModalJobPage {
      */
     validateJob() {
         if (this.jobData.idJob == 0 || this.jobData.idSector == 0) {
-            let alert = Alert.create({
+            let alert = this.alert.create({
                 title: 'Erreur',
                 subTitle: "Veuillez choisir un secteur et un job valides",
                 buttons: ['OK']
             });
-            this.nav.present(alert);
+            alert.present();
             return;
         }
         if ((this.jobData.remuneration <= 0) || this.isEmpty(this.jobData.remuneration)) {
-            let alert = Alert.create({
+            let alert = this.alert.create({
                 title: 'Erreur',
                 subTitle: "Veuillez saisir une rémunération valide",
                 buttons: ['OK']
             });
-            this.nav.present(alert);
+            alert.present();
             return;
         }
         if(this.prerequisObligatoires && this.prerequisObligatoires.length>0){
@@ -476,16 +478,16 @@ export class ModalJobPage {
      */
     showJobList() {
         let c = this.jobData.idSector;
-        this.db.get("JOB_LIST").then(data => {
+        this.db.get("JOB_LIST").then((data:any) => {
 
             this.jobList = JSON.parse(data);
             this.jobList = this.jobList.filter((v)=> {
                 return (v.idsector == c);
             });
 
-            let selectionModel = Modal.create(ModalSelectionPage,
+            let selectionModel = this.modal.create(ModalSelectionPage,
                 {type: 'job', items: this.jobList, selection: this});
-            this.nav.present(selectionModel);
+            selectionModel.present();
         });
     }
 
@@ -494,11 +496,11 @@ export class ModalJobPage {
      * @Description : loads sector list
      */
     showSectorList() {
-        this.db.get("SECTOR_LIST").then(data => {
+        this.db.get("SECTOR_LIST").then((data:any) => {
             this.sectorList = JSON.parse(data);
-            let selectionModel = Modal.create(ModalSelectionPage,
+            let selectionModel = this.modal.create(ModalSelectionPage,
                 {type: 'secteur', items: this.sectorList, selection: this});
-            this.nav.present(selectionModel);
+            selectionModel.present();
         });
 
     }
@@ -536,7 +538,7 @@ export class ModalJobPage {
         this.jobData.idJob = 0;
         this.sectors = [];
 
-        this.db.get("JOB_LIST").then(data => {
+        this.db.get("JOB_LIST").then((data:any) => {
 
             this.jobList = JSON.parse(data);
             this.jobList = this.jobList.filter((v)=> {
@@ -679,8 +681,8 @@ export class ModalJobPage {
      */
     setConvNivPicker(conventionFilter) {
 
-        if (this.platform.version('android').major >= 5) {
-            let picker = Picker.create();
+        if (this.platform.is('android') && this.platform.version().major >= 5) {
+            let picker = this.picker.create();
             let options: PickerColumnOption[] = new Array<PickerColumnOption>();
 
             this.db.get('CONV_' + conventionFilter.name + '_LIST').then(listForPicker => {
@@ -708,7 +710,7 @@ export class ModalJobPage {
                     }
                 });
                 picker.setCssClass('sectorPicker');
-                this.nav.present(picker);
+                picker.present();
 
             });
         } else {
@@ -723,15 +725,15 @@ export class ModalJobPage {
      * @Description : loads sector list
      */
     showConvList(conventionFilter, type) {
-        this.db.get('CONV_' + conventionFilter.name + '_LIST').then(data => {
-            let selectionModel = Modal.create(
+        this.db.get('CONV_' + conventionFilter.name + '_LIST').then((data:any) => {
+            let selectionModel = this.modal.create(
                 ModalSelectionPage, {
                     type: type,
                     items: JSON.parse(data),
                     selection: this
                 }
             );
-            this.nav.present(selectionModel);
+            selectionModel.present();
         });
 
     }
@@ -789,8 +791,8 @@ export class ModalJobPage {
      */
     setSectorsPicker() {
 
-        if (this.platform.version('android').major >= 5) {
-            let picker = Picker.create();
+        if (this.platform.is('android') && this.platform.version().major >= 5) {
+            let picker = this.picker.create();
             let options: PickerColumnOption[] = new Array<PickerColumnOption>();
 
             this.db.get('SECTOR_LIST').then(listSectors => {
@@ -823,7 +825,7 @@ export class ModalJobPage {
                     }
                 });
                 picker.setCssClass('sectorPicker');
-                this.nav.present(picker);
+                picker.present();
 
             });
         } else {
@@ -842,7 +844,7 @@ export class ModalJobPage {
                     let q = this.jobData.idSector;
 
                     // if the value is an empty string don't filter the items
-                    if (!(q === '')) {
+                    if (!(q.toString() === '')) {
                         list = list.filter((v) => {
                             return (v.idsector == q);
                         });
@@ -862,9 +864,9 @@ export class ModalJobPage {
      */
     setJobsPicker() {
 
-        let picker = Picker.create();
+        let picker = this.picker.create();
         let options: PickerColumnOption[] = new Array<PickerColumnOption>();
-        if (this.platform.version('android').major >= 5) {
+        if (this.platform.is('android') && this.platform.version().major >= 5) {
             this.db.get('JOB_LIST').then(
                 list => {
                     if (list) {
@@ -872,7 +874,7 @@ export class ModalJobPage {
                         let q = this.jobData.idSector;
 
                         // if the value is an empty string don't filter the items
-                        if (!(q === '')) {
+                        if (!(q.toString() === '')) {
                             list = list.filter((v) => {
                                 return (v.idsector == q);
                             });
@@ -904,7 +906,7 @@ export class ModalJobPage {
                             }
                         });
                         picker.setCssClass('jobPicker');
-                        this.nav.present(picker);
+                        picker.present();
 
                     }
                 }
@@ -921,16 +923,16 @@ export class ModalJobPage {
 
     presentPopover(ev, type) {
 
-        let popover = Popover.create(PopoverAutocompletePage, {
+        let popover = this.popover.create(PopoverAutocompletePage, {
             list: (type === 'secteur') ? this.listSectors : this.listJobs,
             type: type,
             idSector: this.jobData.idSector
         });
-        this.nav.present(popover, {
+        popover.present( {
             ev: ev
         });
 
-        popover.onDismiss(data => {
+        popover.onDidDismiss((data:any) => {
             if (data) {
 
                 if (type === 'secteur') {

@@ -21,6 +21,7 @@ export class AboutPage {
     projectName: string;
     isEmployer: boolean;
     themeColor: string;
+    push:any;
 
     constructor(gc: GlobalConfigs, platform: Platform) {
         let monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin",

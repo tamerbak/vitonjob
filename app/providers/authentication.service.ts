@@ -16,9 +16,9 @@ export class AuthenticationService {
     db: any;
     configuration;
     projectTarget;
+    data:any
 
-    constructor(http: Http, gc: GlobalConfigs) {
-        this.http = http;
+    constructor(public http: Http, gc: GlobalConfigs) {
         this.db = new Storage(SqlStorage);
 
         // Get target to determine configs
@@ -31,13 +31,13 @@ export class AuthenticationService {
      * @param email, phone, password, role
      * @return JSON results in the form of user accounts
      */
-    authenticate(email: string, phone: number, password, projectTarget: string, isRecruteur) {
+    authenticate(email: string, phone: number, password, projectTarget: string, isRecruteur:boolean) {
 
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
         //Prepare the request
-        var login =
+        let login:any =
         {
             'class': 'com.vitonjob.callouts.auth.AuthToken',
             'email': email,
@@ -65,7 +65,7 @@ export class AuthenticationService {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, body, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.clear();
                     console.log(JSON.stringify(data));
@@ -83,7 +83,7 @@ export class AuthenticationService {
         let headers = Configs.getHttpTextHeaders();
         this.http.post(this.configuration.sqlURL, sql, {headers: headers})
             .map(res => res.json())
-            .subscribe(data => {
+            .subscribe((data:any) => {
             resolve(data);
             });
         })
@@ -97,7 +97,7 @@ export class AuthenticationService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     resolve(data);
                 });
         })
@@ -139,7 +139,7 @@ export class AuthenticationService {
         };
         return new Promise(resolve => {
             this.http.post(url, JSON.stringify(body), {headers: headers}).map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                         this.data = data;
                         console.log("push success", data);
                         resolve(this.data);
@@ -184,7 +184,7 @@ export class AuthenticationService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log(this.data);
                     resolve(this.data);
@@ -223,7 +223,7 @@ export class AuthenticationService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log(this.data);
                     resolve(this.data);
@@ -240,7 +240,7 @@ export class AuthenticationService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log(this.data);
                     resolve(this.data);
@@ -314,7 +314,7 @@ export class AuthenticationService {
 
     updateUserPersonalAddress(id: string, name, streetNumber, street, cp, ville, pays) {
         //  Now we need to save the address
-        var addressData = {
+        let addressData:any = {
             'class': 'com.vitonjob.localisation.AdressToken',
             'street': street,
             'cp': cp,
@@ -341,7 +341,7 @@ export class AuthenticationService {
         return new Promise(resolve => {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, stringData, {headers: headers})
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -354,7 +354,7 @@ export class AuthenticationService {
      */
     updateUserJobAddress(id: string, name, streetNumber, street, cp, ville, pays) {
         //  Now we need to save the address
-        var addressData = {
+        let addressData :any= {
             'class': 'com.vitonjob.localisation.AdressToken',
             'street': street,
             'cp': cp,
@@ -382,7 +382,7 @@ export class AuthenticationService {
         return new Promise(resolve => {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, stringData, {headers: headers})
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -395,7 +395,7 @@ export class AuthenticationService {
      */
     updateUserCorrespondenceAddress(id: string, name, streetNumber, street, cp, ville, pays) {
         //  Now we need to save the address
-        var addressData = {
+        let addressData:any = {
             'class': 'com.vitonjob.localisation.AdressToken',
             'street': street,
             'cp': cp,
@@ -423,7 +423,7 @@ export class AuthenticationService {
         return new Promise(resolve => {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, stringData, {headers: headers})
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -452,7 +452,7 @@ export class AuthenticationService {
         return new Promise(resolve => {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, stringData, {headers: headers})
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = JSON.parse(data._body);
                     resolve(this.data);
                 });
@@ -566,7 +566,7 @@ export class AuthenticationService {
      */
     uploadScan(scanUri, userId, field, action) {
         var role = (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget)
-        var scanData = {
+        let scanData :any= {
             "class": 'com.vitonjob.callouts.files.DataToken',
             "table": 'user_' + role,
             "field": field,
@@ -592,7 +592,7 @@ export class AuthenticationService {
         return new Promise(resolve => {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, stringData, {headers: headers})
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -615,9 +615,9 @@ export class AuthenticationService {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
-                    this.status = data;
-                    resolve(this.status);
+                .subscribe((data:any) => {
+                    let status = data;
+                    resolve(status);
                 });
         });
     }
@@ -629,7 +629,7 @@ export class AuthenticationService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log(this.data);
                     resolve(this.data);
@@ -644,7 +644,7 @@ export class AuthenticationService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log(this.data);
                     resolve(this.data);
@@ -666,14 +666,14 @@ export class AuthenticationService {
         });
     }
 
-    updatePasswordByMail(email, password,reset) {
+    updatePasswordByMail(email:string, password:string,reset:string) {
         let sql = "update user_account set mot_de_passe = '" + password + "' , mot_de_passe_reinitialise = '" + reset + "' where email = '" + email + "';";
 
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log(this.data);
                     resolve(this.data);
@@ -689,7 +689,7 @@ export class AuthenticationService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log(this.data);
                     resolve(this.data);
@@ -708,7 +708,7 @@ export class AuthenticationService {
         return new Promise(resolve => {
             let headers = Configs.getHttpXmlHeaders();
             this.http.post(url, payload, {headers: headers})
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log(this.data);
                     resolve(this.data);
@@ -731,7 +731,7 @@ export class AuthenticationService {
         return new Promise(resolve => {
             let headers = Configs.getHttpXmlHeaders();
             this.http.post(url, payload, {headers: headers})
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log(this.data);
                     resolve(this.data);
@@ -747,7 +747,7 @@ export class AuthenticationService {
                 let headers = Configs.getHttpTextHeaders();
                 this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                     .map(res => res.json())
-                    .subscribe(data => {
+                    .subscribe((data:any) => {
                         this.data = data;
                         resolve(this.data);
                     });

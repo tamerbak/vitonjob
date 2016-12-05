@@ -4,15 +4,15 @@ import {
 	Nav,
 	ionicBootstrap,
 	App,
-	Modal,
-	Toast,
+	ModalController,
+	ToastController,
 	LocalStorage,
-	Alert,
+	AlertController,
 	Storage,
 	SqlStorage,
 	Events
 } from "ionic-angular";
-import {StatusBar, Splashscreen, Push, LocalNotifications} from "ionic-native";
+import {StatusBar, Splashscreen, Push, LocalNotifications, NotificationEventAdditionalData} from "ionic-native";
 import {HomePage} from "./pages/home/home";
 import {PhonePage} from "./pages/phone/phone";
 import {MissionListPage} from "./pages/mission-list/mission-list";
@@ -43,10 +43,6 @@ import {NotationService} from "./providers/notation-service/notation-service";
 import {AttachementsPage} from "./pages/attachements/attachements";
 import {MissionPointingPage} from "./pages/mission-pointing/mission-pointing";
 import {SearchAutoPage} from "./pages/search-auto/search-auto";
-//import {LoginsPage} from './pages/logins/logins';
-//import {SearchAutoPage} from './pages/search-auto/search-auto';
-
-//import {ParametersPage} from "./pages/parameters/parameters";
 
 declare var cordova;
 declare var Connection;
@@ -77,6 +73,13 @@ export class Vitonjob {
     tokens: any;
     currentUserVar: string;
     profilPictureVar: string;
+    loggedOutPages:any;
+    loggedInPages:any;
+    offerCount:any;
+    isCalculating:boolean;
+    alert:any;
+    toast:any;
+    modal:any;
 
     constructor(private platform: Platform,
                 private app: App,
@@ -88,11 +91,15 @@ export class Vitonjob {
                 private changeDetRef: ChangeDetectorRef,
                 public events: Events,
                 public offerService: OffersService,
-                private zone: NgZone) {
+                private zone: NgZone,
+                private _alert: AlertController, private _toast: ToastController, private _modal:ModalController) {
 
         this.app = app;
         this.platform = platform;
         this.menu = menu;
+        this.alert = _alert;
+        this.toast = _toast;
+        this.modal = _modal;
         this.storage = new Storage(SqlStorage);
         this.local = new Storage(LocalStorage);
         // Set global configs
@@ -204,7 +211,6 @@ export class Vitonjob {
 
 
                 //for push notification
-
                 var push = Push.init({
                     android: {
                         senderID: "693415120998"
@@ -216,11 +222,11 @@ export class Vitonjob {
                     },
                     windows: {}
                 });
-                push.on('registration', (data) => {
+                push.on('registration', (data:any) => {
                     console.log(data.registrationId);
                     this.storage.set('deviceToken', data.registrationId);
                 });
-                push.on('notification', (data) => {
+                push.on('notification', (data:any) => {
                     console.log(data);
                     if (data.additionalData.data.objectNotif == "MissionDetailsPage") {
                         this.zone.run(()=> {
@@ -235,7 +241,7 @@ export class Vitonjob {
 
             //local notification
             LocalNotifications.on("click", (notification, state) => {
-                let alert = Alert.create({
+                let alert = this.alert.create({
                     title: "Notification",
                     message: notification.text,
                     buttons: [
@@ -261,18 +267,18 @@ export class Vitonjob {
                         }
                     ]
                 });
-                this.nav.present(alert);
+                alert.present();
             });
 
             //	Initialize network control
             if (navigator.connection) {
                 if (navigator.connection.type == Connection.NONE) {
-                    let toast = Toast.create({
+                    let toast = this.toast.create({
                         message: "La connexion à Internet est perdu",
                         showCloseButton: true,
                         closeButtonText: 'Fermer'
                     });
-                    this.nav.present(toast);
+                    toast.present();
                 }
             }
 
@@ -284,22 +290,22 @@ export class Vitonjob {
 
 
             offline.subscribe(() => {
-                let toast = Toast.create({
+                let toast = this.toast.create({
                     message: "La connexion à Internet est perdu",
                     showCloseButton: true,
                     closeButtonText: 'Fermer'
                 });
-                this.nav.present(toast);
+                toast.present();
                 this.changeDetRef.detectChanges();
             });
 
             online.subscribe(()=> {
-                let toast = Toast.create({
+                let toast = this.toast.create({
                     message: "La connexion à Internet a été restaurée",
                     showCloseButton: true,
                     closeButtonText: 'Fermer'
                 });
-                this.nav.present(toast);
+                toast.present();
 
                 this.networkService.setNetworkStat("");
                 this.changeDetRef.detectChanges();
@@ -395,7 +401,7 @@ export class Vitonjob {
                 this.enableMenu(false);
             }
         });
-        this.events.subscribe('user:login', (data) => {
+        this.events.subscribe('user:login', (data:any) => {
             if (data[0].estRecruteur) {
                 this.constituteRecruiterMenu();
             } else {
@@ -413,7 +419,7 @@ export class Vitonjob {
             this.userImageURL = newURL;
         });
 
-        this.events.subscribe('user:civility', (data) => {
+        this.events.subscribe('user:civility', (data:any) => {
             this.enableMenu(true);
             this.displayInfoUser(data[0]);
         });
@@ -456,18 +462,18 @@ export class Vitonjob {
      * @description this method allows to render the multicriteria modal component
      */
     showCriteriaModal() {
-        let m = new Modal(SearchCriteriaPage);
+        let m = this.modal.create(SearchCriteriaPage);
         this.menu.close();
-        this.nav.present(m);
+        m.present();
     }
 
     /**
      * @description this method allows to render the guided search modal component
      */
     showGuideModal() {
-        let m = new Modal(SearchGuidePage);
+        let m = this.modal.create(SearchGuidePage);
         this.menu.close();
-        this.nav.present(m);
+        m.present();
     }
 }
 

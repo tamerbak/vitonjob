@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, NavParams, ViewController, Alert, Popover} from "ionic-angular";
+import {NavController, NavParams, ViewController, AlertController, PopoverController} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {LoadListService} from "../../providers/load-list.service";
@@ -21,12 +21,16 @@ export class ModalRecruiterManualPage {
     modalTitle: string;
     lastname: string;
     firstname: string;
-    index: int;
-    phone: int;
+    index: string;
+    phone: number;
     //email: string;
     isPhoneNumValid = true;
     phoneExist = false;
     recruiter;
+    accountid:any;
+    pays:any;
+    email:any;
+
 
     constructor(public nav: NavController,
                 params: NavParams,
@@ -36,7 +40,7 @@ export class ModalRecruiterManualPage {
                 private validationDataService: ValidationDataService,
                 private dataProviderService: DataProviderService,
                 private globalService: GlobalService,
-                private recruiterService: RecruiterService) {
+                private recruiterService: RecruiterService, public alert: AlertController, public popover:PopoverController) {
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
         // get config of selected target
@@ -44,7 +48,7 @@ export class ModalRecruiterManualPage {
         // Set store variables and messages
         this.themeColor = config.themeColor;
         this.isEmployer = (this.projectTarget == 'employer');
-        this.modalTitle = "Détail du contact"
+        this.modalTitle = "Détail du contact";
         this.index = "33";
         if (params.data.contact) {
             this.recruiter = params.data.contact;
@@ -62,7 +66,7 @@ export class ModalRecruiterManualPage {
     }
 
     saveContact() {
-        var contact = {};
+        let contact:any;
         contact.firstname = this.firstname;
         contact.lastname = this.lastname;
         contact.phone = "+" + this.index + "" + this.phone;
@@ -72,10 +76,10 @@ export class ModalRecruiterManualPage {
     }
 
     doRadioAlert() {
-        let alert = Alert.create();
+        let alert = this.alert.create();
         alert.setTitle('Choisissez votre pays');
         //load countries list
-        this.loadListService.loadCountries(this.projectTarget).then((data) => {
+        this.loadListService.loadCountries(this.projectTarget).then((data:{data:any}) => {
             this.pays = data.data;
             for (let p of this.pays) {
                 alert.addInput({
@@ -93,7 +97,7 @@ export class ModalRecruiterManualPage {
                     this.index = data;
                 }
             });
-            this.nav.present(alert);
+            alert.present();
         });
     }
 
@@ -120,7 +124,7 @@ export class ModalRecruiterManualPage {
     doesPhoneExist(phone) {
         if (this.isPhoneValid(phone)) {
             var tel = "+" + this.index + phone;
-            this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data) => {
+            this.dataProviderService.getUserByPhone(tel, this.projectTarget).then((data:{status:string, data:Array<any>}) => {
                 if (!data || data.status == "failure") {
                     console.log(data);
                     this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
@@ -174,7 +178,7 @@ export class ModalRecruiterManualPage {
     }
 
     sendNotification() {
-        var contact = {};
+        var contact:any;
         contact.firstname = this.firstname;
         contact.lastname = this.lastname;
         contact.phone = "+" + this.index + "" + this.phone;
@@ -192,12 +196,12 @@ export class ModalRecruiterManualPage {
     }
 
     showPopover(ev) {
-        let popover = Popover.create(PopoverRecruiterPage);
-        this.nav.present(popover, {
+        let popover = this.popover.create(PopoverRecruiterPage);
+        popover.present( {
             ev: ev
         });
 
-        popover.onDismiss(data => {
+        popover.onDidDismiss((data:any) => {
             if (!data)
                 return;
             switch (data.option) {
@@ -212,7 +216,7 @@ export class ModalRecruiterManualPage {
     }
 
     deleteRecruiter() {
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: "Vit-On-Job",
             message: "Etes-vous sûr de vouloir supprimer ce recruteur?",
             buttons: [
@@ -226,12 +230,12 @@ export class ModalRecruiterManualPage {
                     text: 'Oui',
                     handler: () => {
                         console.log('Yes selected');
-                        this.recruiterService.deleteRecruiter(this.recruiter.accountid).then(data => {
+                        this.recruiterService.deleteRecruiter(this.recruiter.accountid).then((data: {status:string}) => {
                             if (!data || data.status == "failure") {
                                 this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                                 return;
                             } else {
-                                this.recruiterService.deleteRecruiterFromLocal(this.recruiter).then(data => {
+                                this.recruiterService.deleteRecruiterFromLocal(this.recruiter).then((data:any) => {
                                     this.viewCtrl.dismiss();
                                 });
                             }
@@ -240,7 +244,7 @@ export class ModalRecruiterManualPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     blockRecruiter() {

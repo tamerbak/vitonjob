@@ -32,7 +32,8 @@ export class ContractWizardPage {
         interviewColor: string,
         validationColor: string,
         signatureColor: string,
-        ArchiveColor: string
+        ArchiveColor: string,
+        backgroundColor:string
     };
     step: {
         employer: {
@@ -55,7 +56,7 @@ export class ContractWizardPage {
         this.backgroundImage = config.backgroundImage;
         this.isEmployer = this.projectTarget === 'employer';
         this.isDisabled = true;
-        this.stepStyle = {backgroundColor: "dodgerblue"};
+        this.stepStyle.backgroundColor = "dodgerblue";
         this.systemColor = {
             validated: 'green',
             inProgress: 'orange',
@@ -124,7 +125,8 @@ export class ContractWizardPage {
                 this.systemColor.inProgress,
             ArchiveColor: (this.step.employer.isCBRIB && this.step.jobyer.isCBRIB) ?
                 this.systemColor.validated :
-                this.systemColor.inProgress
+                this.systemColor.inProgress,
+            backgroundColor: "dodgerblue"
         };
     }
 

@@ -2,12 +2,12 @@ import {
     App,
     NavParams,
     NavController,
-    Loading,
-    Modal,
+    LoadingController,
+    ModalController,
     MenuController,
     Keyboard,
-    Popover,
-    Toast,
+    PopoverController,
+    ToastController,
     Slides,
     Storage,
     SqlStorage,
@@ -31,6 +31,8 @@ import {ModalUpdatePassword} from "../modal-update-password/modal-update-passwor
 import {OfferAddPage} from "../offer-add/offer-add";
 import {OfferListPage} from "../offer-list/offer-list";
 
+declare var SpeechRecognition;
+
 @Component({
     templateUrl: 'build/pages/home/home.html',
     providers: [ProfileService, HomeService]
@@ -42,7 +44,7 @@ export class HomePage implements OnChanges {
 
     private projectName:string;
     private themeColor:string;
-    private isEmployer:string;
+    private isEmployer:boolean;
     private imageURL:string;
     private searchPlaceHolder:string;
     private projectTarget:string;
@@ -91,6 +93,13 @@ export class HomePage implements OnChanges {
     isHunterList:boolean = false;
     globalConfig:any;
     storage:any;
+    keyboard:any;
+    loading:any;
+    modal:any;
+    popover:any;
+    toast:any;
+    globalOfferList:any;
+    profilPictureVar:any;
 
 
     static get parameters() {
@@ -98,7 +107,7 @@ export class HomePage implements OnChanges {
             [NetworkService], [Events], [Keyboard], [MenuController], [OffersService], [ProfileService], [HomeService]];
     }
 
-    constructor(public globalConfig:GlobalConfigs,
+    constructor(public _globalConfig:GlobalConfigs,
                 private app:App,
                 private nav:NavController,
                 private navParams:NavParams,
@@ -108,17 +117,25 @@ export class HomePage implements OnChanges {
                 private offersService:OffersService,
                 private profileService:ProfileService,
                 private homeService:HomeService,
-                private _elementRef:ElementRef) {
+                private _elementRef:ElementRef,
+                private _modal: ModalController,
+                private _popover: PopoverController,
+                private _toast: ToastController,
+                private _loading: LoadingController) {
         // Get target to determine configs
 
-        this.projectTarget = globalConfig.getProjectTarget();
+        this.projectTarget = _globalConfig.getProjectTarget();
+        this.loading = _loading;
+        this.modal = _modal;
+        this.popover = _popover;
+        this.toast = _toast;
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
         this.storage = new Storage(SqlStorage);
         this.storage.get(config.currentUserVar).then((value) => {
             if (value) {
                 let currentUser = JSON.parse(value);
-                this.isHunter = globalConfig.getHunterMask() || currentUser.hunterFlag;
+                this.isHunter = _globalConfig.getHunterMask() || currentUser.hunterFlag;
             }
         });
 
@@ -126,7 +143,7 @@ export class HomePage implements OnChanges {
         this.keyboard = kb;
         // page push
         this.push = SearchCriteriaPage;
-        this.globalConfig = globalConfig;
+        this.globalConfig = _globalConfig;
 
         //menu.enable(true, 'rightOnMenu');
 
@@ -164,7 +181,7 @@ export class HomePage implements OnChanges {
         };
         this.cards.push(card);
 
-        this.homeService.loadHomeData(this.projectTarget).then(data=> {
+        this.homeService.loadHomeData(this.projectTarget).then((data:any) => {
             this.homeServiceData = data;
             this.initHomeList();
             // TEL 21092016 : Hunter offer management
@@ -173,14 +190,14 @@ export class HomePage implements OnChanges {
                     if (this.currentUser.employer &&
                         this.currentUser.employer.entreprises[0] &&
                         this.currentUser.employer.entreprises[0].offers.length > 0) {
-                        let hunterOffers:[] = this.currentUser.employer.entreprises[0].offers.filter((o) => {
+                        let hunterOffers: Array<any> = this.currentUser.employer.entreprises[0].offers.filter((o) => {
                             return !(o.idHunter = 0);
                         });
                         this.isHunterList = (hunterOffers.length > 0);
                     }
                 } else {
                     if (this.currentUser.jobyer && this.currentUser.jobyer.offers.length > 0) {
-                        let hunterOffers:[] = this.currentUser.offers.offers.filter((o) => {
+                        let hunterOffers:Array<any> = this.currentUser.offers.offers.filter((o) => {
                             return !(o.idHunter = 0);
                         });
                         this.isHunterList = (hunterOffers.length > 0);
@@ -196,7 +213,7 @@ export class HomePage implements OnChanges {
 
         //  Let us start with recent offers
 
-        let data = this.homeServiceData.recentOffers;
+        let data:any = this.homeServiceData.recentOffers;
         let max = data.length > this.maxLines ? this.maxLines : data.length;
         for (let i = 0; i < max; i++) {
             this.recentOffers.push(data[i]);
@@ -210,8 +227,8 @@ export class HomePage implements OnChanges {
 
         //  Now we deal with upcoming offers
 
-        let data = this.homeServiceData.upcomingOffers;
-        let max = data.length > this.maxLines ? this.maxLines : data.length;
+        data = this.homeServiceData.upcomingOffers;
+        max = data.length > this.maxLines ? this.maxLines : data.length;
         for (let i = 0; i < max; i++) {
             this.upcomingOffers.push(data[i]);
         }
@@ -254,7 +271,7 @@ export class HomePage implements OnChanges {
             idOffre: '0'
         };
 
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
                 <div>
                     <img src='img/loading.gif' />
@@ -262,8 +279,8 @@ export class HomePage implements OnChanges {
                 `,
             spinner: 'hide'
         });
-        this.nav.present(loading);
-        this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data) => {
+        loading.present();
+        this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data:Array<any>) => {
             console.log(data);
             loading.dismiss();
             for (let i = 0; i < data.length; i++) {
@@ -421,7 +438,7 @@ export class HomePage implements OnChanges {
         }
 
         this.homeServiceData.query.startIndex = offset;
-        this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then(data=> {
+        this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data:{users:any})=> {
             let newData = data.users;
             let max = newData.length > this.maxLines ? this.maxLines : newData.length;
             for (let i = 0; i < max; i++) {
@@ -445,7 +462,7 @@ export class HomePage implements OnChanges {
         this.nextRecentUsers = [];
         let offset = this.homeServiceData.query.startIndex + this.homeServiceData.query.resultCapacity;
         this.homeServiceData.query.startIndex = offset;
-        this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then(data=> {
+        this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data:{users:any})=> {
 
             let newData = data.users;
             let max = newData.length > this.maxLines ? this.maxLines : newData.length;
@@ -478,7 +495,7 @@ export class HomePage implements OnChanges {
         this.nextUpcomingOffers = [];
         let offset = this.homeServiceData.query.startIndexOffers + this.homeServiceData.query.resultCapacityOffers;
         this.homeServiceData.query.startIndexOffers = offset;
-        this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then(data=> {
+        this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data:{recentOffers:any, upcomingOffers:any})=> {
             let newData = data.recentOffers;
             let max = newData.length > this.maxLines ? this.maxLines : newData.length;
             for (let i = 0; i < max; i++) {
@@ -519,7 +536,7 @@ export class HomePage implements OnChanges {
         }
 
         this.homeServiceData.query.startIndexOffers = offset;
-        this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then(data=> {
+        this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data: {recentOffers:any, upcomingOffers:any})=> {
             let newData = data.recentOffers;
             let max = newData.length > this.maxLines ? this.maxLines : newData.length;
             for (let i = 0; i < max; i++) {
@@ -631,7 +648,7 @@ export class HomePage implements OnChanges {
             this.presentToast("Veuillez saisir un job à rechercher avant de lancer la recherche", 5);
             return;
         }
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			
 			<img class="loading" src='img/loading.gif' />
@@ -640,9 +657,9 @@ export class HomePage implements OnChanges {
             spinner: 'hide'
 
         });
-        this.nav.present(loading);
+        loading.present();
         console.log('Initiating search for ' + this.scQuery);
-        this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((data) => {
+        this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((data:any) => {
             this.searchService.persistLastSearch(data);
             loading.dismiss();
             this.nav.push(SearchResultsPage);
@@ -678,10 +695,10 @@ export class HomePage implements OnChanges {
 
         if (this.popinCrietria)
             return;
-        let m = new Modal(SearchGuidePage);
-        m.onDismiss(dismissedModal.bind(this));
+        let m = this.modal.create(SearchGuidePage);
+        m.onDidDismiss(dismissedModal.bind(this));
         this.popinCrietria = true;
-        this.nav.present(m);
+        m.present();
     }
 
     ngOnChanges() {
@@ -694,27 +711,27 @@ export class HomePage implements OnChanges {
      * @param ev
      */
     showSearchPopover(ev) {
-        let popover = Popover.create(PopoverSearchPage);
-        this.nav.present(popover, {
+        let popover = this.popover.create(PopoverSearchPage);
+        popover.present({
             ev: ev
         })
 
     }
 
     showAdvencedSearch(ev) {
-        let advenced = advenced.create(PopoverSearchPage);
-        this.nav.present(advenced, {
+        let advanced = this.popover.create(PopoverSearchPage);
+        advanced.present({
             ev: ev
         })
 
     }
 
     presentToast(message:string, duration:number) {
-        let toast = Toast.create({
+        let toast = this.toast.create({
             message: message,
             duration: duration * 1000
         });
-        this.nav.present(toast);
+        toast.present();
     }
 
     getOffers() {
@@ -749,7 +766,7 @@ export class HomePage implements OnChanges {
                 table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
                 idOffre: '0'
             };
-            this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
+            this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data:Array<any>) => {
                 offer.correspondantsCount = data.length;
                 this.globalOfferList[0].list.sort((a, b) => {
                     return b.correspondantsCount - a.correspondantsCount;
@@ -776,7 +793,7 @@ export class HomePage implements OnChanges {
                 offer.arrowLabel = "arrow-dropdown";
             }
         }
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
                 <div>
                     <img src='img/loading.gif' />
@@ -784,7 +801,7 @@ export class HomePage implements OnChanges {
                 `,
             spinner: 'hide'
         });
-        this.nav.present(loading);
+        loading.present();
         let searchFields = {
             class: 'com.vitonjob.callouts.recherche.SearchQuery',
             job: offer.jobData.job,
@@ -796,7 +813,7 @@ export class HomePage implements OnChanges {
             table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
             idOffre: '0'
         };
-        this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
+        this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data:any) => {
             console.log(data);
             this.searchService.persistLastSearch(data);
             if (!noRedirect) {
@@ -828,7 +845,7 @@ export class HomePage implements OnChanges {
                     }
 
                     var role = this.isEmployer ? "jobyer" : "employeur";
-                    this.profilService.loadProfilePicture(null, r.tel, role).then(data => {
+                    this.profilService.loadProfilePicture(null, r.tel, role).then((data:any) => {
                         if (data && data.data && !this.isEmpty(data.data[0].encode)) {
                             r.avatar = data.data[0].encode;
                         }
@@ -841,8 +858,8 @@ export class HomePage implements OnChanges {
 
 
     showResetPasswordModal() {
-        let m = new Modal(ModalUpdatePassword, {enableBackdropDismiss: false, showBackdrop: false});
-        this.nav.present(m);
+        let m = this.modal.create(ModalUpdatePassword, {enableBackdropDismiss: false, showBackdrop: false});
+        m.present();
     }
 
     itemSelected(item, offer) {
@@ -865,13 +882,13 @@ export class HomePage implements OnChanges {
     }
 
     hunterValidation() {
-        this.homeService.validateHunterOperation(this.currentUser.id).then(result => {
+        this.homeService.validateHunterOperation(this.currentUser.id).then((result:{status:string}) => {
             if (result && result.status === "success") {
-                let toast = Toast.create({
+                let toast = this.toast.create({
                     message: 'Votre opération est traitée avec succès, merci de votre collaboration.',
                     duration: 5000
                 });
-                this.nav.present(toast);
+                toast.present();
                 this.globalConfig.setHunterMask(false);
                 this.logOut();
             }

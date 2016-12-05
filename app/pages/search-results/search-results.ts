@@ -1,4 +1,4 @@
-import {NavController, Platform, Alert, Modal, NavParams, Toast, Storage, SqlStorage} from "ionic-angular";
+import {NavController, Platform, AlertController, ModalController, NavParams, ToastController, Storage, SqlStorage} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Component, OnInit} from "@angular/core";
 import {SearchService} from "../../providers/search-service/search-service";
@@ -15,6 +15,8 @@ import {Configs} from "../../configurations/configs";
 import {ModalOffersPage} from "../modal-offers/modal-offers";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {NotificationContractPage} from "../notification-contract/notification-contract";
+import {LoginsPage} from "../logins/logins";
+import {GlobalService} from "../../providers/global.service";
 
 /**
  * @author jakjoud abdeslam
@@ -22,17 +24,19 @@ import {NotificationContractPage} from "../notification-contract/notification-co
  * @module Search
  */
 declare var google: any;
+declare var sms;
+declare var startApp;
 
 @Component({
     templateUrl: 'build/pages/search-results/search-results.html',
-    providers: [OffersService, ProfileService]
+    providers: [OffersService, ProfileService, GlobalService]
 })
 export class SearchResultsPage implements OnInit {
 
     searchResults: any;
     listView: boolean = false;
     cardView: boolean = false;
-    mapView: string;
+    mapView: any;
     platform: Platform;
     map: any;
     currentCardIndex: number = 0;
@@ -51,7 +55,6 @@ export class SearchResultsPage implements OnInit {
     offersService: any;
     navParams: NavParams;
 
-    toast: Toast;
     showingToast: boolean = false;
 
     db: Storage;
@@ -59,7 +62,6 @@ export class SearchResultsPage implements OnInit {
     availability: string = "green";
     backgroundImage: string;
     themeColor: string;
-    searchService: any;
 
     iconName: string;
     isMapView: boolean;
@@ -72,11 +74,14 @@ export class SearchResultsPage implements OnInit {
     constructor(public globalConfig: GlobalConfigs,
                 public nav: NavController,
                 navParams: NavParams,
-                private searchService: SearchService,
+                public searchService: SearchService,
                 private userService: UserService,
                 offersService: OffersService,
                 platform: Platform,
-                private profileService: ProfileService) {
+                private profileService: ProfileService,
+                public toast:ToastController,
+                public modal:ModalController,
+                public alert:AlertController, public globalService:GlobalService) {
         // Get target to determine configs
         this.projectTarget = globalConfig.getProjectTarget();
         let configInversed = this.projectTarget != 'jobyer' ? Configs.setConfigs('jobyer') : Configs.setConfigs('employer');
@@ -87,14 +92,13 @@ export class SearchResultsPage implements OnInit {
         this.platform = platform;
         this.isEmployer = this.projectTarget == 'employer';
         this.navParams = navParams;
-        this.searchService = searchService;
         this.iconName = 'list';
 
         this.offersService = offersService;
 
         this.db = new Storage(SqlStorage);
 
-        this.db.get('IS_MAP_VIEW').then(data => {
+        this.db.get('IS_MAP_VIEW').then((data:any) => {
             if (data) {
                 data = JSON.parse(data);
             } else {
@@ -158,7 +162,7 @@ export class SearchResultsPage implements OnInit {
                     //load profile pictures
                     for (let i = 0; i < this.searchResults.length; i++) {
                         var role = this.isEmployer ? "jobyer" : "employeur";
-                        this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then(data => {
+                        this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then((data:any) => {
                             if (data && data.data && !this.isEmpty(data.data[0].encode)) {
                                 this.searchResults[i].avatar = data.data[0].encode;
                             }
@@ -360,10 +364,6 @@ export class SearchResultsPage implements OnInit {
 
     }
 
-    contract(item) {
-        console.log('Contract');
-    }
-
     /**
      * @description This function allows to select the candidate for a group recruitment
      * @param item the selected Employer/Jobyer
@@ -392,14 +392,14 @@ export class SearchResultsPage implements OnInit {
             else {
                 message = this.resultsCount + ' offres';
             }
-            let toast = Toast.create({
+            let toast = this.toast.create({
 
                 message: 'Vit-On-Job a trouvé ' + message,
                 showCloseButton: true,
                 closeButtonText: 'Ok',
                 position: 'top'
             });
-            this.nav.present(toast);
+            toast.present();
             this.listView = false;
             this.cardView = true;
             this.mapView = false;
@@ -460,20 +460,20 @@ export class SearchResultsPage implements OnInit {
 
             } else {
                 //redirect employer to fill the missing informations
-                let alert = Alert.create({
+                let alert = this.alert.create({
                     title: 'Informations incomplètes',
                     subTitle: "Veuillez compléter votre profil avant d'établir votre premier contrat",
                     buttons: ['OK']
                 });
-                alert.onDismiss(()=> {
+                alert.onDidDismiss(()=> {
                     this.nav.push(CivilityPage, {currentUser: this.employer});
                 });
-                this.nav.present(alert);
+                alert.present();
 
             }
         }
         else {
-            let alert = Alert.create({
+            let alert = this.alert.create({
                 title: 'Attention',
                 message: 'Pour contacter ce jobyer, vous devez être connectés.',
                 buttons: [
@@ -489,7 +489,7 @@ export class SearchResultsPage implements OnInit {
                     }
                 ]
             });
-            this.nav.present(alert);
+            alert.present();
         }
 
     }
@@ -518,7 +518,7 @@ export class SearchResultsPage implements OnInit {
             libellemetier: 0
         };
 
-        this.offersService.getOffersJob(idOffer, table).then(data => {
+        this.offersService.getOffersJob(idOffer, table).then((data:any) => {
             if (data && data.length > 0)
                 this.proposedJob = data[0];
             else
@@ -534,21 +534,21 @@ export class SearchResultsPage implements OnInit {
         }
 
         //  Now let us get the list of languages and qualities
-        this.offersService.getOffersLanguages(listOffersId, table).then(data => {
+        this.offersService.getOffersLanguages(listOffersId, table).then((data:any) => {
             this.proposedLanguages = data;
         });
 
-        this.offersService.getOffersQualities(listOffersId, table).then(data => {
+        this.offersService.getOffersQualities(listOffersId, table).then((data:any) => {
             this.proposedQualities = data;
         });
 
-        this.toast = Toast.create({
+        let toast = this.toast.create({
             message: 'Utiliser vos critères de recherches pour créer une nouvelle offre',
             showCloseButton: true,
             closeButtonText: 'Créer'
         });
 
-        this.toast.onDismiss(() => {
+        toast.onDidDismiss(() => {
             if (this.showingToast)
                 this.toggleProposition();
             this.showingToast = false;
@@ -583,7 +583,7 @@ export class SearchResultsPage implements OnInit {
      */
     dialNumber(item) {
         console.log("dial number : " + item.tel);
-        window.location = 'tel:' + item.tel;
+        window.location.href = 'tel:' + item.tel;
     }
 
     /**
@@ -619,13 +619,13 @@ export class SearchResultsPage implements OnInit {
             proposedQualities: this.proposedQualities
         };
 
-        let propositionModal = Modal.create(ModalOfferPropositionPage, proposition);
-        propositionModal.onDismiss(ret => {
+        let propositionModal = this.modal.create(ModalOfferPropositionPage, proposition);
+        propositionModal.onDidDismiss(ret => {
             if (ret.status == true) {
                 this.nav.push(OfferAddPage);
             }
         });
-        this.nav.present(propositionModal);
+        propositionModal.present();
     }
 
     addToContracts(item) {
@@ -657,7 +657,7 @@ export class SearchResultsPage implements OnInit {
 
     isUserConnected() {
         if (!this.isUserAuthenticated) {
-            let alert = Alert.create({
+            let alert = this.alert.create({
                 title: 'Attention',
                 message: 'Pour contacter ce profil, vous devez être connecté.',
                 buttons: [
@@ -673,7 +673,7 @@ export class SearchResultsPage implements OnInit {
                     }
                 ]
             });
-            this.nav.present(alert);
+            alert.present();
         }
     }
 
@@ -694,7 +694,7 @@ export class SearchResultsPage implements OnInit {
     sendEmail(item) {
         this.isUserConnected();
         if (this.isUserAuthenticated)
-            window.location = 'mailto:' + item.email;
+            window.location.href = 'mailto:' + item.email;
     }
 
     /**
@@ -795,12 +795,12 @@ export class SearchResultsPage implements OnInit {
                 }
             } else {
                 //redirect employer to fill the missing informations
-                let alert = Alert.create({
+                let alert = this.alert.create({
                     title: 'Informations incomplètes',
                     subTitle: "Veuillez compléter votre profil avant d'établir votre premier contrat",
                     buttons: ['OK']
                 });
-                alert.onDismiss(()=> {
+                alert.onDidDismiss(()=> {
                     this.nav.push(CivilityPage, {
                         currentUser: this.employer,
                         fromPage: "Search",
@@ -809,11 +809,11 @@ export class SearchResultsPage implements OnInit {
                         currentOffer: o
                     });
                 });
-                this.nav.present(alert);
+                alert.present();
             }
         }
         else {
-            let alert = Alert.create({
+            let alert = this.alert.create({
                 title: 'Attention',
                 message: 'Pour contacter ce profil, vous devez être connecté.',
                 buttons: [
@@ -830,19 +830,19 @@ export class SearchResultsPage implements OnInit {
                     }
                 ]
             });
-            this.nav.present(alert);
+            alert.present();
         }
     }
 
     selectOffer(jobyer) {
         return new Promise(resolve => {
-            let m = new Modal(ModalOffersPage, {fromPage: "Search", jobyer: jobyer});
-            m.onDismiss(data => {
+            let m = this.modal.create(ModalOffersPage, {fromPage: "Search", jobyer: jobyer});
+            m.onDidDismiss((data:any) => {
                 if(data)
                     //return selected offer
                     resolve(data);
             });
-            this.nav.present(m);
+            m.present();
         });
     }
 
@@ -880,12 +880,12 @@ export class SearchResultsPage implements OnInit {
         if(employerOffers && employerOffers.length > 0){
             buttons.splice(0, 0, listOfferButton);
         }
-        let alert = Alert.create({
+        let alert = this.alert.create({
             title: 'Sélection de l\'offre',
             subTitle: (employerOffers && employerOffers.length > 0 ? "Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer" : "Veuillez créer une nouvelle offre pour pouvoir recruter ce jobyer"),
             buttons: buttons
         });
-        this.nav.present(alert);
+        alert.present();
     }
 
     isEmpty(str) {

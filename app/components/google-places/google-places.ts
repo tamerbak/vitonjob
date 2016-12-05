@@ -6,6 +6,9 @@ import {IONIC_DIRECTIVES, Searchbar} from "ionic-angular";
  * @description Component for google places autocomplete
  * @module Authentication
  */
+
+declare var google;
+
 @Component({
     selector: 'google-places',
     templateUrl: 'build/components/google-places/google-places.html',
@@ -39,7 +42,7 @@ export class GooglePlaces {
     //input property of the search bar that we can update via property binding
     @Input() bindModelData: any;
     //output property that fires events to which we can subscribe with an event binding
-    @Output() bindModelDataChange: EventEmitter = new EventEmitter();
+    @Output() bindModelDataChange: EventEmitter<any> = new EventEmitter();
 
     /**
      * @description method that bind the ngModel of the searchbar to the component

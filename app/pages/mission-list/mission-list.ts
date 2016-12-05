@@ -31,6 +31,8 @@ export class MissionListPage {
     backgroundImage: any;
     badgeColor: any;
     missionList: any;
+    storage:any;
+    currentUser:any;
 
     constructor(public gc: GlobalConfigs,
                 public nav: NavController,
@@ -74,7 +76,7 @@ export class MissionListPage {
                 } else {
                     id = this.currentUser.jobyer.id;
                 }
-                this.contractService.getContracts(id, this.projectTarget).then(data => {
+                this.contractService.getContracts(id, this.projectTarget).then((data:{data:any}) => {
                     if (data.data) {
 
                         this.contractList = data.data;

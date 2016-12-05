@@ -11,9 +11,10 @@ import {Configs} from "../configurations/configs";
 @Injectable()
 export class DataProviderService {
     configuration;
+    data:any;
 
-    constructor(http: Http) {
-        this.http = http;
+    constructor(public http: Http) {
+
     }
 
     /**
@@ -29,7 +30,7 @@ export class DataProviderService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log("Newly loaded data" + this.data);
                     resolve(this.data);
@@ -54,7 +55,7 @@ export class DataProviderService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log("Newly loaded data" + this.data);
                     resolve(this.data);

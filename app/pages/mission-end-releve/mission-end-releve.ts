@@ -30,7 +30,7 @@ export class MissionEndRelevePage {
             url_signature_de_releve_jobyer: ''
         };
 
-        this.service.loadInvoiceSignature(this.idInvoice).then(data=> {
+        this.service.loadInvoiceSignature(this.idInvoice).then((data:any) => {
 
             this.invoice = data;
 

@@ -14,7 +14,6 @@ export class LoginsPage {
 
     phoneRoot: any;
     mailRoot: any;
-    nav: any;
     selectedItem: any;
     projectTarget: any;
     isEmployer: boolean;
@@ -28,7 +27,7 @@ export class LoginsPage {
         // set the root pages for each tab
         this.phoneRoot = PhonePage;
         this.mailRoot = MailPage;
-        let test: any = app._config;
+        //let test: any = app._config;
         this.nav = nav;
         // If we navigated to this page, we will have an item available as a nav param
         this.selectedItem = navParams.get('item');

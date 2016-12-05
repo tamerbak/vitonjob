@@ -1,8 +1,10 @@
 import {Component, NgZone} from "@angular/core";
-import {NavController, NavParams, ViewController, Events, Alert} from "ionic-angular";
+import {NavController, NavParams, ViewController, Events, AlertController} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {Camera} from "ionic-native";
+
+declare var Croppie;
 
 /*
  Generated class for the ModalPicturePage page.
@@ -29,13 +31,14 @@ export class ModalPicturePage {
     defaultImage: string;
     imgCrop;
     hideCropBtn = true;
+    inversedThemeColor:string;
 
     constructor(public nav: NavController,
                 view: ViewController,
                 gc: GlobalConfigs,
                 event: Events,
                 private zone: NgZone,
-                params: NavParams) {
+                params: NavParams, public alert:AlertController) {
         this.viewCtrl = view;
         this.projectTarget = gc.getProjectTarget();
         // get config of selected target
@@ -55,7 +58,7 @@ export class ModalPicturePage {
      */
     closeModal() {
         if (this.isPictureChanged && !this.hideCropBtn) {
-            let confirm = Alert.create({
+            let confirm = this.alert.create({
                 title: "Vit-On-Job",
                 message: "Voulez-vous valider votre photo de profil?",
                 buttons: [
@@ -75,7 +78,7 @@ export class ModalPicturePage {
                     }
                 ]
             });
-            this.nav.present(confirm);
+            confirm.present();
         } else {
             if (!this.isPictureChanged) {
                 this.viewCtrl.dismiss();
@@ -106,7 +109,7 @@ export class ModalPicturePage {
          this.currentUser.scanUploaded = true;
          this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
          this.authService.uploadScan(this.scanUri, userId, 'scan', 'upload')
-         .then((data) => {
+         .then((data:any) => {
          if (!data || data.status == "failure") {
          console.log("Scan upload failed !");
          //this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde du scan");
@@ -224,7 +227,7 @@ export class ModalPicturePage {
     //initialize fileinput (bug in navigator)
     resetFileInput() {
         var fileinput = document.getElementById('fileinput');
-        fileinput.value = "";
+        (<HTMLInputElement>fileinput).value = "";
     }
 
     isEmpty(str) {

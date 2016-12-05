@@ -1,5 +1,8 @@
 import {Component} from "@angular/core";
-import {NavController, SqlStorage, Storage, ViewController, Platform, NavParams, Events, Alert} from "ionic-angular";
+import {
+    NavController, SqlStorage, Storage, ViewController, Platform, NavParams, Events, AlertController,
+    Alert
+} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {HomePage} from "../home/home";
@@ -38,10 +41,11 @@ export class GeneralConditionsPage {
         articles:Array<{title:string, code:number,content:Array<{subTitle:string,subCode:number,subContent:string}>}>,
         footer:string
     };
+    alert:any;
     
     constructor(private _nav:NavController, private globalConfig:GlobalConfigs,
                 private _viewCtrl: ViewController, private _platform: Platform,
-                private _params: NavParams, _events: Events, private _userService: UserService) {
+                private _params: NavParams, _events: Events, private _userService: UserService, _alert:AlertController) {
 
         this.viewCtrl = _viewCtrl;
         this.platform = _platform;
@@ -51,6 +55,7 @@ export class GeneralConditionsPage {
         this.userService = _userService;
         this.projectTarget = globalConfig.getProjectTarget();
         this.storage = new Storage(SqlStorage);
+        this.alert = _alert;
         let config = Configs.setConfigs(this.projectTarget);
         this.currentUserVar = config.currentUserVar;
         this.profilPictureVar = config.profilPictureVar;
@@ -985,7 +990,7 @@ export class GeneralConditionsPage {
             " En refusant les Conditions Générales, nous somme ravis d'échanger avec vous pour essayer de " +
             "comprendre votre refus.";
 
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: "Vit-On-Job",
             message: message,
             buttons: [
@@ -993,7 +998,7 @@ export class GeneralConditionsPage {
                     text: 'Non, je quitte',
                     handler: () => {
                         this.userService.updateGCStatus("Non", "Non", data.id).then((response)=>{
-                            this.nav.present(confirm);
+                            confirm.present();
                             this.storage.set('connexion', null);
                             this.storage.set(this.currentUserVar, null);
                             this.storage.set(this.profilPictureVar, null);
@@ -1018,7 +1023,7 @@ export class GeneralConditionsPage {
                     text: 'Oui, contactez moi',
                     handler: () => {
                         this.userService.updateGCStatus("Non", "Oui", data.id).then((response) => {
-                            this.nav.present(confirm);
+                            confirm.present();
                             this.storage.set('connexion', null);
                             this.storage.set(this.currentUserVar, null);
                             this.storage.set(this.profilPictureVar, null);
@@ -1043,7 +1048,7 @@ export class GeneralConditionsPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     connect() {

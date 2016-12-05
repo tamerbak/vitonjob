@@ -128,4 +128,4 @@ $ npm install diacritics
 
 ## Environnement
 
-Le projet est compatible avec Ionic 2 la version Beta 10 et Angular2 version rc3. (Voir package.json)
+Le projet est compatible avec Ionic 2 la version Beta 11 et Angular2 version rc4. (Voir package.json)

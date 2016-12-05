@@ -4,6 +4,9 @@ import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Storage, SqlStorage, Platform} from "ionic-angular";
 
+declare var FileTransfer;
+declare var FileUploadOptions;
+
 @Injectable()
 export class ProfileService {
     configuration;
@@ -29,7 +32,7 @@ export class ProfileService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -46,7 +49,7 @@ export class ProfileService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -61,14 +64,14 @@ export class ProfileService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     console.log(data);
                     resolve(data);
                 });
         });
     }
 
-    copyFileLocally(imgUri, accountId) {
+    /*copyFileLocally(imgUri, accountId) {
         this.platform.ready().then(() => {
             var ft = new FileTransfer();
             var filename = accountId + ".jpg";
@@ -96,7 +99,7 @@ export class ProfileService {
                 this.imageProcess = null;
             }, 2000);
         });
-    }
+    }*/
 
     uploadProfilePictureInServer(imgUri, accountId) {
         var sql = "update user_account set photo_de_profil ='" + imgUri + "' where pk_user_account = '" + accountId + "';";
@@ -106,7 +109,7 @@ export class ProfileService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -126,7 +129,7 @@ export class ProfileService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -157,7 +160,7 @@ export class ProfileService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
               .map(res => res.json())
-              .subscribe(data => {
+              .subscribe((data:any) => {
                   resolve(data);
               });
         });
@@ -191,7 +194,7 @@ export class ProfileService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     resolve(data.data);
                 });
         });
@@ -206,7 +209,7 @@ export class ProfileService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     resolve(data.data);
                 });
         });
@@ -215,7 +218,7 @@ export class ProfileService {
     saveQualities(qualities, id, projectTarget) {
         let table = projectTarget == 'jobyer' ? 'user_qualite_du_jobyer' : 'user_qualite_employeur';
         let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
-        this.deleteQualities(id, table, foreignKey).then(data => {
+        this.deleteQualities(id, table, foreignKey).then((data:any) => {
             if(data && qualities && qualities.length != 0)
                 this.attachQualities(qualities, id, table, foreignKey);
         });
@@ -224,7 +227,7 @@ export class ProfileService {
     saveLanguages(languages, id, projectTarget){
         let table = projectTarget == 'jobyer' ? 'user_langue_jobyer' : 'user_langue_employeur';
         let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
-        this.deleteLanguages(id, table, foreignKey).then(data => {
+        this.deleteLanguages(id, table, foreignKey).then((data:any) => {
             if(data && languages && languages.length != 0)
                 this.attachLanguages(languages, id, table, foreignKey);
         })
@@ -236,7 +239,7 @@ export class ProfileService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     resolve(data);
                 });
         });
@@ -252,7 +255,7 @@ export class ProfileService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     resolve(data);
                 });
         });
@@ -264,7 +267,7 @@ export class ProfileService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     resolve(data);
                 });
         });
@@ -280,7 +283,7 @@ export class ProfileService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     resolve(data);
                 });
         });
@@ -339,7 +342,7 @@ export class ProfileService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
               .map(res => res.json())
-              .subscribe(data => {
+              .subscribe((data:any) => {
                   resolve(data.data);
               });
         });

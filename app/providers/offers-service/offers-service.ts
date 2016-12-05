@@ -61,7 +61,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -83,7 +83,7 @@ export class OffersService {
         return new Promise(resolve => {
             // Loading user
             this.loadCurrentUser(projectTarget)
-                .then(data => {
+                .then((data:any) => {
                     switch (projectTarget) {
                         case 'employer' :
                             let employerData = JSON.parse((data)).employer;
@@ -92,7 +92,7 @@ export class OffersService {
                                 this.offerList = employerData.entreprises[0].offers;
                             }
                             for(let i = 0 ; i < this.offerList.length ; i++){
-                                this.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then(data=>{
+                                this.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then((data:any) =>{
                                     this.offerList[i].jobData.prerequisObligatoires = [];
                                     for(let j = 0 ; j < data.length ; j++)
                                         this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
@@ -105,7 +105,7 @@ export class OffersService {
                                 this.offerList = jobyerData.offers;
                             }
                             for(let i = 0 ; i < this.offerList.length ; i++){
-                                this.loadOfferNecessaryDocuments(this.offerList[i].idOffer).then(data=>{
+                                this.loadOfferNecessaryDocuments(this.offerList[i].idOffer).then((data:any) =>{
                                     this.offerList[i].jobData.prerequisObligatoires = [];
                                     for(let j = 0 ; j < data.length ; j++)
                                         this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
@@ -128,7 +128,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -147,7 +147,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -169,7 +169,7 @@ export class OffersService {
         let offers: any;
         let result: any;
         let currentUserVar = this.configuration.currentUserVar;
-        return this.db.get(currentUserVar).then(data => {
+        return this.db.get(currentUserVar).then((data:any) => {
 
             if (data) {
                 data = JSON.parse((data));
@@ -265,7 +265,7 @@ export class OffersService {
             headers = Configs.getHttpJsonHeaders();
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
 
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.addedOffer = data;
@@ -352,7 +352,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
@@ -401,7 +401,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     
                     for(let i = 0 ; i < plist.length ; i++){
                         this.getPrerequis(plist[i]).then(id=>{
@@ -429,7 +429,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     
                     for(let i = 0 ; i < plist.length ; i++){
                         this.getPrerequis(plist[i]).then(id=>{
@@ -457,7 +457,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     
                     let id = -1;
                     if(data.data && data.data.length>0)
@@ -477,7 +477,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     
                     let id = -1;
                     if(data.data && data.data.length>0)
@@ -497,7 +497,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     
                     resolve(data);
                 });
@@ -514,7 +514,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     
                     resolve(data);
                 });
@@ -524,7 +524,7 @@ export class OffersService {
     attachIdOfferInLocal(offer, projectTarget) {
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then(data => {
+        this.db.get(currentUserVar).then((data:any) => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -613,7 +613,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.clear();
@@ -644,7 +644,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -672,7 +672,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.listSectors = data.data;
@@ -693,7 +693,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.listJobs = data.data;
@@ -721,7 +721,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -758,7 +758,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -793,7 +793,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -821,7 +821,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -850,7 +850,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -880,7 +880,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
@@ -914,7 +914,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -947,7 +947,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -974,7 +974,7 @@ export class OffersService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
                     if(data.data && data.data.length>0){
                         this.convention = data.data[0];
@@ -995,7 +995,7 @@ export class OffersService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     let list = [];
                     if(data.data && data.data.length>0)
                         list = data.data;
@@ -1015,7 +1015,7 @@ export class OffersService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     let list = [];
                     if(data.data && data.data.length>0)
                         list = data.data;
@@ -1035,7 +1035,7 @@ export class OffersService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     let list = [];
                     if(data.data && data.data.length>0)
                         list = data.data;
@@ -1055,7 +1055,7 @@ export class OffersService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     let list = [];
                     if(data.data && data.data.length>0)
                         list = data.data;
@@ -1079,7 +1079,7 @@ export class OffersService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     let list = [];
                     if(data.data && data.data.length>0)
                         list = data.data;
@@ -1097,7 +1097,7 @@ export class OffersService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     let list = [];
                     if(data.data && data.data.length>0)
                         list = data.data;
@@ -1112,7 +1112,7 @@ export class OffersService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     let list = [];
                     if(data.data && data.data.length>0)
                         list = data.data;
@@ -1127,7 +1127,7 @@ export class OffersService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     let list = [];
                     if(data.data && data.data.length>0)
                         list = data.data;
@@ -1164,7 +1164,7 @@ export class OffersService {
     updateOfferInLocal(offer, projectTarget) {
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then(data => {
+        this.db.get(currentUserVar).then((data:any) => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -1201,7 +1201,7 @@ export class OffersService {
     updateOfferJob(offer, projectTarget) {
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then(data => {
+        this.db.get(currentUserVar).then((data:any) => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -1238,12 +1238,12 @@ export class OffersService {
         });
 
         if (projectTarget == 'jobyer') {
-            this.updateOfferJobyerJob(offer).then(data => {
+            this.updateOfferJobyerJob(offer).then((data:any) => {
                 this.updateOfferJobyerTitle(offer);
             });
 
         } else {
-            this.updateOfferEntrepriseJob(offer).then(data => {
+            this.updateOfferEntrepriseJob(offer).then((data:any) => {
                 this.updateOfferEntrepriseTitle(offer);
             });
         }
@@ -1261,7 +1261,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1286,7 +1286,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1307,7 +1307,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1332,7 +1332,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1352,7 +1352,7 @@ export class OffersService {
         this.attachQualities(offer, table);
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then(data => {
+        this.db.get(currentUserVar).then((data:any) => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -1399,7 +1399,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1426,7 +1426,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1447,7 +1447,7 @@ export class OffersService {
 
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then(data => {
+        this.db.get(currentUserVar).then((data:any) => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -1494,7 +1494,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1521,7 +1521,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1541,7 +1541,7 @@ export class OffersService {
 
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then(data => {
+        this.db.get(currentUserVar).then((data:any) => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -1588,7 +1588,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1618,7 +1618,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1635,7 +1635,7 @@ export class OffersService {
     deleteOffer(offer, projectTarget) {
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then(data => {
+        this.db.get(currentUserVar).then((data:any) => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -1691,7 +1691,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1711,7 +1711,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1735,7 +1735,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1754,7 +1754,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -1768,7 +1768,7 @@ export class OffersService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     console.log(data.data);
                     resolve(data.data);
                 });
@@ -1782,7 +1782,7 @@ export class OffersService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     console.log(data.data);
                     resolve(data.data);
                 });

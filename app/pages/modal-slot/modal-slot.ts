@@ -1,4 +1,4 @@
-import {NavController, ViewController, Toast, Platform} from "ionic-angular";
+import {NavController, ViewController, ToastController, Platform} from "ionic-angular";
 import {DatePicker} from "ionic-native/dist/index";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
@@ -23,12 +23,12 @@ export class ModalSlotPage {
     private themeColor: string;
     private isEmployer: boolean;
     private viewCtrl: any;
-    private calendarTheme: string;
-    private nav: any;
+    private calendarTheme: number;
     todayDate;
     isAndroid4: boolean;
 
-    constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController, private globalService: GlobalService, platform: Platform) {
+    constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController,
+                private globalService: GlobalService, platform: Platform, public toast:ToastController) {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -39,7 +39,6 @@ export class ModalSlotPage {
         this.isEmployer = (this.projectTarget === 'employer');
         this.viewCtrl = viewCtrl;
         this.calendarTheme = config.calendarTheme;
-        this.nav = nav;
         this.todayDate = new Date().toISOString();
         this.slot = {
             date: new Date(),
@@ -54,7 +53,7 @@ export class ModalSlotPage {
             startHour: null,
             endHour: null
         };
-        this.isAndroid4 = (platform.version('android').major < 5);
+        this.isAndroid4 = (platform.is('android')) && (platform.version().major < 5);
     }
 
     /**
@@ -66,7 +65,7 @@ export class ModalSlotPage {
             date: new Date(),
             mode: type,
             minuteInterval: 15, androidTheme: this.calendarTheme, is24Hour: true,
-            allowOldDates: false, doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+            doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
         }).then(
             date => {
                 console.log("Got date: ", date);
@@ -110,9 +109,9 @@ export class ModalSlotPage {
     validateModal() {
         //console.log('Validating '+ this.showedSlot.date + ' or ' + this.showedSlot.angular4Date);
         let stringDate: string = (this.isAndroid4) ?
-            stringDate = this.showedSlot.angular4Date.split('/')[1] +
-                '-' + this.showedSlot.angular4Date.split('/')[0] +
-                '-' + this.showedSlot.angular4Date.split('/')[2] : "";
+        this.showedSlot.angular4Date.split('/')[1] +
+        '-' + this.showedSlot.angular4Date.split('/')[0] +
+        '-' + this.showedSlot.angular4Date.split('/')[2] : "";
         let date = (this.isAndroid4) ? new Date(stringDate) : new Date(this.showedSlot.date);
         //console.log ('sending ' + date);
         this.slot = {
@@ -123,10 +122,11 @@ export class ModalSlotPage {
             parseInt(this.showedSlot.endHour.split(':')[1]),
         };
         if (this.slot.startHour > this.slot.endHour) {
-            let toast = Toast.create({
+            let toast = this.toast.create({
                 message: "L'heure de début devrait être inférieure à l'heure de fin",
                 duration: 5000
             });
+            toast.present();
             return;
         }
 

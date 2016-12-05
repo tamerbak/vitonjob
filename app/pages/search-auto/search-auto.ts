@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, NavParams, Loading, Storage, SqlStorage} from "ionic-angular";
+import {NavController, NavParams, LoadingController, Storage, SqlStorage} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {OffersService} from "../../providers/offers-service/offers-service";
@@ -23,12 +23,14 @@ export class SearchAutoPage {
     contratsAttente: any = [];
     backgroundImage: string;
     imageURL: string;
+    storage:any;
+    currentUserVar:any;
 
     constructor(public nav: NavController,
-                params: NavParams,
+                public params: NavParams,
                 public gc: GlobalConfigs,
                 public offerService: OffersService,
-                public searchService: SearchService) {
+                public searchService: SearchService, public loading:LoadingController) {
         this.projectTarget = gc.getProjectTarget();
         this.storage = new Storage(SqlStorage);
         let config = Configs.setConfigs(this.projectTarget);
@@ -39,7 +41,6 @@ export class SearchAutoPage {
         this.themeColor = config.themeColor;
         this.isEmployer = (this.projectTarget == 'employer');
         this.currentUserVar = config.currentUserVar;
-        this.params = params;
         this.getOffers();
     }
 
@@ -75,7 +76,7 @@ export class SearchAutoPage {
                 }
                 for (var i = 0; i < this.publicOffers.length; i++) {
                     let offer = this.publicOffers[i];
-                    this.offerService.getCorrespondingOffers(offer, this.projectTarget).then(data => {
+                    this.offerService.getCorrespondingOffers(offer, this.projectTarget).then((data:any) => {
                         offer.correspondantsCount = data.length;
                     });
                 }
@@ -89,7 +90,7 @@ export class SearchAutoPage {
     launchSearch(offer, noRedirect) {
         if (!offer)
             return;
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
                 <div>
                     <img src='img/loading.gif' />
@@ -97,7 +98,7 @@ export class SearchAutoPage {
                 `,
             spinner: 'hide'
         });
-        this.nav.present(loading);
+        loading.present();
         let searchFields = {
             class: 'com.vitonjob.callouts.recherche.SearchQuery',
             job: offer.jobData.job,
@@ -109,7 +110,7 @@ export class SearchAutoPage {
             table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
             idOffre: '0'
         };
-        this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
+        this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data:any) => {
             console.log(data);
             this.searchService.persistLastSearch(data);
             loading.dismiss();

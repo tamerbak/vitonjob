@@ -32,7 +32,7 @@ export class LoadListService {
 
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -53,7 +53,7 @@ export class LoadListService {
 
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     console.log(this.data);
                     resolve(this.data);
@@ -70,7 +70,7 @@ export class LoadListService {
 
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = [];
                     if (data.data)
                         this.data = data.data;
@@ -86,7 +86,7 @@ export class LoadListService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     resolve(data);
                 });
         });
@@ -98,7 +98,7 @@ export class LoadListService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     resolve(data);
                 });
         });

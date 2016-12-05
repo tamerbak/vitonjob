@@ -1,4 +1,4 @@
-import {NavController, ViewController, Alert, NavParams} from "ionic-angular";
+import {NavController, ViewController, AlertController, NavParams} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {Component} from "@angular/core";
@@ -12,12 +12,12 @@ export class ProfileSlotsPage {
     private projectTarget: string;
     private themeColor: string;
     private viewCtrl: any;
-    private nav: any;
     errorMessage: string = '';
     slots = [];
     params: NavParams;
+    inversedThemeColor: any;
 
-    constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController, params: NavParams) {
+    constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController, params: NavParams, public alert:AlertController) {
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
         // get config of selected target
@@ -26,7 +26,6 @@ export class ProfileSlotsPage {
         this.themeColor = config.themeColor;
         this.inversedThemeColor = config.inversedThemeColor;
         this.viewCtrl = viewCtrl;
-        this.nav = nav;
 
         this.showedSlot = {
             startDate: null,
@@ -69,7 +68,7 @@ export class ProfileSlotsPage {
     }
 
     removeSlot(item){
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: 'Êtes-vous sûr?',
             message: 'Voulez-vous supprimer ce créneau?',
             buttons: [
@@ -89,7 +88,7 @@ export class ProfileSlotsPage {
             ]
         });
 
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     isSlotValid() {

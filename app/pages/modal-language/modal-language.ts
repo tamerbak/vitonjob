@@ -1,4 +1,4 @@
-import {NavController, Modal, ViewController, Alert, NavParams} from "ionic-angular";
+import {NavController, ModalController, ViewController, AlertController, NavParams} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalSelectionPage} from "../modal-selection/modal-selection";
@@ -36,12 +36,19 @@ export class ModalLanguagePage {
         idlevel: number,
         level: string
     }>;
+    projectTarget:string;
+    themeColor:string;
+    inversedThemeColor:string;
+    isEmployer:boolean;
+    viewCtrl:any;
+    offerService:any;
+    languageList:any;
 
     constructor(public nav: NavController,
                 gc: GlobalConfigs,
                 viewCtrl: ViewController,
                 params: NavParams,
-                os: OffersService) {
+                os: OffersService, public modal:ModalController, public alert:AlertController) {
         // Set global configs
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -62,11 +69,11 @@ export class ModalLanguagePage {
      */
     showLanguageList() {
 
-        this.offerService.loadLanguages(this.projectTarget).then(data => {
+        this.offerService.loadLanguages(this.projectTarget).then((data:any) => {
             this.languageList = data;
-            let selectionModel = Modal.create(ModalSelectionPage,
+            let selectionModel = this.modal.create(ModalSelectionPage,
                 {type: 'langue', items: this.languageList, selection: this});
-            this.nav.present(selectionModel);
+            selectionModel.present();
         });
     }
 
@@ -90,7 +97,7 @@ export class ModalLanguagePage {
      */
     removeLanguage(item) {
 
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: 'Êtes-vous sûr?',
             message: 'Voulez-vous supprimer cette Langue?',
             buttons: [
@@ -109,6 +116,6 @@ export class ModalLanguagePage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 }

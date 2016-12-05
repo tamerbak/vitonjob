@@ -1,10 +1,11 @@
 import {Component} from "@angular/core";
-import {NavController, Loading, Storage, SqlStorage} from "ionic-angular";
+import {NavController, LoadingController, Storage, SqlStorage, LoadingOptions} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {AuthenticationService} from "../../providers/authentication.service";
 import {GlobalService} from "../../providers/global.service";
 
+declare var md5;
 
 @Component({
     templateUrl: 'build/pages/modal-update-password/modal-update-password.html',
@@ -18,9 +19,13 @@ export class ModalUpdatePassword {
     password2: string;
     currentUser;
     currentUserVar: string;
+    themeColor: string;
+    storage:any;
 
 
-    constructor(public nav: NavController, gc: GlobalConfigs, private authService: AuthenticationService, private globalService: GlobalService) {
+    constructor(public nav: NavController, gc: GlobalConfigs,
+                private authService: AuthenticationService,
+                private globalService: GlobalService, public loading: LoadingController) {
         this.projectTarget = gc.getProjectTarget();
         let config = Configs.setConfigs(this.projectTarget);
         this.options = config.options;
@@ -31,7 +36,7 @@ export class ModalUpdatePassword {
     }
 
     modifyPasswd() {
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -39,13 +44,13 @@ export class ModalUpdatePassword {
 			`,
             spinner: 'hide'
         });
-        this.nav.present(loading);
+        loading.present();
         this.storage.get(this.currentUserVar).then((value) => {
             if (value) {
                 this.currentUser = JSON.parse(value);
                 let pwd = md5(this.password1);
                 this.authService.updatePasswordByPhone(this.currentUser.tel, pwd,"Non")
-                    .then(data => {
+                    .then((data: {length: number, status:string}) => {
                         console.log(data);
                         //case of authentication failure : server unavailable or connection probleme
                         if (!data || data.length == 0 || data.status == "failure") {

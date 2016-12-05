@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Alert, NavController} from "ionic-angular";
+import {AlertController, NavController} from "ionic-angular";
 
 /**
  * @author Amal ROCHD
@@ -8,7 +8,7 @@ import {Alert, NavController} from "ionic-angular";
 
 @Injectable()
 export class GlobalService {
-    constructor(public nav: NavController) {
+    constructor(public nav: NavController, public alert:AlertController) {
 
     }
 
@@ -17,11 +17,11 @@ export class GlobalService {
      * @param msg to show in the alert
      */
     showAlertValidation(title, msg) {
-        let alert = Alert.create({
+        let alert = this.alert.create({
             title: title,
             message: msg,
             buttons: ['OK']
         });
-        this.nav.present(alert);
+        alert.present();
     }
 }

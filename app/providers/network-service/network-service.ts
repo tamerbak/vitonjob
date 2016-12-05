@@ -1,6 +1,8 @@
 import {Injectable} from "@angular/core";
-import {Platform, Toast} from "ionic-angular";
+import {Platform, ToastController} from "ionic-angular";
 
+declare var Connection;
+declare var navigator;
 
 /**
  * @author daoudi amine
@@ -10,8 +12,9 @@ import {Platform, Toast} from "ionic-angular";
 @Injectable()
 export class NetworkService {
     networkStat: String;
+    changeDetRef:any;
 
-    constructor(private platform: Platform) {
+    constructor(private platform: Platform, public toast:ToastController) {
         this.networkStat = "";
     }
 
@@ -21,11 +24,11 @@ export class NetworkService {
 
     checkInitNetwork() {
         if (!navigator.connection.type == Connection.NONE) {
-            let toast = Toast.create({
+            let toast = this.toast.create({
                 message: "Vous n'êtes pas connectés à Internet",
                 duration: 5000
             });
-            this.nav.present(toast);
+            toast.present();
             this.changeDetRef.detectChanges();
             //this.setNetworkStat("Vous n'êtes pas connecté.");
         } else {
@@ -39,11 +42,11 @@ export class NetworkService {
             this.platform.ready().then(() => {
 
                 if (!navigator.connection.type == Connection.NONE) {
-                    let toast = Toast.create({
+                    let toast = this.toast.create({
                         message: "Vous n'êtes pas connectés à Internet",
                         duration: 5000
                     });
-                    this.nav.present(toast);
+                    toast.present();
                     this.changeDetRef.detectChanges();
                     //this.setNetworkStat("Vous n'êtes pas connecté.");
                 } else {

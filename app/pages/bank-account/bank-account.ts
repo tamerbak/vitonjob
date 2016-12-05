@@ -44,7 +44,7 @@ export class BankAccountPage {
             table = 'fk_user_entreprise';
         }
 
-        this.service.loadBankAccount(id, table, this.projectTarget).then(data=> {
+        this.service.loadBankAccount(id, table, this.projectTarget).then((data: Array<any>) => {
             if (data && data.length > 0) {
                 this.bank = data[0];
                 this.voidAccount = false;
@@ -63,7 +63,7 @@ export class BankAccountPage {
             id = this.navParams.data.currentUser.employer.entreprises[0].id;
             table = 'fk_user_entreprise';
         }
-        this.service.saveBankAccount(id, table, this.voidAccount, this.bank).then(data=> {
+        this.service.saveBankAccount(id, table, this.voidAccount, this.bank).then((data:any) => {
             this.nav.pop();
         });
     }
@@ -87,7 +87,7 @@ export class BankAccountPage {
         }
         // rearrange country code and check digits, and convert chars to ints
         digits = (code[3] + code[1] + code[2]).replace(/[A-Z]/g, function (letter) {
-            return letter.charCodeAt(0) - 55;
+            return (letter.charCodeAt(0) - 55).toString();
         });
         // final check
         return this.mod97(digits);

@@ -35,7 +35,7 @@ export class NotationService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -59,13 +59,13 @@ export class NotationService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
-                    this.score = 0;
+                    this.score = {value:0};
                     if (data.data && data.data.length > 0) {
-                        this.score = Math.round(data.data[0].notes);
+                        this.score = {value: Math.round(data.data[0].notes)};
                     }
                     resolve(this.score);
                 });
@@ -83,7 +83,7 @@ export class NotationService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -109,7 +109,7 @@ export class NotationService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));

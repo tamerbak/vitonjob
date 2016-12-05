@@ -1,5 +1,5 @@
 import {Component, NgZone} from "@angular/core";
-import {NavController, NavParams, Alert, Loading, Storage, SqlStorage} from "ionic-angular";
+import {NavController, NavParams, AlertController, LoadingController, Storage, SqlStorage} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {GooglePlaces} from "../../components/google-places/google-places";
@@ -7,6 +7,8 @@ import {AuthenticationService} from "../../providers/authentication.service";
 import {GlobalService} from "../../providers/global.service";
 import {Geolocation} from "ionic-native";
 import {JobAddressPage} from "../job-address/job-address";
+
+declare var google;
 
 /**
  * @author Amal ROCHD
@@ -35,6 +37,14 @@ export class PersonalAddressPage {
     //isAdrFormHidden = true;
     currentUserVar: string;
     isZipCodeValid = true;
+    projectTarget:string;
+    themeColor:string;
+    isEmployer:boolean;
+    storage:any;
+    params:any;
+    currentUser:any;
+    company:any;
+    selectedPlace:any;
 
     /**
      * @description While constructing the view, we get the currentUser passed as parameter from the connection page
@@ -42,10 +52,9 @@ export class PersonalAddressPage {
     constructor(private authService: AuthenticationService,
                 params: NavParams,
                 public gc: GlobalConfigs,
-                nav: NavController,
+                public nav: NavController,
                 private globalService: GlobalService,
-                private zone: NgZone) {
-        this.nav = nav;
+                private zone: NgZone, public alert:AlertController, public loading:LoadingController) {
         //manually entered address
         this.searchData = "";
         //formatted geolocated address
@@ -105,7 +114,7 @@ export class PersonalAddressPage {
                     this.country = this.currentUser.employer.entreprises[0].siegeAdress.country;
                     //for old users, retrieve address components from server bd and stocke them in local db
                     if (!this.country && this.searchData) {
-                        this.authService.getAddressByUser(this.currentUser.employer.entreprises[0].id).then((data) => {
+                        this.authService.getAddressByUser(this.currentUser.employer.entreprises[0].id).then((data:any) => {
                             this.name = data[0].name;
                             this.streetNumber = data[0].streetNumber;
                             this.street = data[0].street;
@@ -123,7 +132,7 @@ export class PersonalAddressPage {
                     this.city = this.currentUser.jobyer.personnalAdress.city;
                     this.country = this.currentUser.jobyer.personnalAdress.country;
                     if (!this.country && this.searchData) {
-                        this.authService.getAddressByUser(this.currentUser.jobyer.id).then((data) => {
+                        this.authService.getAddressByUser(this.currentUser.jobyer.id).then((data:any) => {
                             this.name = data[0].name;
                             this.streetNumber = data[0].streetNumber;
                             this.street = data[0].street;
@@ -151,7 +160,7 @@ export class PersonalAddressPage {
      * @description display the first request alert for geolocation
      */
     displayRequestAlert() {
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: "Vit-On-Job",
             message: "Géolocalisation : êtes-vous connecté depuis votre" + (this.isEmployer ? " siège social" : " domicile") + "?",
             buttons: [
@@ -172,14 +181,14 @@ export class PersonalAddressPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     /**
      * @description display the second request alert for geolocation
      */
     displayGeolocationAlert() {
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: "Vit-On-Job",
             message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider" + (this.isEmployer ? " l'adresse de votre siège social." : " votre adresse personnelle."),
             buttons: [
@@ -202,14 +211,14 @@ export class PersonalAddressPage {
                 }
             ]
         });
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     /**
      * @description geolocate current user
      */
     geolocate() {
-        this.generalLoading = Loading.create({
+        this.generalLoading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -218,7 +227,7 @@ export class PersonalAddressPage {
             spinner: 'hide',
             duration: 10000
         });
-        this.nav.present(this.generalLoading);
+        this.generalLoading.present();
         let options = {timeout: 5000, enableHighAccuracy: true, maximumAge: 0};
         Geolocation.getCurrentPosition(options)
             .then((position) => {
@@ -291,7 +300,7 @@ export class PersonalAddressPage {
      * @description function that calls the service to update personal address for employers and jobyers
      */
     updatePersonalAddress() {
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -300,13 +309,13 @@ export class PersonalAddressPage {
             spinner: 'hide',
             duration: 15000
         });
-        this.nav.present(loading).then(() => {
+        loading.present().then(() => {
             if (this.isEmployer) {
                 var entreprise = this.currentUser.employer.entreprises[0];
                 var eid = "" + entreprise.id + "";
                 // update personal address
                 this.authService.updateUserPersonalAddress(eid, this.name, this.streetNumber, this.street, this.zipCode, this.city, this.country)
-                    .then((data) => {
+                    .then((data: {status:string, error:string, _body:any}) => {
                         if (!data || data.status == "failure") {
                             console.log(data.error);
                             loading.dismiss();
@@ -342,7 +351,7 @@ export class PersonalAddressPage {
                 var roleId = "" + this.currentUser.jobyer.id + "";
                 // update personal address
                 this.authService.updateUserPersonalAddress(roleId, this.name, this.streetNumber, this.street, this.zipCode, this.city, this.country)
-                    .then((data) => {
+                    .then((data: {status:string, error:string, _body:any}) => {
                         if (!data || data.status == "failure") {
                             console.log(data.error);
                             loading.dismiss();

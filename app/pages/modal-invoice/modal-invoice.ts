@@ -1,5 +1,8 @@
 import {Component} from "@angular/core";
-import {NavController, ViewController, Storage, LocalStorage, SqlStorage, Toast, Loading} from "ionic-angular";
+import {
+    NavController, ViewController, Storage, LocalStorage, SqlStorage, ToastController, LoadingController,
+    App
+} from "ionic-angular";
 import {MissionService} from "../../providers/mission-service/mission-service";
 import {isUndefined} from "ionic-angular/util";
 import {PaylineServices} from "../../providers/payline-services/payline-services";
@@ -22,12 +25,13 @@ export class ModalInvoicePage {
     payService: PaylineServices;
     db: Storage;
     paymentMessage: string;
+    projectTarget:string;
 
     constructor(public nav: NavController,
                 viewCtrl: ViewController,
                 service: MissionService,
                 payService: PaylineServices,
-                public globalConfig: GlobalConfigs) {
+                public globalConfig: GlobalConfigs, public loading:LoadingController, public toast:ToastController, public app:App) {
         this.payService = payService;
         this.storage = new Storage(LocalStorage);
         this.db = new Storage(SqlStorage);
@@ -43,7 +47,7 @@ export class ModalInvoicePage {
             montantPayeParClient: 0.0
         };
 
-        this.storage.get('CONTRACT_INVOICE').then(data=> {
+        this.storage.get('CONTRACT_INVOICE').then((data:any) => {
             this.contract = JSON.parse(data);
             this.invoice = {
                 class: "com.vitonjob.tetra.model.PaiementClient",
@@ -67,10 +71,10 @@ export class ModalInvoicePage {
         this.projectTarget = globalConfig.getProjectTarget();
         let config = Configs.setConfigs(this.projectTarget);
         let currentUserVar = config.currentUserVar;
-        this.db.get(currentUserVar).then(data => {
+        this.db.get(currentUserVar).then((data:any) => {
 
             let user = JSON.parse(data);
-            this.payService.checkWallet(user).then(walletId => {
+            this.payService.checkWallet(user).then((walletId:{length:number}) => {
 
                 if (walletId && walletId != 'null' && walletId.length > 0) {
                     this.walletId = walletId;
@@ -89,7 +93,7 @@ export class ModalInvoicePage {
             orderRef: this.invoice.numeroFacture,
             contractReference: this.invoice.numeroContrat
         };
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -97,22 +101,22 @@ export class ModalInvoicePage {
 			`,
             spinner: 'hide'
         });
-        this.nav.present(loading);
-        this.service.validateWork(payConfig).then(data=> {
+        loading.present();
+        this.service.validateWork(payConfig).then((data:{code:any}) => {
 
             loading.dismiss().then(()=> {
                 if (data.code == '00000') {
-                    let toast = Toast.create({
+                    let toast = this.toast.create({
                         message: 'Le paiement a été effectué avec succès',
                         duration: 5000
                     });
-                    this.nav.present(toast);
+                    toast.present();
                 } else {
-                    let toast = Toast.create({
+                    let toast = this.toast.create({
                         message: 'Le paiement a été rejeté, veuillez vérifier la validité de votre carte',
                         duration: 5000
                     });
-                    this.nav.present(toast);
+                    toast.present();
                 }
                 this.nav.setRoot(MissionListPage);
             });

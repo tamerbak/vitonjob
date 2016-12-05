@@ -1,4 +1,4 @@
-import {NavController, Loading, Alert, Storage, SqlStorage} from "ionic-angular";
+import {NavController, LoadingController, AlertController, Storage, SqlStorage} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Component} from "@angular/core";
@@ -30,7 +30,9 @@ export class WalletCreatePage {
 
     constructor(public nav: NavController,
                 gc: GlobalConfigs,
-                service: PaylineServices) {
+                service: PaylineServices,
+                public alert:AlertController,
+                public loading:LoadingController) {
 
         // Set global configs
         // Get target to determine configs
@@ -47,9 +49,9 @@ export class WalletCreatePage {
         this.themeColor = config.themeColor;
         this.currentUserVar = config.currentUserVar;
         this.nav = nav;
-        this.storage.get(this.currentUserVar).then(data => {
+        this.storage.get(this.currentUserVar).then((data:any) => {
             let user = JSON.parse(data);
-            this.service.checkWallet(user).then(walletId => {
+            this.service.checkWallet(user).then((walletId:any) => {
                 if (walletId && walletId != 'null' && walletId.length > 0) {
                     this.existingWallet = true;
                     let cnum = walletId.substring(walletId.length - 4);
@@ -67,7 +69,7 @@ export class WalletCreatePage {
             expireDate: this.cardExpirationDate,
             cvx: this.cardCvv
         };
-        let loading = Loading.create({
+        let loading = this.loading.create({
             content: ` 
 			<div>
 			<img src='img/loading.gif' />
@@ -76,21 +78,21 @@ export class WalletCreatePage {
             spinner: 'hide'
         });
 
-        this.nav.present(loading);
-        this.storage.get(this.currentUserVar).then(data => {
+        loading.present();
+        this.storage.get(this.currentUserVar).then((data:any) => {
             let user = JSON.parse(data);
-            this.service.empreinteCarte(card, user).then(data=> {
+            this.service.empreinteCarte(card, user).then((data:any) => {
                 loading.dismiss();
 
                 if (data.code == '02500') {
                     this.nav.setRoot(MissionListPage);
                 } else {
-                    let alert = Alert.create({
+                    let alert = this.alert.create({
                         title: "Erreur lors de validation de la carte",
                         subTitle: "le numéro de carte bancaire doit comporter 16 chiffres et doit être valide",
                         buttons: ['OK']
                     });
-                    this.nav.present(alert);
+                    alert.present();
                 }
 
             });

@@ -47,7 +47,7 @@ export class PaymentService {
             headers = Configs.getHttpXmlHeaders();
             this.http.post(Configs.smsURL, soapMessage, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     resolve(data);
                 });
         });

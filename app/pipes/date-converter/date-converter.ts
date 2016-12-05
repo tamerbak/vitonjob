@@ -4,6 +4,10 @@ import {Pipe} from "@angular/core";
     name: 'dateConverter'
 })
 export class DateConverter {
+
+    longDateOptions:any;
+    shortDateOptions:any;
+
     transform(value, args) {
         this.longDateOptions = {
             weekday: "long", month: "long", year: "numeric",

@@ -4,6 +4,7 @@ import {Http, Headers} from "@angular/http";
 import {Helpers} from "../../providers/helpers.service.ts";
 import {isUndefined} from "ionic-angular/util";
 
+declare var unescape;
 
 /**
  * @author daoudi amine
@@ -26,7 +27,7 @@ export class ContractService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data.data;
                     resolve(this.data);
                 });
@@ -60,7 +61,7 @@ export class ContractService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -83,7 +84,7 @@ export class ContractService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     console.log('retrieved data : ' + JSON.stringify(data));
                     this.data = data.data;
                     resolve(this.data);
@@ -112,7 +113,7 @@ export class ContractService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -219,7 +220,7 @@ export class ContractService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     
                     resolve(this.data);
@@ -243,7 +244,7 @@ export class ContractService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -262,7 +263,7 @@ export class ContractService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data.data;
                     resolve(this.data);
                 });
@@ -278,7 +279,7 @@ export class ContractService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data.data;
                     resolve(this.data);
                 });
@@ -298,7 +299,7 @@ export class ContractService {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     this.data = data.data;
                     resolve(this.data);
                 });
@@ -475,7 +476,7 @@ export class ContractService {
 
             this.http.post(Configs.yousignURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
 
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
@@ -526,7 +527,7 @@ export class ContractService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe(data => {
+                .subscribe((data:any) => {
                     console.log(JSON.stringify(data));
                     resolve(data);
                 });

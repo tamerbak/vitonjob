@@ -1,7 +1,6 @@
-import {NavController, ViewController, Alert, Modal, NavParams} from "ionic-angular";
+import {NavController, ViewController, AlertController, ModalController, NavParams} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
-import {DatePickerOptions} from "ionic-native/dist/plugins/datepicker";
 import {ModalSlotPage} from "../modal-slot/modal-slot";
 import {Component} from "@angular/core";
 
@@ -25,12 +24,16 @@ export class ModalCalendarPage {
         endHour: number
     }>;
 
-    dateOptions: DatePickerOptions;
-    timeOptions: DatePickerOptions;
     isObsolete = false;
     obj: string;
+    projectTarget:string;
+    themeColor:string;
+    viewCtrl:any;
+    isEmployer:boolean;
+    calendarTheme:number;
 
-    constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController, private navParams: NavParams) {
+    constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController,
+                public navParams: NavParams, public alert:AlertController, public modal:ModalController) {
         // Set global configs
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -42,21 +45,12 @@ export class ModalCalendarPage {
         this.isEmployer = (this.projectTarget === 'employer');
         this.viewCtrl = viewCtrl;
         this.calendarTheme = config.calendarTheme;
-        this.nav = nav;
-        this.navParams = navParams;
         this.obj = this.navParams.get("obj");
         this.slots = this.navParams.get("slots");
         if (!this.slots) {
             this.slots = [];
         }
-        this.dateOptions = {
-            weekday: "long", year: "numeric", month: "long",
-            day: "numeric"//, hour: "2-digit", minute: "2-digit"
-        };
 
-        this.timeOptions = {
-            hour: "2-digit", minute: "2-digit"
-        };
 
         this.verifySlotsValidity();
         if (this.isObsolete) {
@@ -84,7 +78,7 @@ export class ModalCalendarPage {
         for (var i = 0; i < this.slots.length; i++) {
             var slotDate = this.slots[i].date;
             var startH = this.convertToFormattedHour(this.slots[i].startHour);
-            slotDate = new Date(slotDate).setHours(startH.split(':')[0], startH.split(':')[1]);
+            slotDate = new Date(slotDate).setHours(Number(startH.toString().split(':')[0]), Number(startH.toString().split(':')[1]));
             var dateNow = new Date().getTime();
             if (slotDate < dateNow) {
                 this.isObsolete = true;
@@ -113,19 +107,21 @@ export class ModalCalendarPage {
      * Theme_DeviceDefault_Light_Dialog_Alert : 10
      */
     showSlotModal() {
-        let slotModel = Modal.create(ModalSlotPage);
-        slotModel.onDismiss(slotData => {
+        let slotModel = this.modal.create(ModalSlotPage);
+        slotModel.onDidDismiss(slotData => {
             //TODO: Control date value before adding theme.
             if (slotData) {
                 this.slots.push({
                     'class': 'com.vitonjob.callouts.auth.model.CalendarData',
+                    idCalendar: 0,
+                    type: "",
                     date: slotData.date,
                     startHour: slotData.startHour,
                     endHour: slotData.endHour
                 });
             }
         });
-        this.nav.present(slotModel);
+        slotModel.present();
     }
 
     /**
@@ -134,7 +130,7 @@ export class ModalCalendarPage {
      * @param item to be removed
      */
     removeSlot(item) {
-        let confirm = Alert.create({
+        let confirm = this.alert.create({
             title: 'Êtes-vous sûr?',
             message: 'Voulez-vous supprimer ce créneau?',
             buttons: [
@@ -155,7 +151,7 @@ export class ModalCalendarPage {
             ]
         });
 
-        this.nav.present(confirm);
+        confirm.present();
     }
 
     isDeleteSlotDisabled() {
