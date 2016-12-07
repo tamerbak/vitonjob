@@ -69,11 +69,14 @@
     </div>
     <ion-item style="margin-top: 15px;" [hidden]="isAndroid4">
         <ion-label floating>Date de disponibilité</ion-label>
-        <ion-datetime [(ngModel)]="availabilityDate" displayFormat="DD/MM/YYYY"></ion-datetime>
+        <ion-datetime
+            [(ngModel)]="availabilityDate" displayFormat="DD/MM/YYYY"
+            [min]="todayDate" cancelText="Annuler" doneText="Ok"
+        ></ion-datetime>
     </ion-item>
 
     <ion-item [hidden]="!isAndroid4">
-        <ion-label floating>Date</ion-label>
+        <ion-label floating>Date de disponibilité</ion-label>
         <ion-input type="text" [(ngModel)]="availabilityDate"
                    (focus)="launchDateTimePicker('date')" readonly></ion-input>
     </ion-item>
