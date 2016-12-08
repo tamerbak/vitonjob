@@ -797,10 +797,12 @@ export class ModalJobPage {
                 if (listSectors) {
                     listSectors = JSON.parse(listSectors);
                     for (let i = 0; i < listSectors.length; i++) {
-                        options.push({
-                            value: listSectors[i].id,
-                            text: listSectors[i].libelle
-                        })
+                        if(!this.isEmpty(listSectors[i].libelle)) {
+                            options.push({
+                                value: listSectors[i].id,
+                                text: listSectors[i].libelle
+                            })
+                        }
                     }
                 }
                 let column = {
@@ -881,10 +883,12 @@ export class ModalJobPage {
                         this.listJobs = list;
                         this.jobList = list;
                         for (let i = 0; i < this.listJobs.length; i++) {
-                            options.push({
-                                value: this.listJobs[i].id,
-                                text: this.listJobs[i].libelle
-                            })
+                            if(!this.isEmpty(this.listJobs[i].libelle)) {
+                                options.push({
+                                    value: this.listJobs[i].id,
+                                    text: this.listJobs[i].libelle
+                                })
+                            }
                         }
                         let column = {
                             selectedIndex: 0,
