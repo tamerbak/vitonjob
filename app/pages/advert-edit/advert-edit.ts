@@ -19,6 +19,8 @@ export class AdvertEditPage {
     db: Storage;
     isHunter:boolean = false ;
     advert: any;
+    isEmployer : boolean;
+    themeColor : any;
 
     constructor(public nav: NavController,
                 public navParams: NavParams,
