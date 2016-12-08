@@ -1,0 +1,13 @@
+<ion-content class="advert-list" padding [ngStyle]="backgroundImage">
+    <button menuToggle style="background-color: transparent; box-shadow: none" [style.color]="themeColor">
+        <ion-icon name="menu" primary></ion-icon>
+        &nbsp;&nbsp;Annonces
+    </button>
+
+    <ion-list text-wrap *ngFor="let item of adverts">
+            <ion-item (click)="goToDetailAdvert(item)" no-lines>
+                <h2 class="h3-margintop">{{item.titre}}</h2>
+                <p [style.color]="item.color">Cliquer pour voir plus de détail</p>
+            </ion-item>
+    </ion-list>
+</ion-content>

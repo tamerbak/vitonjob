@@ -1,0 +1,30 @@
+.advert-list {
+
+  background-size: cover;
+  .fab-footer {
+    z-index: 99;
+  }
+
+  .bar-footer {
+    background: url(../../img/footer-wireframe.png) repeat-x;
+    height: 2px;
+
+    position: absolute;
+    right: 0;
+    bottom: 44px;
+    left: 0;
+  }
+
+  ion-spinner {
+    width: 14px;
+    height: 14px;
+  }
+  ion-spinner circle {
+    stroke: white;
+  }
+
+  .h3-margintop {
+    margin-top: 0px !important;
+  }
+
+}

@@ -43,6 +43,8 @@ import {NotationService} from "./providers/notation-service/notation-service";
 import {AttachementsPage} from "./pages/attachements/attachements";
 import {MissionPointingPage} from "./pages/mission-pointing/mission-pointing";
 import {SearchAutoPage} from "./pages/search-auto/search-auto";
+import {AdvertListPage} from "./pages/advert-list/advert-list";
+
 //import {LoginsPage} from './pages/logins/logins';
 //import {SearchAutoPage} from './pages/search-auto/search-auto';
 
@@ -351,6 +353,13 @@ export class Vitonjob {
                 title: "Gestion des habilitations",
                 component: RecruiterListPage,
                 icon: "contacts",
+                isBadged: false
+            });
+        }else{
+            this.loggedInPages.push({
+                title: "Annonces",
+                component: AdvertListPage,
+                icon: "logo-buffer",
                 isBadged: false
             });
         }
