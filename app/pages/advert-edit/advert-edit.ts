@@ -8,6 +8,7 @@ import {AdvertService} from "../../providers/advert.service";
 import {Utils} from "../../utils/utils";
 import {OfferDetailPage} from "../offer-detail/offer-detail";
 import { Transfer } from 'ionic-native';
+import {FileUtils} from "../../utils/fileUtils";
 declare var cordova: any;
 
 @Component({
@@ -59,19 +60,18 @@ export class AdvertEditPage {
         });
         this.nav.present(loading).then(()=> {
             this.advertService.getOfferById(this.advert.offerId).then((data: any) => {
-                this.nav.push(OfferDetailPage, {selectedOffer: data});
+                this.nav.push(OfferDetailPage, {selectedOffer: data, obj: "detail"});
                 loading.dismiss();
             })
         });
     }
 
     /*downloadAttachement(){
-        const fileTransfer = new Transfer();
-        let url = this.advert.attachement.fileContent;
-        fileTransfer.download(url, cordova.file.dataDirectory + "file.log").then((entry) => {
-            console.log('download complete: ' + entry.toURL());
-        }, (error) => {
-            console.log("error");
-        });
+        let base64 = this.advert.attachement.fileContent.split(';')[0];
+        let contentType = "application/log";
+        var folderpath = cordova.file.externalRootDirectory;
+        var filename = this.advert.attachement.fileContent.split(';')[1];
+
+        FileUtils.savebase64AsImageFile(folderpath,filename,base64,contentType);
     }*/
 }
