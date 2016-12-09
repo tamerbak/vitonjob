@@ -1,15 +1,13 @@
 import {Component} from "@angular/core";
-import {NavController, Storage, SqlStorage, Loading} from "ionic-angular";
+import {NavController, Loading} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
-import {isUndefined} from "ionic-angular/util";
-import {GlobalService} from "../../providers/global.service";
 import {AdvertService} from "../../providers/advert.service";
 import {AdvertEditPage} from "../../pages/advert-edit/advert-edit";
 
 @Component({
     templateUrl: 'build/pages/advert-list/advert-list.html',
-    providers: [GlobalService, AdvertService]
+    providers: [AdvertService]
 })
 export class AdvertListPage {
 
@@ -18,10 +16,11 @@ export class AdvertListPage {
     db: Storage;
     isHunter:boolean = false ;
     adverts = [];
+    isEmployer : boolean;
+    themeColor : any;
 
     constructor(public nav: NavController,
                 public gc: GlobalConfigs,
-                private globalService: GlobalService,
                 private advertService: AdvertService) {
 
         // Set global configs
@@ -36,17 +35,41 @@ export class AdvertListPage {
         this.isEmployer = (this.projectTarget == 'employer');
         this.themeColor = config.themeColor;
         this.backgroundImage = config.backgroundImage;
-        this.db = new Storage(SqlStorage);
 
         //loading adverts
-        this.advertService.loadAdverts().then(data => {
-            this.adverts = data;
-        })
+        let loading = Loading.create({
+            content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+            spinner: 'hide',
+            duration: 10000
+        });
+        this.nav.present(loading).then(()=> {
+            this.advertService.loadAdverts().then((data: any) => {
+                this.adverts = data;
+                loading.dismiss();
+            })
+        });
     }
 
     goToDetailAdvert(item){
-        //this.advertService.loadAdvert(item).then((data: any) => {
-            this.nav.push(AdvertEditPage, {advert: item});
-        //})
+        //loading adverts
+        let loading = Loading.create({
+            content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+            spinner: 'hide',
+            duration: 20000
+        });
+        this.nav.present(loading).then(()=> {
+            this.advertService.loadAdvert(item).then((data: any) => {
+                this.nav.push(AdvertEditPage, {advert: item});
+                loading.dismiss();
+            })
+        });
     }
 }

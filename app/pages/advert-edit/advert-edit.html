@@ -5,19 +5,33 @@
     </button>
 
     <ion-card>
-        <ion-card-header>Détails de l'annonce</ion-card-header>
+        <ion-row>
+            <ion-col width-33>
+                <ion-avatar>
+                    <img [src]="advert.thumbnail.fileContent" style="margin:5px">
+                </ion-avatar>
+            </ion-col>
+            <ion-col text-wrap>
+                <ion-card-header>{{advert.titre}}</ion-card-header>
+            </ion-col>
+        </ion-row>
         <ion-card-content style="padding: 0;">
             <ion-item text-wrap>
-                <h2 class="h3-margintop">{{advert.titre}}</h2>
-                <span class="large" [innerHTML]="advert.description"></span>
+                <img [src]="advert.imgbg.fileContent" style="border:2px solid gray;">
                 <button block (click)="goToOffer()" [style.backgroundColor]="themeColor" *ngIf="advert.hasOffer">
                     <ion-icon name="create"></ion-icon>
                     Afficher l'offre associée
                 </button>
                 <h3 text-wrap class="h3-margintop" *ngIf="!advert.hasOffer">Aucune offre n'est encore associée à cette annonce</h3>
+                <span class="large" [innerHTML]="advert.description"></span>
             </ion-item>
-
-
+            <!--<ion-item *ngIf="advert.attachement.fileContent.length != 0">
+                <p>Pièces jointes: </p>
+                <button block (click)="downloadAttachement()" outline clear>
+                    <ion-icon name="create"></ion-icon>
+                    Télécharger
+                </button>
+            </ion-item>-->
         </ion-card-content>
     </ion-card>
 

@@ -7,6 +7,8 @@ import {GlobalService} from "../../providers/global.service";
 import {AdvertService} from "../../providers/advert.service";
 import {Utils} from "../../utils/utils";
 import {OfferDetailPage} from "../offer-detail/offer-detail";
+import { Transfer } from 'ionic-native';
+declare var cordova: any;
 
 @Component({
     templateUrl: 'build/pages/advert-edit/advert-edit.html',
@@ -19,6 +21,8 @@ export class AdvertEditPage {
     db: Storage;
     isHunter:boolean = false ;
     advert: any;
+    isEmployer : boolean;
+    themeColor : any;
 
     constructor(public nav: NavController,
                 public navParams: NavParams,
@@ -44,8 +48,30 @@ export class AdvertEditPage {
     }
 
     goToOffer(){
-        this.advertService.getOfferById(this.advert.offerId).then((data: any) => {
-            this.nav.push(OfferDetailPage, {selectedOffer: data});
-        })
+        let loading = Loading.create({
+            content: ` 
+			<div>
+			<img src='img/loading.gif' />
+			</div>
+			`,
+            spinner: 'hide',
+            duration: 10000
+        });
+        this.nav.present(loading).then(()=> {
+            this.advertService.getOfferById(this.advert.offerId).then((data: any) => {
+                this.nav.push(OfferDetailPage, {selectedOffer: data});
+                loading.dismiss();
+            })
+        });
     }
+
+    /*downloadAttachement(){
+        const fileTransfer = new Transfer();
+        let url = this.advert.attachement.fileContent;
+        fileTransfer.download(url, cordova.file.dataDirectory + "file.log").then((entry) => {
+            console.log('download complete: ' + entry.toURL());
+        }, (error) => {
+            console.log("error");
+        });
+    }*/
 }
