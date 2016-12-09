@@ -39,6 +39,8 @@ export class OfferDetailPage {
     fullAdress : string;
     idTiers : number;
     storage : any;
+    obj: string;
+    canModify: boolean = false;
 
     constructor(public nav: NavController, gc: GlobalConfigs, params: NavParams, public offersService: OffersService, public searchService: SearchService, private sanitizer: DomSanitizationService, private globalService: GlobalService) {
 
@@ -59,6 +61,12 @@ export class OfferDetailPage {
         // Get Offer passed in NavParams
         this.offer = params.get('selectedOffer');
         this.fromPage = params.get('fromPage');
+        this.obj = params.get('obj');
+        if(this.obj == "detail"){
+            this.canModify = false;
+        }else{
+            this.canModify = true;
+        }
         this.showJob = false;
         this.jobIconName = 'add';
         this.showQuality = false;
