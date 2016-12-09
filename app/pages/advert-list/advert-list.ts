@@ -18,6 +18,8 @@ export class AdvertListPage {
     db: Storage;
     isHunter:boolean = false ;
     adverts = [];
+    isEmployer : boolean;
+    themeColor : any;
 
     constructor(public nav: NavController,
                 public gc: GlobalConfigs,
@@ -39,7 +41,7 @@ export class AdvertListPage {
         this.db = new Storage(SqlStorage);
 
         //loading adverts
-        this.advertService.loadAdverts().then(data => {
+        this.advertService.loadAdverts().then((data : any) => {
             this.adverts = data;
         })
     }

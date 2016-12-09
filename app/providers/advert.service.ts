@@ -93,7 +93,7 @@ export class AdvertService {
         'class': 'com.vitonjob.callouts.offerInfo.OfferToken',
         'offerId': offerId
       };
-    args = JSON.stringify(args);
+    let args = JSON.stringify(args);
     let encodedArgs = btoa(args);
 
     let dataLog = {
@@ -109,9 +109,9 @@ export class AdvertService {
     return new Promise(resolve => {
       let headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.calloutURL, body, {headers: headers})
-        .map(res => res)
-        .subscribe(data => {
-          resolve(JSON.parse(data._body));
+        .map(res => res.json())
+        .subscribe((data : any) => {
+          resolve(JSON.parse(data));
         });
     });
   }
