@@ -13,7 +13,7 @@ export class AdvertService {
       "pk_user_annonce_entreprise as id" +
       ", titre as titre" +
       ", contenu as content" +
-      //", thumbnail" +
+      ", thumbnail" +
       ", created " +
       ", fk_user_offre_entreprise as \"offerId\" " +
       "from user_annonce_entreprise " +
@@ -23,7 +23,7 @@ export class AdvertService {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
-        .subscribe(data => {
+        .subscribe((data: any) => {
           let adverts = [];
           if(data && data.data){
             for(let i = 0 ; i < data.data.length ; i++){
@@ -31,7 +31,6 @@ export class AdvertService {
               let adv = {
                 id : r.id,
                 'class' : 'com.vitonjob.annonces.Annonce',
-                //idEntreprise : idEntreprise,
                 titre : r.titre,
                 description : this.prepareContent(r.content),
                 briefContent : this.prepareBriefContent(r.content),
@@ -40,7 +39,6 @@ export class AdvertService {
                   code : 0,
                   status : '',
                   fileContent : this.prepareImage(r.thumbnail),
-                  fileName: this.getImageName(r.thumbnail)
                 },
                 created : this.parseDate(r.created),
                 offerId: r.offerId
@@ -64,7 +62,7 @@ export class AdvertService {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
-        .subscribe(data => {
+        .subscribe((data: any) => {
           if(data && data.data && data.data.length != 0){
               let r = data.data[0];
               advert.attachement = {
@@ -110,7 +108,7 @@ export class AdvertService {
       let headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.calloutURL, body, {headers: headers})
         .map(res => res)
-        .subscribe(data => {
+        .subscribe((data: any) => {
           resolve(JSON.parse(data._body));
         });
     });
