@@ -44,7 +44,6 @@ export class AdvertListPage {
 			</div>
 			`,
             spinner: 'hide',
-            duration: 10000
         });
         this.nav.present(loading).then(()=> {
             this.advertService.loadAdverts().then((data: any) => {
@@ -63,7 +62,6 @@ export class AdvertListPage {
 			</div>
 			`,
             spinner: 'hide',
-            duration: 20000
         });
         this.nav.present(loading).then(()=> {
             this.advertService.loadAdvert(item).then((data: any) => {

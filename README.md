@@ -110,6 +110,7 @@ $ ionic plugin add cordova-plugin-contacts
 $ ionic plugin add de.appplant.cordova.plugin.local-notification
 $ npm install croppie
 $ npm install diacritics
+$ cordova plugin add cordova-plugin-file
 ```
 
 ##Notification Push

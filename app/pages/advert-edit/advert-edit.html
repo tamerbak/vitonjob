@@ -19,19 +19,19 @@
             <ion-item text-wrap>
                 <img [src]="advert.imgbg.fileContent" style="border:2px solid gray;">
                 <button block (click)="goToOffer()" [style.backgroundColor]="themeColor" *ngIf="advert.hasOffer">
-                    <ion-icon name="create"></ion-icon>
+                    <ion-icon name="clipbboard"></ion-icon>
                     Afficher l'offre associée
                 </button>
                 <h3 text-wrap class="h3-margintop" *ngIf="!advert.hasOffer">Aucune offre n'est encore associée à cette annonce</h3>
                 <span class="large" [innerHTML]="advert.description"></span>
             </ion-item>
-            <!--<ion-item *ngIf="advert.attachement.fileContent.length != 0">
+            <ion-item *ngIf="advert.attachement.fileContent.length != 0">
                 <p>Pièces jointes: </p>
                 <button block (click)="downloadAttachement()" outline clear>
-                    <ion-icon name="create"></ion-icon>
-                    Télécharger
+                    <ion-icon name="download"></ion-icon>
+                    {{attachFilename}}
                 </button>
-            </ion-item>-->
+            </ion-item>
         </ion-card-content>
     </ion-card>
 
