@@ -9,10 +9,12 @@
 <div class="modal-tutorial">
     <div class="content">
         <ion-list no-lines text-wrap>
-            <ion-item>
-                <ion-icon name="search" item-left></ion-icon>
-                <h2>Title</h2>
-                <p>{{content}}</p>
+            <ion-list-header style="color: white; font-weight: bold">Aide Vit-On-Job</ion-list-header>
+            <ion-item *ngFor="let item of content">
+                <!--ion-icon name="search" item-left></ion-icon-->
+                <h2>{{item.title}}</h2>
+                <p>{{item.description}}</p>
+
             </ion-item>
         </ion-list>
     </div>

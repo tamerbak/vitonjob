@@ -156,10 +156,11 @@ export class HomePage implements OnChanges {
         this.cards.push(card);
         card = {
             id: 2,
-            title: this.projectTarget === 'employer' ? "Jobyers disponibles immédiatement":"Offres imminentes",
+            title: this.projectTarget === 'employer' ? "Jobyers disponibles immédiatement" : "Offres imminentes",
             icon: "megaphone",
             isShowed: false,
-            isActive: false};
+            isActive: false
+        };
         this.cards.push(card);
         card = {
             id: 3,
@@ -904,7 +905,29 @@ export class HomePage implements OnChanges {
     }
 
     getHelp() {
-        let helpModal = Modal.create(ModalTutorialPage, {'content' : 'this is tutorial content'});
+        let content = [{
+                title: "Recherche “Vit-On-Job !”",
+                description: "Résumez en une phrase ce que vous cherchez (Poste, date, expérience, nombre de places, horaires, " +
+                "lieu...) ex : je veux un serveursur Villepinte disponible demain"
+            },
+            {
+                title: "Recherche classique",
+                description: "Trouvez vos jobyers en remplissantles critères."
+            },
+            {
+                title: "Offres imminentes",
+                description: "Retrouvez les offres des jobyers à pourvoir immédiatement."
+            },
+            {
+                title: "Nouveaux jobyers",
+                description: "Retrouvez les jobyers dernièrement arrivés, immédiatement disponibles."
+            }
+        ];
+        let helpModal = Modal.create(ModalTutorialPage, {'content': content});
         this.nav.present(helpModal);
+    }
+
+    test(){
+        debugger;
     }
 }

@@ -151,6 +151,7 @@ export class MissionDetailsPage {
 
         //  Getting contract score
         this.notationService.loadContractNotation(this.contract, this.projectTarget).then(score=> {
+            debugger;
             this.rating = score;
             this.starsText = this.writeStars(this.rating);
         });

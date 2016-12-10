@@ -82,7 +82,7 @@ export class GeneralConditionsPage {
                 object: {
                     title: "Objet des présentes Conditions Générales de Vente",
                     content: "Les présentes Conditions Générales de Vente régissent l’utilisation de l’application " +
-                    "mobile « Vit-On-Job », ciaprès Vit-On-Job, pour l’« Entreprise Utilisatrice », c’està dire " +
+                    "mobile « Vit-On-Job », ciaprès Vit-On-Job, pour l’« Entreprise Utilisatrice », c’est à dire " +
                     "l’entreprise en recherche de jobyers. " +
                     "Vit-On-Job est une plateforme de mise en relation d’Entreprise Utilisatrices et de Jobyers. " +
                     "Manaona est un prestataire de service et de portage salarial pour des entreprises de travail temporaire."
