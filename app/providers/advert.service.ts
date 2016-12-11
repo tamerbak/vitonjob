@@ -55,6 +55,7 @@ export class AdvertService {
     let sql = "select " +
       "piece_jointe as attachement" +
       ", image_principale as imgbg" +
+      ", forme_contrat" +
       " from user_annonce_entreprise " +
       "where dirty='N' and pk_user_annonce_entreprise=" + advert.id;
 
@@ -79,6 +80,7 @@ export class AdvertService {
                   fileContent : this.prepareImage(r.imgbg),
                   fileName: this.getImageName(r.imgbg)
                 };
+                advert.contractForm = r.forme_contrat;
               }
           resolve(advert);
         });
