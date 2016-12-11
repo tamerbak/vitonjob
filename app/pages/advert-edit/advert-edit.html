@@ -23,8 +23,17 @@
                     Afficher l'offre associée
                 </button>
                 <h3 text-wrap class="h3-margintop" *ngIf="!advert.hasOffer">Aucune offre n'est encore associée à cette annonce</h3>
+            </ion-item>
+
+            <ion-item>
                 <span class="large" [innerHTML]="advert.description"></span>
             </ion-item>
+
+            <ion-item *ngIf="contractForm.length != 0">
+                <p>Forme de contrat: </p>
+                <h3 text-wrap *ngFor="let cf of contractForm">{{cf}}</h3>
+            </ion-item>
+
             <ion-item *ngIf="advert.attachement.fileContent.length != 0">
                 <p>Pièces jointes: </p>
                 <button block (click)="downloadAttachement()" outline clear>

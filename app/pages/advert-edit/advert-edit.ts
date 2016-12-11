@@ -7,6 +7,7 @@ import {Utils} from "../../utils/utils";
 import {OfferDetailPage} from "../offer-detail/offer-detail";
 import {Transfer} from 'ionic-native';
 import {FileUtils} from "../../utils/fileUtils";
+
 declare var cordova: any;
 
 @Component({
@@ -23,6 +24,7 @@ export class AdvertEditPage{
   themeColor: any;
   advert: any;
   attachFilename: string;
+  contractForm = [];
 
   constructor(public nav: NavController,
               public navParams: NavParams,
@@ -46,6 +48,7 @@ export class AdvertEditPage{
     this.advert = navParams.get('advert');
     this.advert.hasOffer = (this.advert.offerId != 0 && !Utils.isEmpty(this.advert.offerId) ? true : false);
     this.attachFilename = this.advert.attachement.fileContent.split(';')[0];
+    this.contractForm = (Utils.isEmpty(this.advert.contractForm) ? [] : this.advert.contractForm.split(";"));
   }
 
   goToOffer() {
