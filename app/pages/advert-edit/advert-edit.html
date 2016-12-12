@@ -25,6 +25,13 @@
                 <h3 text-wrap class="h3-margintop" *ngIf="!advert.hasOffer">Aucune offre n'est encore associée à cette annonce</h3>
             </ion-item>
 
+            <ion-item text-wrap>
+                <button block (click)="saveAdvertInterest()" [style.backgroundColor]="themeColor">
+                    <ion-icon name="checkmark"></ion-icon>
+                    {{jobyerInterestLabel}}
+                </button>
+            </ion-item>
+
             <ion-item>
                 <span class="large" [innerHTML]="advert.description"></span>
             </ion-item>

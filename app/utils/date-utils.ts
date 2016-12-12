@@ -9,4 +9,8 @@ export class DateUtils {
     var age = Math.abs(ageDate.getUTCFullYear() - 1970);
     return age;
   }
+
+  public static sqlfy(d) {
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " 00:00:00+00";
+  }
 }
