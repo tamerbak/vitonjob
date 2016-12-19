@@ -44,7 +44,9 @@ export class ModalRecruiterRepertoryPage {
 
   getContacts(ev) {
     this.platform.ready().then(() => {
-      Contacts.find(['*'], {filter: ev.target.value}).then((contacts) => {
+      let allContacts = [];
+      allContacts.push('*');
+      Contacts.find(allContacts, {filter: ev.target.value}).then((contacts) => {
         //in birthday is always invalid date, and displayname is null
         for (let i = 0; i < contacts.length; i++) {
           contacts[i].birthday = null;
@@ -52,7 +54,7 @@ export class ModalRecruiterRepertoryPage {
             contacts[i].displayName = contacts[i].name.formatted;
         }
         this.contactsfound = contacts;
-      })
+      });
       this.search = true;
     });
   }

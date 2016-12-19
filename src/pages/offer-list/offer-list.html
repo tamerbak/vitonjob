@@ -1,5 +1,5 @@
-<ion-header no-shadow class="myToolbar">
-  <ion-toolbar no-border-bottom transparent>
+<ion-header no-border class="myToolbar">
+  <ion-toolbar transparent>
     <button ion-button icon-left menuToggle style="background-color: transparent; box-shadow: none" [style.color]="backGroundColor">
       <ion-icon name="menu" color="vojgrey"></ion-icon>
       &nbsp;&nbsp;Mes offres
@@ -35,7 +35,7 @@
                 Détails
             </button>
         </div>
-        <div *ngFor="let item of globalList.list " no-border-bottom>
+        <div *ngFor="let item of globalList.list ">
             <ion-item (click)="goToDetailOffer(item)" [color]="item.color" no-lines
                       *ngIf="item.visible && showPublishedOffers">
                 <h2 [style.color]="item.color" class="h3-margintop">{{item.title}}</h2>
