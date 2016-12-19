@@ -1,0 +1,38 @@
+<!--
+  Generated template for the RecruiterRepertoryPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+        <ion-title>Ajouter à partir du répertoire</ion-title>
+        <ion-buttons end>
+            <button (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-searchbar (ionInput)="getContacts($event)" placeholder="Chercher un contact"></ion-searchbar>
+    <ion-list [hidden]="!search" text-wrap>
+        <ion-item *ngFor="let item of contactsfound" [hidden]="item.phoneNumbers == null || item.displayName == null">
+            <ion-label>{{item.displayName}} : {{item.phoneNumbers != null ? item.phoneNumbers[0].value : ''}}
+            </ion-label>
+            <ion-checkbox checked="false" [(ngModel)]="item.checked" [disabled]="item.disabled"
+                          (ionChange)="verifyContact(item)"></ion-checkbox>
+        </ion-item>
+    </ion-list>
+</ion-content>
+<ion-footer>
+    <ion-toolbar>
+        <ion-buttons end>
+            <button royal (click)="selectContacts()">
+                Valider la sélection
+                <ion-icon name="checkmark-circle-outline"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-footer>

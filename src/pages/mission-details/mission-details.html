@@ -1,0 +1,253 @@
+<ion-header>
+	<ion-navbar transparent no-border-bottom [color]="themeColor" >
+	<ion-title text-left>Retour à la liste</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<ion-content padding class="mission-details" [ngStyle]="backgroundImage">
+    <!--button clear nav-pop>
+        <ion-icon name="arrow-back"></ion-icon>
+        Retour à la liste<!--{{missionDetailsTitle}}>
+    </button-->
+
+    <ion-card>
+        <ion-item text-wrap (click)="setStarPicker()" style="background-color: aliceblue;">
+            {{contract.titre}}
+            <h3>
+                <!--span>{{(starsText == '')? '': 'Note: '}}</span-->
+                <span style="color: gold; font-size: large">{{(starsText == '')? '': starsText}}</span>
+            </h3>
+            <p>
+                <span>{{(starsText=='')? 'Cliquer pour attribuer une note' : ''}}</span>
+            </p>
+
+        </ion-item>
+        <!--[hidden]="!isEmployer || !missionHours || missionHours.length == 0"-->
+        <ion-card
+                [hidden]="isEmployer ||upperCase(contract.signature_jobyer) == 'OUI' || (!missionHours || missionHours.length == 0)">
+            <ion-list text-wrap [hidden]="prerequisObligatoires.length == 0">
+                <ion-list-header>
+                    <p>En signant ce contrat vous vous engager à vous présenter à la mission munis des prérequis suivants</p>
+                </ion-list-header>
+                <ion-item *ngFor="let p of prerequisObligatoires">
+                    <label >{{p.libelle}}</label>
+                </ion-item>
+
+            </ion-list>
+            <ion-row>
+                <ion-col text-center>
+                    <ion-item>
+                        <button ion-button icon-left block (click)="launchContractPage()" [color]="themeColor" *ngIf="!isEmployer && upperCase(contract.signature_jobyer) == 'NON' && !(upperCase(contract.signature_jobyer) == 'NON' && isSignContractClicked)">
+                            <ion-icon name="create"></ion-icon>
+                            Signer votre contrat
+                        </button>
+                        <button ion-button icon-left block (click)="refreshSignatureStatus()" [color]="themeColor" *ngIf="!isEmployer && upperCase(contract.signature_jobyer) == 'NON' && isSignContractClicked">
+                            <ion-icon name="refresh"></ion-icon>
+                            Rafraîchir
+                        </button>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-card>
+        <ion-card-header>Relevé d'heures de travail</ion-card-header>
+        <ion-card *ngFor="let day of missionHours, let i=index">
+            <ion-card-header (click)="onCardClick(i)" class="cardHeader">
+                Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}
+                <ion-icon name="add-circle"
+                          [hidden]="!isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'"
+                          class="iconRight"></ion-icon>
+            </ion-card-header>
+            <ion-card-content style="padding: 0;">
+                <ion-list>
+                    <ion-grid>
+                        <ion-row>
+                            <ion-col></ion-col>
+                            <ion-col width-33 text-center
+                                     style="border-right: solid white;background-color: lightgoldenrodyellow">
+                                {{enterpriseName}}
+                            </ion-col>
+                            <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" width-33 text-center
+                                     style="background-color: lightgoldenrodyellow">
+                                {{jobyerName}}
+                            </ion-col>
+                        </ion-row>
+                        <ion-row baseline style=" background-color: lightgoldenrodyellow; border-top: solid white;">
+                            <ion-col style="font-size: small;border-right: solid white">Heure début</ion-col>
+                            <ion-col width-33 style="padding: 0; border-right: solid white;" text-center>
+                                <button small
+                                        [style.backgroundColor]="!isEmpty(day.heure_debut_new) ? 'orange' : 'gray'"
+                                        (click)="onHourClick(i, j, true, false)">
+                                    {{!isEmpty(day.heure_debut_new) ?
+                                    (day.heure_debut_new |
+                                    timeConverter:'minute') : (day.heure_debut | timeConverter:'minute')}}
+                                </button>
+                            </ion-col>
+                            <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" style="padding: 0"
+                                     text-center width-33>
+                                <button small
+                                        [style.backgroundColor]="upperCase(day.is_heure_debut_corrigee) == 'OUI' ? 'red' : (upperCase(day.is_heure_debut_corrigee) == 'NON' ? 'green' : '')"
+                                        (click)="onPointedHourClick(i, j, true, false)"
+                                        [hidden]="contract.option_mission == '1.0'|| isNewMission">
+                                    {{(day.heure_debut_pointe)? day.heure_debut_pointe : '--:--'}}
+                                </button>
+                            </ion-col>
+                        </ion-row>
+                        <ion-list *ngFor="let pause of missionPauses[i], let j=index" class="marginTopList">
+
+                            <ion-row style="background-color: lightskyblue;">
+                                <ion-col>Pause {{j + 1}}</ion-col>
+                                <ion-col width-10>
+                                    <button clear (click)="onPauseClick(i, j)">
+                                        <ion-icon name="trash" [hidden]="!isNewMission || !isEmployer"
+                                                  class="iconRight"></ion-icon>
+                                    </button>
+                                </ion-col>
+                            </ion-row>
+                            <ion-row baseline style="border-top: solid white;background-color: lightskyblue;">
+                                <ion-col style="font-size: small;border-right: solid white;">Début de pause</ion-col>
+                                <ion-col style="padding: 0; border-right: solid white;" text-center width-33>
+                                    <!--To verify TEL@04082016-->
+                                    <button small
+                                            [style.backgroundColor]="!isEmpty(pause.pause_debut_new) ? 'orange' : 'gray'"
+                                            (click)="onHourClick(i, j, false, true)">{{!isEmpty(pause.pause_debut_new) ?
+                                        (pause.pause_debut_new | timeConverter:'minute') : (isEmpty(pause.pause_debut) ?
+                                        ' - - : - - ' : pause.pause_debut)}}
+                                    </button>
+                                </ion-col>
+                                <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" style="padding: 0"
+                                         text-center width-33>
+                                    <button small [hidden]="contract.option_mission == '1.0'|| isNewMission"
+                                            (click)="onPointedHourClick(i, j, false, true)"
+                                            [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')">
+                                        {{(pause.pause_debut_pointe)? pause.pause_debut_pointe : '--:--'}}
+                                    </button>
+                                </ion-col>
+                            </ion-row>
+                            <ion-row baseline style="border-top: solid white;background-color: lightskyblue;">
+                                <ion-col style="font-size: small;border-right: solid white;">Fin de pause</ion-col>
+                                <ion-col style="padding: 0;border-right: solid white;" text-center width-33>
+                                    <!--To verify TEL@04082016-->
+                                    <button small (click)="onHourClick(i, j, false, false)"
+                                            [style.backgroundColor]="!isEmpty(pause.pause_fin_new) ? 'orange' : 'gray'">
+                                        {{!isEmpty(pause.pause_fin_new) ? (pause.pause_fin_new | timeConverter:'minute')
+                                        : (isEmpty(pause.pause_fin) ? ' - - : - - ' : pause.pause_fin)}}
+                                    </button>
+                                </ion-col>
+                                <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" style="padding: 0"
+                                         text-center width-33>
+                                    <button small [hidden]="contract.option_mission == '1.0'|| isNewMission"
+                                            (click)="onPointedHourClick(i, j, false, false)"
+                                            [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')">
+                                        {{(pause.pause_fin_pointe)? pause.pause_fin_pointe : '--:--'}}
+                                    </button>
+                                </ion-col>
+                            </ion-row>
+                        </ion-list>
+
+                        <ion-row baseline style="background-color: lightgoldenrodyellow;border-top: solid white;">
+                            <ion-col style="font-size: small;border-right: solid white;">Heure fin</ion-col>
+                            <ion-col style="padding: 0; border-right: solid white;" text-center width-33>
+                                <button small [style.backgroundColor]="!isEmpty(day.heure_fin_new) ? 'orange' : 'gray'"
+                                        (click)="onHourClick(i, j, false, false)">
+                                    {{!isEmpty(day.heure_fin_new) ? (day.heure_fin_new |
+                                    timeConverter:'minute') : (day.heure_fin | timeConverter:'minute')}}
+                                </button>
+                            </ion-col>
+                            <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" style="padding: 0"
+                                     text-center width-33>
+                                <button small
+                                        [style.backgroundColor]="upperCase(day.is_heure_fin_corrigee) == 'OUI' ? 'red' : (upperCase(day.is_heure_fin_corrigee) == 'NON' ? 'green' : '')"
+                                        (click)="onPointedHourClick(i, j, false, false)"
+                                >
+                                    {{(day.heure_fin_pointe)? day.heure_fin_pointe : '--:--'}}
+                                </button>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </ion-list>
+            </ion-card-content>
+        </ion-card>
+        <!--[hidden]=""-->
+        <ion-item>
+            <button ion-button icon-only item-right clear (click)="validateWork()" [style.color]="themeColor"
+                    [hidden]="!isEmployer || isNewMission || upperCase(contract.approuve) != 'OUI' || (upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0')">
+                <ion-icon name="ribbon"></ion-icon>
+            </button>
+            <button ion-button icon-only item-right clear (click)="eomReleve()" [style.color]="themeColor" [hidden]="! isReleveAvailable">
+                <ion-icon name="checkbox-outline"></ion-icon>
+            </button>
+            <button ion-button icon-only item-right clear (click)="eomInvoice()" [style.color]="themeColor" [hidden]="! isInvoiceAvailable">
+                <ion-icon name="document"></ion-icon>
+            </button>
+            <button ion-button icon-only item-right clear (click)="generateTimesheet()" [style.color]="themeColor"
+                    [hidden]="(missionHours && missionHours.length == 0) || !isEmployer || contract.option_mission == '1.0' || isNewMission || upperCase(contract.releve_employeur) == 'OUI'"
+                    [disabled]="disableTimesheetButton()">
+                <ion-icon name="paper"></ion-icon>
+            </button>
+            <button ion-button icon-only item-right clear (click)="validatePauses()" [style.color]="themeColor"
+                    [hidden]="!isNewMission || (missionHours && missionHours.length == 0) || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'">
+                <ion-icon name="send"></ion-icon>
+            </button>
+            <button ion-button icon-only item-right clear (click)="signSchedule()" [style.color]="themeColor"
+                    [hidden]="isNewMission || !isEmployer || upperCase(contract.approuve) == 'OUI' || (contract.option_mission == '2.0' && upperCase(contract.releve_employeur) == 'NON')">
+                <ion-icon name="md-create"></ion-icon>
+            </button>
+            <button ion-button icon-only item-right clear (click)="resetForm()" [style.color]="themeColor"
+                    [hidden]="!isNewMission || (missionHours && missionHours.length == 0) || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'">
+                <ion-icon name="refresh"></ion-icon>
+            </button>
+        </ion-item>
+
+        <ion-item class="labelInItem" text-wrap>
+            <h3>
+                <ion-icon name="ios-information-circle-outline"></ion-icon>
+                Informations :
+            </h3>
+            <p>
+                <ion-icon name="ios-radio-button-on" style="color: green"></ion-icon>
+                Horaire validé par l'employeur
+            </p>
+            <p>
+                <ion-icon name="ios-radio-button-on" style="color: red"></ion-icon>
+                Horaire invalidé par l'employeur
+            </p>
+            <p>
+                <ion-icon name="ios-radio-button-on" style="color: orange"></ion-icon>
+                Horaire prévu modifié et validé par l'employeur
+            </p>
+            <p>
+                <ion-icon name="ios-radio-button-on" style="color: gray"></ion-icon>
+                Horaire prévu et validé par l'employeur
+            </p>
+            <p [hidden]="!isNewMission || (missionHours && missionHours.length == 0) || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'">
+                <ion-icon name="send"></ion-icon>
+                Valider et notifier le Jobyer
+            </p>
+            <p [hidden]="isNewMission || !isEmployer || upperCase(contract.approuve) == 'OUI' || (contract.option_mission == '2.0' && upperCase(contract.releve_employeur) == 'NON')">
+                <ion-icon name="md-create"></ion-icon>
+                Signer les horaires
+            </p>
+            <p [hidden]="disableTimesheetButton()"
+               [hidden]="(missionHours && missionHours.length == 0) || !isEmployer || contract.option_mission == '1.0' || isNewMission || upperCase(contract.releve_employeur) == 'OUI'">
+                <ion-icon name="paper"></ion-icon>
+                Générer et envoyer le relevé d'heure
+            </p>
+            <p [hidden]="!isEmployer || isNewMission || upperCase(contract.approuve) != 'OUI' || (upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0')">
+                <ion-icon name="ribbon"></ion-icon>
+                Fin de mission
+            </p>
+            <p [hidden]="!isNewMission || (missionHours && missionHours.length == 0) || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'">
+                <ion-icon name="refresh"></ion-icon>
+                Réinitialiser
+            </p>
+            <p [hidden]="! isReleveAvailable">
+                <ion-icon name="checkbox-outline"></ion-icon>
+                Signer le relevé
+            </p>
+            <p [hidden]="! isInvoiceAvailable">
+                <ion-icon name="document"></ion-icon>
+                Signer la facture
+            </p>
+        </ion-item>
+    </ion-card>
+</ion-content>

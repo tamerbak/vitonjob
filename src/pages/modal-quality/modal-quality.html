@@ -1,0 +1,42 @@
+<ion-header>
+    <ion-navbar [color]="themeColor">
+        <ion-title>Mon {{ isEmployer ? 'jobyer' : 'employeur' }} idéal</ion-title>
+        <ion-buttons end>
+            <button ion-button icon-only (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding class="modal-quality">
+    <ion-row>
+        <ion-col text-center>
+            <button ion-button icon-left small [color]="themeColor" (click)="showQualityList()">
+                <ion-icon name="add-circle"></ion-icon>
+                Ajouter une qualité
+            </button>
+        </ion-col>
+    </ion-row>
+
+    <ion-list text-wrap>
+      <ion-list-header *ngIf="qualities.length>0" color="primary"> Liste des qualités </ion-list-header>
+        <ion-item *ngFor="let item of qualities">
+            {{ item.libelle }}
+            <button ion-button icon-only item-right clear (click)="removeQuality(item)">
+                <ion-icon name="close-circle" [style.color]="themeColor"></ion-icon>
+            </button>
+        </ion-item>
+    </ion-list>
+
+    <ion-row>
+        <ion-col text-center>
+            <button ion-button icon-left small [hidden]="(qualities.length == 0)"
+                    [color]="themeColor" (click)="validateQuality()">
+                <ion-icon name="checkmark-circle"></ion-icon>
+                Valider
+            </button>
+        </ion-col>
+    </ion-row>
+
+</ion-content>

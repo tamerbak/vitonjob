@@ -1,0 +1,16 @@
+.popover-search {
+  background: transparent;
+
+  .popItem {
+    background-color: transparent;
+  }
+  .popover-content {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+}
+
+ion-content.popover-search {
+  background: transparent;
+}

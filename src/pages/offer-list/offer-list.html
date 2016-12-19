@@ -1,0 +1,93 @@
+<ion-header no-shadow class="myToolbar">
+  <ion-toolbar no-border-bottom transparent>
+    <button ion-button icon-left menuToggle style="background-color: transparent; box-shadow: none" [style.color]="backGroundColor">
+      <ion-icon name="menu" color="vojgrey"></ion-icon>
+      &nbsp;&nbsp;Mes offres
+    </button>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding class="offer" [ngStyle]="backgroundImage">
+
+
+    <ion-row>
+        <ion-col text-center>
+            <button ion-button icon-left small (click)="goToNewOffer()" [color]="themeColor">
+                <ion-icon name="add-circle"></ion-icon>
+                Créer une offre {{isEmployer? " d'emploi":" de service"}}
+            </button>
+        </ion-col>
+    </ion-row>
+
+    <!--ion-card [hidden]="!listMode">
+        <!--ion-card-header style = "text-align: center;">
+            Ma liste des offres :
+        </ion-card-header-->
+
+    <ion-list text-wrap *ngFor="let globalList of globalOfferList">
+        <div style="display: flex;" *ngIf="globalList.list.length >0">
+            <ion-list-header style="color: #757575; background-color: transparent;">{{globalList.header}}</ion-list-header>
+            <button ion-button icon-left outline small style="position: relative; top: 0;" (click)="showOfferList(globalList.header)" color="vojgrey">
+                <ion-icon [name]="detailsIconName1" *ngIf="globalList.header === 'Mes offres en ligne'"></ion-icon>
+                <ion-icon [name]="detailsIconName2" *ngIf="globalList.header === 'Mes brouillons'"></ion-icon>
+                <ion-icon [name]="detailsIconName3" *ngIf="globalList.header === 'Mes opportunités capturées'"></ion-icon>
+                Détails
+            </button>
+        </div>
+        <div *ngFor="let item of globalList.list " no-border-bottom>
+            <ion-item (click)="goToDetailOffer(item)" [color]="item.color" no-lines
+                      *ngIf="item.visible && showPublishedOffers">
+                <h2 [style.color]="item.color" class="h3-margintop">{{item.title}}</h2>
+                <h4 [style.color]="item.color">
+                    <ion-icon [style.color]="item.color" [name]="item.visible ? 'eye' : 'eye-off'"></ion-icon>
+                    {{(isEmployer) ? 'Les jobyers peuvent voir cette offre dans leurs recherches' : 'Les employeurs
+                    peuvent voir cette offre dans leurs recherches'}}
+                </h4>
+                <p [style.color]="item.color">Cliquer pour voir plus de détail</p>
+                <ion-badge [style.backgroundColor]="themeColor" item-right *ngIf="item.visible">
+                    <ion-spinner name="crescent" [hidden]="(item.correspondantsCount >= 0)"></ion-spinner>
+                    {{(item.correspondantsCount < 0) ? '' : item.correspondantsCount}}
+                </ion-badge>
+            </ion-item>
+            <ion-item (click)="goToDetailOffer(item)" [style.color]="item.color"
+                      *ngIf="!item.visible && showUnpublishedOffers">
+                <h2 [style.color]="item.color" class="h3-margintop">{{item.title}}</h2>
+                <h4 [style.color]="item.color">
+                    <ion-icon [style.color]="item.color" [name]="item.visible ? 'eye' : 'eye-off'"></ion-icon>
+                    {{(isEmployer) ? 'Les jobyers ne voient pas cette offre dans leurs recherches' : 'Les employeurs ne
+                    voient pas cette offre dans leurs recherches'}}
+                </h4>
+                <p [style.color]="item.color">Cliquer pour voir plus de détail</p>
+                <ion-badge [style.backgroundColor]="themeColor" item-right *ngIf="item.visible">
+                    <ion-spinner name="crescent" [hidden]="(item.correspondantsCount >= 0)"></ion-spinner>
+                    {{(item.correspondantsCount < 0) ? '' : item.correspondantsCount}}
+                </ion-badge>
+            </ion-item>
+            <ion-item no-lines *ngIf="item.visible && showPublishedOffers">
+                <ion-label style="text-align: right;">Activer l'alerte</ion-label>
+                <ion-toggle secondary [checked]="item.rechercheAutomatique"
+                            (ionChange)="autoSearchMode(item)"></ion-toggle>
+            </ion-item>
+            <ion-item no-lines *ngIf="item.obsolete && showPublishedOffers">
+                <ion-label style="color: red;">Cette offre est obsolète. Veuillez mettre à jour les créneaux de
+                    disponibilité
+                </ion-label>
+            </ion-item>
+            <ion-item style="border-bottom: 0;margin-top: 0;margin-bottom: 0;text-align: center;"
+                      *ngIf="item.visible && showPublishedOffers">
+                <button ion-button color="vojgreen" small (click)="launchSearch(item)">Lancer la recherche</button>
+            </ion-item>
+        </div>
+    </ion-list>
+    <!--/ion-card>
+
+
+    <!--button fab fab-bottom fab-center class="fab-footer"
+            [style.backgroundColor]="themeColor" (click)="onAddOffer()">
+        <ion-icon [name]="okButtonName" is-active="false"></ion-icon>
+    </button>
+    <div class="bar-footer" [hidden]="!listMode"></div-->
+
+
+</ion-content>

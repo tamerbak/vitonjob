@@ -1,0 +1,92 @@
+// http://ionicframework.com/docs/v2/theming/
+
+// App Global Sass
+// --------------------------------------------------
+// Put style rules here that you want to apply globally. These
+// styles are for the entire app and not just one component.
+// Additionally, this file can be also used as an entry point
+// to import other Sass files to be included in the output CSS.
+//
+// Shared Sass variables, which can be used to adjust Ionic's
+// default Sass variables, belong in "theme/variables.scss".
+//
+// To declare rules for a specific mode, create a child rule
+// for the .md, .ios, or .wp mode classes. The mode class is
+// automatically applied to the <body> element in the app.
+
+app {
+  .menu {
+    //background-image: url("../../img/bg_menu_employer.png");
+    background-size: cover;
+    //font-family: 'Quicksand', sans-serif;
+    font-family: 'Maven Pro', sans-serif;
+    font-size: 50px;
+
+    /*.scroll-content {
+      bottom: calc(20%);
+    }*/
+
+    .menuButton {
+      background-color: transparent;
+    }
+    .about-header {
+      /*background-color: #434954;
+      padding: 16px;*/
+      width: 100%;
+      min-height: 40px;
+      text-align: center;
+    }
+
+    .menuHeader{
+      min-height: calc(25%) !important;
+      display: list-item;
+    }
+
+    .w {
+      color: white;
+    }
+
+    //$toolbar-ios-title-text-align: left;
+
+    ion-title {
+      padding: 0 0 0 !important;
+    }
+
+    ion-spinner {
+      width: 14px;
+      height: 14px;
+    }
+    ion-spinner circle {
+      stroke: white;
+    }
+
+    ion-navbar.toolbar {
+      min-height: calc(20%) !important;
+    }
+
+    ion-label.label {
+      margin-top: 0;
+      margin-bottom: 5px;
+    }
+    /*.toolbar-background.toolbar-background-md {
+
+    }*/
+    .toolbar-background-md {
+      background: transparent;
+    }
+
+
+
+    .asterisk {
+      color: red;
+    }
+
+    .error-box {
+      color: red;
+    }
+
+
+  }
+
+
+}

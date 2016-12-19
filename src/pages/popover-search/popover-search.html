@@ -1,0 +1,23 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>popover-search</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content class="popover-search">
+    <ion-list no-lines>
+        <ion-item text-wrap (click)="showGuideModal()" class="popItem">
+            Recherche guidée
+            <p>Je cherche un ... disponible le ... pour une mission (...)</p>
+        </ion-item>
+        <ion-item text-wrap (click)="showCriteriaModal()">
+            Recherche par critères
+
+            <ul>
+                <li>Secteur: ...</li>
+                <li>Job: ... (...)</li>
+            </ul>
+            <p></p>
+        </ion-item>
+    </ion-list>
+
+</ion-content>

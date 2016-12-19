@@ -1,0 +1,150 @@
+$offer-button-size: 90px;
+$horizontal-align: -3vh;//calc(10% - 1px);
+$vertical-align: 2vh;//calc(20% - 1px);
+
+$horizontal-line1 : calc(65% - 1px);
+//$horizontal-line2 : calc(70% - 1px);
+$horizontal-line3 : calc(65% - 1px);
+
+$vertical-line1 : calc(60% - 1px);
+$vertical-line2 : calc(50% - 1px);
+$vertical-line3 : calc(60% - 1px);
+
+$horizontal-arrow-line1 : calc(50% - 1px);
+$horizontal-arrow-line2 : calc(15% - 1px);
+$vertical-arrow-line1 : calc(-70% - 1px);
+$vertical-arrow-line2 : calc(90% - 1px);
+
+offer-add {
+  .offer-add {
+
+    background-size: cover;
+
+    .offer-top-left {
+      //top: $vertical-align;
+      left: $horizontal-align;
+      width: $offer-button-size;
+      height: $offer-button-size;
+    }
+    .offer-top-right {
+      bottom: $vertical-align;
+      //left: $horizontal-align;
+      //right: $horizontal-align;
+      width: $offer-button-size;
+      height: $offer-button-size;
+    }
+
+    .offer-bottom-left {
+      //bottom: $vertical-align;
+      left: $horizontal-align;
+      width: $offer-button-size;
+      height: $offer-button-size;
+    }
+    .offer-bottom-right {
+      bottom: $vertical-align;
+      //right: $horizontal-align;
+      width: $offer-button-size;
+      height: $offer-button-size;
+    }
+
+    .video-bottom-center {
+      position: absolute;
+      bottom: 20px;
+      right: 0;
+      //left: 20%;
+    }
+
+    .arrowDown {
+      position: absolute;
+      top: $horizontal-arrow-line1;
+      left: $vertical-arrow-line2;
+      background-color: transparent;
+    }
+
+    .arrowBack {
+      position: absolute;
+      top: calc(100% - 1px);
+      left: calc(10% - 1px);
+      background-color: transparent;
+    }
+
+    .arrowUp {
+      position: absolute;
+      top: $horizontal-arrow-line2;
+      left: $vertical-arrow-line1;
+      background-color: transparent;
+    }
+
+    .doneAll {
+      position: absolute;
+      top: calc(-60% - 1px);
+      left: calc(40% - 1px);
+      background-color: lightgreen;
+    }
+
+    .checkedJob{
+      position: absolute;
+      top: $horizontal-line1;
+      left: $vertical-line2;
+      background-color: lightgreen;
+      width: 30px;
+      height: 30px;
+    }
+
+    .checkedCalendar{
+      position:absolute;
+      top: $horizontal-line1;
+      left: $vertical-line3;
+      background-color: lightgreen;
+      width: 30px;
+      height: 30px;
+    }
+
+    .checkedQuality{
+      position: absolute;
+      top: $horizontal-line3;
+      left: $vertical-line2;
+      background-color: lightgreen;
+      width: 30px;
+      height: 30px;
+    }
+
+    .checkedLanguage{
+      position: absolute;
+      top: $horizontal-line1;
+      left: $vertical-line1;
+      background-color: lightgreen;
+      width: 30px;
+      height: 30px;
+    }
+
+    .warningJob{
+      position: absolute;
+      top: $horizontal-line1;
+      left: $vertical-line2;
+      background-color: orange;
+      width: 30px;
+      height: 30px;
+    }
+
+    .warningCalendar{
+      position:absolute;
+      top: $horizontal-line1;
+      left: $vertical-line3;
+      background-color: orange;
+      width: 30px;
+      height: 30px;
+    }
+
+
+
+    div {
+      text-align: left;
+    }
+    img {
+      top: 13px;
+      position: relative;
+    }
+  }
+}
+

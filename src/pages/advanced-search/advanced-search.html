@@ -1,0 +1,52 @@
+<!--
+  Generated template for the AdvancedSearchPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-navbar>
+    <ion-title>Recherche Avancée</ion-title>
+</ion-navbar>
+
+<ion-content padding class="advanced-search">
+    <ion-item>
+        <ion-label floating>Secteur</ion-label>
+        <ion-input [(ngModel)]="sector"></ion-input>
+        <button small item-right (click)="setSectorsPicker()">
+
+            <ion-icon name="list"></ion-icon>
+        </button>
+    </ion-item>
+    <ion-item>
+        <ion-label floating>Job</ion-label>
+        <ion-input [(ngModel)]="job">
+
+        </ion-input>
+        <button small item-right (click)="setJobsPicker()">
+
+            <ion-icon name="list"></ion-icon>
+        </button>
+    </ion-item>
+
+    <ion-item text-wrap [hidden]="isAndroid4">
+        <ion-label>Date</ion-label>
+        <ion-datetime id="idt" displayFormat="DD, MMMM YYYY" [(ngModel)]="showedSlot.date"
+                      min="{{showedSlot.date}}" cancelText="Annuler" doneText="Ok"
+                      style="max-width:100%;"></ion-datetime>
+    </ion-item>
+
+    <ion-item [hidden]="!isAndroid4">
+        <ion-label floating>Date</ion-label>
+        <ion-input type="text" [(ngModel)]="showedSlot.date"
+                   (focus)="launchDateTimePicker('date')" readonly></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label floating>Ville</ion-label>
+        <ion-input type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label floating>Pays</ion-label>
+        <ion-input type="text"></ion-input>
+    </ion-item>
+
+</ion-content>

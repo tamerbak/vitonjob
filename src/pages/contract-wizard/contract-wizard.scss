@@ -1,0 +1,28 @@
+.contract-wizard {
+  background-size: cover;
+  .button-state {
+    position: relative;
+    width: 28px;
+    height: 28px;
+  }
+  .line-state {
+    position: relative;
+    left: -28px;
+    top: 28px;
+  }
+
+  .canvas-state {
+    position: fixed;
+    //width: 46px;
+    //height:36px;
+    //border:1px solid #d3d3d3;
+    width: 100%;
+    height: 36px;
+    left: 0;
+  }
+
+  .col-state {
+    padding: 0;
+  }
+
+}

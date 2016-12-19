@@ -1,0 +1,268 @@
+<!--ion-header>
+<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+
+    <!--ion-buttons end>
+      <button (click)="changeViewMode(1)" style="font-size: small;" [ngClass]="{'button-secondary': listView}" >
+	  <ion-icon name="md-list"></ion-icon>
+      </button>
+      <button (click)="changeViewMode(2)" style="font-size: small;"  [ngClass]="{'button-secondary': cardView}" >
+        <ion-icon name="md-albums"></ion-icon>
+      </button>
+
+    </ion-buttons-->
+<!--button (click)="changeViewMode(3)" style="font-size: small;" [ngClass]="{'button-secondary': mapView}" >
+  <ion-icon name="md-map"></ion-icon>
+</button-->
+
+
+<!--button (click)="toggleProposition()" style="font-size: small;" *ngIf="offerProposition" >
+  <ion-icon name="md-create"></ion-icon>
+</button>
+</ion-navbar>
+</ion-header-->
+
+<!--ion-header no-shadow>
+  <ion-navbar no-border-bottom transparent>
+    <ion-title>Retour à la recherche</ion-title>
+  </ion-navbar>
+</ion-header-->
+
+
+<ion-content padding class="search-results" [ngStyle]="backgroundImage">
+    <button ion-button icon-left [color]="themeColor" clear navPop>
+        <ion-icon name="arrow-back"></ion-icon>
+        Retour à la recherche
+    </button>
+
+    <!--button fab fab-top fab-right style="top: 0" (click)="changeView()"><ion-icon [name]="iconName"></ion-icon></button-->
+    <ion-item no-lines style="background-color: transparent;">
+        <ion-label>Activer la vue Map</ion-label>
+        <ion-checkbox secondary (ionChange)="changeView()" [(ngModel)]="isMapView"></ion-checkbox>
+    </ion-item>
+    <div id="map" style="width:100%;height:80%;" [style.display]="mapView">
+    </div>
+
+    <!--ion-list-divider light>
+        {{(resultsCount<2)? resultsCount +' Jobyer existant' : resultsCount + ' Jobyers existants'}}
+    </ion-list-divider-->
+    <ion-list *ngIf="listView" text-wrap>
+
+        <ion-card *ngFor="let item of searchResults, let i=index">
+            <ion-item no-lines text-wrap style="background-color: lightcyan">
+                <ion-avatar item-left>
+                    <img [src]="item.avatar">
+                </ion-avatar>
+                <h2>{{isEmployer ? item.prenom + ' ' + item.nom.substring(0,1) + '.' : item.entreprise}}</h2>
+                <h4>{{item.titreOffre}}</h4>
+                <p>
+                    <ion-icon name="ios-timer" [style.color]="availability" style="font-size: large;"></ion-icon>
+                    &nbsp; Disponible
+                </p>
+                <ion-badge item-right secondary>{{(item.matching.toString().indexOf('.') < 0) ?
+                    item.matching:item.matching.toString().split('.')[0]}}
+                </ion-badge>
+            </ion-item>
+
+            <ion-row>
+                <ion-col text-center style="padding-top: 0; padding-bottom: 0;">
+                    <button ion-button clear small (click)="itemSelected(item)" style="text-decoration: underline;">Voir plus de
+                        détails
+                    </button>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col text-center>
+                    <button ion-button color="vojgreen"
+                            *ngIf="isEmployer && !isRecruteur"
+                            (click)="contract(i)" small>
+                        Recrutement immédiat
+                    </button>
+                </ion-col>
+            </ion-row>
+
+            <ion-row style="padding-left: 16px; padding-top: 5px"><span style="font-size: small">Entretien :</span>
+            </ion-row>
+            <ion-item no-lines>
+                <button ion-button icon-only clear color="primary"
+                        (click)="itemSelected(item)" item-right>
+                    <ion-icon name="map"></ion-icon>
+                </button>
+                <button ion-button icon-only clear color="primary"
+                        (click)="skype(item)" item-right>
+                    <ion-icon name="logo-skype"></ion-icon>
+                </button>
+                <button ion-button icon-only clear color="primary"
+                        *ngIf="isEmployer || item.accepteCandidature=='true'"
+                        (click)="call(item)" item-right>
+                    <ion-icon name="call"></ion-icon>
+                </button>
+                <button ion-button icon-only clear color="primary"
+                        *ngIf="isEmployer || item.accepteCandidature=='true'"
+                        (click)="sendSMS(item)" item-right>
+                    <ion-icon name="ios-chatboxes"></ion-icon>
+                </button>
+                <button ion-button icon-only clear color="primary"
+
+                        *ngIf="isEmployer || item.accepteCandidature=='true'"
+                        (click)="sendEmail(item)" item-right>
+                    <ion-icon name="mail"></ion-icon>
+                </button>
+            </ion-item>
+
+            <ion-item no-lines text-wrap style="font-size: inherit;" *ngIf="isEmployer">
+                <ion-label>Pour recruter en groupe</ion-label>
+                <ion-checkbox [(ngModel)]="item.checkedContract"
+                              (ionChange)="selectContract($event, item)"></ion-checkbox>
+            </ion-item>
+
+            <ion-item *ngIf="isEmployer && item.checkedContract" no-lines text-wrap
+                      style="background-color: lightcyan; margin-top: 0; margin-bottom: 0;">
+                <p>
+                    <span style="font-size: smaller">Ce jobyer est sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Recrutement groupé"</span>
+                </p>
+            </ion-item>
+
+            <ion-item no-lines>
+                <ion-note item-right style="font-size: 2rem;">
+                    {{item.index}}
+                </ion-note>
+            </ion-item>
+
+        </ion-card>
+
+
+        <!--ion-item-sliding *ngFor="let item of searchResults">
+          <button ion-item class="large-btn" (click)="itemSelected(item)" >
+            <ion-avatar item-left>
+              <img src="assets/img/{{avatar}}.png">
+            </ion-avatar>
+
+            <h2>{{isEmployer ? item.titre + ' ' + item.prenom + ' ' + item.nom : item.entreprise}}</h2>
+
+            <ion-badge item-right secondary>{{(item.matching.indexOf('.') < 0) ? item.matching:item.matching.split('.')[0]}}%</ion-badge>
+
+          </button>
+          <ion-item-options>
+            <button (click)="recruitJobyer(item)" secondary *ngIf="isEmployer">
+              Recruter
+            </button>
+          </ion-item-options>
+        </ion-item-sliding-->
+    </ion-list>
+    <ion-card *ngIf="resultsCount == 0 ">
+        <ion-card-content>Vit-On-Job n'a trouvé aucune offre {{isEmployer? "de service":"d'emploi"}} correspondante à
+            votre recherche
+        </ion-card-content>
+    </ion-card>
+    <ion-slides #cardSlider [options]="cardsOptions" (didChange)="onSlideChanged()" *ngIf="cardView">
+        <ion-slide *ngFor="let item of searchResults">
+            <ion-card id="card">
+                <ion-row>
+                    <div id="cover"></div>
+                    <div id="info-lastname">
+                        <ion-badge id="text-lastname" style="background-color: #757575;">{{item.titre}} {{item.prenom}}
+                            {{item.nom}}
+                        </ion-badge>
+                    </div>
+                    <button outline id="btn-r" (click)="recruitJobyer(item)"
+                            *ngIf="isEmployer && !item.checkedContract">Recrutement direct
+                    </button>
+                    <button outline id="btn-rg" *ngIf="isEmployer">Recrutement grouper</button>
+                    <div id="de">
+                        <button outline *ngIf="isEmployer" id="d-re">Détail sur {{item.prenom}}</button>
+                    </div>
+                    <div>
+                        <button outline *ngIf="!isEmployer">Détail</button>
+                    </div>
+                    <div id="div-avatar"><img id="avatar" src="assets/img/{{avatar}}.png"></div>
+                    <div id="matching">
+                        <ion-badge id="match-bdg" style="background-color: #757575;">{{item.matching}} %</ion-badge>
+                    </div>
+                    <div id="info-titre">
+                        <ion-badge id="text-badge" style="background-color: #757575;">{{item.titreOffre}}</ion-badge>
+                    </div>
+
+                    <div>
+                        <button id="btn-call" (click)="dialNumber(item)"
+                                *ngIf="isEmployer || item.accepteCandidature">
+                            <ion-icon id="icon-call" name="call"></ion-icon>
+                        </button>
+                        <button id="btn-mail" (click)="sendSMS(item)"
+                                *ngIf="isEmployer || item.accepteCandidature">
+                            <ion-icon id="icon-mail" name="mail"></ion-icon>
+                        </button>
+                        <button id="btn-google">
+                            <ion-icon name="at"></ion-icon>
+                        </button>
+                        <button id="btn-skype">
+                            <ion-icon name="logo-skype"></ion-icon>
+                        </button>
+
+
+                    </div>
+                </ion-row>
+
+            </ion-card>
+            <!-- <ion-card>
+               <ion-card-header>Vit-On-Job a trouvé {{resultsCount}} offre(s)</ion-card-header>
+             </ion-card>
+
+             <ion-card>
+               <ion-card-header class="candidate-card-header" style="padding:5px">
+                 <ion-grid style="padding:0px">
+                   <ion-row>
+                     <ion-col width-85>{{isEmployer ? item.titre + ' ' + item.prenom + ' ' + item.nom : item.entreprise}}</ion-col>
+                     <ion-col width-15><ion-badge secondary="" style="margin:-5px">{{item.matching}} %</ion-badge></ion-col>
+                   </ion-row>
+                 </ion-grid>
+               </ion-card-header>
+               <ion-card-content class="candidate-card-content">
+                 {{searchResults.indexOf(item) + 1 }} / {{resultsCount}}
+                 <h2>{{item.titreOffre}}{{item.titreoffre}}</h2>
+                 <ion-row>
+                   <span>Tel : {{item.tel}}</span>
+                 </ion-row>
+                 <ion-row>
+                   <span>Email : {{item.email}}</span>
+                 </ion-row>
+                 <ion-row>
+                     <button secondary (click)="dialNumber(item)">
+                       <ion-icon name="md-call"></ion-icon>
+                     </button>
+                     <button secondary (click)="sendSMS(item)">
+                       <ion-icon name="md-mail"></ion-icon>
+                     </button>
+                     <button secondary (click)="recruitJobyer(item)" *ngIf="isEmployer && !item.checkedContract" >
+                     <ion-icon name="checkmark-circle-outline" ></ion-icon>
+                   </button>
+                 </ion-row>
+                 <ion-row *ngIf="isEmployer && !item.checkedContract">
+                   <ion-item>
+                     <ion-label>Sélectionner pour contrat</ion-label>
+                     <ion-checkbox [(ngModel)]="item.checkedContract" (ionChange)="addToContracts(item)" ></ion-checkbox>
+                   </ion-item>
+                 </ion-row>
+                 <ion-row *ngIf="isEmployer && result.checkedContract" >
+                   <span style="text-align: right;margin-top: 40px;" >Ce jobyer est déjà sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Contrats en attente"</span>
+                 </ion-row>
+               </ion-card-content>
+             </ion-card> -->
+        </ion-slide>
+    </ion-slides>
+</ion-content>
+
+<ion-footer>
+    <div *ngIf="offerProposition" class="offer-proposition-div">
+        <ion-grid>
+            <ion-row>
+                <ion-col width-70>Vous pouvez utiliser vos critères de recherche pour créer une nouvelle offre</ion-col>
+                <ion-col width-20>
+                    <button block (click)="toggleProposition()" style="font-size: small;">
+                        Créer
+                    </button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
+</ion-footer>

@@ -1,0 +1,113 @@
+<!--
+  Generated template for the ContractWizardPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<!--ion-header>
+
+  <ion-navbar>
+    <ion-title>contract-wizard</ion-title>
+  </ion-navbar>
+
+</ion-header-->
+
+
+<ion-content padding class="contract-wizard" [ngStyle]="backgroundImage">
+    <button menuToggle style="background-color: transparent; box-shadow: none" [style.color]="themeColor">
+        <ion-icon name="menu" primary></ion-icon>
+        &nbsp;&nbsp;Etat de contrat
+    </button>
+
+    <ion-grid>
+        <ion-row center>
+            <canvas id="myCanvas" class="canvas-state"></canvas>
+            <ion-col class="col-state">
+                <div id="myCol" style="display: flex; width:auto; height: auto"><!-- -->
+                    <button fab outline class="button-state"
+                            style="background-color: white;color: green; border: 2px solid green">
+                        <ion-icon name="contract" style="font-weight: bold"></ion-icon>
+                    </button>
+                </div>
+            </ion-col>
+            <!-- Emp/job 1 -->
+            <ion-col class="col-state">
+                <ion-row center>
+                    <ion-col class="col-state">
+                        <div style="display: flex; width:100%; height: 100%">
+                            <!--canvas id="myCanvas2" class="canvas-state"></canvas-->
+                            <button fab class="button-state" primary [disabled]="false"
+                                    style="border-bottom-left-radius: 0;">Ve
+                            </button>
+                        </div>
+                    </ion-col>
+                </ion-row>
+                <ion-row center>
+                    <ion-col class="col-state">
+                        <!--canvas id="myCanvas3" class="canvas-state"></canvas-->
+                        <button fab class="button-state" secondary [disabled]="false"
+                                style="border-top-right-radius: 0;">Vj
+                        </button>
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+            <ion-col>
+                <button fab outline class="button-state"
+                        style="background-color: white;color: green; border: 2px solid green" [disabled]="false">
+                    <ion-icon name="md-done-all" style="font-weight: bold;font-size: medium;"></ion-icon>
+                </button>
+            </ion-col>
+            <!-- Emp/job 2 -->
+            <ion-col class="col-state">
+                <ion-row center>
+                    <ion-col class="col-state" secondary>
+                        <button fab class="button-state" primary [disabled]="false"
+                                style="border-bottom-left-radius: 0;">Se
+                        </button>
+                    </ion-col>
+                </ion-row>
+                <ion-row center>
+                    <ion-col class="col-state" secondary>
+                        <button fab class="button-state" secondary [disabled]="isDisabled"
+                                style="border-top-right-radius: 0;">Sj
+                        </button>
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+            <ion-col class="col-state">
+                <button fab class="button-state" style="background-color: white;color: orange; border: 2px solid orange"
+                        [disabled]="false">
+                    <ion-icon name="md-create" style="font-size: medium;"></ion-icon>
+                </button>
+            </ion-col>
+            <!-- Emp/job 3 -->
+            <ion-col class="col-state">
+                <ion-row center>
+                    <ion-col class="col-state">
+                        <button fab class="button-state" primary [disabled]="isDisabled"
+                                style="border-bottom-left-radius: 0;">CBe
+                        </button>
+                    </ion-col>
+                </ion-row>
+                <ion-row center>
+                    <ion-col class="col-state">
+                        <button fab class="button-state" secondary [disabled]="isDisabled"
+                                style="border-top-right-radius: 0;">CBj
+                        </button>
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+            <ion-col class="col-state">
+                <button fab class="button-state"
+                        style="background-color: white;color: dodgerblue; border: 2px solid dodgerblue"
+                        [disabled]="false" [disabled]="false">
+                    <ion-icon name="md-filing" style="font-size: medium;"></ion-icon>
+                </button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+    <ion-card>
+        Ici les informations du contrat et la liste des actions..
+    </ion-card>
+</ion-content>

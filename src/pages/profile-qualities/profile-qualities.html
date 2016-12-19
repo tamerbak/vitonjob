@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+    <ion-title>{{ isEmployer ? "Nos qualités" : "Mes qualités" }}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-label floating>Qualités</ion-label>
+      <ion-select [(ngModel)]="selectedQuality">
+        <ion-option *ngFor="let q of qualities"
+          value="{{q.id}}">
+          {{q.libelle}}
+        </ion-option>
+
+      </ion-select>
+    </ion-item>
+      <button small item primary block
+              [disabled]="!selectedQuality || selectedQuality.length == 0"
+              (click)="addQuality()" >
+          <ion-icon  name="add-circle"></ion-icon>Ajouter
+      </button>
+  </ion-list>
+  <ion-list>
+      <ion-item *ngFor="let q of savedQualities">
+          <label>{{q.libelle}}</label>
+          <button small item-right danger (click)="removeQuality(q)" >
+              <ion-icon name="remove-circle"></ion-icon>
+          </button>
+      </ion-item>
+  </ion-list>
+</ion-content>
