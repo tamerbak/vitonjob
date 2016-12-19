@@ -7,6 +7,7 @@ resources/ios
 bower_components
 .idea
 .iws
+.tmp
 workspace.xml
 tasks.xml
 .DS_Store
