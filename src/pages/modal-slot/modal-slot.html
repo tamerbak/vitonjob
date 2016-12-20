@@ -2,7 +2,7 @@
     <ion-navbar [color]="themeColor">
         <ion-title>Sélection d'un créneau</ion-title>
         <ion-buttons end>
-            <button (click)="closeModal()">
+            <button ion-button icon-only (click)="closeModal()">
                 <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
             </button>
         </ion-buttons>
@@ -21,7 +21,7 @@
         <ion-item text-wrap [hidden]="isAndroid4">
             <ion-label>Date</ion-label>
             <ion-datetime id="idt" displayFormat="DD, MMMM YYYY" [(ngModel)]="showedSlot.date"
-                          [min]="todayDate" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
+                          [min]="todayDate" [max]="maxDate" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
         </ion-item>
 
         <ion-item [hidden]="!isAndroid4">

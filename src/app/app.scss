@@ -38,8 +38,8 @@ app {
     }
 
     .menuHeader{
-      min-height: calc(25%) !important;
-      display: list-item;
+      min-height: calc(20%) !important;
+      display: flex;
     }
 
     .w {

@@ -24,6 +24,7 @@ export class ModalSlotPage {
   public viewCtrl: any;
   public calendarTheme: number;
   public todayDate;
+  public maxDate:any;
   public isAndroid4: boolean;
 
   constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController,
@@ -39,6 +40,7 @@ export class ModalSlotPage {
     this.viewCtrl = viewCtrl;
     this.calendarTheme = config.calendarTheme;
     this.todayDate = new Date().toISOString();
+    this.maxDate = new Date (new Date().getFullYear()+10, 12, 31).toISOString();
     this.slot = {
       date: new Date(),
       startHour: 0,

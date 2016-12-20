@@ -1,7 +1,7 @@
 {
-  "name": "Vitonjob",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
+  "name": "Vit-On-Job",
+  "author": "Manaona",
+  "homepage": "http://www.vitonjob.com/",
   "private": true,
   "scripts": {
     "ionic:build": "ionic-app-scripts build",
@@ -45,5 +45,5 @@
       "locator": "ios"
     }
   ],
-  "description": "Vitonjob: An Ionic project"
+  "description": "Vit-On-Job: vite au job et vis ton job!"
 }
