@@ -164,7 +164,7 @@ export class CivilityPage {
 
     // Set local variables and messages
     this.themeColor = config.themeColor;
-    this.currentUser = config.currentUserVar;
+    this.currentUserVar = config.currentUserVar;
     this.isEmployer = (this.projectTarget == 'employer');
     this.calendarTheme = config.calendarTheme;
     this.isAndroid4 = (this.platform.version('android').major < 5);
