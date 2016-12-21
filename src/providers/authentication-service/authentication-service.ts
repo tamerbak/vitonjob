@@ -47,7 +47,7 @@ export class AuthenticationService {
     var encodedLogin = btoa(login);
     var dataLog = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 10022,//10018,//283,
+      'id': 20019,//10018,//283,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'requete authentification',
@@ -149,7 +149,7 @@ export class AuthenticationService {
    * @description update jobyer information
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
-  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, prefecture, dateStay, dateFromStay, dateToStay, birthdepId, numStay, birthCountryId, regionId, isStay) {
+  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, prefecture, dateStay, dateFromStay, dateToStay, birthdepId, numStay, birthCountryId, regionId, isStay, nbWorkHours, studyHoursBigValue) {
     let sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
@@ -173,7 +173,10 @@ export class AuthenticationService {
       (!this.isEmpty(regionId) ? (" fk_user_identifiants_nationalite='" + regionId + "', ") : ("fk_user_identifiants_nationalite = " + null + ", ")) +
 
       (!this.isEmpty(birthplace) ? (" lieu_de_naissance='" + birthplace + "', ") : ("lieu_de_naissance='', ")) +
-      (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "' ") : ("fk_user_departement = " + null + " " )) +
+      (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "', ") : ("fk_user_departement = " + null + ", " )) +
+
+      (!this.isEmpty(nbWorkHours) ? ("nb_heures_de_travail ='" + nbWorkHours + "', ") : ("nb_heures_de_travail = " + 0 + ", " )) +
+      (!this.isEmpty(studyHoursBigValue) ? ("plus_de_350_heures_d_etude ='" + studyHoursBigValue + "' ") : ("plus_de_350_heures_d_etude = " + null + " " )) +
 
       " where pk_user_jobyer ='" + roleId + "';";
 

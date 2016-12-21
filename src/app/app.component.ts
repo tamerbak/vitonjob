@@ -413,7 +413,7 @@ export class Vitonjob {
 
     this.events.subscribe('user:civility', (data: any) => {
       this.enableMenu(true);
-      this.displayInfoUser(data[0]);
+      this.displayInfoUser(data);
     });
 
   }

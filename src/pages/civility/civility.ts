@@ -87,7 +87,10 @@ export class CivilityPage {
   public mintsejFromDate: any;
   public maxtsejToDate: any;
   public mintsejToDate: any;
-
+  //nb work and study hours
+  public nbWorkVitOnJob: number = 0;
+  public nbWorkHours: number = 0;
+  public isNbStudyHoursBig: string = "false";
 
   /*
    Gestion des conventions collectives
@@ -467,6 +470,11 @@ export class CivilityPage {
             }
 
           }
+
+          //cv && nb work and study hours
+          this.nbWorkHours = this.currentUser.jobyer.nbWorkHours;
+          this.nbWorkVitOnJob = this.currentUser.jobyer.nbVitOnJobHours/60;
+          this.isNbStudyHoursBig = "" + this.currentUser.jobyer.nbStudyHoursBig + "";
         }
         if (!this.isRecruiter) {
           if (this.currentUser.scanUploaded) {
@@ -688,9 +696,11 @@ export class CivilityPage {
         let birthdepId = !Utils.isEmpty(this.selectedBirthDep) ? this.selectedBirthDep.id : null;
         this.cni = this.isCIN == 0 ? "" : this.cni;
         this.numStay = this.isCIN == 0 ? this.numStay : "";
+        let studyHoursBigValue = (this.isNbStudyHoursBig == "true"? "OUI" : "NON");
+
         this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni,
           this.nationality, jobyerId, this.birthdate, this.birthplace, this.prefecture, this.tsejProvideDate,
-          this.tsejFromDate, this.tsejToDate, birthdepId, this.numStay, birthCountryId, regionId, isResident)
+          this.tsejFromDate, this.tsejToDate, birthdepId, this.numStay, birthCountryId, regionId, isResident, this.nbWorkHours, studyHoursBigValue)
           .then((data: {status: string, error: string}) => {
             if (!data || data.status == "failure") {
               console.log(data.error);
@@ -732,6 +742,10 @@ export class CivilityPage {
                 this.currentUser.jobyer.dateNaissance = this.birthdate;
               }
               this.currentUser.jobyer.lieuNaissance = this.birthplace;
+              this.currentUser.jobyer.nbWorkHours = this.nbWorkHours;
+              this.currentUser.jobyer.nbVitOnJobHours = this.nbWorkVitOnJob * 60;
+              this.currentUser.jobyer.nbStudyHoursBig = (this.isNbStudyHoursBig == "true" ? true : false);
+
               //upload scan
               this.updateScan(jobyerId);
               // PUT IN SESSION
