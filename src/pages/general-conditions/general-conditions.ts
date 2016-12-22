@@ -1084,7 +1084,6 @@ export class GeneralConditionsPage {
     let toast = this.toast.create({
       message: message,
       position: position,
-      //dismissOnPageChange: true,
       showCloseButton: true,
       closeButtonText: "Ok",
       duration: duration * 1000
