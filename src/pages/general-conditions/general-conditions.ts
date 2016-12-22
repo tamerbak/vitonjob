@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, ViewController, Platform, NavParams, Events, AlertController} from "ionic-angular";
+import {NavController, ViewController, Platform, NavParams, Events, AlertController, ToastController} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {HomePage} from "../home/home";
 import {CivilityPage} from "../civility/civility";
@@ -38,11 +38,12 @@ export class GeneralConditionsPage {
     footer: string
   };
   public alert: any;
+  public toast: any;
 
   constructor(private _nav: NavController, private globalConfig: GlobalConfigs,
               private _viewCtrl: ViewController, private _platform: Platform,
               private _params: NavParams, _events: Events,
-              private _userService: UserService, _alert: AlertController, public storage: Storage) {
+              private _userService: UserService, _alert: AlertController, public storage: Storage, private _toast: ToastController) {
 
     this.viewCtrl = _viewCtrl;
     this.platform = _platform;
@@ -56,6 +57,7 @@ export class GeneralConditionsPage {
     this.currentUserVar = config.currentUserVar;
     this.profilPictureVar = config.profilPictureVar;
     this.backgroundImage = config.backgroundImage;
+    this.toast = _toast;
 
     if (this.projectTarget === 'employer') {
       // CGV
@@ -1057,6 +1059,8 @@ export class GeneralConditionsPage {
         console.log("plateform ios : no back button, just menu button");
         this.nav.setRoot(CivilityPage, {
           currentUser: data, jobyer: jobyer, obj: obj, searchIndex: searchIndex
+        }).then(() => {
+          this.presentToast("Bienvenue dans Vit-On-Job. Vous êtes tout près de trouver votre emploi. Certaines informations sont nécessaires afin de commencer votre recherche. Nous vous invitons à les saisir dans votre compte.", 5);
         });
       } else {
         this.nav.push(CivilityPage, {
@@ -1067,10 +1071,24 @@ export class GeneralConditionsPage {
           const index = this.viewCtrl.index;
           // then we remove it from the navigation stack
           this.nav.remove(index);
+          this.presentToast("Bienvenue dans Vit-On-Job. Vous êtes tout près de trouver votre emploi. Certaines informations sont nécessaires afin de commencer votre recherche. Nous vous invitons à les saisir dans votre compte.", 5);
         });
       }
     });
 
   }
 
+  presentToast(message: string, duration?: number, position?: string) {
+    if (!duration)
+      duration = 3;
+    let toast = this.toast.create({
+      message: message,
+      position: position,
+      //dismissOnPageChange: true,
+      showCloseButton: true,
+      closeButtonText: "Ok",
+      duration: duration * 1000
+    });
+    toast.present();
+  }
 }

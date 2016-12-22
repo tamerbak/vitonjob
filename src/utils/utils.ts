@@ -77,4 +77,29 @@ export class Utils {
     let s3 = siren.substr(6, 3);
     return s1 + " " + s2 + " " + s3 + " ";
   }
+
+  public static preventNull(str){
+    if(this.isEmpty(str)){
+      return "";
+    }else{
+      return str;
+    }
+  }
+
+  public static preventNullProperties(obj){
+    for (let key in obj) {
+      // skip loop if the property is from prototype
+      if (!obj.hasOwnProperty(key)) continue;
+
+      let o = obj[key];
+      for (let prop in o) {
+        // skip loop if the property is from prototype
+        if(!o.hasOwnProperty(prop)) continue;
+
+        this.preventNull(obj.key);
+      }
+    }
+  }
+
+
 }
