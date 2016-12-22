@@ -714,7 +714,8 @@ export class MissionDetailsPage {
      this.nav.push(ModalInvoicePage);
      });
      */
-    this.missionService.saveEndMission(this.contract.pk_user_contrat).then(val => {
+    let nbWorkHours = this.missionService.calculateNbWorkHours(this.missionHours);
+    this.missionService.saveEndMission(this.contract.pk_user_contrat, nbWorkHours, this.contract.fk_user_jobyer).then(val => {
       this.missionService.endOfMission(this.contract.pk_user_contrat)
         .then((data: {
           id: any,
