@@ -394,13 +394,13 @@ export class Vitonjob {
       }
     });
     this.events.subscribe('user:login', (data: any) => {
-      if (data[0].estRecruteur) {
+      if (data.estRecruteur) {
         this.constituteRecruiterMenu();
       } else {
         this.constituteDefaultMenu();
       }
       this.enableMenu(true);
-      this.displayInfoUser(data[0]);
+      this.displayInfoUser(data);
     });
 
     this.events.subscribe('user:logout', () => {
@@ -413,7 +413,7 @@ export class Vitonjob {
 
     this.events.subscribe('user:civility', (data: any) => {
       this.enableMenu(true);
-      this.displayInfoUser(data[0]);
+      this.displayInfoUser(data);
     });
 
   }
