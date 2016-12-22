@@ -996,24 +996,10 @@ export class GeneralConditionsPage {
           text: 'Non, je quitte',
           handler: () => {
             this.userService.updateGCStatus("Non", "Non", data.id).then((response) => {
-              confirm.present();
-              this.storage.set('connexion', null);
-              this.storage.set(this.currentUserVar, null);
-              this.storage.set(this.profilPictureVar, null);
-              this.storage.set("RECRUITER_LIST", null);
-              this.storage.set('OPTION_MISSION', null);
-              this.storage.set('PROFIL_PICTURE', null);
-              this.events.publish('user:logout');
-              if (this.platform.is('ios')) {
-                this.nav.setRoot(HomePage);
-              } else {
-                this.nav.push(HomePage).then(() => {
-                  const index = this.viewCtrl.index;
-                  // then we remove it from the navigation stack
-                  this.nav.remove(index);
-                });
-              }
-              this.viewCtrl.dismiss();
+              this.clearStorage();
+              this.nav.push(HomePage).then(() => {
+                  this.viewCtrl.dismiss();
+              });
             });
           }
         },
@@ -1021,27 +1007,11 @@ export class GeneralConditionsPage {
           text: 'Oui, contactez moi',
           handler: () => {
             this.userService.updateGCStatus("Non", "Oui", data.id).then((response) => {
-              confirm.present();
-              this.storage.set('connexion', null);
-              this.storage.set(this.currentUserVar, null);
-              this.storage.set(this.profilPictureVar, null);
-              this.storage.set("RECRUITER_LIST", null);
-              this.storage.set('OPTION_MISSION', null);
-              this.storage.set('PROFIL_PICTURE', null);
-              this.events.publish('user:logout');
-              if (this.platform.is('ios')) {
-                this.nav.setRoot(HomePage);
-              } else {
-                this.nav.push(HomePage).then(() => {
-                  const index = this.viewCtrl.index;
-                  // then we remove it from the navigation stack
-                  this.nav.remove(index);
-                });
-              }
-
-              this.viewCtrl.dismiss();
+              this.clearStorage();
+              this.nav.push(HomePage).then(() => {
+                this.viewCtrl.dismiss();
+              });
             });
-
           }
         }
       ]
@@ -1054,26 +1024,14 @@ export class GeneralConditionsPage {
     let jobyer = this.params.data.jobyer;
     let searchIndex = this.params.data.searchIndex;
     let obj = this.params.data.obj;
+    let welcomeMsg = "Bienvenue dans Vit-On-Job. Vous êtes tout près de trouver votre " + (this.projectTarget == "jobyer" ? "emploi" : "Jobyer")  + ". Certaines informations sont nécessaires afin de commencer votre recherche. Nous vous invitons à les saisir dans votre compte.";
+
     this.userService.updateGCStatus("Oui", "Non", data.id).then((response) => {
-      if (this.platform.is('ios')) {
-        console.log("plateform ios : no back button, just menu button");
         this.nav.setRoot(CivilityPage, {
           currentUser: data, jobyer: jobyer, obj: obj, searchIndex: searchIndex
         }).then(() => {
-          this.presentToast("Bienvenue dans Vit-On-Job. Vous êtes tout près de trouver votre emploi. Certaines informations sont nécessaires afin de commencer votre recherche. Nous vous invitons à les saisir dans votre compte.", 5);
+          this.presentToast(welcomeMsg, 5);
         });
-      } else {
-        this.nav.push(CivilityPage, {
-          currentUser: data, jobyer: jobyer, obj: obj, searchIndex: searchIndex
-        }).then(() => {
-          console.log("plateform android : no menu button, just back button");
-          // first we find the index of the current view controller:
-          const index = this.viewCtrl.index;
-          // then we remove it from the navigation stack
-          this.nav.remove(index);
-          this.presentToast("Bienvenue dans Vit-On-Job. Vous êtes tout près de trouver votre emploi. Certaines informations sont nécessaires afin de commencer votre recherche. Nous vous invitons à les saisir dans votre compte.", 5);
-        });
-      }
     });
 
   }
@@ -1089,5 +1047,15 @@ export class GeneralConditionsPage {
       duration: duration * 1000
     });
     toast.present();
+  }
+
+  clearStorage(){
+    this.storage.set('connexion', null);
+    this.storage.set(this.currentUserVar, null);
+    this.storage.set(this.profilPictureVar, null);
+    this.storage.set("RECRUITER_LIST", null);
+    this.storage.set('OPTION_MISSION', null);
+    this.storage.set('PROFIL_PICTURE', null);
+    this.events.publish('user:logout');
   }
 }
