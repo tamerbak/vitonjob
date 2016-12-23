@@ -16,7 +16,7 @@ export class FileUtils{
    * @see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
    * @return Blob
    */
-  public static b64toBlob(b64Data, contentType, sliceSize) {
+  public static b64toBlob(b64Data, contentType, sliceSize?) {
     contentType = contentType || '';
     sliceSize = sliceSize || 512;
 

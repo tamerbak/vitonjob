@@ -1,5 +1,5 @@
 import {Component, NgZone} from "@angular/core";
-import {NavController, NavParams, Events, ModalController, Platform} from "ionic-angular";
+import {NavController, NavParams, Events, ModalController, Platform, ToastController} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SqlStorageService} from "../../providers/sql-storage-service/sql-storage-service";
@@ -20,7 +20,10 @@ import {AlertController} from "ionic-angular/components/alert/alert";
 import {LoadListService} from "../../providers/load-list-service/load-list-service";
 import {AuthenticationService} from "../../providers/authentication-service/authentication-service";
 import {Storage} from "@ionic/storage";
+import {FileUtils} from "../../utils/fileUtils";
 
+declare var cordova: any;
+declare var window;
 
 /**
  * @author Amal ROCHD
@@ -133,6 +136,11 @@ export class CivilityPage {
   public alert: any;
   public tsMessage:string="";
 
+  //CV
+  public uploadCVVerb = "Charger ";
+  public cvUri: string;
+  public toast: any;
+
   /**
    * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
    */
@@ -152,6 +160,7 @@ export class CivilityPage {
               private profileService: ProfileService,
               private _loading: LoadingController,
               private _modal: ModalController,
+              private _toast: ToastController,
               private _alert: AlertController, public storage: Storage) {
     // Set global configs
     // Get target to determine configs
@@ -176,6 +185,7 @@ export class CivilityPage {
     this.currentUser = this.params.data.currentUser;
     this.isRecruiter = this.currentUser.estRecruteur;
     this.fromPage = this.params.data.fromPage;
+    this.toast = _toast;
     this.titlePage = this.isEmployer ? "Fiche de l'entreprise" : "Profil";
     //load nationality list
     if (!this.isEmployer && !this.isRecruiter) {
@@ -389,6 +399,7 @@ export class CivilityPage {
           }
         } else {
           if (!this.isRecruiter) {
+            this.uploadCVVerb = (Utils.isEmpty(this.currentUser.jobyer.cv) ? "Charger" : "Recharger");
             this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
               data = data.data[0];
               if (!Utils.isEmpty(data.fk_user_pays)) {
@@ -700,7 +711,7 @@ export class CivilityPage {
 
         this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni,
           this.nationality, jobyerId, this.birthdate, this.birthplace, this.prefecture, this.tsejProvideDate,
-          this.tsejFromDate, this.tsejToDate, birthdepId, this.numStay, birthCountryId, regionId, isResident, this.nbWorkHours, studyHoursBigValue)
+          this.tsejFromDate, this.tsejToDate, birthdepId, this.numStay, birthCountryId, regionId, isResident, this.nbWorkHours, studyHoursBigValue, this.cvUri)
           .then((data: {status: string, error: string}) => {
             if (!data || data.status == "failure") {
               console.log(data.error);
@@ -716,6 +727,7 @@ export class CivilityPage {
               this.currentUser.jobyer.cni = this.cni;
               this.currentUser.jobyer.numSS = this.numSS;
               this.currentUser.jobyer.natId = this.nationality;
+              this.currentUser.jobyer.cv = this.cvUri;
 
 
               if (this.idnationality > 0)
@@ -1052,6 +1064,17 @@ export class CivilityPage {
     });
   }
 
+  onChangeCVUpload(e) {
+    let file = e.target.files[0];
+    let myReader = new FileReader();
+    this.zone.run(() => {
+      myReader.onloadend = (e) => {
+        this.cvUri = myReader.result;
+      }
+      myReader.readAsDataURL(file);
+    });
+  }
+
   /**
    * @description trigged when the user take a picture of the scan, the image taken is base64
    */
@@ -1328,6 +1351,33 @@ export class CivilityPage {
     })
   }
 
+  downloadCV(){
+    let content = this.cvUri;
+    let contentType = "";
+    let folderpath = cordova.file.externalRootDirectory;
+
+    // Convert the base64 string in a Blob
+    var DataBlob = FileUtils.b64toBlob(content, contentType);
+    console.log("Starting to write the file");
+    window.resolveLocalFileSystemURL(folderpath, (dir) => {
+      console.log("Access to the directory granted succesfully");
+      dir.getFile("Cv-Vit-On-Job", {create: true}, (file) => {
+        console.log("File created succesfully.");
+        file.createWriter((fileWriter) => {
+          console.log("Writing content to file");
+          fileWriter.write(DataBlob);
+          this.presentToast("Document sauvegardé dans le stockage local de votre appareil.", 3);
+        }, () => {
+          this.presentToast("Une erreur est survenue lors du téléchargement. Veuillez réessayer.", 3);
+        });
+      });
+    });
+  }
+
+  deleteCV(){
+    this.cvUri = "";
+  }
+
   /**
    * @Description Converts a timeStamp to date string :
    * @param date : a timestamp date
@@ -1339,10 +1389,7 @@ export class CivilityPage {
   }
 
   isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+    return Utils.isEmpty(str);
   }
 
   /**
@@ -1355,5 +1402,17 @@ export class CivilityPage {
     return hours + ":" + minutes;
   }
 
-
+  presentToast(message: string, duration?: number, position?: string) {
+    if (!duration)
+      duration = 3;
+    let toast = this.toast.create({
+      message: message,
+      position: position,
+      dismissOnPageChange: true,
+      showCloseButton: true,
+      closeButtonText: "Ok",
+      duration: duration * 1000
+    });
+    toast.present();
+  }
 }

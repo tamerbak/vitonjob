@@ -3,6 +3,7 @@ import {Http, Headers} from "@angular/http";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Storage} from "@ionic/storage";
+import {Utils} from "../../utils/utils";
 
 /**
  * @author Amal ROCHD
@@ -149,7 +150,7 @@ export class AuthenticationService {
    * @description update jobyer information
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
-  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, prefecture, dateStay, dateFromStay, dateToStay, birthdepId, numStay, birthCountryId, regionId, isStay, nbWorkHours, studyHoursBigValue) {
+  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, prefecture, dateStay, dateFromStay, dateToStay, birthdepId, numStay, birthCountryId, regionId, isStay, nbWorkHours, studyHoursBigValue, cv) {
     let sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
@@ -175,6 +176,7 @@ export class AuthenticationService {
       (!this.isEmpty(birthplace) ? (" lieu_de_naissance='" + birthplace + "', ") : ("lieu_de_naissance='', ")) +
       (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "', ") : ("fk_user_departement = " + null + ", " )) +
 
+      (!this.isEmpty(cv) ? ("cv ='" + Utils.sqlfyText(cv) + "', ") : ("cv = '', " )) +
       (!this.isEmpty(nbWorkHours) ? ("nb_heures_de_travail ='" + nbWorkHours + "', ") : ("nb_heures_de_travail = " + 0 + ", " )) +
       (!this.isEmpty(studyHoursBigValue) ? ("plus_de_350_heures_d_etude ='" + studyHoursBigValue + "' ") : ("plus_de_350_heures_d_etude = " + null + " " )) +
 
