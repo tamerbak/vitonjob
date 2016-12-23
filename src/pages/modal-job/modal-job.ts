@@ -30,7 +30,8 @@ declare let require: any;
  Ionic pages and navigation.
  */
 @Component({
-  templateUrl: 'modal-job.html'
+  templateUrl: 'modal-job.html',
+  selector:'modal-job'
 })
 export class ModalJobPage {
 

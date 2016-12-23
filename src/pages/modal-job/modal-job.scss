@@ -1,43 +1,45 @@
-.modal-job {
-  .error-box {
-    color: red;
-    text-align: right;
-    font-style: italic;
+modal-job{
+  .modal-job {
+    .error-box {
+      color: red;
+      text-align: center;
+      font-style: italic;
+
+    }
 
   }
 
-}
-
-//smartphone screen size 250px at 550px
-@media screen and (min-height: 250px) and (max-height: 550px) {
-  .picker-opt .button-inner {
-    font-size: 0.7em !important;
-    padding-left: 0.5em;
+  /*/smartphone screen size 250px at 550px
+  @media screen and (min-height: 250px) and (max-height: 550px) {
+    .picker-opt .button-inner {
+      font-size: 0.7em !important;
+      padding-left: 0.5em;
+    }
   }
-}
 
-//smartphone screen size 551px at 700px
-@media screen and (min-height: 551px) and (max-height: 700px) {
-  .picker-opt .button-inner {
-    font-size: 0.7em !important;
-    padding-left: 0.5em;
+  //smartphone screen size 551px at 700px
+  @media screen and (min-height: 551px) and (max-height: 700px) {
+    .picker-opt .button-inner {
+      font-size: 0.7em !important;
+      padding-left: 0.5em;
+    }
   }
-}
 
-//smartphone size 701px at 879px
-@media screen and (min-height: 701px) and (max-height: 879px) {
-  .picker-opt .button-inner {
-    font-size: 0.8em !important;
-    padding-left: 0.5em;
+  //smartphone size 701px at 879px
+  @media screen and (min-height: 701px) and (max-height: 879px) {
+    .picker-opt .button-inner {
+      font-size: 0.8em !important;
+      padding-left: 0.5em;
+    }
   }
-}
 
-//tablet size min 880px
-@media screen and (min-height: 880px) {
+  //tablet size min 880px
+  @media screen and (min-height: 880px) {
 
-  .picker-opt .button-inner {
-    font-size: 1em !important;
-    padding-left: 0.5em;
-  }
+    .picker-opt .button-inner {
+      font-size: 1em !important;
+      padding-left: 0.5em;
+    }
+  }*/
 }
 
