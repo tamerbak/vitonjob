@@ -11,3 +11,5 @@ workspace.xml
 tasks.xml
 .DS_Store
 npm-debug.log
+/.tmp
+/www
