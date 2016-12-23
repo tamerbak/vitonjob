@@ -121,6 +121,40 @@ export class SearchService {
     }
 
     /**
+     * @description Advanced search allowing to fetch result count as a stand alone service
+     * as well as multi criteria and offer based search
+     * @param searchQuery JSON Object of the query
+     * @returns {Promise<T>|Promise}
+     */
+    advancedSearch(searchQuery: any) {
+        //  Prepare payload
+        var query = JSON.stringify(searchQuery);
+
+        var payload = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            id: 10045,
+            args: [
+                {
+                    class: 'fr.protogen.masterdata.model.CCalloutArguments',
+                    label: 'Requete de recherche',
+                    value: btoa(query)
+                }
+            ]
+        };
+
+        // don't have the data yet
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });
+    }
+
+    /**
      * @description Persists the last results into phone data base for quick access and history management
      * @param data results of the last search
      */
