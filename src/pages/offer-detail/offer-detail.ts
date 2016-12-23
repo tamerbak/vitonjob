@@ -192,7 +192,33 @@ export class OfferDetailPage {
    * @Description : Launch search from current offer-list
    */
   launchSearch() {
-    console.log(this.offer);
+    let offer = this.offer;
+    console.log(offer);
+    if (!offer)
+      return;
+    let loading = this.loading.create({
+      content: ` 
+                <div>
+                    <img src='assets/img/loading.gif' />
+                </div>
+                `,
+      spinner: 'hide'
+    });
+    loading.present();
+
+    let searchQuery = {
+      class: 'com.vitonjob.recherche.model.SearchQuery',
+      queryType: 'OFFER',
+      idOffer: offer.idOffer,
+      resultsType: this.projectTarget=='jobyer'?'employer':'jobyer'
+    };
+    this.searchService.advancedSearch(searchQuery).then((data:any)=>{
+      this.searchService.persistLastSearch(data);
+      loading.dismiss();
+      this.nav.push(SearchResultsPage, {currentOffer: offer});
+    });
+
+    /*console.log(this.offer);
     if (!this.offer)
       return;
     let loading = this.loading.create({
@@ -220,7 +246,7 @@ export class OfferDetailPage {
       this.searchService.persistLastSearch(data);
       loading.dismiss();
       this.nav.push(SearchResultsPage, {currentOffer: this.offer});
-    });
+    });*/
   }
 
   showQuote() {
