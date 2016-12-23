@@ -24,6 +24,7 @@ import {ProfileService} from "../../providers/profile-service/profile-service";
 import {GeneralConditionsPage} from "../general-conditions/general-conditions";
 import {SearchResultsPage} from "../search-results/search-results";
 import {Storage} from "@ionic/storage";
+import {Utils} from "../../utils/utils";
 
 declare let md5;
 
@@ -217,7 +218,7 @@ export class PhonePage {
               let jobyer = this.params.data.jobyer;
               let searchIndex = this.params.data.searchIndex;
               let obj = this.params.data.obj;
-              if (isNewUser || this.isNewRecruteur) {
+              if (isNewUser || this.isNewRecruteur || Utils.isEmpty(data.titre)) {
                 this.nav.push(GeneralConditionsPage, {
                   currentUser: data,
                   jobyer: jobyer,
