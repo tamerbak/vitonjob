@@ -17,7 +17,7 @@
       Métier
     </ion-list-header>
     <ion-item>
-      <ion-label floating>Secteur</ion-label>
+      <ion-label floating>Secteur<span class="asterisk">*</span></ion-label>
       <ion-input [(ngModel)]="jobData.sector" (keyup)="watchSector($event)"></ion-input>
       <button small ion-button class="text-size" item-right (click)="setSectorsPicker()">
         <ion-icon name="list"></ion-icon>
@@ -37,7 +37,7 @@
     </div>
 
     <ion-item>
-      <ion-label floating>Job</ion-label>
+      <ion-label floating>Job<span class="asterisk">*</span></ion-label>
       <ion-input [(ngModel)]="jobData.job" (keyup)="watchJob($event)"></ion-input>
       <button small ion-button item-right (click)="setJobsPicker()">
         <ion-icon name="list"></ion-icon>
@@ -119,7 +119,7 @@
     <ion-row>
       <ion-col>
         <ion-item style="padding-left: 0;">
-          <ion-label floating>Taux horaire brut en €</ion-label>
+          <ion-label floating>Taux horaire brut en €<span class="asterisk">*</span></ion-label>
           <ion-input
             type="number"
             min="0"
@@ -155,6 +155,7 @@
     <ion-item no-lines>
       <ion-label stacked color="primary">
         {{isEmployer?'Lieu de mission':'Départ au travail'}}
+        <span class="asterisk">*</span>
       </ion-label>
     </ion-item>
     <ion-row>

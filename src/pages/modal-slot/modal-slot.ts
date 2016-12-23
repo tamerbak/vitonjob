@@ -4,6 +4,7 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {Component} from "@angular/core";
 import {GlobalService} from "../../providers/global-service/global-service";
+import {Utils} from "../../utils/utils";
 
 /*
  Generated class for the ModalSlotPage page.
@@ -502,8 +503,9 @@ export class ModalSlotPage {
     }
 
     isValidateDisabled() {
-        if (!this.showedSlot.startHour || !this.showedSlot.endHour || this.showedSlot.endHour < this.showedSlot.startHour)
+        if(Utils.isEmpty(this.showedSlot.date) || Utils.isEmpty(this.showedSlot.startDate) || Utils.isEmpty(this.showedSlot.endDate)){
             return true;
+        }
         return false;
     }
 
@@ -518,22 +520,15 @@ export class ModalSlotPage {
         '-' + this.showedSlot.angular4Date.split('/')[2] : "";
         let date = (this.isAndroid4) ? new Date(stringDate) : new Date(this.showedSlot.date);
         //console.log ('sending ' + date);
+        let sh = this.showedSlot.startDate.split('T')[1];
+        let eh = this.showedSlot.endDate.split('T')[1];
         this.slot = {
             date: date.getTime(),
-            startHour: parseInt(this.showedSlot.startHour.split(':')[0]) * 60 +
-            parseInt(this.showedSlot.startHour.split(':')[1]),
-            endHour: parseInt(this.showedSlot.endHour.split(':')[0]) * 60 +
-            parseInt(this.showedSlot.endHour.split(':')[1]),
+            startHour: parseInt(sh.split(':')[0]) * 60 +
+            parseInt(sh.split(':')[1]),
+            endHour: parseInt(eh.split(':')[0]) * 60 +
+            parseInt(eh.split(':')[1]),
         };
-        if (this.slot.startHour > this.slot.endHour) {
-            let toast = this.toast.create({
-                message: "L'heure de début devrait être inférieure à l'heure de fin",
-                duration: 5000
-            });
-            toast.present();
-            return;
-        }
-
 
         console.log(JSON.stringify('JSON returned: ' + this.slot));
         this.viewCtrl.dismiss(this.slot);
@@ -590,32 +585,29 @@ export class ModalSlotPage {
             this.showedSlot.endHour = new Date(this.showedSlot.endHour).getUTCHours();
         }
 
-        if (new Date(this.showedSlot.startDate).getUTCHours() && new Date(this.showedSlot.endDate).getUTCHours() && new Date(this.showedSlot.startDate).getUTCHours() >= new Date(this.showedSlot.endDate).getUTCHours()) {
+        //check if dates and hours are coherent
+        if (new Date(this.showedSlot.startDate).getUTCHours() && new Date(this.showedSlot.endDate).getUTCHours() && new Date(this.showedSlot.startDate) >= new Date(this.showedSlot.endDate)) {
             if (i == 0) {
                 this.hoursErrorMessage = "* L'heure de début doit être inférieure à l'heure de fin";
                 this.showedSlot.startHour = "";
                 return;
             } else {
-                this.hoursErrorMessage = "* L'heure de début doit être inférieure à l'heure de fin";
+                this.hoursErrorMessage = "* L'heure de fin doit être supérieure à l'heure de début";
                 this.showedSlot.endHour = "";
                 return;
             }
         }
+
         //check if chosen hour and date are passed
-        if (this.showedSlot.startDate && new Date(this.showedSlot.startDate).setHours(0, 0, 0, 0) == new Date().setHours(0, 0, 0, 0)) {
-            let h = new Date().getHours();
-            let m = new Date().getMinutes();
-            let minutesNow = this.convertHoursToMinutes(h + ':' + m);
-            if (i == 0 && new Date(this.showedSlot.startDate).getUTCHours() && this.convertHoursToMinutes(new Date(this.showedSlot.startDate).getUTCHours()) <= minutesNow) {
-                this.hoursErrorMessage = "* L'heure de début doit être supérieure à l'heure actuelle";
-                this.showedSlot.startDate = "";
-                return;
-            }
-            if (i == 1 && new Date(this.showedSlot.EndDate).getUTCHours() && this.convertHoursToMinutes(new Date(this.showedSlot.endDate).getUTCHours()) <= minutesNow) {
-                this.hoursErrorMessage = "* L'heure de fin doit être supérieure à l'heure actuelle";
-                this.showedSlot.endDate = "";
-                return;
-            }
+        if (i == 0 && this.showedSlot.startDate && new Date(this.showedSlot.startDate) <= new Date() ) {
+            this.hoursErrorMessage = "* L'heure de début doit être supérieure à l'heure actuelle";
+            this.showedSlot.startDate = "";
+            return;
+        }
+        if (i == 1 && this.showedSlot.endDate && new Date(this.showedSlot.endDate) <= new Date() ) {
+            this.hoursErrorMessage = "* L'heure de fin doit être supérieure à l'heure actuelle";
+            this.showedSlot.endDate = "";
+            return;
         }
     }
 
