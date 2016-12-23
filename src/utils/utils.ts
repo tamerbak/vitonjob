@@ -101,5 +101,11 @@ export class Utils {
     }
   }
 
+  public static sqlfyText(txt) {
+    if (!txt || txt.length == 0)
+      return "";
+    return txt.replace(/'/g, "''");
+  }
+
 
 }
