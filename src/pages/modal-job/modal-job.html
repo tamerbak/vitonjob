@@ -166,7 +166,7 @@
 
 
   <!-- Prérequis obligatoires -->
-  <ion-list>
+  <ion-list style="margin-bottom: 5px">
     <ion-list-header color="primary">{{ isEmployer ? 'Prérequis obligatoires':'liste des documents nécessaires' }}
     </ion-list-header>
     <ion-item [hidden]="!isEmployer">
@@ -207,11 +207,10 @@
 
     <ion-row [hidden]="prerequisObList.length == 0">
       <ion-col width-100>
-        <ion-list>
+        <ion-list no-lines text-wrap>
           <ion-item *ngFor="let p of prerequisObList" (click)="preqOSelected(p)">
-
+            <ion-icon name="pricetag" item-left></ion-icon>
             {{p.libelle}}
-
           </ion-item>
         </ion-list>
       </ion-col>

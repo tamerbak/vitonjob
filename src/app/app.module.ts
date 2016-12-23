@@ -190,7 +190,11 @@ import {TimeConverter} from "../pipes/time-converter/time-converter";
   ],
   imports: [
     IonicModule.forRoot(Vitonjob, {
-      backButtonText: ''
+      backButtonText: '',
+      monthNames: ['Janvier', 'F\u00e9vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao\u00fbt', 'Septembre', 'Octobre', 'Novembre', 'D\u00e9cembre'],
+      monthShortNames: ['Jan', 'F\u00e9v', 'Mar', 'Avr', 'Mai','Jui', 'Juil', 'Ao\u00fb', 'Sept', 'Oct', 'Nov', 'D\u00e9c'],
+      dayNames: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
+      dayShortNames: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
     }, {})
   ],
   bootstrap: [IonicApp],

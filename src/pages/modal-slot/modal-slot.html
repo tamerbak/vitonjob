@@ -9,8 +9,8 @@
     </ion-navbar>
 </ion-header>
 
-<ion-content padding class="modal-slot">
-    <ion-list>
+<ion-content class="modal-slot">
+    <!--ion-list>
 
         <ion-item [hidden]="!isAndroid4">
             <ion-label floating>Date</ion-label>
@@ -20,7 +20,7 @@
 
         <ion-item text-wrap [hidden]="isAndroid4">
             <ion-label>Date</ion-label>
-            <ion-datetime id="idt" displayFormat="DD, MMMM YYYY" [(ngModel)]="showedSlot.date"
+            <ion-datetime id="idt" displayFormat="DD, MMMM YYYY" [(ngModel)]="showedSlot.date" pickerFormat="D MMM YYYY HH m"
                           [min]="todayDate" [max]="maxDate" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
         </ion-item>
 
@@ -47,7 +47,106 @@
                           minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"
                           style="max-width:100%;"></ion-datetime>
         </ion-item>
-    </ion-list>
+
+
+
+    </ion-list-->
+
+    <ion-grid>
+        <ion-list no-lines>
+            <ion-list-header color="light">
+                Année
+            </ion-list-header>
+            <ion-row>
+                <ion-col>
+                    <ion-item>
+                        <ion-label>{{yearValue}}</ion-label>
+                        <ion-checkbox checked [disabled]="!isNextYearChecked" (ionChange)="yearClicked()" [(ngModel)]="currentYear"></ion-checkbox>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item>
+                        <ion-label>{{(yearValue + 1)}}</ion-label>
+                        <ion-checkbox [(ngModel)]="nextYear" (ionChange)="yearClicked()"></ion-checkbox>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-list>
+        <ion-list no-lines>
+            <ion-list-header color="light">
+                Mois
+            </ion-list-header>
+            <ion-row>
+                <ion-item no-lines style="paddin-right: 0">
+                    <ion-icon name="ios-arrow-back" item-left style="font-size: x-small; margin-right: 0"></ion-icon>
+                    <!--ion-col *ngFor="let mo of monthesList" class="month-col"-->
+                    <ion-scroll scrollX="true" style="height: 50px;">
+                        <button *ngFor="let mo of monthesList" ion-button small class=""
+                                [color]="(mo.checked)? 'primary' : 'light'"
+                                [hidden]="mo.disabled" (click)="monthClicked(mo)">{{mo.shortName}}&nbsp;{{mo.year}}
+                        </button>
+                    </ion-scroll>
+                    <ion-icon name="ios-arrow-forward" item-right style="font-size: x-small"></ion-icon>
+                </ion-item>
+                <!--/ion-col-->
+            </ion-row>
+        </ion-list>
+
+        <ion-list no-lines>
+            <ion-list-header color="light">
+                Jours de semaine
+            </ion-list-header>
+            <ion-row>
+
+                <ion-item no-lines style="paddin-right: 0">
+                    <ion-icon name="ios-arrow-back" item-left style="font-size: x-small; margin-right: 0"></ion-icon>
+                    <ion-scroll scrollX="true" style="height: 50px;">
+                        <button *ngFor="let da of daysList" ion-button small class="day-button"
+                                [color]="(da.checked)? 'primary' : 'light'"
+                                [disabled]="da.disabled" (click)="dayClicked(da)">
+                            {{da.shortName}} le {{da.value}}
+                        </button>
+                    </ion-scroll>
+                    <ion-icon name="ios-arrow-forward" item-right style="font-size: x-small"></ion-icon>
+                </ion-item>
+
+
+                <!--ion-scroll scrollX="true" style="height: 40px;width: 100%;" class="item">
+                    <ion-col *ngFor="let da of daysList" class="day-col">
+                        <button ion-button small class="day-button" [color]="(da.checked)? 'primary' : 'light'"
+                                [disabled]="da.disabled" (click)="dayClicked(da)">{{da.shortName}}
+                        </button>
+                    </ion-col>
+                </ion-scroll-->
+            </ion-row>
+        </ion-list>
+
+
+        <ion-list>
+            <ion-list-header color="light" no-lines>
+                Horaire
+            </ion-list-header>
+            <ion-item text-wrap>
+                <ion-label stacked>Début</ion-label>
+                <ion-datetime displayFormat="Le D MMMM YYYY à HH:mm" pickerFormat="D MMM YYYY HH mm"
+                              [(ngModel)]="showedSlot.startDate" (ionChange)="checkHour(0)"
+                              minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"
+                              [min]="minStartDate" [max]="maxStartDate"
+                              style="max-width:100%;"></ion-datetime>
+            </ion-item>
+
+            <ion-item text-wrap>
+                <ion-label stacked>Fin</ion-label>
+                <ion-datetime displayFormat="Le D MMMM YYYY à HH:mm" pickerFormat="D MMM YYYY HH mm"
+                              [(ngModel)]="showedSlot.endDate" (ionChange)="checkHour(1)"
+                              minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"
+                              [min]="minEndDate" [max]="maxEndDate"
+                              style="max-width:100%;"></ion-datetime>
+            </ion-item>
+        </ion-list>
+    </ion-grid>
+
+
     <div class="error-box">{{hoursErrorMessage}}</div>
 
     <ion-row>
