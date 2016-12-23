@@ -1355,4 +1355,5 @@ export class CivilityPage {
     return hours + ":" + minutes;
   }
 
+
 }

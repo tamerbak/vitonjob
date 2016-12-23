@@ -3,6 +3,7 @@ import {NavController, NavParams} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {BankService} from "../../providers/bank-service/bank-service";
+import {Utils} from "../../utils/utils";
 
 @Component({
   templateUrl: 'bank-account.html'
@@ -10,10 +11,15 @@ import {BankService} from "../../providers/bank-service/bank-service";
 export class BankAccountPage {
   public bank: any;
   public isEmployer: boolean;
+  public isRecruiter: boolean;
   public themeColor: string;
   public projectTarget: any;
   public service: BankService;
   public voidAccount: boolean = true;
+
+  public isValidAccountHolder: boolean = false;
+
+  public accountHolderHint: string = "";
 
   constructor(public nav: NavController,
               public gc: GlobalConfigs,
@@ -23,7 +29,7 @@ export class BankAccountPage {
     let config = Configs.setConfigs(this.projectTarget);
     this.themeColor = config.themeColor;
     this.isEmployer = (this.projectTarget == 'employer');
-
+    this.isRecruiter = this.navParams.data.currentUser.estRecruteur;
     this.service = service;
 
     this.bank = {
@@ -46,6 +52,7 @@ export class BankAccountPage {
     this.service.loadBankAccount(id, table, this.projectTarget).then((data: Array<any>) => {
       if (data && data.length > 0) {
         this.bank = data[0];
+        this.watchAccountHolder(this.bank.detenteur_du_compte);
         this.voidAccount = false;
       } else
         this.voidAccount = true;
@@ -121,19 +128,46 @@ export class BankAccountPage {
     return !regSWIFT.test(this.bank.bic);
   }
 
+  watchAccountHolder(_name) {
+
+    let _isValid: boolean = true;
+    let _hint: string = "";
+
+    if (Utils.isEmpty(_name)) {
+      _isValid = false;
+    } else if (this.isEmployer || this.isRecruiter){
+      let company = this.navParams.data.currentUser.employer.entreprises[0].nom.toLowerCase();
+      if(_name.toLowerCase().trim() !== company) {
+        _hint = "* La raison sociale fournie n'est pas conforme à vos informations de profil";
+        _isValid = false;
+      }
+    } else if ((!this.isEmployer && !this.isRecruiter) && _name.toLowerCase().trim() !== this.getUserFullName() && _name.trim() !== this.getUserReverseFullName() ){
+      _hint = "* Le nom et prénom fournis ne sont pas identiques à vos informations de profil";
+      _isValid = false;
+    } else {
+      _hint = "";
+    }
+
+    this.isValidAccountHolder = _isValid;
+    this.accountHolderHint = _hint;
+  }
+
+  getUserFullName(){
+    return this.navParams.data.currentUser.nom.toLowerCase()+" "+this.navParams.data.currentUser.prenom.toLowerCase();
+  }
+
+  getUserReverseFullName(){
+    return this.navParams.data.currentUser.prenom.toLowerCase()+" "+this.navParams.data.currentUser.nom.toLowerCase();
+  }
+
   isUpdateDisabled() {
 
-    if (!this.bank)
-      return true;
-    if (!this.bank.detenteur_du_compte)
-      return true;
-    if (!this.bank.nom_de_banque)
-      return true;
-    if (this.bank.nom_de_banque == '')
+    if (Utils.isEmpty(this.bank.nom_de_banque) || !this.isValidAccountHolder)
       return true;
 
     if (this.showBICError())
       return true;
+
     if (this.showIBANError())
       return true;
 

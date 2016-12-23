@@ -1,4 +1,4 @@
-import {NavController, PickerController, ModalController, Events} from "ionic-angular";
+import {NavController, PickerController, ModalController, Events, ToastController} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {Component} from "@angular/core";
@@ -19,6 +19,7 @@ import {ProfileLanguagesPage} from "../profile-languages/profile-languages";
 import {ProfileSlotsPage} from "../profile-slots/profile-slots";
 import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
 import {Storage} from "@ionic/storage";
+import {Utils} from "../../utils/utils";
 
 /*
  Generated class for the ProfilePage page.
@@ -54,6 +55,8 @@ export class ProfilePage {
   public defaultImage: string;
   public slots: any;
   public backGroundColor:string;
+  public isNewUser: boolean = true;
+  public toast: any;
 
   constructor(public nav: NavController,
               public gc: GlobalConfigs,
@@ -64,6 +67,7 @@ export class ProfilePage {
               private imageService: ImageService,
               public events: Events,
               public picker: PickerController,
+              private _toast: ToastController,
               public modal: ModalController, public storage: Storage) {
 
 
@@ -80,6 +84,7 @@ export class ProfilePage {
     this.addrService = addrService;
     this.defaultImage = config.userImageURL;
     this.userImageURL = "none";
+    this.toast = _toast;
   }
 
   /**
@@ -132,6 +137,9 @@ export class ProfilePage {
       if (data) {
 
         this.userData = JSON.parse(data);
+
+        this.isNewUser = (this.isEmployer ? (Utils.isEmpty(this.userData.nom) || Utils.isEmpty(this.userData.prenom) || Utils.isEmpty(this.userData.employer.entreprises[0].nom)) : (Utils.isEmpty(this.userData.nom) || Utils.isEmpty(this.userData.prenom)))
+
         this.isRecruiter = this.userData.estRecruteur;
         if (!this.isRecruiter)
           this.loadMap(this.userData);
@@ -393,7 +401,11 @@ export class ProfilePage {
   }
 
   goToBankAccount() {
-    this.nav.push(BankAccountPage, {currentUser: this.userData, fromPage: "profil"});
+    if(this.isNewUser){
+      this.presentToast("Veuillez renseigner les informations de votre profil avant d'accéder aux coordonnées bancaires", 3);
+    }else{
+      this.nav.push(BankAccountPage, {currentUser: this.userData, fromPage: "profil"});
+    }
   }
 
   goToInfoUserTabs() {
@@ -464,5 +476,18 @@ export class ProfilePage {
       return true;
     else
       return false;
+  }
+
+  presentToast(message: string, duration?: number, position?: string) {
+    if (!duration)
+      duration = 3;
+    let toast = this.toast.create({
+      message: message,
+      position: position,
+      showCloseButton: true,
+      closeButtonText: "Ok",
+      duration: duration * 1000
+    });
+    toast.present();
   }
 }
