@@ -141,7 +141,6 @@ export class HomePage {
               private _toast: ToastController,
               private _loading: LoadingController, public storage: Storage) {
     // Get target to determine configs
-
     this.projectTarget = _globalConfig.getProjectTarget();
     this.loading = _loading;
     this.modal = _modal;
