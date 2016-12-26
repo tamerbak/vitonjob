@@ -289,6 +289,7 @@ export class CivilityPage {
     this.departments = [];
     this.selectedCommune = null;
     this.communes = [];
+    this.birthplace = null;
     this.isCIN = (this.isEuropean === 0);
   }
 
@@ -350,6 +351,9 @@ export class CivilityPage {
     this.birthplace = commune.nom;
     this.selectedCommune = commune;
     this.communes = [];
+    if(!this.isEmployer){
+      this.showNSSError();
+    }
   }
 
   ionViewDidEnter() {
@@ -361,6 +365,9 @@ export class CivilityPage {
     if (this.title) {
       this.titlestyle = {
         'font-size': '1.4rem'
+      }
+      if(!this.isEmployer) {
+        this.showNSSError();
       }
     }
     else {
@@ -429,7 +436,24 @@ export class CivilityPage {
               } else {
                 this.isFrench = false;
               }
+              this.birthplace = (this.isFrench ? this.currentUser.jobyer.lieuNaissance : null);
+              if (this.birthplace && this.birthplace != 'null' && !this.isRecruiter) {
 
+                this.communesService.getCommune(this.birthplace).then((data: Array<any>) => {
+                  if (data && data.length > 0) {
+                    this.selectedCommune = data[0];
+                    if (this.selectedCommune.fk_user_code_postal && this.selectedCommune.fk_user_code_postal != "null") {
+                      this.selectedCP = parseInt(this.selectedCommune.fk_user_code_postal);
+                      this.birthcp = this.selectedCommune.code;
+                    } else {
+                      this.selectedCP = 0;
+                      this.birthcp = '';
+                    }
+                  }
+                  this.checkSS = true;
+                });
+              } else
+                this.checkSS = true;
               this.prefecture = data.instance_delivrance;
             });
 
@@ -444,7 +468,7 @@ export class CivilityPage {
               this.birthdate = "";
             }
             //this.birthdate = this.currentUser.jobyer.dateNaissance ?  : "";
-            this.birthplace = this.currentUser.jobyer.lieuNaissance;
+
             this.cni = this.currentUser.jobyer.cni;
             this.numSS = this.currentUser.jobyer.numSS;
             this.nationality = this.currentUser.jobyer.natId == 0 ? 91 : parseInt(this.currentUser.jobyer.natId);
@@ -496,26 +520,6 @@ export class CivilityPage {
           }
         }
       }
-
-      if (this.birthplace && this.birthplace != 'null' && !this.isRecruiter) {
-
-        this.communesService.getCommune(this.birthplace).then((data: Array<any>) => {
-          if (data && data.length > 0) {
-            this.selectedCommune = data[0];
-            if (this.selectedCommune.fk_user_code_postal && this.selectedCommune.fk_user_code_postal != "null") {
-              this.selectedCP = parseInt(this.selectedCommune.fk_user_code_postal);
-              this.birthcp = this.selectedCommune.code;
-            } else {
-              this.selectedCP = 0;
-              this.birthcp = '';
-            }
-
-
-          }
-          this.checkSS = true;
-        });
-      } else
-        this.checkSS = true;
     });
   }
 
@@ -552,7 +556,7 @@ export class CivilityPage {
 
   checkINSEE() {
     let indicator = this.numSS.substr(5, 5);
-    if (this.selectedCommune.id != '0') {
+    if (this.selectedCommune && this.selectedCommune.id != '0') {
       if (indicator != this.selectedCommune.code_insee)
         return false;
       else
@@ -579,7 +583,6 @@ export class CivilityPage {
     catch (err) {
       return false;
     }
-
   }
 
   /**
@@ -1296,6 +1299,9 @@ export class CivilityPage {
      let diff = Math.abs(ageDate.getUTCFullYear() - 1970);
     if (diff < 18) {
       this.isBirthdateValid = false;
+    }
+    if(!this.isEmployer){
+      this.showNSSError();
     }
   }
 
