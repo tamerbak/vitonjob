@@ -400,6 +400,7 @@ export class CivilityPage {
         } else {
           if (!this.isRecruiter) {
             this.uploadCVVerb = (Utils.isEmpty(this.currentUser.jobyer.cv) ? "Charger" : "Recharger");
+            this.cvUri = this.currentUser.jobyer.cv;
             this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
               data = data.data[0];
               if (!Utils.isEmpty(data.fk_user_pays)) {
@@ -1353,8 +1354,9 @@ export class CivilityPage {
   }
 
   downloadCV(){
-    let content = this.cvUri;
-    let contentType = "";
+    let content = this.cvUri.split(',')[1];
+    let cvBase64SecondPart = this.cvUri.split('/')[1];
+    let contentType = cvBase64SecondPart.split(';')[0];
     let folderpath = cordova.file.externalRootDirectory;
 
     // Convert the base64 string in a Blob
@@ -1362,7 +1364,7 @@ export class CivilityPage {
     console.log("Starting to write the file");
     window.resolveLocalFileSystemURL(folderpath, (dir) => {
       console.log("Access to the directory granted succesfully");
-      dir.getFile("Cv-Vit-On-Job", {create: true}, (file) => {
+      dir.getFile("Cv-Vit-On-Job." + contentType, {create: true}, (file) => {
         console.log("File created succesfully.");
         file.createWriter((fileWriter) => {
           console.log("Writing content to file");
