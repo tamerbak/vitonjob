@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+    <ion-navbar [color]="themeColor">
         <button menuToggle>
             <ion-icon name="menu"></ion-icon>
         </button>
@@ -12,7 +12,7 @@
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <button block (click)="openCoporamaModal()" [style.backgroundColor]="themeColor" *ngIf="isEmployer">
+            <button ion-button icon-left block (click)="openCoporamaModal()" [color]="themeColor" *ngIf="isEmployer">
                 <ion-icon name="search"></ion-icon>
                 Rechercher une entreprise
             </button>
@@ -263,12 +263,12 @@
         <ion-row>
             <ion-col text-center>
                 <ion-label>{{uploadVerb}} une photo {{scanTitle}}</ion-label>
-                <button [hidden]="scanUri" class="file-upload button-picture" [style.backgroundColor]="themeColor">
+                <button ion-button icon-only [hidden]="scanUri" class="file-upload button-picture" [color]="themeColor">
                     <input id="fileinput" type="file" class="file-input" (change)="onChangeUpload($event)">
                     <ion-icon name='folder'></ion-icon>
                 </button>
 
-                <button [hidden]="scanUri" seconde (click)="takePicture()" [style.backgroundColor]="themeColor"
+                <button ion-button icon-only [hidden]="scanUri" seconde (click)="takePicture()" [color]="themeColor"
                         class="button-picture">
                     <ion-icon name="camera"></ion-icon>
                 </button>
@@ -292,36 +292,37 @@
             </ion-row>
         </ion-card>
 
-        <ion-row>
+
+        <!-- <ion-row>
             <ion-col text-center>
-                <ion-label>{{uploadCVVerb}} votre CV</ion-label>
-                <button class="file-upload button-picture" [style.backgroundColor]="themeColor">
-                    <input id="cvInput" type="file" class="file-input" (change)="onChangeCVUpload($event)">
-                    <ion-icon name='folder'></ion-icon>
+                <button class="file-upload button-picture">
+                    <input type="file" class="file-input" (change)="onChangeUpload($event)">
+                    <ion-icon name="download" style="padding-right: .4em;"></ion-icon>
+                     Charger un scan {{scanTitle}}
                 </button>
             </ion-col>
         </ion-row>
 
-        <!--<ion-card style="margin: auto;" [hidden]="isEmpty(cvUri)">
-            <ion-row>
-                <ion-col text-center>
-                    <button style="margin: auto;" clear small (click)="downloadCV($event)">
-                        <ion-icon name='download'></ion-icon>
-                    </button>
-                </ion-col>
-                <ion-col text-center>
-                    <button style="margin: auto;" clear small (click)="deleteCV($event)">
-                        <ion-icon name='close'></ion-icon>
-                    </button>
-                </ion-col>
-            </ion-row>
-        </ion-card>-->
+        <ion-row>
+            <ion-col text-center>
+                <button block (click)="takePicture()" [style.backgroundColor]="themeColor" class="button-picture">
+                    <ion-icon name="md-camera"></ion-icon>
+                    Prendre une photo {{scanTitle}}
+                </button>
+            </ion-col>
+        </ion-row>
 
+        <ion-card [hidden]="!scanUri">
+            <ion-card-content>
+                <img [src]="scanUri"/>
+            </ion-card-content>
+        </ion-card>
+        -->
     </div>
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <button block (click)="updateCivility()" [style.backgroundColor]="themeColor"
+            <button ion-button icon-left block (click)="updateCivility()" [color]="themeColor"
                     [disabled]="isUpdateDisabled()" type="submit">
                 <ion-icon name="done-all"></ion-icon>
                 Valider

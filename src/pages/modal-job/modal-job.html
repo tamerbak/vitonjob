@@ -177,21 +177,6 @@
       </button>
     </ion-item>
 
-    <ion-row style="font-size:small" >
-      <ion-col>
-        <ion-chip color="primary" *ngFor="let p of prerequisObligatoires" #elem>
-          <ion-label>{{p}}</ion-label>
-          <button ion-button clear color="light" (click)="removePrerequis(p,elem)">
-            <ion-icon name="close-circle"></ion-icon>
-          </button>
-        </ion-chip>
-      </ion-col>
-      <!--button (click)="removePrerequis(p)" ion-button>
-        <ion-icon name="remove-circle"></ion-icon>
-      </button>
-      &nbsp;<span>{{p}}</span-->
-    </ion-row>
-
     <ion-item [hidden]="isEmployer">
       <ion-label floating>Documents nécessaires</ion-label>
       <ion-input type="text" [(ngModel)]="prerequisOb" (keyup)="watchDocsNecessary($event)"></ion-input>
@@ -202,6 +187,20 @@
     </ion-item>
   </ion-list>
 
+  <ion-row style="font-size:small" >
+    <ion-col>
+      <ion-chip color="primary" *ngFor="let p of prerequisObligatoires" #elem>
+        <ion-label>{{p}}</ion-label>
+        <button ion-button clear color="light" (click)="removePrerequis(p,elem)">
+          <ion-icon name="close-circle"></ion-icon>
+        </button>
+      </ion-chip>
+    </ion-col>
+    <!--button (click)="removePrerequis(p)" ion-button>
+      <ion-icon name="remove-circle"></ion-icon>
+    </button>
+    &nbsp;<span>{{p}}</span-->
+  </ion-row>
 
   <ion-grid>
 

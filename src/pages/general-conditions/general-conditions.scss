@@ -1,10 +1,15 @@
-.general-conditions {
+general-conditions {
+  .general-conditions {
 
-  background-size: cover;
+    background-size: cover;
 
-  #justify p {
-    //max-width: 100%;
-    text-align: justify;
+    #justify p {
+      //max-width: 100%;
+      text-align: justify;
+    }
+    .cg-header {
+      margin-top: 0;
+    }
+
   }
-
 }
