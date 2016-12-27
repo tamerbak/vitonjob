@@ -1308,8 +1308,9 @@ export class CivilityPage {
     let minD = new Date(this.mintsejFromDate);
     this.maxtsejFromDate = (provDate.getFullYear()) + "-12-31";
     let maxD = new Date(this.maxtsejFromDate);
-    if (this.tsejFromDate) {
-      if (this.tsejFromDate.getFullYear() < minD.getFullYear() || this.tsejFromDate.getFullYear() > maxD.getFullYear()) {
+    let fromDate = new Date(this.tsejFromDate);
+    if (fromDate) {
+      if (fromDate.getFullYear() < minD.getFullYear() || fromDate.getFullYear() > maxD.getFullYear()) {
         this.tsejFromDate = null;
       }
     }
