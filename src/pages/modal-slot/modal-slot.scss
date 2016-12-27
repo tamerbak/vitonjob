@@ -1,27 +1,27 @@
 modal-slot{
-  .modal-slot {
-    .month-button {
-      padding:0;
-      height: 1.5em;
-      font-size: 1.9rem;
-    }
-    .month-col{
-      padding: 0;
-    }
+  .month-button {
+    padding:0;
+    height: 1.5em;
+    font-size: 1.9rem;
+  }
+  .month-col{
+    padding: 0;
+  }
 
-    .day-button {
-      padding:0.7rem;
-      /*height: 1.5em;
-      font-size: 1.9rem;*/
-    }
-    .day-col{
-      padding: 2px;
-    }
-    .error-box {
-      color: red;
-      text-align: center;
-      font-style: italic;
-
-    }
+  .day-button {
+    padding:0.7rem;
+    /*height: 1.5em;
+    font-size: 1.9rem;*/
+  }
+  .day-col{
+    padding: 2px;
+  }
+  .error-box {
+    color: red;
+    text-align: center;
+    font-style: italic;
+  }
+  .asterisk{
+    color: red;
   }
 }
