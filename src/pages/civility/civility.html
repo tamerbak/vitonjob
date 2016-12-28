@@ -317,7 +317,22 @@
                 <img [src]="scanUri"/>
             </ion-card-content>
         </ion-card>
-        -->
+
+		<ion-card style="margin: auto;" [hidden]="isEmpty(cvUri)">
+            <ion-row>
+                <ion-col text-center>
+                    <button style="margin: auto;" clear small (click)="downloadCV($event)">
+                        <ion-icon name='download'></ion-icon>
+                    </button>
+                </ion-col>
+                <ion-col text-center>
+                    <button style="margin: auto;" clear small (click)="deleteCV($event)">
+                        <ion-icon name='close'></ion-icon>
+                    </button>
+                </ion-col>
+            </ion-row>
+        </ion-card>
+
     </div>
     <ion-row>
         <ion-col width-10></ion-col>

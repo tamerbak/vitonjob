@@ -1,7 +1,7 @@
 <ion-header>
     <ion-navbar [color]="themeColor">
         <ion-title>Détails</ion-title>
-        <ion-buttons end>
+        <ion-buttons end *ngIf="canModify">
             <button ion-button icon-only (click)="showPopover($event)" *ngIf="!(fromPage === 'ModalOffers')">
                 <ion-icon name="more"></ion-icon>
             </button>
@@ -48,7 +48,7 @@
                     <li><span style="font-weight: bold">Rémunération </span>: {{offer.jobData.remuneration}} €/h</li>
                 </ul>
             </div>
-            <div class="button-footer">
+            <div class="button-footer" *ngIf="canModify">
                 <button ion-button icon-left clear [style.color]="themeColor" (click)="showJobModal()">
                     <ion-icon name="create"></ion-icon>
                     <div>Modifier</div>
@@ -91,7 +91,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="button-footer">
+            <div class="button-footer" *ngIf="canModify">
                 <button ion-button icon-left clear [style.color]="themeColor" (click)="showCalendarModal()">
                     <ion-icon name="create"></ion-icon>
                     <div>Modifier</div>
@@ -127,7 +127,7 @@
                     <li *ngFor="let item of offer.qualityData">{{item.libelle}}</li>
                 </ul>
             </div>
-            <div class="button-footer">
+            <div class="button-footer" *ngIf="canModify">
                 <button ion-button icon-left clear [style.color]="themeColor" (click)="showQualityModal()">
                     <ion-icon name="create"></ion-icon>
                     <div>Modifier</div>
@@ -164,7 +164,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="button-footer">
+            <div class="button-footer" *ngIf="canModify">
                 <button ion-button icon-left clear (click)="showLanguageModal()">
                     <ion-icon name="create"></ion-icon>
                     <div>Modifier</div>
@@ -176,7 +176,7 @@
         <ion-card-header>Vidéo</ion-card-header>
         <ion-card-content>
           <ion-input placeholder="Lien de vidéo Youtube" [(ngModel)]="youtubeLink"
-                     [hidden]="videoAvailable"></ion-input>
+                     [hidden]="videoAvailable || !canModify"></ion-input>
 
           <div *ngIf="videoAvailable">
             <iframe width="100%" height="200" style="display:{{videoAvailable?'block':'none'}}" target="_parent"
@@ -190,11 +190,11 @@
         </div>
 
         <div class="button-footer">
-          <button ion-button clear icon-left small (click)="updateVideo(false)" [hidden]="videoAvailable">
+          <button ion-button clear icon-left small (click)="updateVideo(false)" [hidden]="videoAvailable || !canModify">
             <ion-icon name="add"></ion-icon>
             Ajouter
           </button>
-          <button ion-button outline icon-left [color]="themeColor" (click)="updateVideo(true)" [hidden]="!videoAvailable">
+          <button ion-button outline icon-left [color]="themeColor" (click)="updateVideo(true)" [hidden]="!videoAvailable || !canModify">
             <ion-icon name="trash"></ion-icon>
             Supprimer
           </button>

@@ -445,6 +445,9 @@ export class ProfilePage {
         })
       })
     })
+  }
+
+  showProfileJobs(){
 
   }
 

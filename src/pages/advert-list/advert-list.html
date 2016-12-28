@@ -1,0 +1,40 @@
+<ion-header no-border class="myToolbar">
+    <ion-toolbar transparent>
+        <button ion-button icon-left menuToggle style="background-color: transparent; box-shadow: none" [style.color]="backGroundColor">
+            <ion-icon name="menu" color="vojgrey"></ion-icon>
+            &nbsp;&nbsp;Annonces
+        </button>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="advert-list" padding [ngStyle]="backgroundImage">
+
+    <ion-row *ngIf="isEmployer">
+        <ion-col text-center>
+            <button ion-button icon-left small (click)="goToNewAdvert()" [color]="themeColor">
+                <ion-icon name="add-circle"></ion-icon>
+                Créer une annonce
+            </button>
+        </ion-col>
+    </ion-row>
+
+    <ion-list text-wrap *ngFor="let advert of adverts">
+        <ion-item-sliding>
+            <ion-item (click)="goToDetailAdvert(advert)" no-lines >
+                <ion-avatar item-left>
+                    <img [src]="advert.thumbnail.fileContent">
+                </ion-avatar>
+                <h2 class="h3-margintop">{{advert.titre}}</h2>
+                <span class="large" [innerHTML]="advert.briefContent"></span>
+                <p>Cliquer pour voir plus de détails</p>
+                <p *ngIf="isEmployer">Glisser à gauche pour modifier</p>
+            </ion-item>
+            <ion-item-options side="right" [hidden]="!isEmployer">
+                <button ion-button (click)="gotoEditAdvert(advert)">Modifier</button>
+            </ion-item-options>
+        </ion-item-sliding>
+    </ion-list>
+    <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+</ion-content>

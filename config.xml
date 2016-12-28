@@ -83,6 +83,5 @@
     <variable name="API_KEY_FOR_ANDROID" value="AIzaSyBMuUMZtQQIshx1vxdVYlOxrUa-CAfAgl4"/>
     <variable name="API_KEY_FOR_IOS" value="AIzaSyC2-sCekzD_sLLSiciKrMlPjVgyCtSnLK8"/>
   </plugin>
-  <plugin name="cordova-sqlite-storage" spec="~2.0.0"/>
   <icon src="resources/android/icon/drawable-xhdpi-icon.png"/>
 </widget>
