@@ -56,7 +56,6 @@
         <ion-list no-lines>
             <ion-list-header color="light">
                 Année
-                <span class="asterisk">*</span>
             </ion-list-header>
             <ion-row>
                 <ion-col>
@@ -76,7 +75,6 @@
         <ion-list no-lines>
             <ion-list-header color="light">
                 Mois
-                <span class="asterisk">*</span>
             </ion-list-header>
             <ion-row>
                 <ion-item no-lines style="paddin-right: 0">
@@ -97,7 +95,6 @@
         <ion-list no-lines>
             <ion-list-header color="light">
                 Jours de semaine
-                <span class="asterisk">*</span>
             </ion-list-header>
             <ion-row>
 
@@ -130,7 +127,7 @@
                 Horaire
             </ion-list-header>
             <ion-item text-wrap>
-                <ion-label stacked>Début <span class="asterisk">*</span></ion-label>
+                <ion-label stacked>Début</ion-label>
                 <ion-datetime displayFormat="Le D MMMM YYYY à HH:mm" pickerFormat="D MMM YYYY HH mm"
                               [(ngModel)]="showedSlot.startDate" (ionChange)="checkHour(0)"
                               minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"
@@ -139,7 +136,7 @@
             </ion-item>
 
             <ion-item text-wrap>
-                <ion-label stacked>Fin <span class="asterisk">*</span></ion-label>
+                <ion-label stacked>Fin</ion-label>
                 <ion-datetime displayFormat="Le D MMMM YYYY à HH:mm" pickerFormat="D MMM YYYY HH mm"
                               [(ngModel)]="showedSlot.endDate" (ionChange)="checkHour(1)"
                               minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"
