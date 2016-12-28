@@ -1,0 +1,63 @@
+.advert-edit {
+  background-size: cover;
+
+  ion-toolbar.toolbar {
+    min-height: 70px;
+  }
+
+  .cardHeader {
+    background: #b7b5b5 !important;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: small;
+  }
+
+  .iconRight {
+    float: right;
+  }
+
+  .marginTopList {
+    margin-top: 5px;
+  }
+
+  .button-picture {
+    white-space: normal;
+    font-size: 12px;
+  }
+
+  ion-label {
+    padding-top: 5px;
+  }
+
+  .labelInItem {
+    background-color: lightyellow;
+  }
+
+  .ion-col {
+    border: think solid black;
+  }
+
+  .button-picture {
+    white-space: normal;
+    font-size: 12px;
+  }
+
+  .file-upload {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .file-upload input.file-input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    width: 100%;
+    height: 100%;
+  }
+
+}

@@ -64,6 +64,8 @@ export class OfferDetailPage {
   public languageStyle: any;
   public calendarStyle: any;
   public backGroundColor:string;
+  public canModify: boolean = false;
+
 
   constructor(public nav: NavController,
               public gc: GlobalConfigs,
@@ -96,6 +98,8 @@ export class OfferDetailPage {
     // Get Offer passed in NavParams
     this.offer = params.get('selectedOffer');
     this.fromPage = params.get('fromPage');
+    this.canModify = (params.get('modifyOffer') == false ? false : true);
+
     this.showJob = false;
     this.jobIconName = 'add';
     this.showQuality = false;
