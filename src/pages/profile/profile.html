@@ -172,6 +172,11 @@
               (click)="showProfileSlots()" *ngIf="!isEmployer">
         <ion-icon name="calendar"></ion-icon>
       </button>
+
+      <button ion-fab [color]="themeColor"
+              (click)="showProfileJobs()" *ngIf="!isEmployer">
+        <ion-icon name="briefcase"></ion-icon>
+      </button>
     </ion-fab-list>
   </ion-fab>
 

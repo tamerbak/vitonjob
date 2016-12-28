@@ -1,5 +1,5 @@
-<ion-header>
-    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+<ion-header no-border>
+    <ion-navbar [color]="themeColor">
         <button menuToggle>
             <ion-icon name="menu"></ion-icon>
         </button>
@@ -15,7 +15,7 @@
         <ion-row [hidden]="!isGooglePlaceHidden">
             <ion-col width-10></ion-col>
             <ion-col text-center>
-                <button clear (click)="showGooglePlaceInput()" style="white-space: normal;">
+                <button ion-button icon-left clear (click)="showGooglePlaceInput()" style="white-space: normal;">
                     <ion-icon name="add"></ion-icon>
                     Cliquez ici pour chercher une adresse
                 </button>
@@ -65,7 +65,7 @@
         <ion-row>
             <ion-col width-10></ion-col>
             <ion-col text-center>
-                <button block (click)="updatePersonalAddress()" [style.backgroundColor]="themeColor"
+                <button ion-button icon-left block (click)="updatePersonalAddress()" [color]="themeColor"
                         [disabled]="isBtnDisabled()" type="submit">
                     <ion-icon name="done-all"></ion-icon>
                     Valider

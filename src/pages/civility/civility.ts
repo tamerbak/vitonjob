@@ -31,7 +31,8 @@ declare var window;
  * @module Authentication
  */
 @Component({
-  templateUrl: 'civility.html'
+  templateUrl: 'civility.html',
+  selector:'civility'
 })
 export class CivilityPage {
   public projectTarget: string;
