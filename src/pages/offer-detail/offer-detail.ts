@@ -64,8 +64,9 @@ export class OfferDetailPage {
   public languageStyle: any;
   public calendarStyle: any;
   public backGroundColor:string;
-  public canModify: boolean = false;
 
+  //advert management
+  public canModify: boolean = false;
 
   constructor(public nav: NavController,
               public gc: GlobalConfigs,

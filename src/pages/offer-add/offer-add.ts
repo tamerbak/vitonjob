@@ -19,6 +19,9 @@ import {Component} from "@angular/core";
 import {NotificationContractPage} from "../notification-contract/notification-contract";
 import {HomePage} from "../home/home";
 import {Storage} from "@ionic/storage";
+import {Utils} from "../../utils/utils";
+import {AdvertService} from "../../providers/advert-service/advert-service";
+import {AdvertListPage} from "../advert-list/advert-list";
 
 /*
  Generated class for the OfferAddPage page.
@@ -54,6 +57,9 @@ export class OfferAddPage {
   public idHunter: number = 0;
   public backGroundColor: string;
 
+  //advert management
+  public advertId: string;
+
   constructor(public nav: NavController,
               private gc: GlobalConfigs,
               private os: OffersService,
@@ -62,6 +68,7 @@ export class OfferAddPage {
               public alert: AlertController,
               public modal: ModalController,
               public toast: ToastController,
+              public advertService: AdvertService,
               public loading: LoadingController, public storage: Storage) {
 
     // Set global configs
@@ -325,6 +332,8 @@ export class OfferAddPage {
             let fromPage = this.navParams.data.fromPage;
             let searchRes = this.navParams.data.jobyer;
             let obj = this.navParams.data.obj;
+            this.advertId = this.navParams.data.adv;
+
             if (fromPage == "Search" || obj == "forRecruitment") {
               this.nav.push(NotificationContractPage, {
                 jobyer: searchRes,
@@ -337,13 +346,14 @@ export class OfferAddPage {
               });
             } else if (this.isHunter) {
               this.nav.setRoot(HomePage);
+            } else if(!Utils.isEmpty(this.advertId)){
+              this.advertService.updateAdvertWithOffer(this.advertId, offer.idOffer).then((data: any) => {
+                this.nav.setRoot(AdvertListPage);
+              });
             } else {
               this.nav.setRoot(OfferListPage);
             }
-
-
           });
-
       });
   }
 

@@ -308,4 +308,21 @@ export class AdvertService {
         });
     });
   }
+
+  updateAdvertWithOffer(advertId, offerId) {
+    let sql = "UPDATE user_annonce_entreprise " +
+      "SET " +
+      "fk_user_offre_entreprise = '" + offerId + "' " +
+      "WHERE " +
+      "pk_user_annonce_entreprise = " + advertId + ";";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 }

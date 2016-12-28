@@ -1,14 +1,17 @@
 import {Component, NgZone} from "@angular/core";
-import {NavController, NavParams, LoadingController, ToastController, ModalController} from "ionic-angular";
+import {NavController, NavParams, LoadingController, ToastController, ModalController, AlertController} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {AdvertService} from "../../providers/advert-service/advert-service";
+import {OffersService} from "../../providers/offers-service/offers-service";
 import {Utils} from "../../utils/utils";
 import {Storage} from "@ionic/storage";
 import {ModalGalleryPage} from "../modal-gallery/modal-gallery";
 import {FileUtils} from "../../utils/fileUtils";
 import {AdvertListPage} from "../advert-list/advert-list";
 import {GlobalService} from "../../providers/global-service/global-service";
+import {OfferAddPage} from "../offer-add/offer-add";
+import {OfferDetailPage} from "../offer-detail/offer-detail";
 
 declare var cordova, window: any;
 
@@ -30,16 +33,19 @@ export class AdvertEditPage{
   public jobyerInterested: boolean;
   public contractFormArray: any[] = [];
   public modal: any;
+  public idAdvert: string;
 
   constructor(public nav: NavController,
               public navParams: NavParams,
               public gc: GlobalConfigs,
               public advertService: AdvertService,
+              public offerService: OffersService,
               public loadingCtrl: LoadingController,
               public toast: ToastController,
               private _modal: ModalController,
               private zone: NgZone,
               public globalService: GlobalService,
+              public alert: AlertController,
               public storage: Storage) {
 
   // Set global configs
@@ -86,18 +92,18 @@ export class AdvertEditPage{
       let clonedAdvert = (JSON.parse(JSON.stringify(navParams.get('advert'))));
       this.advert = clonedAdvert;
 
+      this.idAdvert = this.advert.id;
       this.advert.hasOffer = (this.advert.offerId != 0 && !Utils.isEmpty(this.advert.offerId) ? true : false);
       this.attachFilename = this.advert.attachement.fileContent.split(';')[0];
       this.contractFormArray = (Utils.isEmpty(this.advert.contractForm) ? [] : this.advert.contractForm.split(";"));
-    }else{
-      //in the case of creating a new advert
-      this.storage.get(config.currentUserVar).then((value) => {
-        if (value) {
-          this.currentUser = JSON.parse(value);
-          this.advert.idEntreprise = this.currentUser.employer.entreprises[0].id;
-        }
-      });
     }
+
+    this.storage.get(config.currentUserVar).then((value) => {
+      if (value) {
+        this.currentUser = JSON.parse(value);
+        this.advert.idEntreprise = this.currentUser.employer.entreprises[0].id;
+      }
+    });
   }
 
   prepareImageForSaving(obj, name) {
@@ -220,8 +226,8 @@ export class AdvertEditPage{
     if(!Utils.isEmpty(clonedAdvert.id)) {
       this.advertService.updateAdvert(clonedAdvert).then((result: any) => {
         if (result && result.status == 'success') {
-          this.nav.push(AdvertListPage);
           loading.dismiss();
+          this.displayRequestAlert();
         } else {
           loading.dismiss();
           this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
@@ -231,14 +237,48 @@ export class AdvertEditPage{
     }else{
       this.advertService.saveAdvert(clonedAdvert).then((result: any) => {
         if(result.id != 0) {
-          this.nav.push(AdvertListPage);
+          this.idAdvert = result.id;
           loading.dismiss();
+          this.displayRequestAlert();
         } else {
           loading.dismiss();
           this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
           return;
         }
       });
+    }
+  }
+
+  displayRequestAlert() {
+    let confirm = this.alert.create({
+      title: "Vit-On-Job",
+      message: "Offre : Voulez-vous " + ((Utils.isEmpty(this.idAdvert) || Utils.isEmpty(this.advert.offerId)) ? "créer une offre et l'associer à cette annonce " : " modifier l'offre associée à cette annonce" ) + " ?",
+      buttons: [
+        {
+          text: 'Non',
+          handler: () => {
+            console.log('No clicked');
+            this.nav.push(AdvertListPage);
+          }
+        },
+        {
+          text: 'Oui',
+          handler: () => {
+            console.log('Yes clicked');
+            this.gotoOffer();
+          }
+        }
+      ]
+    });
+    confirm.present();
+  }
+
+  gotoOffer(){
+    if (Utils.isEmpty(this.advert.offerId)) {
+      this.nav.push(OfferAddPage, {adv: this.idAdvert});
+    } else {
+      let offer = this.offerService.getOfferByIdFromLocal(this.currentUser, this.advert.offerId);
+      this.nav.push(OfferDetailPage, {selectedOffer: offer});
     }
   }
 
