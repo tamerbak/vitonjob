@@ -54,13 +54,50 @@ export class AdvertEditPage{
     this.themeColor = config.themeColor;
     this.backgroundImage = config.backgroundImage;
     this.modal = _modal;
+    this.advert = {
+      'class': 'com.vitonjob.annonces.Annonce',
+      idEntreprise: 0,
+      titre: '',
+      description: '',
+      attachement: {
+        'class': 'com.vitonjob.annonces.Attachement',
+        code: 0,
+        status: '',
+        fileContent: ''
+      },
+      thumbnail: {
+        'class': 'com.vitonjob.annonces.Attachement',
+        code: 0,
+        status: '',
+        fileContent: ''
+      },
+      imgbg: {
+        'class': 'com.vitonjob.annonces.Attachement',
+        code: 0,
+        status: '',
+        fileContent: ''
+      },
+      contractForm: ''
+    };
 
-    //javascript passes objects by reference, therefore advert param must be cloned to prevent modifying it
-    let clonedAdvert = (JSON.parse(JSON.stringify(navParams.get('advert'))));
-    this.advert = clonedAdvert;
-    this.advert.hasOffer = (this.advert.offerId != 0 && !Utils.isEmpty(this.advert.offerId) ? true : false);
-    this.attachFilename = this.advert.attachement.fileContent.split(';')[0];
-    this.contractFormArray = (Utils.isEmpty(this.advert.contractForm) ? [] : this.advert.contractForm.split(";"));
+    //in the case of editing an existing advert
+    if(navParams.get('advert')){
+      //javascript passes objects by reference, therefore advert param must be cloned to prevent modifying it
+      let clonedAdvert = (JSON.parse(JSON.stringify(navParams.get('advert'))));
+      this.advert = clonedAdvert;
+
+      this.advert.hasOffer = (this.advert.offerId != 0 && !Utils.isEmpty(this.advert.offerId) ? true : false);
+      this.attachFilename = this.advert.attachement.fileContent.split(';')[0];
+      this.contractFormArray = (Utils.isEmpty(this.advert.contractForm) ? [] : this.advert.contractForm.split(";"));
+    }else{
+      //in the case of creating a new advert
+      this.storage.get(config.currentUserVar).then((value) => {
+        if (value) {
+          this.currentUser = JSON.parse(value);
+          this.advert.idEntreprise = this.currentUser.employer.entreprises[0].id;
+        }
+      });
+    }
   }
 
   prepareImageForSaving(obj, name) {
@@ -180,17 +217,30 @@ export class AdvertEditPage{
     this.prepareDataForSaving(clonedAdvert);
     this.prepareImageForSaving(clonedAdvert.thumbnail, 'thumbnail');
     this.prepareImageForSaving(clonedAdvert.imgbg, 'cover');
-    this.advertService.saveAdvert(clonedAdvert).then((result: any) => {
-        if(result && result.status == 'success'){
+    if(!Utils.isEmpty(clonedAdvert.id)) {
+      this.advertService.updateAdvert(clonedAdvert).then((result: any) => {
+        if (result && result.status == 'success') {
           this.nav.push(AdvertListPage);
           loading.dismiss();
-        }else{
+        } else {
+          loading.dismiss();
+          this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
+          return;
+        }
+      });
+    }else{
+      this.advertService.saveAdvert(clonedAdvert).then((result: any) => {
+        if(result.id != 0) {
+          this.nav.push(AdvertListPage);
+          loading.dismiss();
+        } else {
           loading.dismiss();
           this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
           return;
         }
       });
     }
+  }
 
   isUpdateDisabled(){
     return this.isEmpty(this.advert.titre);

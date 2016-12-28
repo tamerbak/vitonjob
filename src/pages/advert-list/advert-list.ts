@@ -116,7 +116,7 @@ export class AdvertListPage {
     }
 
     goToNewAdvert(){
-
+        this.nav.push(AdvertEditPage);
     }
 
     gotoEditAdvert(item){

@@ -258,7 +258,7 @@ export class AdvertService {
     return file;
   }
 
-  saveAdvert(advert: any) {
+  updateAdvert(advert: any) {
     let sql = "UPDATE user_annonce_entreprise " +
         "SET " +
         "titre = '" + Utils.sqlfyText(advert.titre) + "', " +
@@ -276,6 +276,35 @@ export class AdvertService {
         .map(res => res.json())
         .subscribe(data => {
           resolve(data);
+        });
+    });
+  }
+
+  saveAdvert(advert : any){
+    let sql = "insert into user_annonce_entreprise " +
+      "(titre, contenu, piece_jointe, forme_contrat, thumbnail, image_principale, created, fk_user_entreprise) " +
+      "values " +
+      "('"+Utils.sqlfyText(advert.titre)+"', '" +
+      Utils.sqlfyText(advert.description)+"', " + "'" +
+      Utils.sqlfyText(advert.attachement.fileContent)+"', '"+
+      Utils.sqlfyText(advert.contractForm)+"', " + "'"+
+      Utils.sqlfyText(advert.thumbnail.fileContent)+"', " + "'"+
+      Utils.sqlfyText(advert.imgbg.fileContent)+"', '"+
+      new Date().toISOString()+"', " +
+      advert.idEntreprise+")" +
+      " returning pk_user_annonce_entreprise";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let res = {
+            id : 0
+          };
+          if(data && data.data && data.data.length > 0){
+            res.id = data.data[0].pk_user_annonce_entreprise;
+          }
+          resolve(res);
         });
     });
   }
