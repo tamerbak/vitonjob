@@ -1,3 +1,4 @@
+import {Utils} from "./utils";
 export class DateUtils {
 
   constructor() {
@@ -14,4 +15,12 @@ export class DateUtils {
     return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " 00:00:00+00";
   }
 
+  public static toDateString(date) {
+    if(Utils.isEmpty(date)){
+      return "";
+    }
+    let d = new Date(date);
+    let str = d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+    return str;
+  }
 }

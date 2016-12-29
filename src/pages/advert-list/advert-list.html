@@ -33,6 +33,10 @@
                 <button ion-button (click)="gotoEditAdvert(advert)">Modifier</button>
             </ion-item-options>
         </ion-item-sliding>
+        <ion-item style="border-bottom: 0;margin-top: 0;margin-bottom: 0;text-align: center;"
+                  *ngIf="isEmployer">
+            <button ion-button color="vojgreen" small (click)="gotoAdvJobyerInterestList(advert)" [disabled]="advert.nbInterest == 0">{{advert.nbInterest}} jobyer(s) intéressé(s)</button>
+        </ion-item>
     </ion-list>
     <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
         <ion-infinite-scroll-content></ion-infinite-scroll-content>

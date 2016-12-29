@@ -5,6 +5,7 @@ import { AboutPage } from '../pages/about/about';
 import { HomePage } from '../pages/home/home';
 import {AdvancedSearchPage} from "../pages/advanced-search/advanced-search";
 import {AdvertListPage} from "../pages/advert-list/advert-list";
+import {AdvertJobyerListPage} from "../pages/advert-jobyer-list/advert-jobyer-list";
 import {AdvertEditPage} from "../pages/advert-edit/advert-edit";
 import {AdvertDetailsPage} from "../pages/advert-details/advert-details";
 import {AttachementsPage} from "../pages/attachements/attachements";
@@ -34,6 +35,7 @@ import {ModalLanguagePage} from "../pages/modal-language/modal-language";
 import {ModalOfferPropositionPage} from "../pages/modal-offer-proposition/modal-offer-proposition";
 import {ModalOffersPage} from "../pages/modal-offers/modal-offers";
 import {ModalPicturePage} from "../pages/modal-picture/modal-picture";
+import {ModalProfileJobyerPage} from "../pages/modal-profile-jobyer/modal-profile-jobyer";
 import {ModalQualityPage} from "../pages/modal-quality/modal-quality";
 import {ModalRecruiterManualPage} from "../pages/modal-recruiter-manual/modal-recruiter-manual";
 import {ModalRecruiterRepertoryPage} from "../pages/modal-recruiter-repertory/modal-recruiter-repertory";
@@ -122,6 +124,7 @@ import {CKEditorModule} from 'ng2-ckeditor';
     AboutPage,
     AdvancedSearchPage,
     AdvertListPage,
+    AdvertJobyerListPage,
     AdvertEditPage,
     AdvertDetailsPage,
     AttachementsPage,
@@ -152,6 +155,7 @@ import {CKEditorModule} from 'ng2-ckeditor';
     ModalOfferPropositionPage,
     ModalOffersPage,
     ModalPicturePage,
+    ModalProfileJobyerPage,
     ModalQualityPage,
     ModalRecruiterManualPage,
     ModalRecruiterRepertoryPage,
@@ -212,6 +216,7 @@ import {CKEditorModule} from 'ng2-ckeditor';
     AboutPage,
     AdvancedSearchPage,
     AdvertListPage,
+    AdvertJobyerListPage,
     AdvertEditPage,
     AdvertDetailsPage,
     AttachementsPage,
@@ -242,6 +247,7 @@ import {CKEditorModule} from 'ng2-ckeditor';
     ModalOfferPropositionPage,
     ModalOffersPage,
     ModalPicturePage,
+    ModalProfileJobyerPage,
     ModalQualityPage,
     ModalRecruiterManualPage,
     ModalRecruiterRepertoryPage,

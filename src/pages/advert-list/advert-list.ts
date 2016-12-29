@@ -6,6 +6,7 @@ import {AdvertService} from "../../providers/advert-service/advert-service";
 import {AdvertEditPage} from "../advert-edit/advert-edit";
 import {AdvertDetailsPage} from "../advert-details/advert-details";
 import {Storage} from "@ionic/storage";
+import {AdvertJobyerListPage} from "../advert-jobyer-list/advert-jobyer-list";
 
 @Component({
     templateUrl: 'advert-list.html',
@@ -135,5 +136,9 @@ export class AdvertListPage {
                 loading.dismiss();
             })
         });
+    }
+
+    gotoAdvJobyerInterestList(advert){
+        this.nav.push(AdvertJobyerListPage, {advert: advert});
     }
 }
