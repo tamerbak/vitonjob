@@ -292,32 +292,31 @@
             </ion-row>
         </ion-card>
 
-
-        <!-- <ion-row>
+        <ion-row *ngIf="!isEmployer">
             <ion-col text-center>
-                <button class="file-upload button-picture">
-                    <input type="file" class="file-input" (change)="onChangeUpload($event)">
-                    <ion-icon name="download" style="padding-right: .4em;"></ion-icon>
-                     Charger un scan {{scanTitle}}
+                <ion-label>{{uploadCVVerb}} votre CV</ion-label>
+                <button class="file-upload button-picture" [style.backgroundColor]="themeColor">
+                    <input id="cvInput" type="file" class="file-input" (change)="onChangeCVUpload($event)">
+                    <ion-icon name='folder'></ion-icon>
                 </button>
             </ion-col>
         </ion-row>
 
-        <ion-row>
-            <ion-col text-center>
-                <button block (click)="takePicture()" [style.backgroundColor]="themeColor" class="button-picture">
-                    <ion-icon name="md-camera"></ion-icon>
-                    Prendre une photo {{scanTitle}}
-                </button>
-            </ion-col>
-        </ion-row>
-
-        <ion-card [hidden]="!scanUri">
-            <ion-card-content>
-                <img [src]="scanUri"/>
-            </ion-card-content>
+        <ion-card style="margin: auto;" [hidden]="isEmployer || isEmpty(cvUri)">
+            <ion-row>
+                <ion-col text-center>
+                    <button style="margin: auto;" clear small (click)="downloadCV($event)">
+                        <ion-icon name='download'></ion-icon>
+                    </button>
+                </ion-col>
+                <ion-col text-center>
+                    <button style="margin: auto;" clear small (click)="deleteCV($event)">
+                        <ion-icon name='close'></ion-icon>
+                    </button>
+                </ion-col>
+            </ion-row>
         </ion-card>
-        -->
+
     </div>
     <ion-row>
         <ion-col width-10></ion-col>

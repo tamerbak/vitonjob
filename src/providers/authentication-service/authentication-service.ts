@@ -48,7 +48,7 @@ export class AuthenticationService {
     var encodedLogin = btoa(login);
     var dataLog = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 20019,//10018,//283,
+      'id': 20022,//10018,//283,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'requete authentification',

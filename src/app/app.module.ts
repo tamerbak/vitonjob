@@ -4,6 +4,10 @@ import { Vitonjob } from './app.component';
 import { AboutPage } from '../pages/about/about';
 import { HomePage } from '../pages/home/home';
 import {AdvancedSearchPage} from "../pages/advanced-search/advanced-search";
+import {AdvertListPage} from "../pages/advert-list/advert-list";
+import {AdvertJobyerListPage} from "../pages/advert-jobyer-list/advert-jobyer-list";
+import {AdvertEditPage} from "../pages/advert-edit/advert-edit";
+import {AdvertDetailsPage} from "../pages/advert-details/advert-details";
 import {AttachementsPage} from "../pages/attachements/attachements";
 import {BankAccountPage} from "../pages/bank-account/bank-account";
 import {CivilityPage} from "../pages/civility/civility";
@@ -31,6 +35,7 @@ import {ModalLanguagePage} from "../pages/modal-language/modal-language";
 import {ModalOfferPropositionPage} from "../pages/modal-offer-proposition/modal-offer-proposition";
 import {ModalOffersPage} from "../pages/modal-offers/modal-offers";
 import {ModalPicturePage} from "../pages/modal-picture/modal-picture";
+import {ModalProfileJobyerPage} from "../pages/modal-profile-jobyer/modal-profile-jobyer";
 import {ModalQualityPage} from "../pages/modal-quality/modal-quality";
 import {ModalRecruiterManualPage} from "../pages/modal-recruiter-manual/modal-recruiter-manual";
 import {ModalRecruiterRepertoryPage} from "../pages/modal-recruiter-repertory/modal-recruiter-repertory";
@@ -78,6 +83,7 @@ import {Utils} from "../utils/utils";
 import {AccountConstraints} from "../validators/account-constraints";
 import {NumSSConstraints} from "../validators/numss-constraints";
 import {AddressService} from "../providers/address-service/address-service";
+import {AdvertService} from "../providers/advert-service/advert-service";
 import {AttachementsService} from "../providers/attachements-service/attachements-service";
 import {BankService} from "../providers/bank-service/bank-service";
 import {CommunesService} from "../providers/communes-service/communes-service";
@@ -110,12 +116,17 @@ import {ValidationDataService} from "../providers/validation-data-service/valida
 import {Storage} from "@ionic/storage";
 import {DateConverter} from "../pipes/date-converter/date-converter";
 import {TimeConverter} from "../pipes/time-converter/time-converter";
+import {CKEditorModule} from 'ng2-ckeditor';
 
 @NgModule({
   declarations: [
     Vitonjob,
     AboutPage,
     AdvancedSearchPage,
+    AdvertListPage,
+    AdvertJobyerListPage,
+    AdvertEditPage,
+    AdvertDetailsPage,
     AttachementsPage,
     BankAccountPage,
     CivilityPage,
@@ -144,6 +155,7 @@ import {TimeConverter} from "../pipes/time-converter/time-converter";
     ModalOfferPropositionPage,
     ModalOffersPage,
     ModalPicturePage,
+    ModalProfileJobyerPage,
     ModalQualityPage,
     ModalRecruiterManualPage,
     ModalRecruiterRepertoryPage,
@@ -189,6 +201,7 @@ import {TimeConverter} from "../pipes/time-converter/time-converter";
 
   ],
   imports: [
+    CKEditorModule,
     IonicModule.forRoot(Vitonjob, {
       backButtonText: '',
       monthNames: ['Janvier', 'F\u00e9vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao\u00fbt', 'Septembre', 'Octobre', 'Novembre', 'D\u00e9cembre'],
@@ -202,6 +215,10 @@ import {TimeConverter} from "../pipes/time-converter/time-converter";
     Vitonjob,
     AboutPage,
     AdvancedSearchPage,
+    AdvertListPage,
+    AdvertJobyerListPage,
+    AdvertEditPage,
+    AdvertDetailsPage,
     AttachementsPage,
     BankAccountPage,
     CivilityPage,
@@ -230,6 +247,7 @@ import {TimeConverter} from "../pipes/time-converter/time-converter";
     ModalOfferPropositionPage,
     ModalOffersPage,
     ModalPicturePage,
+    ModalProfileJobyerPage,
     ModalQualityPage,
     ModalRecruiterManualPage,
     ModalRecruiterRepertoryPage,
@@ -271,6 +289,7 @@ import {TimeConverter} from "../pipes/time-converter/time-converter";
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AddressService,
+    AdvertService,
     AttachementsService,
     AuthenticationService,
     BankService,

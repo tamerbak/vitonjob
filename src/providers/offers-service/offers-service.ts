@@ -1815,5 +1815,15 @@ export class OffersService {
             return hourArray[0] * 60 + parseInt(hourArray[1]);
         }
     }
+
+    getOfferByIdFromLocal(currentUser, offerId){
+        let offers = currentUser.employer.entreprises[0].offers;
+        for(let i = 0; i < offers.length; i++){
+            if(offers[i].idOffer == offerId){
+                return offers[i];
+            }
+        }
+        return null;
+    }
 }
 
