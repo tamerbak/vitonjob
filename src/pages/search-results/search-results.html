@@ -84,25 +84,25 @@
             <ion-row style="padding-left: 16px; padding-top: 5px"><span style="font-size: small">Entretien :</span>
             </ion-row>
             <ion-item no-lines>
-                <button ion-button icon-only clear color="primary"
+                <button ion-button icon-only clear [color]="themeColor"
                         (click)="itemSelected(item)" item-right>
                     <ion-icon name="map"></ion-icon>
                 </button>
-                <button ion-button icon-only clear color="primary"
+                <button ion-button icon-only clear [color]="themeColor"
                         (click)="skype(item)" item-right>
                     <ion-icon name="logo-skype"></ion-icon>
                 </button>
-                <button ion-button icon-only clear color="primary"
+                <button ion-button icon-only clear [color]="themeColor"
                         *ngIf="isEmployer || item.accepteCandidature=='true'"
                         (click)="call(item)" item-right>
                     <ion-icon name="call"></ion-icon>
                 </button>
-                <button ion-button icon-only clear color="primary"
+                <button ion-button icon-only clear [color]="themeColor"
                         *ngIf="isEmployer || item.accepteCandidature=='true'"
                         (click)="sendSMS(item)" item-right>
                     <ion-icon name="ios-chatboxes"></ion-icon>
                 </button>
-                <button ion-button icon-only clear color="primary"
+                <button ion-button icon-only clear [color]="themeColor"
 
                         *ngIf="isEmployer || item.accepteCandidature=='true'"
                         (click)="sendEmail(item)" item-right>

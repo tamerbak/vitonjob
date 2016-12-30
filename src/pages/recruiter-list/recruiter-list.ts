@@ -100,15 +100,7 @@ export class RecruiterListPage {
             this.saveExistantContact(recruiter, contact);
             //if the send notification button was clicked
             if (Array.isArray(recruiter) && recruiter[0] && recruiter[1] == "notification") {
-                let loading = this.loading.create({
-                    content: ` 
-					<div>
-					<img src='assets/img/loading.gif' />
-					</div>
-					`,
-                    spinner: 'hide',
-                    duration: 10000
-                });
+                let loading = this.loading.create({content:"Merci de patienter..."});
                 loading.present();
                 var tel = recruiter[0].phone;
                 //save existant contact

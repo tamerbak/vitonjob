@@ -590,14 +590,7 @@ export class CivilityPage {
    * @description update civility information for employer and jobyer
    */
   updateCivility() {
-    let loading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide'
-    });
+    let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present(loading);
     if (this.isRecruiter) {
       this.authService.updateRecruiterCivility(this.title, this.lastname, this.firstname, this.currentUser.id).then((data: {status: string, error: string}) => {

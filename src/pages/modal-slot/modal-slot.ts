@@ -200,7 +200,10 @@ export class ModalSlotPage {
             endDate: this.minEndDate,
             angular4Date: stringDate,
             startHour: null,
-            endHour: null
+            endHour: null,
+            annual: false,
+            monthly: false,
+            weekly: false
         };
         this.isAndroid4 = (platform.is('android')) && (platform.version().major < 5);
     }
@@ -573,20 +576,20 @@ export class ModalSlotPage {
             this.minEndDate = new Date(new Date(this.showedSlot.startDate).setUTCHours(new Date(this.showedSlot.startDate).getUTCHours(), new Date(this.showedSlot.startDate).getUTCMinutes() + 15)).toISOString();
             this.maxEndDate = new Date(new Date(this.showedSlot.startDate).setUTCHours(new Date(this.showedSlot.startDate).getUTCHours() + 10)).toISOString();
             this.showedSlot.endDate = this.minEndDate;
-            if (this.daysList.filter(da=>{return da.checked})){
+            if (this.daysList.filter(da=>{return da.checked}).length > 0){
                 this.daysList.filter(da=>{return da.checked})[0].checked = false;
             }
-            if (this.daysList.filter(da=>{return da.value === new Date(this.showedSlot.startDate).getDate()})){
+            if (this.daysList.filter(da=>{return da.value === new Date(this.showedSlot.startDate).getDate()}).length > 0){
                 this.daysList.filter(da=>{return da.value === new Date(this.showedSlot.startDate).getDate()})[0].checked = true;
             }
 
             this.showedSlot.startHour = new Date(this.showedSlot.startDate).getUTCHours();
-        } else if (i===0) {
+        } else if (i===1) {
             this.showedSlot.endHour = new Date(this.showedSlot.endHour).getUTCHours();
         }
 
         //check if dates and hours are coherent
-        if (new Date(this.showedSlot.startDate).getUTCHours() && new Date(this.showedSlot.endDate).getUTCHours() && new Date(this.showedSlot.startDate) >= new Date(this.showedSlot.endDate)) {
+        if (new Date(this.showedSlot.startDate) && new Date(this.showedSlot.endDate) && new Date(this.showedSlot.startDate) >= new Date(this.showedSlot.endDate)) {
             if (i == 0) {
                 this.hoursErrorMessage = "* L'heure de début doit être inférieure à l'heure de fin";
                 this.showedSlot.startHour = "";
@@ -616,5 +619,15 @@ export class ModalSlotPage {
             let hourArray = hour.split(':');
             return hourArray[0] * 60 + parseInt(hourArray[1]);
         }
+    }
+
+    /**
+     * Periodicity change
+     */
+    periodicityClicked(type:number) {
+        switch (type) {
+
+        }
+
     }
 }

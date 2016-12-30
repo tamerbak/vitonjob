@@ -94,14 +94,7 @@ export class ModalInvoicePage {
       orderRef: this.invoice.numeroFacture,
       contractReference: this.invoice.numeroContrat
     };
-    let loading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide'
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
     this.service.validateWork(payConfig).then((data: {code: any}) => {
 

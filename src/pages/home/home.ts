@@ -332,14 +332,7 @@ export class HomePage {
       idOffre: '0'
     };
 
-    let loading = this.loading.create({
-      content: ` 
-                <div>
-                    <img src='assets/img/loading.gif' />
-                </div>
-                `,
-      spinner: 'hide'
-    });
+    let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: Array<any>) => {
       console.log(data);
@@ -704,15 +697,7 @@ export class HomePage {
       this.presentToast("Veuillez saisir un job à rechercher avant de lancer la recherche", 5);
       return;
     }
-    let loading = this.loading.create({
-      content: ` 
-			
-			<img class="loading" src='assets/img/loading.gif' />
-			
-			`,
-      spinner: 'hide'
-
-    });
+    let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
     console.log('Initiating search for ' + this.scQuery);
     this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((data: any) => {
@@ -851,14 +836,7 @@ export class HomePage {
         offer.arrowLabel = "arrow-dropdown";
       }
     }
-    let loading = this.loading.create({
-      content: ` 
-                <div>
-                    <img src='assets/img/loading.gif' />
-                </div>
-                `,
-      spinner: 'hide'
-    });
+    let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
     let searchFields = {
       class: 'com.vitonjob.callouts.recherche.SearchQuery',

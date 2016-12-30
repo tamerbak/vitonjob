@@ -172,19 +172,19 @@
 
   <ion-fab top right>
     <button ion-fab (press)="pressEvent($event)" color="danger" (click)="disapearCurrentCard()">
-      <ion-icon name="pulse"></ion-icon>
+      <ion-icon name="more"></ion-icon>
     </button>
     <ion-fab-list side="down">
-      <button ion-fab outline (click)="showCorrespondantCard(0)" color="vojgreen">
+      <button ion-fab outline (click)="showCorrespondantCard(0)" color="vojgreen" [hidden]="!cards[0].isShowed">
         <ion-icon name="alert"></ion-icon>
       </button>
-      <button ion-fab (click)="showCorrespondantCard(1)" color="vojgreen">
+      <button ion-fab (click)="showCorrespondantCard(1)" color="vojgreen" [hidden]="!cards[1].isShowed">
         <ion-icon name="md-megaphone"></ion-icon>
       </button>
-      <button ion-fab  (click)="showCorrespondantCard(2)" color="vojgreen">
+      <button ion-fab  (click)="showCorrespondantCard(2)" color="vojgreen" [hidden]="!cards[2].isShowed">
         <ion-icon name="md-flame"></ion-icon>
       </button>
-      <button ion-fab  (click)="showCorrespondantCard(3)" color="vojgreen">
+      <button ion-fab  (click)="showCorrespondantCard(3)" color="vojgreen" [hidden]="!cards[3].isShowed">
         <ion-icon name="md-contacts"></ion-icon>
       </button>
       <button ion-fab  color="vojgreen">

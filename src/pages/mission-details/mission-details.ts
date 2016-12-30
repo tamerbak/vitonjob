@@ -266,14 +266,7 @@ export class MissionDetailsPage {
         }
       }
     }
-    let loading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide'
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present().then(() => {
       this.missionService.addPauses(this.missionHours, this.missionPauses, this.contract.pk_user_contrat).then((data: {status: string,error: string}) => {
         if (!data || data.status == "failure") {
@@ -651,15 +644,7 @@ export class MissionDetailsPage {
   }
 
   signSchedule() {
-    let loading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide',
-      duration: 10000
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
 
     loading.present().then(() => {
       this.missionService.signSchedule(this.contract).then((data: {status: string, error: string}) => {
@@ -800,15 +785,7 @@ export class MissionDetailsPage {
   }
 
   watchSignedToggle(e) {
-    let loading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide',
-      duration: 10000
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present().then(() => {
       this.missionService.signContract(this.contract.pk_user_contrat).then((data: {status: string, error: string}) => {
         if (!data || data.status == "failure") {

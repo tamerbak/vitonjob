@@ -302,15 +302,7 @@ export class OfferAddPage {
    */
   addOffer() {
     this.initLocalStorageOffer();
-    let loading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide',
-      duration: 10000
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
     this.offerService.setOfferInLocal(this.offerToBeAdded, this.projectTarget)
       .then(() => {

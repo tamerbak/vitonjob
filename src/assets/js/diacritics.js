@@ -1,4 +1,4 @@
-exports.remove = removeDiacritics;
+//exports.remove = removeDiacritics;
 
 var replacementList = [
   {

@@ -259,14 +259,7 @@ export class OfferListPage {
     console.log(offer);
     if (!offer)
       return;
-    let loading = this.loading.create({
-      content: ` 
-                <div>
-                    <img src='assets/img/loading.gif' />
-                </div>
-                `,
-      spinner: 'hide'
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
 
     let searchQuery = {

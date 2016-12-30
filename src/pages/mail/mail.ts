@@ -108,14 +108,7 @@ export class MailPage {
    */
   authenticate() {
     let indPhone = this.index + this.phone;
-    let loading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide'
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
     //call the service of autentication
     let pwd = md5(this.password1);
@@ -317,14 +310,7 @@ export class MailPage {
   }
 
   passwordForgotten() {
-    let loading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide'
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
     this.authService.setNewPassword(this.email).then((data: {password: string}) => {
       if (!data) {

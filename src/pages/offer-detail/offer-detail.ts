@@ -201,14 +201,7 @@ export class OfferDetailPage {
     console.log(offer);
     if (!offer)
       return;
-    let loading = this.loading.create({
-      content: ` 
-                <div>
-                    <img src='assets/img/loading.gif' />
-                </div>
-                `,
-      spinner: 'hide'
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
 
     let searchQuery = {
@@ -493,15 +486,7 @@ export class OfferDetailPage {
           text: 'Oui',
           handler: () => {
             console.log('Agree clicked');
-            let loading = this.loading.create({
-              content: ` 
-								<div>
-									<img src='assets/img/loading.gif' />
-								</div>
-								`,
-              spinner: 'hide',
-              duration: 10000
-            });
+              let loading = this.loading.create({content:"Merci de patienter..."});
             loading.present();
             let offer = this.offer;
             offer.title = this.offer.title + " (Copie)";

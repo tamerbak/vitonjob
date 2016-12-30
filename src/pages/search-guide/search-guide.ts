@@ -73,14 +73,7 @@ export class SearchGuidePage {
             idOffre: '0'
         };
         console.log(searchFields);
-        let loading = this.loading.create({
-            content: ` 
-                <div>
-                    <img src='assets/img/loading.gif' />
-                </div>
-                `,
-            spinner: 'hide'
-        });
+        let loading = this.loading.create({content:"Merci de patienter..."});
         loading.present();
         this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data:any) => {
             console.log(data);

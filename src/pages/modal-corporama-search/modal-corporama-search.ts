@@ -65,14 +65,7 @@ export class ModalCorporamaSearchPage {
     }
 
     this.hasToRedirect = false;
-    let loading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide'
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
     this.corporamaService.searchCompany(this.typeSearch, this.inputSearch).then((data: any) => {
       if (!data || data.status == "failure" || Utils.isEmpty(data._body)) {
