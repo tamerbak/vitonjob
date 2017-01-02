@@ -710,7 +710,7 @@ export class HomePage {
       this.searchService.setLastIndexation({resultsIndex : results.indexation});
       this.searchService.persistLastSearch(data);
       loading.dismiss();
-      this.nav.push(SearchResultsPage);
+      this.nav.push(SearchResultsPage,{searchType:'semantic'});
     });
   }
 

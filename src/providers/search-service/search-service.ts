@@ -30,33 +30,6 @@ export class SearchService {
     semanticSearch(textQuery: string, referenceOffer: number, projectTarget: string) {
 
         //  Start by identifying the wanted table and prepare the pay load
-        /*var table = projectTarget == 'jobyer' ? 'user_entreprise' : 'user_jobyer';
-        var query = table + ';' + textQuery;
-
-        var payload = {
-            'class': 'fr.protogen.masterdata.model.CCallout',
-            id: 10,
-            args: [
-                {
-                    class: 'fr.protogen.masterdata.model.CCalloutArguments',
-                    label: 'Requete de recherche',
-                    value: btoa(query)
-                },
-                {
-                    class: 'fr.protogen.masterdata.model.CCalloutArguments',
-                    label: 'ID Offre',
-                    value: btoa(referenceOffer + '')
-                },
-                {
-                    class: 'fr.protogen.masterdata.model.CCalloutArguments',
-                    label: 'Ordre de tri',
-                    value: 'TkQ='
-                }
-            ]
-        };
-
-        console.log(JSON.stringify(payload));*/
-
         let searchType = projectTarget == 'jobyer' ? 'employeur' : 'jobyer';
         let bean =  {
             class :"com.vitonjob.callouts.recherche.model.RequeteRecherche",
@@ -89,12 +62,17 @@ export class SearchService {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;
-                    console.log(this.data);
                     resolve(this.data);
                 });
         });
     }
 
+    /**
+     * @description Correct bias parameter of job probability
+     * @param index search request identifier
+     * @param idJob actual job to consider
+     * @returns {Promise<T>|Promise}    Just a status to indicate if the indexation was successful
+     */
     correctIndexation(index, idJob){
         let bean =  {
             class :"com.vitonjob.callouts.recherche.model.RequeteIndexation",

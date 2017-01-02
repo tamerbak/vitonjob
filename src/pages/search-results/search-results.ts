@@ -162,7 +162,7 @@ export class SearchResultsPage implements OnInit {
           for (let i = 0; i < this.searchResults.length; i++) {
             let role = this.isEmployer ? "jobyer" : "employeur";
             this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then((data: any) => {
-              if (data && data.data && !this.isEmpty(data.data[0].encode)) {
+              if (data && data.data && data.data.length>0 && !this.isEmpty(data.data[0].encode)) {
                 this.searchResults[i].avatar = data.data[0].encode;
               }
             });
@@ -312,17 +312,7 @@ export class SearchResultsPage implements OnInit {
       google.maps.event.addDomListener(document.getElementById('myInfoWinDiv'), 'click', function () {
         nav.push(SearchDetailsPage, {searchResult: r});
       });
-      //this.itemSelected(r);
     }.bind(this));
-
-
-    /*google.maps.event.addListener(infoWindow,'domready',function() {
-
-     document.getElementById('myInfoWinDiv').click(function () {
-     //Do your thing
-     this.itemSelected(r);
-     })
-     });*/
 
   };
 
@@ -334,7 +324,7 @@ export class SearchResultsPage implements OnInit {
   itemSelected(item) {
     let o = this.navParams.get('currentOffer');
     let rs = this.navParams.get('searchType');
-    if(rs && rs.type == 'semantic'){
+    if(rs && rs == 'semantic'){
       this.searchService.retrieveLastIndexation().then((data:any)=>{
         let index = null;
         if(data){
@@ -349,32 +339,6 @@ export class SearchResultsPage implements OnInit {
 
     }
     this.nav.push(SearchDetailsPage, {searchResult: item, currentOffer: o});
-    /*let actionSheet = ActionSheet.create({
-     title: 'Options',
-     buttons: [
-     {
-     text: 'Envoyer SMS',
-     icon: 'md-mail',
-     handler: () => {
-     this.sendSMS(item);
-     }
-     },{
-     text: 'Appeler',
-     icon: 'md-call',
-     handler: () => {
-     this.dialNumber(item);
-     }
-     },{
-     text: 'Annuler',
-     role: 'cancel',
-     icon: 'md-close',
-     handler: () => {
-
-     }
-     }
-     ]
-     });
-     this.nav.present(actionSheet);*/
 
   }
 
