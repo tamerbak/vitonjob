@@ -333,6 +333,21 @@ export class SearchResultsPage implements OnInit {
    */
   itemSelected(item) {
     let o = this.navParams.get('currentOffer');
+    let rs = this.navParams.get('searchType');
+    if(rs && rs.type == 'semantic'){
+      this.searchService.retrieveLastIndexation().then((data:any)=>{
+        let index = null;
+        if(data){
+          index = JSON.parse(data);
+          if(index.resultsIndex && index.resultsIndex>0)
+            this.searchService.correctIndexation(index.resultsIndex, item.idJob).then(data=>{
+              index.resultsIndex = 0;
+              this.searchService.setLastIndexation(index);
+            });
+        }
+      });
+
+    }
     this.nav.push(SearchDetailsPage, {searchResult: item, currentOffer: o});
     /*let actionSheet = ActionSheet.create({
      title: 'Options',
@@ -758,7 +773,22 @@ export class SearchResultsPage implements OnInit {
   }
 
   contract(index) {
+    let itm = this.searchResults[index];
+    let rs = this.navParams.get('searchType');
+    if(rs && rs.type == 'semantic'){
+      this.searchService.retrieveLastIndexation().then((data:any)=>{
+        let sidx = null;
+        if(data){
+          sidx = JSON.parse(data);
+          if(sidx.resultsIndex && sidx.resultsIndex>0)
+            this.searchService.correctIndexation(sidx.resultsIndex, itm.idJob).then(data=>{
+              sidx.resultsIndex = 0;
+              this.searchService.setLastIndexation(sidx);
+            });
+        }
+      });
 
+    }
     if (this.isUserAuthenticated) {
 
       let currentEmployer = this.employer.employer;
