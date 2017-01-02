@@ -215,15 +215,7 @@ export class PersonalAddressPage {
    * @description geolocate current user
    */
   geolocate() {
-    this.generalLoading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide',
-      duration: 10000
-    });
+    this.generalLoading = this.loading.create({content:"Merci de patienter..."});
     this.generalLoading.present();
     let options = {timeout: 5000, enableHighAccuracy: true, maximumAge: 0};
     Geolocation.getCurrentPosition(options)
@@ -297,15 +289,7 @@ export class PersonalAddressPage {
    * @description function that calls the service to update personal address for employers and jobyers
    */
   updatePersonalAddress() {
-    let loading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide',
-      duration: 15000
-    });
+    let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present().then(() => {
       if (this.isEmployer) {
         let entreprise = this.currentUser.employer.entreprises[0];

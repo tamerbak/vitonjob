@@ -90,14 +90,7 @@ export class YousignPage {
    * @description call yousign service and send sms to the jobyer
    */
   callYousign() {
-    let loading = this.loading.create({
-      content: ` 
-                <div>
-                    <img src='assets/img/loading.gif' />
-                </div>
-                `,
-      spinner: 'hide'
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
     this.financeService.loadQuote(this.currentOffer.idOffer, this.contractData.baseSalary).then((data: any) => {
       //  Now Let us calculate contract values

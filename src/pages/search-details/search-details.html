@@ -11,7 +11,7 @@
 
 <ion-content padding class="search-details" [ngStyle]="backgroundImage">
 
-    <button [style.color]="themeColor" clear nav-pop>
+    <button ion-button icon-left [color]="themeColor" clear navPop>
         <ion-icon name="arrow-back"></ion-icon>
         Retour à la liste
     </button>
@@ -78,21 +78,21 @@
                 Recruter maintenant!
             </button-->
 
-            <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+            <button ion-button icon-only clear [color]="themeColor"
                     (click)="skype()" item-right>
                 <ion-icon name="logo-skype"></ion-icon>
             </button>
-            <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+            <button ion-button icon-only clear [color]="themeColor"
                     *ngIf="isEmployer || result.accepteCandidature=='true'"
                     (click)="call()" item-right>
                 <ion-icon name="call"></ion-icon>
             </button>
-            <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+            <button ion-button icon-only clear [color]="themeColor"
                     *ngIf="isEmployer || result.accepteCandidature=='true'"
                     (click)="sendSMS()" item-right>
                 <ion-icon name="ios-chatboxes"></ion-icon>
             </button>
-            <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+            <button ion-button icon-only clear [color]="themeColor"
                     *ngIf="isEmployer || result.accepteCandidature=='true'"
                     (click)="sendEmail()" item-right>
                 <ion-icon name="mail"></ion-icon>

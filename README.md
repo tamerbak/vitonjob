@@ -111,6 +111,7 @@ $ ionic plugin add de.appplant.cordova.plugin.local-notification
 $ npm install croppie
 $ npm install diacritics
 $ cordova plugin add cordova-plugin-file
+$ npm install ng2-ckeditor --save
 ```
 
 ##Notification Push

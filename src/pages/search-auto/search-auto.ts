@@ -89,14 +89,7 @@ export class SearchAutoPage {
   launchSearch(offer, noRedirect) {
     if (!offer)
       return;
-    let loading = this.loading.create({
-      content: ` 
-                <div>
-                    <img src='assets/img/loading.gif' />
-                </div>
-                `,
-      spinner: 'hide'
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
     let searchFields = {
       class: 'com.vitonjob.callouts.recherche.SearchQuery',

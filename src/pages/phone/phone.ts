@@ -143,14 +143,7 @@ export class PhonePage {
       return;
     }
     let indPhone = this.index + this.phone;
-    let loading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide'
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
     //call the service of autentication
     let pwd = md5(this.password1);
@@ -480,14 +473,7 @@ export class PhonePage {
   }
 
   passwordForgotten(canal, email) {
-    let loading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide'
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
     let tel = "+" + this.index + this.phone;
     this.authService.setNewPassword(tel).then((data: {password: string}) => {

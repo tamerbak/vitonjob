@@ -65,6 +65,9 @@ export class OfferDetailPage {
   public calendarStyle: any;
   public backGroundColor:string;
 
+  //advert management
+  public canModify: boolean = false;
+
   constructor(public nav: NavController,
               public gc: GlobalConfigs,
               public params: NavParams,
@@ -96,6 +99,8 @@ export class OfferDetailPage {
     // Get Offer passed in NavParams
     this.offer = params.get('selectedOffer');
     this.fromPage = params.get('fromPage');
+    this.canModify = (params.get('modifyOffer') == false ? false : true);
+
     this.showJob = false;
     this.jobIconName = 'add';
     this.showQuality = false;
@@ -196,14 +201,7 @@ export class OfferDetailPage {
     console.log(offer);
     if (!offer)
       return;
-    let loading = this.loading.create({
-      content: ` 
-                <div>
-                    <img src='assets/img/loading.gif' />
-                </div>
-                `,
-      spinner: 'hide'
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
 
     let searchQuery = {
@@ -488,15 +486,7 @@ export class OfferDetailPage {
           text: 'Oui',
           handler: () => {
             console.log('Agree clicked');
-            let loading = this.loading.create({
-              content: ` 
-								<div>
-									<img src='assets/img/loading.gif' />
-								</div>
-								`,
-              spinner: 'hide',
-              duration: 10000
-            });
+              let loading = this.loading.create({content:"Merci de patienter..."});
             loading.present();
             let offer = this.offer;
             offer.title = this.offer.title + " (Copie)";

@@ -349,6 +349,32 @@ export class ProfileService {
         });
     }
 
+    getJobyerInfo(id){
+        let jobyerData = {
+            'class': 'com.vitonjob.callouts.jobyerInfo.JobyerToken',
+            'jobyerId': id
+        };
+        let jobyerDataStr = JSON.stringify(jobyerData);
+        let encodedJobyer = btoa(jobyerDataStr);
+        let data = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            'id': 20020,
+            'args': [{
+                'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                label: 'JobyerInfo',
+                value: encodedJobyer
+            }]
+        };
+        let stringData = JSON.stringify(data);
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(Configs.calloutURL, stringData, {headers: headers})
+              .subscribe(data => {
+                  resolve(data);
+              });
+        });
+    }
+
     isEmpty(str) {
         if (str == '' || str == 'null' || !str)
             return true;

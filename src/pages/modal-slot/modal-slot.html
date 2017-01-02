@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header no-border>
     <ion-navbar [color]="themeColor">
         <ion-title>Sélection d'un créneau</ion-title>
         <ion-buttons end>
@@ -72,6 +72,10 @@
                     </ion-item>
                 </ion-col>
             </ion-row>
+            <ion-item>
+                <ion-label>Récurrence annuelle</ion-label>
+                <ion-checkbox [(ngModel)]="showedSlot.annual" (ionChange)="periodicityClicked(0)"></ion-checkbox>
+            </ion-item>
         </ion-list>
         <ion-list no-lines>
             <ion-list-header color="light">
@@ -92,11 +96,15 @@
                 </ion-item>
                 <!--/ion-col-->
             </ion-row>
+            <ion-item>
+                <ion-label>Récurrence mensuelle</ion-label>
+                <ion-checkbox [(ngModel)]="showedSlot.monthly" (ionChange)="periodicityClicked(1)"></ion-checkbox>
+            </ion-item>
         </ion-list>
 
         <ion-list no-lines>
             <ion-list-header color="light">
-                Jours de semaine
+                Jour de semaine
                 <span class="asterisk">*</span>
             </ion-list-header>
             <ion-row>
@@ -122,6 +130,10 @@
                     </ion-col>
                 </ion-scroll-->
             </ion-row>
+            <ion-item>
+                <ion-label>Récurrence hebdomadaire</ion-label>
+                <ion-checkbox [(ngModel)]="showedSlot.weekly" (ionChange)="periodicityClicked(2)"></ion-checkbox>
+            </ion-item>
         </ion-list>
 
 

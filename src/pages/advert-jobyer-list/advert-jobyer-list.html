@@ -1,0 +1,20 @@
+<ion-header no-border class="myToolbar">
+    <ion-navbar transparent [color]="themeColor" >
+        <ion-title text-left>Retour à la liste</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding class="advert-jobyer-list" [ngStyle]="backgroundImage">
+
+    <ion-list text-wrap>
+        <ion-list-header [hidden]="advert.nbInterest == 0">
+            Jobyers intéressés par l'annonce {{advert.titre}}
+        </ion-list-header>
+        <ion-item *ngFor="let item of jobyerList, let i=index">
+            <h2>{{i + 1}} - {{preventNull(item.nom)}} {{preventNull(item.prenom)}}</h2>
+            <button ion-button icon-only clear item-right [color]="themeColor" (click)="showJobyerProfileModal(item)">
+                <ion-icon name="search"></ion-icon>
+            </button>
+        </ion-item>
+    </ion-list>
+</ion-content>

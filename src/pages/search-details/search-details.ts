@@ -20,7 +20,8 @@ declare let sms;
 declare let startApp;
 
 @Component({
-  templateUrl: 'search-details.html'
+  templateUrl: 'search-details.html',
+  selector:'search-details'
 })
 export class SearchDetailsPage implements OnInit {
   public isEmployer: boolean = false;

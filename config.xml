@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.manaona.vitonjob.jobyer" android-versionCode="103000" version="1.3.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.manaona.vitonjob.jobyer" android-versionCode="103030" version="1.3.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Jobyer</name>
   <description>Vite on job et vis ton job!</description>
   <author email="support@vitonjob.com" href="http://wwww.vitonjob.com/">Vit-On-Job</author>
@@ -75,7 +75,7 @@
   <preference name="SplashMaintainAspectRatio" value="true"/>
   <preference name="FadeSplashScreenDuration" value="300"/>
   <preference name="SplashScreen" value="screen"/>
-  <preference name="SplashScreenDelay" value="3000"/>
+  <preference name="SplashScreenDelay" value="30000"/>
   <feature name="StatusBar">
     <param name="ios-package" onload="true" value="CDVStatusBar"/>
   </feature>
@@ -83,6 +83,5 @@
     <variable name="API_KEY_FOR_ANDROID" value="AIzaSyBMuUMZtQQIshx1vxdVYlOxrUa-CAfAgl4"/>
     <variable name="API_KEY_FOR_IOS" value="AIzaSyC2-sCekzD_sLLSiciKrMlPjVgyCtSnLK8"/>
   </plugin>
-  <plugin name="cordova-sqlite-storage" spec="~2.0.0"/>
   <icon src="resources/android/icon/drawable-xhdpi-icon.png"/>
 </widget>

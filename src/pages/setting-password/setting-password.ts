@@ -45,14 +45,7 @@ export class SettingPasswordPage {
   }
 
   modifyPasswd() {
-    let loading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide'
-    });
+      let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
 
     this.storage.get(this.currentUserVar).then((value) => {

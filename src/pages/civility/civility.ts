@@ -290,6 +290,7 @@ export class CivilityPage {
     this.departments = [];
     this.selectedCommune = null;
     this.communes = [];
+    this.birthplace = null;
     this.isCIN = (this.isEuropean === 0);
   }
 
@@ -351,6 +352,9 @@ export class CivilityPage {
     this.birthplace = commune.nom;
     this.selectedCommune = commune;
     this.communes = [];
+    if(!this.isEmployer){
+      this.showNSSError();
+    }
   }
 
   ionViewDidEnter() {
@@ -362,6 +366,9 @@ export class CivilityPage {
     if (this.title) {
       this.titlestyle = {
         'font-size': '1.4rem'
+      }
+      if(!this.isEmployer) {
+        this.showNSSError();
       }
     }
     else {
@@ -401,6 +408,7 @@ export class CivilityPage {
         } else {
           if (!this.isRecruiter) {
             this.uploadCVVerb = (Utils.isEmpty(this.currentUser.jobyer.cv) ? "Charger" : "Recharger");
+            this.cvUri = this.currentUser.jobyer.cv;
             this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
               data = data.data[0];
               if (!Utils.isEmpty(data.fk_user_pays)) {
@@ -429,7 +437,24 @@ export class CivilityPage {
               } else {
                 this.isFrench = false;
               }
+              this.birthplace = (this.isFrench ? this.currentUser.jobyer.lieuNaissance : null);
+              if (this.birthplace && this.birthplace != 'null' && !this.isRecruiter) {
 
+                this.communesService.getCommune(this.birthplace).then((data: Array<any>) => {
+                  if (data && data.length > 0) {
+                    this.selectedCommune = data[0];
+                    if (this.selectedCommune.fk_user_code_postal && this.selectedCommune.fk_user_code_postal != "null") {
+                      this.selectedCP = parseInt(this.selectedCommune.fk_user_code_postal);
+                      this.birthcp = this.selectedCommune.code;
+                    } else {
+                      this.selectedCP = 0;
+                      this.birthcp = '';
+                    }
+                  }
+                  this.checkSS = true;
+                });
+              } else
+                this.checkSS = true;
               this.prefecture = data.instance_delivrance;
             });
 
@@ -444,7 +469,7 @@ export class CivilityPage {
               this.birthdate = "";
             }
             //this.birthdate = this.currentUser.jobyer.dateNaissance ?  : "";
-            this.birthplace = this.currentUser.jobyer.lieuNaissance;
+
             this.cni = this.currentUser.jobyer.cni;
             this.numSS = this.currentUser.jobyer.numSS;
             this.nationality = this.currentUser.jobyer.natId == 0 ? 91 : parseInt(this.currentUser.jobyer.natId);
@@ -496,26 +521,6 @@ export class CivilityPage {
           }
         }
       }
-
-      if (this.birthplace && this.birthplace != 'null' && !this.isRecruiter) {
-
-        this.communesService.getCommune(this.birthplace).then((data: Array<any>) => {
-          if (data && data.length > 0) {
-            this.selectedCommune = data[0];
-            if (this.selectedCommune.fk_user_code_postal && this.selectedCommune.fk_user_code_postal != "null") {
-              this.selectedCP = parseInt(this.selectedCommune.fk_user_code_postal);
-              this.birthcp = this.selectedCommune.code;
-            } else {
-              this.selectedCP = 0;
-              this.birthcp = '';
-            }
-
-
-          }
-          this.checkSS = true;
-        });
-      } else
-        this.checkSS = true;
     });
   }
 
@@ -552,7 +557,7 @@ export class CivilityPage {
 
   checkINSEE() {
     let indicator = this.numSS.substr(5, 5);
-    if (this.selectedCommune.id != '0') {
+    if (this.selectedCommune && this.selectedCommune.id != '0') {
       if (indicator != this.selectedCommune.code_insee)
         return false;
       else
@@ -579,21 +584,13 @@ export class CivilityPage {
     catch (err) {
       return false;
     }
-
   }
 
   /**
    * @description update civility information for employer and jobyer
    */
   updateCivility() {
-    let loading = this.loading.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide'
-    });
+    let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present(loading);
     if (this.isRecruiter) {
       this.authService.updateRecruiterCivility(this.title, this.lastname, this.firstname, this.currentUser.id).then((data: {status: string, error: string}) => {
@@ -1297,6 +1294,9 @@ export class CivilityPage {
     if (diff < 18) {
       this.isBirthdateValid = false;
     }
+    if(!this.isEmployer){
+      this.showNSSError();
+    }
   }
 
   watchTsejProvideDate(e) {
@@ -1354,8 +1354,9 @@ export class CivilityPage {
   }
 
   downloadCV(){
-    let content = this.cvUri;
-    let contentType = "";
+    let content = this.cvUri.split(',')[1];
+    let cvBase64SecondPart = this.cvUri.split('/')[1];
+    let contentType = cvBase64SecondPart.split(';')[0];
     let folderpath = cordova.file.externalRootDirectory;
 
     // Convert the base64 string in a Blob
@@ -1363,7 +1364,7 @@ export class CivilityPage {
     console.log("Starting to write the file");
     window.resolveLocalFileSystemURL(folderpath, (dir) => {
       console.log("Access to the directory granted succesfully");
-      dir.getFile("Cv-Vit-On-Job", {create: true}, (file) => {
+      dir.getFile("Cv-Vit-On-Job." + contentType, {create: true}, (file) => {
         console.log("File created succesfully.");
         file.createWriter((fileWriter) => {
           console.log("Writing content to file");
