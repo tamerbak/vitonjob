@@ -3,6 +3,7 @@ import {NavController, NavParams} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {MissionService} from "../../providers/mission-service/mission-service";
+import {Utils} from "../../utils/utils";
 
 /*
  Generated class for the MissionPointingPage page.
@@ -50,11 +51,11 @@ export class MissionPointingPage {
         let array = this.getTodayMission(missionHoursTemp);
         this.missionHours = array[0];
         this.missionPauses = array[1];
-        this.disableBtnPointing = this.disablePointing();
+        //this.disableBtnPointing = this.disablePointing();
         let autoPointing = navParams.get('autoPointing');
         if (autoPointing) {
           this.nextPointing = navParams.get('nextPointing');
-          this.pointHour(true);
+          //this.pointHour(true);
         }
       }
     });
@@ -72,13 +73,13 @@ export class MissionPointingPage {
     return array;
   }
 
-  pointHour(autoPointing) {
-    if (this.nextPointing) {
+  pointHour(autoPointing, day, isStart, isPause) {
+    //if (this.nextPointing) {
       let h = new Date().getHours();
       let m = new Date().getMinutes();
       let minutesNow = this.missionService.convertHoursToMinutes(h + ':' + m);
-      this.nextPointing.pointe = minutesNow;
-      this.missionService.savePointing(this.nextPointing).then((data: any) => {
+      day.pointe = minutesNow;
+      this.missionService.savePointing(day, isStart, isPause).then((data: any) => {
         //retrieve mission hours of tody
         this.missionService.listMissionHours(this.contract, true).then((data: {data: any}) => {
           if (data.data) {
@@ -86,11 +87,11 @@ export class MissionPointingPage {
             let array = this.getTodayMission(missionHoursTemp);
             this.missionHours = array[0];
             this.missionPauses = array[1];
-            this.disableBtnPointing = true;
+            //this.disableBtnPointing = true;
           }
         });
       });
-    }
+    //}
   }
 
   disablePointing() {
@@ -144,9 +145,6 @@ export class MissionPointingPage {
   }
 
   isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+    return Utils.isEmpty(str);
   }
 }
