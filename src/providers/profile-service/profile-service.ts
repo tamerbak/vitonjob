@@ -26,7 +26,7 @@ export class ProfileService {
     }
 
     countEntreprisesByRaisonSocial(companyname: string) {
-        var sql = "select count(*) from user_entreprise where nom_ou_raison_sociale='" + companyname + "';";
+        let sql = "select count(*) from user_entreprise where nom_ou_raison_sociale='" + companyname + "';";
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
@@ -41,7 +41,7 @@ export class ProfileService {
     }
 
     deleteEmployerAccount(accountId, employerId) {
-        var sql = "delete from user_entreprise where fk_user_account = '" + accountId + "';"
+        let sql = "delete from user_entreprise where fk_user_account = '" + accountId + "';"
         sql = sql + " delete from user_employeur where pk_user_employeur = '" + employerId + "';"
         sql = sql + " delete from user_account where pk_user_account = '" + accountId + "';";
         console.log(sql);
@@ -58,7 +58,7 @@ export class ProfileService {
     }
 
     countEntreprisesBySIRET(siret) {
-        var sql = "select count(*) from user_entreprise where siret='" + siret + "';";
+        let sql = "select count(*) from user_entreprise where siret='" + siret + "';";
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
@@ -103,7 +103,7 @@ export class ProfileService {
     }*/
 
     uploadProfilePictureInServer(imgUri, accountId) {
-        var sql = "update user_account set photo_de_profil ='" + imgUri + "' where pk_user_account = '" + accountId + "';";
+        let sql = "update user_account set photo_de_profil ='" + imgUri + "' where pk_user_account = '" + accountId + "';";
         console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
@@ -118,8 +118,8 @@ export class ProfileService {
     }
 
     loadProfilePicture(accountId, tel, role) {
-        var sql;
-        if (!this.isEmpty(accountId)) {
+        let sql;
+        if (!this.isEmpty(accountId) && accountId != null) {
             sql = "select encode(photo_de_profil::bytea, 'escape') from user_account where pk_user_account = '" + accountId + "';";
         } else {
             sql = "select encode(photo_de_profil::bytea, 'escape') from user_account where telephone = '" + tel + "' and role = '" + role + "';";

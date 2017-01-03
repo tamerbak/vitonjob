@@ -164,7 +164,7 @@ export class SearchResultsPage implements OnInit {
           for (let i = 0; i < this.searchResults.length; i++) {
             let role = this.isEmployer ? "jobyer" : "employeur";
             this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then((data: any) => {
-              if (data && data.data && !this.isEmpty(data.data[0].encode)) {
+              if (data && data.data && data.data.length>0 && !this.isEmpty(data.data[0].encode)) {
                 this.searchResults[i].avatar = data.data[0].encode;
               }
             });
@@ -321,17 +321,7 @@ export class SearchResultsPage implements OnInit {
       google.maps.event.addDomListener(document.getElementById('myInfoWinDiv'), 'click', function () {
         nav.push(SearchDetailsPage, {searchResult: r});
       });
-      //this.itemSelected(r);
     }.bind(this));
-
-
-    /*google.maps.event.addListener(infoWindow,'domready',function() {
-
-     document.getElementById('myInfoWinDiv').click(function () {
-     //Do your thing
-     this.itemSelected(r);
-     })
-     });*/
 
   };
 
@@ -342,33 +332,22 @@ export class SearchResultsPage implements OnInit {
    */
   itemSelected(item) {
     let o = this.navParams.get('currentOffer');
-    this.nav.push(SearchDetailsPage, {searchResult: item, currentOffer: o});
-    /*let actionSheet = ActionSheet.create({
-     title: 'Options',
-     buttons: [
-     {
-     text: 'Envoyer SMS',
-     icon: 'md-mail',
-     handler: () => {
-     this.sendSMS(item);
-     }
-     },{
-     text: 'Appeler',
-     icon: 'md-call',
-     handler: () => {
-     this.dialNumber(item);
-     }
-     },{
-     text: 'Annuler',
-     role: 'cancel',
-     icon: 'md-close',
-     handler: () => {
+    let rs = this.navParams.get('searchType');
+    if(rs && rs == 'semantic'){
+      this.searchService.retrieveLastIndexation().then((data:any)=>{
+        let index = null;
+        if(data){
+          index = JSON.parse(data);
+          if(index.resultsIndex && index.resultsIndex>0)
+            this.searchService.correctIndexation(index.resultsIndex, item.idJob).then(data=>{
+              index.resultsIndex = 0;
+              this.searchService.setLastIndexation(index);
+            });
+        }
+      });
 
-     }
-     }
-     ]
-     });
-     this.nav.present(actionSheet);*/
+    }
+    this.nav.push(SearchDetailsPage, {searchResult: item, currentOffer: o});
 
   }
 
@@ -767,7 +746,22 @@ export class SearchResultsPage implements OnInit {
   }
 
   contract(index) {
+    let itm = this.searchResults[index];
+    let rs = this.navParams.get('searchType');
+    if(rs && rs.type == 'semantic'){
+      this.searchService.retrieveLastIndexation().then((data:any)=>{
+        let sidx = null;
+        if(data){
+          sidx = JSON.parse(data);
+          if(sidx.resultsIndex && sidx.resultsIndex>0)
+            this.searchService.correctIndexation(sidx.resultsIndex, itm.idJob).then(data=>{
+              sidx.resultsIndex = 0;
+              this.searchService.setLastIndexation(sidx);
+            });
+        }
+      });
 
+    }
     if (this.isUserAuthenticated) {
 
       let currentEmployer = this.employer.employer;

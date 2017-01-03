@@ -1,31 +1,4 @@
-<!--ion-header>
-<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
 
-    <!--ion-buttons end>
-      <button (click)="changeViewMode(1)" style="font-size: small;" [ngClass]="{'button-secondary': listView}" >
-	  <ion-icon name="md-list"></ion-icon>
-      </button>
-      <button (click)="changeViewMode(2)" style="font-size: small;"  [ngClass]="{'button-secondary': cardView}" >
-        <ion-icon name="md-albums"></ion-icon>
-      </button>
-
-    </ion-buttons-->
-<!--button (click)="changeViewMode(3)" style="font-size: small;" [ngClass]="{'button-secondary': mapView}" >
-  <ion-icon name="md-map"></ion-icon>
-</button-->
-
-
-<!--button (click)="toggleProposition()" style="font-size: small;" *ngIf="offerProposition" >
-  <ion-icon name="md-create"></ion-icon>
-</button>
-</ion-navbar>
-</ion-header-->
-
-<!--ion-header no-border>
-  <ion-navbar transparent>
-    <ion-title>Retour à la recherche</ion-title>
-  </ion-navbar>
-</ion-header-->
 
 
 <ion-content padding class="search-results" [ngStyle]="backgroundImage">
@@ -34,7 +7,6 @@
         Retour à la recherche
     </button>
 
-    <!--button fab fab-top fab-right style="top: 0" (click)="changeView()"><ion-icon [name]="iconName"></ion-icon></button-->
     <ion-item no-lines style="background-color: transparent;">
         <ion-label>Activer la vue Map</ion-label>
         <ion-checkbox secondary (ionChange)="changeView()" [(ngModel)]="isMapView"></ion-checkbox>
@@ -42,9 +14,6 @@
     <div id="map" #map style="width:100%;height:80%;" [style.display]="mapView">
     </div>
 
-    <!--ion-list-divider light>
-        {{(resultsCount<2)? resultsCount +' Jobyer existant' : resultsCount + ' Jobyers existants'}}
-    </ion-list-divider-->
     <ion-list *ngIf="listView" text-wrap>
 
         <ion-card *ngFor="let item of searchResults, let i=index">
@@ -132,23 +101,7 @@
         </ion-card>
 
 
-        <!--ion-item-sliding *ngFor="let item of searchResults">
-          <button ion-item class="large-btn" (click)="itemSelected(item)" >
-            <ion-avatar item-left>
-              <img src="assets/img/{{avatar}}.png">
-            </ion-avatar>
 
-            <h2>{{isEmployer ? item.titre + ' ' + item.prenom + ' ' + item.nom : item.entreprise}}</h2>
-
-            <ion-badge item-right secondary>{{(item.matching.indexOf('.') < 0) ? item.matching:item.matching.split('.')[0]}}%</ion-badge>
-
-          </button>
-          <ion-item-options>
-            <button (click)="recruitJobyer(item)" secondary *ngIf="isEmployer">
-              Recruter
-            </button>
-          </ion-item-options>
-        </ion-item-sliding-->
     </ion-list>
     <ion-card *ngIf="resultsCount == 0 ">
         <ion-card-content>Vit-On-Job n'a trouvé aucune offre {{isEmployer? "de service":"d'emploi"}} correspondante à
@@ -204,50 +157,7 @@
                 </ion-row>
 
             </ion-card>
-            <!-- <ion-card>
-               <ion-card-header>Vit-On-Job a trouvé {{resultsCount}} offre(s)</ion-card-header>
-             </ion-card>
 
-             <ion-card>
-               <ion-card-header class="candidate-card-header" style="padding:5px">
-                 <ion-grid style="padding:0px">
-                   <ion-row>
-                     <ion-col width-85>{{isEmployer ? item.titre + ' ' + item.prenom + ' ' + item.nom : item.entreprise}}</ion-col>
-                     <ion-col width-15><ion-badge secondary="" style="margin:-5px">{{item.matching}} %</ion-badge></ion-col>
-                   </ion-row>
-                 </ion-grid>
-               </ion-card-header>
-               <ion-card-content class="candidate-card-content">
-                 {{searchResults.indexOf(item) + 1 }} / {{resultsCount}}
-                 <h2>{{item.titreOffre}}{{item.titreoffre}}</h2>
-                 <ion-row>
-                   <span>Tel : {{item.tel}}</span>
-                 </ion-row>
-                 <ion-row>
-                   <span>Email : {{item.email}}</span>
-                 </ion-row>
-                 <ion-row>
-                     <button secondary (click)="dialNumber(item)">
-                       <ion-icon name="md-call"></ion-icon>
-                     </button>
-                     <button secondary (click)="sendSMS(item)">
-                       <ion-icon name="md-mail"></ion-icon>
-                     </button>
-                     <button secondary (click)="recruitJobyer(item)" *ngIf="isEmployer && !item.checkedContract" >
-                     <ion-icon name="checkmark-circle-outline" ></ion-icon>
-                   </button>
-                 </ion-row>
-                 <ion-row *ngIf="isEmployer && !item.checkedContract">
-                   <ion-item>
-                     <ion-label>Sélectionner pour contrat</ion-label>
-                     <ion-checkbox [(ngModel)]="item.checkedContract" (ionChange)="addToContracts(item)" ></ion-checkbox>
-                   </ion-item>
-                 </ion-row>
-                 <ion-row *ngIf="isEmployer && result.checkedContract" >
-                   <span style="text-align: right;margin-top: 40px;" >Ce jobyer est déjà sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Contrats en attente"</span>
-                 </ion-row>
-               </ion-card-content>
-             </ion-card> -->
         </ion-slide>
     </ion-slides>
 </ion-content>
@@ -258,7 +168,7 @@
             <ion-row>
                 <ion-col width-70>Vous pouvez utiliser vos critères de recherche pour créer une nouvelle offre</ion-col>
                 <ion-col width-20>
-                    <button block (click)="toggleProposition()" style="font-size: small;">
+                    <button ion-button block (click)="toggleProposition()" style="font-size: small;">
                         Créer
                     </button>
                 </ion-col>

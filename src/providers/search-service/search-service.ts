@@ -30,32 +30,67 @@ export class SearchService {
     semanticSearch(textQuery: string, referenceOffer: number, projectTarget: string) {
 
         //  Start by identifying the wanted table and prepare the pay load
-        var table = projectTarget == 'jobyer' ? 'user_entreprise' : 'user_jobyer';
-        var query = table + ';' + textQuery;
+        let searchType = projectTarget == 'jobyer' ? 'employeur' : 'jobyer';
+        let bean =  {
+            class :"com.vitonjob.callouts.recherche.model.RequeteRecherche",
+            sentence :textQuery,
+            type :searchType
+        };
 
-        var payload = {
+        let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            id: 10,
+            id: 10046,
             args: [
                 {
                     class: 'fr.protogen.masterdata.model.CCalloutArguments',
                     label: 'Requete de recherche',
-                    value: btoa(query)
-                },
-                {
-                    class: 'fr.protogen.masterdata.model.CCalloutArguments',
-                    label: 'ID Offre',
-                    value: btoa(referenceOffer + '')
-                },
-                {
-                    class: 'fr.protogen.masterdata.model.CCalloutArguments',
-                    label: 'Ordre de tri',
-                    value: 'TkQ='
+                    value: btoa(JSON.stringify(bean))
                 }
             ]
         };
 
-        console.log(JSON.stringify(payload));
+        // don't have the data yet
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers = Configs.getHttpJsonHeaders();
+            this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
+                .map(res => res.json())
+                .subscribe((data:any) => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    this.data = data;
+                    resolve(this.data);
+                });
+        });
+    }
+
+    /**
+     * @description Correct bias parameter of job probability
+     * @param index search request identifier
+     * @param idJob actual job to consider
+     * @returns {Promise<T>|Promise}    Just a status to indicate if the indexation was successful
+     */
+    correctIndexation(index, idJob){
+        let bean =  {
+            class :"com.vitonjob.callouts.recherche.model.RequeteIndexation",
+            idIndex :index,
+            idJob :idJob
+        };
+
+        let payload = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            id: 10048,
+            args: [
+                {
+                    class: 'fr.protogen.masterdata.model.CCalloutArguments',
+                    label: 'Correction des indexes',
+                    value: btoa(JSON.stringify(bean))
+                }
+            ]
+        };
 
         // don't have the data yet
         return new Promise(resolve => {
@@ -171,5 +206,20 @@ export class SearchService {
 
     }
 
+    /**
+     * @description Persists the last indexation of semantic search
+     * @param indexData details about indexation
+     */
+    setLastIndexation(indexData){
+        this.db.set('LAST_INDEX', JSON.stringify(indexData));
+    }
+
+    /**
+     * @description Loads the last indexed query if it exists
+     * @returns {Promise<any>}
+     */
+    retrieveLastIndexation(){
+        return this.db.get('LAST_INDEX');
+    }
 }
 

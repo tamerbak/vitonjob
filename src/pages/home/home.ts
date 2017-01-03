@@ -701,10 +701,17 @@ export class HomePage {
     let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
     console.log('Initiating search for ' + this.scQuery);
-    this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((data: any) => {
+    this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((results: any) => {
+      let data = [];
+      if(this.projectTarget == 'jobyer')
+        data = results.offerEnterprise;
+      else
+        data = results.offerJobyers;
+
+      this.searchService.setLastIndexation({resultsIndex : results.indexation});
       this.searchService.persistLastSearch(data);
       loading.dismiss();
-      this.nav.push(SearchResultsPage);
+      this.nav.push(SearchResultsPage,{searchType:'semantic'});
     });
   }
 
