@@ -55,7 +55,9 @@ export class MissionPointingPage {
         let autoPointing = navParams.get('autoPointing');
         if (autoPointing) {
           this.nextPointing = navParams.get('nextPointing');
-          //this.pointHour(true);
+          let isPause = (Utils.isEmpty(this.nextPointing.id_pause) ? false: true);
+          this.nextPointing.id = (isPause ? this.nextPointing.id_pause : this.nextPointing.id);
+          this.pointHour(true, this.nextPointing, this.nextPointing.start, isPause);
         }
       }
     });
