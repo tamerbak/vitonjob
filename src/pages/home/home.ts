@@ -37,6 +37,7 @@ import {
   GoogleMapsMarkerOptions,
   GoogleMapsMarker
 } from "ionic-native";
+import {ModalHelpPage} from "../modal-help/modal-help";
 
 declare let SpeechRecognition;
 
@@ -970,4 +971,27 @@ export class HomePage {
       activeCards[0].isActive = false;
   }
 
+  getHelp(){
+    let content = [{
+      title: "Recherche “Vit-On-Job” !",
+      description: "Résumez en une phrase ce que vous cherchez (Poste, date, expérience, nombre de places, horaires, " +
+      "lieu...) ex : je veux un serveur sur Villepinte disponible demain"
+    },
+      {
+        title: "Recherche classique",
+        description: "Trouvez vos jobyers en remplissantles critères."
+      },
+      {
+        title: "Offres imminentes",
+        description: "Retrouvez les offres des jobyers à pourvoir immédiatement."
+      },
+      {
+        title: "Nouveaux jobyers",
+        description: "Retrouvez les jobyers dernièrement arrivés, immédiatement disponibles."
+      }
+    ];
+    let helpModal = this.modal.create(ModalHelpPage, {'content': content});
+    helpModal.present(helpModal);
+
+  }
 }

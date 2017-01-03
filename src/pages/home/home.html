@@ -170,8 +170,8 @@
     <ion-col width-10></ion-col>
   </ion-row>
 
-  <ion-fab top right>
-    <button ion-fab (press)="pressEvent($event)" color="danger" (click)="disapearCurrentCard()">
+  <ion-fab top right >
+    <button ion-fab (press)="pressEvent($event)" color="danger" (click)="disapearCurrentCard()" mini>
       <ion-icon name="more"></ion-icon>
     </button>
     <ion-fab-list side="down">
@@ -187,8 +187,8 @@
       <button ion-fab  (click)="showCorrespondantCard(3)" color="vojgreen" [hidden]="!cards[3].isShowed">
         <ion-icon name="md-contacts"></ion-icon>
       </button>
-      <button ion-fab  color="vojgreen">
-        <ion-icon name="help"></ion-icon>
+      <button ion-fab  color="vojgreen" (click)="getHelp()">
+        <ion-icon name="help-circle" style="font-size: xx-large"></ion-icon>
       </button>
     </ion-fab-list>
   </ion-fab>

@@ -1,6 +1,6 @@
 import {NavController, Platform, AlertController, ModalController, NavParams, ToastController} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
 import {SearchService} from "../../providers/search-service/search-service";
 import {UserService} from "../../providers/user-service/user-service";
 import {ContractPage} from "../contract/contract";
@@ -33,12 +33,14 @@ declare let startApp;
 })
 export class SearchResultsPage implements OnInit {
 
+  @ViewChild('map') map;
+
   public searchResults: any;
   public listView: boolean = false;
   public cardView: boolean = false;
   public mapView: any;
   public platform: Platform;
-  public map: any;
+  //public map: any;
   //public currentCardIndex: number = 0;
   public projectTarget: any;
   public avatar: string;
@@ -217,6 +219,13 @@ export class SearchResultsPage implements OnInit {
 
   ngOnInit() {
 
+    let mapEle = this.map.nativeElement;
+
+    if (!mapEle) {
+      console.error('Unable to initialize map, no map element with #map view reference.');
+      return;
+    }
+
     //get the currentEmployer
     this.userService.getCurrentUser(this.projectTarget).then(results => {
 
@@ -235,13 +244,13 @@ export class SearchResultsPage implements OnInit {
           this.searchResults = jsonResults;
           this.resultsCount = this.searchResults.length;
         }
-        this.loadMap();
+        this.loadMap(mapEle);
       })
     });
 
   }
 
-  loadMap() {
+  loadMap(mapElement) {
 
     let latLng = new google.maps.LatLng(48.855168, 2.344813);
 
@@ -251,7 +260,7 @@ export class SearchResultsPage implements OnInit {
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
-    let mapElement = document.getElementById("map");
+    //let mapElement = document.getElementById("map");
     this.map = new google.maps.Map(mapElement, mapOptions);
 
     let addresses = [];

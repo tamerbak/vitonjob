@@ -6,7 +6,7 @@
 -->
 
 <ion-content padding class="notification-contract" [ngStyle]="backgroundImage">
-    <button [style.color]="themeColor" clear nav-pop>
+    <button ion-button icon-left [color]="themeColor" clear navPop>
         <ion-icon name="arrow-back"></ion-icon>
         Retour
     </button>
@@ -22,7 +22,7 @@
         </ion-card-content>
 
         <ion-item>
-            <button item-right outline (click)="gotoContractForm()">Je confirme avoir lu et compris</button>
+            <button ion-button item-right outline (click)="gotoContractForm()">Je confirme avoir lu et compris</button>
         </ion-item>
     </ion-card>
 
