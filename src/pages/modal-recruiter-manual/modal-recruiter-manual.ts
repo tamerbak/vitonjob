@@ -65,7 +65,7 @@ export class ModalRecruiterManualPage {
   }
 
   saveContact() {
-    let contact: any;
+    let contact: any = {};
     contact.firstname = this.firstname;
     contact.lastname = this.lastname;
     contact.phone = "+" + this.index + "" + this.phone;
@@ -177,7 +177,7 @@ export class ModalRecruiterManualPage {
   }
 
   sendNotification() {
-    let contact: any;
+    let contact: any = {};
     contact.firstname = this.firstname;
     contact.lastname = this.lastname;
     contact.phone = "+" + this.index + "" + this.phone;

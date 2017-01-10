@@ -3,6 +3,7 @@ import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Http, Headers} from "@angular/http";
 import {} from "ionic-angular";
+import {Storage} from "@ionic/storage";
 
 declare var md5;
 
@@ -10,11 +11,11 @@ declare var md5;
 export class RecruiterService {
     configuration: any;
     projectTarget: string;
-    storage:any;
+    //storage:any;
     data:any;
 
 
-    constructor(public http: Http, public gc: GlobalConfigs) {
+    constructor(public http: Http, public gc: GlobalConfigs,public storage:Storage) {
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
         this.configuration = Configs.setConfigs(this.projectTarget);
