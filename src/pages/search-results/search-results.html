@@ -28,7 +28,7 @@
                     &nbsp; Disponible
                 </p>
                 <ion-badge item-right secondary>{{(item.matching.toString().indexOf('.') < 0) ?
-                    item.matching:item.matching.toString().split('.')[0]}}
+                    item.matching:item.matching.toString().split('.')[0]}} %
                 </ion-badge>
             </ion-item>
 
@@ -130,7 +130,7 @@
                     </div>
                     <div id="div-avatar"><img id="avatar" src="assets/img/{{avatar}}.png"></div>
                     <div id="matching">
-                        <ion-badge id="match-bdg" style="background-color: #757575;">{{item.matching}} %</ion-badge>
+                        <ion-badge id="match-bdg" style="background-color: #757575;">{{item.matching}}</ion-badge>
                     </div>
                     <div id="info-titre">
                         <ion-badge id="text-badge" style="background-color: #757575;">{{item.titreOffre}}</ion-badge>

@@ -250,7 +250,9 @@ export class SearchDetailsPage implements OnInit {
 
       let addresses = [];
 
-      if (this.result.latitude == "0" && this.result.longitude == "0")
+      if ((this.result.latitude == "0" && this.result.longitude == "0") ||
+          this.result.latitude  == null || isUndefined(this.result.latitude  == null) ||
+          this.result.longitude  == null || isUndefined(this.result.longitude  == null))
         return;
 
       let latlng = new google.maps.LatLng(this.result.latitude, this.result.longitude);

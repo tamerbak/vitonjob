@@ -21,7 +21,7 @@
             <ion-avatar item-left><img [src]="avatar"></ion-avatar>
             <h3 style="margin-top: 2px;">{{fullName}}</h3>
             <ion-badge item-right style="margin: 0px 8px 9px 0;">{{(matching.toString().indexOf('.') < 0) ?
-                matching:matching.toString().split('.')[0]}}%
+                matching:matching.toString().split('.')[0]}}
             </ion-badge>
             <p style="color: yellowgreen">{{starsText}}</p>
         </ion-item>
@@ -61,7 +61,7 @@
 
         <ion-row>
             <ion-col text-center>
-                <button secondary
+                <button ion-button secondary
                         *ngIf="isEmployer && !isRecruteur"
                         (click)="contract()" small>
                     Recrutement immédiat
