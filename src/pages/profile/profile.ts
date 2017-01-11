@@ -14,12 +14,14 @@ import {BankAccountPage} from "../bank-account/bank-account";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {GlobalService} from "../../providers/global-service/global-service";
 import {ImageService} from "../../providers/image-service/image-service";
+import {LoadListService} from "../../providers/load-list-service/load-list-service";
 import {ProfileQualitiesPage} from "../profile-qualities/profile-qualities";
 import {ProfileLanguagesPage} from "../profile-languages/profile-languages";
 import {ProfileSlotsPage} from "../profile-slots/profile-slots";
 import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
 import {Storage} from "@ionic/storage";
 import {Utils} from "../../utils/utils";
+import {ModalSoftwarePage} from "../modal-software/modal-software";
 
 /*
  Generated class for the ProfilePage page.
@@ -65,6 +67,7 @@ export class ProfilePage {
               private globalService: GlobalService,
               private profileService: ProfileService,
               private imageService: ImageService,
+              private listService: LoadListService,
               public events: Events,
               public picker: PickerController,
               private _toast: ToastController,
@@ -447,8 +450,19 @@ export class ProfilePage {
     })
   }
 
-  showProfileJobs(){
-
+  showProfileSoftwares(){
+    //load Softwares for jobyers pharmaciens
+    this.profileService.getUserSoftwares(this.userData.jobyer.id).then((res:any) => {
+      let modal = this.modal.create(ModalSoftwarePage, {savedSoftwares: res});
+      modal.present();
+      modal.onDidDismiss((data:any) => {
+        this.profileService.deleteSoftwares(this.userData.jobyer.id).then((res:any) => {
+          if (res.status == 'success') {
+            this.profileService.saveSoftwares(this.userData.jobyer.id, data);
+          }
+        })
+      })
+    })
   }
 
   isMapHidden() {
