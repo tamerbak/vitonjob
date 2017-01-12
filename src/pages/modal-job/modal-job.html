@@ -217,11 +217,27 @@
 
     </ion-row>
   </ion-grid>
-  <!--ion-list>
-    <ion-list-header>Ma liste des prérequis</ion-list-header>
 
-  </ion-list-->
+  <!-- logiciels des pharmaciens -->
+  <ion-item *ngIf="softwares != 0">
+    <ion-label floating>Logiciels des pharmaciens</ion-label>
+    <ion-select [(ngModel)]="software">
+      <ion-option *ngFor="let s of softwares" [value] = "s">{{s.nom}}</ion-option>
+    </ion-select>
+    <button small item-right (click)="addSoftware(software)" ion-button
+            [disabled]="!software">
+      <ion-icon name="add-circle"></ion-icon>
+    </button>
+  </ion-item>
 
+  <ion-list>
+    <ion-item *ngFor="let s of savedSoftwares">
+      <label>{{s.nom}}</label>
+      <button small item-right danger (click)="removeSoftware(s)" >
+        <ion-icon name="remove-circle"></ion-icon>
+      </button>
+    </ion-item>
+  </ion-list>
 
   <!-- Avantages salariaux -->
 

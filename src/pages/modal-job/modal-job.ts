@@ -13,6 +13,7 @@ import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {ModalSelectionPage} from "../modal-selection/modal-selection";
 import {OffersService} from "../../providers/offers-service/offers-service";
+import {LoadListService} from "../../providers/load-list-service/load-list-service";
 import {Component, NgZone} from "@angular/core";
 import {PopoverAutocompletePage} from "../popover-autocomplete/popover-autocomplete";
 import {AuthenticationService} from "../../providers/authentication-service/authentication-service";
@@ -46,6 +47,7 @@ export class ModalJobPage {
     currency: string,
     validated: boolean,
     prerequisObligatoires: any,
+    pharmaSoftwares: any,
     adress: any
   };
   public offerService: any;
@@ -161,6 +163,13 @@ export class ModalJobPage {
   public jobForm: any;
   public listSectors = [];
 
+  /*
+  PHARMACIENS
+   */
+  public softwares: any = [];
+  public software: any;
+  public savedSoftwares: any = [];
+
   constructor(public nav: NavController,
               viewCtrl: ViewController,
               fb: FormBuilder,
@@ -174,7 +183,9 @@ export class ModalJobPage {
               public modal: ModalController,
               public picker: PickerController,
               public popover: PopoverController,
-              public alert: AlertController, public storage: Storage) {
+              public alert: AlertController,
+              public storage: Storage,
+              public listService: LoadListService) {
 
     // Set global configs
     // Get target to determine configs
@@ -273,6 +284,17 @@ export class ModalJobPage {
 
     //this.jobData.job = this.jobForm.controls['username'];
     //this.jobData.sector = this.jobForm.controls['password'];
+
+    if(this.isEmployer){
+      this.listService.loadPharmacieSoftwares().then((data: any) => {
+        let softwares = data.data;
+        if (softwares && softwares.length > 0) {
+          this.softwares = softwares;
+        } else {
+          this.softwares = [];
+        }
+      })
+    }
   }
 
   showResults(place) {
@@ -386,6 +408,7 @@ export class ModalJobPage {
         currency: 'euro',
         validated: false,
         prerequisObligatoires: [],
+        pharmaSoftwares: [],
         adress: {
           fullAdress: '',
           name: '',
@@ -448,6 +471,7 @@ export class ModalJobPage {
       city: this.city,
       country: this.country
     };
+    this.jobData.pharmaSoftwares = this.savedSoftwares;
     this.viewCtrl.dismiss(this.jobData);
   }
 
@@ -948,6 +972,40 @@ export class ModalJobPage {
       }
     });
 
+  }
+
+  addSoftware(soft) {
+    for(let i = 0; i < this.savedSoftwares.length; i++){
+      if(this.savedSoftwares[i].id == soft.id){
+        this.savedSoftwares.splice(i, 1);
+        break;
+      }
+    }
+    this.savedSoftwares.push(soft);
+  }
+
+  removeSoftware(item) {
+
+    let confirm = this.alert.create({
+      title: 'Êtes-vous sûr?',
+      message: 'Voulez-vous vraiment supprimer ce logiciel?',
+      buttons: [
+        {
+          text: 'Non',
+          handler: () => {
+            console.log('Disagree clicked');
+          }
+        },
+        {
+          text: 'Oui',
+          handler: () => {
+            console.log('Agree clicked');
+            this.savedSoftwares.splice(this.savedSoftwares.indexOf(item), 1);
+          }
+        }
+      ]
+    });
+    confirm.present();
   }
 
   isEmpty(str) {
