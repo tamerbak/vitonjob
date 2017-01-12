@@ -148,44 +148,47 @@ export class OfferAddPage {
    * @description Initializing local storage dara
    */
   initLocalStorageOffer() {
-    // --> Job state
-    this.storage.get('jobData').then(value => {
-      value = JSON.parse(value);
-      if (value) {
-        this.offerToBeAdded.jobData = value;
-        let level = (this.offerToBeAdded.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant';
-        this.offerToBeAdded.title = this.offerToBeAdded.jobData.job + " " + level;
-        this.validated.isJob = value.validated;
-        this.steps.isCalendar = this.validated.isJob;
-        this.steps.styleDisableCalendar.opacity = (!this.steps.isCalendar && !this.validated.isJob) ? 0.5 : 1;
-      }
-      // --> Calendar state
-      this.storage.get('slots').then(value => {
+    return new Promise(resolve => {
+      // --> Job state
+      this.storage.get('jobData').then(value => {
         value = JSON.parse(value);
         if (value) {
-          this.offerToBeAdded.calendarData = value;
-          this.validated.isCalendar = value.length > 0;
-          this.steps.isQuality = this.validated.isCalendar;
-          this.steps.styleDisableQuality.opacity = (!this.steps.isCalendar && !this.validated.isJob) ? 0.5 : 1;
+          this.offerToBeAdded.jobData = value;
+          let level = (this.offerToBeAdded.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant';
+          this.offerToBeAdded.title = this.offerToBeAdded.jobData.job + " " + level;
+          this.validated.isJob = value.validated;
+          this.steps.isCalendar = this.validated.isJob;
+          this.steps.styleDisableCalendar.opacity = (!this.steps.isCalendar && !this.validated.isJob) ? 0.5 : 1;
         }
-
-        // --> Quality state
-        this.storage.get('qualities').then(value => {
+        // --> Calendar state
+        this.storage.get('slots').then(value => {
           value = JSON.parse(value);
           if (value) {
-            this.offerToBeAdded.qualityData = value;
-            this.validated.isQuality = value.length > 0;
-            this.steps.isLanguage = this.validated.isQuality;
-            this.steps.styleDisableQuality.opacity = !(this.validated.isCalendar && this.validated.isJob) ? 0.5 : 1;
+            this.offerToBeAdded.calendarData = value;
+            this.validated.isCalendar = value.length > 0;
+            this.steps.isQuality = this.validated.isCalendar;
+            this.steps.styleDisableQuality.opacity = (!this.steps.isCalendar && !this.validated.isJob) ? 0.5 : 1;
           }
-          // --> Language state
-          this.storage.get('languages').then(value => {
+
+          // --> Quality state
+          this.storage.get('qualities').then(value => {
             value = JSON.parse(value);
             if (value) {
-              this.offerToBeAdded.languageData = value;
-              this.validated.isLanguage = value.length > 0;
-              this.steps.styleDisableLanguage.opacity = !(this.validated.isCalendar && this.validated.isJob) ? 0.5 : 1;
+              this.offerToBeAdded.qualityData = value;
+              this.validated.isQuality = value.length > 0;
+              this.steps.isLanguage = this.validated.isQuality;
+              this.steps.styleDisableQuality.opacity = !(this.validated.isCalendar && this.validated.isJob) ? 0.5 : 1;
             }
+            // --> Language state
+            this.storage.get('languages').then(value => {
+              value = JSON.parse(value);
+              if (value) {
+                this.offerToBeAdded.languageData = value;
+                this.validated.isLanguage = value.length > 0;
+                this.steps.styleDisableLanguage.opacity = !(this.validated.isCalendar && this.validated.isJob) ? 0.5 : 1;
+              }
+              resolve(this.offerToBeAdded);
+            });
           });
         });
       });
@@ -301,52 +304,54 @@ export class OfferAddPage {
    * Description : Adding offer in local and remote databases
    */
   addOffer() {
-    this.initLocalStorageOffer();
+    this.initLocalStorageOffer().then((res: any) => {
+      this.offerToBeAdded = res;
       let loading = this.loading.create({content:"Merci de patienter..."});
-    loading.present();
-    this.offerService.setOfferInLocal(this.offerToBeAdded, this.projectTarget)
-      .then(() => {
-        console.log('••• Adding offer : local storing success!');
+      loading.present();
+      this.offerService.setOfferInLocal(this.offerToBeAdded, this.projectTarget)
+          .then(() => {
+            console.log('••• Adding offer : local storing success!');
 
-        this.offerService.setOfferInRemote(this.offerToBeAdded, this.projectTarget)
-          .then((data: {_body: any}) => {
-            console.log('••• Adding offer : remote storing success!');
-            let offer = JSON.parse(data._body);
-            //debugger;
-            if (this.jobData && this.jobData.adress) {
-              this.offerService.saveOfferAdress(offer, this.jobData.adress, this.jobData.adress.streetNumber, this.jobData.adress.street,
-                this.jobData.adress.city, this.jobData.adress.zipCode, this.jobData.adress.name, this.jobData.adress.country, this.idTiers, this.projectTarget);
-            }
-            this.storage.clear();
-            loading.dismiss();
+            this.offerService.setOfferInRemote(this.offerToBeAdded, this.projectTarget)
+                .then((data: {_body: any}) => {
+                  console.log('••• Adding offer : remote storing success!');
+                  let offer = JSON.parse(data._body);
+                  //debugger;
+                  if (this.jobData && this.jobData.adress) {
+                    this.offerService.saveOfferAdress(offer, this.jobData.adress, this.jobData.adress.streetNumber, this.jobData.adress.street,
+                        this.jobData.adress.city, this.jobData.adress.zipCode, this.jobData.adress.name, this.jobData.adress.country, this.idTiers, this.projectTarget);
+                  }
+                  this.storage.clear();
+                  loading.dismiss();
 
-            //decide to which page redirect to
-            let fromPage = this.navParams.data.fromPage;
-            let searchRes = this.navParams.data.jobyer;
-            let obj = this.navParams.data.obj;
-            this.advertId = this.navParams.data.adv;
+                  //decide to which page redirect to
+                  let fromPage = this.navParams.data.fromPage;
+                  let searchRes = this.navParams.data.jobyer;
+                  let obj = this.navParams.data.obj;
+                  this.advertId = this.navParams.data.adv;
 
-            if (fromPage == "Search" || obj == "forRecruitment") {
-              this.nav.push(NotificationContractPage, {
-                jobyer: searchRes,
-                currentOffer: this.offerToBeAdded
-              }).then(() => {
-                // first we find the index of the current view controller:
-                const index = this.viewCtrl.index;
-                // then we remove it from the navigation stack
-                this.nav.remove(index);
-              });
-            } else if (this.isHunter) {
-              this.nav.setRoot(HomePage);
-            } else if(!Utils.isEmpty(this.advertId)){
-              this.advertService.updateAdvertWithOffer(this.advertId, offer.idOffer).then((data: any) => {
-                this.nav.setRoot(AdvertListPage);
-              });
-            } else {
-              this.nav.setRoot(OfferListPage);
-            }
+                  if (fromPage == "Search" || obj == "forRecruitment") {
+                    this.nav.push(NotificationContractPage, {
+                      jobyer: searchRes,
+                      currentOffer: this.offerToBeAdded
+                    }).then(() => {
+                      // first we find the index of the current view controller:
+                      const index = this.viewCtrl.index;
+                      // then we remove it from the navigation stack
+                      this.nav.remove(index);
+                    });
+                  } else if (this.isHunter) {
+                    this.nav.setRoot(HomePage);
+                  } else if(!Utils.isEmpty(this.advertId)){
+                    this.advertService.updateAdvertWithOffer(this.advertId, offer.idOffer).then((data: any) => {
+                      this.nav.setRoot(AdvertListPage);
+                    });
+                  } else {
+                    this.nav.setRoot(OfferListPage);
+                  }
+                });
           });
-      });
+    })
   }
 
   showVideoAlert() {

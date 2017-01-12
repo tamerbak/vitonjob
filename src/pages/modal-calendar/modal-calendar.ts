@@ -20,6 +20,7 @@ export class ModalCalendarPage {
     idCalendar: number,
     type: string,
     date: number,
+    dateEnd: number,
     startHour: number,
     endHour: number
   }>;
@@ -109,13 +110,14 @@ export class ModalCalendarPage {
   showSlotModal() {
     let slotModel = this.modal.create(ModalSlotPage);
     slotModel.onDidDismiss(slotData => {
-      //TODO: Control date value before adding theme.
+      //TODO: Control date value before adding them.
       if (slotData) {
         this.slots.push({
           'class': 'com.vitonjob.callouts.auth.model.CalendarData',
           idCalendar: 0,
           type: "",
           date: slotData.date,
+          dateEnd: slotData.dateEnd,
           startHour: slotData.startHour,
           endHour: slotData.endHour
         });

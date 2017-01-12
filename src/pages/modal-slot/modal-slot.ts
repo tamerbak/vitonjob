@@ -189,6 +189,7 @@ export class ModalSlotPage {
          ];*/
         this.slot = {
             date: new Date(),
+            dateEnd: new Date(),
             startHour: 0,
             endHour: 0
         };
@@ -522,15 +523,17 @@ export class ModalSlotPage {
         '-' + this.showedSlot.angular4Date.split('/')[0] +
         '-' + this.showedSlot.angular4Date.split('/')[2] : "";
         let date = (this.isAndroid4) ? new Date(stringDate) : new Date(this.showedSlot.date);
+        let dateEnd = new Date(this.showedSlot.endDate);
         //console.log ('sending ' + date);
         let sh = this.showedSlot.startDate.split('T')[1];
         let eh = this.showedSlot.endDate.split('T')[1];
         this.slot = {
             date: date.getTime(),
+            dateEnd: dateEnd.getTime(),
             startHour: parseInt(sh.split(':')[0]) * 60 +
             parseInt(sh.split(':')[1]),
             endHour: parseInt(eh.split(':')[0]) * 60 +
-            parseInt(eh.split(':')[1]),
+            parseInt(eh.split(':')[1])
         };
 
         console.log(JSON.stringify('JSON returned: ' + this.slot));

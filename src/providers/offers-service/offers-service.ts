@@ -242,7 +242,7 @@ export class OffersService {
 
         let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            id: 10015,//332,
+            id: 10043,//332,
             args: [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'creation offre',
