@@ -24,6 +24,7 @@ import {PickerColumnOption} from "ionic-angular/components/picker/picker-options
 import {Storage} from "@ionic/storage";
 import {isUndefined} from "../../../node_modules/ionic-angular/util/util";
 import {DatePicker, InAppBrowser} from "ionic-native";
+import {Utils} from "../../utils/utils";
 
 //declare let cordova;
 
@@ -84,6 +85,7 @@ export class MissionDetailsPage {
 
   public isSignContractClicked: boolean = false;
   public missionPauses = [];
+  public hasJobyerSigned: boolean;
 
   constructor(private platform: Platform,
               public gc: GlobalConfigs,
@@ -120,11 +122,11 @@ export class MissionDetailsPage {
     console.log(JSON.stringify(this.contract));
 
     //verify if the mission has already pauses
-    this.isNewMission = (this.contract.vu.toUpperCase() === 'Oui'.toUpperCase());
+    this.isNewMission = (this.contract.vu.toUpperCase() === 'NON');
+    this.hasJobyerSigned = (this.contract.signature_jobyer.toUpperCase() == 'OUI');
     let forPointing = this.contract.option_mission != "1.0" ? true : false;
     this.missionService.listMissionHours(this.contract, forPointing).then((data: {data: any}) => {
       if (data.data) {
-
         this.initialMissionHours = data.data;
         //initiate pauses array
         let array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
@@ -1208,6 +1210,27 @@ export class MissionDetailsPage {
     })
   }
 
+  pointHour(autoPointing, day, isStart, isPause) {
+    //if (this.nextPointing) {
+    let h = new Date().getHours();
+    let m = new Date().getMinutes();
+    let minutesNow = this.missionService.convertHoursToMinutes(h + ':' + m);
+    day.pointe = minutesNow;
+    this.missionService.savePointing(day, isStart, isPause).then((data: any) => {
+      //retrieve mission hours of tody
+      this.missionService.listMissionHours(this.contract, true).then((data: {data: any}) => {
+        if (data.data) {
+          let missionHoursTemp = data.data;
+          let array = this.missionService.constructMissionHoursArray(missionHoursTemp);
+          this.missionHours = array[0];
+          this.missionPauses = array[1];
+          //this.disableBtnPointing = true;
+        }
+      });
+    });
+    //}
+  }
+
   upperCase(str) {
     if (str == null || !str || isUndefined(str))
       return '';
@@ -1215,9 +1238,6 @@ export class MissionDetailsPage {
   }
 
   isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+    return Utils.isEmpty(str);
   }
 }
