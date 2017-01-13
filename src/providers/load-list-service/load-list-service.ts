@@ -103,4 +103,16 @@ export class LoadListService {
                 });
         });
     }
+
+    loadPharmacieSoftwares(){
+        let sql = "select pk_user_logiciels_pharmaciens as id, nom from user_logiciels_pharmaciens where UPPER(dirty) ='N' order by nom asc";
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    resolve(data);
+                });
+        });
+    }
 }

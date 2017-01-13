@@ -21,6 +21,7 @@ import {LoadListService} from "../../providers/load-list-service/load-list-servi
 import {AuthenticationService} from "../../providers/authentication-service/authentication-service";
 import {Storage} from "@ionic/storage";
 import {FileUtils} from "../../utils/fileUtils";
+import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
 
 declare var cordova: any;
 declare var window;
@@ -586,6 +587,11 @@ export class CivilityPage {
     }
   }
 
+  showResetPasswordModal() {
+    let m = this.modal.create(ModalUpdatePassword, {enableBackdropDismiss: false, showBackdrop: false});
+    m.present();
+  }
+
   /**
    * @description update civility information for employer and jobyer
    */
@@ -608,8 +614,12 @@ export class CivilityPage {
           this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
           this.events.publish('user:civility', this.currentUser);
           loading.dismiss();
+          console.log(this.currentUser,"***",this.fromPage);
           if (this.fromPage == "profil") {
             this.nav.pop();
+          }
+          if(this.currentUser.changePassword == true){
+              this.showResetPasswordModal();
           }
         }
       });

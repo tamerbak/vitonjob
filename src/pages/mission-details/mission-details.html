@@ -62,18 +62,22 @@
                     <ion-grid>
                         <ion-row>
                             <ion-col></ion-col>
-                            <ion-col width-33 text-center
+                            <ion-col width-25 text-center
                                      style="border-right: solid white;background-color: lightgoldenrodyellow">
                                 {{enterpriseName}}
                             </ion-col>
-                            <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" width-33 text-center
+                            <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" width-25 text-center
                                      style="background-color: lightgoldenrodyellow">
                                 {{jobyerName}}
+                            </ion-col>
+                            <ion-col *ngIf="!isEmployer && hasJobyerSigned" width-25 text-center
+                                     style="background-color: lightgoldenrodyellow">
+                               Pointage
                             </ion-col>
                         </ion-row>
                         <ion-row baseline style=" background-color: lightgoldenrodyellow; border-top: solid white;">
                             <ion-col style="font-size: small;border-right: solid white">Heure début</ion-col>
-                            <ion-col width-33 style="padding: 0; border-right: solid white;" text-center>
+                            <ion-col width-25 style="padding: 0; border-right: solid white;" text-center>
                                 <button small
                                         [style.backgroundColor]="!isEmpty(day.heure_debut_new) ? 'orange' : 'gray'"
                                         (click)="onHourClick(i, j, true, false)">
@@ -83,12 +87,17 @@
                                 </button>
                             </ion-col>
                             <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" style="padding: 0"
-                                     text-center width-33>
+                                     text-center width-25>
                                 <button small
                                         [style.backgroundColor]="upperCase(day.is_heure_debut_corrigee) == 'OUI' ? 'red' : (upperCase(day.is_heure_debut_corrigee) == 'NON' ? 'green' : '')"
                                         (click)="onPointedHourClick(i, j, true, false)"
                                         [hidden]="contract.option_mission == '1.0'|| isNewMission">
                                     {{(day.heure_debut_pointe)? day.heure_debut_pointe : '--:--'}}
+                                </button>
+                            </ion-col>
+                            <ion-col width-25 text-center *ngIf="!isEmployer && hasJobyerSigned">
+                                <button block (click)="pointHour(false, day, true, false)" [style.backgroundColor]="themeColor" *ngIf="isEmpty(day.heure_debut_pointe)">
+                                    <ion-icon name="finger-print"></ion-icon>
                                 </button>
                             </ion-col>
                         </ion-row>
@@ -105,7 +114,7 @@
                             </ion-row>
                             <ion-row baseline style="border-top: solid white;background-color: lightskyblue;">
                                 <ion-col style="font-size: small;border-right: solid white;">Début de pause</ion-col>
-                                <ion-col style="padding: 0; border-right: solid white;" text-center width-33>
+                                <ion-col style="padding: 0; border-right: solid white;" text-center width-25>
                                     <!--To verify TEL@04082016-->
                                     <button small
                                             [style.backgroundColor]="!isEmpty(pause.pause_debut_new) ? 'orange' : 'gray'"
@@ -115,17 +124,22 @@
                                     </button>
                                 </ion-col>
                                 <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" style="padding: 0"
-                                         text-center width-33>
+                                         text-center width-25>
                                     <button small [hidden]="contract.option_mission == '1.0'|| isNewMission"
                                             (click)="onPointedHourClick(i, j, false, true)"
                                             [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')">
                                         {{(pause.pause_debut_pointe)? pause.pause_debut_pointe : '--:--'}}
                                     </button>
                                 </ion-col>
+                                <ion-col width-25 text-center *ngIf="!isEmployer && hasJobyerSigned">
+                                    <button block (click)="pointHour(false, pause, true, true)" [style.backgroundColor]="themeColor" *ngIf="isEmpty(day.pause_debut_pointe)">
+                                        <ion-icon name="finger-print"></ion-icon>
+                                    </button>
+                                </ion-col>
                             </ion-row>
                             <ion-row baseline style="border-top: solid white;background-color: lightskyblue;">
                                 <ion-col style="font-size: small;border-right: solid white;">Fin de pause</ion-col>
-                                <ion-col style="padding: 0;border-right: solid white;" text-center width-33>
+                                <ion-col style="padding: 0;border-right: solid white;" text-center width-25>
                                     <!--To verify TEL@04082016-->
                                     <button small (click)="onHourClick(i, j, false, false)"
                                             [style.backgroundColor]="!isEmpty(pause.pause_fin_new) ? 'orange' : 'gray'">
@@ -134,11 +148,16 @@
                                     </button>
                                 </ion-col>
                                 <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" style="padding: 0"
-                                         text-center width-33>
+                                         text-center width-25>
                                     <button small [hidden]="contract.option_mission == '1.0'|| isNewMission"
                                             (click)="onPointedHourClick(i, j, false, false)"
                                             [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')">
                                         {{(pause.pause_fin_pointe)? pause.pause_fin_pointe : '--:--'}}
+                                    </button>
+                                </ion-col>
+                                <ion-col width-25 text-center *ngIf="!isEmployer && hasJobyerSigned">
+                                    <button block (click)="pointHour(false, pause, false, true)" [style.backgroundColor]="themeColor" *ngIf="isEmpty(day.pause_fin_pointe)">
+                                        <ion-icon name="finger-print"></ion-icon>
                                     </button>
                                 </ion-col>
                             </ion-row>
@@ -146,7 +165,7 @@
 
                         <ion-row baseline style="background-color: lightgoldenrodyellow;border-top: solid white;">
                             <ion-col style="font-size: small;border-right: solid white;">Heure fin</ion-col>
-                            <ion-col style="padding: 0; border-right: solid white;" text-center width-33>
+                            <ion-col style="padding: 0; border-right: solid white;" text-center width-25>
                                 <button small [style.backgroundColor]="!isEmpty(day.heure_fin_new) ? 'orange' : 'gray'"
                                         (click)="onHourClick(i, j, false, false)">
                                     {{!isEmpty(day.heure_fin_new) ? (day.heure_fin_new |
@@ -154,12 +173,17 @@
                                 </button>
                             </ion-col>
                             <ion-col [hidden]="contract.option_mission == '1.0'|| isNewMission" style="padding: 0"
-                                     text-center width-33>
+                                     text-center width-25>
                                 <button small
                                         [style.backgroundColor]="upperCase(day.is_heure_fin_corrigee) == 'OUI' ? 'red' : (upperCase(day.is_heure_fin_corrigee) == 'NON' ? 'green' : '')"
                                         (click)="onPointedHourClick(i, j, false, false)"
                                 >
                                     {{(day.heure_fin_pointe)? day.heure_fin_pointe : '--:--'}}
+                                </button>
+                            </ion-col>
+                            <ion-col width-25 text-center *ngIf="!isEmployer && hasJobyerSigned">
+                                <button block (click)="pointHour(false, day, false, false)" [style.backgroundColor]="themeColor" *ngIf="isEmpty(day.heure_fin_pointe)">
+                                    <ion-icon name="finger-print"></ion-icon>
                                 </button>
                             </ion-col>
                         </ion-row>

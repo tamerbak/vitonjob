@@ -37,6 +37,7 @@ import {ModalOffersPage} from "../pages/modal-offers/modal-offers";
 import {ModalPicturePage} from "../pages/modal-picture/modal-picture";
 import {ModalProfileJobyerPage} from "../pages/modal-profile-jobyer/modal-profile-jobyer";
 import {ModalQualityPage} from "../pages/modal-quality/modal-quality";
+import {ModalSoftwarePage} from "../pages/modal-software/modal-software";
 import {ModalRecruiterManualPage} from "../pages/modal-recruiter-manual/modal-recruiter-manual";
 import {ModalRecruiterRepertoryPage} from "../pages/modal-recruiter-repertory/modal-recruiter-repertory";
 import {ModalSelectionPage} from "../pages/modal-selection/modal-selection";
@@ -159,6 +160,7 @@ import {ModalHelpPage} from "../pages/modal-help/modal-help";
         ModalPicturePage,
         ModalProfileJobyerPage,
         ModalQualityPage,
+        ModalSoftwarePage,
         ModalRecruiterManualPage,
         ModalRecruiterRepertoryPage,
         ModalSelectionPage,
@@ -252,6 +254,7 @@ import {ModalHelpPage} from "../pages/modal-help/modal-help";
         ModalPicturePage,
         ModalProfileJobyerPage,
         ModalQualityPage,
+        ModalSoftwarePage,
         ModalRecruiterManualPage,
         ModalRecruiterRepertoryPage,
         ModalSelectionPage,

@@ -174,9 +174,14 @@
       </button>
 
       <button ion-fab [color]="themeColor"
+              (click)="showProfileSoftwares()" *ngIf="!isEmployer">
+        <ion-icon name="apps"></ion-icon>
+      </button>
+
+      <!--<button ion-fab [color]="themeColor"
               (click)="showProfileJobs()" *ngIf="!isEmployer">
         <ion-icon name="briefcase"></ion-icon>
-      </button>
+      </button>-->
     </ion-fab-list>
   </ion-fab>
 

@@ -38,7 +38,9 @@
                     <ion-col>
                         <h3 [style.color]="themeColor">
                             <!--ion-icon name="calendar"></ion-icon-->
-                            &nbsp;Du {{toStringDate(item.date_de_debut)}}
+                            &nbsp;Date de la mission
+                            <span *ngIf="!(toStringDate(item.date_de_fin)===toStringDate(item.date_de_debut))">Du</span>
+                            {{toStringDate(item.date_de_debut)}}
                           <span *ngIf="!(toStringDate(item.date_de_fin)===toStringDate(item.date_de_debut))">au {{toStringDate(item.date_de_fin)}}</span>
                         </h3>
                         <h3 [style.color]="themeColor">
@@ -76,15 +78,14 @@
                         </ion-badge>
                     </ion-col>
                 </ion-row>
-                <ion-row>
+                <!--<ion-row>
                     <ion-col text-center>
                         <button ion-button item-right (click)="goToMissionPointingPage(item)"
                                 [hidden]="item.option_mission != '2.0' || isEmployer || upperCase(item.releve_employeur) == 'OUI' || upperCase(item.vu) == 'NON'">
-                            <!--ion-icon name="finger-print"></ion-icon-->
                             Pointage
                         </button>
                     </ion-col>
-                </ion-row>
+                </ion-row>-->
             </ion-item>
         </div>
     </ion-list>

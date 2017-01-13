@@ -336,6 +336,42 @@ export class ProfileService {
         });
     }
 
+    deleteSoftwares(id){
+        let sql = "delete from user_experience_logiciel_pharmacien " +
+            "where fk_user_jobyer="+id;
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe((data: any)=> {
+                    resolve(data);
+                });
+        });
+    }
+
+    saveSoftwares(jobyerId, softwares){
+        let sql="";
+        for(let i = 0; i < softwares.length; i++){
+            sql = sql + " insert into user_experience_logiciel_pharmacien (" +
+                "fk_user_jobyer, " +
+                "fk_user_logiciels_pharmaciens, " +
+                "annees_experience" +
+                ") values (" +
+                jobyerId+", " +
+                "'"+softwares[i].id+"', " +
+                "'"+softwares[i].experience+"'" +
+                "); ";
+        }
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe((data: any)=> {
+                    resolve(data);
+                });
+        });
+    }
+
     getUserDisponibilite(id: any) {
         let sql = "select * from user_disponibilite_du_jobyer where dirty='N' and fk_user_jobyer = '" + id + "'";
 
@@ -372,6 +408,19 @@ export class ProfileService {
               .subscribe(data => {
                   resolve(data);
               });
+        });
+    }
+
+    getUserSoftwares(jobyerId){
+        let sql = "select exp.pk_user_experience_logiciel_pharmacien as \"expId\", exp.fk_user_logiciels_pharmaciens as \"id\", exp.annees_experience as experience, log.nom from user_experience_logiciel_pharmacien as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_jobyer = '" + jobyerId + "'";
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    resolve(data.data);
+                });
         });
     }
 

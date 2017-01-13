@@ -242,7 +242,7 @@ export class OffersService {
 
         let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            id: 10015,//332,
+            id: 10043,//332,
             args: [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'creation offre',
@@ -278,8 +278,6 @@ export class OffersService {
                     console.log('ADDED OFFER IN SERVER : ' + JSON.stringify(this.addedOffer));
 
                     if(offerData.jobData.prerequisObligatoires && offerData.jobData.prerequisObligatoires.length>0){
-
-
                         switch (projectTarget) {
                             case 'employer' :
                                 this.updatePrerequisObligatoires(idOffer,offerData.jobData.prerequisObligatoires);
@@ -289,6 +287,11 @@ export class OffersService {
                                 break;
                         }
                     }
+
+                    if(offerData.jobData.pharmaSoftwares && offerData.jobData.pharmaSoftwares.length != 0){
+                        this.saveSoftwares(idOffer, offerData.jobData.pharmaSoftwares);
+                    }
+
                     resolve(this.addedOffer);
                 });
         });
@@ -1785,6 +1788,27 @@ export class OffersService {
                 .subscribe((data:any) => {
                     console.log(data.data);
                     resolve(data.data);
+                });
+        });
+    }
+
+    saveSoftwares(offerId, softwares){
+        let sql="";
+        for(let i = 0; i < softwares.length; i++){
+            sql = sql + " insert into user_logiciels_des_offres (" +
+                "fk_user_offre_entreprise, " +
+                "fk_user_logiciels_pharmaciens" +
+                ") values (" +
+                offerId+", " +
+                "'"+softwares[i].id+"'" +
+                "); ";
+        }
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe((data: any)=> {
+                    resolve(data);
                 });
         });
     }

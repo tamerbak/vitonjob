@@ -29,6 +29,10 @@ export class SettingPasswordPage {
   public currentUserVar: string;
   public themeColor: string;
 
+  public showHidePasswdLabel: string;
+  public showHideOldPasswdLabel: string;
+  public showHidePasswdConfirmLabel: string;
+
 
   constructor(public nav: NavController, gc: GlobalConfigs,
               private authService: AuthenticationService,
@@ -41,7 +45,59 @@ export class SettingPasswordPage {
     this.themeColor = config.themeColor;
     this.currentUserVar = config.currentUserVar;
 
+    this.showHideOldPasswdLabel = "Afficher le mot de passe";
+    this.showHidePasswdLabel = "Afficher le mot de passe";
+    this.showHidePasswdConfirmLabel = "Afficher le mot de passe";
+
     this.isOldPasswordCorrect = true;
+  }
+
+  showHidePasswd() {
+    let divHide = document.getElementById('hidePasswd');
+    let divShow = document.getElementById('showPasswd');
+
+    if (divHide.style.display == 'none') {
+      divHide.style.display = 'block';
+      divShow.style.display = 'none';
+      //this.showHidePasswdLabel = "Afficher le mot de passe";
+    }
+    else {
+      divHide.style.display = 'none';
+      divShow.style.display = 'block';
+      //this.showHidePasswdLabel = "Cacher le mot de passe";
+    }
+  }
+
+  showHideOldPasswd() {
+    let divHide = document.getElementById('hideOldPasswd');
+    let divShow = document.getElementById('showOldPasswd');
+
+    if (divHide.style.display == 'none') {
+      divHide.style.display = 'block';
+      divShow.style.display = 'none';
+      //this.showHidePasswdLabel = "Afficher le mot de passe";
+    }
+    else {
+      divHide.style.display = 'none';
+      divShow.style.display = 'block';
+      //this.showHidePasswdLabel = "Cacher le mot de passe";
+    }
+  }
+
+  showHidePasswdConfirm() {
+    let divHide = document.getElementById('hidePasswdConfirm');
+    let divShow = document.getElementById('showPasswdConfirm');
+
+    if (divHide.style.display == 'none') {
+      divHide.style.display = 'block';
+      divShow.style.display = 'none';
+      //this.showHidePasswdConfirmLabel = "Afficher le mot de passe";
+    }
+    else {
+      divHide.style.display = 'none';
+      divShow.style.display = 'block';
+      //this.showHidePasswdConfirmLabel = "Cacher le mot de passe";
+    }
   }
 
   modifyPasswd() {

@@ -30,7 +30,7 @@ export class GlobalConfigs {
 
 
     constructor() {
-        this.projectTarget = "jobyer"; // "jobyer" / "employer"
+        this.projectTarget = "employer"; // "jobyer" / "employer"
         this.cnxBtnName = "Se connecter / S'inscrire";
         this.thirdThemeColor = '#f4f4f4';
     }

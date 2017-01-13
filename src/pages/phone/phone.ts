@@ -186,6 +186,11 @@ export class PhonePage {
 
             debugger;
             data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
+
+            if(data.estRecruteur && data.titre === ""){
+              data.changePassword = true;
+            }
+            console.log(data);
             this.afterAuthSuccess(data);
             let toast = this.toast.create({
               message: "Bienvenue " + data.prenom + " vous venez de vous connecter !",

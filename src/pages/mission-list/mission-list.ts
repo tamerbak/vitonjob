@@ -4,7 +4,7 @@ import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {ContractService} from "../../providers/contract-service/contract-service";
 import {MissionDetailsPage} from "../mission-details/mission-details";
-import {MissionPointingPage} from "../mission-pointing/mission-pointing";
+//import {MissionPointingPage} from "../mission-pointing/mission-pointing";
 import {Storage} from "@ionic/storage";
 
 /*
@@ -132,9 +132,9 @@ export class MissionListPage {
     this.nav.push(MissionDetailsPage, {contract: contract});
   }
 
-  goToMissionPointingPage(contract) {
+  /*goToMissionPointingPage(contract) {
     this.nav.push(MissionPointingPage, {contract: contract});
-  }
+  }*/
 
   isEmpty(str) {
     if (str == '' || str == 'null' || !str)
