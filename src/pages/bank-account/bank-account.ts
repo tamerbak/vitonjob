@@ -51,7 +51,7 @@ export class BankAccountPage {
 
     this.service.loadBankAccount(id, table, this.projectTarget).then((data: Array<any>) => {
       if (data && data.length > 0) {
-        this.bank = data[0];
+        this.bank = Utils.preventNullProperties(data[0]);
         this.watchAccountHolder(this.bank.detenteur_du_compte);
         this.voidAccount = false;
       } else
