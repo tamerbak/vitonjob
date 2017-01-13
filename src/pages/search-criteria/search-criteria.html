@@ -1,14 +1,14 @@
 <ion-header>
-    <ion-navbar [color]="themeColor">
+    <ion-navbar color="vojgrey">
         <ion-title style="padding-left: 0">Recherche par critères</ion-title>
         <ion-buttons end>
-            <button ion-button icon-only (click)="close()">
+            <!--button ion-button icon-only (click)="close()">
                 <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
-            </button>
+            </button-->
         </ion-buttons>
     </ion-navbar>
 </ion-header>
-<ion-content class="search-criteria">
+<ion-content class="search-criteria" id="content" #content>
 
     <!--ion-list class="criteria-list">
         <ion-list-header>
@@ -28,81 +28,284 @@
             Choisissez vos critères à partir de la barre ci-dessus
         </ion-card-content>
     </ion-card-->
+<ion-list>
 
+    <ion-list-header color="vojgreen" no-lines>
+        Métier
+    </ion-list-header>
     <ion-item>
         <ion-label floating>Secteur</ion-label>
-        <ion-input [(ngModel)]="sector" (keyup)="watchSector($event)"></ion-input>
-        <button ion-button small item-right (click)="setSectorsPicker()" [color]="themeColor">
-            <ion-icon name="list"></ion-icon>
-        </button>
+        <ion-textarea rows="3" [(ngModel)]="jobData.sector" (keyup)="watchSector($event)" aria-readonly="true"></ion-textarea>
+        <div item-right style="display: table-row-group;margin-left: 0;margin-right: 0">
+            <div>
+                <button ion-button small (click)="showSectorList()" color="vojbrown">
+                    <ion-icon name="list"></ion-icon>
+                </button>
+            </div>
+            <div style="height: 100%;display: inline-table;">
+                <button ion-button clear (click)="clearSector()" color="vojbrown" style="position: absolute; vertical-align: middle" *ngIf="jobData.sector">
+                    <ion-icon name="close-circle" style="font-size: x-large"></ion-icon>
+                </button>
+            </div>
+        </div>
     </ion-item>
-    <ion-item *ngIf="sectors.length>0">
-        <ion-list>
-            <ion-item *ngFor="let s of sectors" (click)="sectorSelected(s)">
-                {{s.libelle}}
-            </ion-item>
-        </ion-list>
-    </ion-item>
+    <ion-list *ngIf="sectors.length>0" no-lines>
+        <ion-item *ngFor="let s of sectors" (click)="sectorSelected(s)">
+            <h6>{{s.libelle}}</h6>
+        </ion-item>
+    </ion-list>
     <div [hidden]="isSectorFound"
          style="color:red">
         <ion-icon name="md-arrow-dropup"></ion-icon>
         Veuillez saisir un secteur valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus
     </div>
     <ion-item>
-        <ion-label floating>Job</ion-label>
-        <ion-input [(ngModel)]="job" (keyup)="watchJob($event)"></ion-input>
-        <button small item-right (click)="setJobsPicker()"  ion-button [color]="themeColor">
-            <ion-icon name="list"></ion-icon>
-        </button>
+        <ion-label floating>Job <span style="font-size: xx-large;color: red">*</span></ion-label>
+        <ion-textarea rows="3" [(ngModel)]="jobData.job" (keyup)="watchJob($event)" text-wrap></ion-textarea>
+        <div item-right style="display: table-row-group;margin-left: 0;margin-right: 0">
+            <div>
+                <button small item-right (click)="showJobList()" ion-button  color="vojbrown" *ngIf="jobData.sector && isSectorFound" style="margin-left: 2px;margin-right: 2px;">
+                    <ion-icon name="list"></ion-icon>
+                </button>
+            </div>
+            <div style="height: 100%;display: inline-table;">
+                <button ion-button clear (click)="clearJob()"  color="vojbrown" style="position: absolute; vertical-align: middle" *ngIf="jobData.job">
+                    <ion-icon name="close-circle" style="font-size: x-large"></ion-icon>
+                </button>
+            </div>
+        </div>
+
     </ion-item>
-    <ion-item *ngIf="jobs.length>0">
-        <ion-list>
-            <ion-item *ngFor="let s of jobs" (click)="jobSelected(s)">
-                {{s.libelle}}
-            </ion-item>
-        </ion-list>
-    </ion-item>
+    <ion-list *ngIf="jobs.length>0" text-wrap>
+        <div  *ngFor="let sec of jobs">
+            <ion-list-header color="light"> {{sec.sector}}</ion-list-header>
+            <div  *ngFor="let j of sec.jobs">
+                <ion-item (click)="jobSelected(j)">
+                    {{j.libelle}}
+                </ion-item>
+            </div>
+        </div>
+
+    </ion-list>
     <div [hidden]="isJobFound"
          style="color:red">
         <ion-icon name="md-arrow-dropup"></ion-icon>
         Veuillez saisir un job valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus
     </div>
-    <ion-item style="margin-top: 15px;" [hidden]="isAndroid4">
+</ion-list>
+
+
+    <!-- Level -->
+    <ion-list radio-group [(ngModel)]="jobData.level" *ngIf="filterState[0].isActivated">
+        <ion-list-header color="vojgreen" no-lines>
+            Niveau d'expérience
+        </ion-list-header>
+        <ion-item>
+            <ion-label>Débutant</ion-label>
+            <ion-radio value="junior"></ion-radio>
+        </ion-item>
+        <ion-item>
+            <ion-label>Expérimenté</ion-label>
+            <ion-radio value="senior"></ion-radio>
+        </ion-item>
+    </ion-list>
+
+    <!-- Dispo -->
+    <ion-list  *ngIf="filterState[1].isActivated">
+        <ion-list-header color="vojgreen" no-lines>
+            Disponibilité
+        </ion-list-header>
+        <ion-item text-wrap>
+            <ion-label stacked>Début</ion-label>
+            <ion-datetime displayFormat="Le D MMMM YYYY à HH:mm" pickerFormat="D MMM YYYY HH mm"
+                          [(ngModel)]="showedSlot.startDate" (ionChange)="checkHour(0)"
+                          minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"
+                          [min]="minStartDate" [max]="maxStartDate"
+                          style="max-width:100%;"></ion-datetime>
+        </ion-item>
+
+        <ion-item text-wrap>
+            <ion-label stacked>Fin</ion-label>
+            <ion-datetime displayFormat="Le D MMMM YYYY à HH:mm" pickerFormat="D MMM YYYY HH mm"
+                          [(ngModel)]="showedSlot.endDate" (ionChange)="checkHour(1)"
+                          minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"
+                          [min]="minEndDate" [max]="maxStartDate"
+                          style="max-width:100%;"></ion-datetime>
+        </ion-item>
+        <div *ngIf="hoursErrorMessage"
+             style="color:red">
+            <ion-icon name="md-arrow-dropup"></ion-icon>
+            {{hoursErrorMessage}}
+        </div>
+    </ion-list>
+
+
+    <!--ion-item style="margin-top: 15px;" [hidden]="true">
         <ion-label floating>Date de disponibilité</ion-label>
         <ion-datetime [(ngModel)]="availabilityDate" displayFormat="DD/MM/YYYY"></ion-datetime>
     </ion-item>
 
-    <ion-item [hidden]="!isAndroid4">
+    <ion-item [hidden]="!isAndroid4 ">
         <ion-label floating>Date</ion-label>
         <ion-input type="text" [(ngModel)]="availabilityDate"
                    (focus)="launchDateTimePicker('date')" readonly></ion-input>
-    </ion-item>
-    <ion-item>
-        <ion-label floating>Ville</ion-label>
-        <ion-input [(ngModel)]="city" (keyup)="watchCity($event)"></ion-input>
-    </ion-item>
-    <ion-item *ngIf="cities.length>0">
-        <ion-list>
-            <ion-item *ngFor="let s of cities" (click)="citySelected(s)">
-                {{s.nom}}
-            </ion-item>
-        </ion-list>
-    </ion-item>
-    <ion-row></ion-row>
+    </ion-item-->
 
-  <ion-fab bottom right>
-    <button ion-fab [color]="themeColor" (click)="showGuideModal()">
-      <ion-icon name="help"></ion-icon>
-    </button>
-  </ion-fab>
+    <!--CITY-->
+    <ion-list  *ngIf="filterState[2].isActivated">
+        <ion-list-header color="vojgreen" no-lines>
+            Lieu
+        </ion-list-header>
+        <ion-item>
+            <ion-label floating>Ville</ion-label>
+            <ion-input [(ngModel)]="city" (keyup)="watchCity($event)"></ion-input>
+        </ion-item>
+        <ion-row  *ngIf="!isCity.done && filterState[2].isActivated">
+            <ion-col text-center>
+                <ion-spinner></ion-spinner>
+            </ion-col>
+        </ion-row>
+
+        <ion-item *ngIf="cities.length>0">
+            <ion-list>
+                <ion-item *ngFor="let s of cities" (click)="citySelected(s)">
+                    {{s.nom}}
+                </ion-item>
+            </ion-list>
+        </ion-item>
+        <div [hidden]="isCity.found"
+             style="color:red">
+            <ion-icon name="md-arrow-dropup"></ion-icon>
+            Vérifiez l'orthographe, cette ville n'existe pas et/ou ne comporte aucune offre
+        </div>
+    </ion-list>
+
+    <!--ENTERPRISE-->
+    <ion-list  *ngIf="filterState[3].isActivated && !isEmployer">
+        <ion-list-header color="vojgreen" no-lines>
+            Entreprise
+        </ion-list-header>
+        <ion-item>
+            <ion-label floating>Entreprise</ion-label>
+            <ion-input [(ngModel)]="enterprise.name" (keyup)="watchEnterprise($event)"></ion-input>
+        </ion-item>
+        <ion-row  *ngIf="!isEnterprise.done && filterState[3].isActivated">
+            <ion-col text-center>
+                <ion-spinner></ion-spinner>
+            </ion-col>
+        </ion-row>
+
+        <ion-item *ngIf="enterprises.length>0">
+            <ion-list>
+                <ion-item *ngFor="let e of enterprises" (click)="enterpriseSelected(e)">
+                    {{e.nom}}
+                </ion-item>
+            </ion-list>
+        </ion-item>
+        <div [hidden]="isEnterprise.found"
+             style="color:red">
+            <ion-icon name="md-arrow-dropup"></ion-icon>
+            Cette entreprise n'est pas encore répertoriée chez Vit-On-Job
+        </div>
+    </ion-list>
+
+    <!--Languages-->
+    <ion-list *ngIf="filterState[4].isActivated" text-wrap>
+        <ion-list-header color="vojgreen" no-lines>
+            Langues
+            <button ion-button item-right small  color="vojbrown" (click)="showLanguages()">
+                <ion-icon name="add"></ion-icon>
+            </button>
+        </ion-list-header>
+        <ion-item *ngFor="let item of languages">
+            {{ item.libelle }}
+            <button ion-button icon-only item-right clear (click)="removeLanguage(item)"  color="vojbrown">
+                <ion-icon name="close-circle"></ion-icon>
+            </button>
+        </ion-item>
+    </ion-list>
+
+    <!--Qualities-->
+    <ion-list *ngIf="filterState[5].isActivated" text-wrap>
+        <ion-list-header color="vojgreen" no-lines>
+            Qualités
+            <button ion-button item-right small  color="vojbrown" (click)="showQualities()">
+                <ion-icon name="add"></ion-icon>
+            </button>
+        </ion-list-header>
+        <ion-item *ngFor="let item of qualities">
+            {{ item.libelle }}
+            <button ion-button icon-only item-right clear (click)="removeQuality(item)"  color="vojbrown">
+                <ion-icon name="close-circle" ></ion-icon>
+            </button>
+        </ion-item>
+    </ion-list>
+
+    <!-- JOBYER -->
+    <ion-list  *ngIf="filterState[6].isActivated && isEmployer">
+        <ion-list-header color="vojgreen" no-lines>
+            Jobyer
+        </ion-list-header>
+        <ion-item>
+            <ion-label floating>Prénom</ion-label>
+            <ion-input [(ngModel)]="person.firstName"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label floating>Nom</ion-label>
+            <ion-input [(ngModel)]="person.lastName"></ion-input>
+        </ion-item>
+    </ion-list>
+
+    <!--ion-fab bottom left>
+        <button ion-fab  color="vojbrown" (click)="showGuideModal()">
+            <ion-icon name="help"></ion-icon>
+        </button>
+    </ion-fab-->
+
+
     <ion-row>
         <ion-col text-center>
-            <button [style.backgroundColor]="themeColor" (click)="validateSearch()" ion-button icon-left [color]="themeColor">
+            <button  color="vojgreen" (click)="validateSearch()" ion-button icon-left
+                    [color]="themeColor" small [disabled]="!jobData.job || !isJobFound">
                 <ion-icon name="search"></ion-icon>
-                Recherche
+                Rechercher
             </button>
         </ion-col>
     </ion-row>
+
+
+    <ion-row>&nbsp;</ion-row>
+    <ion-row>&nbsp;</ion-row>
+
+    <ion-fab #fab bottom right id="fab">
+        <button ion-fab (press)="pressEvent($event)" color="vojbrown">
+
+            <ion-icon name="funnel"></ion-icon>
+        </button>
+        <ion-fab-list side="top">
+            <button ion-fab  *ngIf="isEmployer" [color]="filterState[6].color"  (click)="setFilter(6,fab)">
+                <ion-icon name="contact"></ion-icon>
+            </button>
+            <button ion-fab  [color]="filterState[5].color"  (click)="setFilter(5,fab)">
+                <ion-icon name="happy"></ion-icon>
+            </button>
+            <button ion-fab  [color]="filterState[4].color"  (click)="setFilter(4,fab)">
+                <ion-icon name="globe" style="font-size: xx-large"></ion-icon>
+            </button>
+            <button ion-fab  [color]="filterState[3].color"  (click)="setFilter(3,fab)"  *ngIf="!isEmployer">
+                <ion-icon name="cube"></ion-icon>
+            </button>
+            <button ion-fab  [color]="filterState[2].color"  (click)="setFilter(2,fab)">
+                <ion-icon name="pin" style="font-size: xx-large"></ion-icon>
+            </button>
+            <button ion-fab outline [color]="filterState[1].color"  (click)="setFilter(1,fab)">
+                <ion-icon name="md-clock"></ion-icon>
+            </button>
+            <button ion-fab  [color]="filterState[0].color"  (click)="setFilter(0,fab)">
+                <ion-icon name="podium"></ion-icon>
+            </button>
+        </ion-fab-list>
+    </ion-fab>
 
 
 </ion-content>

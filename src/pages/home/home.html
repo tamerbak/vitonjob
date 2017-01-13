@@ -24,7 +24,11 @@
     <ion-col width-10></ion-col>
   </ion-row>
 
-  <ion-row id="search-position" *ngIf="!isHunter"> <!--id="search-position"-->
+    <ion-row>
+      <ion-col></ion-col>
+    </ion-row>
+
+  <!--ion-row id="search-position" *ngIf="!isHunter"> <!--id="search-position">
     <ion-item class="itemSearch">
 
       <ion-label id="search-label" floating class="withoutOverflow">{{searchPlaceHolder}}</ion-label>
@@ -36,8 +40,8 @@
       </button>
 
     </ion-item>
-  </ion-row>
-  <!--div id="adv-search"-->
+  </ion-row-->
+  <!--div id="adv-search">
   <ion-row *ngIf="!isHunter">
     <ion-col text-right>
       <a id="ra" [navPush]="push">
@@ -45,7 +49,9 @@
       </a>
     </ion-col>
 
-  </ion-row>
+  </ion-row-->
+
+  <ion-row><ion-col text-center><button ion-button icon-left outline [navPush]="push" large color="vojgreen"><ion-icon name="search"></ion-icon>Lancer la recherche</button></ion-col></ion-row>
 
   <div style="width:100%; background-color: transparent" *ngIf="!isHunter"> <!--!isHunter-->
 
