@@ -33,6 +33,7 @@ import {MissionListPage} from "../pages/mission-list/mission-list";
 import {ProfilePage} from "../pages/profile/profile";
 import {PendingContractsPage} from "../pages/pending-contracts/pending-contracts";
 import {Observable} from "rxjs/Rx";
+import {ContractPage} from "../pages/contract/contract";
 //import {isUndefined} from "ionic-angular/util/util";
 
 //declare let cordova;
@@ -44,7 +45,7 @@ declare let navigator;
   selector: 'app'
 })
 export class Vitonjob {
-  public rootPage: any = HomePage;
+  public rootPage: any = HomePage; // TIM
   @ViewChild(Nav) nav: Nav;
   public pages: Array<any>;
   public projectTarget: any;
