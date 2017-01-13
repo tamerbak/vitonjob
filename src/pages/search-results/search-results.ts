@@ -268,7 +268,11 @@ export class SearchResultsPage implements OnInit {
     let locatedResults = [];
     for (let i = 0; i < this.searchResults.length; i++) {
       let r = this.searchResults[i];
-      if (parseInt(r.latitude) == 0 && parseInt(r.longitude) == 0)
+      if ((parseInt(r.latitude) == 0 && parseInt(r.longitude) == 0)
+          || r.latitude == null
+          || r.longitude == null
+          || isUndefined(r.latitude)
+          || isUndefined(r.longitude))
         continue;
       let latlng = new google.maps.LatLng(r.latitude, r.longitude);
       locatedResults.push(r);
