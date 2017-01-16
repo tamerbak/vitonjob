@@ -577,11 +577,11 @@ export class ContractPage {
     if (!this.workAdress || this.workAdress.length == 0)
       return true;
 
-    if (!this.contractData.workTimeHours || this.contractData.workTimeHours.length == 0)
-      return true;
+    /*if (!this.contractData.workTimeHours || this.contractData.workTimeHours.length == 0)
+      return true;*/
 
-    if (!this.contractData.usualWorkTimeHours || this.contractData.usualWorkTimeHours.length == 0)
-      return true;
+    /*if (!this.contractData.usualWorkTimeHours || this.contractData.usualWorkTimeHours.length == 0)
+      return true;*/
 
     if (!this.contractData.baseSalary || this.contractData.baseSalary == 0)
       return true;
@@ -598,6 +598,6 @@ export class ContractPage {
     if (!this.companyName || this.companyName.length == 0)
       return true;
 
-    return !this.embaucheAutorise || !this.rapatriement;
+    //return !this.embaucheAutorise || !this.rapatriement;
   }
 }

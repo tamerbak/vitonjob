@@ -54,19 +54,19 @@
               {{userData.jobyer.lieuNaissance}} le {{userData.jobyer.dateNaissance}}</p-->
         </ion-item>
 
-        <ion-item *ngIf="!isEmployer && userData.jobyer.cni">
-          <!--ul  style="font-size: 1.3rem;"-->
 
-          <ion-icon name="paper" item-left></ion-icon>
-          <h5>CNI</h5>
-          <p>{{userData.jobyer.cni}}</p>
+        <ion-item *ngIf="!isEmployer && userData.email">
+          <ion-icon name="mail" item-left></ion-icon>
+          <h5>E-mail</h5>
+          <p>{{userData.email}}</p>
 
         </ion-item>
 
-        <ion-item *ngIf="!isEmployer && userData.jobyer.cni">
-          <ion-icon name="paper" item-left></ion-icon>
-          <h5>Numéro SS :</h5>
-          <p>{{userData.jobyer.numSS}}</p>
+        <ion-item *ngIf="!isEmployer && userData.tel">
+          <!--ul  style="font-size: 1.3rem;"-->
+          <ion-icon name="call" item-left></ion-icon>
+          <h5>Téléphone</h5>
+          <p>{{userData.tel}}</p>
 
         </ion-item>
 
@@ -118,7 +118,7 @@
         <p *ngIf="!isEmployer">{{userData.jobyer.personnalAdress.fullAdress}}</p>
         <p *ngIf="isEmployer && userData.employer.entreprises.length != 0">
           {{userData.employer.entreprises[0].siegeAdress.fullAdress}}</p>
-        <button ion-button clear item-right (click)="goToPersonalAddressTab()">
+        <button ion-button clear item-right (click)="goToPersonalAddressTab()" large>
           <ion-icon name="create"></ion-icon>
         </button>
       </ion-item>
@@ -129,7 +129,7 @@
         <p *ngIf="!isEmployer">{{userData.jobyer.workAdress.fullAdress}}</p>
         <p *ngIf="isEmployer  && userData.employer.entreprises.length != 0">
           {{userData.employer.entreprises[0].workAdress.fullAdress}}</p>
-        <button ion-button clear item-right (click)="goToJobAddressTab()">
+        <button ion-button clear item-right (click)="goToJobAddressTab()" large>
           <ion-icon name="create"></ion-icon>
         </button>
       </ion-item>
@@ -138,7 +138,7 @@
         <h5 *ngIf="isEmployer">Adresse de correspondance</h5>
         <p *ngIf="isEmployer && userData.employer.entreprises.length != 0">
           {{userData.employer.entreprises[0].correspondanceAdress.fullAdress}}</p>
-        <button ion-button clear item-right (click)="goToCorrespondenceAddressTab()">
+        <button ion-button clear item-right (click)="goToCorrespondenceAddressTab()" large>
           <ion-icon name="create"></ion-icon>
         </button>
       </ion-item>
