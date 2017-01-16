@@ -979,21 +979,14 @@ export class GeneralConditionsPage {
   logOut() {
     let data: any = this.params.get('currentUser');
     let message: string = "";
-    if (this.projectTarget === 'employer') {
-      message = "Merci d'être venu sur notre plateforme pour recruter en quelques clics!";
-    } else {
-      message = "Merci d'être venu sur notre plateforme pour trouver un job à proximité!";
-    }
-    message = message +
-      " En refusant les Conditions Générales, nous somme ravis d'échanger avec vous pour essayer de " +
-      "comprendre votre refus.";
+    message = "Si vous le souhaitez, nous serions ravis d'échanger avec vous pour bien comprendre les raisons de votre refus.";
 
     let confirm = this.alert.create({
       title: "Vit-On-Job",
       message: message,
       buttons: [
         {
-          text: 'Non, je quitte',
+          text: 'Non, merci',
           handler: () => {
             this.userService.updateGCStatus("Non", "Non", data.id).then((response) => {
               this.clearStorage();
