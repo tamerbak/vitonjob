@@ -14,7 +14,7 @@ import {
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SearchService} from "../../providers/search-service/search-service";
 import {SearchResultsPage} from "../search-results/search-results";
-import {Component, ViewChild, OnChanges} from "@angular/core";
+import {Component, ViewChild} from "@angular/core";
 import {Configs} from "../../configurations/configs";
 import {CommunesService} from "../../providers/communes-service/communes-service";
 import {isUndefined} from "../../../node_modules/ionic-angular/util/util";
@@ -77,6 +77,7 @@ export class SearchCriteriaPage {
         validated: boolean,
         prerequisObligatoires: any,
         adress: any
+        isJobValidated: boolean;
     };
     public newCombination = [];
     public showedSlot: any;
@@ -92,11 +93,12 @@ export class SearchCriteriaPage {
     public qualities = [];
     public offerService: any;
 
-    public person: {firstName:string, lastName:string};
-    public enterprise : {id:number, name:string};
-    public enterprises= [];
-    public isEnterprise: {found : boolean, done:boolean};
-    public isCity: {found : boolean, done:boolean};
+    public person: {firstName: string, lastName: string};
+    public enterprise: {id: number, name: string};
+    public enterprises = [];
+    public isEnterprise: {found: boolean, done: boolean};
+    public isCity: {found: boolean, done: boolean};
+    public isCityValidated: boolean = false;
 
     constructor(private viewCtrl: ViewController,
                 public globalConfig: GlobalConfigs,
@@ -106,7 +108,7 @@ export class SearchCriteriaPage {
                 public loading: LoadingController,
                 public toast: ToastController,
                 public picker: PickerController, public db: Storage, public modal: ModalController,
-                _offerService: OffersService, public alert: AlertController, public event: Events, public corporama:CorporamaService) {
+                _offerService: OffersService, public alert: AlertController, public event: Events, public corporama: CorporamaService) {
         this.viewCtrl = viewCtrl;
         this.projectTarget = globalConfig.getProjectTarget();
         this.isEmployer = (this.projectTarget === 'employer');
@@ -142,13 +144,14 @@ export class SearchCriteriaPage {
                 zipCode: '',
                 city: '',
                 country: ''
-            }
+            },
+            isJobValidated: false
         };
 
-        this.person = {firstName:"", lastName:""};
-        this.enterprise = {id:0, name:""};
-        this.isEnterprise = {found:true, done:true};
-        this.isCity = {found:true, done:true};
+        this.person = {firstName: "", lastName: ""};
+        this.enterprise = {id: 0, name: ""};
+        this.isEnterprise = {found: true, done: true};
+        this.isCity = {found: true, done: true};
 
         //load Jobs
         this.db.get('JOB_LIST').then(
@@ -653,13 +656,13 @@ export class SearchCriteriaPage {
                     return true
                 });
             }
-            this.isCity.done =true ;
+            this.isCity.done = true;
             this.isCity.found = this.cities.length > 0;
 
         });
     }
 
-    watchEnterprise(e){
+    watchEnterprise(e) {
         let val = e.target.value;
         this.isEnterprise.found = true;
         if (val.length < 3) {
@@ -977,4 +980,31 @@ export class SearchCriteriaPage {
         });
         confirm.present();
     }
+
+    jobValidated() {
+        if (this.jobData.job)
+            this.jobData.isJobValidated = true;
+    }
+
+    cityValidated() {
+        this.isCityValidated = true;
+    }
+
+    closeChip(fab,chip: Element) {
+        chip.remove();
+        switch (chip.id) {
+            case 'jobChip':
+                this.clearJob();
+                this.jobData.isJobValidated = false;
+                break;
+            case 'cityChip':
+                this.city = '';
+                this.cities = [];
+                this.isCityValidated = false;
+                fab.close();
+                break;
+        }
+
+    }
+
 }

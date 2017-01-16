@@ -28,71 +28,156 @@
             Choisissez vos critères à partir de la barre ci-dessus
         </ion-card-content>
     </ion-card-->
-<ion-list>
+    <ion-card *ngIf="jobData.isJobValidated">
+        <ion-list-header color="vojgreen">Je recherche...</ion-list-header>
+        <div style="padding: 10px">
 
-    <ion-list-header color="vojgreen" no-lines>
-        Métier
-    </ion-list-header>
-    <ion-item>
-        <ion-label floating>Secteur</ion-label>
-        <ion-textarea rows="3" [(ngModel)]="jobData.sector" (keyup)="watchSector($event)" aria-readonly="true"></ion-textarea>
-        <div item-right style="display: table-row-group;margin-left: 0;margin-right: 0">
-            <div>
-                <button ion-button small (click)="showSectorList()" color="vojbrown">
-                    <ion-icon name="list"></ion-icon>
+            <ion-chip id="jobChip" #jobChip>
+                <ion-label>{{jobData.job}}</ion-label>
+                <button ion-button clear color="light" (click)="closeChip(fab,jobChip)">
+                    <ion-icon name="close-circle"></ion-icon>
                 </button>
+            </ion-chip>
+            <div *ngIf="isCityValidated">
+                à
+                <ion-chip #cityChip id="cityChip">
+                    <ion-label>{{city}}</ion-label>
+                    <button ion-button clear color="light" (click)="closeChip(fab, cityChip)">
+                        <ion-icon name="close-circle"></ion-icon>
+                    </button>
+                </ion-chip>
             </div>
-            <div style="height: 100%;display: inline-table;">
-                <button ion-button clear (click)="clearSector()" color="vojbrown" style="position: absolute; vertical-align: middle" *ngIf="jobData.sector">
-                    <ion-icon name="close-circle" style="font-size: x-large"></ion-icon>
-                </button>
+            <div *ngIf="">
+                disponible entre
+                <ion-chip>
+                    <ion-label>08/02/2017 à 8h00</ion-label>
+                    <button ion-button clear color="light">
+                        <ion-icon name="close-circle"></ion-icon>
+                    </button>
+                </ion-chip>
+                et
+                <ion-chip>
+                    <ion-label>08/02/2017 à 18h00</ion-label>
+                    <button ion-button clear color="light">
+                        <ion-icon name="close-circle"></ion-icon>
+                    </button>
+                </ion-chip>
+            </div>
+            <div *ngFor="let l of languages">
+                qui parle
+                <ion-chip>
+                    <ion-label>{{l.nom}}</ion-label>
+                    <button ion-button clear color="light">
+                        <ion-icon name="close-circle"></ion-icon>
+                    </button>
+                </ion-chip>
+            </div>
+            <div *ngFor="let q of qualities">
+                ayant comme qualité :
+                <ion-chip>
+                    <ion-label>{{q.nom}}</ion-label>
+                    <button ion-button clear color="light">
+                        <ion-icon name="close-circle"></ion-icon>
+                    </button>
+                </ion-chip>
+            </div>
+            <div *ngIf="isEmployer && (person.firstName || person.lastName)">
+                qui s'appelle
+                <ion-chip>
+                    <ion-label>{{person.firstName}} {{person.lastName}}</ion-label>
+                    <button ion-button clear color="light">
+                        <ion-icon name="close-circle"></ion-icon>
+                    </button>
+                </ion-chip>
             </div>
         </div>
-    </ion-item>
-    <ion-list *ngIf="sectors.length>0" no-lines>
-        <ion-item *ngFor="let s of sectors" (click)="sectorSelected(s)">
-            <h6>{{s.libelle}}</h6>
+
+        <ion-item>
+            <button color="vojgreen" (click)="validateSearch()" ion-button icon-left item-right
+                    [color]="themeColor" small [disabled]="!jobData.job || !isJobFound">
+                <ion-icon name="search"></ion-icon>
+                Rechercher
+            </button>
         </ion-item>
-    </ion-list>
-    <div [hidden]="isSectorFound"
-         style="color:red">
-        <ion-icon name="md-arrow-dropup"></ion-icon>
-        Veuillez saisir un secteur valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus
-    </div>
-    <ion-item>
-        <ion-label floating>Job <span style="font-size: xx-large;color: red">*</span></ion-label>
-        <ion-textarea rows="3" [(ngModel)]="jobData.job" (keyup)="watchJob($event)" text-wrap></ion-textarea>
-        <div item-right style="display: table-row-group;margin-left: 0;margin-right: 0">
-            <div>
-                <button small item-right (click)="showJobList()" ion-button  color="vojbrown" *ngIf="jobData.sector && isSectorFound" style="margin-left: 2px;margin-right: 2px;">
-                    <ion-icon name="list"></ion-icon>
-                </button>
-            </div>
-            <div style="height: 100%;display: inline-table;">
-                <button ion-button clear (click)="clearJob()"  color="vojbrown" style="position: absolute; vertical-align: middle" *ngIf="jobData.job">
-                    <ion-icon name="close-circle" style="font-size: x-large"></ion-icon>
-                </button>
-            </div>
-        </div>
 
-    </ion-item>
-    <ion-list *ngIf="jobs.length>0" text-wrap>
-        <div  *ngFor="let sec of jobs">
-            <ion-list-header color="light"> {{sec.sector}}</ion-list-header>
-            <div  *ngFor="let j of sec.jobs">
-                <ion-item (click)="jobSelected(j)">
-                    {{j.libelle}}
+    </ion-card>
+
+    <ion-card *ngIf="!jobData.isJobValidated">
+        <ion-list>
+            <ion-list-header color="vojgreen" no-lines>
+                Métier
+            </ion-list-header>
+            <ion-item>
+                <ion-label floating>Secteur</ion-label>
+                <ion-textarea rows="3" [(ngModel)]="jobData.sector" (keyup)="watchSector($event)"
+                              aria-readonly="true"></ion-textarea>
+                <div item-right style="display: table-row-group;margin-left: 0;margin-right: 0">
+                    <div>
+                        <button ion-button small (click)="showSectorList()" color="vojbrown">
+                            <ion-icon name="list"></ion-icon>
+                        </button>
+                    </div>
+                    <div style="height: 100%;display: inline-table;">
+                        <button ion-button clear (click)="clearSector()" color="vojbrown"
+                                style="position: absolute; vertical-align: middle" *ngIf="jobData.sector">
+                            <ion-icon name="close-circle" style="font-size: x-large"></ion-icon>
+                        </button>
+                    </div>
+                </div>
+            </ion-item>
+            <ion-list *ngIf="sectors.length>0" no-lines>
+                <ion-item *ngFor="let s of sectors" (click)="sectorSelected(s)">
+                    <h6>{{s.libelle}}</h6>
                 </ion-item>
+            </ion-list>
+            <div [hidden]="isSectorFound"
+                 style="color:red">
+                <ion-icon name="md-arrow-dropup"></ion-icon>
+                Veuillez saisir un secteur valide, ou en choisir à partir de la liste en cliquant sur le bouton
+                ci-dessus
             </div>
-        </div>
+            <ion-item>
+                <ion-label floating>Job <span style="font-size: xx-large;color: red">*</span></ion-label>
+                <ion-textarea rows="3" [(ngModel)]="jobData.job" (keyup)="watchJob($event)" text-wrap></ion-textarea>
+                <div item-right style="display: table-row-group;margin-left: 0;margin-right: 0">
+                    <div>
+                        <button small item-right (click)="showJobList()" ion-button color="vojbrown"
+                                *ngIf="jobData.sector && isSectorFound" style="margin-left: 2px;margin-right: 2px;">
+                            <ion-icon name="list"></ion-icon>
+                        </button>
+                    </div>
+                    <div style="height: 100%;display: inline-table;">
+                        <button ion-button clear (click)="clearJob()" color="vojbrown"
+                                style="position: absolute; vertical-align: middle" *ngIf="jobData.job">
+                            <ion-icon name="close-circle" style="font-size: x-large"></ion-icon>
+                        </button>
+                    </div>
+                </div>
 
-    </ion-list>
-    <div [hidden]="isJobFound"
-         style="color:red">
-        <ion-icon name="md-arrow-dropup"></ion-icon>
-        Veuillez saisir un job valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus
-    </div>
-</ion-list>
+            </ion-item>
+            <ion-list *ngIf="jobs.length>0" text-wrap>
+                <div *ngFor="let sec of jobs">
+                    <ion-list-header color="light"> {{sec.sector}}</ion-list-header>
+                    <div *ngFor="let j of sec.jobs">
+                        <ion-item (click)="jobSelected(j)">
+                            {{j.libelle}}
+                        </ion-item>
+                    </div>
+                </div>
+
+            </ion-list>
+            <div [hidden]="isJobFound"
+                 style="color:red">
+                <ion-icon name="md-arrow-dropup"></ion-icon>
+                Veuillez saisir un job valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus
+            </div>
+        </ion-list>
+        <ion-item>
+            <button *ngIf="!isJobFound || jobData.job.length >3 " ion-button icon-left outline item-right
+                    (click)="jobValidated()">Valider
+            </button>
+        </ion-item>
+    </ion-card>
 
 
     <!-- Level -->
@@ -111,7 +196,7 @@
     </ion-list>
 
     <!-- Dispo -->
-    <ion-list  *ngIf="filterState[1].isActivated">
+    <ion-list *ngIf="filterState[1].isActivated">
         <ion-list-header color="vojgreen" no-lines>
             Disponibilité
         </ion-list-header>
@@ -152,36 +237,39 @@
     </ion-item-->
 
     <!--CITY-->
-    <ion-list  *ngIf="filterState[2].isActivated">
-        <ion-list-header color="vojgreen" no-lines>
-            Lieu
-        </ion-list-header>
-        <ion-item>
-            <ion-label floating>Ville</ion-label>
-            <ion-input [(ngModel)]="city" (keyup)="watchCity($event)"></ion-input>
-        </ion-item>
-        <ion-row  *ngIf="!isCity.done && filterState[2].isActivated">
-            <ion-col text-center>
-                <ion-spinner></ion-spinner>
-            </ion-col>
-        </ion-row>
+    <ion-card *ngIf="!isCityValidated && filterState[2].isActivated">
+        <ion-list>
+            <ion-list-header color="vojgreen" no-lines>
+                Lieu
+            </ion-list-header>
+            <ion-item>
+                <ion-label floating>Ville</ion-label>
+                <ion-input [(ngModel)]="city" (keyup)="watchCity($event)"></ion-input>
+            </ion-item>
+            <ion-row *ngIf="!isCity.done && filterState[2].isActivated">
+                <ion-col text-center>
+                    <ion-spinner></ion-spinner>
+                </ion-col>
+            </ion-row>
 
-        <ion-item *ngIf="cities.length>0">
-            <ion-list>
-                <ion-item *ngFor="let s of cities" (click)="citySelected(s)">
-                    {{s.nom}}
-                </ion-item>
-            </ion-list>
-        </ion-item>
-        <div [hidden]="isCity.found"
-             style="color:red">
-            <ion-icon name="md-arrow-dropup"></ion-icon>
-            Vérifiez l'orthographe, cette ville n'existe pas et/ou ne comporte aucune offre
-        </div>
-    </ion-list>
+            <ion-item *ngIf="cities.length>0">
+                <ion-list>
+                    <ion-item *ngFor="let s of cities" (click)="citySelected(s)">
+                        {{s.nom}}
+                    </ion-item>
+                </ion-list>
+            </ion-item>
+            <div [hidden]="isCity.found"
+                 style="color:red">
+                <ion-icon name="md-arrow-dropup"></ion-icon>
+                Vérifiez l'orthographe, cette ville n'existe pas et/ou ne comporte aucune offre
+            </div>
+        </ion-list>
+        <ion-item><button ion-button outline item-right (click)="cityValidated()" *ngIf="city">Valider</button></ion-item>
+    </ion-card>
 
     <!--ENTERPRISE-->
-    <ion-list  *ngIf="filterState[3].isActivated && !isEmployer">
+    <ion-list *ngIf="filterState[3].isActivated && !isEmployer">
         <ion-list-header color="vojgreen" no-lines>
             Entreprise
         </ion-list-header>
@@ -189,7 +277,7 @@
             <ion-label floating>Entreprise</ion-label>
             <ion-input [(ngModel)]="enterprise.name" (keyup)="watchEnterprise($event)"></ion-input>
         </ion-item>
-        <ion-row  *ngIf="!isEnterprise.done && filterState[3].isActivated">
+        <ion-row *ngIf="!isEnterprise.done && filterState[3].isActivated">
             <ion-col text-center>
                 <ion-spinner></ion-spinner>
             </ion-col>
@@ -213,13 +301,13 @@
     <ion-list *ngIf="filterState[4].isActivated" text-wrap>
         <ion-list-header color="vojgreen" no-lines>
             Langues
-            <button ion-button item-right small  color="vojbrown" (click)="showLanguages()">
+            <button ion-button item-right small color="vojbrown" (click)="showLanguages()">
                 <ion-icon name="add"></ion-icon>
             </button>
         </ion-list-header>
         <ion-item *ngFor="let item of languages">
             {{ item.libelle }}
-            <button ion-button icon-only item-right clear (click)="removeLanguage(item)"  color="vojbrown">
+            <button ion-button icon-only item-right clear (click)="removeLanguage(item)" color="vojbrown">
                 <ion-icon name="close-circle"></ion-icon>
             </button>
         </ion-item>
@@ -229,20 +317,20 @@
     <ion-list *ngIf="filterState[5].isActivated" text-wrap>
         <ion-list-header color="vojgreen" no-lines>
             Qualités
-            <button ion-button item-right small  color="vojbrown" (click)="showQualities()">
+            <button ion-button item-right small color="vojbrown" (click)="showQualities()">
                 <ion-icon name="add"></ion-icon>
             </button>
         </ion-list-header>
         <ion-item *ngFor="let item of qualities">
             {{ item.libelle }}
-            <button ion-button icon-only item-right clear (click)="removeQuality(item)"  color="vojbrown">
-                <ion-icon name="close-circle" ></ion-icon>
+            <button ion-button icon-only item-right clear (click)="removeQuality(item)" color="vojbrown">
+                <ion-icon name="close-circle"></ion-icon>
             </button>
         </ion-item>
     </ion-list>
 
     <!-- JOBYER -->
-    <ion-list  *ngIf="filterState[6].isActivated && isEmployer">
+    <ion-list *ngIf="filterState[6].isActivated && isEmployer">
         <ion-list-header color="vojgreen" no-lines>
             Jobyer
         </ion-list-header>
@@ -263,15 +351,15 @@
     </ion-fab-->
 
 
-    <ion-row>
+    <!--ion-row>
         <ion-col text-center>
-            <button  color="vojgreen" (click)="validateSearch()" ion-button icon-left
+            <button color="vojgreen" (click)="validateSearch()" ion-button icon-left
                     [color]="themeColor" small [disabled]="!jobData.job || !isJobFound">
                 <ion-icon name="search"></ion-icon>
                 Rechercher
             </button>
         </ion-col>
-    </ion-row>
+    </ion-row-->
 
 
     <ion-row>&nbsp;</ion-row>
@@ -283,25 +371,25 @@
             <ion-icon name="funnel"></ion-icon>
         </button>
         <ion-fab-list side="top">
-            <button ion-fab  *ngIf="isEmployer" [color]="filterState[6].color"  (click)="setFilter(6,fab)">
+            <button ion-fab *ngIf="isEmployer" [color]="filterState[6].color" (click)="setFilter(6,fab)">
                 <ion-icon name="contact"></ion-icon>
             </button>
-            <button ion-fab  [color]="filterState[5].color"  (click)="setFilter(5,fab)">
+            <button ion-fab [color]="filterState[5].color" (click)="setFilter(5,fab)">
                 <ion-icon name="happy"></ion-icon>
             </button>
-            <button ion-fab  [color]="filterState[4].color"  (click)="setFilter(4,fab)">
+            <button ion-fab [color]="filterState[4].color" (click)="setFilter(4,fab)">
                 <ion-icon name="globe" style="font-size: xx-large"></ion-icon>
             </button>
-            <button ion-fab  [color]="filterState[3].color"  (click)="setFilter(3,fab)"  *ngIf="!isEmployer">
+            <button ion-fab [color]="filterState[3].color" (click)="setFilter(3,fab)" [hidden]="isEmployer">
                 <ion-icon name="cube"></ion-icon>
             </button>
-            <button ion-fab  [color]="filterState[2].color"  (click)="setFilter(2,fab)">
+            <button ion-fab [color]="filterState[2].color" (click)="setFilter(2,fab)" *ngIf="!isCityValidated">
                 <ion-icon name="pin" style="font-size: xx-large"></ion-icon>
             </button>
-            <button ion-fab outline [color]="filterState[1].color"  (click)="setFilter(1,fab)">
+            <button ion-fab outline [color]="filterState[1].color" (click)="setFilter(1,fab)">
                 <ion-icon name="md-clock"></ion-icon>
             </button>
-            <button ion-fab  [color]="filterState[0].color"  (click)="setFilter(0,fab)">
+            <button ion-fab [color]="filterState[0].color" (click)="setFilter(0,fab)">
                 <ion-icon name="podium"></ion-icon>
             </button>
         </ion-fab-list>
