@@ -80,7 +80,7 @@
         </ion-item>
 
         <ion-item style="margin-top: 1.5em" [hidden]="isEmployer || isAndroid4">
-            <ion-label>Date de naissance</ion-label>
+            <ion-label>Date de naissance <span class="asteriskb">*</span></ion-label>
             <ion-datetime [(ngModel)]="birthdate" displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok"
                           (ionChange)="watchBirthdate($event)"></ion-datetime>
         </ion-item>
@@ -95,19 +95,19 @@
         </ion-item>
 
         <ion-item [hidden]="isEmployer">
-            <ion-label floating>Pays de naissance</ion-label>
+            <ion-label floating>Pays de naissance <span class="asteriskb">*</span></ion-label>
             <ion-select [(ngModel)]="index" (ionChange)="watchBirthCountry()">
                 <ion-option *ngFor="let p of pays" [value] = "p.indicatif_telephonique" value="p.nom">{{p.nom}}</ion-option>
             </ion-select>
         </ion-item>
 
         <ion-item *ngIf="!isEmployer && !isFrench">
-            <ion-label floating>Code postal du lieu de naissance</ion-label>
+            <ion-label floating>Code postal du lieu de naissance <span class="asteriskb">*</span></ion-label>
             <ion-input type="text" [(ngModel)]="indexForForeigner" disabled></ion-input>
         </ion-item>
 
         <ion-item [hidden]="isEmployer || !isFrench">
-            <ion-label floating> Département de naissance </ion-label>
+            <ion-label floating> Département de naissance</ion-label>
             <ion-input type="text" [(ngModel)]="birthdep" (keyup)="watchBirthDep($event)"></ion-input>
         </ion-item>
         <ion-item [hidden]="isEmployer || departments.length==0">
@@ -119,7 +119,7 @@
         </ion-item>
 
         <ion-item [hidden]="isEmployer || !isFrench">
-            <ion-label floating>Lieu de naissance</ion-label>
+            <ion-label floating>Lieu de naissance <span class="asteriskb">*</span></ion-label>
             <ion-input type="text" [(ngModel)]="birthplace" (keyup)="watchBirthPlace($event)"></ion-input>
         </ion-item>
         <ion-item [hidden]="isEmployer || communes.length==0">
@@ -148,7 +148,7 @@
         </ion-item>-->
 
         <ion-item [hidden]="isEmployer">
-            <ion-label floating>N° de sécurité sociale</ion-label>
+            <ion-label floating>N° de sécurité sociale <span class="asteriskb">*</span></ion-label>
             <ion-input type="number" [(ngModel)]="numSS" (keyup)="watchNumSS($event)" maxlength="15"></ion-input>
         </ion-item>
 		<div *ngIf="showNSSError()" class="error-box">{{numSSMessage}}</div>
@@ -170,25 +170,25 @@
                 Type de document
             </ion-list-header>
             <ion-item>
-                <ion-label>Carte de séjour temporaire</ion-label>
+                <ion-label>Carte de séjour temporaire <span class="asteriskb">*</span></ion-label>
                 <ion-radio value="0"></ion-radio>
             </ion-item>
             <ion-item>
-                <ion-label>Carte de résident</ion-label>
+                <ion-label>Carte de résident <span class="asteriskb">*</span></ion-label>
                 <ion-radio value="1"></ion-radio>
             </ion-item>
         </ion-list>
 
         <ion-list radio-group [(ngModel)]="isCIN" style="margin-bottom: 5px;" *ngIf="!isEmployer && isEuropean == 0" >
             <ion-list-header>
-                Type de document
+                Type de document <span class="asteriskb">*</span>
             </ion-list-header>
             <ion-item>
-                <ion-label>CNI ou passeport</ion-label>
+                <ion-label>CNI ou passeport </ion-label>
                 <ion-radio value="1"></ion-radio>
             </ion-item>
             <ion-item>
-                <ion-label>Carte de ressortissant d'un état membre de l'UE</ion-label>
+                <ion-label>Carte de ressortissant d'un état membre de l'UE <span class="asteriskb">*</span></ion-label>
                 <ion-radio value="0"></ion-radio>
             </ion-item>
         </ion-list>
@@ -199,7 +199,7 @@
         </ion-item>
 
         <ion-item [hidden]="isEmployer || isEuropean == 1 || isCIN == '0'">
-            <ion-label floating> N° de la CNI ou Passeport </ion-label>
+            <ion-label floating> N° de la CNI ou Passeport <span class="asteriskb">*</span></ion-label>
             <ion-input type="text" [(ngModel)]="cni" (keyup)="watchOfficialDocument($event)" maxlength="13"></ion-input>
         </ion-item>
         <div *ngIf="showCNIError()"
@@ -207,24 +207,24 @@
         </div>
 
         <ion-item [hidden]="isEmployer || isEuropean == 1 || isCIN == '1'">
-            <ion-label floating> N° de la carte de ressortissant </ion-label>
+            <ion-label floating> N° de la carte de ressortissant <span class="asteriskb">*</span></ion-label>
             <ion-input type="text" [(ngModel)]="numStay"></ion-input>
         </ion-item>
 
-            <ion-item [hidden]="isEmployer">
-            <ion-label>Pièce d'identité délivrée le</ion-label>
+            <ion-item [hidden]="isEmployer" text-wrap>
+            <ion-label>Pièce d'identité délivrée le<span class="asteriskb">*</span></ion-label>
             <ion-datetime [(ngModel)]="tsejProvideDate" (ionChange)="watchTsejProvideDate($event)"
                           displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejProvideDate"
                           [(min)]="mintsejProvideDate"></ion-datetime>
         </ion-item>
         <ion-item [hidden]="isEmployer">
-            <ion-label>Pièce d'identité valable du</ion-label>
+            <ion-label>Valable du <span class="asteriskb">*</span></ion-label>
             <ion-datetime [(ngModel)]="tsejFromDate" (ionChange)="watchTsejFromDate($event)"
                           displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejFromDate"
                           [(min)]="mintsejFromDate"></ion-datetime>
         </ion-item>
         <ion-item [hidden]="isEmployer">
-            <ion-label>Pièce d'identité valable au</ion-label>
+            <ion-label>Au <span class="asteriskb">*</span></ion-label>
             <ion-datetime [(ngModel)]="tsejToDate" displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok"
                           [(max)]="maxtsejToDate" [(min)]="mintsejToDate"></ion-datetime>
         </ion-item>
@@ -295,7 +295,7 @@
         <ion-row *ngIf="!isEmployer">
             <ion-col text-center>
                 <ion-label>{{uploadCVVerb}} votre CV</ion-label>
-                <button class="file-upload button-picture" [style.backgroundColor]="themeColor">
+                <button class="file-upload button-picture" [color]="themeColor" ion-button>
                     <input id="cvInput" type="file" class="file-input" (change)="onChangeCVUpload($event)">
                     <ion-icon name='folder'></ion-icon>
                 </button>
