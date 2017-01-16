@@ -11,6 +11,7 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 export class CorporamaService {
   configuration;
   projectTarget;
+  data:any;
 
   constructor(public http: Http, gc: GlobalConfigs) {
     this.http = http;
@@ -82,5 +83,24 @@ export class CorporamaService {
       companies.push(company);
     }
     return companies;
+  }
+
+  autocompleteEnterprise(letters) {
+    let sql = "select pk_user_entreprise as id, nom_ou_raison_sociale as nom from user_entreprise where lower(unaccent(nom_ou_raison_sociale)) LIKE lower(unaccent('%" + letters + "%')) order by nom asc";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+          .map(res => res.json())
+          .subscribe((data:any) => {
+            // we've got back the raw data, now generate the core schedule data
+            // and save the data for later reference
+            this.data = data.data;
+            resolve(this.data);
+          });
+    });
+
   }
 }

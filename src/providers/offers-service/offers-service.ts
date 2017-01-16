@@ -686,7 +686,7 @@ export class OffersService {
     }
 
     loadJobsToLocal() {
-        let sql = 'select pk_user_job as id, libelle as libelle, fk_user_metier as idSector from user_job order by libelle asc';
+        let sql = 'select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc';
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,

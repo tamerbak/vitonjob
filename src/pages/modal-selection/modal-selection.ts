@@ -128,9 +128,10 @@ export class ModalSelectionPage {
         }
         break;
       case 'langue' :
-        if (this.params.get('selection').languages.filter((v) => {
-            return (v.libelle.toLowerCase().indexOf(item.libelle.toLowerCase()) > -1)
-          }).length == 0) {
+        let filteredList = this.params.get('selection').languages.filter((v) => {
+          return (v.libelle.toLowerCase().indexOf(item.libelle.toLowerCase()) > -1)
+        });
+        if (filteredList.length == 0) {
           item.class = 'com.vitonjob.callouts.auth.model.LanguageData';
           this.params.get('selection').languages.push(item);
         } else {

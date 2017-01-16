@@ -101,7 +101,7 @@ export class CommunesService {
     }
 
     autocompleteCity(letters) {
-        let sql = "select pk_user_ville as id, nom from user_ville where lower_unaccent(nom) % lower_unaccent('" + letters + "') order by nom asc limit 20";
+        let sql = "select pk_user_ville as id, nom from user_ville where lower(unaccent(nom)) LIKE lower(unaccent('" + letters + "%')) order by nom asc";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
