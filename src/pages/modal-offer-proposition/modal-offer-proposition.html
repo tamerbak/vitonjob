@@ -2,7 +2,7 @@
     <ion-navbar [color]="themeColor">
         <ion-title>Proposition</ion-title>
         <ion-buttons end>
-            <button (click)="closeModal()">
+            <button (click)="closeModal()" clear>
                 <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
             </button>
         </ion-buttons>
@@ -18,23 +18,23 @@
         <ion-list-header>Langues</ion-list-header>
         <ion-item *ngFor="let l of proposedLanguages">
             <span>{{l.libelle}}</span>
-            <button item-right secondary (click)="deleteLanguage(l)">
+            <button item-right [color] = "themeColor" (click)="deleteLanguage(l)" ion-button>
                 <ion-icon name="md-trash"></ion-icon>
             </button>
         </ion-item>
         <ion-list-header>Indispensables</ion-list-header>
         <ion-item *ngFor="let q of proposedQualities">
             <span>{{q.libelle}}</span>
-            <button item-right secondary (click)="deleteQuality(q)">
+            <button ion-button [color] = "themeColor" item-right secondary (click)="deleteQuality(q)">
                 <ion-icon name="md-trash"></ion-icon>
             </button>
         </ion-item>
 
     </ion-list>
-    <button block secondary (click)="saveProposition()">
+    <button block ion-button [color] = "themeColor" (click)="saveProposition()">
         Enregistrer
     </button>
-    <button block primary (click)="cancel()">
+    <button block ion-button [color] = "themeColor"  (click)="cancel()">
         Annuler
     </button>
 </ion-content>
