@@ -982,14 +982,15 @@ export class HomePage {
     }
 
     getHelp() {
+        
         let content = [{
             title: "Recherche “Vit-On-Job” !",
             description: "Résumez en une phrase ce que vous cherchez (Poste, date, expérience, nombre de places, horaires, " +
-            "lieu...) ex : je veux un serveur sur Villepinte disponible demain"
+            "lieu...) ex: je veux un serveur sur Villepinte disponible demain"
         },
             {
                 title: "Recherche classique",
-                description: "Trouvez vos jobyers en remplissantles critères."
+                description: "Trouvez vos jobyers en remplissant les critères."
             },
             {
                 title: "Offres imminentes",
@@ -1002,6 +1003,6 @@ export class HomePage {
         ];
         let helpModal = this.modal.create(ModalHelpPage, {'content': content});
         helpModal.present(helpModal);
-
+        
     }
 }
