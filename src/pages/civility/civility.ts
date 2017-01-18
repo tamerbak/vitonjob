@@ -22,7 +22,7 @@ import {AuthenticationService} from "../../providers/authentication-service/auth
 import {Storage} from "@ionic/storage";
 import {FileUtils} from "../../utils/fileUtils";
 import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
-
+import {ConventionService} from "../../providers/convention-service/convention-service"
 declare var cordova: any;
 declare var window;
 
@@ -104,6 +104,7 @@ export class CivilityPage {
   public conventionId: any;
   public conventions: any = [];
   public convObject: any;
+  public collective_heure_hebdo: number;
 
   //birth country and department
   public pays: any = [];
@@ -163,7 +164,9 @@ export class CivilityPage {
               private _loading: LoadingController,
               private _modal: ModalController,
               private _toast: ToastController,
-              private _alert: AlertController, public storage: Storage) {
+              private _alert: AlertController,
+              public storage: Storage,
+              private conventionService: ConventionService) {
     // Set global configs
     // Get target to determine configs
 
@@ -218,6 +221,15 @@ export class CivilityPage {
     let d = (today.getDate()) < 10 ? "0" + (today.getDate()) : "" + (today.getDate());
     this.maxtsejProvideDate = today.getFullYear() + "-" + m + "-" + d;
     this.mintsejProvideDate = (today.getFullYear() - 70) + "-01-01";
+
+    this.conventionService.loadConventionData(this.currentUser.employer.id).then((data: any)=>{
+      if (data.length > 0) {
+        this.collective_heure_hebdo = Number(data[0].duree_collective_travail_hebdo);
+      } else {
+        this.collective_heure_hebdo = 35;
+      }
+    });
+
     if (this.currentUser.employer.enterprises && this.currentUser.employer.enterprises.length > 0) {
       if (this.currentUser.employer.entreprises[0].conventionCollective &&
         this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
@@ -632,7 +644,7 @@ export class CivilityPage {
        let entrepriseId = this.currentUser.employer.entreprises[0].id;
       // update employer
       this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname,
-        this.siret, this.ape, employerId, entrepriseId, this.projectTarget, this.medecineId, this.conventionId)
+        this.siret, this.ape, employerId, entrepriseId, this.projectTarget, this.medecineId, this.conventionId, this.collective_heure_hebdo)
         .then((data: {status: string, error: string}) => {
           if (!data || data.status == "failure") {
             console.log(data.error);

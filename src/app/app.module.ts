@@ -89,6 +89,7 @@ import {AttachementsService} from "../providers/attachements-service/attachement
 import {BankService} from "../providers/bank-service/bank-service";
 import {CommunesService} from "../providers/communes-service/communes-service";
 import {ContractService} from "../providers/contract-service/contract-service";
+import {ConventionService} from "../providers/convention-service/convention-service";
 import {CorporamaService} from "../providers/corporama-service/corporama-service";
 import {FinanceService} from "../providers/finance-service/finance-service";
 import {HomeService} from "../providers/home-service/home-service";
@@ -301,6 +302,7 @@ import {ModalHelpPage} from "../pages/modal-help/modal-help";
         BankService,
         CommunesService,
         ContractService,
+        ConventionService,
         CorporamaService,
         DataProviderService,
         FinanceService,
