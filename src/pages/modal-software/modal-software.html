@@ -34,7 +34,7 @@
     <ion-list>
         <ion-item *ngFor="let s of savedSoftwares">
             <label>{{s.nom}} - {{s.experience}}</label>
-            <button small item-right danger (click)="removeSoftware(s)" >
+            <button ion-button small item-right danger (click)="removeSoftware(s)" color="vojgrey">
                 <ion-icon name="remove-circle"></ion-icon>
             </button>
         </ion-item>

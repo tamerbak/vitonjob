@@ -17,7 +17,7 @@
 
       </ion-select>
     </ion-item>
-    <button small item primary block
+    <button ion-button icon-left small item color="primary"
             [disabled]="!selectedLangue || selectedLangue.length == 0"
             (click)="addLangue()" >
       <ion-icon  name="add-circle"></ion-icon>Ajouter
@@ -26,7 +26,7 @@
   <ion-list>
     <ion-item *ngFor="let q of savedLangues">
       <label>{{q.libelle}}</label>
-      <button small item-right danger (click)="removeLangue(q)" >
+      <button ion-button small item-right danger (click)="removeLangue(q)" color="vojgrey">
         <ion-icon name="remove-circle"></ion-icon>
       </button>
     </ion-item>
