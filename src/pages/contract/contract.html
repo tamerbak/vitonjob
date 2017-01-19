@@ -17,7 +17,7 @@
         </ion-list-header>
 
         <ion-item class="contract-item">
-            <ion-label>Agence d'interim</ion-label>
+            <ion-label color="vojlightgray">Agence d'interim</ion-label>
             <ion-input type="text" [(ngModel)]="contractData.interim" disabled="true"></ion-input>
         </ion-item>
 
@@ -48,52 +48,52 @@
         </ion-list-header>
 
         <ion-item class="contract-item">
-            <ion-label>Nom&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-label color="vojlightgray">Nom&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
             <ion-input type="text" [(ngModel)]="jobyer.nom" disabled="true" ></ion-input>
         </ion-item>
 
         <ion-item class="contract-item">
-            <ion-label>Prénom&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-label color="vojlightgray">Prénom&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
             <ion-input type="text" [(ngModel)]="jobyer.prenom" disabled="true" ></ion-input>
         </ion-item>
 
         <ion-item class="contract-item">
-            <ion-label>N° Sécu. sociale&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-label color="vojlightgray">N° Sécu. sociale&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
             <ion-input type="text" [(ngModel)]="jobyer.numSS" disabled="true" ></ion-input>
         </ion-item>
 
         <ion-item class="contract-item">
-            <ion-label>Date de naissance&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-label color="vojlightgray">Date de naissance&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
             <ion-input type="date" [(ngModel)]="jobyerBirthDate" disabled="true" ></ion-input>
         </ion-item>
 
         <ion-item class="contract-item">
-            <ion-label>Lieu de naissance&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-label color="vojlightgray">Lieu de naissance&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
             <ion-input type="text" [(ngModel)]="jobyer.lieuNaissance" disabled="true" ></ion-input>
         </ion-item>
 
         <ion-item class="contract-item">
-            <ion-label>Nationalité&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-label color="vojlightgray">Nationalité&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
             <ion-input type="text" [(ngModel)]="jobyer.nationaliteLibelle" disabled="true" ></ion-input>
         </ion-item>
 
         <ion-item class="contract-item">
-            <ion-label>CNI ou Passeport&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
-            <ion-input type="text" [(ngModel)]="contractData.numeroTitreTravail" disabled="true" ></ion-input>
+            <ion-label color="vojlightgray">CNI ou Passeport&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-input type="text" [(ngModel)]="contractData.numeroTitreTravail" disabled="true"></ion-input>
         </ion-item>
 
         <ion-item class="contract-item">
-            <ion-label>Valable du&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-label color="vojlightgray">Valable du&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
             <ion-input type="date" [(ngModel)]="contractData.debutTitreTravail" disabled="true" ></ion-input>
         </ion-item>
 
         <ion-item class="contract-item">
-            <ion-label>Au&nbsp;<span style="color: #ff0000;" >*</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ion-label>
+            <ion-label color="vojlightgray"> Au&nbsp;<span style="color: #ff0000;" >*</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ion-label>
             <ion-input type="date" [(ngModel)]="contractData.finTitreTravail" disabled="true" ></ion-input>
         </ion-item>
 
         <ion-item class="contract-item">
-            <ion-label>Qualification&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-label color="vojlightgray">Qualification&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
             <ion-input type="text" [(ngModel)]="contractData.qualification" disabled="true" ></ion-input>
         </ion-item>
     </ion-list>
@@ -105,15 +105,15 @@
         </ion-list-header>
 
         <ion-item class="contract-item">
-            <ion-label>Début de mission&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-label color="vojlightgray">Début de mission&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
             <ion-input type="date" [(ngModel)]="contractData.missionStartDate" disabled="true"></ion-input>
         </ion-item>
         <ion-item class="contract-item">
-            <ion-label>Fin de mission&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-label color="vojlightgray">Fin de mission&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
             <ion-input type="date" [(ngModel)]="contractData.missionEndDate" disabled="true"></ion-input>
         </ion-item>
         <ion-item class="contract-item">
-            <ion-label>P. essai (J)&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-label color="vojlightgray">P. essai (J)&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
             <ion-input type="number" [(ngModel)]="contractData.trialPeriod" disabled="true"></ion-input>
         </ion-item>
         <ion-item class="contract-item">
@@ -238,20 +238,20 @@
         </ion-list-header>
 
         <ion-item class="contract-item">
-            <ion-label>Heures normales</ion-label>
+            <ion-label color="vojlightgray">Heures normales</ion-label>
             <ion-input type="text" [(ngModel)]="contractData.baseSalary" disabled="true">
             </ion-input>
             <span>€ B/H</span>
         </ion-item>
 
         <ion-item class="contract-item">
-            <ion-label>Ind. fin de mission&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-label color="vojlightgray">Ind. fin de mission&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
             <ion-input type="text" [(ngModel)]="contractData.indemniteFinMission" disabled="true"></ion-input>
 
         </ion-item>
 
         <ion-item class="contract-item">
-            <ion-label>Ind. congés payés&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-label color="vojlightgray">Ind. congés payés&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
             <ion-input type="text" [(ngModel)]="contractData.indemniteCongesPayes" disabled="true"></ion-input>
 
         </ion-item>
@@ -272,11 +272,11 @@
             MEDECINE DU TRAVAIL
         </ion-list-header>
         <ion-item class="contract-item">
-            <ion-label>Centre de médecine ETT</ion-label>
+            <ion-label color="vojlightgray">Centre de médecine ETT</ion-label>
             <ion-input type="text" [(ngModel)]="contractData.centreMedecineETT" disabled="true"></ion-input>
         </ion-item>
         <ion-item class="contract-item">
-            <ion-label>Adresse</ion-label>
+            <ion-label color="vojlightgray">Adresse</ion-label>
             <ion-input type="text" [(ngModel)]="contractData.adresseCentreMedecineETT" disabled="true"></ion-input>
         </ion-item>
         <ion-item class="contract-item">
