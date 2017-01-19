@@ -183,6 +183,8 @@ export class OffersService {
                         offers = rawData.entreprises[0].offers;
                         console.log('off',offerData);
                         offerData.nbPoste = offerData.jobData.nbPoste;
+                        offerData.contact = offerData.jobData.contact;
+                        offerData.telephone = offerData.jobData.telephone;
                         offers.push(offerData);
                         // Save new offer list in SqlStorage :
                         this.db.set(currentUserVar, JSON.stringify(data));
@@ -212,7 +214,6 @@ export class OffersService {
      * @caution ALWAYS CALLED AFTER setOfferInLocal()!
      */
     setOfferInRemote(offerData: any, projectTarget: string) {
-        console.log("od",offerData)
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
@@ -285,7 +286,7 @@ export class OffersService {
                         switch (projectTarget) {
                             case 'employer' :
                                 this.updatePrerequisObligatoires(idOffer,offerData.jobData.prerequisObligatoires);
-                                this.updateNbPoste(offerData.jobData.nbPoste,idOffer);
+                                this.updateOfferEntrepriseTitle(offerData);
                                 break;
                             case 'jobyer':
                                 this.updateNecessaryDocuments(idOffer,offerData.jobData.prerequisObligatoires);
@@ -1261,8 +1262,7 @@ export class OffersService {
         if (projectTarget == 'jobyer') {
             this.updateOfferJobyerJob(offer).then((data:any) => {
                 this.updateOfferJobyerTitle(offer);
-                console.log("up",offer);
-                this.updateNbPoste(offer.jobData.nbPoste,offer.idOffer);
+                
             });
 
         } else {
@@ -1344,8 +1344,12 @@ export class OffersService {
     }
 
     updateOfferEntrepriseTitle(offer) {
-
-        let sql = "update user_offre_entreprise set titre='" + this.sqlfyText(offer.title) + "', tarif_a_l_heure='" + offer.jobData.remuneration + "' where pk_user_offre_entreprise=" + offer.idOffer;
+        let sql = "update user_offre_entreprise set titre='" + this.sqlfyText(offer.title) +
+                    "', tarif_a_l_heure='" + offer.jobData.remuneration +
+                    "', nombre_de_postes = " + offer.nbPoste +
+                    ", contact_sur_place = '" + offer.contact +
+                    "', telephone_contact = '" + offer.telephone +
+                    "' where pk_user_offre_entreprise=" + offer.idOffer;
 
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,

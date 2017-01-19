@@ -187,6 +187,28 @@
         <google-places [(bindModelData)]="searchData" (onPlaceChanged)='showResults($event)'></google-places>
       </ion-col>
     </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item style="padding-left: 0;">
+          <ion-label floating>Contact sur place</ion-label>
+          <ion-input
+            type="text"
+            [(ngModel)]="jobData.contact"
+          ></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item style="padding-left: 0;">
+          <ion-label floating>N° Téléphone </ion-label>
+          <ion-input
+            type="text"
+            [(ngModel)]="jobData.telephone"
+          ></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
   </ion-list>
 
 

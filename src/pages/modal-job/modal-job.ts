@@ -49,7 +49,9 @@ export class ModalJobPage {
     prerequisObligatoires: any,
     pharmaSoftwares: any,
     adress: any,
-    nbPoste:number
+    nbPoste:number,
+    contact:any,
+    telephone:any
   };
   public offerService: any;
   public sectors: any = [];
@@ -419,7 +421,9 @@ export class ModalJobPage {
           city: '',
           country: ''
         },
-        nbPoste:1
+        nbPoste:1,
+        contact:"",
+        telephone:""
       }
     }
   }
