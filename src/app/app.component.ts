@@ -332,7 +332,7 @@ export class Vitonjob {
       {title: "Mon compte", description: "Profil, options et coordonnées bancaires", component: ProfilePage, icon: "person", isBadged: false},
       {title: "Mes offres", description: "Gestion des offres, liste, ajout, modification...", component: OfferListPage, icon: "megaphone", isBadged: true},
       {title: "Mes missions", description: "Gestion des missions, horaires...", component: MissionListPage, icon: "paper", isBadged: false},
-      {title: (this.isEmployer ? "Mes annonces" : "Annonces"), description: "Gestion des annonces et leurs relation avec les offres", component: AdvertListPage, icon: "clipboard", isBadged: false}
+      {title: (this.isEmployer ? "Mes annonces" : "Annonces"), description: "Gestion des annonces et leurs relations avec les offres", component: AdvertListPage, icon: "clipboard", isBadged: false}
       //{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
     ];
     this.isEmployer = (this.projectTarget == 'employer');
