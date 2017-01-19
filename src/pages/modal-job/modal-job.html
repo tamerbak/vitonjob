@@ -174,7 +174,7 @@
   </ion-list>
 
   <ion-list>
-    <ion-list-header color="primary"> Adresse</ion-list-header>
+    <ion-list-header color="primary"> Coordonnées</ion-list-header>
 
     <ion-item no-lines>
       <ion-label stacked color="primary">
@@ -187,7 +187,7 @@
         <google-places [(bindModelData)]="searchData" (onPlaceChanged)='showResults($event)'></google-places>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row *ngIf="projectTarget ==='employer'">
       <ion-col>
         <ion-item style="padding-left: 0;">
           <ion-label floating>Contact sur place</ion-label>
@@ -198,7 +198,7 @@
         </ion-item>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row *ngIf="projectTarget ==='employer'">
       <ion-col>
         <ion-item style="padding-left: 0;">
           <ion-label floating>N° Téléphone </ion-label>
