@@ -44,6 +44,7 @@ export class PendingContratDetailsPage {
   public videoLink: string;
   public starsText: string = '';
   public avatar:string;
+  public themeColor:string;
 
   constructor(public nav: NavController,
               public params: NavParams,
@@ -57,6 +58,8 @@ export class PendingContratDetailsPage {
     this.isEmployer = this.projectTarget == 'employer';
     this.result = params.data.searchResult;
     this.delegate = params.data.delegate;
+    let config = Configs.setConfigs(this.projectTarget);
+    this.themeColor = config.themeColor;
     let configInversed = (this.projectTarget === 'employer') ? Configs.setConfigs('jobyer') : Configs.setConfigs('employer');
     this.avatar = (this.result.avatar) ? this.result.avatar : configInversed.avatars[0].url;
     if (this.result.titreOffre)

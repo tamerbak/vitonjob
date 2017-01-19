@@ -1,6 +1,6 @@
 <ion-header>
-    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-        <button menuToggle>
+    <ion-navbar [color]="themeColor">
+        <button ion-button menuToggle>
             <ion-icon name="menu"></ion-icon>
         </button>
         <ion-title>{{mailTitle}}</ion-title>
@@ -26,7 +26,7 @@
             </ion-item>
         </ion-col>
         <ion-col width-20>
-            <button (click)="doRadioAlert()" class="button button-clear button-outline">
+            <button ion-button (click)="doRadioAlert()" class="button button-clear button-outline">
                 <ion-icon name="ios-arrow-down"></ion-icon>
             </button>
         </ion-col>
@@ -58,7 +58,7 @@
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <button block (click)="authenticate()" [style.backgroundColor]="themeColor" [disabled]="isAuthDisabled()"
+            <button ion-button block (click)="authenticate()" [style.backgroundColor]="themeColor" [disabled]="isAuthDisabled()"
                     type="submit">
                 <ion-icon name="log-in"></ion-icon>
                 {{libelleButton}}
@@ -69,7 +69,7 @@
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <button block (click)="goBack()" light>
+            <button ion-button block (click)="goBack()" light>
                 <ion-icon name="undo"></ion-icon>
                 Quitter
             </button>
@@ -80,7 +80,7 @@
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <button block clear (click)="displayPasswordAlert()">
+            <button ion-button block clear (click)="displayPasswordAlert()">
                 <ion-icon name="key"></ion-icon>
                 Mot de passe oublié
             </button>

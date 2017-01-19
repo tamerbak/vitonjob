@@ -64,7 +64,7 @@
 
       <ion-fab-list side="top">
         <button ion-fab class="offer-top-left" [ngStyle]="steps.styleDisableJob"
-                [style.background]="backGroundColor" (click)="showJobModal()">
+                [color]="themeColor" (click)="showJobModal()">
           <ion-icon name="briefcase" style="color:white;font-size: -webkit-xxx-large;"></ion-icon>
         </button>
 
@@ -83,7 +83,7 @@
 
       <ion-fab-list side="right">
         <button ion-fab class="offer-top-right" [ngStyle]="steps.styleDisableCalendar"
-                [style.backgroundColor]="backGroundColor" (click)="showCalendarModal()">
+                [color]="themeColor" (click)="showCalendarModal()">
           <ion-icon name="md-calendar" style="color:white;font-size: -webkit-xxx-large;"></ion-icon>
         </button>
 
@@ -117,7 +117,7 @@
 
       <ion-fab-list side="left">
         <button ion-fab class="offer-bottom-right" [ngStyle]="steps.styleDisableLanguage"
-                [style.backgroundColor]="backGroundColor" (click)="showLanguageModal()">
+                [color]="themeColor" (click)="showLanguageModal()">
           <ion-icon name="globe" color="themeColor" style="color:white;font-size: -webkit-xxx-large;"></ion-icon>
           </button>
 
