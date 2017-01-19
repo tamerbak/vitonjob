@@ -15,7 +15,7 @@
   <ion-fab top right edge class="myEdge">
     <button ion-fab [color]="themeColor" class="img-button">
       <!--div *ngIf="!(userImageURL=== 'none')" style="max-width: 150%;"-->
-      <img [src]="userImageURL" style="max-width: 150%;" *ngIf="!(userImageURL=== 'none')">
+      <img [src]="userImageURL" style="max-width: 125%;" *ngIf="!(userImageURL=== 'none')">
       <!--/div-->
       <ion-spinner *ngIf="(userImageURL==='none')"></ion-spinner>
 
