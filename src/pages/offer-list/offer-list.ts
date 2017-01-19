@@ -103,6 +103,8 @@ export class OfferListPage {
       this.offerList = data;
       //debugger;
       for (var i = 0; i < this.offerList.length; i++) {
+        console.log("nb",this.offerList[i].nbPoste);
+        this.offerList[i].jobData.nbPoste = this.offerList[i].nbPoste;
         let offer = this.offerList[i];
         if (isUndefined(offer) || !offer || !offer.jobData) {
           continue;

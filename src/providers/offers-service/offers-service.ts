@@ -93,6 +93,7 @@ export class OffersService {
                                 this.offerList = employerData.entreprises[0].offers;
                             }
                             for(let i = 0 ; i < this.offerList.length ; i++){
+                                this.offerList[i].jobData.nbPoste = this.offerList[i].nbPoste;
                                 this.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then((data:any) =>{
                                     this.offerList[i].jobData.prerequisObligatoires = [];
                                     for(let j = 0 ; j < data.length ; j++)
@@ -180,6 +181,8 @@ export class OffersService {
                         //adding userId for remote storing
                         offerData.identity = rawData.entreprises[0].id;
                         offers = rawData.entreprises[0].offers;
+                        console.log('off',offerData);
+                        offerData.nbPoste = offerData.jobData.nbPoste;
                         offers.push(offerData);
                         // Save new offer list in SqlStorage :
                         this.db.set(currentUserVar, JSON.stringify(data));
@@ -209,6 +212,7 @@ export class OffersService {
      * @caution ALWAYS CALLED AFTER setOfferInLocal()!
      */
     setOfferInRemote(offerData: any, projectTarget: string) {
+        console.log("od",offerData)
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
@@ -281,6 +285,7 @@ export class OffersService {
                         switch (projectTarget) {
                             case 'employer' :
                                 this.updatePrerequisObligatoires(idOffer,offerData.jobData.prerequisObligatoires);
+                                this.updateNbPoste(offerData.jobData.nbPoste,idOffer);
                                 break;
                             case 'jobyer':
                                 this.updateNecessaryDocuments(idOffer,offerData.jobData.prerequisObligatoires);
@@ -297,6 +302,19 @@ export class OffersService {
         });
 
     }
+
+    updateNbPoste(nbPoste, offerId){
+        let sql = "update user_offre_entreprise set nombre_de_postes = " + nbPoste + " where pk_user_offre_entreprise = " + offerId;
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                resolve(data.data);
+            });
+        });
+    }
+
 
     saveOfferAdress(offer, offerAddress, streetNumberOA, streetOA,
                     cityOA, zipCodeOA, nameOA, countryOA, idTiers, type) {
@@ -1243,6 +1261,8 @@ export class OffersService {
         if (projectTarget == 'jobyer') {
             this.updateOfferJobyerJob(offer).then((data:any) => {
                 this.updateOfferJobyerTitle(offer);
+                console.log("up",offer);
+                this.updateNbPoste(offer.jobData.nbPoste,offer.idOffer);
             });
 
         } else {

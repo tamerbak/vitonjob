@@ -149,6 +149,30 @@
     </ion-row>
   </ion-list>
 
+  <ion-list *ngIf="projectTarget ==='employer'">
+    <ion-list-header color="primary">
+      Nombre de postes
+    </ion-list-header>
+    <ion-row>
+      <ion-col>
+        <ion-item style="padding-left: 0;">
+          <ion-label floating>Nombre de postes <span class="asterisk">*</span></ion-label>
+          <ion-input
+            type="number"
+            step=1
+            min="1"
+            [(ngModel)]="jobData.nbPoste"
+          ></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="!jobData.nbPoste || jobData.nbPoste < 1"
+             style="color:red">
+      <ion-icon name="md-arrow-dropup"></ion-icon>
+      Veuillez saisir le nombre de postes
+    </ion-row>
+  </ion-list>
+
   <ion-list>
     <ion-list-header color="primary"> Adresse</ion-list-header>
 
@@ -269,7 +293,7 @@
   <ion-row>
     <ion-col text-center>
       <button [color]="themeColor" ion-button icon-left small
-              [disabled]="!jobData.job || !jobData.sector || !jobData.remuneration || !isSectorFound || !isJobFound || jobs.length > 0 || sectors.length > 0 || !searchData || searchData.length ==0"
+              [disabled]="(projectTarget === 'employer' && (!jobData.nbPoste || jobData.nbPoste <1)) || !jobData.job || !jobData.sector || !jobData.remuneration || !isSectorFound || !isJobFound || jobs.length > 0 || sectors.length > 0 || !searchData || searchData.length ==0"
               (click)="validateJob()">
         <ion-icon name="checkmark-circle"></ion-icon>
         Valider

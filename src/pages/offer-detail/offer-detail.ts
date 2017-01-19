@@ -368,6 +368,7 @@ export class OfferDetailPage {
       city: '',
       country: ''
     };
+    console.log("sm",this.offer.jobData,this.offer)
     let modal = this.modal.create(ModalJobPage, {jobData: this.offer.jobData});
     modal.onDidDismiss((data: any) => {
       this.modified.isJob = data.validated;
@@ -375,6 +376,7 @@ export class OfferDetailPage {
       //this.localOffer.set('jobData', JSON.stringify(data));
       if (this.modified.isJob) {
         this.offer.jobData = data;
+        this.offer.nbPoste = data.nbPoste;
         this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
         this.offerService.updateOfferJob(this.offer, this.projectTarget);
         if (this.offer.jobData.adress && this.offer.jobData.adress.zipCode && this.offer.jobData.adress.zipCode.length > 0) {
