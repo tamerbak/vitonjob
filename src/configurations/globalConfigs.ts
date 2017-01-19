@@ -28,6 +28,12 @@ export class GlobalConfigs {
         "electronic-signature": "docusign", // "yousign", "docusign"
     };
 
+    // DEV or PROD environment
+    /**
+     * Change here the env variable that indicates the nature of DB connections : PROD or DEV
+     * @type {string}
+     */
+    static env:string = 'DEV';
 
     constructor() {
         this.projectTarget = "employer"; // "jobyer" / "employer"

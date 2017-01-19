@@ -33,7 +33,8 @@ declare let require: any;
  * @module Search
  */
 @Component({
-    templateUrl: 'search-criteria.html'
+    templateUrl: 'search-criteria.html',
+    selector: 'search-criteria'
 })
 export class SearchCriteriaPage {
 
@@ -78,6 +79,7 @@ export class SearchCriteriaPage {
         prerequisObligatoires: any,
         adress: any
         isJobValidated: boolean;
+        isLevelValidated: boolean;
     };
     public newCombination = [];
     public showedSlot: any;
@@ -93,12 +95,14 @@ export class SearchCriteriaPage {
     public qualities = [];
     public offerService: any;
 
-    public person: {firstName: string, lastName: string};
-    public enterprise: {id: number, name: string};
+    public person: {firstName: string, lastName: string, isPersonValidated: boolean};
+    public enterprise: {id: number, name: string, isEnterpriseValidated: boolean};
     public enterprises = [];
     public isEnterprise: {found: boolean, done: boolean};
     public isCity: {found: boolean, done: boolean};
     public isCityValidated: boolean = false;
+    public isLanguageValidated: boolean = false;
+    public isQualityValidated: boolean = false;
 
     constructor(private viewCtrl: ViewController,
                 public globalConfig: GlobalConfigs,
@@ -145,11 +149,12 @@ export class SearchCriteriaPage {
                 city: '',
                 country: ''
             },
-            isJobValidated: false
+            isJobValidated: false,
+            isLevelValidated: false
         };
 
-        this.person = {firstName: "", lastName: ""};
-        this.enterprise = {id: 0, name: ""};
+        this.person = {firstName: "", lastName: "", isPersonValidated: false};
+        this.enterprise = {id: 0, name: "", isEnterpriseValidated: false};
         this.isEnterprise = {found: true, done: true};
         this.isCity = {found: true, done: true};
 
@@ -175,7 +180,8 @@ export class SearchCriteriaPage {
             date: new Date().toISOString(),
             startDate: this.minStartDate,
             endDate: this.minEndDate,
-            startHour: null
+            startHour: null,
+            isSlotValidated: false
         };
         /*offerService.loadJobs(this.projectTarget, this.jobData.idSector).then((data)=>{
          this.jobs = data;
@@ -346,60 +352,90 @@ export class SearchCriteriaPage {
      */
     validateSearch() {
 
-        //  check first if there are any criteria with value
-        /*var voidQuery = true;
-         for (var i = 0; i < this.filters.length; i++) {
-         let f = this.filters[i];
-         console.log(f);
-         if (f.activated && f.value != '') {
-         voidQuery = false;
-         break;
-         }
-         }
-
-         if (voidQuery) {
-         //  Nothing to do here
-         console.log('No search criteria given');
-         this.viewCtrl.dismiss();
-         return;
-         }*/
-
-        ///availability date must be greater than today
-        if (new Date(new Date(this.availabilityDate).setHours(0, 0, 0)).getTime() <= new Date(new Date().setHours(0, 0, 0)).getTime()) {
-            this.presentToast("Veuillez saisir une date supérieure à la date du jour", 1);
-            return;
-        }
+        let idLevel = 0;
+        let startDate:Date;
+        let endDate: Date;
+        let langIdList=[];
+        let qualIdList=[];
+        let query='';
         // Construct the search query in the correct format then summon search service
         // TEL05082016 : fixes #628
         let ignoreSector: boolean = false;
         if (isUndefined(this.sector) || (this.job && this.job.length > 0))
             ignoreSector = true;
-        if (isUndefined(this.job))
-            this.job = '';
+        if (this.jobData.idJob === 0) {
+            //launch semantic search with search sentence as a query
+            query = this.jobData.job;
+        }
         if (isUndefined(this.city))
             this.city = '';
+        if (isUndefined(this.jobData.level))
+            if (this.jobData.level === 'junior')
+                idLevel = 1;
+            else idLevel = 2;
+        if (this.showedSlot.startDate) {
+            startDate = new Date(this.showedSlot.startDate);
+        }
+        if (this.showedSlot.endDate) {
+            endDate = new Date(this.showedSlot.endDate);
+        }
+        if (this.languages.length > 0){
+            // TODO id not recognized
+            debugger;
+            for (let i=0;i<this.languages.length;i++)
+                langIdList.push(this.languages[i].idLanguage.toString());
+        }
+        if (this.qualities.length > 0){
+            for (let i=0;i<this.qualities.length;i++)
+                qualIdList.push(this.qualities[i].idQuality.toString());
+        }
 
-        let date = '';
-        if (this.availabilityDate) {
-            date = this.availabilityDate.split('-')[2] + '/' + this.availabilityDate.split('-')[1] + '/' + this.availabilityDate.split('-')[0];
+        // If job is not recognized :
+        if (query.length > 0) {
+            this.doSemanticSearch(query);
+            return;
         }
 
         let searchFields = {
-            class: 'com.vitonjob.callouts.recherche.SearchQuery',
-            job: this.job,
-            metier: (ignoreSector) ? '' : this.sector,
-            lieu: this.city,
-            nom: this.filters[2].value,
-            entreprise: this.projectTarget == 'jobyer' ? this.filters[5].value : '',
-            date: date,
-            table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
-            idOffre: '0'
+            class: 'com.vitonjob.recherche.model.SearchQuery',
+            queryType: 'CRITERIA',
+            job: this.jobData.idJob,
+            sector: 0,
+            location: (this.filterState[2].isActivated)? this.city: "",
+            firstName: (this.filterState[6].isActivated && this.projectTarget == 'employer')? this.person.firstName:"",
+            lastName: (this.filterState[6].isActivated && this.projectTarget == 'employer')? this.person.lastName:"",
+
+            startDate: (this.filterState[1].isActivated)? startDate:null,
+            endDate: (this.filterState[1].isActivated)? endDate:null,
+            startHour: (this.filterState[1].isActivated)? 0:0,
+            endHour: (this.filterState[1].isActivated)? 0:0,
+
+            level: (this.filterState[0].isActivated)? idLevel:0,
+
+            idEntreprise: (this.filterState[3].isActivated && this.projectTarget == 'jobyer')? this.enterprise.id:0,
+
+            languages: (this.filterState[4].isActivated)? langIdList:null,
+            qualities: (this.filterState[5].isActivated)? qualIdList:null,
+
+            resultsType: this.projectTarget == 'jobyer' ? 'employer' : 'jobyer'
         };
+
+        /*let searchFields = {
+         class: 'com.vitonjob.callouts.recherche.SearchQuery',
+         job: this.job,
+         metier: (ignoreSector) ? '' : this.sector,
+         lieu: this.city,
+         nom: this.filters[2].value,
+         entreprise: this.projectTarget == 'jobyer' ? this.filters[5].value : '',
+         date: startDate,
+         table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
+         idOffre: '0'
+         };*/
         console.log(JSON.stringify(searchFields));
 
         let loading = this.loading.create({content: "Merci de patienter..."});
         loading.present();
-        this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
+        this.searchService.advancedSearch(searchFields).then((data: any) => {
             console.log(data);
             this.searchService.persistLastSearch(data);
             loading.dismiss();
@@ -423,6 +459,27 @@ export class SearchCriteriaPage {
         return style;
     }
 
+    /**
+     * @author abdeslam jakjoud
+     * @description perform semantic search and pushes the results view
+     */
+    doSemanticSearch(query:string) {
+        let loading = this.loading.create({content: "Merci de patienter..."});
+        loading.present();
+        console.log('Initiating search for ' + query);
+        this.searchService.semanticSearch(query, 0, this.projectTarget).then((results: any) => {
+            let data = [];
+            if (this.projectTarget == 'jobyer')
+                data = results.offerEnterprise;
+            else
+                data = results.offerJobyers;
+
+            this.searchService.setLastIndexation({resultsIndex: results.indexation});
+            this.searchService.persistLastSearch(data);
+            loading.dismiss();
+            this.nav.push(SearchResultsPage, {searchType: 'semantic'});
+        });
+    }
 
     watchSector(e) {
         let val = e.target.value;
@@ -782,10 +839,13 @@ export class SearchCriteriaPage {
      * @Description : loads sector list
      */
     showSectorList() {
+        let loading = this.loading.create({content: "Merci de patienter..."});
+        loading.present();
         this.db.get("SECTOR_LIST").then((data: any) => {
             this.sectorList = JSON.parse(data);
             let selectionModel = this.modal.create(ModalSelectionPage,
                 {type: 'secteur', items: this.sectorList, selection: this});
+            loading.dismiss();
             selectionModel.present();
             selectionModel.onDidDismiss(() => {
                 this.isSectorFound = true;
@@ -805,6 +865,8 @@ export class SearchCriteriaPage {
      */
     showJobList() {
         let c = this.jobData.idSector;
+        let loading = this.loading.create({content: "Merci de patienter..."});
+        loading.present();
         this.db.get("JOB_LIST").then((data: any) => {
 
             this.jobList = JSON.parse(data);
@@ -814,6 +876,7 @@ export class SearchCriteriaPage {
 
             let selectionModel = this.modal.create(ModalSelectionPage,
                 {type: 'job', items: this.jobList, selection: this});
+            loading.dismiss();
             selectionModel.present();
             selectionModel.onDidDismiss(() => {
                 this.isJobFound = true;
@@ -905,11 +968,13 @@ export class SearchCriteriaPage {
      * @Description : loads language list
      */
     showLanguages() {
-
+        let loading = this.loading.create({content: "Merci de patienter..."});
+        loading.present();
         this.offerService.loadLanguages(this.projectTarget).then((data: any) => {
             let languageList = data;
             let selectionModel = this.modal.create(ModalSelectionPage,
                 {type: 'langue', items: languageList, selection: this});
+            loading.dismiss();
             selectionModel.present();
         });
     }
@@ -919,37 +984,41 @@ export class SearchCriteriaPage {
      */
     removeLanguage(item) {
 
-        let confirm = this.alert.create({
-            title: 'Êtes-vous sûr?',
-            message: 'Voulez-vous supprimer cette Langue?',
-            buttons: [
-                {
-                    text: 'Non',
-                    handler: () => {
-                        console.log('Disagree clicked');
-                    }
-                },
-                {
-                    text: 'Oui',
-                    handler: () => {
-                        console.log('Agree clicked');
-                        this.languages.splice(this.languages.indexOf(item), 1);
-                    }
-                }
-            ]
-        });
-        confirm.present();
+        if (this.languages.length > 0 && this.languages.indexOf(item) > -1)
+            this.languages.splice(this.languages.indexOf(item), 1);
+        /*let confirm = this.alert.create({
+         title: 'Êtes-vous sûr?',
+         message: 'Voulez-vous supprimer cette Langue?',
+         buttons: [
+         {
+         text: 'Non',
+         handler: () => {
+         console.log('Disagree clicked');
+         }
+         },
+         {
+         text: 'Oui',
+         handler: () => {
+         console.log('Agree clicked');
+         this.languages.splice(this.languages.indexOf(item), 1);
+         }
+         }
+         ]
+         });
+         confirm.present();*/
     }
 
     /**
      * @Description : loads language list
      */
     showQualities() {
-
+        let loading = this.loading.create({content: "Merci de patienter..."});
+        loading.present();
         this.offerService.loadQualities(this.projectTarget).then((data: any) => {
             let qualityList = data;
             let selectionModel = this.modal.create(ModalSelectionPage,
                 {type: 'qualité', items: qualityList, selection: this});
+            loading.dismiss();
             selectionModel.present();
         });
     }
@@ -959,26 +1028,28 @@ export class SearchCriteriaPage {
      */
     removeQuality(item) {
 
-        let confirm = this.alert.create({
-            title: 'Êtes-vous sûr?',
-            message: 'Voulez-vous supprimer cette qualité?',
-            buttons: [
-                {
-                    text: 'Non',
-                    handler: () => {
-                        console.log('Disagree clicked');
-                    }
-                },
-                {
-                    text: 'Oui',
-                    handler: () => {
-                        console.log('Agree clicked');
-                        this.qualities.splice(this.qualities.indexOf(item), 1);
-                    }
-                }
-            ]
-        });
-        confirm.present();
+        if (this.qualities.length > 0 && this.qualities.indexOf(item) > -1)
+            this.qualities.splice(this.qualities.indexOf(item), 1);
+        /*let confirm = this.alert.create({
+         title: 'Êtes-vous sûr?',
+         message: 'Voulez-vous supprimer cette qualité?',
+         buttons: [
+         {
+         text: 'Non',
+         handler: () => {
+         console.log('Disagree clicked');
+         }
+         },
+         {
+         text: 'Oui',
+         handler: () => {
+         console.log('Agree clicked');
+         this.qualities.splice(this.qualities.indexOf(item), 1);
+         }
+         }
+         ]
+         });
+         confirm.present();*/
     }
 
     jobValidated() {
@@ -986,11 +1057,36 @@ export class SearchCriteriaPage {
             this.jobData.isJobValidated = true;
     }
 
+    levelValidated() {
+        if (this.jobData.level)
+            this.jobData.isLevelValidated = true;
+    }
+
+    slotValidated() {
+        this.showedSlot.isSlotValidated = true;
+    }
+
     cityValidated() {
         this.isCityValidated = true;
     }
 
-    closeChip(fab,chip: Element) {
+    enterpriseValidated() {
+        this.enterprise.isEnterpriseValidated = true;
+    }
+
+    languageValidated() {
+        this.isLanguageValidated = true;
+    }
+
+    qualityValidated() {
+        this.isQualityValidated = true;
+    }
+
+    personValidated() {
+        this.person.isPersonValidated = true;
+    }
+
+    closeChip(fab, chip: Element, elemList?) {
         chip.remove();
         switch (chip.id) {
             case 'jobChip':
@@ -1001,6 +1097,37 @@ export class SearchCriteriaPage {
                 this.city = '';
                 this.cities = [];
                 this.isCityValidated = false;
+                fab.close();
+                break;
+            case 'levelChip' :
+                this.jobData.level = '';
+                this.jobData.isLevelValidated = false;
+                fab.close();
+                break;
+            case 'slotChip' :
+                this.showedSlot.isSlotValidated = false;
+                fab.close();
+                break;
+            case 'slotChip2' :
+                this.showedSlot.isSlotValidated = false;
+                fab.close();
+                break;
+            case 'enterpriseChip' :
+                this.enterprise.isEnterpriseValidated = false;
+                fab.close();
+                break;
+            case 'langChip' :
+                this.removeLanguage(elemList);
+                this.isLanguageValidated = false;
+                fab.close();
+                break;
+            case 'qualityChip':
+                this.removeQuality(elemList);
+                this.isQualityValidated = false;
+                fab.close();
+                break;
+            case 'personChip':
+                this.person.isPersonValidated = false;
                 fab.close();
                 break;
         }

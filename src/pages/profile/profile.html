@@ -15,7 +15,7 @@
   <ion-fab top right edge class="myEdge">
     <button ion-fab [color]="themeColor" class="img-button">
       <!--div *ngIf="!(userImageURL=== 'none')" style="max-width: 150%;"-->
-      <img [src]="userImageURL" style="max-width: 150%;" *ngIf="!(userImageURL=== 'none')">
+      <img [src]="userImageURL" style="max-width: 125%;" *ngIf="!(userImageURL=== 'none')">
       <!--/div-->
       <ion-spinner *ngIf="(userImageURL==='none')"></ion-spinner>
 
@@ -118,7 +118,7 @@
         <p *ngIf="!isEmployer">{{userData.jobyer.personnalAdress.fullAdress}}</p>
         <p *ngIf="isEmployer && userData.employer.entreprises.length != 0">
           {{userData.employer.entreprises[0].siegeAdress.fullAdress}}</p>
-        <button ion-button clear item-right (click)="goToPersonalAddressTab()" large>
+        <button ion-button clear item-right (click)="goToPersonalAddressTab()" large color="vojblue">
           <ion-icon name="create"></ion-icon>
         </button>
       </ion-item>
@@ -129,7 +129,7 @@
         <p *ngIf="!isEmployer">{{userData.jobyer.workAdress.fullAdress}}</p>
         <p *ngIf="isEmployer  && userData.employer.entreprises.length != 0">
           {{userData.employer.entreprises[0].workAdress.fullAdress}}</p>
-        <button ion-button clear item-right (click)="goToJobAddressTab()" large>
+        <button ion-button clear item-right (click)="goToJobAddressTab()" large color="vojblue">
           <ion-icon name="create"></ion-icon>
         </button>
       </ion-item>
@@ -138,7 +138,7 @@
         <h5 *ngIf="isEmployer">Adresse de correspondance</h5>
         <p *ngIf="isEmployer && userData.employer.entreprises.length != 0">
           {{userData.employer.entreprises[0].correspondanceAdress.fullAdress}}</p>
-        <button ion-button clear item-right (click)="goToCorrespondenceAddressTab()" large>
+        <button ion-button clear item-right (click)="goToCorrespondenceAddressTab()" large color="vojblue">
           <ion-icon name="create"></ion-icon>
         </button>
       </ion-item>

@@ -20,7 +20,7 @@
         <ion-card-content style="padding: 0;">
             <ion-item text-wrap>
                 <img [src]="advert.imgbg.fileContent" style="border:2px solid gray;">
-                <button block (click)="goToOffer()" [style.backgroundColor]="themeColor" *ngIf="advert.hasOffer">
+                <button ion-button (click)="goToOffer()" color="vojgrey" *ngIf="advert.hasOffer">
                     <ion-icon name="clipbboard"></ion-icon>
                     Afficher l'offre associée
                 </button>
@@ -33,6 +33,7 @@
                     {{jobyerInterestLabel}}
                 </button>
             </ion-item>
+
 
             <ion-item>
                 <span class="large" [innerHTML]="advert.description"></span>

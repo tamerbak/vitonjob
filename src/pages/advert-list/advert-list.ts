@@ -45,14 +45,7 @@ export class AdvertListPage {
         this.backgroundImage = config.backgroundImage;
 
         //loading adverts
-        let loading = this.loadingCtrl.create({
-            content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-            spinner: 'hide',
-        });
+        let loading = this.loadingCtrl.create({content:"Merci de patienter..."});
         loading.present();
         this.storage.get(config.currentUserVar).then((res: any) => {
             if (res) {

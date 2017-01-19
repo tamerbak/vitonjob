@@ -32,7 +32,7 @@ export class FinanceService {
             mode: 'VALEURS',
             preContract: true,
             documentType: 'NONE',
-            env: Configs.env
+            env: GlobalConfigs.env
         };
 
         let encodedArg = btoa(JSON.stringify(bean));
@@ -73,7 +73,7 @@ export class FinanceService {
             mode: 'VALEURS',
             preContract: true,
             documentType: 'QUOTE',
-            env: Configs.env
+            env: GlobalConfigs.env
         };
         console.log(JSON.stringify(bean));
         let encodedArg = btoa(JSON.stringify(bean));
@@ -118,7 +118,7 @@ export class FinanceService {
             mode: 'VALEURS',
             preContract: false,
             documentType: 'INVOICE',
-            env: Configs.env
+            env: GlobalConfigs.env
         };
         console.log(JSON.stringify(bean));
         let encodedArg = btoa(JSON.stringify(bean));
