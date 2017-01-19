@@ -5,10 +5,10 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+    <ion-navbar [color]="themeColor">
         <ion-title>Ajouter à partir du répertoire</ion-title>
         <ion-buttons end>
-            <button (click)="closeModal()">
+            <button (click)="closeModal()" ion-button>
                 <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
             </button>
         </ion-buttons>

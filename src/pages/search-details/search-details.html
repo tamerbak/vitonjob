@@ -29,39 +29,44 @@
         </div>
 
         <ion-row>
-            <ion-col text-center>
+            <ion-col text-center style="padding-top: 16px;">
                 <h2 style="font-weight: bold">{{isEmployer ? 'Offre de service: ' : 'Offre: '}} {{fullTitle}} </h2>
             </ion-col>
         </ion-row>
         <ion-row>&nbsp;</ion-row>
 
-        <ion-list no-lines [hidden]="languages.length==0">
-            <ion-list-header>
+        <ion-list no-lines [hidden]="languages.length==0" style="margin-bottom: 16px;">
+            <ion-list-header color="light">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Langues {{isEmployer?"maîtrisées":"requises"}}
             </ion-list-header>
             <ion-item *ngFor="let item of languages">
-                <p>&nbsp;&nbsp;• {{item.libelle}} </p>
+                <ion-icon name="md-arrow-dropright" item-left></ion-icon>
+                {{item.libelle}}
             </ion-item>
         </ion-list>
-        <ion-list no-lines [hidden]="qualities.length==0">
-            <ion-list-header>
+        <ion-list no-lines [hidden]="qualities.length==0" style="margin-bottom: 16px;">
+            <ion-list-header color="light">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Qualités {{isEmployer?"acquises":"requises"}}
             </ion-list-header>
             <ion-item *ngFor="let item of qualities">
-                <p>&nbsp;&nbsp;• {{item.libelle}}</p>
+                <ion-icon name="md-arrow-dropright" item-left></ion-icon>
+                {{item.libelle}}
             </ion-item>
         </ion-list>
-        <ion-item *ngIf="videoPresent">
-            <iframe width="100%" height="200"
-                    src="{{videoLink}}">
-                <!--http://www.youtube.com/embed/XGSy3_Czz8k?autoplay=1 -->
-            </iframe>
-        </ion-item>
+        <ion-list no-lines *ngIf="videoPresent">
+            <ion-list-header>Présentation</ion-list-header>
+            <ion-item>
+                <iframe width="100%" height="200"
+                        src="{{videoLink}}">
+                    <!--http://www.youtube.com/embed/XGSy3_Czz8k?autoplay=1 -->
+                </iframe>
+            </ion-item>
+        </ion-list>
 
 
         <ion-row>
             <ion-col text-center>
-                <button ion-button secondary
+                <button ion-button color="vojgreen"
                         *ngIf="isEmployer && !isRecruteur"
                         (click)="contract()" small>
                     Recrutement immédiat
