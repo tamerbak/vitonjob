@@ -14,6 +14,7 @@ declare let Croppie;
  */
 @Component({
   templateUrl: 'modal-picture.html',
+  selector: 'modal-picture'
 })
 export class ModalPicturePage {
 

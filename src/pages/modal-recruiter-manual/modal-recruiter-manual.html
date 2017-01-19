@@ -33,7 +33,7 @@
             </ion-item>
         </ion-col>
         <ion-col width-10>
-            <button (click)="doRadioAlert()" class="button button-clear button-outline">
+            <button ion-button icon-only (click)="doRadioAlert()" class="button button-clear button-outline" small color="vojgrey">
                 <ion-icon name="ios-arrow-down"></ion-icon>
             </button>
         </ion-col>
@@ -59,7 +59,7 @@
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <button block (click)="saveContact()" [style.backgroundColor]="themeColor" [disabled]="isUpdateDisabled()"
+            <button ion-button icon-left block (click)="saveContact()" color="primary" [disabled]="isUpdateDisabled()"
                     type="submit">
                 <ion-icon name="done-all"></ion-icon>
                 Valider
@@ -70,7 +70,7 @@
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <button block (click)="sendNotification()" [style.backgroundColor]="themeColor"
+            <button ion-button icon-left block (click)="sendNotification()" color="primary"
                     [disabled]="isUpdateDisabled()" type="submit">
                 <ion-icon name="send"></ion-icon>
                 Valider & Notifier

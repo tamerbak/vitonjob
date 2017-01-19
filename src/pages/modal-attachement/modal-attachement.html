@@ -10,20 +10,20 @@
 <ion-content padding>
     <ion-row>
         <ion-item>
-            <ion-label floating>Nom du fichier</ion-label>
+            <ion-label floating>Nom du document <span class="asterisk">*</span></ion-label>
             <ion-input type="text" [(ngModel)]="fileName"></ion-input>
         </ion-item>
     </ion-row>
     <ion-row>
         <ion-col text-center>
-            <ion-label>Télécharger</ion-label>
-            <button [hidden]="scanUri" class="file-upload button-picture" [style.backgroundColor]="themeColor">
+            <ion-label>Télécharger (JPEG/PNG)</ion-label>
+            <button ion-button [hidden]="scanUri" class="file-upload button-picture" color="primary" icon-right small>
                 <input type="file" class="file-input" (change)="onChangeUpload($event)">
                 <ion-icon name='folder'></ion-icon>
             </button>
 
-            <button [hidden]="scanUri" seconde (click)="takePicture()" [style.backgroundColor]="themeColor"
-                    class="button-picture">
+            <button ion-button [hidden]="scanUri" (click)="takePicture()" color="primary"
+                    class="button-picture" small>
                 <ion-icon name="camera"></ion-icon>
             </button>
         </ion-col>
@@ -32,18 +32,18 @@
         <img [src]="scanUri"/>
         <ion-row>
             <ion-col text-center>
-                <button style="margin: auto;" clear (click)="showModal()" small>
+                <button ion-button style="margin: auto;" clear (click)="showModal()" small>
                     <ion-icon name='expand'></ion-icon>
                 </button>
             </ion-col>
             <ion-col text-center>
-                <button style="margin: auto;" clear (click)="onDelete($event)" small>
+                <button ion-button style="margin: auto;" clear (click)="onDelete($event)" small>
                     <ion-icon name='close'></ion-icon>
                 </button>
             </ion-col>
         </ion-row>
     </ion-card>
-    <button block (click)="saveFile()" [disabled]="isEmpty(fileName) || isEmpty(scanUri)">
+    <button ion-button icon-left block (click)="saveFile()" [disabled]="isEmpty(fileName) || isEmpty(scanUri)" color="vojgreen">
         <ion-icon name="cloud-upload"></ion-icon>
         Ajouter
     </button>

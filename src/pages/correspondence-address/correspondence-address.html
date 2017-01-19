@@ -10,7 +10,7 @@
 <ion-content padding>
     <ion-row>
         <ion-col text-center>
-            <button [style.backgroundColor]="themeColor" class="button-picture" (click)="copyPersonalAddress()">
+            <button ion-button icon-left color="vojgrey" class="button-picture" (click)="copyPersonalAddress()">
                 <ion-icon name="copy"></ion-icon>
                 Utiliser mon adresse siège social
             </button>
@@ -24,7 +24,7 @@
         <ion-row [hidden]="!isGooglePlaceHidden">
             <ion-col width-10></ion-col>
             <ion-col text-center>
-                <button clear (click)="showGooglePlaceInput()" style="white-space: normal;">
+                <button ion-button icon-left clear (click)="showGooglePlaceInput()" style="white-space: normal;" color="vojblue">
                     <ion-icon name="add"></ion-icon>
                     Cliquez ici pour chercher une adresse
                 </button>
@@ -73,7 +73,7 @@
         <ion-row>
             <ion-col width-10></ion-col>
             <ion-col text-center>
-                <button block (click)="updateCorrespondenceAddress()" [style.backgroundColor]="themeColor"
+                <button ion-button icon-left (click)="updateCorrespondenceAddress()" color="vojgrey"
                         [disabled]="isBtnDisabled()" type="submit">
                     <ion-icon name="done-all"></ion-icon>
                     Valider
