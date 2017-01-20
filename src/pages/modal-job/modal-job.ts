@@ -48,7 +48,10 @@ export class ModalJobPage {
     validated: boolean,
     prerequisObligatoires: any,
     pharmaSoftwares: any,
-    adress: any
+    adress: any,
+    nbPoste:number,
+    contact:any,
+    telephone:any
   };
   public offerService: any;
   public sectors: any = [];
@@ -417,7 +420,10 @@ export class ModalJobPage {
           zipCode: '',
           city: '',
           country: ''
-        }
+        },
+        nbPoste:1,
+        contact:"",
+        telephone:""
       }
     }
   }
