@@ -64,13 +64,13 @@
 
       <ion-fab-list side="top">
         <button ion-fab class="offer-top-left" [ngStyle]="steps.styleDisableJob"
-                [style.background]="backGroundColor" (click)="showJobModal()">
+                [color]="themeColor" (click)="showJobModal()">
           <ion-icon name="briefcase" style="color:white;font-size: -webkit-xxx-large;"></ion-icon>
         </button>
 
-        <button ion-fab class="arrowDown" [hidden]="!validated.isJob"> <!---->
+        <!--button ion-fab class="arrowDown" [hidden]="!validated.isJob">
           <ion-icon name="md-arrow-round-down" style="font-size: -webkit-xxx-large;" color="primary"></ion-icon>
-        </button>
+        </button-->
 
         <button ion-fab class="checkedJob" [hidden]="!validated.isJob"> <!---->
           <ion-icon name="checkmark" style="font-size: xx-large;" [color]="(isEmployer)? 'vojgrey':'vojgrey'"></ion-icon>
@@ -83,13 +83,13 @@
 
       <ion-fab-list side="right">
         <button ion-fab class="offer-top-right" [ngStyle]="steps.styleDisableCalendar"
-                [style.backgroundColor]="backGroundColor" (click)="showCalendarModal()">
+                [color]="themeColor" (click)="showCalendarModal()">
           <ion-icon name="md-calendar" style="color:white;font-size: -webkit-xxx-large;"></ion-icon>
         </button>
 
-        <button ion-fab class="arrowBack" [hidden]="!validated.isCalendar"> <!---->
+        <!--button ion-fab class="arrowBack" [hidden]="!validated.isCalendar">
           <ion-icon name="md-arrow-round-back" style="font-size: -webkit-xxx-large;" color="primary"></ion-icon>
-        </button>
+        </button-->
 
         <button ion-fab class="checkedCalendar" [hidden]="!validated.isCalendar"> <!---->
           <ion-icon name="checkmark" style="font-size: xx-large;" [color]="(isEmployer)? 'vojgrey':'vojgrey'"></ion-icon>
@@ -100,15 +100,16 @@
         </button>
       </ion-fab-list>
 
+
       <ion-fab-list side="bottom">
         <button ion-fab class="offer-bottom-left" [ngStyle]="steps.styleDisableQuality"
                 [style.backgroundColor]="backGroundColor" (click)="showQualityModal()">
           <ion-icon name="happy" color="themeColor" style="color:white;font-size: -webkit-xxx-large;"></ion-icon>
         </button>
 
-        <button ion-fab class="arrowUp" [hidden]="!validated.isQuality"> <!---->
+        <!--button ion-fab class="arrowUp" [hidden]="!validated.isQuality">
           <ion-icon name="md-arrow-round-up" style="font-size: -webkit-xxx-large;" color="primary"></ion-icon>
-        </button>
+        </button-->
 
         <button ion-fab class="checkedQuality" [hidden]="!validated.isQuality" > <!---->
           <ion-icon name="checkmark" style="font-size: xx-large;" [color]="(isEmployer)? 'vojgrey':'vojgrey'"></ion-icon>
@@ -117,13 +118,13 @@
 
       <ion-fab-list side="left">
         <button ion-fab class="offer-bottom-right" [ngStyle]="steps.styleDisableLanguage"
-                [style.backgroundColor]="backGroundColor" (click)="showLanguageModal()">
+                [color]="themeColor" (click)="showLanguageModal()">
           <ion-icon name="globe" color="themeColor" style="color:white;font-size: -webkit-xxx-large;"></ion-icon>
           </button>
 
-        <button ion-fab class="doneAll" outline [color]="themeColor" [hidden]="!validated.isLanguage && !validated.isQuality"> <!---->
+        <!--button ion-fab class="doneAll" outline [color]="themeColor" [hidden]="!validated.isLanguage && !validated.isQuality">
           <ion-icon name="md-done-all" style="font-size: xx-large;" color="primary"></ion-icon>
-        </button>
+        </button-->
 
         <button ion-fab class="checkedLanguage" [hidden]="!validated.isLanguage"> <!---->
           <ion-icon name="checkmark" style="font-size: xx-large;" [color]="(isEmployer)? 'vojgrey':'vojgrey'"></ion-icon>

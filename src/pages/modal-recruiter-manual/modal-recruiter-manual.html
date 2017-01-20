@@ -1,14 +1,14 @@
 <ion-header>
-    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+    <ion-navbar [color]="themeColor">
         <ion-title>{{modalTitle}}</ion-title>
         <ion-buttons left>
-            <button (click)="closeModal()">
+            <button ion-button (click)="closeModal()">
                 <ion-icon name="arrow-round-back" style="font-size: xx-large;"></ion-icon>
             </button>
         </ion-buttons>
 
         <ion-buttons right>
-            <button (click)="showPopover($event)">
+            <button ion-button (click)="showPopover($event)">
                 <ion-icon name="more" style="font-size: xx-large;"></ion-icon>
             </button>
         </ion-buttons>

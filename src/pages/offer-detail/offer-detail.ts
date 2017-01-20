@@ -375,6 +375,9 @@ export class OfferDetailPage {
       //this.localOffer.set('jobData', JSON.stringify(data));
       if (this.modified.isJob) {
         this.offer.jobData = data;
+        this.offer.nbPoste = data.nbPoste;
+        this.offer.telephone = data.telephone;
+        this.offer.contact = data.contact;
         this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
         this.offerService.updateOfferJob(this.offer, this.projectTarget);
         if (this.offer.jobData.adress && this.offer.jobData.adress.zipCode && this.offer.jobData.adress.zipCode.length > 0) {

@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+    <ion-navbar [color]="themeColor">
         <ion-title>{{yousignTitle}}</ion-title>
         <!--ion-buttons end>
           <button (click)="showMenuToEditContract()">
@@ -14,7 +14,7 @@
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <button [style.backgroundColor]="themeColor" (click)="goToPayment()">
+            <button ion-button [color]="themeColor" (click)="goToPayment()">
                 <ion-icon name="card"></ion-icon>
                 Etape suivante
             </button>

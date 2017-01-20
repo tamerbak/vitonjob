@@ -48,7 +48,10 @@ export class ModalJobPage {
     validated: boolean,
     prerequisObligatoires: any,
     pharmaSoftwares: any,
-    adress: any
+    adress: any,
+    nbPoste:number,
+    contact:any,
+    telephone:any
   };
   public offerService: any;
   public sectors: any = [];
@@ -106,7 +109,7 @@ export class ModalJobPage {
   public static CONV_FILTER_COEF = 3;
   public conventionFilters: any = [{
     name: 'NIV',
-    labelle: 'niveau',
+    labelle: 'Niveau',
     selected: "",
     list: [],
     filteredList: [],
@@ -127,7 +130,7 @@ export class ModalJobPage {
     isFound: true,
   }, {
     name: 'COEF',
-    labelle: 'Coéfficient',
+    labelle: 'Coefficient',
     selected: "",
     list: [],
     filteredList: [],
@@ -417,7 +420,10 @@ export class ModalJobPage {
           zipCode: '',
           city: '',
           country: ''
-        }
+        },
+        nbPoste:1,
+        contact:"",
+        telephone:""
       }
     }
   }

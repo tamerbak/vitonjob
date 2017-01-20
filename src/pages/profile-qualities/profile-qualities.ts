@@ -2,6 +2,8 @@ import {Component} from "@angular/core";
 import {NavController, NavParams} from "ionic-angular";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {LoadListService} from "../../providers/load-list-service/load-list-service";
+import {Configs} from "../../configurations/configs";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
 
 @Component({
   templateUrl: 'profile-qualities.html'
@@ -12,11 +14,16 @@ export class ProfileQualitiesPage {
   public savedQualities: any = [];
   public currentUser: any;
   public isEmployer: boolean;
+  public themeColor: string;
+  public projectTarget: string;
 
   constructor(private nav: NavController,
               private navParams: NavParams,
               private profileService: ProfileService,
-              private listService: LoadListService) {
+              private listService: LoadListService,public gc:GlobalConfigs) {
+    this.projectTarget = gc.getProjectTarget();
+    let config = Configs.setConfigs(this.projectTarget);
+    this.themeColor = config.themeColor;
     this.currentUser = navParams.data.currentUser;
     this.isEmployer = navParams.data.isEmployer;
     let type = this.isEmployer ? "employeur" : "jobyer";
