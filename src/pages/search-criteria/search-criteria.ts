@@ -188,6 +188,15 @@ export class SearchCriteriaPage {
          });*/
     }
 
+    /**
+     * @Description Converts a timeStamp to date string :
+     * @param date : a timestamp date or Date object
+     * @param options Date options
+     */
+    toDateString(date: any) {
+        return new Date(date).toLocaleDateString('fr-FR');
+    }
+
     onPageScroll(event) {
         console.log(event.scrollTop);
         if (event.scrollTop === event.startY)
@@ -822,9 +831,19 @@ export class SearchCriteriaPage {
      * @Description Converts a timeStamp to date string :
      * @param date : a timestamp date
      */
-    toDateString(date: number) {
+    toDateStringFR(date: number) {
         let d = new Date(date);
         return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
+    }
+
+    /**
+     * @Description Converts a timeStamp to date string
+     * @param time : a timestamp date
+     */
+    toHourString(time: number) {
+        let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+        let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+        return hours + ":" + minutes;
     }
 
     presentToast(message: string, duration: number) {
@@ -934,6 +953,11 @@ export class SearchCriteriaPage {
          } else if (i===1) {
          this.showedSlot.endHour = new Date(this.showedSlot.endHour).getUTCHours();
          }*/
+        let date = new Date (this.showedSlot.startDate);
+        this.showedSlot.startHour = (date.getHours()-1) * 60 + date.getMinutes();
+
+        date = new Date (this.showedSlot.endDate);
+        this.showedSlot.endHour = (date.getHours()-1) * 60 + date.getMinutes();
 
         //check if dates and hours are coherent
         if (new Date(this.showedSlot.startDate) && new Date(this.showedSlot.endDate) && new Date(this.showedSlot.startDate) >= new Date(this.showedSlot.endDate)) {
@@ -1064,6 +1088,11 @@ export class SearchCriteriaPage {
 
     slotValidated() {
         this.showedSlot.isSlotValidated = true;
+        let date = new Date (this.showedSlot.startDate);
+        this.showedSlot.startHour = (date.getHours()-1) * 60 + date.getMinutes();
+
+        date = new Date (this.showedSlot.endDate);
+        this.showedSlot.endHour = (date.getHours()-1) * 60 + date.getMinutes();
     }
 
     cityValidated() {

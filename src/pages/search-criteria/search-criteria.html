@@ -73,7 +73,7 @@
                 <span *ngIf="!isEmployer">entre le </span>
                 <div class="div-sentence">
                     <ion-chip #slotChip id="slotChip">
-                        <ion-label>{{showedSlot.startDate.toLocaleString()}}</ion-label>
+                        <ion-label>{{toDateStringFR(showedSlot.startDate)}} à {{toHourString(showedSlot.startHour)}}</ion-label>
                         <button ion-button clear color="light">
                             <ion-icon name="close-circle" (click)="closeChip(fab, slotChip)"></ion-icon>
                         </button>
@@ -83,7 +83,7 @@
                 et le
                 <div class="div-sentence">
                     <ion-chip #slotChip id="slotChip2">
-                        <ion-label>{{showedSlot.endDate.toLocaleString()}}</ion-label>
+                        <ion-label>{{toDateStringFR(showedSlot.endDate)}} à {{toHourString(showedSlot.endHour)}}</ion-label>
                         <button ion-button clear color="light">
                             <ion-icon name="close-circle" (click)="closeChip(fab, slotChip)"></ion-icon>
                         </button>
