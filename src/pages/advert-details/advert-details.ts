@@ -64,14 +64,7 @@ export class AdvertDetailsPage{
   }
 
   goToOffer() {
-    let loading = this.loadingCtrl.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide',
-    });
+    let loading = this.loadingCtrl.create({content:"Merci de patienter..."});
     loading.present();
     this.advertService.getOfferById(this.advert.offerId).then((data: any) => {
       this.nav.push(OfferDetailPage, {selectedOffer: data, modifyOffer: false});

@@ -93,14 +93,7 @@ export class AdvertListPage {
 
     goToDetailAdvert(item){
         //loading advert
-        let loading = this.loadingCtrl.create({
-            content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-            spinner: 'hide',
-        });
+        let loading = this.loadingCtrl.create({content:"Merci de patienter..."});
         loading.present().then(()=> {
             this.advertService.loadAdvert(item).then((data: any) => {
                 this.nav.push(AdvertDetailsPage, {advert: item});
@@ -115,14 +108,7 @@ export class AdvertListPage {
 
     gotoEditAdvert(item){
         //loading advert
-        let loading = this.loadingCtrl.create({
-            content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-            spinner: 'hide',
-        });
+        let loading = this.loadingCtrl.create({content:"Merci de patienter..."});
         loading.present().then(()=> {
             this.advertService.loadAdvert(item).then((data: any) => {
                 this.nav.push(AdvertEditPage, {advert: item});

@@ -1,8 +1,8 @@
 ﻿<ion-header>
-    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
+    <ion-navbar [color]="themeColor">
         <ion-title>Option suivi mission</ion-title>
         <ion-buttons end>
-            <button (click)="closeModal()">
+            <button ion-button (click)="closeModal()">
                 <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
             </button>
         </ion-buttons>

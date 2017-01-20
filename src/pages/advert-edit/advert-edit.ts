@@ -210,14 +210,7 @@ export class AdvertEditPage{
   }
 
   saveAdvert(){
-    let loading = this.loadingCtrl.create({
-      content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide',
-    });
+    let loading = this.loadingCtrl.create({content:"Merci de patienter..."});
     loading.present();
     let clonedAdvert = (JSON.parse(JSON.stringify(this.advert)));
     this.prepareDataForSaving(clonedAdvert);

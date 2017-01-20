@@ -1,6 +1,6 @@
 <ion-header>
-    <ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">
-        <button menuToggle>
+    <ion-navbar [color]="themeColor">
+        <button ion-button menuToggle>
             <ion-icon name="menu"></ion-icon>
         </button>
         <ion-title>Empreinte de carte bancaire</ion-title>
@@ -14,7 +14,7 @@
             {{walletMsg}}
         </ion-card-content>
         <!--ion-card-footer-->
-            <button block primary (click)="gotomissions()">
+            <button ion-button block primary (click)="gotomissions()">
                 Passer
             </button>
         <!--/ion-card-footer-->
@@ -69,7 +69,7 @@
         </ion-col>
     </ion-row>
 
-    <button [style.backgroundColor]="themeColor" block (click)="openWallet()">
+    <button ion-button [color]="themeColor" block (click)="openWallet()">
         <ion-icon name="profile"></ion-icon>
         Enregistrer
     </button>
