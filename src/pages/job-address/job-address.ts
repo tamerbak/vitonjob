@@ -77,7 +77,7 @@ export class JobAddressPage {
     this.themeColor = config.themeColor;
     this.currentUserVar = config.currentUserVar;
     this.isEmployer = (this.projectTarget == 'employer');
-    this.titlePage = this.isEmployer ? "Adresse lieu de travail" : "Adresse de départ au travail";
+    this.titlePage = this.isEmployer ? "Adresse lieu de travail" : "Départ au travail";
     //this.tabs=tabs;
 
     //get current employer data from params passed by phone/mail connection

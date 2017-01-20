@@ -106,7 +106,7 @@ export class ModalJobPage {
   public static CONV_FILTER_COEF = 3;
   public conventionFilters: any = [{
     name: 'NIV',
-    labelle: 'niveau',
+    labelle: 'Niveau',
     selected: "",
     list: [],
     filteredList: [],
@@ -127,7 +127,7 @@ export class ModalJobPage {
     isFound: true,
   }, {
     name: 'COEF',
-    labelle: 'Coéfficient',
+    labelle: 'Coefficient',
     selected: "",
     list: [],
     filteredList: [],

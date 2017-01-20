@@ -35,14 +35,7 @@ export class AdvertJobyerListPage {
         this.isEmployer = (this.projectTarget == 'employer');
 
         this.advert = navParams.get('advert');
-        let loading = this.loadingCtrl.create({
-            content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-            spinner: 'hide',
-        });
+        let loading = this.loadingCtrl.create({content:"Merci de patienter..."});
         loading.present();
         this.advertService.getInterestedJobyers(this.advert.id).then((data: any) => {
             if (data && data.status == "success" && data.data) {
@@ -57,14 +50,7 @@ export class AdvertJobyerListPage {
     }
 
     showJobyerProfileModal(jobyer){
-        let loading = this.loadingCtrl.create({
-            content: ` 
-			<div>
-			<img src='assets/img/loading.gif' />
-			</div>
-			`,
-            spinner: 'hide',
-        });
+        let loading = this.loadingCtrl.create({content:"Merci de patienter..."});
         loading.present();
         this.profileService.getJobyerInfo(jobyer.jobyerid).then((data: any) => {
             loading.dismiss();

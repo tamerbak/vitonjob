@@ -14,20 +14,39 @@
             <ion-input type="text" [(ngModel)]="fileName"></ion-input>
         </ion-item>
     </ion-row>
-    <ion-row>
+    <ion-row [hidden]="scanUri">
         <ion-col text-center>
             <ion-label>Télécharger (JPEG/PNG)</ion-label>
-            <button ion-button [hidden]="scanUri" class="file-upload button-picture" color="primary" icon-right small>
-                <input type="file" class="file-input" (change)="onChangeUpload($event)">
-                <ion-icon name='folder'></ion-icon>
-            </button>
-
-            <button ion-button [hidden]="scanUri" (click)="takePicture()" color="primary"
-                    class="button-picture" small>
-                <ion-icon name="camera"></ion-icon>
-            </button>
         </ion-col>
     </ion-row>
+    <ion-item no-lines style="padding-left:0" [hidden]="scanUri">
+        <ion-row>
+            <ion-col text-center>
+                <button ion-button outline class="file-upload button-picture" color="primary"
+                        icon-right small>
+                    <input type="file" class="file-input" (change)="onChangeUpload($event)">
+                    <ion-icon name='folder'></ion-icon>
+                </button>
+            </ion-col>
+        </ion-row>
+    </ion-item>
+    <ion-row [hidden]="scanUri">
+        <ion-col text-center>
+            <ion-label>Ou</ion-label>
+        </ion-col>
+    </ion-row>
+    <ion-item no-lines>
+        <ion-row>
+            <ion-col text-center>
+                <button icon-right ion-button [hidden]="scanUri" (click)="takePicture()" color="primary"
+                        class="button-picture" small outline>
+                    Prenez en photo votre document
+                    <ion-icon name="camera"></ion-icon>
+                </button>
+            </ion-col>
+        </ion-row>
+    </ion-item>
+
     <ion-card style="margin: auto;" [hidden]="!scanUri" id="card-file">
         <img [src]="scanUri"/>
         <ion-row>
@@ -43,7 +62,9 @@
             </ion-col>
         </ion-row>
     </ion-card>
-    <button ion-button icon-left block (click)="saveFile()" [disabled]="isEmpty(fileName) || isEmpty(scanUri)" color="vojgreen">
+    <ion-row>&nbsp;</ion-row>
+    <button ion-button icon-left block (click)="saveFile()" [disabled]="isEmpty(fileName) || isEmpty(scanUri)"
+            color="vojgreen">
         <ion-icon name="cloud-upload"></ion-icon>
         Ajouter
     </button>
