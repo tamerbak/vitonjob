@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Http, Headers} from "@angular/http";
-import {} from "ionic-angular";
 import {LocalNotifications} from "ionic-native";
 
 /**
@@ -15,7 +14,7 @@ export class MissionService {
     configuration: any;
     projectTarget: string;
 
-    data:any;
+    data: any;
 
     constructor(public http: Http, public gc: GlobalConfigs) {
 
@@ -37,7 +36,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -121,7 +120,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -142,7 +141,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -173,7 +172,7 @@ export class MissionService {
 
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
 
 
                     // we've got back the raw data, now generate the core schedule data
@@ -211,7 +210,7 @@ export class MissionService {
 
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
 
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
@@ -235,7 +234,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -251,7 +250,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -267,7 +266,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -283,7 +282,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -383,7 +382,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -429,7 +428,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -448,7 +447,7 @@ export class MissionService {
             let headers = new Headers();
             headers = Configs.getHttpXmlHeaders();
             this.http.post(url, payload, {headers: headers})
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     console.log(this.data);
                     resolve(this.data);
@@ -465,7 +464,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -481,7 +480,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -510,7 +509,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -539,7 +538,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -568,7 +567,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -577,9 +576,13 @@ export class MissionService {
 
     signEndOfMission(bean) {
         let dataSign = JSON.stringify(bean);
-        var payload = {
+        let callOutId: number = 339;
+        if (GlobalConfigs.env === 'PROD') {
+            callOutId = 10003;
+        }
+        let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 339,
+            'id': callOutId,
             'args': [
                 {
                     'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -598,7 +601,7 @@ export class MissionService {
 
             this.http.post(Configs.yousignURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
 
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
@@ -646,7 +649,7 @@ export class MissionService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -665,7 +668,7 @@ export class MissionService {
             headers.append("Content-Type", 'text/plain');
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
@@ -681,50 +684,50 @@ export class MissionService {
             headers.append("Content-Type", 'text/plain');
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     this.data = data;
                     resolve(this.data);
                 });
         });
     }
 
-    getPrerequisObligatoires(idContrat){
+    getPrerequisObligatoires(idContrat) {
         let sql = "select libelle from user_prerquis where pk_user_prerquis " +
-                "in (select fk_user_prerquis from user_prerequis_obligatoires where fk_user_offre_entreprise " +
-                    "in (" +
-                        "select fk_user_offre_entreprise from user_contrat where pk_user_contrat="+idContrat +
-                    ")" +
-                ")";
+            "in (select fk_user_prerquis from user_prerequis_obligatoires where fk_user_offre_entreprise " +
+            "in (" +
+            "select fk_user_offre_entreprise from user_contrat where pk_user_contrat=" + idContrat +
+            ")" +
+            ")";
         return new Promise(resolve => {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     let d = [];
-                    if(data.data)
+                    if (data.data)
                         d = data.data;
                     resolve(d);
                 });
         });
     }
 
-    getContract(id){
+    getContract(id) {
         let sql = "SELECT * FROM user_contrat where pk_user_contrat ='" + id + "'";
         return new Promise(resolve => {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-              .map(res => res.json())
-              .subscribe((data:any) => {
-                  resolve(data);
-              });
+                .map(res => res.json())
+                .subscribe((data: any) => {
+                    resolve(data);
+                });
         });
     }
 
-    calculateNbWorkHours(missionHours){
+    calculateNbWorkHours(missionHours) {
         let total = 0;
-        for(let i = 0; i < missionHours.length; i++){
+        for (let i = 0; i < missionHours.length; i++) {
             total = total + (missionHours[i].heure_fin - missionHours[i].heure_debut);
         }
         return total;

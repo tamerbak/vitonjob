@@ -751,7 +751,7 @@ export class MissionDetailsPage {
               idContract: idContrat,
               idInvoice: idInvoice,
               idDocument: idInvoice,
-              environnement: 'DEV'
+              environnement: GlobalConfigs.env
 
             };
             this.missionService.signEndOfMission(bean).then(signatureData => {
