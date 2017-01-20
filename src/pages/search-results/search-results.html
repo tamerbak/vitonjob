@@ -118,15 +118,15 @@
                             {{item.nom}}
                         </ion-badge>
                     </div>
-                    <button outline id="btn-r" (click)="recruitJobyer(item)"
+                    <button ion-button outline id="btn-r" (click)="recruitJobyer(item)"
                             *ngIf="isEmployer && !item.checkedContract">Recrutement direct
                     </button>
-                    <button outline id="btn-rg" *ngIf="isEmployer">Recrutement grouper</button>
+                    <button ion-button outline id="btn-rg" *ngIf="isEmployer">Recrutement grouper</button>
                     <div id="de">
-                        <button outline *ngIf="isEmployer" id="d-re">Détail sur {{item.prenom}}</button>
+                        <button ion-button outline *ngIf="isEmployer" id="d-re">Détail sur {{item.prenom}}</button>
                     </div>
                     <div>
-                        <button outline *ngIf="!isEmployer">Détail</button>
+                        <button ion-button outline *ngIf="!isEmployer">Détail</button>
                     </div>
                     <div id="div-avatar"><img id="avatar" src="assets/img/{{avatar}}.png"></div>
                     <div id="matching">
@@ -137,18 +137,18 @@
                     </div>
 
                     <div>
-                        <button id="btn-call" (click)="dialNumber(item)"
+                        <button ion-button id="btn-call" (click)="dialNumber(item)"
                                 *ngIf="isEmployer || item.accepteCandidature">
                             <ion-icon id="icon-call" name="call"></ion-icon>
                         </button>
-                        <button id="btn-mail" (click)="sendSMS(item)"
+                        <button ion-button id="btn-mail" (click)="sendSMS(item)"
                                 *ngIf="isEmployer || item.accepteCandidature">
                             <ion-icon id="icon-mail" name="mail"></ion-icon>
                         </button>
-                        <button id="btn-google">
+                        <button ion-button id="btn-google">
                             <ion-icon name="at"></ion-icon>
                         </button>
-                        <button id="btn-skype">
+                        <button ion-button id="btn-skype">
                             <ion-icon name="logo-skype"></ion-icon>
                         </button>
 

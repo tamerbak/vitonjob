@@ -14,10 +14,10 @@
         </ion-item>
         <ion-item [hidden]="(list.length > 0) || (searchQuery === '') || (label === 'secteur')">
             Ajouter le {{label}} {{searchQuery}} ?
-            <button clear item-right (click)="addNewLabel()" style="margin: 0">
+            <button ion-button clear item-right (click)="addNewLabel()" style="margin: 0">
                 <ion-icon name="checkmark-circle"></ion-icon>
             </button>
-            <button clear item-right style="color: #757575;margin: 0;" (click)="cancelNewLabel()">
+            <button ion-button clear item-right style="color: #757575;margin: 0;" (click)="cancelNewLabel()">
                 <ion-icon name="close-circle"></ion-icon>
             </button>
         </ion-item>

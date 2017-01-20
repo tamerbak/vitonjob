@@ -2,7 +2,7 @@
     <ion-navbar [color]="themeColor">
         <ion-title style="padding-left: 0">{{fullTitle}}</ion-title>
         <ion-buttons end>
-            <button (click)="close()">
+            <button ion-button (click)="close()">
                 <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
             </button>
         </ion-buttons>
@@ -126,7 +126,7 @@
 
         <ion-row>
             <ion-col text-center>
-                <button secondary
+                <button ion-button secondary
                         *ngIf="isEmployer && !isRecruteur"
                         (click)="contract()" small>
                     Recrutement immédiat
@@ -143,19 +143,19 @@
                 Recruter maintenant!
             </button-->
 
-            <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+            <button ion-button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
                     (click)="skype()" item-right>
                 <ion-icon name="logo-skype"></ion-icon>
             </button>
-            <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+            <button ion-button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
                     (click)="call()" item-right>
                 <ion-icon name="call"></ion-icon>
             </button>
-            <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+            <button ion-button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
                     (click)="sendSMS()" item-right>
                 <ion-icon name="ios-chatboxes"></ion-icon>
             </button>
-            <button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
+            <button ion-button clear [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
                     (click)="sendEmail()" item-right>
                 <ion-icon name="mail"></ion-icon>
             </button>
