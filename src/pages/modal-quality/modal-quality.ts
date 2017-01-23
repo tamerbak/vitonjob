@@ -1,4 +1,4 @@
-import {NavController, ModalController, ViewController, NavParams, AlertController} from "ionic-angular";
+import {NavController, ModalController,LoadingController, ViewController, NavParams, AlertController} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalSelectionPage} from "../modal-selection/modal-selection";
@@ -33,7 +33,10 @@ export class ModalQualityPage {
               gc: GlobalConfigs,
               viewCtrl: ViewController,
               params: NavParams,
-              os: OffersService, public alert: AlertController, public modal: ModalController) {
+              os: OffersService,
+              public loading: LoadingController,
+              public alert: AlertController, 
+              public modal: ModalController) {
     // Set global configs
     // Get target to determine configs
     this.projectTarget = gc.getProjectTarget();
@@ -65,10 +68,12 @@ export class ModalQualityPage {
    * @Description : loads quality list
    */
   showQualityList() {
-
+    let loading = this.loading.create({content:"Merci de patienter..."});
+    loading.present();
     /*if (this.qualityList && this.qualityList.length > 0)
      return;*/
     this.offerService.loadQualities(this.projectTarget).then((data: any) => {
+      loading.dismiss();
       this.qualityList = data;
       let selectionModel = this.modal.create(ModalSelectionPage,
         {type: 'qualité', items: this.qualityList, selection: this});
