@@ -28,13 +28,13 @@ export class SmsService {
 
         if (phoneNumber.charAt(0) == '+') {
             phoneNumber = phoneNumber.substring(1);
+            phoneNumber = "00" + phoneNumber;
         }
-
-        phoneNumber = "00" + phoneNumber;
-
-        //only for test 
-        //phoneNumber = "00212672435408";
-        var soapMessage =
+        if(phoneNumber.charAt(0) == '0' && phoneNumber.charAt(1) != '0'){
+            phoneNumber = phoneNumber.substring(1);
+            phoneNumber = "0033" + phoneNumber;
+        }
+        let soapMessage =
             '<fr.protogen.connector.model.SmsModel>' +
             '<telephone>' + phoneNumber + '</telephone>' +
             '<text>' + message + '</text>' +
@@ -45,8 +45,7 @@ export class SmsService {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
-            let headers = new Headers();
-            headers = Configs.getHttpXmlHeaders();
+            let headers = Configs.getHttpXmlHeaders();
 
             this.http.post(Configs.smsURL, soapMessage, {headers: headers})
                 .map(res => res)
@@ -56,5 +55,26 @@ export class SmsService {
         });
     }
 
+    sendMail(email, message, subject){
+        let msg =
+            '<fr.protogen.connector.model.MailModel>' +
+            '<sendTo>' + email + '</sendTo>' +
+            '<title>' + subject + '</title>' +
+            '<content>' + message + '</content>' +
+            '</fr.protogen.connector.model.MailModel>';
+
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = Configs.getHttpXmlHeaders();
+
+            this.http.post(Configs.emailURL, msg, {headers: headers})
+                .map(res => res)
+                .subscribe((data:any) => {
+                    resolve(data);
+                });
+        });
+    }
 }
 
