@@ -321,7 +321,7 @@ export class OfferAddPage {
                     this.offerService.saveOfferAdress(offer, this.jobData.adress, this.jobData.adress.streetNumber, this.jobData.adress.street,
                         this.jobData.adress.city, this.jobData.adress.zipCode, this.jobData.adress.name, this.jobData.adress.country, this.idTiers, this.projectTarget);
                   }
-                  this.storage.clear();
+                  this.clearOfferStorage();
                   loading.dismiss();
 
                   //decide to which page redirect to
@@ -388,5 +388,13 @@ export class OfferAddPage {
       ]
     });
     prompt.present();
+  }
+
+  clearOfferStorage(){
+    this.storage.set("videolink", null);
+    this.storage.set("slots", null);
+    this.storage.set("languages", null);
+    this.storage.set("qualities", null);
+    this.storage.set("jobData", null);
   }
 }

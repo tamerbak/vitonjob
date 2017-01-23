@@ -58,9 +58,10 @@ export class ModalSlotPage {
         this.yearValue = new Date().getFullYear();
         this.monthValue = new Date().getMonth() + 1;
         //let dayValue: number = new Date().getDay();
-        this.maxDate = new Date(new Date().getFullYear() + 2, 11, 31).toISOString();
+        //max date should be the day of tomorrow
+        this.maxDate = new Date().setDate(new Date().getDate() + 1);
         this.minStartDate = new Date(this.todayDate.setUTCHours(this.todayDate.getUTCHours() + 1)).toISOString();
-        this.maxStartDate = this.maxDate;
+        this.maxStartDate = new Date(this.maxDate).toISOString();
         this.minEndDate = new Date(this.todayDate.setUTCHours(this.todayDate.getUTCHours(), this.todayDate.getUTCMinutes() + 15)).toISOString();
         this.maxEndDate = new Date(this.todayDate.setDate(this.todayDate.getDate() + 1)).toISOString();
         this.monthesList = [
@@ -231,6 +232,8 @@ export class ModalSlotPage {
         this.minStartDate = new Date(this.todayDate.setUTCFullYear(startYear)).toISOString();
         this.minStartDate = new Date(new Date(this.minStartDate).setUTCMonth(startMonth)).toISOString();
         this.minStartDate = new Date(new Date(this.minStartDate).setUTCDate(1)).toISOString();
+        this.maxDate = new Date(this.minStartDate).setDate(new Date(this.minStartDate).getDate() + 1);
+        this.maxStartDate = new Date(this.maxDate).toISOString();
         this.showedSlot.startDate = this.minStartDate;
         if (this.monthValue === Number(month.value))
             this.daysList = this.getDaysArray();
@@ -258,6 +261,9 @@ export class ModalSlotPage {
         this.minStartDate = new Date(this.todayDate.setUTCFullYear(startYear)).toISOString();
         this.minStartDate = new Date(new Date(this.minStartDate).setUTCMonth(startMonth)).toISOString();
         this.minStartDate = new Date(new Date(this.minStartDate).setUTCDate(startDay)).toISOString();
+        this.maxDate = new Date(this.minStartDate).setDate(new Date(this.minStartDate).getDate() + 1);
+        this.maxStartDate = new Date(this.maxDate).toISOString();
+
         this.showedSlot.startDate = this.minStartDate;
         this.checkHour(0);
     }
