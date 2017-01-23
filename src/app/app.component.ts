@@ -455,6 +455,11 @@ export class Vitonjob {
     }
   }
 
+  gotoAccountPage() {
+    this.menu.close();
+    this.nav.setRoot(ProfilePage);
+  }
+
   /**
    * @description this method allows to render the multicriteria modal component
    */
