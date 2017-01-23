@@ -72,7 +72,6 @@ export class SmsService {
             this.http.post(Configs.emailURL, msg, {headers: headers})
                 .map(res => res)
                 .subscribe((data:any) => {
-                    debugger;
                     resolve(data);
                 });
         });

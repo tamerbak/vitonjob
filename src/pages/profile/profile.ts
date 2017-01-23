@@ -449,11 +449,9 @@ export class ProfilePage {
 
                 if(data.reference.phone){
                     //  Send notification by sms
-                    debugger;
                     let message = this.userData.nom+' '+this.userData.prenom+' vous a désigné comme référence. Nous désirons avoir votre retour sur contact@vitonjob.com';
                     let phone = data.reference.phone;
                     this.smsService.sendSms(phone, message).then((result:any)=>{
-                        console.log(result);
                         this.presentToast("Un SMS a été adressé à votre référence afin de fournir une appréciation.", 3);
                     });
                 }
@@ -466,7 +464,6 @@ export class ProfilePage {
                     let mail = data.reference.email;
                     let subject = this.userData.nom+' '+this.userData.prenom+' vous a désigné comme référence';
                     this.smsService.sendMail(mail, message, subject).then((result:any)=>{
-                        console.log(result);
                         this.presentToast("Un courrier électronique a été adressé à votre référence afin de fournir une appréciation.", 3);
                     });
                 }
