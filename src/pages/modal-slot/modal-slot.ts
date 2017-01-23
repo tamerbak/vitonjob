@@ -475,40 +475,6 @@ export class ModalSlotPage {
     }
 
     /**
-     * launching dateTimePicker component for slot selection
-     */
-    launchDateTimePicker(type: string, flag?: string) {
-
-        DatePicker.show({
-            date: new Date(),
-            mode: type,
-            minuteInterval: 15, androidTheme: this.calendarTheme, is24Hour: true,
-            doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
-        }).then(
-            date => {
-                console.log("Got date: ", date);
-
-                switch (flag) {
-                    case 'start' :
-                        this.slot.startHour = date.getHours() * 60 + date.getMinutes();
-                        this.showedSlot.startHour = this.toHourString(this.slot.startHour);
-                        break;
-                    case 'end' :
-                        this.slot.endHour = date.getHours() * 60 + date.getMinutes();
-                        this.showedSlot.endHour = this.toHourString(this.slot.endHour);
-                        break;
-                    default :
-                        this.slot.date = date.getTime();
-                        this.showedSlot.date = date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
-                        this.showedSlot.angular4Date = this.showedSlot.date;
-                        break;
-                }
-            },
-            err => console.log("Error occurred while getting date:", err)
-        );
-    }
-
-    /**
      * @Description : Closing the modal page
      */
     closeModal() {
@@ -516,7 +482,7 @@ export class ModalSlotPage {
     }
 
     isValidateDisabled() {
-        if(Utils.isEmpty(this.showedSlot.date) || Utils.isEmpty(this.showedSlot.startDate) || Utils.isEmpty(this.showedSlot.endDate)){
+        if(Utils.isEmpty(this.showedSlot.startDate) || Utils.isEmpty(this.showedSlot.endDate)){
             return true;
         }
         return false;
@@ -526,14 +492,8 @@ export class ModalSlotPage {
      * @Description : Validating slot modal
      */
     validateModal() {
-        //console.log('Validating '+ this.showedSlot.date + ' or ' + this.showedSlot.angular4Date);
-        let stringDate: string = (this.isAndroid4) ?
-        this.showedSlot.angular4Date.split('/')[1] +
-        '-' + this.showedSlot.angular4Date.split('/')[0] +
-        '-' + this.showedSlot.angular4Date.split('/')[2] : "";
-        let date = (this.isAndroid4) ? new Date(stringDate) : new Date(this.showedSlot.date);
+        let date = new Date(this.showedSlot.startDate);
         let dateEnd = new Date(this.showedSlot.endDate);
-        //console.log ('sending ' + date);
         let sh = this.showedSlot.startDate.split('T')[1];
         let eh = this.showedSlot.endDate.split('T')[1];
         this.slot = {
@@ -544,8 +504,6 @@ export class ModalSlotPage {
             endHour: parseInt(eh.split(':')[0]) * 60 +
             parseInt(eh.split(':')[1])
         };
-
-        console.log(JSON.stringify('JSON returned: ' + this.slot));
         this.viewCtrl.dismiss(this.slot);
     }
 
