@@ -137,6 +137,20 @@ export class ProfileService {
         });
     }
 
+    loadAccountId(tel, role){
+        let sql = "select pk_user_account as id from user_account where telephone='"+tel+"' and role='"+role+"'";
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe((data:any) => {
+                    console.log(data);
+                    resolve(data.data[0].id);
+                });
+        });
+    }
+
     uploadProfilePictureInLocal(imgUri) {
         this.storage.set(this.profilPictureVar, imgUri);
     }
