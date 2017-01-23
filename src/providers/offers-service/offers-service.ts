@@ -108,9 +108,11 @@ export class OffersService {
                             }
                             for(let i = 0 ; i < this.offerList.length ; i++){
                                 this.loadOfferNecessaryDocuments(this.offerList[i].idOffer).then((data:any) =>{
-                                    this.offerList[i].jobData.prerequisObligatoires = [];
-                                    for(let j = 0 ; j < data.length ; j++)
-                                        this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
+                                   if(data && data.length > 0) {
+                                       this.offerList[i].jobData.prerequisObligatoires = [];
+                                       for (let j = 0; j < data.length; j++)
+                                           this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
+                                   }
                                 });
                             }
                             break;

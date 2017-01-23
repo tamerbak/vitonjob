@@ -3,6 +3,7 @@ import {Configs} from "../../configurations/configs";
 import {Http, Headers} from "@angular/http";
 import {Helpers} from "../helpers-service/helpers-service";
 import {isUndefined} from "ionic-angular/util/util";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
 
 declare let unescape;
 
@@ -453,12 +454,18 @@ export class ContractService {
         'idQuote': idQuote,
         'idDocument': idQuote,
         'data': btoa(unescape(encodeURIComponent(JSON.stringify(jsonData)))),
-        'environnement': 'DEV'
+        'environnement': GlobalConfigs.env
       });
+
+    // Compute ID according to env
+    let callOutId: number = 10337; // 338 ?????
+    if (GlobalConfigs.env == 'PROD') {
+      callOutId = 10537;
+    }
 
     let payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 338,
+      'id': callOutId,
       'args': [
         {
           'class': 'fr.protogen.masterdata.model.CCalloutArguments',
