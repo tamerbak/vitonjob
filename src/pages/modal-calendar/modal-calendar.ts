@@ -63,7 +63,7 @@ export class ModalCalendarPage {
    * @Description : Closing the modal page :
    */
   closeModal() {
-    this.viewCtrl.dismiss({slots: this.slots, isObsolete: this.isObsolete});
+    this.viewCtrl.dismiss({slots: null, isObsolete: this.isObsolete});
   }
 
   /**
