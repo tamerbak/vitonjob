@@ -450,7 +450,7 @@ export class ProfilePage {
                 if(data.reference.phone){
                     //  Send notification by sms
                     debugger;
-                    let message = this.userData.nom+' '+this.userData.prenom+' a travaillé pour vous. Nous désirons avoir votre retour sur contact@vitonjob.com';
+                    let message = this.userData.nom+' '+this.userData.prenom+' vous a désigné comme référence. Nous désirons avoir votre retour sur contact@vitonjob.com';
                     let phone = data.reference.phone;
                     this.smsService.sendSms(phone, message).then((result:any)=>{
                         console.log(result);
