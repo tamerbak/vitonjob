@@ -17,9 +17,8 @@
       Métier
     </ion-list-header>
     <ion-item>
-      <label class="item item-input">
-          <textarea placeholder="Secteur *" class="full-width" [(ngModel)]="jobData.sector" (keyup)="watchSector($event)"></textarea>
-      </label>
+      <ion-label floating>Secteur <span class="asterisk">*</span></ion-label>
+      <ion-textarea [(ngModel)]="jobData.sector" (keyup)="watchSector($event)"></ion-textarea>  
       <button small ion-button class="text-size" item-right (click)="setSectorsPicker()">
         <ion-icon name="list"></ion-icon>
       </button>
@@ -38,9 +37,8 @@
     </div>
 
     <ion-item>
-      <label class="item item-input">
-          <textarea placeholder="Job *" class="full-width" [(ngModel)]="jobData.job" (keyup)="watchJob($event)"></textarea>
-      </label>
+      <ion-label floating>Job <span class="asterisk">*</span></ion-label>
+      <ion-textarea [(ngModel)]="jobData.job" (keyup)="watchJob($event)"></ion-textarea>  
       <button small ion-button item-right (click)="setJobsPicker()">
         <ion-icon name="list"></ion-icon>
       </button>
