@@ -8,6 +8,11 @@ modal-job{
     color: red;
   }
 
+  .full-width{
+    width:100%;
+    border: 0px; 
+  }
+
   /*/smartphone screen size 250px at 550px
   @media screen and (min-height: 250px) and (max-height: 550px) {
     .picker-opt .button-inner {
