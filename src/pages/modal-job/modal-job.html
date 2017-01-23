@@ -18,14 +18,14 @@
     </ion-list-header>
     <ion-item>
       <ion-label floating>Secteur <span class="asterisk">*</span></ion-label>
-      <ion-input [(ngModel)]="jobData.sector" (keyup)="watchSector($event)"></ion-input>
+      <ion-textarea [(ngModel)]="jobData.sector" (keyup)="watchSector($event)"></ion-textarea>  
       <button small ion-button class="text-size" item-right (click)="setSectorsPicker()">
         <ion-icon name="list"></ion-icon>
       </button>
     </ion-item>
     <ion-item *ngIf="sectors.length>0">
       <ion-list>
-        <ion-item *ngFor="let s of sectors" (click)="sectorSelected(s)">
+        <ion-item class="item item-text-wrap" *ngFor="let s of sectors" (click)="sectorSelected(s)">
           {{s.libelle}}
         </ion-item>
       </ion-list>
@@ -38,7 +38,7 @@
 
     <ion-item>
       <ion-label floating>Job <span class="asterisk">*</span></ion-label>
-      <ion-input [(ngModel)]="jobData.job" (keyup)="watchJob($event)"></ion-input>
+      <ion-textarea [(ngModel)]="jobData.job" (keyup)="watchJob($event)"></ion-textarea>  
       <button small ion-button item-right (click)="setJobsPicker()">
         <ion-icon name="list"></ion-icon>
       </button>
@@ -135,7 +135,7 @@
           <ion-select [(ngModel)]="jobData.currency"
                       style="padding: 0;overflow: visible; max-width: 100%;"
                       [selectOptions]="alertOptions"
-                      okText="Ok" cancelText="Annuler">
+                      okText="Ok" cancelText="Annuler ">
             <ion-option value="euro" selected="true">Euro</ion-option>
             <!--ion-option value="dollar" disabled="true">Dollar</ion-option-->
           </ion-select>

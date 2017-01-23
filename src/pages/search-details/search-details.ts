@@ -14,6 +14,9 @@ import {ModalOffersPage} from "../modal-offers/modal-offers";
 import {OfferAddPage} from "../offer-add/offer-add";
 import {NotificationContractPage} from "../notification-contract/notification-contract";
 import {Storage} from "@ionic/storage";
+import {AccountReferencesService} from "../../providers/account-references-service/account-references-service";
+import {ProfileService} from "../../providers/profile-service/profile-service";
+import {InfoModalPage} from "../info-modal/info-modal";
 
 declare let google: any;
 declare let sms;
@@ -53,6 +56,11 @@ export class SearchDetailsPage implements OnInit {
   public backgroundImage: string;
   public themeColor: string;
 
+  /*
+   * References
+   */
+  public references : any = [];
+
   constructor(public nav: NavController,
               public params: NavParams,
               public globalConfig: GlobalConfigs,
@@ -64,6 +72,8 @@ export class SearchDetailsPage implements OnInit {
               private notationService: NotationService,
               public alert: AlertController,
               public modal: ModalController,
+              public referenceService : AccountReferencesService,
+              public profileService : ProfileService,
               public db: Storage) {
 
     // Get target to determine configs
@@ -76,6 +86,14 @@ export class SearchDetailsPage implements OnInit {
     this.isEmployer = this.projectTarget == 'employer';
     this.platform = platform;
     this.result = params.data.searchResult;
+
+    let role = this.isEmployer ? "jobyer" : "employeur";
+    this.profileService.loadAccountId(this.result.tel, role).then((id:any)=>{
+      this.referenceService.loadReferences(id).then((results : any)=>{
+        this.references = results;
+      });
+    });
+
     this.avatar = (this.result.avatar) ? this.result.avatar : configInversed.avatars[0].url;
     if (this.result.titreOffre)
       this.fullTitle = this.result.titreOffre;
@@ -519,5 +537,10 @@ export class SearchDetailsPage implements OnInit {
       buttons: buttons
     });
     alert.present();
+  }
+
+  showReferenceDetails(reference){
+    let modal = this.modal.create(InfoModalPage, {reference : reference});
+    modal.present();
   }
 }

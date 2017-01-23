@@ -86,7 +86,7 @@
 
         <ion-item style="margin-top: 1.5em" [hidden]="isEmployer || isAndroid4">
             <ion-label>Date de naissance <span class="asteriskb">*</span></ion-label>
-            <ion-datetime [(ngModel)]="birthdate" displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok"
+            <ion-datetime [(ngModel)]="birthdate" displayFormat="DD/MM/YYYY" cancelText="Annuler " doneText="Ok"
                           (ionChange)="watchBirthdate($event)"></ion-datetime>
         </ion-item>
         <div [hidden]="isBirthdateValid"
@@ -192,7 +192,7 @@
                 <ion-label>CNI ou passeport </ion-label>
                 <ion-radio value="1"></ion-radio>
             </ion-item>
-            <ion-item>
+            <ion-item text-wrap>
                 <ion-label>Carte de ressortissant d'un état membre de l'UE <span class="asteriskb">*</span></ion-label>
                 <ion-radio value="0"></ion-radio>
             </ion-item>

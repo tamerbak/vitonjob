@@ -27,7 +27,7 @@ export class OfferListPage {
   public offerService: OffersService;
   public projectTarget: string;
   public backgroundImage: any;
-  public isNewUser = true;
+  public isNewUser = false;
   public globalOfferList = [];
   public showPublishedOffers = false;
   public showUnpublishedOffers = false;
@@ -78,6 +78,12 @@ export class OfferListPage {
     // console.log($( "#draggable" ).draggable());
     this.offerService = offersService;
 
+
+
+  }
+
+  ionViewWillEnter() {
+    let config = Configs.setConfigs(this.projectTarget);
     let currentUserVar = config.currentUserVar;
     this.db.get(currentUserVar).then(value => {
       if (value && value != "null") {
@@ -89,10 +95,6 @@ export class OfferListPage {
         }
       }
     });
-
-  }
-
-  ionViewWillEnter() {
 
     this.offerService.loadOfferList(this.projectTarget).then((data: any) => {
       // TEL26082016 ref : http://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript

@@ -102,7 +102,7 @@ export class ModalSoftwarePage {
           text: 'Oui',
           handler: () => {
             console.log('Agree clicked');
-            this.savedSoftwares.splice(this.softwares.indexOf(item), 1);
+            this.savedSoftwares.splice(this.savedSoftwares.indexOf(item), 1);
           }
         }
       ]
