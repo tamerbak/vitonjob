@@ -26,6 +26,7 @@ import {ModalSoftwarePage} from "../modal-software/modal-software";
 import {AccountReferencesService} from '../../providers/account-references-service/account-references-service'
 import {ProfileReferencePage} from "../profile-reference/profile-reference";
 import {SmsService} from "../../providers/sms-service/sms-service";
+import {InfoModalPage} from "../info-modal/info-modal";
 
 /*
  Generated class for the ProfilePage page.
@@ -418,6 +419,11 @@ export class ProfilePage {
         });
         pictureModel.present();
 
+    }
+
+    deleteloadDetails(reference : any){
+        let modal = this.modal.create(InfoModalPage, {reference : reference});
+        modal.present();
     }
 
     /**
