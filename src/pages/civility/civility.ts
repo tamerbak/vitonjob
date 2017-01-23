@@ -197,7 +197,7 @@ export class CivilityPage {
       this.loadListService.loadNationalities(this.projectTarget).then((data: {data: any}) => {
         this.nationalities = data.data;
         //initialize nationality with (9 = francais)
-        this.scanTitle = " de votre CNI";
+        this.scanTitle = " de votre document d'identité";
         this.nationalitiesstyle = {'font-size': '1.4rem'};
       });
     } else {
@@ -1122,7 +1122,7 @@ export class CivilityPage {
       this.regionId = data.data[0].pk_user_identifiants_nationalite;
       if (this.isEuropean == 0) {
         this.idNationaliteLabel = "EU, EEE";
-        this.scanTitle = " de votre CNI ou Passeport";
+        this.scanTitle = " de votre document d'identité ou Passeport";
       }
       if (this.isEuropean == 1) {
         this.idNationaliteLabel = "Autre";
