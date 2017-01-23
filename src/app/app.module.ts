@@ -122,6 +122,7 @@ import {CKEditorModule} from "ng2-ckeditor";
 import {ModalHelpPage} from "../pages/modal-help/modal-help";
 import {AccountReferencesService} from "../providers/account-references-service/account-references-service";
 import {ProfileReferencePage} from "../pages/profile-reference/profile-reference";
+import {InfoModalPage} from "../pages/info-modal/info-modal";
 
 @NgModule({
     declarations: [
@@ -201,6 +202,7 @@ import {ProfileReferencePage} from "../pages/profile-reference/profile-reference
         WalletCreatePage,
         YousignPage,
         ProfileReferencePage,
+        InfoModalPage,
         // Custom components
         GooglePlaces,
         SwipeVertical,
@@ -296,6 +298,7 @@ import {ProfileReferencePage} from "../pages/profile-reference/profile-reference
         WalletCreatePage,
         YousignPage,
         ProfileReferencePage,
+        InfoModalPage
     ],
     providers: [
         {provide: ErrorHandler, useClass: IonicErrorHandler},
