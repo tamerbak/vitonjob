@@ -58,9 +58,10 @@ export class ModalSlotPage {
         this.yearValue = new Date().getFullYear();
         this.monthValue = new Date().getMonth() + 1;
         //let dayValue: number = new Date().getDay();
-        this.maxDate = new Date(new Date().getFullYear() + 2, 11, 31).toISOString();
+        //max date should be the day of tomorrow
+        this.maxDate = new Date().setDate(new Date().getDate() + 1);
         this.minStartDate = new Date(this.todayDate.setUTCHours(this.todayDate.getUTCHours() + 1)).toISOString();
-        this.maxStartDate = this.maxDate;
+        this.maxStartDate = new Date(this.maxDate).toISOString();
         this.minEndDate = new Date(this.todayDate.setUTCHours(this.todayDate.getUTCHours(), this.todayDate.getUTCMinutes() + 15)).toISOString();
         this.maxEndDate = new Date(this.todayDate.setDate(this.todayDate.getDate() + 1)).toISOString();
         this.monthesList = [
@@ -68,7 +69,7 @@ export class ModalSlotPage {
                 value: "01",
                 shortName: "Jan",
                 fullName: "Janvier",
-                disabled: !(this.monthValue === 1),
+                disabled: !(this.monthValue <= 1),
                 checked: (this.monthValue === 1),
                 year: this.yearValue,
                 color: "light"
@@ -77,7 +78,7 @@ export class ModalSlotPage {
                 value: "02",
                 shortName: "Fév",
                 fullName: "Février",
-                disabled: !(this.monthValue == 2),
+                disabled: !(this.monthValue <= 2),
                 checked: (this.monthValue === 2),
                 year: this.yearValue,
                 color: "light"
@@ -86,7 +87,7 @@ export class ModalSlotPage {
                 value: "03",
                 shortName: "Mars",
                 fullName: "Mars",
-                disabled: !(this.monthValue == 3),
+                disabled: !(this.monthValue <= 3),
                 checked: (this.monthValue === 3),
                 year: this.yearValue,
                 color: "light"
@@ -95,7 +96,7 @@ export class ModalSlotPage {
                 value: "04",
                 shortName: "Avr",
                 fullName: "Avril",
-                disabled: !(this.monthValue == 4),
+                disabled: !(this.monthValue <= 4),
                 checked: (this.monthValue === 4),
                 year: this.yearValue,
                 color: "light"
@@ -104,7 +105,7 @@ export class ModalSlotPage {
                 value: "05",
                 shortName: "Mai",
                 fullName: "Mai",
-                disabled: !(this.monthValue == 5),
+                disabled: !(this.monthValue <= 5),
                 checked: (this.monthValue === 5),
                 year: this.yearValue,
                 color: "light"
@@ -113,7 +114,7 @@ export class ModalSlotPage {
                 value: "06",
                 shortName: "Juin",
                 fullName: "Juin",
-                disabled: !(this.monthValue == 6),
+                disabled: !(this.monthValue <= 6),
                 checked: (this.monthValue === 6),
                 year: this.yearValue,
                 color: "light"
@@ -122,7 +123,7 @@ export class ModalSlotPage {
                 value: "07",
                 shortName: "Juil",
                 fullName: "Juillet",
-                disabled: !(this.monthValue == 7),
+                disabled: !(this.monthValue <= 7),
                 checked: (this.monthValue === 7),
                 year: this.yearValue,
                 color: "light"
@@ -131,7 +132,7 @@ export class ModalSlotPage {
                 value: "08",
                 shortName: "Août",
                 fullName: "Août",
-                disabled: !(this.monthValue == 8),
+                disabled: !(this.monthValue <= 8),
                 checked: (this.monthValue === 8),
                 year: this.yearValue,
                 color: "light"
@@ -140,7 +141,7 @@ export class ModalSlotPage {
                 value: "09",
                 shortName: "Sep",
                 fullName: "Septembre",
-                disabled: !(this.monthValue == 9),
+                disabled: !(this.monthValue <= 9),
                 checked: (this.monthValue === 9),
                 year: this.yearValue,
                 color: "light"
@@ -149,7 +150,7 @@ export class ModalSlotPage {
                 value: "10",
                 shortName: "Oct",
                 fullName: "Octobre",
-                disabled: !(this.monthValue == 10),
+                disabled: !(this.monthValue <= 10),
                 checked: (this.monthValue === 10),
                 year: this.yearValue,
                 color: "light"
@@ -158,7 +159,7 @@ export class ModalSlotPage {
                 value: "11",
                 shortName: "Nov",
                 fullName: "Novembre",
-                disabled: !(this.monthValue == 11),
+                disabled: !(this.monthValue <= 11),
                 checked: (this.monthValue === 11),
                 year: this.yearValue,
                 color: "light"
@@ -167,7 +168,7 @@ export class ModalSlotPage {
                 value: "12",
                 shortName: "Déc",
                 fullName: "Décembre",
-                disabled: !(this.monthValue == 12),
+                disabled: !(this.monthValue <= 12),
                 checked: (this.monthValue === 12),
                 year: this.yearValue,
                 color: "light"
@@ -231,6 +232,8 @@ export class ModalSlotPage {
         this.minStartDate = new Date(this.todayDate.setUTCFullYear(startYear)).toISOString();
         this.minStartDate = new Date(new Date(this.minStartDate).setUTCMonth(startMonth)).toISOString();
         this.minStartDate = new Date(new Date(this.minStartDate).setUTCDate(1)).toISOString();
+        this.maxDate = new Date(this.minStartDate).setDate(new Date(this.minStartDate).getDate() + 1);
+        this.maxStartDate = new Date(this.maxDate).toISOString();
         this.showedSlot.startDate = this.minStartDate;
         if (this.monthValue === Number(month.value))
             this.daysList = this.getDaysArray();
@@ -258,6 +261,9 @@ export class ModalSlotPage {
         this.minStartDate = new Date(this.todayDate.setUTCFullYear(startYear)).toISOString();
         this.minStartDate = new Date(new Date(this.minStartDate).setUTCMonth(startMonth)).toISOString();
         this.minStartDate = new Date(new Date(this.minStartDate).setUTCDate(startDay)).toISOString();
+        this.maxDate = new Date(this.minStartDate).setDate(new Date(this.minStartDate).getDate() + 1);
+        this.maxStartDate = new Date(this.maxDate).toISOString();
+
         this.showedSlot.startDate = this.minStartDate;
         this.checkHour(0);
     }
@@ -403,6 +409,9 @@ export class ModalSlotPage {
                     if (Number(this.monthesList[i].value) < this.monthValue) {
                         this.monthesList[i].disabled = true;
                         this.monthesList[i].checked = false;
+                    }else{
+                        this.monthesList[i].disabled = false;
+                        this.monthesList[i].checked = false;
                     }
             } else {
                 // - -
@@ -466,40 +475,6 @@ export class ModalSlotPage {
     }
 
     /**
-     * launching dateTimePicker component for slot selection
-     */
-    launchDateTimePicker(type: string, flag?: string) {
-
-        DatePicker.show({
-            date: new Date(),
-            mode: type,
-            minuteInterval: 15, androidTheme: this.calendarTheme, is24Hour: true,
-            doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
-        }).then(
-            date => {
-                console.log("Got date: ", date);
-
-                switch (flag) {
-                    case 'start' :
-                        this.slot.startHour = date.getHours() * 60 + date.getMinutes();
-                        this.showedSlot.startHour = this.toHourString(this.slot.startHour);
-                        break;
-                    case 'end' :
-                        this.slot.endHour = date.getHours() * 60 + date.getMinutes();
-                        this.showedSlot.endHour = this.toHourString(this.slot.endHour);
-                        break;
-                    default :
-                        this.slot.date = date.getTime();
-                        this.showedSlot.date = date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
-                        this.showedSlot.angular4Date = this.showedSlot.date;
-                        break;
-                }
-            },
-            err => console.log("Error occurred while getting date:", err)
-        );
-    }
-
-    /**
      * @Description : Closing the modal page
      */
     closeModal() {
@@ -507,7 +482,7 @@ export class ModalSlotPage {
     }
 
     isValidateDisabled() {
-        if(Utils.isEmpty(this.showedSlot.date) || Utils.isEmpty(this.showedSlot.startDate) || Utils.isEmpty(this.showedSlot.endDate)){
+        if(Utils.isEmpty(this.showedSlot.startDate) || Utils.isEmpty(this.showedSlot.endDate)){
             return true;
         }
         return false;
@@ -517,14 +492,8 @@ export class ModalSlotPage {
      * @Description : Validating slot modal
      */
     validateModal() {
-        //console.log('Validating '+ this.showedSlot.date + ' or ' + this.showedSlot.angular4Date);
-        let stringDate: string = (this.isAndroid4) ?
-        this.showedSlot.angular4Date.split('/')[1] +
-        '-' + this.showedSlot.angular4Date.split('/')[0] +
-        '-' + this.showedSlot.angular4Date.split('/')[2] : "";
-        let date = (this.isAndroid4) ? new Date(stringDate) : new Date(this.showedSlot.date);
+        let date = new Date(this.showedSlot.startDate);
         let dateEnd = new Date(this.showedSlot.endDate);
-        //console.log ('sending ' + date);
         let sh = this.showedSlot.startDate.split('T')[1];
         let eh = this.showedSlot.endDate.split('T')[1];
         this.slot = {
@@ -535,8 +504,6 @@ export class ModalSlotPage {
             endHour: parseInt(eh.split(':')[0]) * 60 +
             parseInt(eh.split(':')[1])
         };
-
-        console.log(JSON.stringify('JSON returned: ' + this.slot));
         this.viewCtrl.dismiss(this.slot);
     }
 

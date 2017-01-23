@@ -1,0 +1,37 @@
+<ion-header>
+    <ion-navbar [color]="themeColor">
+        <ion-title>Nouvelle référence</ion-title>
+        <ion-buttons end>
+            <button ion-button (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+    <ion-list>
+        <ion-item text-wrap>
+            <ion-label>Nom du contact</ion-label>
+            <ion-input type="text" [(ngModel)]="reference.fullName"></ion-input>
+        </ion-item>
+        <ion-item text-wrap>
+            <ion-label>N° Téléphone</ion-label>
+            <ion-input type="text" [(ngModel)]="reference.phone"></ion-input>
+        </ion-item>
+        <ion-item text-wrap>
+            <ion-label>Email</ion-label>
+            <ion-input type="text" [(ngModel)]="reference.email"></ion-input>
+        </ion-item>
+    </ion-list>
+    <ion-row>
+        <ion-col text-center>
+            <button ion-button icon-right medium [disabled]="isValidateDisabled()"
+                    color="vojgreen" (click)="saveReference()">
+                Enregistrer
+                <ion-icon name="checkmark-circle"></ion-icon>
+            </button>
+        </ion-col>
+    </ion-row>
+</ion-content>

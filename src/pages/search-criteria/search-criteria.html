@@ -247,7 +247,7 @@
                 <ion-label stacked>Début</ion-label>
                 <ion-datetime displayFormat="Le D MMMM YYYY à HH:mm" pickerFormat="D MMM YYYY HH mm"
                               [(ngModel)]="showedSlot.startDate" (ionChange)="checkHour(0)"
-                              minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"
+                              minuteValues="0,15,30,45" cancelText="Annuler " doneText="Ok"
                               [min]="minStartDate" [max]="maxStartDate"
                               style="max-width:100%;"></ion-datetime>
             </ion-item>
@@ -256,7 +256,7 @@
                 <ion-label stacked>Fin</ion-label>
                 <ion-datetime displayFormat="Le D MMMM YYYY à HH:mm" pickerFormat="D MMM YYYY HH mm"
                               [(ngModel)]="showedSlot.endDate" (ionChange)="checkHour(1)"
-                              minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"
+                              minuteValues="0,15,30,45" cancelText="Annuler " doneText="Ok"
                               [min]="minEndDate" [max]="maxStartDate"
                               style="max-width:100%;"></ion-datetime>
             </ion-item>

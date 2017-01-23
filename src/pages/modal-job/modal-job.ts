@@ -587,18 +587,14 @@ export class ModalJobPage {
     }
 
     this.jobs = [];
-    let removeDiacritics = require('diacritics').remove;
-    for (let i = 0; i < this.jobList.length; i++) {
-      let s = this.jobList[i];
-      if (removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase()) > -1) {
-        this.jobs.push(s);
+    this.offersService.selectJobs(val).then((data: any) => {
+      this.jobs = data;
+      if (this.jobs.length == 0) {
+        this.isJobFound = false;
+      } else {
+        this.isJobFound = true;
       }
-    }
-    if (this.jobs.length == 0) {
-      this.isJobFound = false;
-    } else {
-      this.isJobFound = true;
-    }
+    })
   }
 
   /**

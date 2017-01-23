@@ -108,9 +108,11 @@ export class OffersService {
                             }
                             for(let i = 0 ; i < this.offerList.length ; i++){
                                 this.loadOfferNecessaryDocuments(this.offerList[i].idOffer).then((data:any) =>{
-                                    this.offerList[i].jobData.prerequisObligatoires = [];
-                                    for(let j = 0 ; j < data.length ; j++)
-                                        this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
+                                   if(data && data.length > 0) {
+                                       this.offerList[i].jobData.prerequisObligatoires = [];
+                                       for (let j = 0; j < data.length; j++)
+                                           this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
+                                   }
                                 });
                             }
                             break;
@@ -1872,6 +1874,19 @@ export class OffersService {
             }
         }
         return null;
+    }
+
+    selectJobs(kw){
+        let sql = "select pk_user_job as id, libelle from user_job where ( lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')) order by similarity(lower_unaccent(libelle),lower_unaccent('"+this.sqlfyText(kw)+"')) desc";
+        console.log(sql);
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe((data:any) => {
+                    resolve(data.data);
+                });
+        });
     }
 }
 

@@ -12,7 +12,7 @@
 <ion-content padding class="modal-calendar">
     <ion-row>
         <ion-col text-center>
-            <button ion-button small icon-left [color]="themeColor" (click)="showSlotModal()" [disabled]="isObsolete">
+            <button ion-button small icon-left [color]="themeColor" (click)="showSlotModal()">
                 <ion-icon name="add-circle"></ion-icon>
                 Ajouter un créneau
             </button>
@@ -57,7 +57,7 @@
     <ion-row>
         <ion-col text-center>
             <button [hidden]="(slots.length == 0)" ion-button icon-left small
-                    [color]="themeColor" (click)="validateCalendar()" [disabled]="isObsolete">
+                    [color]="themeColor" (click)="validateCalendar()">
                 <ion-icon name="checkmark-circle"></ion-icon>
                 Valider
             </button>
