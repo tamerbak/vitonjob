@@ -25,6 +25,44 @@ export class ProfileService {
         this.profilPictureVar = this.configuration.profilPictureVar;
     }
 
+    loadProfileJobs(idJobyer){
+        let sql = "select pk_user_job as id, user_job.libelle as libelle, fk_user_niveau as niveau from user_job, user_profil_job where user_job.pk_user_job= user_profil_job.fk_user_job and user_profil_job.dirty='N' and user_profil_job.fk_user_jobyer="+idJobyer;
+        return new Promise(resolve => {
+        let headers = Configs.getHttpTextHeaders();
+        this.http.post(Configs.sqlURL, sql, {headers: headers})
+            .map(res => res.json())
+            .subscribe(data => {
+            resolve(data.data);
+            });
+        });
+    }
+
+    removeJob(j, idJobyer){
+        let sql = "delete from user_profil_job where fk_user_jobyer="+idJobyer+" and fk_user_job="+j.id;
+        return new Promise(resolve => {
+        let headers = Configs.getHttpTextHeaders();
+        this.http.post(Configs.sqlURL, sql, {headers: headers})
+            .map(res => res.json())
+            .subscribe(data => {
+
+            resolve(data.data);
+            });
+        });
+    }
+
+    attachJob(j, idJobyer){
+        let sql = "insert into user_profil_job (fk_user_jobyer,fk_user_job,fk_user_niveau) values ("+idJobyer+","+j.id+","+j.niveau+")";
+        return new Promise(resolve => {
+        let headers = Configs.getHttpTextHeaders();
+        this.http.post(Configs.sqlURL, sql, {headers: headers})
+            .map(res => res.json())
+            .subscribe(data => {
+
+            resolve(data.data);
+            });
+        });
+    }
+
     countEntreprisesByRaisonSocial(companyname: string) {
         let sql = "select count(*) from user_entreprise where nom_ou_raison_sociale='" + companyname + "';";
         console.log(sql);
