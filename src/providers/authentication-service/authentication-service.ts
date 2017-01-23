@@ -330,13 +330,13 @@ export class AuthenticationService {
       'streetNumber': streetNumber,
       'role': (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget),
       'id': id,
-      'type': 'personnelle'
+      'type': (this.projectTarget == 'jobyer' ? 'personnelle' : 'siege_social')
     };
     addressData = JSON.stringify(addressData);
     var encodedAddress = btoa(addressData);
     var data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 10017,
+      'id': 20030,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'Adresse',
@@ -370,13 +370,13 @@ export class AuthenticationService {
       'streetNumber': streetNumber,
       'role': (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget),
       'id': id,
-      'type': 'travaille'
+      'type': (this.projectTarget == "jobyer" ? 'depart_vers_le_travail' : 'adresse_de_travail')
     };
     addressData = JSON.stringify(addressData);
     var encodedAddress = btoa(addressData);
     var data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 10017,
+      'id': 20030,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'Adresse',
@@ -417,7 +417,7 @@ export class AuthenticationService {
     var encodedAddress = btoa(addressData);
     var data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 10017,
+      'id': 20030,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'Adresse',
