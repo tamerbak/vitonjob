@@ -9,7 +9,7 @@ import {
     AlertController,
     Content,
     FabContainer,
-    Events
+    Events, NavParams
 } from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SearchService} from "../../providers/search-service/search-service";
@@ -112,7 +112,10 @@ export class SearchCriteriaPage {
                 public loading: LoadingController,
                 public toast: ToastController,
                 public picker: PickerController, public db: Storage, public modal: ModalController,
-                _offerService: OffersService, public alert: AlertController, public event: Events, public corporama: CorporamaService) {
+                _offerService: OffersService,
+                public alert: AlertController,
+                public event: Events,
+                public corporama: CorporamaService, public params:NavParams) {
         this.viewCtrl = viewCtrl;
         this.projectTarget = globalConfig.getProjectTarget();
         this.isEmployer = (this.projectTarget === 'employer');
@@ -129,12 +132,14 @@ export class SearchCriteriaPage {
             this.filterState.push({isActivated: false, color: "light"});
         }
 
+        let jobParam = this.params.get('job');
+
         this.jobData = {
             'class': "com.vitonjob.callouts.auth.model.JobData",
-            job: "",
-            sector: "",
-            idSector: 0,
-            idJob: 0,
+            job: (jobParam)? jobParam.libelle:"",
+            sector: (jobParam)? jobParam.sector:"",
+            idSector: (jobParam)? jobParam.idsector:"",
+            idJob: (jobParam)? jobParam.id:"",
             level: 'junior',
             remuneration: null,
             currency: 'euro',
@@ -957,7 +962,7 @@ export class SearchCriteriaPage {
         this.showedSlot.startHour = (date.getHours()-1) * 60 + date.getMinutes();
 
         date = new Date (this.showedSlot.endDate);
-        this.showedSlot.endHour = (date.getHours()-1) * 60 + date.getMinutes();
+        this.showedSlot.startHour = date.getHours()-1 * 60 + date.getMinutes();
 
         //check if dates and hours are coherent
         if (new Date(this.showedSlot.startDate) && new Date(this.showedSlot.endDate) && new Date(this.showedSlot.startDate) >= new Date(this.showedSlot.endDate)) {
@@ -1089,10 +1094,10 @@ export class SearchCriteriaPage {
     slotValidated() {
         this.showedSlot.isSlotValidated = true;
         let date = new Date (this.showedSlot.startDate);
-        this.showedSlot.startHour = (date.getHours()-1) * 60 + date.getMinutes();
+        this.showedSlot.startHour = date.getHours() * 60 + date.getMinutes();
 
         date = new Date (this.showedSlot.endDate);
-        this.showedSlot.endHour = (date.getHours()-1) * 60 + date.getMinutes();
+        this.showedSlot.startHour = date.getHours() * 60 + date.getMinutes();
     }
 
     cityValidated() {

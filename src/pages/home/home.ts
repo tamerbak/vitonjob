@@ -40,6 +40,7 @@ import {
 import {ModalHelpPage} from "../modal-help/modal-help";
 
 declare let SpeechRecognition;
+declare let require;
 
 @Component({
     selector: 'home',
@@ -119,6 +120,10 @@ export class HomePage {
     public toast: any;
     public globalOfferList: any;
     public profilPictureVar: any;
+    public isJobFound: boolean;
+    public jobs: any = [];
+    public newCombination: any = [];
+    public jobList: any = [];
 
 
     /*static get parameters() {
@@ -154,6 +159,11 @@ export class HomePage {
                 let currentUser = JSON.parse(value);
                 this.isHunter = _globalConfig.getHunterMask() || currentUser.hunterFlag;
             }
+        });
+
+        // Get job list
+        this.storage.get("JOB_LIST").then((data: any) => {
+            this.jobList = JSON.parse(data);
         });
 
         this.keyboard = kb;
@@ -721,10 +731,49 @@ export class HomePage {
      * @param e Key Up javascript event allowing us to access the keyboard used key
      */
     checkForEnterKey(e) {
-        if (e.code != "Enter")
-            return;
+        /*if (e.code != "Enter")
+         return;
 
-        this.doSemanticSearch();
+         this.doSemanticSearch();*/
+        let val = e.target.value;
+        if (val.length < 3) {
+            this.isJobFound = true;
+            this.jobs = [];
+            this.newCombination = [];
+            return;
+        }
+
+        this.jobs = [];
+        this.newCombination = [];
+        let removeDiacritics = require('diacritics').remove;
+        for (let i = 0; i < this.jobList.length; i++) {
+            let s = this.jobList[i];
+            let sectorIndex = 0;
+            if (removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase()) > -1) {
+                let currentJob = s;
+                if (this.newCombination.filter((elem, pos) => {
+                        sectorIndex = pos;
+                        return elem.idSector === s.idsector;
+                    }).length > 0) {
+                    this.newCombination[sectorIndex].jobs.push(currentJob);
+                } else {
+                    this.newCombination.push({idSector: s.idsector, sector: s.sector, jobs: [currentJob]});
+                }
+            }
+
+        }
+
+        this.jobs = this.newCombination.sort((a, b) => {
+            return b.sector - a.sector;
+        });
+
+        this.isJobFound = (this.jobs.length == 0);
+
+
+    }
+
+    jobSelected(job) {
+        this.nav.push(SearchCriteriaPage, {job: job});
     }
 
     /**
@@ -982,7 +1031,7 @@ export class HomePage {
     }
 
     getHelp() {
-        
+
         let content = [{
             title: "Recherche “Vit-On-Job” !",
             description: "Résumez en une phrase ce que vous cherchez (Poste, date, expérience, nombre de places, horaires, " +
@@ -1003,6 +1052,6 @@ export class HomePage {
         ];
         let helpModal = this.modal.create(ModalHelpPage, {'content': content});
         helpModal.present(helpModal);
-        
+
     }
 }

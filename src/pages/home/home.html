@@ -35,13 +35,26 @@
             <ion-input type="text" (focus)="onFocus($event)"
                        (blur)="onBlur($event)" (keyup)="checkForEnterKey($event)"
                        [(ngModel)]="scQuery"></ion-input>
-            <button class="search-button" ion-button icon-only clear item-right (click)="doSemanticSearch()" color="vojgreen">
+            <button class="search-button" ion-button icon-only clear item-right (click)="doSemanticSearch()">
                 <ion-icon id="icon-search" name="search" class="searchIcon"></ion-icon>
             </button>
-            <button ion-button icon-only item-right clear [navPush]="push" color="vojgreen"><ion-icon name="funnel" class="searchIcon"></ion-icon></button>
+            <button ion-button icon-only item-right clear [navPush]="push"><ion-icon name="funnel" class="searchIcon"></ion-icon></button>
 
         </ion-item>
     </ion-row>
+
+    <ion-list *ngIf="jobs.length>0" text-wrap style="background-color: white;">
+        <div *ngFor="let sec of jobs">
+            <ion-list-header color="light"> {{sec.sector}}</ion-list-header>
+            <div *ngFor="let j of sec.jobs">
+                <ion-item (click)="jobSelected(j)">
+                    {{j.libelle}}
+                </ion-item>
+            </div>
+        </div>
+
+    </ion-list>
+
     <!--div id="adv-search">
         <ion-row *ngIf="!isHunter">
             <ion-col text-right>
