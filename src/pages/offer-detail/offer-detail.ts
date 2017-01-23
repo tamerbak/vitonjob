@@ -433,13 +433,11 @@ export class OfferDetailPage {
     let modal = this.modal.create(ModalCalendarPage, {slots: this.offer.calendarData});
     modal.present();
     modal.onDidDismiss((data: {slots: any, isObsolete: boolean}) => {
-      // this.modified.isCalendar = (data.length) ? data.length > 0 : false;
-      //if (this.modified.isCalendar){
-      this.offer.calendarData = data.slots;
-      this.offer.obsolete = data.isObsolete;
-      this.offerService.updateOfferCalendar(this.offer, this.projectTarget);
-      //}
-
+      if(data.slots){
+        this.offer.calendarData = data.slots;
+        this.offer.obsolete = data.isObsolete;
+        this.offerService.updateOfferCalendar(this.offer, this.projectTarget);
+      }
     })
   }
 
