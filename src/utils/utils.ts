@@ -102,5 +102,14 @@ export class Utils {
     return txt.replace(/'/g, "''");
   }
 
+  public static checkMail(email : string){
+    let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+    return re.test(email);
+  }
+
+  public static checkPhone(phone : string){
+    let re = /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/;
+    return re.test(phone);
+  }
 }
