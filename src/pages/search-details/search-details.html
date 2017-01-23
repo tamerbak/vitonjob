@@ -104,7 +104,6 @@
             </button>
         </ion-item>
 
-
         <!--ion-item>
             <ion-label>Candidature en groupe</ion-label>
             <ion-checkbox [(ngModel)]="result.checkedContract" (ionChange)="selectContract($event)"></ion-checkbox>
@@ -120,4 +119,23 @@
 
 
     </ion-card>
+
+    <ion-card [hidden]="references.length == 0">
+        <ion-item text-wrap>
+            <h2>Références</h2>
+        </ion-item>
+        <ion-list>
+            <ion-item *ngFor="let r of references">
+                <ion-icon subtle large item-left name='star' style="color: #f1e42e"></ion-icon>
+                <h5 >{{r.fullName}}</h5>
+                <p>
+                    {{r.phone}} {{r.phone != '' && r.email != ''?' / ':''}} {{r.email}}
+                </p>
+                <button ion-button clear item-right (click)="showReferenceDetails(r)" large color="vojblue">
+                    <ion-icon name="more"></ion-icon>
+                </button>
+            </ion-item>
+        </ion-list>
+    </ion-card>
+
 </ion-content>

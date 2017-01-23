@@ -285,15 +285,17 @@ export class OfferAddPage {
         let modal = this.modal.create(ModalCalendarPage, {slots: JSON.parse(value), obj: "add"});
         modal.present();
         modal.onDidDismiss((data: any) => {
-          this.validated.isCalendar = (data.slots.length) ? data.slots.length > 0 : false;
-          this.steps.isCalendar = this.validated.isCalendar;
-          this.steps.styleDisableCalendar.opacity = (!this.steps.isCalendar && !this.validated.isJob) ? 0.5 : 1;
-          this.steps.styleDisableQuality.opacity = !(this.validated.isCalendar && this.validated.isJob) ? 0.5 : 1;
-          this.steps.styleDisableLanguage.opacity = !(this.validated.isCalendar && this.validated.isJob) ? 0.5 : 1;
-          this.storage.set('slots', JSON.stringify(data.slots));
-          if (this.validated.isCalendar && this.validated.isQuality)
-            this.presentToast("Vous pouvez ajouter votre nouvelle offre dès maintenant! " +
-              "Pour plus de précision pensez à saisir les qualités et langues...", 3);
+          if(data && data.slots) {
+            this.validated.isCalendar = (data.slots.length) ? data.slots.length > 0 : false;
+            this.steps.isCalendar = this.validated.isCalendar;
+            this.steps.styleDisableCalendar.opacity = (!this.steps.isCalendar && !this.validated.isJob) ? 0.5 : 1;
+            this.steps.styleDisableQuality.opacity = !(this.validated.isCalendar && this.validated.isJob) ? 0.5 : 1;
+            this.steps.styleDisableLanguage.opacity = !(this.validated.isCalendar && this.validated.isJob) ? 0.5 : 1;
+            this.storage.set('slots', JSON.stringify(data.slots));
+            if (this.validated.isCalendar && this.validated.isQuality)
+              this.presentToast("Vous pouvez ajouter votre nouvelle offre dès maintenant! " +
+                  "Pour plus de précision pensez à saisir les qualités et langues...", 3);
+          }
         })
       });
     }
