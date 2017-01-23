@@ -120,6 +120,8 @@ import {DateConverter} from "../pipes/date-converter/date-converter";
 import {TimeConverter} from "../pipes/time-converter/time-converter";
 import {CKEditorModule} from "ng2-ckeditor";
 import {ModalHelpPage} from "../pages/modal-help/modal-help";
+import {AccountReferencesService} from "../providers/account-references-service/account-references-service";
+import {ProfileReferencePage} from "../pages/profile-reference/profile-reference";
 
 @NgModule({
     declarations: [
@@ -198,6 +200,7 @@ import {ModalHelpPage} from "../pages/modal-help/modal-help";
         SlimPayPage,
         WalletCreatePage,
         YousignPage,
+        ProfileReferencePage,
         // Custom components
         GooglePlaces,
         SwipeVertical,
@@ -291,7 +294,8 @@ import {ModalHelpPage} from "../pages/modal-help/modal-help";
         SettingsPage,
         SlimPayPage,
         WalletCreatePage,
-        YousignPage
+        YousignPage,
+        ProfileReferencePage,
     ],
     providers: [
         {provide: ErrorHandler, useClass: IonicErrorHandler},
@@ -334,7 +338,8 @@ import {ModalHelpPage} from "../pages/modal-help/modal-help";
         DateUtils,
         Utils,
         AccountConstraints,
-        NumSSConstraints
+        NumSSConstraints,
+        AccountReferencesService
     ]
 })
 export class AppModule {
