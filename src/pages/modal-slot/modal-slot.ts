@@ -68,7 +68,7 @@ export class ModalSlotPage {
                 value: "01",
                 shortName: "Jan",
                 fullName: "Janvier",
-                disabled: !(this.monthValue === 1),
+                disabled: !(this.monthValue <= 1),
                 checked: (this.monthValue === 1),
                 year: this.yearValue,
                 color: "light"
@@ -77,7 +77,7 @@ export class ModalSlotPage {
                 value: "02",
                 shortName: "Fév",
                 fullName: "Février",
-                disabled: !(this.monthValue == 2),
+                disabled: !(this.monthValue <= 2),
                 checked: (this.monthValue === 2),
                 year: this.yearValue,
                 color: "light"
@@ -86,7 +86,7 @@ export class ModalSlotPage {
                 value: "03",
                 shortName: "Mars",
                 fullName: "Mars",
-                disabled: !(this.monthValue == 3),
+                disabled: !(this.monthValue <= 3),
                 checked: (this.monthValue === 3),
                 year: this.yearValue,
                 color: "light"
@@ -95,7 +95,7 @@ export class ModalSlotPage {
                 value: "04",
                 shortName: "Avr",
                 fullName: "Avril",
-                disabled: !(this.monthValue == 4),
+                disabled: !(this.monthValue <= 4),
                 checked: (this.monthValue === 4),
                 year: this.yearValue,
                 color: "light"
@@ -104,7 +104,7 @@ export class ModalSlotPage {
                 value: "05",
                 shortName: "Mai",
                 fullName: "Mai",
-                disabled: !(this.monthValue == 5),
+                disabled: !(this.monthValue <= 5),
                 checked: (this.monthValue === 5),
                 year: this.yearValue,
                 color: "light"
@@ -113,7 +113,7 @@ export class ModalSlotPage {
                 value: "06",
                 shortName: "Juin",
                 fullName: "Juin",
-                disabled: !(this.monthValue == 6),
+                disabled: !(this.monthValue <= 6),
                 checked: (this.monthValue === 6),
                 year: this.yearValue,
                 color: "light"
@@ -122,7 +122,7 @@ export class ModalSlotPage {
                 value: "07",
                 shortName: "Juil",
                 fullName: "Juillet",
-                disabled: !(this.monthValue == 7),
+                disabled: !(this.monthValue <= 7),
                 checked: (this.monthValue === 7),
                 year: this.yearValue,
                 color: "light"
@@ -131,7 +131,7 @@ export class ModalSlotPage {
                 value: "08",
                 shortName: "Août",
                 fullName: "Août",
-                disabled: !(this.monthValue == 8),
+                disabled: !(this.monthValue <= 8),
                 checked: (this.monthValue === 8),
                 year: this.yearValue,
                 color: "light"
@@ -140,7 +140,7 @@ export class ModalSlotPage {
                 value: "09",
                 shortName: "Sep",
                 fullName: "Septembre",
-                disabled: !(this.monthValue == 9),
+                disabled: !(this.monthValue <= 9),
                 checked: (this.monthValue === 9),
                 year: this.yearValue,
                 color: "light"
@@ -149,7 +149,7 @@ export class ModalSlotPage {
                 value: "10",
                 shortName: "Oct",
                 fullName: "Octobre",
-                disabled: !(this.monthValue == 10),
+                disabled: !(this.monthValue <= 10),
                 checked: (this.monthValue === 10),
                 year: this.yearValue,
                 color: "light"
@@ -158,7 +158,7 @@ export class ModalSlotPage {
                 value: "11",
                 shortName: "Nov",
                 fullName: "Novembre",
-                disabled: !(this.monthValue == 11),
+                disabled: !(this.monthValue <= 11),
                 checked: (this.monthValue === 11),
                 year: this.yearValue,
                 color: "light"
@@ -167,7 +167,7 @@ export class ModalSlotPage {
                 value: "12",
                 shortName: "Déc",
                 fullName: "Décembre",
-                disabled: !(this.monthValue == 12),
+                disabled: !(this.monthValue <= 12),
                 checked: (this.monthValue === 12),
                 year: this.yearValue,
                 color: "light"
@@ -402,6 +402,9 @@ export class ModalSlotPage {
                 for (let i = 0; i < this.monthesList.length; i++)
                     if (Number(this.monthesList[i].value) < this.monthValue) {
                         this.monthesList[i].disabled = true;
+                        this.monthesList[i].checked = false;
+                    }else{
+                        this.monthesList[i].disabled = false;
                         this.monthesList[i].checked = false;
                     }
             } else {
