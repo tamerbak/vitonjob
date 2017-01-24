@@ -686,7 +686,7 @@ export class OffersService {
     }
 
     loadSectorsToLocal() {
-        let sql = 'select pk_user_metier as id, libelle as libelle from user_metier order by libelle asc';
+        let sql = "select pk_user_metier as id, libelle as libelle from user_metier where dirty='N' order by libelle asc";
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -707,7 +707,7 @@ export class OffersService {
     }
 
     loadJobsToLocal() {
-        let sql = 'select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc';
+        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier and j.dirty='N' order by j.libelle asc";
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -735,7 +735,7 @@ export class OffersService {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
-        var sql = 'select pk_user_metier as id, libelle as libelle from user_metier';
+        var sql = "select pk_user_metier as id, libelle as libelle from user_metier where dirty='N'";
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -768,11 +768,13 @@ export class OffersService {
             sql = 'SELECT pk_user_job as id, user_job.libelle as libelle, fk_user_metier as idsector, user_metier.libelle as libelleSector  ' +
                 'FROM user_job, user_metier ' +
                 'WHERE fk_user_metier = pk_user_metier ' +
-                'AND fk_user_metier =' + idSector;
+                'AND fk_user_metier =' + idSector+
+                "AND user_job.dirty='N'";
         else
             sql = 'SELECT pk_user_job as id, user_job.libelle as libelle, fk_user_metier as idsector, user_metier.libelle as libelleSector ' +
                 'FROM user_job, user_metier ' +
-                'WHERE fk_user_metier = pk_user_metier';
+                'WHERE fk_user_metier = pk_user_metier'+
+                "AND user_job.dirty='N'";
 
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -834,7 +836,7 @@ export class OffersService {
     loadLanguages(projectTarget: string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
-        var sql = 'select pk_user_langue as \"idLanguage\", libelle as libelle, \'junior\' as level from user_langue';
+        var sql = "select pk_user_langue as \"idLanguage\", libelle as libelle, \'junior\' as level from user_langue where dirty='N'";
         console.log(sql);
         return new Promise(resolve => {
 
@@ -864,7 +866,7 @@ export class OffersService {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
         let type = (projectTarget != "jobyer") ? 'jobyer' : 'employeur';
-        var sql = "select pk_user_indispensable as \"idQuality\", libelle as libelle from user_indispensable where type='" + type + "'";
+        var sql = "select pk_user_indispensable as \"idQuality\", libelle as libelle from user_indispensable where type='" + type + "' and dirty='N'";
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
