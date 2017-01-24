@@ -4,6 +4,7 @@ platforms/
 plugins/
 resources/android
 resources/ios
+res
 bower_components
 .idea
 .iws
