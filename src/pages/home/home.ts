@@ -678,9 +678,9 @@ export class HomePage {
 
     onFocus() {
         if (this.projectTarget == 'employer')
-            this.searchPlaceHolder = "Ex : Je cherche un serveur";// débutant disponible demain sur Villepinte";
+            this.searchPlaceHolder = "Saisissez le job sur lequel vous recrutez";// débutant disponible demain sur Villepinte";
         else
-            this.searchPlaceHolder = "Ex : Je suis un serveur";//Je cherche une offre d'emploi pour serveur débutant demain sur Villepinte";
+            this.searchPlaceHolder = "Saisissez le job que vous souhaitez";//Je cherche une offre d'emploi pour serveur débutant demain sur Villepinte";
     }
 
     onBlur() {

@@ -1,5 +1,4 @@
 import {NavController, ViewController, ToastController, Platform} from "ionic-angular";
-import {DatePicker} from "ionic-native";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {Component} from "@angular/core";
@@ -409,7 +408,7 @@ export class ModalSlotPage {
                     if (Number(this.monthesList[i].value) < this.monthValue) {
                         this.monthesList[i].disabled = true;
                         this.monthesList[i].checked = false;
-                    }else{
+                    } else {
                         this.monthesList[i].disabled = false;
                         this.monthesList[i].checked = false;
                     }
@@ -482,7 +481,7 @@ export class ModalSlotPage {
     }
 
     isValidateDisabled() {
-        if(Utils.isEmpty(this.showedSlot.startDate) || Utils.isEmpty(this.showedSlot.endDate)){
+        if (Utils.isEmpty(this.showedSlot.startDate) || Utils.isEmpty(this.showedSlot.endDate)) {
             return true;
         }
         return false;
@@ -546,15 +545,23 @@ export class ModalSlotPage {
             this.minEndDate = new Date(new Date(this.showedSlot.startDate).setUTCHours(new Date(this.showedSlot.startDate).getUTCHours(), new Date(this.showedSlot.startDate).getUTCMinutes() + 15)).toISOString();
             this.maxEndDate = new Date(new Date(this.showedSlot.startDate).setUTCHours(new Date(this.showedSlot.startDate).getUTCHours() + 10)).toISOString();
             this.showedSlot.endDate = this.minEndDate;
-            if (this.daysList.filter(da=>{return da.checked}).length > 0){
-                this.daysList.filter(da=>{return da.checked})[0].checked = false;
+            if (this.daysList.filter(da => {
+                    return da.checked
+                }).length > 0) {
+                this.daysList.filter(da => {
+                    return da.checked
+                })[0].checked = false;
             }
-            if (this.daysList.filter(da=>{return da.value === new Date(this.showedSlot.startDate).getDate()}).length > 0){
-                this.daysList.filter(da=>{return da.value === new Date(this.showedSlot.startDate).getDate()})[0].checked = true;
+            if (this.daysList.filter(da => {
+                    return da.value === new Date(this.showedSlot.startDate).getDate()
+                }).length > 0) {
+                this.daysList.filter(da => {
+                    return da.value === new Date(this.showedSlot.startDate).getDate()
+                })[0].checked = true;
             }
 
             this.showedSlot.startHour = new Date(this.showedSlot.startDate).getUTCHours();
-        } else if (i===1) {
+        } else if (i === 1) {
             this.showedSlot.endHour = new Date(this.showedSlot.endHour).getUTCHours();
         }
 
@@ -572,12 +579,12 @@ export class ModalSlotPage {
         }
 
         //check if chosen hour and date are passed
-        if (i == 0 && this.showedSlot.startDate && new Date(this.showedSlot.startDate) <= new Date() ) {
+        if (i == 0 && this.showedSlot.startDate && new Date(this.showedSlot.startDate) <= new Date()) {
             this.hoursErrorMessage = "* L'heure de début doit être supérieure à l'heure actuelle";
             this.showedSlot.startDate = "";
             return;
         }
-        if (i == 1 && this.showedSlot.endDate && new Date(this.showedSlot.endDate) <= new Date() ) {
+        if (i == 1 && this.showedSlot.endDate && new Date(this.showedSlot.endDate) <= new Date()) {
             this.hoursErrorMessage = "* L'heure de fin doit être supérieure à l'heure actuelle";
             this.showedSlot.endDate = "";
             return;
@@ -594,7 +601,7 @@ export class ModalSlotPage {
     /**
      * Periodicity change
      */
-    periodicityClicked(type:number) {
+    periodicityClicked(type: number) {
         switch (type) {
 
         }
