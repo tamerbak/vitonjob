@@ -112,12 +112,12 @@
 
     <ion-item>
         <ion-label stacked>Nombre d'heures de travail Vit-On-Job</ion-label>
-        <ion-label>{{jobyer.nbVitOnJobHours/60}}</ion-label>
+        <ion-label>{{parseInt(jobyer.nbVitOnJobHours/60)}}</ion-label>
     </ion-item>
 
     <ion-item *ngIf="!isEmpty(jobyer.nbWorkHours)">
         <ion-label stacked>Nombre d'heures de travail ailleurs</ion-label>
-        <ion-label>{{jobyer.nbWorkHours}}</ion-label>
+        <ion-label>{{parseInt(jobyer.nbWorkHours)}}</ion-label>
     </ion-item>
 
     <ion-item *ngIf="!isEmpty(jobyer.nbStudyHoursBig)">

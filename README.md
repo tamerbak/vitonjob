@@ -130,4 +130,4 @@ $ npm install ng2-ckeditor --save
 
 ## Environnement
 
-Le projet est compatible avec Ionic 2 la version RC4 et Angular2 version finale 2.x (Voir package.json)
+Le projet est compatible avec Ionic 2 la version RC5 et Angular2 version finale 2.x (Voir package.json)

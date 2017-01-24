@@ -1,0 +1,54 @@
+<ion-content class="advert-list" padding [ngStyle]="backgroundImage">
+    <button clear nav-pop>
+        <ion-icon name="arrow-back"></ion-icon>
+        Retour à la liste
+    </button>
+
+    <ion-card>
+        <ion-row>
+            <ion-col width-33>
+                <ion-avatar>
+                    <img [src]="advert.thumbnail.fileContent" style="margin:5px">
+                </ion-avatar>
+            </ion-col>
+            <ion-col text-wrap>
+                <ion-card-header>{{advert.titre}}</ion-card-header>
+            </ion-col>
+        </ion-row>
+        <ion-card-content style="padding: 0;">
+            <ion-item text-wrap>
+                <img [src]="advert.imgbg.fileContent" style="border:2px solid gray;">
+                <button block (click)="goToOffer()" [style.backgroundColor]="themeColor" *ngIf="advert.hasOffer">
+                    <ion-icon name="clipbboard"></ion-icon>
+                    Afficher l'offre associée
+                </button>
+                <h3 text-wrap class="h3-margintop" *ngIf="!advert.hasOffer">Aucune offre n'est encore associée à cette annonce</h3>
+            </ion-item>
+
+            <ion-item text-wrap>
+                <button block (click)="saveAdvertInterest()" [style.backgroundColor]="themeColor">
+                    <ion-icon name="checkmark"></ion-icon>
+                    {{jobyerInterestLabel}}
+                </button>
+            </ion-item>
+
+            <ion-item>
+                <span class="large" [innerHTML]="advert.description"></span>
+            </ion-item>
+
+            <ion-item *ngIf="contractForm.length != 0">
+                <p>Forme de contrat: </p>
+                <h3 text-wrap *ngFor="let cf of contractForm">{{cf}}</h3>
+            </ion-item>
+
+            <ion-item *ngIf="advert.attachement.fileContent.length != 0">
+                <p>Pièces jointes: </p>
+                <button block (click)="downloadAttachement()" outline clear>
+                    <ion-icon name="download"></ion-icon>
+                    {{attachFilename}}
+                </button>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+
+</ion-content>

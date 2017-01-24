@@ -324,18 +324,6 @@
 
         <ion-list>
             <ion-list-header color="primary">Jobs qui m'intéressent</ion-list-header>
-
-            <ion-list radio-group [(ngModel)]="selectedJobLevel">
-                <ion-item>
-                    <ion-label>Débutant</ion-label>
-                    <ion-radio value="1"></ion-radio>
-                </ion-item>
-
-                <ion-item>
-                    <ion-label>Expérimenté</ion-label>
-                    <ion-radio value="2"></ion-radio>
-                </ion-item>
-            </ion-list>
             <ion-item>
                 <ion-label floating>Job <span class="asterisk">*</span></ion-label>
                 <ion-input [(ngModel)]="selectedJob" (keyup)="watchJob($event)"></ion-input>
@@ -356,16 +344,32 @@
                 Veuillez saisir un job valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus
                 </div>
 
+            <!--LEVEL-->
+            <div [hidden]="!selectedJobId">
+                <ion-list-header color="primary">Niveau</ion-list-header>
+                <ion-list radio-group [(ngModel)]="selectedJobLevel">
+                    <ion-item>
+                        <ion-label>Débutant</ion-label>
+                        <ion-radio value="1"></ion-radio>
+                    </ion-item>
+
+                    <ion-item>
+                        <ion-label>Expérimenté</ion-label>
+                        <ion-radio value="2"></ion-radio>
+                    </ion-item>
+                </ion-list>
+            </div>
+
             <ion-row>
                 <ion-col text-center>
-                    <button ion-button icon-left small [color]="themeColor" (click)="addJob()" [hidden]="!selectedJobId">
+                    <button ion-button icon-left small [color]="themeColor" (click)="addJob()">
                         <ion-icon name="add-circle"></ion-icon>
                         Ajouter un job
                     </button>
                 </ion-col>
             </ion-row>
 
-            <ion-list text-wrap>
+            <ion-list text-wrap no-lines>
             
                 <ion-item *ngFor="let j of interestingJobs">
                     {{j.libelle}} - {{j.niveau == '1'?'Débutant':'Expérimenté'}}
@@ -374,7 +378,6 @@
                     </button>
                 </ion-item>
             </ion-list>
-
 
         </ion-list>
 
