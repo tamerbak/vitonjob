@@ -25,6 +25,8 @@ import {ModalSoftwarePage} from "../modal-software/modal-software";
 
 import {AccountReferencesService} from '../../providers/account-references-service/account-references-service'
 import {ProfileReferencePage} from "../profile-reference/profile-reference";
+import {SmsService} from "../../providers/sms-service/sms-service";
+import {InfoModalPage} from "../info-modal/info-modal";
 
 /*
  Generated class for the ProfilePage page.
@@ -76,6 +78,7 @@ export class ProfilePage {
                 private profileService: ProfileService,
                 private imageService: ImageService,
                 private listService: LoadListService,
+                private smsService: SmsService,
                 private referenceService : AccountReferencesService,
                 public events: Events,
                 public picker: PickerController,
@@ -418,6 +421,11 @@ export class ProfilePage {
 
     }
 
+    deleteloadDetails(reference : any){
+        let modal = this.modal.create(InfoModalPage, {reference : reference});
+        modal.present();
+    }
+
     /**
      * DELETE A SPECIFIC REFERENCE FROM ACCOUNT
      * @param reference
@@ -444,6 +452,27 @@ export class ProfilePage {
         modal.onDidDismiss((data:any)=>{
             if(data != null && data.reference != null){
                 this.references.push(data.reference);
+
+                if(data.reference.phone){
+                    //  Send notification by sms
+                    let message = this.userData.nom+' '+this.userData.prenom+' vous a désigné comme référence. Nous désirons avoir votre retour sur contact@vitonjob.com';
+                    let phone = data.reference.phone;
+                    this.smsService.sendSms(phone, message).then((result:any)=>{
+                        this.presentToast("Un SMS a été adressé à votre référence afin de fournir une appréciation.", 3);
+                    });
+                }
+                if(data.reference.email){
+                    //  Send notification by email
+                    let message = 'Bonjour, '+this.userData.nom+' '+this.userData.prenom+' vous a désigné comme référence pour sur la plateforme de l\'emploi http://webapp.vitonjob.com.' +
+                        '\n Nous désirons avoir votre retour sur ses compétences par email  : contact@vitonjob.com.' +
+                        '\n\n' +
+                        'Vit-On-Job';
+                    let mail = data.reference.email;
+                    let subject = this.userData.nom+' '+this.userData.prenom+' vous a désigné comme référence';
+                    this.smsService.sendMail(mail, message, subject).then((result:any)=>{
+                        this.presentToast("Un courrier électronique a été adressé à votre référence afin de fournir une appréciation.", 3);
+                    });
+                }
             }
         });
     }

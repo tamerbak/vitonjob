@@ -192,8 +192,8 @@
                 <ion-label>CNI ou passeport </ion-label>
                 <ion-radio value="1"></ion-radio>
             </ion-item>
-            <ion-item>
-                <ion-label>Carte de ressortissant d'un état membre de l'UE <span class="asteriskb">*</span></ion-label>
+            <ion-item text-wrap>
+                <ion-label>Carte de ressortissant d'un état membre de l'UE</ion-label>
                 <ion-radio value="0"></ion-radio>
             </ion-item>
         </ion-list>
@@ -218,13 +218,13 @@
 
             <ion-item [hidden]="isEmployer" text-wrap>
             <ion-label>Pièce d'identité délivrée le<span class="asteriskb">*</span></ion-label>
-            <ion-datetime [(ngModel)]="tsejProvideDate" (ionChange)="watchTsejProvideDate($event)"
+            <ion-datetime [(ngModel)]="tsejProvideDate"
                           displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejProvideDate"
                           [(min)]="mintsejProvideDate"></ion-datetime>
         </ion-item>
         <ion-item [hidden]="isEmployer">
             <ion-label>Valable du <span class="asteriskb">*</span></ion-label>
-            <ion-datetime [(ngModel)]="tsejFromDate" (ionChange)="watchTsejFromDate($event)"
+            <ion-datetime [(ngModel)]="tsejFromDate"
                           displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejFromDate"
                           [(min)]="mintsejFromDate"></ion-datetime>
         </ion-item>
@@ -321,6 +321,62 @@
                 </ion-col>
             </ion-row>
         </ion-card>
+
+        <ion-list>
+            <ion-list-header color="primary">Jobs qui m'intéressent</ion-list-header>
+
+            <ion-list radio-group [(ngModel)]="selectedJobLevel">
+                <ion-item>
+                    <ion-label>Débutant</ion-label>
+                    <ion-radio value="1"></ion-radio>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label>Expérimenté</ion-label>
+                    <ion-radio value="2"></ion-radio>
+                </ion-item>
+            </ion-list>
+            <ion-item>
+                <ion-label floating>Job <span class="asterisk">*</span></ion-label>
+                <ion-input [(ngModel)]="selectedJob" (keyup)="watchJob($event)"></ion-input>
+                <!--<button small ion-button item-right (click)="setJobsPicker()">
+                    <ion-icon name="list"></ion-icon>
+                </button>-->
+                </ion-item>
+                <ion-item *ngIf="jobs.length>0">
+                    <ion-list>
+                        <ion-item *ngFor="let s of jobs" (click)="jobSelected(s)">
+                            {{s.libelle}}
+                        </ion-item>
+                    </ion-list>
+                </ion-item>
+                <div [hidden]="isJobFound"
+                    style="color:red">
+                <ion-icon name="md-arrow-dropup"></ion-icon>
+                Veuillez saisir un job valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus
+                </div>
+
+            <ion-row>
+                <ion-col text-center>
+                    <button ion-button icon-left small [color]="themeColor" (click)="addJob()" [hidden]="!selectedJobId">
+                        <ion-icon name="add-circle"></ion-icon>
+                        Ajouter un job
+                    </button>
+                </ion-col>
+            </ion-row>
+
+            <ion-list text-wrap>
+            
+                <ion-item *ngFor="let j of interestingJobs">
+                    {{j.libelle}} - {{j.niveau == '1'?'Débutant':'Expérimenté'}}
+                    <button ion-button icon-only item-right clear (click)="removeJob(j)">
+                        <ion-icon name="close-circle" [style.color]="themeColor"></ion-icon>
+                    </button>
+                </ion-item>
+            </ion-list>
+
+
+        </ion-list>
 
     </div>
     <ion-row>

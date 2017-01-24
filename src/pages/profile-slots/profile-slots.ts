@@ -17,6 +17,8 @@ export class ProfileSlotsPage {
   public params: NavParams;
   public inversedThemeColor: any;
   public isEmployer: boolean;
+  public maxEndDate: any;
+  public minStartDate: any;
 
   constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController, params: NavParams, public alert: AlertController) {
     // Get target to determine configs
@@ -35,6 +37,11 @@ export class ProfileSlotsPage {
       startHour: null,
       endHour: null
     };
+
+    let today = new Date();
+    this.maxEndDate = (today.getFullYear() + 2) + "-12-31";
+    this.minStartDate = new Date().toISOString();
+
     //load saved slots
     if (params.get('savedSlots') && params.get('savedSlots').length > 0) {
       for (let i = 0; i < params.get('savedSlots').length; i++) {
