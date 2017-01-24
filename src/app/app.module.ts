@@ -124,6 +124,7 @@ import {ModalHelpPage} from "../pages/modal-help/modal-help";
 import {AccountReferencesService} from "../providers/account-references-service/account-references-service";
 import {ProfileReferencePage} from "../pages/profile-reference/profile-reference";
 import {InfoModalPage} from "../pages/info-modal/info-modal";
+import {EnvironmentService} from "../providers/environment-service/environment-service";
 
 @NgModule({
     declarations: [
@@ -345,7 +346,8 @@ import {InfoModalPage} from "../pages/info-modal/info-modal";
         Utils,
         AccountConstraints,
         NumSSConstraints,
-        AccountReferencesService
+        AccountReferencesService,
+        EnvironmentService
     ]
 })
 export class AppModule {
