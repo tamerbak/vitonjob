@@ -1,0 +1,176 @@
+<ion-header no-border>
+    <ion-navbar [color]="themeColor">
+        <ion-title>Sélection d'un créneau</ion-title>
+        <ion-buttons end>
+            <button ion-button icon-only (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content class="modal-slot">
+    <!--ion-list>
+
+        <ion-item [hidden]="!isAndroid4">
+            <ion-label floating>Date</ion-label>
+            <ion-input type="text" [(ngModel)]="showedSlot.angular4Date"
+                       (focus)="launchDateTimePicker('date', 'day')" readonly></ion-input>
+        </ion-item>
+
+        <ion-item text-wrap [hidden]="isAndroid4">
+            <ion-label>Date</ion-label>
+            <ion-datetime id="idt" displayFormat="DD, MMMM YYYY" [(ngModel)]="showedSlot.date" pickerFormat="D MMM YYYY HH m"
+                          [min]="todayDate" [max]="maxDate" cancelText="Annuler" doneText="Ok" style="max-width:100%;"></ion-datetime>
+        </ion-item>
+
+        <ion-item [hidden]="!isAndroid4">
+            <ion-label floating>Heure de début</ion-label>
+            <ion-input type="text" [(ngModel)]="showedSlot.startHour"
+                       (focus)="launchDateTimePicker('time', 'start')" readonly></ion-input>
+        </ion-item>
+        <ion-item text-wrap [hidden]="isAndroid4">
+            <ion-label>Heure de Début</ion-label>
+            <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.startHour" (ionChange)="checkHour(0)"
+                          minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"
+                          style="max-width:100%;"></ion-datetime>
+        </ion-item>
+
+        <ion-item [hidden]="!isAndroid4">
+            <ion-label floating>Heure de fin</ion-label>
+            <ion-input type="text" [(ngModel)]="showedSlot.endHour"
+                       (focus)="launchDateTimePicker('time', 'end')" readonly></ion-input>
+        </ion-item>
+        <ion-item text-wrap [hidden]="isAndroid4">
+            <ion-label>Heure de fin</ion-label>
+            <ion-datetime displayFormat="HH:mm" [(ngModel)]="showedSlot.endHour" (ionChange)="checkHour(1)"
+                          minuteValues="0,15,30,45" cancelText="Annuler" doneText="Ok"
+                          style="max-width:100%;"></ion-datetime>
+        </ion-item>
+
+
+
+    </ion-list-->
+
+    <ion-grid>
+        <ion-list no-lines>
+            <ion-list-header color="light">
+                Année
+                <span class="asterisk">*</span>
+            </ion-list-header>
+            <ion-row>
+                <ion-col>
+                    <ion-item>
+                        <ion-label>{{yearValue}}</ion-label>
+                        <ion-checkbox checked [disabled]="!isNextYearChecked" (ionChange)="yearClicked()" [(ngModel)]="currentYear"></ion-checkbox>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item>
+                        <ion-label>{{(yearValue + 1)}}</ion-label>
+                        <ion-checkbox [(ngModel)]="nextYear" (ionChange)="yearClicked()"></ion-checkbox>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-item>
+                <ion-label>Récurrence annuelle</ion-label>
+                <ion-checkbox [(ngModel)]="showedSlot.annual" (ionChange)="periodicityClicked(0)"></ion-checkbox>
+            </ion-item>
+        </ion-list>
+        <ion-list no-lines>
+            <ion-list-header color="light">
+                Mois
+                <span class="asterisk">*</span>
+            </ion-list-header>
+            <ion-row>
+                <ion-item no-lines style="paddin-right: 0">
+                    <ion-icon name="ios-arrow-back" item-left style="font-size: x-small; margin-right: 0"></ion-icon>
+                    <!--ion-col *ngFor="let mo of monthesList" class="month-col"-->
+                    <ion-scroll scrollX="true" style="height: 50px;">
+                        <button *ngFor="let mo of monthesList" ion-button small class=""
+                                [color]="(mo.checked)? 'primary' : 'light'"
+                                [hidden]="mo.disabled" (click)="monthClicked(mo)">{{mo.shortName}}&nbsp;{{mo.year}}
+                        </button>
+                    </ion-scroll>
+                    <ion-icon name="ios-arrow-forward" item-right style="font-size: x-small"></ion-icon>
+                </ion-item>
+                <!--/ion-col-->
+            </ion-row>
+            <ion-item>
+                <ion-label>Récurrence mensuelle</ion-label>
+                <ion-checkbox [(ngModel)]="showedSlot.monthly" (ionChange)="periodicityClicked(1)"></ion-checkbox>
+            </ion-item>
+        </ion-list>
+
+        <ion-list no-lines>
+            <ion-list-header color="light">
+                Jour de semaine
+                <span class="asterisk">*</span>
+            </ion-list-header>
+            <ion-row>
+
+                <ion-item no-lines style="paddin-right: 0">
+                    <ion-icon name="ios-arrow-back" item-left style="font-size: x-small; margin-right: 0"></ion-icon>
+                    <ion-scroll scrollX="true" style="height: 50px;">
+                        <button *ngFor="let da of daysList" ion-button small class="day-button"
+                                [color]="(da.checked)? 'primary' : 'light'"
+                                [disabled]="da.disabled" (click)="dayClicked(da)">
+                            {{da.shortName}} le {{da.value}}
+                        </button>
+                    </ion-scroll>
+                    <ion-icon name="ios-arrow-forward" item-right style="font-size: x-small"></ion-icon>
+                </ion-item>
+
+
+                <!--ion-scroll scrollX="true" style="height: 40px;width: 100%;" class="item">
+                    <ion-col *ngFor="let da of daysList" class="day-col">
+                        <button ion-button small class="day-button" [color]="(da.checked)? 'primary' : 'light'"
+                                [disabled]="da.disabled" (click)="dayClicked(da)">{{da.shortName}}
+                        </button>
+                    </ion-col>
+                </ion-scroll-->
+            </ion-row>
+            <ion-item>
+                <ion-label>Récurrence hebdomadaire</ion-label>
+                <ion-checkbox [(ngModel)]="showedSlot.weekly" (ionChange)="periodicityClicked(2)"></ion-checkbox>
+            </ion-item>
+        </ion-list>
+
+
+        <ion-list>
+            <ion-list-header color="light" no-lines>
+                Horaire
+            </ion-list-header>
+            <ion-item text-wrap>
+                <ion-label stacked>Début <span class="asterisk">*</span></ion-label>
+                <ion-datetime displayFormat="Le D MMMM YYYY à HH:mm" pickerFormat="D MMM YYYY HH mm"
+                              [(ngModel)]="showedSlot.startDate" (ionChange)="checkHour(0)"
+                              minuteValues="0,15,30,45" cancelText="Annuler " doneText="Ok"
+                              [min]="minStartDate" [max]="maxStartDate"
+                              style="max-width:100%;"></ion-datetime>
+            </ion-item>
+
+            <ion-item text-wrap>
+                <ion-label stacked>Fin <span class="asterisk">*</span></ion-label>
+                <ion-datetime displayFormat="Le D MMMM YYYY à HH:mm" pickerFormat="D MMM YYYY HH mm"
+                              [(ngModel)]="showedSlot.endDate" (ionChange)="checkHour(1)"
+                              minuteValues="0,15,30,45" cancelText="Annuler " doneText="Ok"
+                              [min]="minEndDate" [max]="maxEndDate"
+                              style="max-width:100%;"></ion-datetime>
+            </ion-item>
+        </ion-list>
+    </ion-grid>
+
+
+    <div class="error-box">{{hoursErrorMessage}}</div>
+
+    <ion-row>
+        <ion-col text-center>
+            <button [disabled]="isValidateDisabled()" ion-button icon-left small
+                    [color]="themeColor" (click)="validateModal()">
+                <ion-icon name="checkmark-circle"></ion-icon>
+                Valider
+            </button>
+        </ion-col>
+    </ion-row>
+</ion-content>

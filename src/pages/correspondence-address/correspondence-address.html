@@ -1,0 +1,85 @@
+<ion-header>
+    <ion-navbar [color]="themeColor">
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>{{titlePage}}</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-row>
+        <ion-col text-center>
+            <button ion-button icon-left color="vojgrey" class="button-picture" (click)="copyPersonalAddress()">
+                <ion-icon name="copy"></ion-icon>
+                Utiliser mon adresse siège social
+            </button>
+        </ion-col>
+    </ion-row>
+
+    <ion-list>
+        <google-places [(bindModelData)]="searchData" (onPlaceChanged)='showResults($event)'
+                       [hidden]="isGooglePlaceHidden"></google-places>
+
+        <ion-row [hidden]="!isGooglePlaceHidden">
+            <ion-col width-10></ion-col>
+            <ion-col text-center>
+                <button ion-button icon-left clear (click)="showGooglePlaceInput()" style="white-space: normal;" color="vojblue">
+                    <ion-icon name="add"></ion-icon>
+                    Cliquez ici pour chercher une adresse
+                </button>
+            </ion-col>
+            <ion-col width-10></ion-col>
+        </ion-row>
+    </ion-list>
+
+    <!--{{geolocAddress}}	-->
+    <div>
+        <ion-item>
+            <ion-label floating>N° de la rue</ion-label>
+            <ion-input type="text" [(ngModel)]="streetNumber"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>Rue</ion-label>
+            <ion-textarea type="text" [(ngModel)]="street"></ion-textarea>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>Adresse complémentaire</ion-label>
+            <ion-textarea type="text" [(ngModel)]="name"></ion-textarea>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>Code postal</ion-label>
+            <ion-input type="number" [(ngModel)]="zipCode" (keyup)="watchZipCode($event)"
+                       (change)="validateZipCode($event)" maxlength="5" min="0" inputmode="numeric"
+                       pattern="[0-9]*"></ion-input>
+        </ion-item>
+        <div [hidden]="isZipCodeValid" class="error-box">
+            <ion-icon name="md-arrow-dropup"></ion-icon>
+            Veuillez saisir un code postal valide
+        </div>
+
+        <ion-item>
+            <ion-label floating>Ville</ion-label>
+            <ion-input type="text" [(ngModel)]="city"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label floating>Pays</ion-label>
+            <ion-input type="text" [(ngModel)]="country"></ion-input>
+        </ion-item>
+
+        <ion-row>
+            <ion-col width-10></ion-col>
+            <ion-col text-center>
+                <button ion-button icon-left (click)="updateCorrespondenceAddress()" color="vojgrey"
+                        [disabled]="isBtnDisabled()" type="submit">
+                    <ion-icon name="done-all"></ion-icon>
+                    Valider
+                </button>
+            </ion-col>
+            <ion-col width-10></ion-col>
+        </ion-row>
+    </div>
+</ion-content>

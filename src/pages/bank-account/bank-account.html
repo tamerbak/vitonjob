@@ -1,0 +1,45 @@
+<ion-header>
+    <ion-navbar [color]="themeColor">
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>Coordonnées bancaires</ion-title>
+
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding class="bank-account">
+    <ion-item>
+        <ion-label floating>Nom de la banque <span class="asterisk">*</span></ion-label>
+        <ion-input type="text" [(ngModel)]="bank.nom_de_banque"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label floating >Détenteur du compte <span class="asterisk">*</span></ion-label>
+        <ion-input type="text" [(ngModel)]="bank.detenteur_du_compte" (keyup)="watchAccountHolder($event.target.value)"></ion-input>
+    </ion-item>
+    <div class="error-box">{{accountHolderHint}}
+    </div>
+    <ion-item>
+        <ion-label floating>IBAN <span class="asterisk">*</span></ion-label>
+        <ion-input type="text" [(ngModel)]="bank.iban"></ion-input>
+    </ion-item>
+    <div *ngIf="showIBANError()"
+         class="error-box">* Le format de l'IBAN est incorrect
+    </div>
+    <ion-item>
+        <ion-label floating>BIC <span class="asterisk">*</span></ion-label>
+        <ion-input type="text" [(ngModel)]="bank.bic"></ion-input>
+    </ion-item>
+    <div *ngIf="showBICError()"
+         class="error-box">* Le format du BIC est incorrect
+    </div>
+  <ion-row>
+    <ion-col text-center>
+      <button ion-button icon-left small (click)="updateBankData()" [color]="themeColor" type="submit"
+              [disabled]="isUpdateDisabled()">
+        <ion-icon name="done-all"></ion-icon>
+        Valider
+      </button>
+    </ion-col>
+  </ion-row>
+</ion-content>

@@ -1,0 +1,53 @@
+<!--
+  Generated template for the AboutPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+
+<ion-content class="about">
+
+    <div class="about-header">
+        <button ion-button icon-only id="menu-btn" style="background-color: transparent;box-shadow: none;" [navPush]="push"
+                [color]="themeColor">
+            <ion-icon name="arrow-back" style="color: #757575"></ion-icon>
+        </button>
+        <img [src]="logo">
+    </div>
+    <div padding class="about-info" id="justify">
+        <h4 class="title">{{projectName}}<span class="junior"> <ion-icon name="globe"></ion-icon> <a
+                href="http://www.vitonjob.com">Site</a></span></h4>
+
+        <ion-list no-lines style="margin-bottom: 0px;">
+            <ion-item text-wrap style="padding-left: 0;">
+                <ion-icon name="calendar" item-left></ion-icon>
+                <ion-label style="margin-right: 0;">Lancement</ion-label>
+                <ion-label text-right style="margin-right: 0;">{{releaseDate}}</ion-label>
+                <!--ion-datetime displayFormat="DD MMM YYYY" [(ngModel)]="releaseDate" disabled></ion-datetime-->
+            </ion-item>
+
+            <ion-item style="padding-left: 0;">
+                <ion-icon ios="logo-apple" md="logo-android" item-left></ion-icon>
+                <ion-label>Version</ion-label>
+                <ion-label text-right>{{versionNumber}} {{versionCode}}</ion-label>
+            </ion-item>
+
+            <!--ion-item>
+              <ion-icon name="pin" item-left></ion-icon>
+              <ion-label>Local</ion-label>
+              <ion-label text-right>Paris</ion-label>
+            </ion-item-->
+        </ion-list>
+
+        <p class="text">
+            Vit-On-Job Employeur/Jobyer <span style="font-size: 1.2rem;color: #14baa6;"></span> est une application
+            permettant,
+            en quelques clics, d’être « Vite On Job ». Elle répond aux besoins d’employeurs qui souhaitent recruter
+            rapidement et de ceux qui veulent vite un emploi. Le service assure l’ensemble de l'embauche, de la
+            recherche
+            géolocalisée à la paie, formalités comprises.
+        </p>
+        <p>Enfin une contribution positive et ludique à la résolution d’une problématique majeure de notre société!</p>
+    </div>
+</ion-content>

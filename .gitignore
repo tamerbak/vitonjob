@@ -4,6 +4,7 @@ platforms/
 plugins/
 resources/android
 resources/ios
+res
 bower_components
 .idea
 .iws
@@ -12,3 +13,5 @@ workspace.xml
 tasks.xml
 .DS_Store
 npm-debug.log
+/.tmp
+/www

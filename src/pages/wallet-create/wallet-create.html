@@ -1,0 +1,77 @@
+<ion-header>
+    <ion-navbar [color]="themeColor">
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>Empreinte de carte bancaire</ion-title>
+
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding class="mangoPay">
+    <ion-card *ngIf="existingWallet">
+        <ion-card-content>
+            {{walletMsg}}
+        </ion-card-content>
+        <!--ion-card-footer-->
+            <button ion-button block primary (click)="gotomissions()">
+                Passer
+            </button>
+        <!--/ion-card-footer-->
+    </ion-card>
+
+    <ion-row>
+        <ion-col width-30>
+            <ion-item>
+                <ion-label floating>Type de carte</ion-label>
+                <ion-select [(ngModel)]="cardType">
+                    <ion-option value="CB">Carte Bleue</ion-option>
+                    <!--ion-option value="AMEX">AMEX</ion-option>
+                    <ion-option value="COFINOGA">COFINOGA</ion-option>
+                    <ion-option value="JCB">JCB</ion-option>
+                    <ion-option value="DINERS">DINERS</ion-option>
+                    <ion-option value="AURORE">AURORE</ion-option>
+                    <ion-option value="SOFINCO">SOFINCO</ion-option>
+                    <ion-option value="CETELEM">CETELEM</ion-option>
+                    <ion-option value="FNAC">FNAC</ion-option>
+                    <ion-option value="PRINTEMPS">PRINTEMPS</ion-option>
+                    <ion-option value="KANGOUROU">KANGOUROU</ion-option>
+                    <ion-option value="SURCOUF">SURCOUF</ion-option>
+                    <ion-option value="CYRILLUS">CYRILLUS</ion-option-->
+                </ion-select>
+            </ion-item>
+        </ion-col>
+        <ion-col width-70>
+            <ion-item>
+                <ion-label floating>Numéro de carte</ion-label>
+                <ion-input type="text"
+                           [(ngModel)]="cardNumber"></ion-input>
+            </ion-item>
+        </ion-col>
+
+    </ion-row>
+
+    <ion-row>
+        <ion-col width-30>
+            <ion-item>
+                <ion-label floating>MMAA</ion-label>
+                <ion-input type="text"
+                           [(ngModel)]="cardExpirationDate"></ion-input>
+            </ion-item>
+        </ion-col>
+
+        <ion-col width-70>
+            <ion-item>
+                <ion-label floating>Code Sécurité</ion-label>
+                <ion-input type="text"
+                           [(ngModel)]="cardCvv"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+
+    <button ion-button [color]="themeColor" block (click)="openWallet()">
+        <ion-icon name="profile"></ion-icon>
+        Enregistrer
+    </button>
+
+</ion-content>

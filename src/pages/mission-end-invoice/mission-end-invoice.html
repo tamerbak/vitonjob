@@ -1,0 +1,30 @@
+<ion-header>
+    <!--Mettre "themeColor" dans le TS plus tard (une fois fait supprimer le commentaire)-->
+    <ion-navbar [color]="themeColor">
+        <ion-title>Facture</ion-title>
+        <!--ion-buttons end>
+          <button (click)="showMenuToEditContract()">
+            <ion-icon name="create"></ion-icon>
+          </button>
+        </ion-buttons-->
+    </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+    <ion-card [hidden]="unSigned">
+        <ion-card-content>La facture de cette mission a déjà été signée</ion-card-content>
+    </ion-card>
+    <div id="iframPlaceHolder" style="width: 100%;height: 100%;">
+    </div>
+    <ion-row>
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button ion-button [style.backgroundColor]="themeColor" (click)="getBackToMissions()">
+                <ion-icon name="checkbox-outline"></ion-icon>
+                Terminer
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+</ion-content>

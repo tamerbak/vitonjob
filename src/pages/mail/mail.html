@@ -1,0 +1,90 @@
+<ion-header>
+    <ion-navbar [color]="themeColor">
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>{{mailTitle}}</ion-title>
+
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding class="mail">
+
+    <ion-label stacked>Entrez votre email</ion-label>
+    <ion-item>
+        <ion-input type="email" [(ngModel)]="email" (change)="watchEmail($event)"></ion-input>
+    </ion-item>
+    <div [hidden]="!showEmailError()"
+         class="error-box">* Veuillez saisir un email valide
+    </div>
+
+    <ion-label stacked [hidden]="!showPhoneField">Votre numéro de téléphone</ion-label>
+    <ion-row baseline [hidden]="!showPhoneField">
+        <ion-col width-25>
+            <ion-item>
+                <ion-input type="number" [(ngModel)]="index"></ion-input>
+            </ion-item>
+        </ion-col>
+        <ion-col width-20>
+            <button ion-button (click)="doRadioAlert()" class="button button-clear button-outline">
+                <ion-icon name="ios-arrow-down"></ion-icon>
+            </button>
+        </ion-col>
+        <ion-col>
+            <ion-item>
+                <ion-input type="number" [(ngModel)]="phone" maxlength="9" (keyup)="watchPhone($event)"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <div [hidden]="!showPhoneError()"
+         class="error-box"></div>
+
+    <ion-label stacked>Votre mot de passe</ion-label>
+    <ion-item>
+        <ion-input type="password" [(ngModel)]="password1"></ion-input>
+    </ion-item>
+    <div [hidden]="!showPassword1Error()"
+         class="error-box">* Taille minimale: 6 caractères
+    </div>
+
+    <ion-label stacked [hidden]="!showPhoneField">Confirmation du mot de passe</ion-label>
+    <ion-item [hidden]="!showPhoneField">
+        <ion-input type="password" [(ngModel)]="password2"></ion-input>
+    </ion-item>
+    <div [hidden]="!showPassword2Error()"
+         class="error-box">* Les deux mots de passe doivent être identiques!
+    </div>
+
+    <ion-row>
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button ion-button block (click)="authenticate()" [style.backgroundColor]="themeColor" [disabled]="isAuthDisabled()"
+                    type="submit">
+                <ion-icon name="log-in"></ion-icon>
+                {{libelleButton}}
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button ion-button block (click)="goBack()" light>
+                <ion-icon name="undo"></ion-icon>
+                Quitter
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+    <ion-row>&nbsp;</ion-row>
+    <ion-row>
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button ion-button block clear (click)="displayPasswordAlert()">
+                <ion-icon name="key"></ion-icon>
+                Mot de passe oublié
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+</ion-content>

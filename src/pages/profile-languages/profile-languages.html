@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-navbar [color]="themeColor">
+    <ion-title>Mes langues</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-label floating>Langue</ion-label>
+      <ion-select [(ngModel)]="selectedLangue">
+        <ion-option *ngFor="let q of langues"
+                    value="{{q.id}}">
+          {{q.libelle}}
+        </ion-option>
+
+      </ion-select>
+    </ion-item>
+    <button ion-button icon-left small item color="primary"
+            [disabled]="!selectedLangue || selectedLangue.length == 0"
+            (click)="addLangue()" >
+      <ion-icon  name="add-circle"></ion-icon>Ajouter
+    </button>
+  </ion-list>
+  <ion-list>
+    <ion-item *ngFor="let q of savedLangues">
+      <label>{{q.libelle}}</label>
+      <button ion-button small item-right danger (click)="removeLangue(q)" color="vojgrey">
+        <ion-icon name="remove-circle"></ion-icon>
+      </button>
+    </ion-item>
+  </ion-list>
+</ion-content>

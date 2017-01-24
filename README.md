@@ -111,6 +111,7 @@ $ ionic plugin add de.appplant.cordova.plugin.local-notification
 $ npm install croppie
 $ npm install diacritics
 $ cordova plugin add cordova-plugin-file
+$ npm install ng2-ckeditor --save
 ```
 
 ##Notification Push
@@ -129,4 +130,4 @@ $ cordova plugin add cordova-plugin-file
 
 ## Environnement
 
-Le projet est compatible avec Ionic 2 la version Beta 10 et Angular2 version rc3. (Voir package.json)
+Le projet est compatible avec Ionic 2 la version RC4 et Angular2 version finale 2.x (Voir package.json)

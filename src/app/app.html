@@ -1,0 +1,60 @@
+<!-- logged out menu -->
+<ion-menu [content]="menuContent" id="loggedOutMenu" class="menu">
+  <ion-header no-border>
+  <ion-toolbar [color]="themeColor">
+    <ion-title>
+      Menu
+    </ion-title>
+  </ion-toolbar>
+  </ion-header>
+  <ion-content class="menu" [style.backgroundColor]="backGroundColor">
+    <ion-list no-lines text-wrap>
+      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)" class="menuButton w">
+        <ion-icon name="{{p.icon}}"></ion-icon>
+        &nbsp;&nbsp;{{p.title}}
+      </button>
+      <button ion-item *ngFor="let p of loggedOutPages" (click)="openPage(p)" class="menuButton w">
+        <ion-icon name="{{p.icon}}"></ion-icon>
+        &nbsp;&nbsp;{{p.title}}
+      </button>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-menu [content]="menuContent" id="loggedInMenu" class="menu">
+<ion-header (click)="gotoAccountPage()" class="menuHeader" [style.backgroundColor]="(isEmployer)? '#14baa6' : '#757575'">
+  <ion-title style="padding-left: 0; vertical-align: middle;" [style.backgroundColor]="(isEmployer)? '#14baa6' : '#757575'">
+    <ion-item style="background-color: transparent; width:100%;" no-lines text-wrap>
+      <ion-avatar item-left>
+        <img [src]="userImageURL" style="width: 8rem;height: 8rem;">
+      </ion-avatar>
+      <h3 style="color: white;">{{userName}}</h3>
+      <h4 style="color: white;">{{userEnterprise}}</h4>
+      <p style="color: white;font-size: x-small;">{{userMail}}</p>
+      <p style="color: white;font-size: x-small;">{{userPhone}}</p>
+    </ion-item>
+  </ion-title>
+
+  <!--ion-toolbar text-left [style.backgroundColor]="(isEmployer)? '#14baa6' : '#757575'"
+               style="height: inherit;">
+
+  </ion-toolbar-->
+</ion-header>
+  <ion-content style="position: relative;" [style.backgroundColor]="backGroundColor">
+    <ion-list >
+      <button icon-left menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)" class="menuButton w" text-wrap>
+        <ion-icon name="{{p.icon}}" item-left></ion-icon>
+        &nbsp;&nbsp;<h2>{{p.title}}</h2>
+        <p><span style="color: lightcyan;font-size: smaller">{{p.description}}</span></p>
+      </button>
+      <button icon-left menuClose ion-item *ngFor="let p of loggedInPages" (click)="openPage(p)" class="menuButton w" text-wrap>
+        <ion-icon name="{{p.icon}}" item-left></ion-icon>
+        &nbsp;&nbsp;<h2>{{p.title}}</h2>
+        <p><span style="color: lightcyan;font-size: smaller">{{p.description}}</span></p>
+      </button>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-nav id="nav" [root]="rootPage" #menuContent swipeBackEnabled="false"></ion-nav>
+

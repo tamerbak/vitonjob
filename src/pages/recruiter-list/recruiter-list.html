@@ -1,0 +1,44 @@
+<ion-header no-border class="myToolbar">
+  <ion-toolbar transparent>
+    <button ion-button icon-left menuToggle style="background-color: transparent; box-shadow: none" [style.color]="backGroundColor">
+      <ion-icon name="menu" color="vojgrey"></ion-icon>
+      &nbsp;&nbsp;Gestion des habilitations
+    </button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding class="recruiter-list" [ngStyle]="backgroundImage">
+    <!--button menuToggle style="background-color: transparent; box-shadow: none" [style.color]="themeColor">
+        <ion-icon name="menu"></ion-icon>
+        &nbsp;&nbsp;Gestion des habilitations
+    </button-->
+
+    <ion-row>
+        <ion-col width-50>
+            <button ion-button icon-left block (click)="showRecruiterRepertoryModal()" [color]="themeColor"
+                    class="button-picture">
+                <ion-icon name="contacts"></ion-icon>
+                Ajout à partir du répertoire
+            </button>
+        </ion-col>
+        <ion-col width-50>
+            <button ion-button icon-left block [color]="themeColor" class="button-picture"
+                    (click)="showRecruiterManualModal()">
+                <ion-icon name="add-circle"></ion-icon>
+                Ajout manuel
+            </button>
+        </ion-col>
+    </ion-row>
+
+    <ion-list text-wrap>
+        <ion-list-header [hidden]="!recruiterList || recruiterList.length == 0">
+            Liste des recruteurs
+        </ion-list-header>
+        <ion-item *ngFor="let item of recruiterList">
+            <h2>{{item.firstname}} {{item.lastname}}</h2>
+            <button ion-button icon-only clear item-right [color]="themeColor" (click)="showRecruiterManualModal(item)">
+                <ion-icon name="create"></ion-icon>
+            </button>
+        </ion-item>
+    </ion-list>
+</ion-content>

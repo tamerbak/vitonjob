@@ -1,0 +1,30 @@
+<ion-header>
+    <ion-navbar [color]="themeColor">
+        <ion-title>Proposition</ion-title>
+            <button ion-button (click)="closeModal()" icon-only  clear>
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+    </ion-navbar>
+</ion-header>
+<ion-content padding class="modal-offers">
+    <ion-card *ngIf="voidOffers">
+        <ion-card-content>
+            Vous n'avez créé aucune offre pour le moment.
+        </ion-card-content>
+    </ion-card>
+    <button ion-button icon-left [color] = "themeColor" block (click)="goToNewOffer()">
+        <ion-icon name="add-circle" style="font-size: xx-large;"></ion-icon>
+        Créer une nouvelle offre
+    </button>
+    <ion-list text-wrap *ngIf="!voidOffers">
+        <ion-list-header>Offres disponibles</ion-list-header>
+        <ion-item *ngFor="let item of offerList " text-wrap>
+            <ion-label text-wrap (click)="chooseOffer(item)">
+                {{item.title}}
+            </ion-label>
+            <button ion-button [color] = "themeColor" item-right (click)="goToOfferDetails(item)" outline>
+                Détail
+            </button>
+        </ion-item>
+    </ion-list>
+</ion-content>

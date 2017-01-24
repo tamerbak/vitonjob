@@ -1,0 +1,42 @@
+<ion-header>
+    <ion-navbar [color]="themeColor">
+        <ion-title>Logiciels maitrisés</ion-title>
+        <ion-buttons end>
+            <button ion-button icon-only (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding class="modal-software">
+    <ion-item>
+        <ion-label floating>Logiciel</ion-label>
+        <ion-select [(ngModel)]="software">
+            <ion-option *ngFor="let s of softwares" [value] = "s">{{s.nom}}</ion-option>
+        </ion-select>
+    </ion-item>
+    <ion-item>
+        <ion-label floating>Année d'expérience</ion-label>
+        <ion-input type="number" [(ngModel)]="software.experience"></ion-input>
+    </ion-item>
+
+    <ion-row>
+        <ion-col text-center>
+            <button ion-button icon-left small
+                    [color]="themeColor" (click)="addSoftware(software)">
+                <ion-icon name="checkmark-circle"></ion-icon>
+                Ajouter
+            </button>
+        </ion-col>
+    </ion-row>
+
+    <ion-list>
+        <ion-item *ngFor="let s of savedSoftwares">
+            <label>{{s.nom}} - {{s.experience}}</label>
+            <button ion-button small item-right danger (click)="removeSoftware(s)" color="vojgrey">
+                <ion-icon name="remove-circle"></ion-icon>
+            </button>
+        </ion-item>
+    </ion-list>
+</ion-content>

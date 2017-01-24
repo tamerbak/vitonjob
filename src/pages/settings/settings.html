@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-navbar [color]="themeColor">
+    <ion-title>Options</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding class="settings">
+
+  <ion-list no-border-top>
+
+
+    <ion-list-header class="header-text-color" [hidden]="!isEmployer" color="vojblue">
+      Mission
+    </ion-list-header>
+    <ion-item (click)="changeOption()" [hidden]="!isEmployer" text-wrap no-lines>
+      <ion-icon name="clipboard" item-left></ion-icon>
+      Modifier le mode de validation des horaires
+    </ion-item>
+
+
+    <ion-list-header class="header-text-color" color="vojblue">
+      Sécurité
+    </ion-list-header>
+    <ion-item (click)="goToSettingPassword()">
+      <ion-icon name="key" item-left></ion-icon>
+      Modifier votre mot de passe
+    </ion-item>
+    <ion-item (click)="lockApp()" class="deactivated" no-lines>
+      <ion-icon name="lock" item-left></ion-icon>
+      Verrouiller votre compte
+    </ion-item>
+
+
+    <ion-list-header class="header-text-color" color="vojblue">
+      Compte
+    </ion-list-header>
+    <ion-item class="deactivated">
+      <ion-icon name="call" item-left></ion-icon>
+      Modifier votre téléphone
+    </ion-item>
+    <ion-item class="deactivated">
+      <ion-icon name="mail" item-left></ion-icon>
+      Modifier votre e-mail
+    </ion-item>
+    <ion-item class="logout-text-color" (click)="logOut()" no-lines>
+      <ion-icon name="log-out" item-left color="danger"></ion-icon>
+      Se déconnecter
+    </ion-item>
+
+  </ion-list>
+
+
+</ion-content>

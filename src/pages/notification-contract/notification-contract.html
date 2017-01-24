@@ -1,0 +1,29 @@
+<!--
+  Generated template for the NotificationContarctPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+<ion-content padding class="notification-contract" [ngStyle]="backgroundImage">
+    <button ion-button icon-left [color]="themeColor" clear navPop>
+        <ion-icon name="arrow-back"></ion-icon>
+        Retour
+    </button>
+    <ion-card>
+        <ion-card-header>Attention</ion-card-header>
+        <ion-card-content>
+            <p>Vous êtes sur le point de procéder à la complétion, aux éventuelles modifications
+                et à la validation des informations qui vont être installées sur votre <span *ngIf="!isEmployer">contrat de mission</span>
+                <span *ngIf="isEmployer">contrat de mise à disposition</span>. </p>
+            <p>Cette étape exige toute votre attention pour éviter la signature d'un contrat avec des informations
+                erronées.</p>
+            <p>Nous avons apporté un soin particulier pour vous aider à réussir cette étape.</p>
+        </ion-card-content>
+
+        <ion-item>
+            <button ion-button item-right outline (click)="gotoContractForm()">Je confirme avoir lu et compris</button>
+        </ion-item>
+    </ion-card>
+
+</ion-content>

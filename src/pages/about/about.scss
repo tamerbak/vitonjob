@@ -1,0 +1,73 @@
+about{
+  .about {
+    .about-header {
+      //background-color: #14baa6;
+      padding: 0;
+      width: 100%;
+      min-height: 150px;
+      text-align: center;
+      background-image: url("../../assets/img/bgAbout.png");
+      background-size: cover;
+    }
+
+    .about-header img {
+      max-width: 200px;
+      min-height: 115px;
+      margin-left: -15px;
+      padding: 25px 0 20px 0;
+    }
+
+    .about-info p {
+      color: #697072;
+      text-align: left;
+    }
+
+    .about-info ion-icon {
+      color: color($colors, primary);
+      width: 20px;
+    }
+
+    .md,
+    .wp {
+      .about-info [text-right] {
+        margin-right: 0;
+      }
+    }
+
+    .ios .about-info {
+      text-align: center;
+    }
+
+    .ios .about-info ion-icon {
+      width: auto;
+      margin-right: 10px;
+    }
+
+    .title {
+      color: #757575;
+    }
+
+    .junior {
+      font-size: small;
+      color: #14baa6;
+      text-align: right;
+    }
+
+    #menu-btn {
+      position: absolute;
+      left: 0;
+    }
+
+    #justify p {
+      //max-width: 100%;
+      text-align: justify;
+    }
+
+    #justify p:after {
+      //content: "";
+      //display: inline-block;
+      //width: 100%;
+    }
+
+  }
+}

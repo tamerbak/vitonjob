@@ -1,0 +1,34 @@
+<ion-header no-border class="myToolbar">
+  <ion-toolbar transparent>
+    <button ion-button icon-left menuToggle style="background-color: transparent; box-shadow: none" [style.color]="backGroundColor">
+      <ion-icon name="menu" color="vojgrey"></ion-icon>
+      &nbsp;&nbsp;Coffre numérique
+    </button>
+  </ion-toolbar>
+</ion-header>
+<ion-content padding class="attachements" [ngStyle]="backgroundImage">
+
+    <!--button menuToggle style="background-color: transparent; box-shadow: none" [style.color]="themeColor">
+        <ion-icon name="menu"></ion-icon>
+        &nbsp;&nbsp;Coffre numérique
+    </button-->
+    <div *ngIf="emptySafe"><p class="bg-info attachments-info-box">Vous pouvez installer dès maintenant un document dans votre coffre numérique sécurisé</p></div>
+    <button ion-button icon-left block (click)="newAttachement()" [color]="themeColor">
+        <ion-icon name="add-circle"></ion-icon>
+        Ajouter un document
+    </button>
+    <ion-list>
+        <ion-item-sliding *ngFor="let a of attachments">
+            <ion-item (click)="downloadAttachement(a)">
+                <h2>{{a.fileName}}</h2>
+                <h3>{{a.uploadDate}}</h3>
+            </ion-item>
+            <ion-item-options>
+                <button ion-button icon-left color="danger" (click)="deleteAttachment(a)">
+                    <ion-icon name="trash"></ion-icon>
+                    Supprimer
+                </button>
+            </ion-item-options>
+        </ion-item-sliding>
+    </ion-list>
+</ion-content>

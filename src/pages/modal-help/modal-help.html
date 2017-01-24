@@ -1,0 +1,34 @@
+<!--
+  Generated template for the ModalhelpPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+
+<div class="modal-help">
+    <div class="content">
+        <ion-list no-lines text-wrap>
+            <ion-list-header
+                    style="color: white; font-weight: bold; background-color: transparent;border-top: initial;">Aide
+                Vit-On-Job
+            </ion-list-header>
+            <ion-item *ngFor="let item of content">
+                <!--ion-icon name="search" item-left></ion-icon-->
+                <h2>{{item.title}}</h2>
+                <p>{{item.description}}</p>
+
+            </ion-item>
+        </ion-list>
+    </div>
+</div>
+
+<div class="cancelButton">
+    <ion-fab bottom center>
+        <button ion-fab (click)="closeModal()" outline style="color: white">
+            <ion-icon name="close-circle" style="font-size: xx-large"></ion-icon>
+        </button>
+    </ion-fab>
+</div>
+
+

@@ -1,0 +1,62 @@
+<!--
+  Generated template for the GeneralConditionsPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-content padding class="general-conditions" [ngStyle]="backgroundImage">
+    <!--button style="background-color: transparent; color: #757575;" menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button-->
+
+    <ion-card style="height: calc(95% - 2px);overflow: auto;">
+        <div class="about-info" id="justify">
+            <ion-list style="white-space: normal;" text-wrap no-lines>
+                <ion-item>
+                    <h2 class="cg-header" text-center>{{gConditions.title}}</h2>
+                </ion-item>
+                <ion-item>
+                    <h4 class="cg-header">{{gConditions.legalInformation.title}}</h4>
+                    <p class="">{{gConditions.legalInformation.content}}</p>
+                </ion-item>
+                <ion-item>
+                    <h4 class="cg-header">{{gConditions.preamble.title}}</h4>
+                    <p class="cg-header">{{gConditions.preamble.content}}</p>
+                </ion-item>
+                <ion-item>
+                    <h4 class="cg-header">{{gConditions.object.title}}</h4>
+                    <p class="cg-header">{{gConditions.object.content}}</p>
+                </ion-item>
+
+                <ion-item *ngFor="let article of gConditions.articles">
+                    <h4 class="cg-header">
+                        Article {{article.code}}: {{article.title}}</h4>
+                    <div *ngFor="let subArticle of article.content">
+                        <h5 class="cg-header" *ngIf="subArticle.subTitle">
+                            Article {{article.code}}.{{subArticle.subCode}}: {{subArticle.subTitle}}</h5>
+                        <p class="">
+                            {{subArticle.subContent}}
+                        </p>
+                    </div>
+                </ion-item>
+
+                <ion-item>
+                    <h6 text-center>{{gConditions.footer}}</h6>
+                </ion-item>
+
+                <ion-item style="background-color: azure">
+                    <button ion-button icon-left outline item-left (click)="logOut()">
+                        <ion-icon name="close" ></ion-icon>
+                        Je refuse
+                    </button>
+                    <button ion-button icon-left outline item-right (click)="connect()">
+                        <ion-icon name="checkmark"></ion-icon>
+                        J'accepte
+                    </button>
+                </ion-item>
+
+            </ion-list>
+        </div>
+    </ion-card>
+
+</ion-content>

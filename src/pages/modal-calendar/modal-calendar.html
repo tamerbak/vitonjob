@@ -1,0 +1,67 @@
+<ion-header>
+    <ion-navbar [color]="themeColor" >
+        <ion-title>Agenda</ion-title>
+        <ion-buttons end>
+            <button ion-button (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding class="modal-calendar">
+    <ion-row>
+        <ion-col text-center>
+            <button ion-button small icon-left [color]="themeColor" (click)="showSlotModal()">
+                <ion-icon name="add-circle"></ion-icon>
+                Ajouter un créneau
+            </button>
+            <p [hidden]="!isObsolete" style="color:red">Cette offre contient des créneaux qui sont dépassés. Veuillez
+                les mettre à jour.</p>
+        </ion-col>
+    </ion-row>
+
+    <ion-list>
+        <ion-card *ngFor="let item of slots"
+                  style="background-image: url('assets/img/slot.png');background-size: cover;">
+            <ion-card-header style="padding-right: 0;padding-left: 0; padding-bottom: 0;">
+                <ion-row>
+                    <ion-col>
+                        Créneau du {{toDateString(item.date, '')}}
+                    </ion-col>
+
+                    <ion-col style="text-align: right;">
+                        <button ion-button outline small text-right (click)="removeSlot(item)"
+                                class="delete-button" [disabled]="isDeleteSlotDisabled()">
+                            Retirer
+                            <!--ion-icon name="close-circle"></ion-icon-->
+                        </button>
+                    </ion-col>
+
+                </ion-row>
+            </ion-card-header>
+
+            <ion-item style="background-color: transparent;">
+                <ion-icon name="calendar" item-left large color="primary"></ion-icon>
+                <h2>Le {{toDateString(item.date, dateOptions)}}</h2>
+                <p style="color: black;">De {{toHourString(item.startHour)}} à {{toHourString(item.endHour)}}</p>
+            </ion-item>
+
+            <!--ion-item style="background-color: transparent;">
+                <ion-label>Ajouter à l'agenda</ion-label>
+                <ion-toggle checked="false"></ion-toggle>
+            </ion-item-->
+        </ion-card>
+    </ion-list>
+
+    <ion-row>
+        <ion-col text-center>
+            <button [hidden]="(slots.length == 0)" ion-button icon-left small
+                    [color]="themeColor" (click)="validateCalendar()">
+                <ion-icon name="checkmark-circle"></ion-icon>
+                Valider
+            </button>
+        </ion-col>
+    </ion-row>
+
+</ion-content>

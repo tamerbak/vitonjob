@@ -1,0 +1,24 @@
+<ion-list text-wrap no-lines>
+    <ion-list-header color="primary">Options</ion-list-header>
+    <button ion-item (click)="copyOffer()">
+        Copier l'offre
+    </button>
+    <button ion-item (click)="changePrivacy()">
+        <span *ngIf="visibility">Rendre l'offre privée</span>
+        <span *ngIf="!visibility">Mettre l'offre en ligne</span>
+    </button>
+    <button ion-item (click)="launchSearch()">
+        Lancer une recherche
+    </button>
+    <button ion-item (click)="autoSearchMode()">
+        <span *ngIf="autoSearch">Désactiver </span>
+        <span *ngIf="!autoSearch">Activer </span>
+        la recherche auto
+    </button>
+    <button ion-item (click)="showQuote()" *ngIf="isEmployer">
+        Consulter le devis
+    </button>
+    <button ion-item (click)="deleteOffer()">
+        Supprimer l'offre
+    </button>
+</ion-list>
