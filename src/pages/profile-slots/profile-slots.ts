@@ -19,6 +19,7 @@ export class ProfileSlotsPage {
   public isEmployer: boolean;
   public maxEndDate: any;
   public minStartDate: any;
+  public yearsVals=[];
 
   constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController, params: NavParams, public alert: AlertController) {
     // Get target to determine configs
@@ -39,8 +40,13 @@ export class ProfileSlotsPage {
     };
 
     let today = new Date();
-    this.maxEndDate = (today.getFullYear() + 2) + "-12-31";
+    let maxYearsNum = 2 ; 
+    this.maxEndDate = (today.getFullYear() + maxYearsNum) + "-12-31";
     this.minStartDate = new Date().toISOString();
+    let i=0;
+    for(i=0;i<=maxYearsNum;i++){
+      this.yearsVals.push(today.getFullYear() +i);
+    }
 
     //load saved slots
     if (params.get('savedSlots') && params.get('savedSlots').length > 0) {
