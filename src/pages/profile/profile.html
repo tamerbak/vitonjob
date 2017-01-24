@@ -204,9 +204,16 @@
         <ion-icon name="calendar"></ion-icon>
       </button>
 
+     
+
       <button ion-fab [color]="themeColor"
               (click)="showProfileSoftwares()" *ngIf="!isEmployer">
         <ion-icon name="apps"></ion-icon>
+      </button>
+
+       <button ion-fab [color]="themeColor"
+              (click)="goToInterestingJobs()" *ngIf="!isEmployer">
+        <ion-icon name="happy"></ion-icon>
       </button>
 
       <!--<button ion-fab [color]="themeColor"
