@@ -193,7 +193,7 @@
                 <ion-radio value="1"></ion-radio>
             </ion-item>
             <ion-item text-wrap>
-                <ion-label>Carte de ressortissant d'un état membre de l'UE <span class="asteriskb">*</span></ion-label>
+                <ion-label>Carte de ressortissant d'un état membre de l'UE</ion-label>
                 <ion-radio value="0"></ion-radio>
             </ion-item>
         </ion-list>
@@ -218,13 +218,13 @@
 
             <ion-item [hidden]="isEmployer" text-wrap>
             <ion-label>Pièce d'identité délivrée le<span class="asteriskb">*</span></ion-label>
-            <ion-datetime [(ngModel)]="tsejProvideDate" (ionChange)="watchTsejProvideDate($event)"
+            <ion-datetime [(ngModel)]="tsejProvideDate"
                           displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejProvideDate"
                           [(min)]="mintsejProvideDate"></ion-datetime>
         </ion-item>
         <ion-item [hidden]="isEmployer">
             <ion-label>Valable du <span class="asteriskb">*</span></ion-label>
-            <ion-datetime [(ngModel)]="tsejFromDate" (ionChange)="watchTsejFromDate($event)"
+            <ion-datetime [(ngModel)]="tsejFromDate"
                           displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejFromDate"
                           [(min)]="mintsejFromDate"></ion-datetime>
         </ion-item>

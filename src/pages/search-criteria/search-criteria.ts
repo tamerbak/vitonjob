@@ -139,7 +139,7 @@ export class SearchCriteriaPage {
             job: (jobParam)? jobParam.libelle:"",
             sector: (jobParam)? jobParam.sector:"",
             idSector: (jobParam)? jobParam.idsector:"",
-            idJob: (jobParam)? jobParam.id:"",
+            idJob: (jobParam)? jobParam.id: 0,
             level: 'junior',
             remuneration: null,
             currency: 'euro',
@@ -622,10 +622,9 @@ export class SearchCriteriaPage {
                         list = list.filter((v) => {
                             return (v.idsector == q);
                         });
-                        this.listJobs = list;
-                        this.jobList = list;
                     }
-
+                    this.listJobs = list;
+                    this.jobList = list;
                 }
             }
         );
