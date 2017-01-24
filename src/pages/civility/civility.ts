@@ -267,7 +267,7 @@ export class CivilityPage {
     this.mintsejFromDate = (today.getFullYear() - 70) + "-01-01";
 
     this.mintsejToDate = today.getFullYear() + "-" + m + "-" + d;
-    this.maxtsejToDate = (today.getFullYear() + 70) + "-12-31";
+    this.maxtsejToDate = (today.getFullYear() + 10) + "-12-31";
 
     //load data for birth country
     this.loadListService.loadCountries(this.projectTarget).then((data: {data: any}) => {
@@ -1505,7 +1505,7 @@ export class CivilityPage {
     }
 
     this.mintsejToDate = this.mintsejFromDate;
-    this.maxtsejToDate = (provDate.getFullYear() + 73) + "-12-31";
+    this.maxtsejToDate = (provDate.getFullYear() + 10) + "-12-31";
 
     this.tsejFromDate = this.tsejProvideDate;
   }
@@ -1516,7 +1516,7 @@ export class CivilityPage {
     let m = (fromDate.getMonth() + 1) < 10 ? "0" + (fromDate.getMonth() + 1) : "" + (fromDate.getMonth() + 1);
 
     this.mintsejToDate = (fromDate.getFullYear()) + "-" + m + "-" + d;
-    this.maxtsejToDate = (fromDate.getFullYear() + 73) + "-12-31";
+    this.maxtsejToDate = (fromDate.getFullYear() + 10) + "-12-31";
 
     this.tsejToDate = this.tsejFromDate;
   }
