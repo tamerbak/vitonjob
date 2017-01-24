@@ -1,6 +1,6 @@
 <ion-header>
     <ion-navbar [color]="themeColor">
-        <ion-title>Rechercher une entreprise</ion-title>
+        <ion-title>Rechercher ent. </ion-title>
         <ion-buttons end>
             <button ion-button icon-only (click)="closeModal()">
                 <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
@@ -21,7 +21,7 @@
 
     <ion-item>
         <ion-input [(ngModel)]="inputSearch" placeholder="{{searchPlaceholder}}"></ion-input>
-        <button clear item-right [style.color]="themeColor" (click)="searchCompany()">
+        <button ion-button clear item-right [style.color]="themeColor" (click)="searchCompany()">
             <ion-icon name="search"></ion-icon>
         </button>
     </ion-item>

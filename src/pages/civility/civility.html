@@ -285,12 +285,12 @@
             <img [src]="scanUri"/>
             <ion-row>
                 <ion-col text-center>
-                    <button style="margin: auto;" clear (click)="showModal()" small>
+                    <button ion-button style="margin: auto;" clear (click)="showModal()" small>
                         <ion-icon name='expand'></ion-icon>
                     </button>
                 </ion-col>
                 <ion-col text-center>
-                    <button style="margin: auto;" clear (click)="onDelete($event)" small>
+                    <button ion-button style="margin: auto;" clear (click)="onDelete($event)" small>
                         <ion-icon name='close'></ion-icon>
                     </button>
                 </ion-col>
@@ -300,7 +300,7 @@
         <ion-row *ngIf="!isEmployer">
             <ion-col text-center>
                 <ion-label>{{uploadCVVerb}} votre CV</ion-label>
-                <button class="file-upload button-picture" [color]="themeColor" ion-button>
+                <button  ion-button class="file-upload button-picture" [color]="themeColor">
                     <input id="cvInput" type="file" class="file-input" (change)="onChangeCVUpload($event)">
                     <ion-icon name='folder'></ion-icon>
                 </button>
@@ -310,12 +310,12 @@
         <ion-card style="margin: auto;" [hidden]="isEmployer || isEmpty(cvUri)">
             <ion-row>
                 <ion-col text-center>
-                    <button style="margin: auto;" clear small (click)="downloadCV($event)">
+                    <button ion-button style="margin: auto;" clear small (click)="downloadCV($event)">
                         <ion-icon name='download'></ion-icon>
                     </button>
                 </ion-col>
                 <ion-col text-center>
-                    <button style="margin: auto;" clear small (click)="deleteCV($event)">
+                    <button ion-button style="margin: auto;" clear small (click)="deleteCV($event)">
                         <ion-icon name='close'></ion-icon>
                     </button>
                 </ion-col>

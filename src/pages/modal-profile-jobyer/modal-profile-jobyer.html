@@ -134,7 +134,7 @@
         <img [src]="scanUri"/>
         <ion-row>
             <ion-col text-center>
-                <button style="margin: auto;" clear (click)="showModal()" small>
+                <button ion-button style="margin: auto;" clear (click)="showModal()" small>
                     <ion-icon name='expand'></ion-icon>
                 </button>
             </ion-col>
@@ -149,7 +149,7 @@
     <ion-card style="margin: auto;" [hidden]="isEmpty(jobyer.cv)">
         <ion-row>
             <ion-col text-center>
-                <button style="margin: auto;" clear small (click)="downloadCV($event)">
+                <button ion-button style="margin: auto;" clear small (click)="downloadCV($event)">
                     <ion-icon name='download'></ion-icon>
                 </button>
             </ion-col>

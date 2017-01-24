@@ -2,7 +2,7 @@
     <ion-navbar [color]="themeColor">
         <ion-title>Facture</ion-title>
         <ion-buttons end>
-            <button (click)="cancelPayment()">
+            <button ion-button (click)="cancelPayment()">
                 <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
             </button>
         </ion-buttons>
@@ -29,7 +29,7 @@
             </ion-grid>
         </ion-card-content>
         <!--ion-card-footer-->
-            <button block secondary (click)="cancelPayment()">
+            <button ion-button block secondary (click)="cancelPayment()">
                 Fermer
             </button>
         <!--/ion-card-footer-->
