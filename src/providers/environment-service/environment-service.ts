@@ -67,11 +67,9 @@ export class EnvironmentService {
             if (Utils.isEmpty(currentUser) == false) {
                 this.loadUserEnvironment(currentUser.id).then((data: any) => {
                     this.environment = data;
-                    console.log("rldEnvT",this.environment)
                 });
             } else {
                 this.environment = [];
-                console.log("rldEnvF",this.environment)
             }
         }
       });
