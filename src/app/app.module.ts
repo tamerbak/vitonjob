@@ -61,6 +61,7 @@ import {PopoverRecruiterPage} from "../pages/popover-recruiter/popover-recruiter
 import {PopoverSearchPage} from "../pages/popover-search/popover-search";
 import {ProfilePage} from "../pages/profile/profile";
 import {ProfileLanguagesPage} from "../pages/profile-languages/profile-languages";
+import {InterestingJobsPage} from "../pages/interesting-jobs/interesting-jobs";
 import {ProfileQualitiesPage} from "../pages/profile-qualities/profile-qualities";
 import {ProfileSlotsPage} from "../pages/profile-slots/profile-slots";
 import {RecruiterListPage} from "../pages/recruiter-list/recruiter-list";
@@ -188,6 +189,7 @@ import {InfoModalPage} from "../pages/info-modal/info-modal";
         PopoverSearchPage,
         ProfilePage,
         ProfileLanguagesPage,
+        InterestingJobsPage,
         ProfileQualitiesPage,
         ProfileSlotsPage,
         RecruiterListPage,
@@ -284,6 +286,7 @@ import {InfoModalPage} from "../pages/info-modal/info-modal";
         PopoverSearchPage,
         ProfilePage,
         ProfileLanguagesPage,
+        InterestingJobsPage,
         ProfileQualitiesPage,
         ProfileSlotsPage,
         RecruiterListPage,
