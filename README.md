@@ -2,7 +2,8 @@
 Le projet vit-on-job sur Github ne contient que les parties de développement qui seront modifiées par les différents
 collaborateurs du projet.
 
-## CE PROJET EST ARCHIVE
+## IMPORTANT
+Ce projet est archivé (ionic 2 beta 10).
 
 ## La structure du projet :
 
