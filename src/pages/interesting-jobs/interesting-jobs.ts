@@ -25,6 +25,8 @@ import {FileUtils} from "../../utils/fileUtils";
 import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
 import {ConventionService} from "../../providers/convention-service/convention-service";
 import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
+import {EnvironmentService} from "../../providers/environment-service/environment-service";
+
 declare var cordova: any;
 declare var window;
 declare let require: any;
@@ -66,7 +68,8 @@ export class InterestingJobsPage {
   /**
    * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
    */
-  constructor(public nav: NavController,
+  constructor(public environmentService:EnvironmentService,
+              public nav: NavController,
               public gc: GlobalConfigs,
               private sqlStorageService: SqlStorageService,
               params: NavParams,
@@ -141,7 +144,7 @@ export class InterestingJobsPage {
 
     this.interestingJobs.splice(index,1);
     this.profileService.removeJob(j, this.currentUser.jobyer.id).then((data: any)=> {
-      
+      this.environmentService.reload();
     });
   }
 
@@ -195,6 +198,7 @@ export class InterestingJobsPage {
     this.profileService.attachJob(j, this.currentUser.jobyer.id).then((data: any)=> {
       this.selectedJob = '';
       this.selectedJobId = null;
+      this.environmentService.reload();
     });
   }
 

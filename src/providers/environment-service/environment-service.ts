@@ -35,10 +35,8 @@ export class EnvironmentService {
       let headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.calloutURL, stringData, {headers: headers})
         .subscribe((data: any) => {
-          console.log(data);
           if (data && data._body) {
             this.environment = JSON.parse(data._body);
-            console.log("env",this.environment);
           }
           resolve(this.environment);
         });
