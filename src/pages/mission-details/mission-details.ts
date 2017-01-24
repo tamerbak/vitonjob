@@ -862,7 +862,9 @@ export class MissionDetailsPage {
    * Stars picker
    */
   setStarPicker() {
-
+    if(!this.isReleveAvailable){
+      return;
+    }
     let picker = this.picker.create();
     let options: PickerColumnOption[] = new Array<PickerColumnOption>();
     for (let i = 1; i <= 5; i++) {

@@ -121,5 +121,33 @@ export class NotationService {
                 });
         });
     }
+
+    loadSearchNotationByProfil(estEmployeur, id) {
+        let sql = "";
+        if (estEmployeur)
+            sql = 'select avg(notes_employeur) as notes from user_contrat where fk_user_entreprise =' + id + ' and notes_employeur > 0';
+        else
+            sql = 'select avg(notes_jobyer) as notes from user_contrat where fk_user_jobyer =' + id + ' and notes_jobyer > 0';
+        console.log(sql);
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe((data:any) => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    console.log(JSON.stringify(data));
+                    this.score = 0;
+                    if (data.data && data.data.length > 0) {
+                        this.score = data.data[0].notes;
+                    }
+                    resolve(this.score);
+                });
+        });
+    }
 }
 
