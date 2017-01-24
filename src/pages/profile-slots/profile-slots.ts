@@ -74,7 +74,14 @@ export class ProfileSlotsPage {
     };
 
     this.slots.push(slot);
+    this.showedSlot = {
+      startDate: null,
+      endDate: null,
+      startHour: null,
+      endHour: null
+    };
   }
+  
 
   removeSlot(item) {
     let confirm = this.alert.create({
