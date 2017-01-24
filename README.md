@@ -1,7 +1,8 @@
 # VitOnJob
-
-Le projet vit-on-jobsur Github ne contient que les parties de développement qui seront modifiées par les différents
+Le projet vit-on-job sur Github ne contient que les parties de développement qui seront modifiées par les différents
 collaborateurs du projet.
+
+## CE PROJET EST ARCHIVE
 
 ## La structure du projet :
 
@@ -129,3 +130,5 @@ $ npm install diacritics
 ## Environnement
 
 Le projet est compatible avec Ionic 2 la version Beta 10 et Angular2 version rc3. (Voir package.json)
+
+
