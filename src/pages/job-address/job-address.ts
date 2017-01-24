@@ -9,6 +9,7 @@ import {SearchResultsPage} from "../search-results/search-results";
 import {OfferAddPage} from "../offer-add/offer-add";
 import {CorrespondenceAddressPage} from "../correspondence-address/correspondence-address";
 import {ProfilePage} from "../profile/profile";
+import {HomePage} from "../home/home";
 import {Storage} from "@ionic/storage";
 import {AuthenticationService} from "../../providers/authentication-service/authentication-service";
 
@@ -379,7 +380,7 @@ export class JobAddressPage {
                 this.nav.pop();
               } else {
                 //redirecting to offer list page
-                this.nav.setRoot(OfferListPage).then(() => {
+                this.nav.setRoot(HomePage).then(() => {
                   this.presentToast("Félicitations, vous venez de créer votre compte avec succès. Vous pouvez maintenant créer vos offres de service.", 3);
                 });
               }
