@@ -300,7 +300,7 @@
         <ion-row *ngIf="!isEmployer">
             <ion-col text-center>
                 <ion-label>{{uploadCVVerb}} votre CV</ion-label>
-                <button  ion-button class="file-upload button-picture" [color]="themeColor">
+                <button  ion-button icon-only class="file-upload button-picture" [color]="themeColor">
                     <input id="cvInput" type="file" class="file-input" (change)="onChangeCVUpload($event)">
                     <ion-icon name='folder'></ion-icon>
                 </button>

@@ -223,7 +223,7 @@ export class CivilityPage {
       this.loadListService.loadNationalities(this.projectTarget).then((data: {data: any}) => {
         this.nationalities = data.data;
         //initialize nationality with (9 = francais)
-        this.scanTitle = " de votre document d'identité";
+        this.scanTitle = " de votre CNI ou Passeport";
         this.nationalitiesstyle = {'font-size': '1.4rem'};
       });
     } else {
@@ -591,8 +591,9 @@ export class CivilityPage {
             this.cvUri = this.currentUser.jobyer.cv;
             this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
               data = data.data[0];
-              if (!Utils.isEmpty(data.fk_user_pays)) {
-                this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
+              let country:any = this.profileService.getCountryById(data.fk_user_pays, this.pays);
+              if (!Utils.isEmpty(data.fk_user_pays) && !country){
+                this.index = country.indicatif_telephonique;
                 this.indexForForeigner = "99" + " " + this.index;
               }
               this.regionId = data.fk_user_identifiants_nationalite;
@@ -1289,7 +1290,7 @@ export class CivilityPage {
       this.regionId = data.data[0].pk_user_identifiants_nationalite;
       if (this.isEuropean == 0) {
         this.idNationaliteLabel = "EU, EEE";
-        this.scanTitle = " de votre document d'identité ou Passeport";
+        this.scanTitle = " de votre CNI ou Passeport";
       }
       if (this.isEuropean == 1) {
         this.idNationaliteLabel = "Autre";
