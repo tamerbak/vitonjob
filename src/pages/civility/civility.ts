@@ -690,7 +690,7 @@ export class CivilityPage {
 
           //cv && nb work and study hours
           this.nbWorkHours = this.currentUser.jobyer.nbWorkHours;
-          this.nbWorkVitOnJob = this.currentUser.jobyer.nbVitOnJobHours/60;
+          this.nbWorkVitOnJob = this.currentUser.jobyer.nbVitOnJobHours/60 | 0;
           this.isNbStudyHoursBig = "" + this.currentUser.jobyer.nbStudyHoursBig + "";
         }
         if (!this.isRecruiter) {
