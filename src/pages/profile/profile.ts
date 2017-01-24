@@ -27,6 +27,7 @@ import {AccountReferencesService} from '../../providers/account-references-servi
 import {ProfileReferencePage} from "../profile-reference/profile-reference";
 import {SmsService} from "../../providers/sms-service/sms-service";
 import {InfoModalPage} from "../info-modal/info-modal";
+import {InterestingJobsPage} from "../interesting-jobs/interesting-jobs";
 
 /*
  Generated class for the ProfilePage page.
@@ -503,6 +504,10 @@ export class ProfilePage {
 
     showProfileQualities() {
         this.nav.push(ProfileQualitiesPage, {currentUser: this.userData, isEmployer: this.isEmployer});
+    }
+
+    goToInterestingJobs() {
+        this.nav.push(InterestingJobsPage, {currentUser: this.userData, isEmployer: this.isEmployer});
     }
 
     showProfileLanguages() {
