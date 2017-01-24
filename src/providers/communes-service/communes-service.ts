@@ -201,12 +201,12 @@ export class CommunesService {
     getCommunesByTerm(term, birthdep) {
         let sql = "";
         if (!birthdep || birthdep.id == 0) {
-            sql = "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%" + term + "%') UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('" + term + "') limit 5";
+            sql = "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%" + term + "%') UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('" + term + "') limit 10";
         } else {
             sql = "select c.pk_user_commune as id, c.nom, c.code_insee, cp.code from user_commune as c, user_code_postal as cp " +
               " where lower_unaccent(c.nom) like  lower_unaccent('%" + term + "%') and c.fk_user_code_postal = cp.pk_user_code_postal and CAST(cp.code as text) like '" + birthdep.numero + "%' " +
               "UNION select c.pk_user_commune as id, c.nom, c.code_insee, cp.code from user_commune as c, user_code_postal as cp " +
-              " where lower_unaccent(c.nom) like lower_unaccent('" + term + "') and c.fk_user_code_postal = cp.pk_user_code_postal and CAST(cp.code as text) like '" + birthdep.numero + "%'";
+              " where lower_unaccent(c.nom) like lower_unaccent('" + term + "') and c.fk_user_code_postal = cp.pk_user_code_postal and CAST(cp.code as text) like '" + birthdep.numero + "%' limit 10";
         }
 
         return new Promise(resolve => {
