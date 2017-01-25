@@ -600,11 +600,15 @@ export class CivilityPage {
                         this.cvUri = this.currentUser.jobyer.cv;
                         this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
                             data = data.data[0];
-                            let country: any = this.profileService.getCountryById(data.fk_user_pays, this.pays);
-                            if (!Utils.isEmpty(data.fk_user_pays) && !country) {
-                                this.index = country.indicatif_telephonique;
-                                this.indexForForeigner = "99" + " " + this.index;
-                            }
+                            this.loadListService.loadCountries(this.projectTarget).then((dataC: {data: any}) => {
+                                let countries = dataC.data;
+                                let country: any = this.profileService.getCountryById(data.fk_user_pays, countries);
+                                if (!Utils.isEmpty(data.fk_user_pays) && country != null) {
+                                    this.index = country.indicatif_telephonique;
+                                    this.indexForForeigner = "99" + " " + this.index;
+                                }
+                            });
+                            
                             this.regionId = data.fk_user_identifiants_nationalite;
                             this.isEuropean = this.regionId == "42" ? 1 : 0;
                             if (this.isEuropean == 0) {
