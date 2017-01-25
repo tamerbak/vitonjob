@@ -331,7 +331,7 @@
                     <ion-icon name="list"></ion-icon>
                 </button>-->
                 </ion-item>
-                <ion-item *ngIf="jobs.length>0">
+                <ion-item *ngIf="jobs.length>0" text-wrap>
                     <ion-list>
                         <ion-item *ngFor="let s of jobs" (click)="jobSelected(s)">
                             {{s.libelle}}
@@ -370,8 +370,8 @@
             </ion-row>
 
             <ion-list text-wrap no-lines>
-            
-                <ion-item *ngFor="let j of interestingJobs">
+
+                <ion-item *ngFor="let j of interestingJobs" text-wrap>
                     {{j.libelle}} - {{j.niveau == '1'?'Débutant':'Expérimenté'}}
                     <button ion-button icon-only item-right clear (click)="removeJob(j)">
                         <ion-icon name="close-circle" [style.color]="themeColor"></ion-icon>

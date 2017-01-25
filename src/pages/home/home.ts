@@ -152,6 +152,7 @@ export class HomePage {
         this.modal = _modal;
         this.popover = _popover;
         this.toast = _toast;
+        this.jobs = [];
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
         this.storage.get(config.currentUserVar).then((value) => {

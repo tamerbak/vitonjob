@@ -13,11 +13,11 @@
     <ion-card>
         <ion-item text-wrap (click)="setStarPicker()" style="background-color: aliceblue;">
             {{contract.titre}}
-            <h3>
+            <h3 *ngIf="isReleveAvailable">
                 <!--span>{{(starsText == '')? '': 'Note: '}}</span-->
                 <span style="color: gold; font-size: large">{{(starsText == '')? '': starsText}}</span>
             </h3>
-            <p>
+            <p *ngIf="isReleveAvailable">
                 <span>{{(starsText=='')? 'Cliquer pour attribuer une note' : ''}}</span>
             </p>
 

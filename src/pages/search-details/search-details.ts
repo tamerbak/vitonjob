@@ -171,8 +171,9 @@ export class SearchDetailsPage implements OnInit {
 
     //  Loading score
     let resultType = !this.isEmployer;
-    let id = this.result.idOffre;
-    this.notationService.loadSearchNotation(resultType, id).then(score => {
+    //let id = this.result.idOffre;
+    let id = (!this.isEmployer ? this.result.entrepriseId : this.result.idJobyer);
+    this.notationService.loadSearchNotationByProfil(resultType, id).then(score => {
 
       this.rating = score;
       this.starsText = this.writeStars(this.rating);

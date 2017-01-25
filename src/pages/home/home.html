@@ -197,10 +197,10 @@
         </ion-row>
 
         <ion-fab top right>
-            <button ion-fab (press)="pressEvent($event)" color="danger" (click)="disapearCurrentCard()" mini>
+            <button ion-fab (press)="pressEvent($event)" color="danger" (click)="disapearCurrentCard()" class="alert-button-position">
                 <ion-icon name="more"></ion-icon>
             </button>
-            <ion-fab-list side="down">
+            <ion-fab-list side="down" class="alert-button-position">
                 <button ion-fab outline (click)="showCorrespondantCard(0)" color="vojgreen"
                         [hidden]="!cards[0].isShowed">
                     <ion-icon name="alert"></ion-icon>

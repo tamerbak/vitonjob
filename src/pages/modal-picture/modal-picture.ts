@@ -193,6 +193,7 @@ export class ModalPicturePage {
       viewport: {width: 100, height: 100, type: 'circle'},
       boundary: {width: 250, height: 250},
       showZoomer: false,
+      enableOrientation: true
     });
     this.imgCrop.bind({
       url: img,
