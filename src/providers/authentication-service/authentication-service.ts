@@ -179,7 +179,6 @@ export class AuthenticationService {
       (!this.isEmpty(cv) ? ("cv ='" + Utils.sqlfyText(cv) + "' ") : ("cv = '' " )) +
 
       " where pk_user_jobyer ='" + roleId + "';";
-      console.log(sql)
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
