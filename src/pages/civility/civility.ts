@@ -103,10 +103,6 @@ export class CivilityPage {
     public mintsejFromDate: any;
     public maxtsejToDate: any;
     public mintsejToDate: any;
-    //nb work and study hours
-    public nbWorkVitOnJob: number = 0;
-    public nbWorkHours: number = 0;
-    public isNbStudyHoursBig: string = "false";
 
     /*
      Gestion des conventions collectives
@@ -131,7 +127,7 @@ export class CivilityPage {
     public isCIN: any;
     public numStay: string;
     //flags for field validation
-    public isValidCni: boolean;
+    public isValidCni: boolean = true;
 
     //returned company from corporama search
     public company: any;
@@ -448,11 +444,15 @@ export class CivilityPage {
                         this.cvUri = this.currentUser.jobyer.cv;
                         this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
                             data = data.data[0];
-                            let country: any = this.profileService.getCountryById(data.fk_user_pays, this.pays);
-                            if (!Utils.isEmpty(data.fk_user_pays) && !country) {
-                                this.index = country.indicatif_telephonique;
-                                this.indexForForeigner = "99" + " " + this.index;
-                            }
+                            this.loadListService.loadCountries(this.projectTarget).then((dataC: {data: any}) => {
+                                let countries = dataC.data;
+                                let country: any = this.profileService.getCountryById(data.fk_user_pays, countries);
+                                if (!Utils.isEmpty(data.fk_user_pays) && country != null) {
+                                    this.index = country.indicatif_telephonique;
+                                    this.indexForForeigner = "99" + " " + this.index;
+                                }
+                            });
+                            
                             this.regionId = data.fk_user_identifiants_nationalite;
                             this.isEuropean = this.regionId == "42" ? 1 : 0;
                             if (this.isEuropean == 0) {
@@ -546,10 +546,7 @@ export class CivilityPage {
 
                     }
 
-                    //cv && nb work and study hours
-                    this.nbWorkHours = this.currentUser.jobyer.nbWorkHours;
-                    this.nbWorkVitOnJob = this.currentUser.jobyer.nbVitOnJobHours / 60 | 0;
-                    this.isNbStudyHoursBig = "" + this.currentUser.jobyer.nbStudyHoursBig + "";
+                    
                 }
                 if (!this.isRecruiter) {
                     if (this.currentUser.scanUploaded) {
@@ -752,11 +749,10 @@ export class CivilityPage {
                 let birthdepId = !Utils.isEmpty(this.selectedBirthDep) ? this.selectedBirthDep.id : null;
                 this.cni = this.isCIN == 0 ? "" : this.cni;
                 this.numStay = this.isCIN == 0 ? this.numStay : "";
-                let studyHoursBigValue = (this.isNbStudyHoursBig == "true" ? "OUI" : "NON");
 
                 this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni,
                     this.nationality, jobyerId, this.birthdate, this.birthplace, this.prefecture, this.tsejProvideDate,
-                    this.tsejFromDate, this.tsejToDate, birthdepId, this.numStay, birthCountryId, regionId, isResident, this.nbWorkHours, studyHoursBigValue, this.cvUri)
+                    this.tsejFromDate, this.tsejToDate, birthdepId, this.numStay, birthCountryId, regionId, isResident, this.cvUri)
                     .then((data: {status: string, error: string}) => {
                         if (!data || data.status == "failure") {
                             console.log(data.error);
@@ -799,9 +795,6 @@ export class CivilityPage {
                                 this.currentUser.jobyer.dateNaissance = this.birthdate;
                             }
                             this.currentUser.jobyer.lieuNaissance = this.birthplace;
-                            this.currentUser.jobyer.nbWorkHours = this.nbWorkHours;
-                            this.currentUser.jobyer.nbVitOnJobHours = this.nbWorkVitOnJob * 60;
-                            this.currentUser.jobyer.nbStudyHoursBig = (this.isNbStudyHoursBig == "true" ? true : false);
 
                             //upload scan
                             this.updateScan(jobyerId);

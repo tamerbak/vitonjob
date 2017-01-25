@@ -149,7 +149,7 @@ export class CommunesService {
      * @description Loading list of all prefectures
      */
     loadPrefectures() {
-        let sql = "select pk_user_prefecture, nom from user_prefecture";
+        let sql = "select pk_user_prefecture, nom from user_prefecture order by nom";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.

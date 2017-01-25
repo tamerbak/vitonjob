@@ -225,6 +225,7 @@ export class ProfileService {
                 return countries[i];
             }
         }
+        return null;
     }
 
     getCountryByIndex(index, countries) {
