@@ -176,9 +176,10 @@ export class AuthenticationService {
       (!this.isEmpty(birthplace) ? (" lieu_de_naissance='" + birthplace + "', ") : ("lieu_de_naissance='', ")) +
       (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "', ") : ("fk_user_departement = " + null + ", " )) +
 
-      (!this.isEmpty(cv) ? ("cv ='" + Utils.sqlfyText(cv) + "', ") : ("cv = '', " )) +
+      (!this.isEmpty(cv) ? ("cv ='" + Utils.sqlfyText(cv) + "' ") : ("cv = '' " )) +
 
       " where pk_user_jobyer ='" + roleId + "';";
+      console.log(sql)
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
