@@ -150,7 +150,7 @@ export class AuthenticationService {
    * @description update jobyer information
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
-  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, prefecture, dateStay, dateFromStay, dateToStay, birthdepId, numStay, birthCountryId, regionId, isStay, nbWorkHours, studyHoursBigValue, cv) {
+  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, prefecture, dateStay, dateFromStay, dateToStay, birthdepId, numStay, birthCountryId, regionId, isStay, cv) {
     let sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
@@ -177,6 +177,25 @@ export class AuthenticationService {
       (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "', ") : ("fk_user_departement = " + null + ", " )) +
 
       (!this.isEmpty(cv) ? ("cv ='" + Utils.sqlfyText(cv) + "', ") : ("cv = '', " )) +
+
+      " where pk_user_jobyer ='" + roleId + "';";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          this.data = data;
+          console.log(this.data);
+          resolve(this.data);
+        });
+    })
+  }
+
+  updateJobyerWorkHours(roleId, nbWorkHours, studyHoursBigValue) {
+    let sql = "";
+    //building the sql request
+    sql = "update user_jobyer set  " +
       (!this.isEmpty(nbWorkHours) ? ("nb_heures_de_travail ='" + nbWorkHours + "', ") : ("nb_heures_de_travail = " + 0 + ", " )) +
       (!this.isEmpty(studyHoursBigValue) ? ("plus_de_350_heures_d_etude ='" + studyHoursBigValue + "' ") : ("plus_de_350_heures_d_etude = " + null + " " )) +
 

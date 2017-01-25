@@ -538,7 +538,7 @@ export class ProfilePage {
     showProfileSoftwares(){
         //load Softwares for jobyers pharmaciens
         this.profileService.getUserSoftwares(this.userData.jobyer.id).then((res:any) => {
-            let modal = this.modal.create(ModalSoftwarePage, {savedSoftwares: res});
+            let modal = this.modal.create(ModalSoftwarePage, {savedSoftwares: res,currentUser:this.userData});
             modal.present();
             modal.onDidDismiss((data:any) => {
                 this.profileService.deleteSoftwares(this.userData.jobyer.id).then((res:any) => {
