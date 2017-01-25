@@ -29,6 +29,8 @@ import {SmsService} from "../../providers/sms-service/sms-service";
 import {InfoModalPage} from "../info-modal/info-modal";
 import {InterestingJobsPage} from "../interesting-jobs/interesting-jobs";
 
+import {EnvironmentService} from "../../providers/environment-service/environment-service";
+
 /*
  Generated class for the ProfilePage page.
 
@@ -65,13 +67,15 @@ export class ProfilePage {
     public backGroundColor:string;
     public isNewUser: boolean = true;
     public toast: any;
+    
 
     /*
      * REFERENCES MANAGEMENT
      */
     public references : any = [];
 
-    constructor(public nav: NavController,
+    constructor(public environmentService:EnvironmentService,
+                public nav: NavController,
                 public gc: GlobalConfigs,
                 userService: UserService,
                 addrService: AddressService,
@@ -101,6 +105,8 @@ export class ProfilePage {
         this.defaultImage = config.userImageURL;
         this.userImageURL = "none";
         this.toast = _toast;
+
+        this.environmentService.reload();
     }
 
     /**

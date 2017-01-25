@@ -212,7 +212,7 @@
      
 
       <button ion-fab [color]="themeColor"
-              (click)="showProfileSoftwares()" *ngIf="!isEmployer">
+              (click)="showProfileSoftwares()" *ngIf="!isEmployer && environmentService.get('JOBYER_PHARMA')=='true'">
         <ion-icon name="apps"></ion-icon>
       </button>
 
