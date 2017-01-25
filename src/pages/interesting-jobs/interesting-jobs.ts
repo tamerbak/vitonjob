@@ -11,18 +11,14 @@ import {
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SqlStorageService} from "../../providers/sql-storage-service/sql-storage-service";
-import {GlobalService} from "../../providers/global-service/global-service";
-import {CommunesService} from "../../providers/communes-service/communes-service";
-import {AttachementsService} from "../../providers/attachements-service/attachements-service";
-import {MedecineService} from "../../providers/medecine-service/medecine-service";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {Utils} from "../../utils/utils";
 import {LoadingController} from "ionic-angular/components/loading/loading";
 import {AlertController} from "ionic-angular/components/alert/alert";
 import {ModalSelectionPage} from "../modal-selection/modal-selection";
 import {Storage} from "@ionic/storage";
-import {ConventionService} from "../../providers/convention-service/convention-service";
 import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
+import {EnvironmentService} from "../../providers/environment-service/environment-service";
 declare var cordova: any;
 declare var window;
 declare let require: any;
@@ -64,16 +60,13 @@ export class InterestingJobsPage {
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
      */
-    constructor(public nav: NavController,
+    constructor(public environmentService:EnvironmentService,
+                public nav: NavController,
                 public gc: GlobalConfigs,
                 private sqlStorageService: SqlStorageService,
                 params: NavParams,
-                private globalService: GlobalService,
                 private zone: NgZone,
                 public events: Events,
-                private attachementService: AttachementsService,
-                private medecineService: MedecineService,
-                communesService: CommunesService,
                 _platform: Platform,
                 public picker: PickerController,
                 private profileService: ProfileService,
@@ -81,8 +74,7 @@ export class InterestingJobsPage {
                 private _modal: ModalController,
                 private _toast: ToastController,
                 private _alert: AlertController,
-                public storage: Storage,
-                private conventionService: ConventionService) {
+                public storage: Storage) {
         // Set global configs
         // Get target to determine configs
 
@@ -139,7 +131,7 @@ export class InterestingJobsPage {
 
         this.interestingJobs.splice(index, 1);
         this.profileService.removeJob(j, this.currentUser.jobyer.id).then((data: any) => {
-
+            this.environmentService.reload();
         });
     }
 
@@ -192,6 +184,7 @@ export class InterestingJobsPage {
         this.profileService.attachJob(j, this.currentUser.jobyer.id).then((data: any) => {
             this.selectedJob = '';
             this.selectedJobId = null;
+            this.environmentService.reload();
         });
     }
 

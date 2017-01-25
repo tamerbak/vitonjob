@@ -33,6 +33,7 @@ import {FileUtils} from "../../utils/fileUtils";
 import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
 import {ConventionService} from "../../providers/convention-service/convention-service";
 import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
+import {EnvironmentService} from "../../providers/environment-service/environment-service";
 declare var cordova: any;
 declare var window;
 declare let require: any;
@@ -188,7 +189,8 @@ export class CivilityPage {
                 private _toast: ToastController,
                 private _alert: AlertController,
                 public storage: Storage,
-                private conventionService: ConventionService) {
+                private conventionService: ConventionService,
+                public environmentService:EnvironmentService) {
         // Set global configs
         // Get target to determine configs
 
@@ -281,7 +283,7 @@ export class CivilityPage {
         this.loadListService.loadCountries(this.projectTarget).then((data: {data: any}) => {
             this.pays = data.data;
         });
-
+        this.environmentService.reload();
     }
 
     initinterestingJobs() {
