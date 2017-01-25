@@ -913,7 +913,7 @@ export class MissionDetailsPage {
   }
 
   onPointedHourClick(i, j, isStartMission, isStartPause) {
-    if (!this.isEmployer || this.upperCase(this.contract.releve_employeur) == 'OUI') {
+    if (this.upperCase(this.contract.releve_employeur) == 'OUI') {
       return;
     }
     if (isStartPause) {
@@ -935,37 +935,41 @@ export class MissionDetailsPage {
       }
     }
 
-    let actionSheet = this.actionSheet.create({
-      title: 'Actions',
-      cssClass: 'action-sheets-basic-page',
-      buttons: [
-        {
-          text: 'Valider l\'heure pointée',
-          icon: 'thumbs-up',
-          handler: () => {
-            console.log('Validate clicked');
-            this.colorHour(i, j, isStartMission, isStartPause, true);
+    if(this.isEmployer){
+      let actionSheet = this.actionSheet.create({
+        title: 'Actions',
+        cssClass: 'action-sheets-basic-page',
+        buttons: [
+          {
+            text: 'Valider l\'heure pointée',
+            icon: 'thumbs-up',
+            handler: () => {
+              console.log('Validate clicked');
+              this.colorHour(i, j, isStartMission, isStartPause, true);
+            }
+          },
+          {
+            text: 'Refuser l\'heure pointée',
+            icon: 'thumbs-down',
+            handler: () => {
+              console.log('Refuse clicked');
+              this.colorHour(i, j, isStartMission, isStartPause, false);
+            }
+          },
+          {
+            text: 'Annuler',
+            role: 'cancel', // will always sort to be on the bottom
+            icon: 'close',
+            handler: () => {
+              console.log('Cancel clicked');
+            }
           }
-        },
-        {
-          text: 'Refuser l\'heure pointée',
-          icon: 'thumbs-down',
-          handler: () => {
-            console.log('Refuse clicked');
-            this.colorHour(i, j, isStartMission, isStartPause, false);
-          }
-        },
-        {
-          text: 'Annuler',
-          role: 'cancel', // will always sort to be on the bottom
-          icon: 'close',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        }
-      ]
-    });
-    actionSheet.present();
+        ]
+      });
+      actionSheet.present();
+    }else{
+      this.modifyPointedHour(i, j, isStartPause, isStartMission);
+    }
   }
 
   colorHour(i, j, isStartMission, isStartPause, valid) {
@@ -1112,6 +1116,57 @@ export class MissionDetailsPage {
         });
       },
       err => console.log('Error occurred while getting date: ', err));
+  }
+
+  modifyPointedHour(i, j, isStartPause, isStartMission){
+    DatePicker.show({
+      date: new Date(),
+      mode: 'time',
+      is24Hour: true,
+      doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
+    }).then(newHour => {
+          console.log("Got date: ", newHour);
+          debugger;
+          if(Utils.isEmpty(newHour)){
+            return;
+          }
+          let myNewHour: number = newHour.getHours() * 60 + newHour.getMinutes();
+          /*let isHourValid = this.checkPointedHours(i, j, isStartPause, isStartMission, myNewHour);
+          if (!isHourValid) {
+            return;
+          }*/
+          let day = {pointe:myNewHour, id:0};
+          let isStart;
+          let isPause;
+          if (isStartPause) {
+            isStart = true;
+            isPause = true;
+            this.missionPauses[i][j].pause_debut_pointe = this.missionService.convertToFormattedHour(myNewHour);
+            day.id = this.missionPauses[i][j].id;
+          } else {
+            if (j >= 0) {
+              isStart = false;
+              isPause = true;
+              this.missionPauses[i][j].pause_fin_pointe = this.missionService.convertToFormattedHour(myNewHour);
+              day.id = this.missionPauses[i][j].id;
+            }
+          }
+          if (isStartMission) {
+            isStart = true;
+            isPause = false;
+            this.missionHours[i].heure_debut_pointe = this.missionService.convertToFormattedHour(myNewHour);
+            day.id = this.missionHours[i].id;
+          } else {
+            if (!j && j != 0) {
+              isStart = false;
+              isPause = false;
+              this.missionHours[i].heure_fin_pointe = this.missionService.convertToFormattedHour(myNewHour);
+              day.id = this.missionHours[i].id;
+            }
+          }
+          this.missionService.savePointing(day, isStart, isPause);
+        },
+        err => console.log('Error occurred while getting date: ', err));
   }
 
   undoNewHour(i, j, isStartMission, isStartPause) {
