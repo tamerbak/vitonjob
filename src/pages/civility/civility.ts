@@ -131,7 +131,7 @@ export class CivilityPage {
     public isCIN: any;
     public numStay: string;
     //flags for field validation
-    public isValidCni: boolean;
+    public isValidCni: boolean = true;
 
     //returned company from corporama search
     public company: any;
