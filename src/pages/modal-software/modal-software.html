@@ -39,4 +39,40 @@
             </button>
         </ion-item>
     </ion-list>
+
+    <ion-item *ngIf="!isEmployer">
+        <ion-label floating>Nombre d'heures de travail Vit-On-Job</ion-label>
+        <ion-input [(ngModel)]="nbWorkVitOnJob" min="0" disabled></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="!isEmployer">
+        <ion-label floating>Nombre d'heures de travail ailleurs</ion-label>
+        <ion-input type="number" [(ngModel)]="nbWorkHours" min="0"></ion-input>
+    </ion-item>
+
+    <ion-list radio-group [(ngModel)]="isNbStudyHoursBig" style="margin-bottom: 5px;">
+        <ion-list-header>
+            Nombre d'heures d'étude
+        </ion-list-header>
+        <ion-item>
+            <ion-label>Plus de 350 heures d'étude</ion-label>
+            <ion-radio value="true"></ion-radio>
+        </ion-item>
+        <ion-item>
+            <ion-label>Moins de 350 heures d'étude</ion-label>
+            <ion-radio value="false"></ion-radio>
+        </ion-item>
+    </ion-list>
+    <ion-row>
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button ion-button icon-left block (click)="updateJobyerWorkHours()" [color]="themeColor" type="submit">
+                <ion-icon name="done-all"></ion-icon>
+                Valider
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+
+
 </ion-content>
