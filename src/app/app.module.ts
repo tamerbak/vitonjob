@@ -125,6 +125,7 @@ import {AccountReferencesService} from "../providers/account-references-service/
 import {ProfileReferencePage} from "../pages/profile-reference/profile-reference";
 import {InfoModalPage} from "../pages/info-modal/info-modal";
 import {EnvironmentService} from "../providers/environment-service/environment-service";
+import {PrerequisitesInfosPage} from "../pages/prerequisites-infos/prerequisites-infos";
 
 @NgModule({
     declarations: [
@@ -210,7 +211,8 @@ import {EnvironmentService} from "../providers/environment-service/environment-s
         GooglePlaces,
         SwipeVertical,
         DateConverter,
-        TimeConverter
+        TimeConverter,
+        PrerequisitesInfosPage
 
     ],
     imports: [
@@ -302,7 +304,8 @@ import {EnvironmentService} from "../providers/environment-service/environment-s
         WalletCreatePage,
         YousignPage,
         ProfileReferencePage,
-        InfoModalPage
+        InfoModalPage,
+        PrerequisitesInfosPage
     ],
     providers: [
         {provide: ErrorHandler, useClass: IonicErrorHandler},

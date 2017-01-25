@@ -27,7 +27,6 @@ import {LoadingController} from "ionic-angular/components/loading/loading";
 import {AlertController} from "ionic-angular/components/alert/alert";
 import {LoadListService} from "../../providers/load-list-service/load-list-service";
 import {AuthenticationService} from "../../providers/authentication-service/authentication-service";
-import {ModalSelectionPage} from "../modal-selection/modal-selection";
 import {Storage} from "@ionic/storage";
 import {FileUtils} from "../../utils/fileUtils";
 import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";

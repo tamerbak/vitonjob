@@ -28,8 +28,10 @@ import {ProfileReferencePage} from "../profile-reference/profile-reference";
 import {SmsService} from "../../providers/sms-service/sms-service";
 import {InfoModalPage} from "../info-modal/info-modal";
 import {InterestingJobsPage} from "../interesting-jobs/interesting-jobs";
+import {PrerequisitesInfosPage} from "../prerequisites-infos/prerequisites-infos";
 
 import {EnvironmentService} from "../../providers/environment-service/environment-service";
+
 
 /*
  Generated class for the ProfilePage page.
@@ -519,6 +521,12 @@ export class ProfilePage {
     showProfileLanguages() {
         this.nav.push(ProfileLanguagesPage, {currentUser: this.userData, isEmployer: this.isEmployer});
     }
+
+    showPrerequisitesInfos() {
+        this.nav.push(PrerequisitesInfosPage, {currentUser: this.userData, isEmployer: this.isEmployer});
+    }
+
+    PrerequisitesInfosPage
 
     showProfileSlots() {
         this.profileService.getUserDisponibilite(this.userData.jobyer.id).then((res: any) => {

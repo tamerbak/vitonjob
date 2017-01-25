@@ -23,11 +23,7 @@ declare var cordova: any;
 declare var window;
 declare let require: any;
 
-/**
- * @author Amal ROCHD
- * @description update civility information
- * @module Authentication
- */
+
 @Component({
     templateUrl: 'interesting-jobs.html',
     selector: 'interesting-jobs'
@@ -57,9 +53,7 @@ export class InterestingJobsPage {
     public inversedThemeColor: any;
     public isEmployer: boolean;
 
-    /**
-     * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
-     */
+
     constructor(public environmentService:EnvironmentService,
                 public nav: NavController,
                 public gc: GlobalConfigs,
