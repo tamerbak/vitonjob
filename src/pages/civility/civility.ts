@@ -1092,24 +1092,32 @@ export class CivilityPage {
      */
     onChangeUpload(e) {
         let file = e.target.files[0];
-        let myReader = new FileReader();
-        this.zone.run(() => {
-            myReader.onloadend = (e) => {
-                this.scanUri = myReader.result;
-            }
-            myReader.readAsDataURL(file);
-        });
+        if(file.type.startsWith("image/")){
+            let myReader = new FileReader();
+            this.zone.run(() => {
+                myReader.onloadend = (e) => {
+                    this.scanUri = myReader.result;
+                }
+                myReader.readAsDataURL(file);
+            });
+        }
     }
 
     onChangeCVUpload(e) {
         let file = e.target.files[0];
-        let myReader = new FileReader();
-        this.zone.run(() => {
-            myReader.onloadend = (e) => {
-                this.cvUri = myReader.result;
-            }
-            myReader.readAsDataURL(file);
-        });
+        if(file.type === "application/pdf"){
+            let myReader = new FileReader();
+            this.zone.run(() => {
+                myReader.onloadend = (e) => {
+                    this.cvUri = myReader.result;
+                }
+                myReader.readAsDataURL(file);
+            });
+        }else{
+            (document.getElementById("cvInput") as any).value = "";
+            console.log("Format du fichier non valide")
+        }
+        
     }
 
     /**

@@ -245,7 +245,7 @@
             <ion-col text-center>
                 <ion-label>{{uploadVerb}} une photo {{scanTitle}}</ion-label>
                 <button ion-button icon-only [hidden]="scanUri" class="file-upload button-picture" [color]="themeColor">
-                    <input id="fileinput" type="file" class="file-input" (change)="onChangeUpload($event)">
+                    <input id="fileinput" accept="image/*" type="file" class="file-input" (change)="onChangeUpload($event)">
                     <ion-icon name='folder'></ion-icon>
                 </button>
 
@@ -277,7 +277,7 @@
             <ion-col text-center>
                 <ion-label>{{uploadCVVerb}} votre CV</ion-label>
                 <button  ion-button class="file-upload button-picture" [color]="themeColor">
-                    <input id="cvInput" type="file" class="file-input" (change)="onChangeCVUpload($event)">
+                    <input id="cvInput" type="file" class="file-input" accept="application/pdf" (change)="onChangeCVUpload($event)">
                     <ion-icon name='folder'></ion-icon>
                 </button>
             </ion-col>
