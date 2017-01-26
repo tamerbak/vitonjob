@@ -112,7 +112,7 @@
         </ion-item>
 
         <ion-item [hidden]="isEmployer || !isFrench">
-            <ion-label floating> Département de naissance</ion-label>
+            <ion-label floating> Département de naissance ex: 25</ion-label>
             <ion-input type="text" [(ngModel)]="birthdep" (keyup)="watchBirthDep($event)"></ion-input>
         </ion-item>
         <ion-item [hidden]="isEmployer || departments.length==0">
