@@ -194,13 +194,11 @@ export class ModalSelectionPage {
    */
   getItems(ev) {
     // set q to the value of the searchbar
-    console.log("serch");
     let q = ev.target.value;
-    console.log(q);
+    
     if (q.trim() == '') {
       return;
     }
-    console.log(this.params.get('type') === "lieu de naissance")
     
     if(this.params.get('type') === "lieu de naissance"){
       let birthDep = this.params.get('birthDep')
@@ -219,7 +217,6 @@ export class ModalSelectionPage {
       this.list = this.list.filter((v) => {
         return (v.libelle.toLowerCase().indexOf(q.toLowerCase()) > -1);
       })
-      console.log(this.list);
     }
   }
 }
