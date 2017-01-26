@@ -1,0 +1,25 @@
+<ion-header>
+    <ion-navbar [color]="themeColor">
+        <button ion-button icon-only menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>{{titlePage}}</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding class="Prerequisites-infos">
+        <ion-card *ngFor="let j of jobs">
+            <ion-card-header *ngIf="j.requirements.length > 0">
+                {{j.libelle}}
+            </ion-card-header>
+
+            <ion-list *ngFor="let r of j.requirements" >
+                <ion-item>
+                <ion-icon name="arrow-dropright-circle" item-left></ion-icon>
+                    {{r.libelle}}
+                </ion-item>
+            </ion-list>
+        </ion-card>
+
+   
+</ion-content>
