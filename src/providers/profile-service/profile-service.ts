@@ -25,6 +25,23 @@ export class ProfileService {
         this.profilPictureVar = this.configuration.profilPictureVar;
     }
 
+    loadRequirementsByJob(idjob){
+
+        let sql = "select distinct(p.libelle) as libelle from user_prerquis p where pk_user_prerquis in " +
+        "(select fk_user_prerquis from user_prerequis_obligatoires where fk_user_offre_entreprise in " +
+        "(select fk_user_offre_entreprise from user_pratique_job where fk_user_job = "+idjob+")" +
+        ")";
+
+        return new Promise(resolve => {
+        let headers = Configs.getHttpTextHeaders();
+        this.http.post(Configs.sqlURL, sql, {headers: headers})
+            .map(res => res.json())
+            .subscribe(data => {
+            resolve(data.data);
+            });
+        });
+    }
+
     loadProfileJobs(idJobyer){
         let sql = "select pk_user_job as id, user_job.libelle as libelle, fk_user_niveau as niveau from user_job, user_profil_job where user_job.pk_user_job= user_profil_job.fk_user_job and user_profil_job.dirty='N' and user_profil_job.fk_user_jobyer="+idJobyer;
         return new Promise(resolve => {

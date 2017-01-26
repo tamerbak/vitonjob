@@ -211,6 +211,10 @@
         <ion-icon name="briefcase"></ion-icon>
       </button>
 
+      <button ion-fab [color]="themeColor"
+              (click)="showPrerequisitesInfos()" *ngIf="!isEmployer">
+        <ion-icon name="clipboard"></ion-icon>
+      </button>
      
 
       <button ion-fab [color]="themeColor"
