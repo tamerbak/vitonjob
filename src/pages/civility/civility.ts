@@ -32,6 +32,7 @@ import {FileUtils} from "../../utils/fileUtils";
 import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
 import {ConventionService} from "../../providers/convention-service/convention-service";
 import {EnvironmentService} from "../../providers/environment-service/environment-service";
+import {ModalSelectionPage} from "../modal-selection/modal-selection";
 declare var cordova: any;
 declare var window;
 declare let require: any;
@@ -268,6 +269,32 @@ export class CivilityPage {
         this.environmentService.reload();
     }
 
+    /**
+   * pickers
+   */
+  setBirthplacePicker() {
+      this.showBirthplaceList();
+  }
+
+  setBirthdepPicker() {
+      this.showBirthdepList();
+  }
+
+  showBirthplaceList() {
+
+      let selectionModel = this.modal.create(ModalSelectionPage,
+        {type: 'lieu de naissance', items: [], selection: this,birthDep:this.selectedBirthDep});
+      selectionModel.present();
+
+
+  }
+
+  showBirthdepList() {
+      let selectionModel = this.modal.create(ModalSelectionPage,
+        {type: 'département de naissance', items: [], selection: this});
+      selectionModel.present();
+  }
+
 
     watchConvention(e) {
         this.conventionId = 0;
@@ -385,6 +412,7 @@ export class CivilityPage {
         this.selectedCommune = commune;
         this.communes = [];
         if (!this.isEmployer) {
+            
             this.showNSSError();
         }
     }

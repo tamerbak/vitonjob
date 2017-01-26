@@ -3,6 +3,7 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {Component} from "@angular/core";
 import {ModalJobPage} from "../modal-job/modal-job";
+import {CommunesService} from "../../providers/communes-service/communes-service";
 
 /*
  Generated class for the ModalSelectionPage page.
@@ -29,6 +30,7 @@ export class ModalSelectionPage {
 
   constructor(private nav: NavController,
               private gc: GlobalConfigs,
+              private communesService:CommunesService,
               private params: NavParams,
               private viewCtrl: ViewController,
               public toast: ToastController) {
@@ -138,6 +140,23 @@ export class ModalSelectionPage {
           isLangExist = true;
         }
         break;
+      case 'lieu de naissance' :
+        this.params.get('selection').birthplace = item.nom;
+        this.params.get('selection').selectedCommune = item;
+        if(!this.params.get('selection').isEmployer){
+          this.params.get('selection').showNSSError()
+        }
+        break;
+      case 'département de naissance' :
+        this.params.get('selection').birthdep = item.numero;
+        this.params.get('selection').selectedBirthDep = item;
+        this.params.get('selection').birthplace = '';
+        this.params.get('selection').selectedCommune = {
+            id: 0,
+            nom: '',
+            code_insee: ''
+        };
+        break;
     }
 
 
@@ -174,19 +193,33 @@ export class ModalSelectionPage {
    * @param ev : search value
    */
   getItems(ev) {
-    // Reset items back to all of the items
-    this.initializeItems(this.params.get('items'));
-
     // set q to the value of the searchbar
+    console.log("serch");
     let q = ev.target.value;
-
-    // if the value is an empty string don't filter the items
+    console.log(q);
     if (q.trim() == '') {
       return;
     }
-
-    this.list = this.list.filter((v) => {
-      return (v.libelle.toLowerCase().indexOf(q.toLowerCase()) > -1);
-    })
+    console.log(this.params.get('type') === "lieu de naissance")
+    
+    if(this.params.get('type') === "lieu de naissance"){
+      let birthDep = this.params.get('birthDep')
+      this.communesService.getCommunesByTerm(q, birthDep).then((data: any) => {
+        this.list = data;
+      });
+    }else if(this.params.get('type') === "département de naissance"){
+      this.communesService.getDepartmentsByTerm(q).then((data: any) => {
+        this.list = data;
+      });
+    }else{
+      // Reset items back to all of the items
+      this.initializeItems(this.params.get('items'));
+      // if the value is an empty string don't filter the items
+     
+      this.list = this.list.filter((v) => {
+        return (v.libelle.toLowerCase().indexOf(q.toLowerCase()) > -1);
+      })
+      console.log(this.list);
+    }
   }
 }
