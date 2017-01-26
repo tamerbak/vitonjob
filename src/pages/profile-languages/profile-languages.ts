@@ -17,6 +17,7 @@ export class ProfileLanguagesPage {
   public isEmployer: boolean;
   public projectTarget: string;
   public themeColor: string;
+  public level: string = "Débutant";
 
   constructor(private nav: NavController,
               private navParams: NavParams,
@@ -57,7 +58,8 @@ export class ProfileLanguagesPage {
     for (let i = 0; i < this.savedLangues.length; i++)
       if (this.savedLangues[i].id == q.id)
         return;
-
+    
+    q.level = this.level;
     this.savedLangues.push(q);
     let idUser = this.isEmployer ?
       this.currentUser.employer.entreprises[0].id :

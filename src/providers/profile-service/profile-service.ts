@@ -274,7 +274,7 @@ export class ProfileService {
     getUserLanguages(id: any, projectTarget: string) {
         let table = projectTarget == 'jobyer' ? 'user_langue_jobyer' : 'user_langue_employeur';
         let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
-        let sql = "select pk_user_langue as id, libelle from user_langue as i, " + table + " as t where i.pk_user_langue = t.fk_user_langue and t." + foreignKey + " = '" + id + "'";
+        let sql = "select pk_user_langue as id, i.libelle,n.libelle as level from user_langue as i, user_niveau as n , " + table + " as t where n.pk_user_niveau = t.fk_user_niveau and i.pk_user_langue = t.fk_user_langue and t." + foreignKey + " = '" + id + "'";
 
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
@@ -345,10 +345,11 @@ export class ProfileService {
     }
 
     attachLanguages(languages, id, table, foreignKey) {
+        console.log(languages)
         let sql = "";
         for (let i = 0; i < languages.length; i++) {
             let q = languages[i];
-            sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_langue) values (" + id + ", " + q.id + "); ";
+            sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_langue,fk_user_niveau) values (" + id + ", " + q.id + ","+((q.level == "Débutant") ? 1 : 2 )+ "); ";
         }
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();

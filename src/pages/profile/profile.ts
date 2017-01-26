@@ -526,8 +526,6 @@ export class ProfilePage {
         this.nav.push(PrerequisitesInfosPage, {currentUser: this.userData, isEmployer: this.isEmployer});
     }
 
-    PrerequisitesInfosPage
-
     showProfileSlots() {
         this.profileService.getUserDisponibilite(this.userData.jobyer.id).then((res: any) => {
             let modal = this.modal.create(ProfileSlotsPage, {savedSlots: res});
