@@ -315,7 +315,7 @@ export class CorrespondenceAddressPage {
                 } else {
                   //redirecting to offer list page
                   this.nav.setRoot(HomePage).then(() => {
-                    this.presentToast("Félicitations, vous venez de créer votre compte avec succès. Vous pouvez maintenant créer vos offres de service.", 3);
+                    this.presentToast("Félicitations, vous venez de créer votre compte avec succès. Vous pouvez maintenant créer vos offres de service.", 7);
                   });
                 }
               }

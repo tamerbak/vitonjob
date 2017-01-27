@@ -27,7 +27,7 @@ export class NetworkService {
         if (!navigator.connection.type == Connection.NONE) {
             let toast = this.toast.create({
                 message: "Vous n'êtes pas connectés à Internet",
-                duration: 5000
+                duration: 10000
             });
             toast.present();
             this.changeDetRef.detectChanges();
@@ -45,7 +45,7 @@ export class NetworkService {
                 if (!navigator.connection.type == Connection.NONE) {
                     let toast = this.toast.create({
                         message: "Vous n'êtes pas connectés à Internet",
-                        duration: 5000
+                        duration: 10000
                     });
                     toast.present();
                     this.changeDetRef.detectChanges();
