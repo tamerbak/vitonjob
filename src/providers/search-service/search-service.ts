@@ -1,10 +1,8 @@
-import {} from "ionic-angular";
 import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import "rxjs/add/operator/map";
 import {Configs} from "../../configurations/configs";
 import {Storage} from "@ionic/storage";
-import {errorHandler} from "@angular/platform-browser/src/browser";
 import {HttpRequestHandler} from "../../http/http-request-handler";
 
 /**
@@ -16,13 +14,8 @@ import {HttpRequestHandler} from "../../http/http-request-handler";
 export class SearchService {
     data: any = null;
     configuration: any;
-    private handleError(error: any): Promise<any> {
-        debugger;
-        console.error('An error occurred', error); // for demo purposes only
-        return Promise.reject(error.message || error);
-    }
 
-    constructor(public http: Http, public db:Storage, public httpRequestHandler: HttpRequestHandler) {
+    constructor(public http: Http, public db: Storage, public httpRequestHandler: HttpRequestHandler) {
 
     }
 
@@ -37,10 +30,10 @@ export class SearchService {
 
         //  Start by identifying the wanted table and prepare the pay load
         let searchType = projectTarget == 'jobyer' ? 'employeur' : 'jobyer';
-        let bean =  {
-            class :"com.vitonjob.callouts.recherche.model.RequeteRecherche",
-            sentence :textQuery,
-            type :searchType
+        let bean = {
+            class: "com.vitonjob.callouts.recherche.model.RequeteRecherche",
+            sentence: textQuery,
+            type: searchType
         };
 
         let payload = {
@@ -61,7 +54,7 @@ export class SearchService {
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
 
-            this.httpRequestHandler.sendCallOut(payload, this, true).subscribe((data:any) => {
+            this.httpRequestHandler.sendCallOut(payload, this, true).subscribe((data: any) => {
                 // we've got back the raw data, now generate the core schedule data
                 // and save the data for later reference
                 this.data = data;
@@ -77,11 +70,11 @@ export class SearchService {
      * @param idJob actual job to consider
      * @returns {Promise<T>|Promise}    Just a status to indicate if the indexation was successful
      */
-    correctIndexation(index, idJob){
-        let bean =  {
-            class :"com.vitonjob.callouts.recherche.model.RequeteIndexation",
-            idIndex :index,
-            idJob :idJob
+    correctIndexation(index, idJob) {
+        let bean = {
+            class: "com.vitonjob.callouts.recherche.model.RequeteIndexation",
+            idIndex: index,
+            idJob: idJob
         };
 
         let payload = {
@@ -105,7 +98,7 @@ export class SearchService {
             headers = Configs.getHttpJsonHeaders();
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;
@@ -149,7 +142,7 @@ export class SearchService {
             headers = Configs.getHttpJsonHeaders();
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.data = data;
@@ -214,7 +207,7 @@ export class SearchService {
      * @description Persists the last indexation of semantic search
      * @param indexData details about indexation
      */
-    setLastIndexation(indexData){
+    setLastIndexation(indexData) {
         this.db.set('LAST_INDEX', JSON.stringify(indexData));
     }
 
@@ -222,7 +215,7 @@ export class SearchService {
      * @description Loads the last indexed query if it exists
      * @returns {Promise<any>}
      */
-    retrieveLastIndexation(){
+    retrieveLastIndexation() {
         return this.db.get('LAST_INDEX');
     }
 
