@@ -205,12 +205,15 @@ export class ModalSelectionPage {
     // Reset items back to all of the items
     if(!(this.params.get('type') === "lieu de naissance") && !(this.params.get('type') === "département de naissance")){
       this.initializeItems(this.params.get('items'));
-    }
+    
     // if the value is an empty string don't filter the items
     
-    this.list = this.list.filter((v) => {
-      return (v.libelle.toLowerCase().indexOf(q.toLowerCase()) > -1);
-    })
+      this.list = this.list.filter((v) => {
+        return (v.libelle.toLowerCase().indexOf(q.toLowerCase()) > -1);
+      })
+    }else{
+      return;
+    }
     
   }
 

@@ -15,7 +15,7 @@
                    [placeholder]="searchPlaceholder"
                    [cancelButtonText]="cancelButtonText" style="background-color: #387ef5;"></ion-searchbar>
 
-    <button ion-button icon-left block (click)="getResults()" [color]="themeColor" *ngIf="params.get('type') !== 'département de naissance' || params.get('type') !== 'lieu de naissance'"
+    <button ion-button icon-left block (click)="getResults()" [color]="themeColor" *ngIf="(params.get('type') === 'département de naissance') || (params.get('type') === 'lieu de naissance')"
                     [disabled]="searchQuery.length == 0" type="submit">
                 <ion-icon name="search"></ion-icon>
                 Rechercher
