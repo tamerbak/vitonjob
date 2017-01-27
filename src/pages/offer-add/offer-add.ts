@@ -270,7 +270,7 @@ export class OfferAddPage {
           //this.steps.isCalendar = this.validated.isLanguage;
           this.storage.set('languages', JSON.stringify(data));
           if (this.validated.isLanguage && this.validated.isQuality)
-            this.presentToast("Félicitations, votre offre est complète. Vous pouvez la valider pour l'enregistrer.", 4);
+            this.presentToast("Félicitations, votre offre est complète. Vous pouvez la valider pour l'enregistrer.", 7);
         })
       });
     }
@@ -294,7 +294,7 @@ export class OfferAddPage {
             this.storage.set('slots', JSON.stringify(data.slots));
             if (this.validated.isCalendar && this.validated.isQuality)
               this.presentToast("Vous pouvez ajouter votre nouvelle offre dès maintenant! " +
-                  "Pour plus de précision pensez à saisir les qualités et langues...", 3);
+                  "Pour plus de précision pensez à saisir les qualités et langues...", 7);
           }
         })
       });

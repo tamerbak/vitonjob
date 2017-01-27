@@ -467,7 +467,7 @@ export class ProfilePage {
                     let message = this.userData.nom+' '+this.userData.prenom+' vous a désigné comme référence. Nous désirons avoir votre retour sur contact@vitonjob.com';
                     let phone = data.reference.phone;
                     this.smsService.sendSms(phone, message).then((result:any)=>{
-                        this.presentToast("Un SMS a été adressé à votre référence afin de fournir une appréciation.", 3);
+                        this.presentToast("Un SMS a été adressé à votre référence afin de fournir une appréciation.", 7);
                     });
                 }
                 if(data.reference.email){
@@ -479,7 +479,7 @@ export class ProfilePage {
                     let mail = data.reference.email;
                     let subject = this.userData.nom+' '+this.userData.prenom+' vous a désigné comme référence';
                     this.smsService.sendMail(mail, message, subject).then((result:any)=>{
-                        this.presentToast("Un courrier électronique a été adressé à votre référence afin de fournir une appréciation.", 3);
+                        this.presentToast("Un courrier électronique a été adressé à votre référence afin de fournir une appréciation.", 7);
                     });
                 }
             }
@@ -488,7 +488,7 @@ export class ProfilePage {
 
     goToBankAccount() {
         if(this.isNewUser){
-            this.presentToast("Veuillez renseigner les informations de votre profil avant d'accéder aux coordonnées bancaires", 3);
+            this.presentToast("Veuillez renseigner les informations de votre profil avant d'accéder aux coordonnées bancaires", 7);
         }else{
             this.nav.push(BankAccountPage, {currentUser: this.userData, fromPage: "profil"});
         }
