@@ -183,7 +183,6 @@ export class OffersService {
                         //adding userId for remote storing
                         offerData.identity = rawData.entreprises[0].id;
                         offers = rawData.entreprises[0].offers;
-                        console.log('off',offerData);
                         offerData.nbPoste = offerData.jobData.nbPoste;
                         offerData.contact = offerData.jobData.contact;
                         offerData.telephone = offerData.jobData.telephone;

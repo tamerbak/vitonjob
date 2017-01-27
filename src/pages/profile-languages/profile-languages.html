@@ -17,6 +17,24 @@
 
       </ion-select>
     </ion-item>
+    <div>
+        <ion-list radio-group [(ngModel)]="level">
+            <ion-list-header style="margin-left: 0; padding: 0 0 0 0;" color="primary">
+                <h5 style="margin-bottom: 0; margin-top: auto">
+                   Niveau
+                </h5>
+            </ion-list-header>
+            <ion-item>
+                <ion-label>Débutant</ion-label>
+                <ion-radio value="Débutant"></ion-radio>
+            </ion-item>
+            <ion-item>
+                <ion-label>Courant</ion-label>
+                <ion-radio value="Expérimenté"></ion-radio>
+            </ion-item>
+        </ion-list>
+    </div>
+
     <button ion-button icon-left small item color="primary"
             [disabled]="!selectedLangue || selectedLangue.length == 0"
             (click)="addLangue()" >
@@ -25,7 +43,7 @@
   </ion-list>
   <ion-list>
     <ion-item *ngFor="let q of savedLangues">
-      <label>{{q.libelle}}</label>
+      <label>{{q.libelle + ' - ' + q.level  }}</label>
       <button ion-button small item-right danger (click)="removeLangue(q)" color="vojgrey">
         <ion-icon name="remove-circle"></ion-icon>
       </button>
