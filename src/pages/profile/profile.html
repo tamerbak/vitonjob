@@ -22,20 +22,19 @@
     </button>
 
     <ion-fab-list side="left" style="margin-top: 4vh">
-      <button ion-fab [color]="themeColor" (click)="showPictureModel()">
+      <button ion-fab color="primary" (click)="showPictureModel()">
         <ion-icon name="camera"></ion-icon>
       </button>
-      <button ion-fab [color]="themeColor" (click)="goToSettings()">
+      <button ion-fab color="primary" (click)="goToSettings()">
         <ion-icon name="settings"></ion-icon>
       </button>
-      <button ion-fab [color]="themeColor" (click)="goToBankAccount()">
+      <button ion-fab color="primary" (click)="goToBankAccount()">
         <ion-icon name="logo-euro"></ion-icon>
       </button>
-
-      <!-- tutorial button not working yet -->
-      <!--<button ion-fab [color]="themeColor">
-        <ion-icon name="md-help"></ion-icon>
-      </button>-->
+        <!-- tutorial button not working yet -->
+        <!--<button ion-fab color="primary">
+          <ion-icon name="md-help"></ion-icon>
+        </button>-->
     </ion-fab-list>
   </ion-fab>
 
@@ -136,7 +135,7 @@
         </button>
       </ion-item>
       <ion-item text-wrap *ngIf="isEmployer">
-        <ion-icon subtle large item-left name='pin' style="color: #14baa6"></ion-icon>
+        <ion-icon subtle large item-left name='pin' style="color: #4178BC"></ion-icon>
         <h5 *ngIf="isEmployer">Adresse de correspondance</h5>
         <p *ngIf="isEmployer && userData.employer.entreprises.length != 0">
           {{userData.employer.entreprises[0].correspondanceAdress.fullAdress}}</p>
@@ -191,38 +190,36 @@
 
     <ion-fab-list side="right">
 
-      <button ion-fab [color]="themeColor"
+      <button ion-fab color="primary"
               (click)="showProfileQualities()">
         <ion-icon name="happy"></ion-icon>
       </button>
 
-      <button ion-fab [color]="themeColor"
+      <button ion-fab color="primary"
               (click)="showProfileLanguages()">
         <ion-icon name="globe"></ion-icon>
       </button>
 
-      <button ion-fab [color]="themeColor"
+      <button ion-fab color="primary"
               (click)="showProfileSlots()" *ngIf="!isEmployer">
         <ion-icon name="calendar"></ion-icon>
       </button>
 
-      <button ion-fab [color]="themeColor"
+      <button ion-fab color="primary"
               (click)="goToInterestingJobs()" *ngIf="!isEmployer">
         <ion-icon name="briefcase"></ion-icon>
       </button>
 
-      <button ion-fab [color]="themeColor"
+      <button ion-fab color="primary"
               (click)="showPrerequisitesInfos()" *ngIf="!isEmployer">
         <ion-icon name="clipboard"></ion-icon>
       </button>
-     
 
-      <button ion-fab [color]="themeColor"
+
+      <button ion-fab color="primary"
               (click)="showProfileSoftwares()" *ngIf="!isEmployer && environmentService.get('JOBYER_PHARMA')=='true'">
         <ion-icon name="apps"></ion-icon>
       </button>
-
-       
 
       <!--<button ion-fab [color]="themeColor"
               (click)="showProfileJobs()" *ngIf="!isEmployer">

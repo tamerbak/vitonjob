@@ -21,9 +21,9 @@ export class AdvertListPage {
     public themeColor : any;
     public currentUserVar: string;
     public currentUser: any;
-    //determine the number of elements that should be skipped by the loading adverts query
+    //determine the number of elements that should be skipped by the loadingCtrl adverts query
     public queryOffset: number = 0;
-    //determine the number of elemens to be retrieved by the loading adverts query
+    //determine the number of elemens to be retrieved by the loadingCtrl adverts query
     public queryLimit: number = 7;
 
     constructor(public nav: NavController,

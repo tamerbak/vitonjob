@@ -705,24 +705,29 @@ export class HomePage {
      * @description perform semantic search and pushes the results view
      */
     doSemanticSearch() {
-        if (this.scQuery == "" || this.scQuery == " " || !this.scQuery) {
+        if (this.scQuery == "" || this.scQuery.trim() == "" || !this.scQuery) {
             this.presentToast("Veuillez saisir un job à rechercher avant de lancer la recherche", 5);
             return;
         }
-        let loading = this.loading.create({content: "Merci de patienter..."});
-        loading.present();
+        //let loading = this.loading.create({content: "Merci de patienter..."});
+        //loading.present();
         console.log('Initiating search for ' + this.scQuery);
         this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((results: any) => {
-            let data = [];
-            if (this.projectTarget == 'jobyer')
-                data = results.offerEnterprise;
-            else
-                data = results.offerJobyers;
+            if (results.success !== false){
+                let data = [];
+                if (this.projectTarget == 'jobyer')
+                    data = results.offerEnterprise;
+                else
+                    data = results.offerJobyers;
 
-            this.searchService.setLastIndexation({resultsIndex: results.indexation});
-            this.searchService.persistLastSearch(data);
-            loading.dismiss();
-            this.nav.push(SearchResultsPage, {searchType: 'semantic'});
+                this.searchService.setLastIndexation({resultsIndex: results.indexation});
+                this.searchService.persistLastSearch(data);
+                //loading.dismiss();
+                this.nav.push(SearchResultsPage, {searchType: 'semantic'});
+            }
+        }).catch(e => {
+            debugger;
+            console.log(e)
         });
     }
 

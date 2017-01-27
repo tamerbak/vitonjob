@@ -126,6 +126,7 @@ import {ProfileReferencePage} from "../pages/profile-reference/profile-reference
 import {InfoModalPage} from "../pages/info-modal/info-modal";
 import {EnvironmentService} from "../providers/environment-service/environment-service";
 import {PrerequisitesInfosPage} from "../pages/prerequisites-infos/prerequisites-infos";
+import {HttpRequestHandler} from "../http/http-request-handler";
 
 @NgModule({
     declarations: [
@@ -350,7 +351,8 @@ import {PrerequisitesInfosPage} from "../pages/prerequisites-infos/prerequisites
         AccountConstraints,
         NumSSConstraints,
         AccountReferencesService,
-        EnvironmentService
+        EnvironmentService,
+        HttpRequestHandler
     ]
 })
 export class AppModule {
