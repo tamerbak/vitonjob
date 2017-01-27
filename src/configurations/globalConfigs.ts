@@ -36,7 +36,7 @@ export class GlobalConfigs {
     static env:string = 'DEV'; // DEV ou PROD
 
     constructor() {
-        this.projectTarget = "employer"; // "jobyer" / "employer"
+        this.projectTarget = "jobyer"; // "jobyer" / "employer"
         this.cnxBtnName = "Se connecter / S'inscrire";
         this.thirdThemeColor = '#f4f4f4';
     }
