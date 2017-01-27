@@ -364,7 +364,7 @@ export class SearchCriteriaPage {
     /**
      * @description send criteria search to web service and load results view
      */
-    validateSearch() {
+     validateSearch() {
 
         let idLevel = 0;
         let startDate:Date;

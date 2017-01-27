@@ -127,6 +127,7 @@ import {InfoModalPage} from "../pages/info-modal/info-modal";
 import {EnvironmentService} from "../providers/environment-service/environment-service";
 import {PrerequisitesInfosPage} from "../pages/prerequisites-infos/prerequisites-infos";
 import {HttpRequestHandler} from "../http/http-request-handler";
+import {ModalPeriodPage} from "../pages/modal-period/modal-period";
 
 @NgModule({
     declarations: [
@@ -213,7 +214,8 @@ import {HttpRequestHandler} from "../http/http-request-handler";
         SwipeVertical,
         DateConverter,
         TimeConverter,
-        PrerequisitesInfosPage
+        PrerequisitesInfosPage,
+        ModalPeriodPage
 
     ],
     imports: [
@@ -306,7 +308,8 @@ import {HttpRequestHandler} from "../http/http-request-handler";
         YousignPage,
         ProfileReferencePage,
         InfoModalPage,
-        PrerequisitesInfosPage
+        PrerequisitesInfosPage,
+        ModalPeriodPage
     ],
     providers: [
         {provide: ErrorHandler, useClass: IonicErrorHandler},

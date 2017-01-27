@@ -3,6 +3,7 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalSlotPage} from "../modal-slot/modal-slot";
 import {Component} from "@angular/core";
+import {ModalPeriodPage} from "../modal-period/modal-period";
 
 /*
  Generated class for the ModalCalendarPage page.
@@ -108,7 +109,7 @@ export class ModalCalendarPage {
    * Theme_DeviceDefault_Light_Dialog_Alert : 10
    */
   showSlotModal() {
-    let slotModel = this.modal.create(ModalSlotPage);
+    let slotModel = this.modal.create(ModalPeriodPage);
     slotModel.onDidDismiss(slotData => {
       //TODO: Control date value before adding them.
       if (slotData) {
