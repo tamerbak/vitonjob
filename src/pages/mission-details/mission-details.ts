@@ -22,7 +22,7 @@ import {MissionEndInvoicePage} from "../mission-end-invoice/mission-end-invoice"
 import {MissionEndRelevePage} from "../mission-end-releve/mission-end-releve";
 import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
 import {Storage} from "@ionic/storage";
-import {isUndefined} from "../../../node_modules/ionic-angular/util/util";
+import {isUndefined} from "ionic-angular/util/util";
 import {DatePicker, InAppBrowser} from "ionic-native";
 import {Utils} from "../../utils/utils";
 
@@ -811,7 +811,8 @@ export class MissionDetailsPage {
   launchContractPage() {
     this.isSignContractClicked = true;
     this.platform.ready().then(() => {
-      let browser = new InAppBrowser(this.contract.lien_jobyer, '_blank');
+      //let browser = new InAppBrowser(this.contract.lien_jobyer, '_blank');
+      InAppBrowser.open(this.contract.lien_jobyer, '_blank');
     });
   }
 

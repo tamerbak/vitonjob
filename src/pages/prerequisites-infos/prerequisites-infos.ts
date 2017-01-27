@@ -14,10 +14,9 @@ import {SqlStorageService} from "../../providers/sql-storage-service/sql-storage
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {Utils} from "../../utils/utils";
 import {Storage} from "@ionic/storage";
-import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
 import {EnvironmentService} from "../../providers/environment-service/environment-service";
-declare var cordova: any;
-declare var window;
+declare let cordova: any;
+declare let window;
 declare let require: any;
 
 @Component({
@@ -32,7 +31,7 @@ export class PrerequisitesInfosPage {
     public titlePage: string;
 
     //Jobs
-    public jobs : any = [];
+    public jobs: any = [];
 
     public modal: any;
     public platform: any;
@@ -42,7 +41,7 @@ export class PrerequisitesInfosPage {
     public inversedThemeColor: any;
     public isEmployer: boolean;
 
-    constructor(public environmentService:EnvironmentService,
+    constructor(public environmentService: EnvironmentService,
                 public nav: NavController,
                 public gc: GlobalConfigs,
                 private sqlStorageService: SqlStorageService,
@@ -79,39 +78,39 @@ export class PrerequisitesInfosPage {
 
     }
 
-    initRequirements(){
+    initRequirements() {
 
         let offers = this.currentUser.jobyer.offers;
         console.log(offers);
-        for(let i = 0 ;i < offers.length ; i++){
+        for (let i = 0; i < offers.length; i++) {
             let jd = offers[i].jobData;
             console.log(jd);
             let found = false;
 
-            for ( let j = 0 ; j < this.jobs.length ; j++){
+            for (let j = 0; j < this.jobs.length; j++) {
                 console.log(this.jobs[j].id == jd.idJob);
-                if(this.jobs[j].id == jd.idJob){
-                    found= true;
+                if (this.jobs[j].id == jd.idJob) {
+                    found = true;
                     break;
                 }
 
-                if(found){
+                if (found) {
                     continue;
                 }
             }
 
             this.jobs.push({
-                id : jd.idJob,
-                libelle : jd.job,
-                requirements : []
+                id: jd.idJob,
+                libelle: jd.job,
+                requirements: []
             });
-            
+
         }
         console.log(this.jobs);
-        for(let i = 0 ; i < this.jobs.length ; i++)
-        this.profileService.loadRequirementsByJob(this.jobs[i].id).then((data:any)=>{
-            this.jobs[i].requirements = data;
-        });
+        for (let i = 0; i < this.jobs.length; i++)
+            this.profileService.loadRequirementsByJob(this.jobs[i].id).then((data: any) => {
+                this.jobs[i].requirements = data;
+            });
     }
 
     isEmpty(str) {
