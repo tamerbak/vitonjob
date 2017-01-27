@@ -98,7 +98,7 @@ export class SearchDetailsPage implements OnInit {
     if (this.result.titreOffre)
       this.fullTitle = this.result.titreOffre;
     if (this.result.titreoffre)
-      this.fullTitle = this.fullTitle + this.result.titreoffre;
+      this.fullTitle = this.result.titreoffre;
 
     if (!this.isEmployer)
       this.fullName = this.result.entreprise;

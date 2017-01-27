@@ -219,15 +219,15 @@ export class OfferDetailPage {
     /*console.log(this.offer);
     if (!this.offer)
       return;
-    let loading = this.loading.create({
+    let loadingCtrl = this.loadingCtrl.create({
       content: ` 
                 <div>
-                    <img src='assets/img/loading.gif' />
+                    <img src='assets/img/loadingCtrl.gif' />
                 </div>
                 `,
       spinner: 'hide'
     });
-    loading.present();
+    loadingCtrl.present();
     let searchFields = {
       class: 'com.vitonjob.callouts.recherche.SearchQuery',
       job: this.offer.jobData.job,
@@ -242,7 +242,7 @@ export class OfferDetailPage {
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
       console.log(data);
       this.searchService.persistLastSearch(data);
-      loading.dismiss();
+      loadingCtrl.dismiss();
       this.nav.push(SearchResultsPage, {currentOffer: this.offer});
     });*/
   }

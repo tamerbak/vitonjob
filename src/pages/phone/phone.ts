@@ -155,7 +155,7 @@ export class PhonePage {
       //debugger;
       /*if (data0 && data0.data.length != 0 && !(data0.data[0].mot_de_passe === pwd) && !(data0.data[0].mot_de_passe_hunter === pwd)) {
        this.globalService.showAlertValidation("Vit-On-Job", "Votre mot de passe est incorrect.");
-       loading.dismiss();
+       loadingCtrl.dismiss();
        return;
        }*/
 

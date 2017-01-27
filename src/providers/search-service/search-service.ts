@@ -4,6 +4,8 @@ import {Http, Headers} from "@angular/http";
 import "rxjs/add/operator/map";
 import {Configs} from "../../configurations/configs";
 import {Storage} from "@ionic/storage";
+import {errorHandler} from "@angular/platform-browser/src/browser";
+import {HttpRequestHandler} from "../../http/http-request-handler";
 
 /**
  * @author jakjoud abdeslam
@@ -14,9 +16,13 @@ import {Storage} from "@ionic/storage";
 export class SearchService {
     data: any = null;
     configuration: any;
+    private handleError(error: any): Promise<any> {
+        debugger;
+        console.error('An error occurred', error); // for demo purposes only
+        return Promise.reject(error.message || error);
+    }
 
-
-    constructor(public http: Http, public db:Storage) {
+    constructor(public http: Http, public db:Storage, public httpRequestHandler: HttpRequestHandler) {
 
     }
 
@@ -54,16 +60,14 @@ export class SearchService {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
-            let headers = new Headers();
-            headers = Configs.getHttpJsonHeaders();
-            this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
-                .map(res => res.json())
-                .subscribe((data:any) => {
-                    // we've got back the raw data, now generate the core schedule data
-                    // and save the data for later reference
-                    this.data = data;
-                    resolve(this.data);
-                });
+
+            this.httpRequestHandler.sendCallOut(payload, this, true).subscribe((data:any) => {
+                // we've got back the raw data, now generate the core schedule data
+                // and save the data for later reference
+                this.data = data;
+                resolve(this.data);
+            });
+
         });
     }
 
@@ -163,9 +167,9 @@ export class SearchService {
      */
     advancedSearch(searchQuery: any) {
         //  Prepare payload
-        var query = JSON.stringify(searchQuery);
+        let query = JSON.stringify(searchQuery);
 
-        var payload = {
+        let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
             id: 10047,//10045,
             args: [
@@ -220,6 +224,10 @@ export class SearchService {
      */
     retrieveLastIndexation(){
         return this.db.get('LAST_INDEX');
+    }
+
+    errorMessage(e) {
+        alert("Erreur serveur" + e);
     }
 }
 

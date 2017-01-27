@@ -33,10 +33,10 @@ export class GlobalConfigs {
      * Change here the env variable that indicates the nature of DB connections : PROD or DEV
      * @type {string}
      */
-    static env:string = 'DEV';
+    static env:string = 'DEV'; // DEV ou PROD
 
     constructor() {
-        this.projectTarget = "jobyer"; // "jobyer" / "employer"
+        this.projectTarget = "employer"; // "jobyer" / "employer"
         this.cnxBtnName = "Se connecter / S'inscrire";
         this.thirdThemeColor = '#f4f4f4';
     }

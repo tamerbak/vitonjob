@@ -92,30 +92,30 @@ export class ModalCorporamaSearchPage {
   }
 
   takeAction(company) {
-    /*let loading = this.alert.create({
+    /*let loadingCtrl = this.alert.create({
      content: `
      <div>
-     <img src='assets/img/loading.gif' />
+     <img src='assets/img/loadingCtrl.gif' />
      </div>
      `,
      spinner: 'hide',
      });
-     loading.present();*/
+     loadingCtrl.present();*/
     if (this.typeSearch == "siren" || this.hasToRedirect) {
-      //loading.dismiss();
+      //loadingCtrl.dismiss();
       this.viewCtrl.dismiss(company);
     } else {
       this.corporamaService.searchCompany("siren", company.siren).then((data: any) => {
         if (!data || data.status == "failure" || Utils.isEmpty(data._body)) {
           console.log(data);
-          //loading.dismiss();
+          //loadingCtrl.dismiss();
           this.globalService.showAlertValidation("Vit-On-Job", "Service indisponible. Veuillez réessayer ultérieurement.");
           return;
         } else {
           data = JSON.parse(data._body);
           this.companies = this.corporamaService.convertSearchResponse(data);
           this.hasToRedirect = true;
-          //loading.dismiss();
+          //loadingCtrl.dismiss();
         }
       })
     }
