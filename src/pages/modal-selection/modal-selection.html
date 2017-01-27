@@ -16,7 +16,7 @@
                    [cancelButtonText]="cancelButtonText" style="background-color: #387ef5;"></ion-searchbar>
     <ion-list text-wrap>
         <ion-item *ngFor="let item of list" (click)="validateModal(item)">
-            {{ item.libelle }}
+            {{params.get('type') !== 'département de naissance' ? (item.libelle || item.nom) : (item.numero + ' - ' + item.nom) }}
         </ion-item>
     </ion-list>
 </ion-content>

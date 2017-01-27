@@ -111,28 +111,23 @@
             <ion-input type="text" [(ngModel)]="indexForForeigner" disabled></ion-input>
         </ion-item>
 
+
+
+        
         <ion-item [hidden]="isEmployer || !isFrench">
-            <ion-label floating> Département de naissance ex: 25</ion-label>
-            <ion-input type="text" [(ngModel)]="birthdep" (keyup)="watchBirthDep($event)"></ion-input>
-        </ion-item>
-        <ion-item [hidden]="isEmployer || departments.length==0">
-            <ion-list>
-                <ion-item *ngFor="let d of departments" (click)="departmentSelected(d)">
-                    {{d.numero}}
-                </ion-item>
-            </ion-list>
+            <ion-label floating>Département de naissance </ion-label>
+            <ion-input type="text" [(ngModel)]="birthdep" disabled></ion-input>
+            <button small ion-button class="text-size" item-right (click)="setBirthdepPicker()">
+                <ion-icon name="list"></ion-icon>
+            </button>
         </ion-item>
 
         <ion-item [hidden]="isEmployer || !isFrench">
             <ion-label floating>Lieu de naissance <span class="asteriskb">*</span></ion-label>
-            <ion-input type="text" [(ngModel)]="birthplace" (keyup)="watchBirthPlace($event)"></ion-input>
-        </ion-item>
-        <ion-item [hidden]="isEmployer || communes.length==0">
-            <ion-list>
-                <ion-item *ngFor="let c of communes" (click)="communeSelected(c)">
-                    {{c.nom}}
-                </ion-item>
-            </ion-list>
+            <ion-input type="text" [(ngModel)]="birthplace" disabled></ion-input>
+            <button small ion-button class="text-size" item-right (click)="setBirthplacePicker()">
+                <ion-icon name="list"></ion-icon>
+            </button>
         </ion-item>
 
         <ion-item [hidden]="!isEmployer">
