@@ -551,18 +551,25 @@ export class CivilityPage {
                         let day = d.getDate() < 10 ? "0" + d.getDate() : d.getDate();
                         this.tsejToDate = d.getFullYear() + "-" + month + "-" + day;
                     }
-                    if (jobyer.duTS && jobyer.duTS != 'null') {
-                        let d = new Date(jobyer.duTS);
-                        let month = (d.getMonth() + 1) < 10 ? "0" + (d.getMonth() + 1) : "" + (d.getMonth() + 1);
-                        let day = d.getDate() < 10 ? "0" + d.getDate() : d.getDate();
-                        this.tsejFromDate = d.getFullYear() + "-" + month + "-" + day;
-                    }
+
                     if (jobyer.delivranceTS && jobyer.delivranceTS != 'null') {
                         let d = new Date(jobyer.delivranceTS);
                         let month = (d.getMonth() + 1) < 10 ? "0" + (d.getMonth() + 1) : "" + (d.getMonth() + 1);
                         let day = d.getDate() < 10 ? "0" + d.getDate() : d.getDate();
                         this.tsejProvideDate = d.getFullYear() + "-" + month + "-" + day;
                     }
+
+                    if (jobyer.duTS && jobyer.duTS != 'null') {
+                        let d = new Date(jobyer.duTS);
+                        let month = (d.getMonth() + 1) < 10 ? "0" + (d.getMonth() + 1) : "" + (d.getMonth() + 1);
+                        let day = d.getDate() < 10 ? "0" + d.getDate() : d.getDate();
+                        this.tsejFromDate = d.getFullYear() + "-" + month + "-" + day;
+                    }else{
+                        if(this.tsejProvideDate){
+                            this.tsejFromDate = this.tsejProvideDate;
+                        }
+                    }
+                    
 
                     if (jobyer.identifiantNationalite && jobyer.identifiantNationalite > 0) {
                         this.idnationality = jobyer.identifiantNationalite;
@@ -778,6 +785,10 @@ export class CivilityPage {
                 let birthdepId = !Utils.isEmpty(this.selectedBirthDep) ? this.selectedBirthDep.id : null;
                 this.cni = this.isCIN == 0 ? "" : this.cni;
                 this.numStay = this.isCIN == 0 ? this.numStay : "";
+
+                if(!this.tsejFromDate && this.tsejProvideDate){
+                    this.tsejFromDate = this.tsejProvideDate;
+                }
 
                 this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni,
                     this.nationality, jobyerId, this.birthdate, this.birthplace, this.prefecture, this.tsejProvideDate,
