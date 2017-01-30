@@ -218,7 +218,7 @@ export class CivilityPage {
             this.loadListService.loadNationalities(this.projectTarget).then((data: {data: any}) => {
                 this.nationalities = data.data;
                 //initialize nationality with (9 = francais)
-                this.scanTitle = " de votre CNI ou Passeport";
+                this.scanTitle = " de votre titre d'identité";
                 this.nationalitiesstyle = {'font-size': '1.4rem'};
             });
         } else {
