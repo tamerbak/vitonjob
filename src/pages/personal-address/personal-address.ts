@@ -187,7 +187,8 @@ export class PersonalAddressPage {
   displayGeolocationAlert() {
     let confirm = this.alert.create({
       title: "Vit-On-Job",
-      message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider" + (this.isEmployer ? " l'adresse de votre siège social." : " votre adresse personnelle."),
+      
+      message: "Acceptez-vous d'être géolocalisé? Si oui, vous n'aurez qu'à valider" + (this.isEmployer ? " l'adresse de votre siège social." : " votre adresse personnelle."),
       buttons: [
         {
           text: 'Non',

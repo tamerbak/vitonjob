@@ -196,7 +196,7 @@ export class JobAddressPage {
     displayGeolocationAlert() {
         let confirm = this.alert.create({
             title: "Vit-On-Job",
-            message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider l'" + (this.isEmployer ? "adresse lieu de travail." : "adresse de départ au travail."),
+            message: "Acceptez-vous d'être géolocalisé? Si oui, vous n'aurez qu'à valider votre " + (this.isEmployer ? "adresse lieu de travail." : "adresse de départ au travail."),
             buttons: [
                 {
                     text: 'Non',
