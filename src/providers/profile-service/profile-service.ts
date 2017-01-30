@@ -274,7 +274,7 @@ export class ProfileService {
     getUserLanguages(id: any, projectTarget: string) {
         let table = projectTarget == 'jobyer' ? 'user_langue_jobyer' : 'user_langue_employeur';
         let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
-        let sql = "select pk_user_langue as id, i.libelle,n.libelle as level from user_langue as i, user_niveau as n , " + table + " as t where n.pk_user_niveau = t.fk_user_niveau and i.pk_user_langue = t.fk_user_langue and t." + foreignKey + " = '" + id + "'";
+        let sql = "select pk_user_langue as id, i.libelle,n.libelle as level from user_langue as i, user_niveau as n , " + table + " as t where n.pk_user_niveau = t.fk_user_niveau and i.pk_user_langue = t.fk_user_langue and t." + foreignKey + " = '" + id + "' order by i.libelle";
 
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
