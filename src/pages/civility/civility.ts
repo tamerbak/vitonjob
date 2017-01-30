@@ -161,6 +161,8 @@ export class CivilityPage {
     public selectedJobLevel: any = 1;
     public isJobFound = true;
 
+    public isDepInputDisabled = true;
+    public isBirthplaceInputDisabled = true;
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
      */

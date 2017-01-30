@@ -27,6 +27,7 @@ export class ModalSelectionPage {
   public searchQuery: string;
   public searchPlaceholder: string;
   public cancelButtonText: string;
+  public message:string;
 
   constructor(private nav: NavController,
               private gc: GlobalConfigs,
@@ -54,6 +55,7 @@ export class ModalSelectionPage {
     this.searchQuery = "";
     this.searchPlaceholder = 'Recherchez votre ' + params.get('type');
     this.cancelButtonText = 'Annuler';
+    this.message = "";
 
   }
 
@@ -200,23 +202,43 @@ export class ModalSelectionPage {
       return;
     }
     
+    // Reset items back to all of the items
+    if(!(this.params.get('type') === "lieu de naissance") && !(this.params.get('type') === "département de naissance")){
+      this.initializeItems(this.params.get('items'));
+    
+    // if the value is an empty string don't filter the items
+    
+      this.list = this.list.filter((v) => {
+        return (v.libelle.toLowerCase().indexOf(q.toLowerCase()) > -1);
+      })
+    }else{
+      return;
+    }
+    
+  }
+
+
+  getResults(ev) {
+    this.list = [];
+    this.message = "Recherche en cours ..."
+    // set q to the value of the searchbar
+    let q = this.searchQuery;
+    
+    if (q.trim() == '') {
+      return;
+    }
+    
     if(this.params.get('type') === "lieu de naissance"){
       let birthDep = this.params.get('birthDep')
       this.communesService.getCommunesByTerm(q, birthDep).then((data: any) => {
         this.list = data;
+        this.message = this.list.length == 0 ? "Aucun résultat trouvé" : "";
       });
     }else if(this.params.get('type') === "département de naissance"){
       this.communesService.getDepartmentsByTerm(q).then((data: any) => {
         this.list = data;
+        this.message = this.list.length == 0 ? "Aucun résultat trouvé" : "";
       });
-    }else{
-      // Reset items back to all of the items
-      this.initializeItems(this.params.get('items'));
-      // if the value is an empty string don't filter the items
-     
-      this.list = this.list.filter((v) => {
-        return (v.libelle.toLowerCase().indexOf(q.toLowerCase()) > -1);
-      })
     }
   }
 }
