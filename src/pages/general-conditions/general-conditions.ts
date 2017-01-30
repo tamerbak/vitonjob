@@ -1023,7 +1023,7 @@ export class GeneralConditionsPage {
         this.nav.setRoot(CivilityPage, {
           currentUser: data, jobyer: jobyer, obj: obj, searchIndex: searchIndex
         }).then(() => {
-          this.presentToast(welcomeMsg, 10);
+          this.presentToast(welcomeMsg, 20);
         });
     });
 
