@@ -57,13 +57,19 @@ export class MissionListPage {
     let missionNow = [];
     let missionFutur = [];
     let missionPast = [];
+    let missionCanceled = [];
+
     this.missionList = [];
     let missionsObjNow = {header: 'Missions en cours', list: missionNow, loaded: false};
     let missionsObjFutur = {header: 'Missions en attente', list: missionFutur, loaded: false};
     let missionsObjPast = {header: 'Missions terminées', list: missionPast, loaded: false};
+    let missionsObjCancel = {header: 'Missions annulées', list: missionCanceled, loaded: false};
+    
     this.missionList.push(missionsObjNow);
     this.missionList.push(missionsObjFutur);
     this.missionList.push(missionsObjPast);
+    this.missionList.push(missionsObjCancel);
+
 
     //get contracts
     this.storage.get(this.currentUserVar).then((value) => {
@@ -77,23 +83,26 @@ export class MissionListPage {
         }
         this.contractService.getContracts(id, this.projectTarget).then((data: {data: any}) => {
           if (data.data) {
-
+              console.log(data.data)
             this.contractList = data.data;
             for (let i = 0; i < this.contractList.length; i++) {
               let item = this.contractList[i];
               if (item.date_de_debut) {
                 /*if ((this.dayDifference(item.date_de_debut) == 0) || (this.dayDifference(item.date_de_debut) < 0 && this.dayDifference(item.date_de_fin) >= 0))*/
-                if (item.signature_jobyer.toUpperCase() == 'OUI' && item.accompli.toUpperCase() == 'NON')
+                if (item.signature_jobyer.toUpperCase() == 'OUI' && item.accompli.toUpperCase() == 'NON' && item.annule_par == "null")
                 // Mission en cours
                   missionNow.push(item);
                 /*else if (this.dayDifference(item.date_de_debut) > 0)*/
-                if (item.signature_jobyer.toUpperCase() == 'NON')
+                if (item.signature_jobyer.toUpperCase() == 'NON' && item.annule_par == "null")
                 // Mission in futur
                   missionFutur.push(item);
                 //else
-                if (item.accompli.toUpperCase() == 'OUI')
+                if (item.accompli.toUpperCase() == 'OUI' && item.annule_par == "null")
                 // Mission in past
                   missionPast.push(item);
+
+                if (item.annule_par != "null")
+                  missionCanceled.push(item);
               }
             }
 
@@ -108,6 +117,10 @@ export class MissionListPage {
             missionPast = missionPast.sort((a, b) => {
               return this.contractService.dayDifference(b.date_de_debut, a.date_de_debut)
             });
+
+             missionCanceled = missionCanceled.sort((a, b) => {
+              return this.contractService.dayDifference(b.date_de_debut, a.date_de_debut)
+            });
           }
           this.missionList[0].list = missionNow;
           this.missionList[0].loaded = true;
@@ -115,6 +128,8 @@ export class MissionListPage {
           this.missionList[1].loaded = true;
           this.missionList[2].list = missionPast;
           this.missionList[2].loaded = true;
+          this.missionList[3].list = missionCanceled;
+          this.missionList[3].loaded = true;
         });
       }
     });

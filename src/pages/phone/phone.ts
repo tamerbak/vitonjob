@@ -194,7 +194,7 @@ export class PhonePage {
             this.afterAuthSuccess(data);
             let toast = this.toast.create({
               message: "Bienvenue " + data.prenom + " vous venez de vous connecter !",
-              duration: 2000,
+              duration: 10000,
             });
 
             loading.dismiss().then(() => {
