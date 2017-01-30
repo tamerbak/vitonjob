@@ -296,3 +296,4 @@ export class AdvertEditPage{
     return Utils.isEmpty(str);
   }
 }
+
