@@ -166,7 +166,7 @@ export class CorrespondenceAddressPage {
   displayGeolocationAlert() {
     let confirm = this.alert.create({
       title: "Vit-On-Job",
-      message: "Si vous acceptez d'être localisé, vous n'aurez qu'à valider l'adresse de correspondance",
+      message: "Acceptez-vous d'être géolocalisé? Si oui, vous n'aurez qu'à valider votre adresse de correspondance",
       buttons: [
         {
           text: 'Non',
