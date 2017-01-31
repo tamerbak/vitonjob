@@ -384,8 +384,8 @@ export class ModalJobPage {
     let jobData = params.get('jobData');
 
     if (jobData) {
-
       this.jobData = jobData;
+      this.savedSoftwares = this.jobData.pharmaSoftwares;
       if (this.jobData.prerequisObligatoires)
         this.prerequisObligatoires = this.jobData.prerequisObligatoires;
       if (this.jobData.adress) {

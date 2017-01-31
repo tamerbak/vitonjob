@@ -267,7 +267,7 @@
 
   <!-- logiciels des pharmaciens -->
   <ion-item *ngIf="softwares != 0 && isEmployer">
-    <ion-label floating>Logiciels des pharmaciens</ion-label>
+    <ion-label floating>Logiciel(s) maîtrisé(s)</ion-label>
     <ion-select [(ngModel)]="software">
       <ion-option *ngFor="let s of softwares" [value] = "s">{{s.nom}}</ion-option>
     </ion-select>
