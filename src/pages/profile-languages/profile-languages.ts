@@ -33,9 +33,10 @@ export class ProfileLanguagesPage {
     let loading = this.loadingCtrl.create({content:"Merci de patienter..."});
     loading.present();
     this.listService.loadLanguages().then((results: any) => {
+      loading.dismiss();
       if (results.data)
         this.langues = results.data;
-        loading.dismiss();
+        
         
     });
     let idUser = this.isEmployer ?
