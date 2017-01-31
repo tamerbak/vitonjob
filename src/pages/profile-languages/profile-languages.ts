@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, NavParams} from "ionic-angular";
+import {NavController,LoadingController,NavParams} from "ionic-angular";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {LoadListService} from "../../providers/load-list-service/load-list-service";
 import {Configs} from "../../configurations/configs";
@@ -22,15 +22,20 @@ export class ProfileLanguagesPage {
   constructor(private nav: NavController,
               private navParams: NavParams,
               private profileService: ProfileService,
+              private loadingCtrl:LoadingController,
               private listService: LoadListService, public gc:GlobalConfigs) {
     this.projectTarget = gc.getProjectTarget();
     let config = Configs.setConfigs(this.projectTarget);
     this.themeColor = config.themeColor;
     this.currentUser = navParams.data.currentUser;
     this.isEmployer = navParams.data.isEmployer;
+    
+    let loading = this.loadingCtrl.create({content:"Merci de patienter..."});
+    loading.present();
     this.listService.loadLanguages().then((results: any) => {
+      loading.dismiss();
       if (results.data)
-        this.langues = results.data;
+        this.langues = results.data;        
     });
     let idUser = this.isEmployer ?
       this.currentUser.employer.entreprises[0].id :
