@@ -22,6 +22,7 @@ import {Storage} from "@ionic/storage";
 import {Utils} from "../../utils/utils";
 import {AdvertService} from "../../providers/advert-service/advert-service";
 import {AdvertListPage} from "../advert-list/advert-list";
+import {EnvironmentService} from "../../providers/environment-service/environment-service";
 
 /*
  Generated class for the OfferAddPage page.
@@ -64,6 +65,7 @@ export class OfferAddPage {
               private gc: GlobalConfigs,
               private os: OffersService,
               public navParams: NavParams,
+              public environmentService:EnvironmentService,
               private viewCtrl: ViewController,
               public alert: AlertController,
               public modal: ModalController,
@@ -93,6 +95,7 @@ export class OfferAddPage {
         this.offerToBeAdded.idHunter = this.idHunter;
       }
     });
+    this.environmentService.reload();
   }
 
 
