@@ -102,10 +102,9 @@ export class OfferListPage {
       this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
       this.globalOfferList.push({header: 'Mes brouillons', list: []});
       this.globalOfferList.push({header: 'Mes opportunités capturées', list: []});
+      
       this.offerList = data;
-      console.log(data);
-      //debugger;
-      console.log(data);
+      
       for (var i = 0; i < this.offerList.length; i++) {
         this.offerList[i].jobData.nbPoste = this.offerList[i].nbPoste;
         
@@ -113,7 +112,7 @@ export class OfferListPage {
         this.offerList[i].jobData.contact = this.offerList[i].contact;
 
         let offer = this.offerList[i];
-        if (isUndefined(offer) || !offer || !offer.jobData) {
+        if (isUndefined(offer) || !offer || !offer.jobData || offer.jobData.idSector == 0 || offer.jobData.idJob == 0) {
           continue;
         }
         if (offer.visible) {
