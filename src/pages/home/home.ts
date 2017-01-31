@@ -706,7 +706,7 @@ export class HomePage {
      */
     doSemanticSearch() {
         if (this.scQuery == "" || this.scQuery.trim() == "" || !this.scQuery) {
-            this.presentToast("Veuillez saisir un job à rechercher avant de lancer la recherche", 5);
+            this.presentToast("Veuillez saisir un job à rechercher avant de lancer la recherche", 7);
             return;
         }
         //let loading = this.loading.create({content: "Merci de patienter..."});
@@ -828,7 +828,7 @@ export class HomePage {
 
     presentToast(message: string, duration?: number, position?: string) {
         if (!duration)
-            duration = 3;
+            duration = 7;
         let toast = this.toast.create({
             message: message,
             position: position,
@@ -1017,7 +1017,7 @@ export class HomePage {
     }
 
     pressEvent(e) {
-        this.presentToast("Ce menu donne accès aux différentes nouvelles concernant les offres et les nouveaux inscrits!", 5, 'middle')
+        this.presentToast("Ce menu donne accès aux différentes nouvelles concernant les offres et les nouveaux inscrits!", 7, 'middle')
     }
 
     showCorrespondantCard(i: number) {
