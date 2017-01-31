@@ -9,7 +9,7 @@ import {
   App,
   AlertController
 } from "ionic-angular";
-import {StatusBar, Splashscreen} from "ionic-native";
+import {StatusBar, Splashscreen, AppVersion} from "ionic-native";
 import {HomePage} from "../pages/home/home";
 import {OffersService} from "../providers/offers-service/offers-service";
 import {NgZone} from "../../node_modules/@angular/core/src/zone/ng_zone";
@@ -33,7 +33,7 @@ import {MissionListPage} from "../pages/mission-list/mission-list";
 import {ProfilePage} from "../pages/profile/profile";
 import {PendingContractsPage} from "../pages/pending-contracts/pending-contracts";
 import {Observable} from "rxjs/Rx";
-//import {isUndefined} from "ionic-angular/util/util";
+import { GoogleAnalytics } from 'ionic-native';
 
 //declare let cordova;
 declare let Connection;
@@ -155,6 +155,7 @@ export class Vitonjob {
 
   initializeApp(gc: any) {
     this.platform.ready().then(() => {
+
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       // target:string = "employer"; //Jobyer
@@ -164,7 +165,17 @@ export class Vitonjob {
       this.storage.remove('languages');
       this.storage.remove('qualities');
       this.storage.remove('slots');
+      GoogleAnalytics.startTrackerWithId(gc.googleAnalyticsID)
+          .then(() => {
+            console.log('Google analytics is starting up');
+            AppVersion.getVersionNumber().then(_version => {
+              GoogleAnalytics.setAppVersion(_version);
+              GoogleAnalytics.debugMode();
+              GoogleAnalytics.enableUncaughtExceptionReporting(true);
+            });
 
+          })
+          .catch(e => console.log('Error starting Google Analytics', e));
 
       // Instabug integration
       //let cordova = require('cordova');
