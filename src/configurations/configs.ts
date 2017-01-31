@@ -1,5 +1,6 @@
 import {Headers} from "@angular/http";
 import {GlobalConfigs} from "./globalConfigs";
+import {GoogleAnalytics} from "ionic-native";
 /**
  * Created by tim on 04/05/16.
  * Here we will define all configurations of both apps.
@@ -147,6 +148,8 @@ export class Configs {
         'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/fssjs':
         'https://app.vitonjob.com/api/fssjs';
 
+    public static GA_INITIALIZED:boolean=false;
+
     public static getHttpJsonHeaders() {
         let headers = new Headers();
         headers.append("Content-Type", 'application/json');
@@ -180,5 +183,7 @@ export class Configs {
 
         return null;
     }
+
+
 }
 

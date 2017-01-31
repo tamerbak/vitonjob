@@ -9,7 +9,7 @@ import {
   App,
   AlertController
 } from "ionic-angular";
-import {StatusBar, Splashscreen, AppVersion} from "ionic-native";
+import {StatusBar, Splashscreen, AppVersion, GoogleAnalytics} from "ionic-native";
 import {HomePage} from "../pages/home/home";
 import {OffersService} from "../providers/offers-service/offers-service";
 import {NgZone} from "../../node_modules/@angular/core/src/zone/ng_zone";
@@ -33,7 +33,7 @@ import {MissionListPage} from "../pages/mission-list/mission-list";
 import {ProfilePage} from "../pages/profile/profile";
 import {PendingContractsPage} from "../pages/pending-contracts/pending-contracts";
 import {Observable} from "rxjs/Rx";
-import { GoogleAnalytics } from 'ionic-native';
+import {GoogleAnalyticsService} from "../providers/google-analytics-service/google-analytics-serivce";
 
 //declare let cordova;
 declare let Connection;
@@ -154,7 +154,26 @@ export class Vitonjob {
   }
 
   initializeApp(gc: any) {
+    /*console.log('Initializing Google analytics with ID : '+gc.googleAnalyticsID);
+    GoogleAnalytics.enableUncaughtExceptionReporting(true);
+    GoogleAnalytics.startTrackerWithId(gc.googleAnalyticsID)
+        .then(() => {
+          console.log('Google analytics is starting up');
+          AppVersion.getVersionNumber().then(_version => {
+            GoogleAnalytics.setAppVersion(_version);
+            GoogleAnalytics.debugMode();
+
+            Configs.GA_INITIALIZED = true;
+            console.log('Google analytics is ready');
+          });
+
+        })
+        .catch(e => {
+          console.log('Error starting Google Analytics', e);
+        });*/
     this.platform.ready().then(() => {
+
+
 
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -165,126 +184,9 @@ export class Vitonjob {
       this.storage.remove('languages');
       this.storage.remove('qualities');
       this.storage.remove('slots');
-      GoogleAnalytics.startTrackerWithId(gc.googleAnalyticsID)
-          .then(() => {
-            console.log('Google analytics is starting up');
-            AppVersion.getVersionNumber().then(_version => {
-              GoogleAnalytics.setAppVersion(_version);
-              GoogleAnalytics.debugMode();
-              GoogleAnalytics.enableUncaughtExceptionReporting(true);
-            });
-
-          })
-          .catch(e => console.log('Error starting Google Analytics', e));
-
-      // Instabug integration
-      //let cordova = require('cordova');
-      /*if (window.cordova) {
-
-       //gc.setInstabug(cordova.plugins.instabug);
-       if (!cordova.plugins.cordova) {
-       cordova.plugins.instabug.activate(
-       {
-       android: this.tokens.android,
-       ios: this.tokens.ios
-       },
-       'button',
-       {
-       commentRequired: true,
-       emailRequired: true,
-       shakingThresholdAndroid: '1.5',
-       shakingThresholdIPhone: '1.5',
-       shakingThresholdIPad: '0.6',
-       enableIntroDialog: false,
-       floatingButtonOffset: '200',
-       setLocale: 'french',
-       colorTheme: 'light'
-       },
-       function () {
-       console.log('Instabug initialized.');
-       },
-       function (error) {
-       console.log('Instabug could not be initialized - ' + error);
-       }
-       )
-       }
-       }
-
-       //for push notification
-       let push = Push.init({
-       android: {
-       senderID: "693415120998"
-       },
-       ios: {
-       alert: "true",
-       badge: true,
-       sound: 'false'
-       },
-       windows: {}
-       });
-       push.on('registration', (data:any) => {
-       console.log(data.registrationId);
-       this.storage.set('deviceToken', data.registrationId);
-       });
-       push.on('notification', (data:any) => {
-       console.log(data);
-       if (data.additionalData.data.objectNotif == "MissionDetailsPage") {
-       this.zone.run(()=> {
-       this.nav.push(MissionDetailsPage, {contract: JSON.parse(data.additionalData.data.contract)});
-       });
-       }
-       });
-       push.on('error', (e) => {
-       console.log(e.message);
-       });
-       */
-
-      //local notification
-      /*LocalNotifications.on("click", (notification, state) => {
-       let alert = this.alert.create({
-       title: "Notification",
-       message: notification.text,
-       buttons: [
-       {
-       text: 'Annuler',
-       handler: () => {
-       console.log('No clicked');
-       }
-       },
-       {
-       text: 'Pointer',
-       handler: () => {
-       console.log('pointer clicked');
-       alert.dismiss().then(() => {
-       let data = JSON.parse(notification.data);
-       this.nav.push(MissionPointingPage, {
-       contract: data.contract,
-       autoPointing: true,
-       nextPointing: data.nextPointing
-       });
-       })
-       }
-       }
-       ]
-       });
-       alert.present();
-       });*/
 
 
-      //	Initialize network control
-      /*if (navigator.connection) {
-       if (navigator.connection.type == Connection.NONE) {
-       let toast = this.toast.create({
-       message: "La connexion à Internet est perdu",
-       showCloseButton: true,
-       closeButtonText: 'Fermer'
-       });
-       toast.present();
-       }
-       }*/
-
-
-      //this.networkService.updateNetworkStat();
+      GoogleAnalyticsService.initialize(gc);
 
       let offline = Observable.fromEvent(document, "offline");
       let online = Observable.fromEvent(document, "online");

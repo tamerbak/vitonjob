@@ -38,6 +38,7 @@ import {
     GoogleMapsMarker
 } from "ionic-native";
 import {ModalHelpPage} from "../modal-help/modal-help";
+import {GoogleAnalyticsService} from "../../providers/google-analytics-service/google-analytics-serivce";
 
 declare let SpeechRecognition;
 declare let require;
@@ -145,7 +146,11 @@ export class HomePage {
                 private _modal: ModalController,
                 private _popover: PopoverController,
                 private _toast: ToastController,
+                private _gaService: GoogleAnalyticsService,
                 private _loading: LoadingController, public storage: Storage) {
+        //  TrackScreen
+        GoogleAnalyticsService.trackView("Accueil");
+
         // Get target to determine configs
         this.projectTarget = _globalConfig.getProjectTarget();
         this.loading = _loading;

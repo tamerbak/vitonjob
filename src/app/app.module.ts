@@ -127,6 +127,7 @@ import {InfoModalPage} from "../pages/info-modal/info-modal";
 import {EnvironmentService} from "../providers/environment-service/environment-service";
 import {PrerequisitesInfosPage} from "../pages/prerequisites-infos/prerequisites-infos";
 import {HttpRequestHandler} from "../http/http-request-handler";
+import {GoogleAnalyticsService} from "../providers/google-analytics-service/google-analytics-serivce";
 
 @NgModule({
     declarations: [
@@ -352,7 +353,8 @@ import {HttpRequestHandler} from "../http/http-request-handler";
         NumSSConstraints,
         AccountReferencesService,
         EnvironmentService,
-        HttpRequestHandler
+        HttpRequestHandler,
+        GoogleAnalyticsService
     ]
 })
 export class AppModule {
