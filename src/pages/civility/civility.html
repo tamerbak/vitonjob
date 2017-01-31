@@ -235,16 +235,28 @@
             </ion-select>
         </ion-item>
         <div class="error-box">{{tsMessage}}</div>
-
+        <ion-row wrap>
+                <ion-col width-33 *ngFor="let i of allImages; let idx = index" class="col-md-2 col-xs-12 profile-doc-list-elem">
+                  <img
+                    class="img-thumbnail"
+                    style="max-height: 100px;margin:1px;width:100%"
+                    [src]="i.data"
+                  />
+                  <button ion-button small color="danger" style="width: 100%;" (click)="deleteImage(idx)">
+                    Supprimer
+                  </button>
+                </ion-col>
+        </ion-row>
         <ion-row>
+            
             <ion-col text-center>
                 <ion-label>{{uploadVerb}} une photo {{scanTitle}}</ion-label>
-                <button ion-button icon-only [hidden]="scanUri" class="file-upload button-picture" [color]="themeColor">
+                <button ion-button icon-only class="file-upload button-picture" [color]="themeColor">
                     <input id="fileinput" accept="image/*" type="file" class="file-input" (change)="onChangeUpload($event)">
                     <ion-icon name='folder'></ion-icon>
                 </button>
 
-                <button ion-button icon-only [hidden]="scanUri" seconde (click)="takePicture()" [color]="themeColor"
+                <button ion-button icon-only seconde (click)="takePicture()" [color]="themeColor"
                         class="button-picture">
                     <ion-icon name="camera"></ion-icon>
                 </button>
