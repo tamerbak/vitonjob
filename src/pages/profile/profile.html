@@ -119,7 +119,7 @@
         <p *ngIf="!isEmployer">{{userData.jobyer.personnalAdress.fullAdress}}</p>
         <p *ngIf="isEmployer && userData.employer.entreprises.length != 0">
           {{userData.employer.entreprises[0].siegeAdress.fullAdress}}</p>
-        <button ion-button clear item-right (click)="goToPersonalAddressTab()" large color="vojblue">
+        <button ion-button clear item-right (click)="goToPersonalAddressTab()" large color="primary">
           <ion-icon name="create"></ion-icon>
         </button>
       </ion-item>
@@ -130,7 +130,7 @@
         <p *ngIf="!isEmployer">{{userData.jobyer.workAdress.fullAdress}}</p>
         <p *ngIf="isEmployer  && userData.employer.entreprises.length != 0">
           {{userData.employer.entreprises[0].workAdress.fullAdress}}</p>
-        <button ion-button clear item-right (click)="goToJobAddressTab()" large color="vojblue">
+        <button ion-button clear item-right (click)="goToJobAddressTab()" large color="primary">
           <ion-icon name="create"></ion-icon>
         </button>
       </ion-item>
@@ -139,7 +139,7 @@
         <h5 *ngIf="isEmployer">Adresse de correspondance</h5>
         <p *ngIf="isEmployer && userData.employer.entreprises.length != 0">
           {{userData.employer.entreprises[0].correspondanceAdress.fullAdress}}</p>
-        <button ion-button clear item-right (click)="goToCorrespondenceAddressTab()" large color="vojblue">
+        <button ion-button clear item-right (click)="goToCorrespondenceAddressTab()" large color="primary">
           <ion-icon name="create"></ion-icon>
         </button>
       </ion-item>
@@ -165,10 +165,10 @@
         <p>
           {{r.phone}} {{r.phone != '' && r.email != ''?' / ':''}} {{r.email}}
         </p>
-        <button ion-button clear item-right (click)="deleteReference(r)" large color="vojblue">
+        <button ion-button clear item-right (click)="deleteReference(r)" large color="primary">
           <ion-icon name="trash"></ion-icon>
         </button>
-        <button ion-button clear item-right (click)="deleteloadDetails(r)" large color="vojblue">
+        <button ion-button clear item-right (click)="deleteloadDetails(r)" large color="primary">
           <ion-icon name="more"></ion-icon>
         </button>
       </ion-item>

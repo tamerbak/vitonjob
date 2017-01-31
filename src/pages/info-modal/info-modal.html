@@ -13,11 +13,11 @@
 <ion-content padding>
   <h2>{{reference.fullName}}</h2>
   <ion-item [hidden]="reference.phone == ''" (click)="call()" >
-    <ion-icon subtle large item-left name='call' color="vojblue"></ion-icon>
+    <ion-icon subtle large item-left name='call' color="primary"></ion-icon>
     <h5>{{reference.phone}}</h5>
   </ion-item>
   <ion-item [hidden]="reference.email == ''" (click)="sendEmail()" >
-    <ion-icon subtle large item-left name='mail' color="vojblue"></ion-icon>
+    <ion-icon subtle large item-left name='mail' color="primary"></ion-icon>
     <h5>{{reference.email}}</h5>
   </ion-item>
   <p>{{reference.msgReference}}</p>
