@@ -3,6 +3,7 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalSlotPage} from "../modal-slot/modal-slot";
 import {Component} from "@angular/core";
+import {ModalPeriodPage} from "../modal-period/modal-period";
 
 /*
  Generated class for the ModalCalendarPage page.

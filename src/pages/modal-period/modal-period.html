@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-navbar [color]="themeColor">
+    <ion-title>Période</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <ion-list-header color="primary" no-lines>
+      Période
+    </ion-list-header>
+    <ion-item text-wrap>
+      <ion-label stacked>Début <span class="asterisk">*</span></ion-label>
+      <ion-datetime displayFormat="Le D MMMM YYYY" pickerFormat="D MMM YYYY"
+                    [(ngModel)]="period.startDate" (ionChange)="checkDate(0)"
+                    cancelText="Annuler " doneText="Ok"
+                    [min]="limit.startDate.min" [max]="limit.startDate.max"
+                    style="max-width:100%;"></ion-datetime>
+    </ion-item>
+
+    <ion-item text-wrap>
+      <ion-label stacked>Fin <span class="asterisk">*</span></ion-label>
+      <ion-datetime displayFormat="Le D MMMM YYYY" pickerFormat="D MMM YYYY"
+                    [(ngModel)]="period.endDate" (ionChange)="checkDate(1)"
+                    cancelText="Annuler " doneText="Ok"
+                    [min]="limit.endDate.min" [max]="limit.endDate.max"
+                    style="max-width:100%;"></ion-datetime>
+    </ion-item>
+
+    <div class="error-box">{{errorMessage}}</div>
+  </ion-list>
+  <ion-row>
+    <ion-col text-center>
+      <button [disabled]="isValidateDisabled()" ion-button icon-left small
+              [color]="themeColor" (click)="validateModal()">
+        <ion-icon name="checkmark-circle"></ion-icon>
+        Valider
+      </button>
+    </ion-col>
+  </ion-row>
+</ion-content>

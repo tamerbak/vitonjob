@@ -33,10 +33,39 @@
                 <h2 style="font-weight: bold">{{isEmployer ? 'Offre de service: ' : 'Offre: '}} {{fullTitle}} </h2>
             </ion-col>
         </ion-row>
-        <ion-row>&nbsp;</ion-row>
+
+        <ion-col text-center *ngIf="result.rate && result.rate > 0">
+            <ion-badge>
+                <ion-icon name="logo-euro"></ion-icon>
+                Taux horaire {{(isEmployer)?'demandé ':''}}: {{result.rate}} €/h
+            </ion-badge>
+        </ion-col>
+
+        <ion-list *ngIf="result.disponibilites.length>0">
+            <ion-list-header color="primary" style="margin-bottom: 1px;" *ngIf="isEmployer"> Horaire</ion-list-header>
+            <ion-list-header color="primary" style="margin-bottom: 1px;" *ngIf="!isEmployer"> Disponibilité
+            </ion-list-header>
+            <div>
+                <table id="t01">
+                    <tr>
+                        <th [style.backgroundColor]="inversedThemeColor">Créneau</th>
+                        <th [style.backgroundColor]="inversedThemeColor">Début</th>
+                        <th [style.backgroundColor]="inversedThemeColor">Fin</th>
+                    </tr>
+                    <tr *ngFor="let item of result.disponibilites">
+                        <td>{{(item.pause)? "Pause":(toDateString(item.startDate)===toDateString(item.endDate))?
+                            "Le " + toDateString(item.startDate) : "Du " + toDateString(item.startDate) + " au "
+                            +toDateString(item.endDate)}}
+                        </td>
+                        <td>{{toHourString(item.startHour)}}</td>
+                        <td>{{toHourString(item.endHour)}}</td>
+                    </tr>
+                </table>
+            </div>
+        </ion-list>
 
         <ion-list no-lines [hidden]="languages.length==0" style="margin-bottom: 16px;">
-            <ion-list-header color="light">
+            <ion-list-header color="primary">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Langues {{isEmployer?"maîtrisées":"requises"}}
             </ion-list-header>
             <ion-item *ngFor="let item of languages">
@@ -45,7 +74,7 @@
             </ion-item>
         </ion-list>
         <ion-list no-lines [hidden]="qualities.length==0" style="margin-bottom: 16px;">
-            <ion-list-header color="light">
+            <ion-list-header color="primary">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Qualités {{isEmployer?"acquises":"requises"}}
             </ion-list-header>
             <ion-item *ngFor="let item of qualities">
@@ -54,7 +83,7 @@
             </ion-item>
         </ion-list>
         <ion-list no-lines *ngIf="videoPresent">
-            <ion-list-header>Présentation</ion-list-header>
+            <ion-list-header color="primary">Présentation</ion-list-header>
             <ion-item>
                 <iframe width="100%" height="200"
                         src="{{videoLink}}">
@@ -74,19 +103,20 @@
             </ion-col>
         </ion-row>
 
-        <ion-row style="padding-left: 16px; padding-top: 5px"><span style="font-size: small">Entretien :</span>
+        <ion-row style="padding-left: 16px; padding-top: 5px" *ngIf="isEmployer || result.accepteCandidature=='true'">
+            <span style="font-size: small">Entretien :</span>
         </ion-row>
-        <ion-item>
+        <ion-item *ngIf="isEmployer || result.accepteCandidature=='true'">
             <!--button [attr.secondary]="isEmployer ? '' : null" [attr.primary]="isEmployer ? null : ''"
                     *ngIf="isEmployer && !result.checkedContract && !isRecruteur"
                     (click)="contract()" item-left>
                 Recruter maintenant!
             </button-->
 
-            <button ion-button icon-only clear [color]="themeColor"
+            <!--button ion-button icon-only clear [color]="themeColor"
                     (click)="skype()" item-right>
                 <ion-icon name="logo-skype"></ion-icon>
-            </button>
+            </button-->
             <button ion-button icon-only clear [color]="themeColor"
                     *ngIf="isEmployer || result.accepteCandidature=='true'"
                     (click)="call()" item-right>
@@ -109,6 +139,16 @@
             <ion-checkbox [(ngModel)]="result.checkedContract" (ionChange)="selectContract($event)"></ion-checkbox>
         </ion-item-->
 
+        <ion-row *ngIf="!isEmployer">
+            <ion-col text-right>
+                <button ion-button icon-right clear (click)="saveOfferInterest()" color="primary">
+                    {{jobyerInterestLabel}}
+                    <ion-icon name="md-thumbs-up" *ngIf="!jobyerInterested"></ion-icon>
+                    <ion-icon name="md-thumbs-down" *ngIf="jobyerInterested"></ion-icon>
+                </button>
+            </ion-col>
+        </ion-row>
+
         <ion-item *ngIf="isEmployer && result.checkedContract" text-wrap style="background-color: lightcyan;
     margin-top: 0;
     margin-bottom: 0;">
@@ -127,7 +167,7 @@
         <ion-list>
             <ion-item *ngFor="let r of references">
                 <ion-icon subtle large item-left name='star' style="color: #f1e42e"></ion-icon>
-                <h5 >{{r.fullName}}</h5>
+                <h5>{{r.fullName}}</h5>
                 <p>
                     {{r.phone}} {{r.phone != '' && r.email != ''?' / ':''}} {{r.email}}
                 </p>

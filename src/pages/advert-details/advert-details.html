@@ -32,9 +32,9 @@
             </ion-item>
 
             <ion-item text-wrap *ngIf="!isEmployer">
-                <button ion-button icon-left block (click)="saveAdvertInterest()" [color]="themeColor">
-                    <ion-icon name="checkmark"></ion-icon>
+                <button ion-button icon-right block (click)="saveAdvertInterest()" [color]="themeColor">
                     {{jobyerInterestLabel}}
+                    <ion-icon name="md-thumbs-up"></ion-icon>
                 </button>
             </ion-item>
 

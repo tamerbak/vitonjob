@@ -16,6 +16,10 @@
       <ion-icon name="clipboard" item-left></ion-icon>
       Modifier le mode de validation des horaires
     </ion-item>
+    <ion-item (click)="spontaneousContact()" [hidden]="!isEmployer" text-wrap no-lines>
+      <ion-icon name="clipboard" item-left></ion-icon>
+      Modifier le mode de validation des horaires
+    </ion-item>
 
 
     <ion-list-header class="header-text-color" color="primary">
