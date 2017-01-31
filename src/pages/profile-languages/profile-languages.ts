@@ -35,9 +35,7 @@ export class ProfileLanguagesPage {
     this.listService.loadLanguages().then((results: any) => {
       loading.dismiss();
       if (results.data)
-        this.langues = results.data;
-        
-        
+        this.langues = results.data;        
     });
     let idUser = this.isEmployer ?
       this.currentUser.employer.entreprises[0].id :
