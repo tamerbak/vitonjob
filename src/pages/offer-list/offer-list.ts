@@ -196,7 +196,7 @@ export class OfferListPage {
    */
   goToNewOffer() {
     if (this.isNewUser) {
-      this.presentToast("Veuillez remplir les informations de votre profil avant de créer une offre.", 5);
+      this.presentToast("Veuillez remplir les informations de votre profil avant de créer une offre.", 7);
       return;
     } else {
       this.nav.push(OfferAddPage);
