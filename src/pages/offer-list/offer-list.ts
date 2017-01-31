@@ -104,6 +104,7 @@ export class OfferListPage {
       this.globalOfferList.push({header: 'Mes opportunités capturées', list: []});
       this.offerList = data;
       //debugger;
+      console.log(data);
       for (var i = 0; i < this.offerList.length; i++) {
         this.offerList[i].jobData.nbPoste = this.offerList[i].nbPoste;
         
