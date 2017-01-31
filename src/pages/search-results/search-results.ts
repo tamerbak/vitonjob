@@ -18,6 +18,7 @@ import {NotificationContractPage} from "../notification-contract/notification-co
 import {LoginsPage} from "../logins/logins";
 import {GlobalService} from "../../providers/global-service/global-service";
 import {Storage} from "@ionic/storage";
+import {AdvertService} from "../../providers/advert-service/advert-service";
 
 /**
  * @author jakjoud abdeslam
@@ -68,6 +69,12 @@ export class SearchResultsPage implements OnInit {
   public iconName: string;
   public isMapView: boolean;
 
+  public jobyerInterested: boolean;
+  public jobyerInterestLabel: string;
+  public currentUser: any;
+  public configInversed:any;
+  public currentUserVar:any;
+
   /**
    * @description While constructing the view we get the last results of the search from the user
    */
@@ -83,10 +90,10 @@ export class SearchResultsPage implements OnInit {
               public modal: ModalController,
               public alert: AlertController,
               public globalService: GlobalService,
-              public db: Storage) {
+              public db: Storage, public advertService: AdvertService) {
     // Get target to determine configs
     this.projectTarget = globalConfig.getProjectTarget();
-    let configInversed = this.projectTarget != 'jobyer' ? Configs.setConfigs('jobyer') : Configs.setConfigs('employer');
+    this.configInversed = this.projectTarget != 'jobyer' ? Configs.setConfigs('jobyer') : Configs.setConfigs('employer');
     let config = Configs.setConfigs(this.projectTarget);
     this.backgroundImage = config.backgroundImage;
     this.themeColor = config.themeColor;
@@ -95,6 +102,7 @@ export class SearchResultsPage implements OnInit {
     this.isEmployer = this.projectTarget == 'employer';
     this.navParams = navParams;
     this.iconName = 'list';
+    this.currentUserVar = config.currentUserVar;
 
     this.offersService = offersService;
 
@@ -111,69 +119,7 @@ export class SearchResultsPage implements OnInit {
       this.mapView = (this.isMapView) ? 'block' : 'none';
     });
 
-    this.db.get('PENDING_CONTRACTS').then(contrats => {
 
-      if (contrats) {
-        this.contratsAttente = JSON.parse(contrats);
-      } else {
-        this.contratsAttente = [];
-        this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
-      }
-
-      //  Retrieving last search
-      searchService.retrieveLastSearch().then(results => {
-
-        let jsonResults = JSON.parse(results);
-        if (jsonResults) {
-          this.searchResults = jsonResults;
-          this.resultsCount = this.searchResults.length;
-          if (this.resultsCount == 0) {
-            this.mapView = 'none';
-          } else if (this.isMapView) {
-            this.mapView = 'block';
-          } else {
-            this.mapView = 'none'
-          }
-          for (let i = 0; i < this.searchResults.length; i++) {
-            let r = this.searchResults[i];
-            r.matching = Number(r.matching).toFixed(2);
-            r.index = i + 1;
-            if (r.titre === 'M.') {
-              r.avatar = configInversed.avatars[0].url;
-            } else {
-              r.avatar = configInversed.avatars[1].url;
-            }
-
-          }
-          console.log(this.searchResults);
-
-          //  Determine constraints for proposed offer
-          this.createCriteria();
-          for (let j = 0; j < this.searchResults.length; j++) {
-            let r = this.searchResults[j];
-            r.checkedContract = false;
-            for (let i = 0; i < this.contratsAttente.length; i++) {
-              if (this.contratsAttente[i].idOffre == r.idOffre) {
-                r.checkedContract = true;
-                break;
-              }
-            }
-          }
-
-          //load profile pictures
-          for (let i = 0; i < this.searchResults.length; i++) {
-            let role = this.isEmployer ? "jobyer" : "employeur";
-            this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then((data: any) => {
-              if (data && data.data && data.data.length>0 && !this.isEmpty(data.data[0].encode)) {
-                this.searchResults[i].avatar = data.data[0].encode;
-              }
-            });
-          }
-        } else {
-          this.mapView = 'none';
-        }
-      });
-    });
     //if redirected from another page
     let fromPage = this.navParams.data.fromPage;
     let index = this.navParams.data.searchIndex;
@@ -225,6 +171,89 @@ export class SearchResultsPage implements OnInit {
       console.error('Unable to initialize map, no map element with #map view reference.');
       return;
     }
+
+    //get currentuser
+    this.db.get(this.currentUserVar).then((value) => {
+      if (value) {
+        this.currentUser = JSON.parse(value);
+      }
+    });
+
+    this.db.get('PENDING_CONTRACTS').then(contrats => {
+
+      if (contrats) {
+        this.contratsAttente = JSON.parse(contrats);
+      } else {
+        this.contratsAttente = [];
+        this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
+      }
+
+      //  Retrieving last search
+      this.searchService.retrieveLastSearch().then(results => {
+
+        let jsonResults = JSON.parse(results);
+        if (jsonResults) {
+          this.searchResults = jsonResults;
+          this.resultsCount = this.searchResults.length;
+          if (this.resultsCount == 0) {
+            this.mapView = 'none';
+          } else if (this.isMapView) {
+            this.mapView = 'block';
+          } else {
+            this.mapView = 'none'
+          }
+          for (let i = 0; i < this.searchResults.length; i++) {
+            let r = this.searchResults[i];
+            r.jobyerInterested  = false;
+            r.jobyerInterestLabel = "Cette offre m'intéresse";
+            this.setInterestButtonLabel(r).then((data: any) => {
+              if(data && data.data && data.data.length  > 0){
+                r.jobyerInterested = true;
+                r.jobyerInterestLabel = "Cette offre ne m'intéresse plus";
+              }else{
+                r.jobyerInterested = false;
+                r.jobyerInterestLabel = "Cette offre m'intéresse";
+              }
+            });
+            r.matching = Number(r.matching).toFixed(2);
+            r.rate = Number(r.rate).toFixed(2);
+            r.index = i + 1;
+            if (r.titre === 'M.') {
+              r.avatar = this.configInversed.avatars[0].url;
+            } else {
+              r.avatar = this.configInversed.avatars[1].url;
+            }
+
+          }
+          console.log(this.searchResults);
+
+          //  Determine constraints for proposed offer
+          this.createCriteria();
+          for (let j = 0; j < this.searchResults.length; j++) {
+            let r = this.searchResults[j];
+            r.checkedContract = false;
+            for (let i = 0; i < this.contratsAttente.length; i++) {
+              if (this.contratsAttente[i].idOffre == r.idOffre) {
+                r.checkedContract = true;
+                break;
+              }
+            }
+          }
+
+          //load profile pictures
+          for (let i = 0; i < this.searchResults.length; i++) {
+            let role = this.isEmployer ? "jobyer" : "employeur";
+            this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then((data: any) => {
+              if (data && data.data && data.data.length>0 && !this.isEmpty(data.data[0].encode)) {
+                this.searchResults[i].avatar = data.data[0].encode;
+              }
+            });
+          }
+        } else {
+          this.mapView = 'none';
+        }
+      });
+    });
 
     //get the currentEmployer
     this.userService.getCurrentUser(this.projectTarget).then(results => {
@@ -905,5 +934,35 @@ export class SearchResultsPage implements OnInit {
     else if (item.accepteCandidature)
       return true;
     return false;
+  }
+
+  saveOfferInterest(item){
+    let currentJobyerId = this.currentUser.jobyer.id;
+    if(item.jobyerInterested){
+      this.advertService.deleteOfferInterest(item.idOffre, currentJobyerId).then((data: any) => {
+        if(data && data.status == 'success') {
+          item.jobyerInterestLabel = "Cette annonce m'intéresse";
+          item.jobyerInterested = false;
+        }
+      });
+    }else{
+      this.advertService.saveOfferInterest(item.idOffre, currentJobyerId).then((data: any) => {
+        if(data && data.status == 'success'){
+          item.jobyerInterestLabel = "Cette annonce ne m'intéresse plus";
+          item.jobyerInterested = true;
+        }
+      });
+    }
+  }
+
+  setInterestButtonLabel(item){
+    if (!this.currentUser || !this.currentUser.jobyer) {
+      return item;
+    }
+    return this.advertService.getInterestOffer(item.idOffre, this.currentUser.jobyer.id);
+  }
+
+  formatNumbers (num):string {
+    return Number(num).toFixed(2);
   }
 }

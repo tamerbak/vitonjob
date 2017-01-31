@@ -9,7 +9,8 @@ import {
     AlertController,
     Content,
     FabContainer,
-    Events, NavParams
+    Events,
+    NavParams
 } from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SearchService} from "../../providers/search-service/search-service";
@@ -115,7 +116,7 @@ export class SearchCriteriaPage {
                 _offerService: OffersService,
                 public alert: AlertController,
                 public event: Events,
-                public corporama: CorporamaService, public params:NavParams) {
+                public corporama: CorporamaService, public params: NavParams) {
         this.viewCtrl = viewCtrl;
         this.projectTarget = globalConfig.getProjectTarget();
         this.isEmployer = (this.projectTarget === 'employer');
@@ -133,13 +134,18 @@ export class SearchCriteriaPage {
         }
 
         let jobParam = this.params.get('job');
+        let cityParam = this.params.get('city');
+
+        this.city = (cityParam) ? cityParam.nom : "";
+        this.isCityValidated = (cityParam);
+        this.filterState[2].isActivated = (cityParam);
 
         this.jobData = {
             'class': "com.vitonjob.callouts.auth.model.JobData",
-            job: (jobParam)? jobParam.libelle:"",
-            sector: (jobParam)? jobParam.sector:"",
-            idSector: (jobParam)? jobParam.idsector:"",
-            idJob: (jobParam)? jobParam.id: 0,
+            job: (jobParam) ? jobParam.libelle : (cityParam) ? "un/une jobyer" :"",
+            sector: (jobParam) ? jobParam.sector : "",
+            idSector: (jobParam) ? jobParam.idsector : "",
+            idJob: (jobParam) ? jobParam.id : (cityParam) ? -1 : 0,
             level: 'junior',
             remuneration: null,
             currency: 'euro',
@@ -154,7 +160,7 @@ export class SearchCriteriaPage {
                 city: '',
                 country: ''
             },
-            isJobValidated: false,
+            isJobValidated: (cityParam),
             isLevelValidated: false
         };
 
@@ -364,14 +370,14 @@ export class SearchCriteriaPage {
     /**
      * @description send criteria search to web service and load results view
      */
-     validateSearch() {
+    validateSearch() {
 
         let idLevel = 0;
-        let startDate:Date;
+        let startDate: Date;
         let endDate: Date;
-        let langIdList=[];
-        let qualIdList=[];
-        let query='';
+        let langIdList = [];
+        let qualIdList = [];
+        let query = '';
         // Construct the search query in the correct format then summon search service
         // TEL05082016 : fixes #628
         let ignoreSector: boolean = false;
@@ -393,14 +399,14 @@ export class SearchCriteriaPage {
         if (this.showedSlot.endDate) {
             endDate = new Date(this.showedSlot.endDate);
         }
-        if (this.languages.length > 0){
+        if (this.languages.length > 0) {
             // TODO id not recognized
             debugger;
-            for (let i=0;i<this.languages.length;i++)
+            for (let i = 0; i < this.languages.length; i++)
                 langIdList.push(this.languages[i].idLanguage.toString());
         }
-        if (this.qualities.length > 0){
-            for (let i=0;i<this.qualities.length;i++)
+        if (this.qualities.length > 0) {
+            for (let i = 0; i < this.qualities.length; i++)
                 qualIdList.push(this.qualities[i].idQuality.toString());
         }
 
@@ -415,21 +421,21 @@ export class SearchCriteriaPage {
             queryType: 'CRITERIA',
             job: this.jobData.idJob,
             sector: 0,
-            location: (this.filterState[2].isActivated)? this.city: "",
-            firstName: (this.filterState[6].isActivated && this.projectTarget == 'employer')? this.person.firstName:"",
-            lastName: (this.filterState[6].isActivated && this.projectTarget == 'employer')? this.person.lastName:"",
+            location: (this.filterState[2].isActivated) ? this.city : "",
+            firstName: (this.filterState[6].isActivated && this.projectTarget == 'employer') ? this.person.firstName : "",
+            lastName: (this.filterState[6].isActivated && this.projectTarget == 'employer') ? this.person.lastName : "",
 
-            startDate: (this.filterState[1].isActivated)? startDate:null,
-            endDate: (this.filterState[1].isActivated)? endDate:null,
-            startHour: (this.filterState[1].isActivated)? 0:0,
-            endHour: (this.filterState[1].isActivated)? 0:0,
+            startDate: (this.filterState[1].isActivated) ? startDate : null,
+            endDate: (this.filterState[1].isActivated) ? endDate : null,
+            startHour: (this.filterState[1].isActivated) ? 0 : 0,
+            endHour: (this.filterState[1].isActivated) ? 0 : 0,
 
-            level: (this.filterState[0].isActivated)? idLevel:0,
+            level: (this.filterState[0].isActivated) ? idLevel : 0,
 
-            idEntreprise: (this.filterState[3].isActivated && this.projectTarget == 'jobyer')? this.enterprise.id:0,
+            idEntreprise: (this.filterState[3].isActivated && this.projectTarget == 'jobyer') ? this.enterprise.id : 0,
 
-            languages: (this.filterState[4].isActivated)? langIdList:null,
-            qualities: (this.filterState[5].isActivated)? qualIdList:null,
+            languages: (this.filterState[4].isActivated) ? langIdList : null,
+            qualities: (this.filterState[5].isActivated) ? qualIdList : null,
 
             resultsType: this.projectTarget == 'jobyer' ? 'employer' : 'jobyer'
         };
@@ -477,7 +483,7 @@ export class SearchCriteriaPage {
      * @author abdeslam jakjoud
      * @description perform semantic search and pushes the results view
      */
-    doSemanticSearch(query:string) {
+    doSemanticSearch(query: string) {
         let loading = this.loading.create({content: "Merci de patienter..."});
         loading.present();
         console.log('Initiating search for ' + query);
@@ -768,8 +774,8 @@ export class SearchCriteriaPage {
         this.isEnterprise.found = true;
     }
 
-    citySelected(job) {
-        this.city = job.nom;
+    citySelected(city) {
+        this.city = city.nom;
         this.cities = [];
     }
 
@@ -957,11 +963,11 @@ export class SearchCriteriaPage {
          } else if (i===1) {
          this.showedSlot.endHour = new Date(this.showedSlot.endHour).getUTCHours();
          }*/
-        let date = new Date (this.showedSlot.startDate);
-        this.showedSlot.startHour = (date.getHours()-1) * 60 + date.getMinutes();
+        let date = new Date(this.showedSlot.startDate);
+        this.showedSlot.startHour = (date.getHours() - 1) * 60 + date.getMinutes();
 
-        date = new Date (this.showedSlot.endDate);
-        this.showedSlot.startHour = date.getHours()-1 * 60 + date.getMinutes();
+        date = new Date(this.showedSlot.endDate);
+        this.showedSlot.startHour = date.getHours() - 1 * 60 + date.getMinutes();
 
         //check if dates and hours are coherent
         if (new Date(this.showedSlot.startDate) && new Date(this.showedSlot.endDate) && new Date(this.showedSlot.startDate) >= new Date(this.showedSlot.endDate)) {
@@ -1014,26 +1020,6 @@ export class SearchCriteriaPage {
 
         if (this.languages.length > 0 && this.languages.indexOf(item) > -1)
             this.languages.splice(this.languages.indexOf(item), 1);
-        /*let confirm = this.alert.create({
-         title: 'Êtes-vous sûr?',
-         message: 'Voulez-vous supprimer cette Langue?',
-         buttons: [
-         {
-         text: 'Non',
-         handler: () => {
-         console.log('Disagree clicked');
-         }
-         },
-         {
-         text: 'Oui',
-         handler: () => {
-         console.log('Agree clicked');
-         this.languages.splice(this.languages.indexOf(item), 1);
-         }
-         }
-         ]
-         });
-         confirm.present();*/
     }
 
     /**
@@ -1058,26 +1044,6 @@ export class SearchCriteriaPage {
 
         if (this.qualities.length > 0 && this.qualities.indexOf(item) > -1)
             this.qualities.splice(this.qualities.indexOf(item), 1);
-        /*let confirm = this.alert.create({
-         title: 'Êtes-vous sûr?',
-         message: 'Voulez-vous supprimer cette qualité?',
-         buttons: [
-         {
-         text: 'Non',
-         handler: () => {
-         console.log('Disagree clicked');
-         }
-         },
-         {
-         text: 'Oui',
-         handler: () => {
-         console.log('Agree clicked');
-         this.qualities.splice(this.qualities.indexOf(item), 1);
-         }
-         }
-         ]
-         });
-         confirm.present();*/
     }
 
     jobValidated() {
@@ -1092,15 +1058,19 @@ export class SearchCriteriaPage {
 
     slotValidated() {
         this.showedSlot.isSlotValidated = true;
-        let date = new Date (this.showedSlot.startDate);
+        let date = new Date(this.showedSlot.startDate);
         this.showedSlot.startHour = date.getHours() * 60 + date.getMinutes();
 
-        date = new Date (this.showedSlot.endDate);
+        date = new Date(this.showedSlot.endDate);
         this.showedSlot.startHour = date.getHours() * 60 + date.getMinutes();
     }
 
     cityValidated() {
         this.isCityValidated = true;
+        // Didier wanna discover french city's population :
+        this.jobData.isJobValidated = true;
+        this.jobData.idJob = -1;
+        this.jobData.job = "un/une jobyer"
     }
 
     enterpriseValidated() {
