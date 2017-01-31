@@ -35,6 +35,7 @@ import {EnvironmentService} from "../../providers/environment-service/environmen
 import {ModalSelectionPage} from "../modal-selection/modal-selection";
 declare var cordova: any;
 declare var window;
+declare var jQuery:any;
 declare let require: any;
 
 /**
@@ -104,6 +105,16 @@ export class CivilityPage {
     public maxtsejToDate: any;
     public mintsejToDate: any;
 
+    /*
+   * Multiple uploads
+   */
+    public allImages: any[];
+    public currentImg: any;
+    public currentHeightIndex: number = 0;
+    public currentWidth: number = 0;
+    public scanData: string = "";
+    public accountId: string;
+    public userRoleId: string;
     /*
      Gestion des conventions collectives
      */
@@ -206,13 +217,16 @@ export class CivilityPage {
         this.isEmployer = (this.projectTarget == 'employer');
         this.calendarTheme = config.calendarTheme;
         this.isAndroid4 = (this.platform.version('android').major < 5);
-        //this.tabs=tabs;
         this.params = params;
         this.currentUser = this.params.data.currentUser;
+        this.accountId = this.currentUser.id;
+        this.userRoleId = this.projectTarget == "employer" ? this.currentUser.employer.id : this.currentUser.jobyer.id;
+        //this.tabs=tabs;
         this.isRecruiter = this.currentUser.estRecruteur;
         this.fromPage = this.params.data.fromPage;
         this.toast = _toast;
         this.titlePage = this.isEmployer ? "Fiche de l'entreprise" : "Profil";
+        this.allImages = [];
         //load nationality list
         if (!this.isEmployer && !this.isRecruiter) {
             this.loadListService.loadNationalities(this.projectTarget).then((data: {data: any}) => {
@@ -220,9 +234,11 @@ export class CivilityPage {
                 //initialize nationality with (9 = francais)
                 this.scanTitle = " de votre titre d'identité";
                 this.nationalitiesstyle = {'font-size': '1.4rem'};
+                this.loadAttachement(this.scanTitle);
             });
         } else {
             this.scanTitle = " de votre extrait k-bis";
+            this.loadAttachement(this.scanTitle);
             this.loadListService.loadConventions().then((response: any) => {
                 this.conventions = response;
             });
@@ -271,6 +287,55 @@ export class CivilityPage {
         this.environmentService.reload();
     }
 
+  loadAttachement(scanTitle) {
+    // Get scan
+    this.attachementService.loadAttachementsByFolder(this.currentUser, 'Scans').then((attachments: any) => {
+      let allImagesTmp = [];
+      for (let i = 0; i < attachments.length; ++i) {
+        if (attachments[i].fileName.substr(0, 4 + scanTitle.length) == "scan" + scanTitle) {
+          this.attachementService.downloadActualFile(attachments[i].id, attachments[i].fileName).then((data: any)=> {
+            allImagesTmp.push({
+              data: data.stream
+            });
+          });
+        }
+      }
+      this.allImages = allImagesTmp;
+    });
+  }
+
+//    ngAfterViewInit(): void {
+//     var self = this;
+//     jQuery(document).ready(function () {
+//       jQuery('.fileinput').on('change.bs.fileinput', function (e, file) {
+//         if (file === undefined) {
+//             console.log("not ok");
+//           jQuery('.fileinput').fileinput('clear');
+//         } else {
+//           self.scanData = file.result;
+//         }
+
+
+//       });
+//     });
+//    }
+
+  updateScan(accountId, userId, role) {
+    if (this.allImages && this.allImages.length > 0) {
+      if (accountId) {
+        for (let i = 0; i < this.allImages.length; i++) {
+          let index = i + 1;
+          this.attachementService.uploadFileByFolder(this.currentUser, 'scan' + this.scanTitle + ' ' + index, this.allImages[i].data, 'Scans').then((data: any) => {
+            if (data && data.id != 0) {
+              this.attachementService.uploadActualFile(data.id, data.fileName, this.allImages[i].data);
+            }
+          });
+        }
+      }
+      this.currentUser.scanUploaded = false;
+      this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
+    }
+  }
     /**
    * pickers
    */
@@ -737,7 +802,8 @@ export class CivilityPage {
                             libelle: libelle
                         };
                         //upload scan
-                        this.updateScan(employerId);
+                        this.updateScan(this.accountId, this.userRoleId, 'employeur');
+                        //this.updateScan(employerId);
                         // PUT IN SESSION
                         this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
                         this.events.publish('user:civility', this.currentUser);
@@ -837,7 +903,8 @@ export class CivilityPage {
                             this.currentUser.jobyer.lieuNaissance = this.birthplace;
 
                             //upload scan
-                            this.updateScan(jobyerId);
+                            //this.updateScan(jobyerId);
+                            this.updateScan(this.accountId, this.userRoleId, "jobyer");
                             // PUT IN SESSION
                             this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
                             this.events.publish('user:civility', this.currentUser);
@@ -854,35 +921,49 @@ export class CivilityPage {
         }
     }
 
+    appendImg() {
+        ////console.log(this.scanData)
+        this.allImages.push({
+            data: this.scanData
+        });
+
+        this.scanData = '';
+        //jQuery('.fileinput').fileinput('clear');
+    }
+
+    deleteImage(index) {
+        this.allImages.splice(index, 1);
+    }
+
     /**
      * @description upload scan and attach ot to the current user
      */
-    updateScan(userId) {
-        if (this.scanUri) {
-            this.currentUser.scanUploaded = true;
-            this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
-            this.authService.uploadScan(this.scanUri, userId, 'scan', 'upload')
-                .then((data: {status: string}) => {
-                    if (!data || data.status == "failure") {
-                        console.log("Scan upload failed !");
-                        //this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde du scan");
-                        this.currentUser.scanUploaded = false;
-                        this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
-                    }
-                    else {
-                        console.log("Scan uploaded !");
-                    }
+    // updateScan(userId) {
+    //     if (this.scanUri) {
+    //         this.currentUser.scanUploaded = true;
+    //         this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
+    //         this.authService.uploadScan(this.scanUri, userId, 'scan', 'upload')
+    //             .then((data: {status: string}) => {
+    //                 if (!data || data.status == "failure") {
+    //                     console.log("Scan upload failed !");
+    //                     //this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde du scan");
+    //                     this.currentUser.scanUploaded = false;
+    //                     this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
+    //                 }
+    //                 else {
+    //                     console.log("Scan uploaded !");
+    //                 }
 
-                });
-            this.storage.get(this.currentUserVar).then(usr => {
-                if (usr) {
-                    let user = JSON.parse(usr);
-                    this.attachementService.uploadFile(user, 'scan ' + this.scanTitle, this.scanUri);
-                }
-            });
+    //             });
+    //         this.storage.get(this.currentUserVar).then(usr => {
+    //             if (usr) {
+    //                 let user = JSON.parse(usr);
+    //                 this.attachementService.uploadFile(user, 'scan ' + this.scanTitle, this.scanUri);
+    //             }
+    //         });
 
-        }
-    }
+    //     }
+    // }
 
     /**
      * @description function called to decide if the validate button should be disabled or not
@@ -1137,7 +1218,8 @@ export class CivilityPage {
             let myReader = new FileReader();
             this.zone.run(() => {
                 myReader.onloadend = (e) => {
-                    this.scanUri = myReader.result;
+                    this.scanData = myReader.result;
+                    this.appendImg();
                 }
                 myReader.readAsDataURL(file);
             });
@@ -1172,7 +1254,8 @@ export class CivilityPage {
         }).then((imageData) => {
             this.zone.run(() => {
                 // imageData is a base64 encoded string
-                this.scanUri = "data:image/jpeg;base64," + imageData;
+                this.scanData = "data:image/jpeg;base64," + imageData;
+                this.appendImg();
             });
         }, (err) => {
             console.log(err);
@@ -1189,10 +1272,12 @@ export class CivilityPage {
             if (this.isEuropean == 0) {
                 this.idNationaliteLabel = "EU, EEE";
                 this.scanTitle = " de votre CNI ou Passeport";
+                this.loadAttachement(this.scanTitle);
             }
             if (this.isEuropean == 1) {
                 this.idNationaliteLabel = "Autre";
                 this.scanTitle = " de votre titre de séjour";
+                this.loadAttachement(this.scanTitle);
             }
         });
 
