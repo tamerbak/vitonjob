@@ -21,6 +21,10 @@ export class AttachementsService {
         entreprise = user.employer.entreprises[0];
         }
 
+        if(fileName.indexOf("'") > -1){
+            fileName = fileName.replace("'","''");
+        }
+
         let sql = "update user_pieces_justificatives set dirty='Y' where " +
         "fk_user_account="+userId+" " +
         (entreprise ? "and fk_user_entreprise=" + entreprise.id + " " : "") +
@@ -47,6 +51,10 @@ export class AttachementsService {
         let entreprise : any = null;
         if (user && Utils.isEmpty(user.employer.entreprises) === false && user.employer.entreprises.length > 0) {
         entreprise = user.employer.entreprises[0];
+        }
+
+        if(fileName.indexOf("'") > -1){
+            fileName = fileName.replace("'","''");
         }
 
         let sql = "insert into user_pieces_justificatives (" +
@@ -88,6 +96,7 @@ export class AttachementsService {
   }
 
   updateAttachementsByFolder(userId, idAttachment, fileName, scanUri, fileFolder){
+
     let today = this.sqlfyDate(new Date());
     let storageId = "{\"class\":\"com.vitonjob.callouts.AttachementDownload\",\"idBean\":<<DBID>>,\"idAttachement\":"+idAttachment+"}";
     let rowId = userId;
@@ -225,6 +234,10 @@ export class AttachementsService {
     }
 
     uploadFile(user, fileName, scanUri) {
+        if(fileName.indexOf("'") > -1){
+            fileName = fileName.replace("'","''");
+        }
+
         let d = new Date();
         let sql = "insert into user_pieces_justificatives (fk_user_account, nom_fichier, date_mise_a_jour) values (" + user.id + ",'" + fileName + "','" + this.sqlfyDate(d) + "') returning pk_user_pieces_justificatives";
         console.log(sql);
@@ -254,6 +267,9 @@ export class AttachementsService {
     }
 
     updateAttachements(user, idAttachment, fileName, scanUri) {
+        if(fileName.indexOf("'") > -1){
+            fileName = fileName.replace("'","''");
+        }
 
         if (user.estRecruteur || user.estEmployeur)
             return;
@@ -332,6 +348,10 @@ export class AttachementsService {
     }
 
     uploadActualFile(id, fileName, scanUri) {
+        if(fileName.indexOf("'") > -1){
+            fileName = fileName.replace("'","''");
+        }
+
         let payload = {
             'class': 'fr.protogen.connector.model.StreamedFile',
             fileName: fileName,
