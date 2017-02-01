@@ -266,8 +266,8 @@
   </ion-grid>
 
   <!-- logiciels des pharmaciens -->
-  <ion-item *ngIf="softwares != 0 && isEmployer">
-    <ion-label floating>Logiciels des pharmaciens</ion-label>
+  <ion-item *ngIf="softwares != 0 && isEmployer && environmentService.get('EMPLOYER_PHARMA')=='true'">
+    <ion-label floating>Logiciel(s) maîtrisé(s)</ion-label>
     <ion-select [(ngModel)]="software">
       <ion-option *ngFor="let s of softwares" [value] = "s">{{s.nom}}</ion-option>
     </ion-select>
@@ -277,7 +277,7 @@
     </button>
   </ion-item>
 
-  <ion-list>
+  <ion-list *ngIf="isEmployer && environmentService.get('EMPLOYER_PHARMA')=='true'">
     <ion-item *ngFor="let s of savedSoftwares">
       <label>{{s.nom}}</label>
       <button ion-button small item-right danger (click)="removeSoftware(s)" >

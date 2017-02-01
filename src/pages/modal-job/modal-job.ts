@@ -19,6 +19,7 @@ import {PopoverAutocompletePage} from "../popover-autocomplete/popover-autocompl
 import {AuthenticationService} from "../../providers/authentication-service/authentication-service";
 import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
 import {Storage} from "@ionic/storage";
+import {EnvironmentService} from "../../providers/environment-service/environment-service";
 //import {Element} from "@angular/compiler";
 
 
@@ -180,6 +181,7 @@ export class ModalJobPage {
               os: OffersService,
               params: NavParams,
               platform: Platform,
+              public environmentService:EnvironmentService,
               private zone: NgZone,
               private authService: AuthenticationService,
               public offersService: OffersService,
@@ -206,7 +208,7 @@ export class ModalJobPage {
     // this.currentUser = config.currentUserVar;
 
     let self = this;
-
+    this.environmentService.reload();
     this.storage.get(config.currentUserVar).then((value) => {
       if (value) {
         let currentUser = JSON.parse(value);
@@ -386,6 +388,7 @@ export class ModalJobPage {
     if (jobData) {
 
       this.jobData = jobData;
+      this.savedSoftwares = this.jobData.pharmaSoftwares;
       if (this.jobData.prerequisObligatoires)
         this.prerequisObligatoires = this.jobData.prerequisObligatoires;
       if (this.jobData.adress) {
