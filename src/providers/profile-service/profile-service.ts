@@ -426,11 +426,11 @@ export class ProfileService {
             sql = sql + " insert into user_experience_logiciel_pharmacien (" +
                 "fk_user_jobyer, " +
                 "fk_user_logiciels_pharmaciens, " +
-                "annees_experience" +
+                "niveau" +
                 ") values (" +
                 jobyerId+", " +
                 "'"+softwares[i].id+"', " +
-                "'"+softwares[i].experience+"'" +
+                "'"+softwares[i].niveau+"'" +
                 "); ";
         }
         return new Promise(resolve => {
@@ -483,7 +483,7 @@ export class ProfileService {
     }
 
     getUserSoftwares(jobyerId){
-        let sql = "select exp.pk_user_experience_logiciel_pharmacien as \"expId\", exp.fk_user_logiciels_pharmaciens as \"id\", exp.annees_experience as experience, log.nom from user_experience_logiciel_pharmacien as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_jobyer = '" + jobyerId + "'";
+        let sql = "select exp.pk_user_experience_logiciel_pharmacien as \"expId\", exp.fk_user_logiciels_pharmaciens as \"id\", exp.niveau as niveau, log.nom from user_experience_logiciel_pharmacien as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_jobyer = '" + jobyerId + "'";
 
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
