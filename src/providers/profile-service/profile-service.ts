@@ -21,7 +21,6 @@ export class ProfileService {
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
         this.configuration = Configs.setConfigs(this.projectTarget);
-
         this.profilPictureVar = this.configuration.profilPictureVar;
     }
 
@@ -500,5 +499,40 @@ export class ProfileService {
             return true;
         else
             return false;
+    }
+
+    updateSpontaneousContact(value, accountid) {
+        let sql = "update user_account set ";
+        sql = sql + " accepte_candidatures='" + this.sqlfyText(value) + "'";
+        sql = sql + " where pk_user_account=" + accountid + ";";
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe((data: any)=> {
+                    resolve(data);
+                });
+        })
+
+    }
+
+    getIsSpontaneousContact(accountid) {
+        let sql = "select accepte_candidatures from user_account where pk_user_account = " + accountid + ";";
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe((data: any)=> {
+                    resolve(data.data[0]);
+                });
+        });
+    }
+
+    sqlfyText(txt) {
+        if (!txt || txt.length == 0)
+            return "";
+        return txt.replace("'", "''");
     }
 }

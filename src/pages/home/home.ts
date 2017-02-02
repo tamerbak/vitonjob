@@ -730,7 +730,7 @@ export class HomePage {
                 this.nav.push(SearchResultsPage, {searchType: 'semantic'});
             }
         }).catch(e => {
-            debugger;
+           //debugger;
             console.log(e)
         });
     }

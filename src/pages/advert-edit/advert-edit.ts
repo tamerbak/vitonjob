@@ -220,7 +220,9 @@ export class AdvertEditPage{
       this.advertService.updateAdvert(clonedAdvert).then((result: any) => {
         if (result && result.status == 'success') {
           loading.dismiss();
-          this.displayRequestAlert();
+          //this.displayRequestAlert();
+          this.nav.pop();
+          //this.nav.popTo(OfferAddPage,{advertId: clonedAdvert});
         } else {
           loading.dismiss();
           this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
@@ -232,7 +234,11 @@ export class AdvertEditPage{
         if(result.id != 0) {
           this.idAdvert = result.id;
           loading.dismiss();
-          this.displayRequestAlert();
+          //this.displayRequestAlert();
+          this.storage.set('advert', {id: this.idAdvert, value:clonedAdvert}).then(()=>{
+            this.nav.pop();
+          });
+
         } else {
           loading.dismiss();
           this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
