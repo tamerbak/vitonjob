@@ -6,6 +6,7 @@ import {CivilityPage} from "../civility/civility";
 import {UserService} from "../../providers/user-service/user-service";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Storage} from "@ionic/storage";
+import {ProfileService} from "../../providers/profile-service/profile-service";
 
 /*
  Generated class for the GeneralConditionsPage page.
@@ -39,11 +40,14 @@ export class GeneralConditionsPage {
   };
   public alert: any;
   public toast: any;
+  public isHunter:boolean;
 
   constructor(private _nav: NavController, private globalConfig: GlobalConfigs,
               private _viewCtrl: ViewController, private _platform: Platform,
               private _params: NavParams, _events: Events,
-              private _userService: UserService, _alert: AlertController, public storage: Storage, private _toast: ToastController) {
+              private _userService: UserService, _alert: AlertController,
+              public storage: Storage, private _toast: ToastController,
+              public profileService: ProfileService) {
 
     this.viewCtrl = _viewCtrl;
     this.platform = _platform;
@@ -58,6 +62,7 @@ export class GeneralConditionsPage {
     this.profilPictureVar = config.profilPictureVar;
     this.backgroundImage = config.backgroundImage;
     this.toast = _toast;
+    this.isHunter = globalConfig.getHunterMask();
 
     if (this.projectTarget === 'employer') {
       // CGV
@@ -1019,11 +1024,40 @@ export class GeneralConditionsPage {
     let obj = this.params.data.obj;
     let welcomeMsg = "Bienvenue dans Vit-On-Job. Vous êtes tout près de trouver votre " + (this.projectTarget == "jobyer" ? "emploi" : "Jobyer")  + ". Certaines informations sont nécessaires afin de commencer votre recherche. Nous vous invitons à les saisir dans votre compte.";
 
-    this.userService.updateGCStatus("Oui", "Non", data.id).then((response) => {
+    this.userService.updateGCStatus("Oui", "Non", data.id).then((response:any) => {
         this.nav.setRoot(CivilityPage, {
           currentUser: data, jobyer: jobyer, obj: obj, searchIndex: searchIndex
         }).then(() => {
-          this.presentToast(welcomeMsg, 20);
+
+          if (this.projectTarget !== 'jobyer' && !this.isHunter) {
+            let confirm = this.alert.create({
+              title: 'Candidatures spontanées',
+              message: 'Acceptez-vous de recevoir des candidatures spontanées? Vous pouvez changer ce paramètre dans les options.',
+              buttons: [
+                {
+                  text: 'Non',
+                  handler: () => {
+                    console.log('Disagree spontaneous contact');
+                    this.profileService.updateSpontaneousContact('Non', data.id).then(()=>{
+                      this.presentToast(welcomeMsg, 20);
+                    });
+                  }
+                },
+                {
+                  text: 'Oui',
+                  handler: () => {
+                    console.log('Agree spontaneous contact');
+                    this.profileService.updateSpontaneousContact('Oui', data.id).then(() => {
+                      this.presentToast(welcomeMsg, 20);
+                    });
+                  }
+                }
+              ]
+            });
+            confirm.present();
+          } else {
+            this.presentToast(welcomeMsg, 20);
+          }
         });
     });
 

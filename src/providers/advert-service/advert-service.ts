@@ -347,12 +347,12 @@ export class AdvertService {
     });
   }
 
-  updateAdvertWithOffer(advertId, offerId) {
-    let sql = "UPDATE user_annonce_entreprise " +
+  updateOfferWithAdvert(advertId, offerId) {
+    let sql = "UPDATE user_offre_entreprise " +
       "SET " +
-      "fk_user_offre_entreprise = '" + offerId + "' " +
+      "fk_user_annonce_entreprise = '" + advertId + "' " +
       "WHERE " +
-      "pk_user_annonce_entreprise = " + advertId + ";";
+      "pk_user_offre_entreprise = " + offerId + ";";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();

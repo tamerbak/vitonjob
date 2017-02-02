@@ -1,129 +1,164 @@
 <ion-header no-border class="myToolbar">
-    <ion-navbar transparent [color]="themeColor">
-        <ion-title text-left>Retour à la liste</ion-title>
+    <ion-navbar transparent>
+        <ion-title text-left style="color: #14baa6">Retour à la liste</ion-title>
     </ion-navbar>
 </ion-header>
 
-<ion-content class="advert-edit" padding [ngStyle]="backgroundImage">
+<ion-content class="advert-edit" [ngStyle]="backgroundImage">
 
-    <ion-item>
-        <ion-label floating>Titre<span class="asterisk">*</span></ion-label>
-        <ion-input type="text" [(ngModel)]="advert.titre"></ion-input>
-    </ion-item>
+    <ion-list>
+        <ion-list-header color="primary">Général</ion-list-header>
+        <ion-item style="background-color: transparent">
+            <ion-label floating color="primary">Titre<span class="asterisk">*</span></ion-label>
+            <ion-input type="text" [(ngModel)]="advert.titre"></ion-input>
+        </ion-item>
 
-    <ion-label>Contenu</ion-label>
-    <!--CKEDITOR should absolutely not be put within an ion-item-->
-    <ckeditor name="desc"
-              [(ngModel)]="advert.description"
-              debounce="500">
-    </ckeditor>
+        <ion-item style="background-color: transparent" text-wrap>
+            <ion-label color="primary">Forme contrat</ion-label>
+            <ion-select [(ngModel)]="contractFormArray" multiple="true">
+                <ion-option value="Intérim">Intérim</ion-option>
+                <ion-option value="Formation">Formation</ion-option>
+                <ion-option value="CDD">CDD</ion-option>
+                <ion-option value="CDI">CDI</ion-option>
+                <ion-option value="CDI partiel">CDI partiel</ion-option>
+            </ion-select>
+        </ion-item>
 
-    <br/>
-    <ion-item>
-        <ion-label>Forme contrat</ion-label>
-        <ion-select [(ngModel)]="contractFormArray" multiple="true">
-            <ion-option value="Intérim">Intérim</ion-option>
-            <ion-option value="Formation">Formation</ion-option>
-            <ion-option value="CDD">CDD</ion-option>
-            <ion-option value="CDI">CDI</ion-option>
-            <ion-option value="CDI partiel">CDI partiel</ion-option>
-        </ion-select>
-    </ion-item>
+        <ion-list-header color="primary">Contenu</ion-list-header>
+        <!--CKEDITOR should absolutely not be put within an ion-item-->
+        <ckeditor name="desc"
+                  [(ngModel)]="advert.description"
+                  debounce="500">
+        </ckeditor>
 
-    <ion-card>
-        <ion-row>
+        <ion-list-header color="primary" style="margin-bottom: 0">Vignette</ion-list-header>
+        <ion-item no-lines [hidden]="advert.thumbnail.fileContent">
+            Charger une photo
+            <button ion-button icon-only item-right large outline class="file-upload button-picture">
+                <input id="fileinputThumb" type="file" class="file-input"
+                       (change)="onChangeUpload($event, 'thumb')">
+                <ion-icon name='folder'></ion-icon>
+            </button>
+        </ion-item>
+
+        <!--ion-row>
             <ion-col text-center>
-                <ion-list-header>Vignette</ion-list-header>
-                <button ion-button [hidden]="advert.thumbnail.fileContent" class="file-upload button-picture"
-                        [style.backgroundColor]="themeColor">
+                <button ion-button icon-left [hidden]="advert.thumbnail.fileContent" class="file-upload button-picture">
                     <input id="fileinputThumb" type="file" class="file-input"
                            (change)="onChangeUpload($event, 'thumb')">
                     <ion-icon name='folder'></ion-icon>
+                    Charger
                 </button>
             </ion-col>
-        </ion-row>
+        </ion-row-->
 
-        <ion-card style="margin: auto;" [hidden]="!advert.thumbnail.fileContent" id="card-file-thumb">
+        <ion-card [hidden]="!advert.thumbnail.fileContent" id="card-file-thumb">
             <img [src]="advert.thumbnail.fileContent"/>
             <ion-row>
                 <ion-col text-center>
-                    <button ion-button style="margin: auto;" clear (click)="showModal('thumb')" small>
+                    <button ion-button style="margin: auto;" clear large (click)="showModal('thumb')" small>
                         <ion-icon name='expand'></ion-icon>
                     </button>
                 </ion-col>
                 <ion-col text-center>
-                    <button ion-button style="margin: auto;" clear (click)="onDelete($event, 'thumb')" small>
+                    <button ion-button style="margin: auto;" clear large (click)="onDelete($event, 'thumb')" small>
                         <ion-icon name='close'></ion-icon>
                     </button>
                 </ion-col>
             </ion-row>
         </ion-card>
 
-        <ion-row>
+        <ion-list-header color="primary" style="margin-bottom: 0">Image de couverture</ion-list-header>
+        <ion-item no-lines [hidden]="advert.imgbg.fileContent">
+            Charger une photo
+            <button ion-button icon-only item-right large outline class="file-upload button-picture">
+                <input id="fileinputCover" type="file" class="file-input"
+                       (change)="onChangeUpload($event, 'cover')">
+                <ion-icon name='folder'></ion-icon>
+            </button>
+        </ion-item>
+
+        <!--ion-row>
             <ion-col text-center>
-                <ion-list-header>Image de couverture</ion-list-header>
-                <button ion-button [hidden]="advert.imgbg.fileContent" class="file-upload button-picture"
-                        [style.backgroundColor]="themeColor">
+                <button ion-button icon-left [hidden]="advert.imgbg.fileContent" class="file-upload button-picture">
                     <input id="fileinputCover" type="file" class="file-input"
                            (change)="onChangeUpload($event, 'cover')">
                     <ion-icon name='folder'></ion-icon>
+                    Charger
                 </button>
             </ion-col>
-        </ion-row>
+        </ion-row-->
 
-        <ion-card style="margin: auto;" [hidden]="!advert.imgbg.fileContent" id="card-file-cover">
+        <ion-card [hidden]="!advert.imgbg.fileContent" id="card-file-cover">
             <img [src]="advert.imgbg.fileContent"/>
             <ion-row>
                 <ion-col text-center>
-                    <button ion-button style="margin: auto;" clear (click)="showModal('cover')" small>
+                    <button ion-button style="margin: auto;" clear large (click)="showModal('cover')" small>
                         <ion-icon name='expand'></ion-icon>
                     </button>
                 </ion-col>
                 <ion-col text-center>
-                    <button ion-button style="margin: auto;" clear (click)="onDelete($event, 'cover')" small>
+                    <button ion-button style="margin: auto;" clear large (click)="onDelete($event, 'cover')" small>
                         <ion-icon name='close'></ion-icon>
                     </button>
                 </ion-col>
             </ion-row>
         </ion-card>
 
-        <ion-row>
+        <ion-list-header color="primary" style="margin-bottom: 0">Pièce jointe</ion-list-header>
+
+        <ion-item no-lines [hidden]="!isEmpty(advert.attachement.fileContent)" text-wrap>
+            Charger un fichier
+            <button ion-button icon-only item-right large outline class="file-upload button-picture">
+                <input id="pjInput" type="file" class="file-input" (change)="onChangeUpload($event, 'pj')">
+                <ion-icon name='folder'></ion-icon>
+            </button>
+        </ion-item>
+
+        <!--ion-row>
             <ion-col text-center>
-                <ion-list-header>Pièce jointe</ion-list-header>
-                <button ion-button class="file-upload button-picture" [style.backgroundColor]="themeColor">
+                <button ion-button class="file-upload button-picture">
                     <input id="pjInput" type="file" class="file-input" (change)="onChangeUpload($event, 'pj')">
                     <ion-icon name='folder'></ion-icon>
                 </button>
             </ion-col>
-        </ion-row>
+        </ion-row-->
 
-        <ion-card style="margin: auto;" [hidden]="isEmpty(advert.attachement.fileContent)">
+        <ion-card [hidden]="isEmpty(advert.attachement.fileContent)" id="card-file-attachment">
+            <ion-item text-wrap>
+                <ion-icon name="document" item-left></ion-icon>
+                {{advert.attachement.fileName}}
+            </ion-item>
             <ion-row>
                 <ion-col text-center>
-                    <button ion-button style="margin: auto;" clear small (click)="downloadAttachement($event)">
+                    <button ion-button style="margin: auto;" clear large (click)="downloadAttachement($event)">
                         <ion-icon name='download'></ion-icon>
                     </button>
                 </ion-col>
                 <ion-col text-center>
-                    <button ion-button style="margin: auto;" clear small (click)="onDelete($event, 'pj')">
+                    <button ion-button style="margin: auto;" clear large (click)="onDelete($event, 'pj')">
                         <ion-icon name='close'></ion-icon>
                     </button>
                 </ion-col>
             </ion-row>
         </ion-card>
+    </ion-list>
 
-        <ion-row>
-            <ion-col width-10></ion-col>
-            <ion-col text-center>
+    <ion-row>
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button ion-button icon-left (click)="saveAdvert()" [color]="themeColor"
+                    [disabled]="isUpdateDisabled()" type="submit">
+                <ion-icon name="done-all"></ion-icon>
+                Valider
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
 
-            </ion-col>
-            <ion-col width-10></ion-col>
-        </ion-row>
-    </ion-card>
-    <button ion-button block (click)="saveAdvert()" [style.backgroundColor]="themeColor"
-            [disabled]="isUpdateDisabled()" type="submit">
-        <ion-icon name="done-all"></ion-icon>
-        Valider
-    </button>
+    <ion-row>&nbsp;</ion-row>
+    <ion-row>&nbsp;</ion-row>
+    <ion-row>&nbsp;</ion-row>
+
 </ion-content>
 

@@ -9,6 +9,7 @@ import {HomePage} from "../home/home";
 import {ModalTrackMissionPage} from "../modal-track-mission/modal-track-mission";
 import {MissionService} from "../../providers/mission-service/mission-service";
 import {Storage} from "@ionic/storage";
+import {ProfileService} from "../../providers/profile-service/profile-service";
 /*
  Generated class for the SettingsPage page.
 
@@ -16,77 +17,96 @@ import {Storage} from "@ionic/storage";
  Ionic pages and navigation.
  */
 @Component({
-  templateUrl: 'settings.html',
-  selector: 'settings'
+    templateUrl: 'settings.html',
+    selector: 'settings'
 })
 export class SettingsPage {
-  public options: any;
-  public projectTarget: string;
-  public isEmployer: boolean;
-  //public password1: string;
-  //public password2: string;
-  public currentUser: any;
-  public events: any;
-  public currentUserVar: string;
-  public profilPictureVar: string;
-  public themeColor:string;
+    public options: any;
+    public projectTarget: string;
+    public isEmployer: boolean;
+    //public password1: string;
+    //public password2: string;
+    public currentUser: any;
+    public events: any;
+    public currentUserVar: string;
+    public profilPictureVar: string;
+    public themeColor: string;
+    public spontaneousContact: boolean = false;
 
-  constructor(public nav: NavController, gc: GlobalConfigs,
-              private authService: AuthenticationService,
-              private globalService: GlobalService, events: Events,
-              private missionService: MissionService, public modal: ModalController, public storage:Storage) {
-    this.projectTarget = gc.getProjectTarget();
-    let config = Configs.setConfigs(this.projectTarget);
-    this.options = config.options;
-    this.currentUserVar = config.currentUserVar;
-    this.profilPictureVar = config.profilPictureVar;
-    this.themeColor = config.themeColor;
-    this.isEmployer = (this.projectTarget === 'employer');
-
-    this.events = events;
-  }
-
-  logOut() {
-    this.storage.set('connexion', null);
-    this.storage.set(this.currentUserVar, null);
-    this.storage.set(this.profilPictureVar, null);
-    this.storage.set("RECRUITER_LIST", null);
-    this.storage.set('OPTION_MISSION', null);
-    this.storage.set('PROFIL_PICTURE', null);
-    this.events.publish('user:logout');
-    this.nav.setRoot(HomePage);
-  }
-
-  goToSettingPassword() {
-    this.nav.push(SettingPasswordPage);
-  }
-
-  lockApp() {
-
-  }
-
-  changeOption() {
-    this.storage.get(this.currentUserVar).then((value) => {
-      if (value) {
-        this.currentUser = JSON.parse(value);
-        this.missionService.getOptionMission(this.currentUser.id).then((opt: any) => {
-          let modal = this.modal.create(ModalTrackMissionPage, {optionMission: opt.data[0].option_mission});
-          modal.present();
-          modal.onDidDismiss(selectedOption => {
-            if (selectedOption) {
-              this.storage.set('OPTION_MISSION', selectedOption).then(() => {
-                this.missionService.updateDefaultOptionMission(selectedOption, this.currentUser.id, this.currentUser.employer.entreprises[0].id).then((data: any) => {
-                  if (!data || data.status == 'failure') {
-                    this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
-                  } else {
-                    console.log("default option mission saved successfully");
-                  }
-                });
-              });
+    constructor(public nav: NavController, gc: GlobalConfigs,
+                private authService: AuthenticationService,
+                private globalService: GlobalService, events: Events,
+                private missionService: MissionService,
+                public modal: ModalController,
+                public storage: Storage, public profileService: ProfileService) {
+        this.projectTarget = gc.getProjectTarget();
+        let config = Configs.setConfigs(this.projectTarget);
+        this.options = config.options;
+        this.currentUserVar = config.currentUserVar;
+        this.profilPictureVar = config.profilPictureVar;
+        this.themeColor = config.themeColor;
+        this.isEmployer = (this.projectTarget === 'employer');
+        this.events = events;
+        this.storage.get(this.currentUserVar).then((value) => {
+            //if user has already signed up, fill the address field with his data
+            if (value) {
+                this.currentUser = JSON.parse(value);
+                this.profileService.getIsSpontaneousContact(this.currentUser.id).then((result: any) => {
+                    if (result) {
+                        this.spontaneousContact = (result.accepte_candidatures.toUpperCase() === 'OUI');
+                    }
+                })
             }
-          });
         });
-      }
-    });
-  }
+
+    }
+
+    logOut() {
+        this.storage.set('connexion', null);
+        this.storage.set(this.currentUserVar, null);
+        this.storage.set(this.profilPictureVar, null);
+        this.storage.set("RECRUITER_LIST", null);
+        this.storage.set('OPTION_MISSION', null);
+        this.storage.set('PROFIL_PICTURE', null);
+        this.events.publish('user:logout');
+        this.nav.setRoot(HomePage);
+    }
+
+    goToSettingPassword() {
+        this.nav.push(SettingPasswordPage);
+    }
+
+    lockApp() {
+
+    }
+
+    changeOption() {
+        this.storage.get(this.currentUserVar).then((value) => {
+            if (value) {
+                this.currentUser = JSON.parse(value);
+                this.missionService.getOptionMission(this.currentUser.id).then((opt: any) => {
+                    let modal = this.modal.create(ModalTrackMissionPage, {optionMission: opt.data[0].option_mission});
+                    modal.present();
+                    modal.onDidDismiss(selectedOption => {
+                        if (selectedOption) {
+                            this.storage.set('OPTION_MISSION', selectedOption).then(() => {
+                                this.missionService.updateDefaultOptionMission(selectedOption, this.currentUser.id, this.currentUser.employer.entreprises[0].id).then((data: any) => {
+                                    if (!data || data.status == 'failure') {
+                                        this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+                                    } else {
+                                        console.log("default option mission saved successfully");
+                                    }
+                                });
+                            });
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    toggleContactChanged() {
+        let value:string = (this.spontaneousContact)? 'Oui': 'Non';
+        this.profileService.updateSpontaneousContact(value, this.currentUser.id);
+    }
 }

@@ -146,7 +146,7 @@ export class ModalJobPage {
   /*
    * PREREQUIS
    */
-  public prerequisOb: string = '';
+  public prerequisOb: any;
   public prerequisObList: any = [];
   public prerequisObligatoires: any = [];
 
@@ -204,6 +204,8 @@ export class ModalJobPage {
       code: '',
       libelle: ''
     };
+
+    this.prerequisOb = '';
 
     // this.currentUser = config.currentUserVar;
 
@@ -352,23 +354,23 @@ export class ModalJobPage {
 
   preqOSelected(p) {
     this.showPrerequisBtn = true;
-    this.prerequisOb = p.libelle;
+    this.prerequisOb = p;
     this.prerequisObList = [];
   }
 
   addPrerequis() {
     for (let i = 0; i < this.prerequisObligatoires.length; i++)
-      if (this.prerequisObligatoires[i].toLowerCase() == this.prerequisOb.toLocaleLowerCase())
+      if (this.prerequisObligatoires[i].libelle.toLowerCase() == this.prerequisOb.libelle.toLocaleLowerCase())
         return;
     this.prerequisObligatoires.push(this.prerequisOb);
-    this.prerequisOb = '';
+    this.prerequisOb.libelle = '';
   }
 
   removePrerequis(p, chip:Element) {
 
     let index = -1;
     for (let i = 0; i < this.prerequisObligatoires.length; i++)
-      if (this.prerequisObligatoires[i] == p) {
+      if (this.prerequisObligatoires[i].libelle == p.libelle) {
         index = i;
         break;
       }

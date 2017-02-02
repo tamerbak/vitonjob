@@ -221,7 +221,7 @@ export class SearchCriteriaPage {
 
     ngOnChanges(changes) {
         // changes.prop contains the old and the new value...
-        debugger;
+       //debugger;
     }
 
 
@@ -401,7 +401,7 @@ export class SearchCriteriaPage {
         }
         if (this.languages.length > 0) {
             // TODO id not recognized
-            debugger;
+           //debugger;
             for (let i = 0; i < this.languages.length; i++)
                 langIdList.push(this.languages[i].idLanguage.toString());
         }
