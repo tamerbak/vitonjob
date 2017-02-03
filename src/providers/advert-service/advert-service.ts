@@ -186,6 +186,19 @@ export class AdvertService {
     });
   }
 
+  saveOfferInterest(offerId, jobyerId){
+    let sql = "insert into user_candidatures_aux_offres (date, fk_user_offre_entreprise, fk_user_jobyer) values ('" + DateUtils.sqlfy(new Date()) + "', " + offerId + ", " + jobyerId + ")";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+          .map(res => res.json())
+          .subscribe(data => {
+            resolve(data);
+          });
+    });
+  }
+
   deleteAdvertInterest(advertId, jobyerId){
     let sql = "delete from user_interet_jobyer_annonces where fk_user_annonce_entreprise = " + advertId + " and fk_user_jobyer = " + jobyerId;
     return new Promise(resolve => {
@@ -195,6 +208,18 @@ export class AdvertService {
         .subscribe(data => {
           resolve(data);
         });
+    });
+  }
+
+  deleteOfferInterest(offerId, jobyerId){
+    let sql = "delete from user_candidatures_aux_offres where fk_user_offre_entreprise = " + offerId + " and fk_user_jobyer = " + jobyerId;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+          .map(res => res.json())
+          .subscribe(data => {
+            resolve(data);
+          });
     });
   }
 
@@ -208,6 +233,19 @@ export class AdvertService {
         .subscribe(data => {
           resolve(data);
         });
+    });
+  }
+
+  getInterestOffer(offerId, jobyerId){
+    let sql = "select * from user_candidatures_aux_offres where fk_user_offre_entreprise = " + offerId + " and fk_user_jobyer = " + jobyerId;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+          .map(res => res.json())
+          .subscribe(data => {
+            resolve(data);
+          });
     });
   }
 
@@ -309,12 +347,12 @@ export class AdvertService {
     });
   }
 
-  updateAdvertWithOffer(advertId, offerId) {
-    let sql = "UPDATE user_annonce_entreprise " +
+  updateOfferWithAdvert(advertId, offerId) {
+    let sql = "UPDATE user_offre_entreprise " +
       "SET " +
-      "fk_user_offre_entreprise = '" + offerId + "' " +
+      "fk_user_annonce_entreprise = '" + advertId + "' " +
       "WHERE " +
-      "pk_user_annonce_entreprise = " + advertId + ";";
+      "pk_user_offre_entreprise = " + offerId + ";";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();

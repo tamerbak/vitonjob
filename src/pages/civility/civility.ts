@@ -1542,9 +1542,9 @@ export class CivilityPage {
                 file.createWriter((fileWriter) => {
                     console.log("Writing content to file");
                     fileWriter.write(DataBlob);
-                    this.presentToast("Document sauvegardé dans le stockage local de votre appareil.", 3);
+                    this.presentToast("Document sauvegardé dans le stockage local de votre appareil.", 7);
                 }, () => {
-                    this.presentToast("Une erreur est survenue lors du téléchargement. Veuillez réessayer.", 3);
+                    this.presentToast("Une erreur est survenue lors du téléchargement. Veuillez réessayer.", 7);
                 });
             });
         });

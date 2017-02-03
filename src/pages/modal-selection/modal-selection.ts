@@ -166,7 +166,7 @@ export class ModalSelectionPage {
       if (isQualityExist) {
         let toast = this.toast.create({
           message: "Vous avez déjà choisi cette qualité! Merci d'en sélectionner une autre.",
-          duration: 3000
+          duration: 7000
         });
 
         toast.onDidDismiss(() => {
@@ -178,7 +178,7 @@ export class ModalSelectionPage {
       if (isLangExist) {
         let toast = this.toast.create({
           message: "Vous avez déjà choisi cette langue! Merci d'en sélectionner une autre.",
-          duration: 3000
+          duration: 7000
         });
 
         toast.onDidDismiss(() => {

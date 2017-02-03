@@ -17,6 +17,7 @@ import {Storage} from "@ionic/storage";
 import {AccountReferencesService} from "../../providers/account-references-service/account-references-service";
 import {ProfileService} from "../../providers/profile-service/profile-service";
 import {InfoModalPage} from "../info-modal/info-modal";
+import {AdvertService} from "../../providers/advert-service/advert-service";
 
 declare let google: any;
 declare let sms;
@@ -55,6 +56,10 @@ export class SearchDetailsPage implements OnInit {
   public avatar: string;
   public backgroundImage: string;
   public themeColor: string;
+  public inversedThemeColor:string;
+  public jobyerInterested: boolean;
+  public jobyerInterestLabel: string;
+  public currentUser: any;
 
   /*
    * References
@@ -74,13 +79,14 @@ export class SearchDetailsPage implements OnInit {
               public modal: ModalController,
               public referenceService : AccountReferencesService,
               public profileService : ProfileService,
-              public db: Storage) {
+              public db: Storage, public advertService: AdvertService) {
 
     // Get target to determine configs
     this.projectTarget = globalConfig.getProjectTarget();
     let configInversed = (this.projectTarget === 'employer') ? Configs.setConfigs('jobyer') : Configs.setConfigs('employer');
     let config = Configs.setConfigs(this.projectTarget);
     this.themeColor = config.themeColor;
+    this.inversedThemeColor = "#208EA3";
     this.backgroundImage = config.backgroundImage;
     //this.avatar = configInversed.avatars[0].url;
     this.isEmployer = this.projectTarget == 'employer';
@@ -94,6 +100,7 @@ export class SearchDetailsPage implements OnInit {
       });
     });
 
+    this.result.rate = Number(this.result.rate).toFixed(2);
     this.avatar = (this.result.avatar) ? this.result.avatar : configInversed.avatars[0].url;
     if (this.result.titreOffre)
       this.fullTitle = this.result.titreOffre;
@@ -126,11 +133,18 @@ export class SearchDetailsPage implements OnInit {
           if (this.employer.estRecruteur)
             this.isRecruteur = this.employer.estRecruteur;
         }
-
-
         console.log(currentEmployer);
       }
+    });
 
+    //get currentuser
+    this.db.get(config.currentUserVar).then((value) => {
+      if (value) {
+        this.currentUser = JSON.parse(value);
+        if(!this.isEmployer){
+          this.setInterestButtonLabel();
+        }
+      }
     });
 
     console.log(JSON.stringify(this.result));
@@ -251,6 +265,9 @@ export class SearchDetailsPage implements OnInit {
       }
     });
 
+    if(this.projectTarget == 'jobyer' && this.currentUser) {
+      this.setInterestButtonLabel();
+    }
   }
 
   loadMap() {
@@ -544,4 +561,71 @@ export class SearchDetailsPage implements OnInit {
     let modal = this.modal.create(InfoModalPage, {reference : reference});
     modal.present();
   }
+
+  /**
+   * @Description Converts a timeStamp to date string :
+   * @param date : a timestamp date
+   */
+  toDateString(date: number) {
+    return new Date(date).toLocaleDateString('fr-FR');
+  }
+
+  /**
+   * @Description Converts a timeStamp to date string
+   * @param time : a timestamp date
+   */
+  toHourString(time: number) {
+    let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+    let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+    return hours + ":" + minutes;
+  }
+
+  saveOfferInterest(){
+    let currentJobyerId = this.currentUser.jobyer.id;
+    if(this.jobyerInterested){
+      this.advertService.deleteOfferInterest(this.result.idOffre, currentJobyerId).then((data: any) => {
+        if(data && data.status == 'success') {
+          this.jobyerInterestLabel = "Cette annonce m'intéresse";
+          this.jobyerInterested = false;
+        }
+      });
+    }else{
+      this.advertService.saveOfferInterest(this.result.idOffre, currentJobyerId).then((data: any) => {
+        if(data && data.status == 'success'){
+          this.jobyerInterestLabel = "Cette annonce ne m'intéresse plus";
+          this.jobyerInterested = true;
+        }
+      });
+    }
+  }
+
+  /*setInterestButtonLabel(){
+    let currentJobyerId = this.currentUser.jobyer.id;
+    this.advertService.getInterestAnnonce(this.result.idOffre, currentJobyerId).then((data: any) => {
+      if(data && data.data && data.data.length  == 1){
+        this.jobyerInterested = true;
+        this.jobyerInterestLabel = "Cette annonce ne m'intéresse plus";
+      }else{
+        this.jobyerInterested = false;
+        this.jobyerInterestLabel = "Cette annonce m'intéresse";
+      }
+    });
+  }*/
+
+
+  setInterestButtonLabel(){
+    if (!this.currentUser || !this.currentUser.jobyer) {
+      return;
+    }
+    this.advertService.getInterestOffer(this.result.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+      if(data && data.data && data.data.length > 0){
+        this.jobyerInterested = true;
+        this.jobyerInterestLabel = "Cette offre ne m'intéresse plus";
+      }else{
+        this.jobyerInterested = false;
+        this.jobyerInterestLabel = "Cette offre m'intéresse";
+      }
+    });
+  }
+
 }

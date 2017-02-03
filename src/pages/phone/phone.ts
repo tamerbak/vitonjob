@@ -184,7 +184,7 @@ export class PhonePage {
 
           this.authService.getPasswordStatus("+" + indPhone, this.projectTarget).then((dataPwd: any) => {
 
-            debugger;
+           //debugger;
             data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
 
             if(data.estRecruteur && data.titre === ""){
@@ -560,7 +560,7 @@ export class PhonePage {
               this.passwordForgotten("sms", '');
               let toast = this.toast.create({
                 message: "Votre mot de passe a été réinitialisé. Vous recevrez un SMS avec un nouveau mot de passe d'ici peu.",
-                duration: 5000
+                duration: 10000
               });
               toast.present();
             }
@@ -580,7 +580,7 @@ export class PhonePage {
               this.passwordForgotten("sms", '');
               let toast = this.toast.create({
                 message: "Votre mot de passe a été réinitialisé. Vous recevrez un SMS avec un nouveau mot de passe d'ici peu.",
-                duration: 5000
+                duration: 10000
               });
               toast.present();
             }
@@ -592,7 +592,7 @@ export class PhonePage {
               this.passwordForgotten("email", this.email);
               let toast = this.toast.create({
                 message: "Votre mot de passe a été réinitialisé. Vous recevrez un courrier électronique avec un nouveau mot de passe d'ici peu.",
-                duration: 5000
+                duration: 10000
               });
               toast.present();
             }
