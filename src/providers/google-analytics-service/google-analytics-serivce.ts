@@ -18,27 +18,10 @@ export class GoogleAnalyticsService {
         GoogleAnalytics.startTrackerWithId(gc.googleAnalyticsID);
         GoogleAnalytics.setAllowIDFACollection(true);
         Configs.GA_INITIALIZED = true;
-            /*.then(() => {
-                try{
-                    console.log('Google analytics is starting up');
-                    AppVersion.getVersionNumber().then(_version => {
-                        GoogleAnalytics.setAppVersion(_version);
-
-                    });
-                    Configs.GA_INITIALIZED = true;
-                    console.log('Google analytics is ready');
-
-                }catch(e){
-                   console.log(e);
-                };
-
-            })
-            .catch(e => {
-                console.log('Error starting Google Analytics', e);
-            });*/
     }
 
     public static trackView(screen:string):void{
+        //  Using timeout as a workaround
         if(Configs.GA_INITIALIZED){
             setTimeout(function () {
                 GoogleAnalytics.trackView(screen).then(() => {
@@ -47,9 +30,6 @@ export class GoogleAnalyticsService {
             }, 20000);
         }
 
-        /*if (Configs.GA_INITIALIZED){
-            GoogleAnalytics.trackView(screen);
-        }*/
     }
 
 }
