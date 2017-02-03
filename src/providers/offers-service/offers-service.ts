@@ -8,7 +8,6 @@ import {Offer} from "../../dto/offer";
 import {CCalloutArguments} from "../../dto/generium/ccallout-arguments";
 import {CCallout} from "../../dto/generium/ccallout";
 import {HttpRequestHandler} from "../../http/http-request-handler";
-import {tryCatch} from "rxjs/util/tryCatch";
 import {CalendarSlot} from "../../dto/calendar-slot";
 import {Quality} from "../../dto/quality";
 import {Language} from "../../dto/language";
@@ -62,8 +61,8 @@ export class OffersService {
         this.configuration = Configs.setConfigs(projectTarget);
 
         //  Constructing the query
-        var table = projectTarget == "jobyer" ? 'user_offre_entreprise' : 'user_offre_jobyer';
-        var sql = 'select count(pk_' + table + ') from ' + table + ' as nbBadge where pk_' + table + ' in (select fk_' + table + ' from user_pratique_job where fk_user_job=(select fk_user_job from user_pratique_job where pk_user_pratique_job=' + jobId + '))';
+        let table = projectTarget == "jobyer" ? 'user_offre_entreprise' : 'user_offre_jobyer';
+        let sql = 'select count(pk_' + table + ') from ' + table + ' as nbBadge where pk_' + table + ' in (select fk_' + table + ' from user_pratique_job where fk_user_job=(select fk_user_job from user_pratique_job where pk_user_pratique_job=' + jobId + '))';
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
