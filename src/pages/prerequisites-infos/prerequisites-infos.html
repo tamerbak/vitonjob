@@ -8,6 +8,12 @@
 </ion-header>
 
 <ion-content padding class="Prerequisites-infos">
+    <ion-list-header color="light" text-wrap>
+        Les employeurs peuvent parfois vous demander les prérequis suivants:
+    </ion-list-header>
+    <ion-col text-center *ngIf="!isRequirementsLoaded">
+        <ion-spinner></ion-spinner>
+    </ion-col>
         <ion-card *ngFor="let j of jobs">
             <ion-card-header *ngIf="j.requirements.length > 0">
                 {{j.libelle}}
