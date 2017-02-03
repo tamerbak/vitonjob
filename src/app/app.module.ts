@@ -128,6 +128,7 @@ import {EnvironmentService} from "../providers/environment-service/environment-s
 import {PrerequisitesInfosPage} from "../pages/prerequisites-infos/prerequisites-infos";
 import {HttpRequestHandler} from "../http/http-request-handler";
 import {ModalPeriodPage} from "../pages/modal-period/modal-period";
+import {IntroPage} from "../pages/intro/intro";
 
 @NgModule({
     declarations: [
@@ -209,13 +210,14 @@ import {ModalPeriodPage} from "../pages/modal-period/modal-period";
         YousignPage,
         ProfileReferencePage,
         InfoModalPage,
+        PrerequisitesInfosPage,
+        ModalPeriodPage,
+        IntroPage,
         // Custom components
         GooglePlaces,
         SwipeVertical,
         DateConverter,
-        TimeConverter,
-        PrerequisitesInfosPage,
-        ModalPeriodPage
+        TimeConverter
 
     ],
     imports: [
@@ -309,7 +311,8 @@ import {ModalPeriodPage} from "../pages/modal-period/modal-period";
         ProfileReferencePage,
         InfoModalPage,
         PrerequisitesInfosPage,
-        ModalPeriodPage
+        ModalPeriodPage,
+        IntroPage
     ],
     providers: [
         {provide: ErrorHandler, useClass: IonicErrorHandler},
