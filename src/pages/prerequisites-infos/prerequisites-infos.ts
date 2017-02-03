@@ -40,6 +40,7 @@ export class PrerequisitesInfosPage {
     public params: NavParams;
     public inversedThemeColor: any;
     public isEmployer: boolean;
+    public isRequirementsLoaded: boolean= false;
 
     constructor(public environmentService: EnvironmentService,
                 public nav: NavController,
@@ -70,7 +71,8 @@ export class PrerequisitesInfosPage {
         this.params = params;
         this.currentUser = this.params.data.currentUser;
         this.isRecruiter = this.currentUser.estRecruteur;
-        this.titlePage = "Les employeurs peuvent parfois vous demander les prérequis suivants";
+        this.titlePage = "Prérequis récurrents";
+        
         //load nationality list
         if (!this.isEmployer && !this.isRecruiter) {
             this.initRequirements();
@@ -110,6 +112,8 @@ export class PrerequisitesInfosPage {
         for (let i = 0; i < this.jobs.length; i++)
             this.profileService.loadRequirementsByJob(this.jobs[i].id).then((data: any) => {
                 this.jobs[i].requirements = data;
+                if (i === this.jobs.length - 1)
+                    this.isRequirementsLoaded = true;
             });
     }
 
