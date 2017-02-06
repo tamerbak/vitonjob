@@ -52,8 +52,33 @@
                 </ion-item>
             </div>
         </div>
-
     </ion-list>
+
+    <!-- Search by city -->
+
+    <ion-row *ngIf="!isCity.done && isCity.activated">
+        <ion-col text-center>
+            <ion-spinner></ion-spinner>
+        </ion-col>
+    </ion-row>
+
+    <ion-item *ngIf="cities.length>0">
+        <ion-list>
+            <ion-item *ngFor="let s of cities" (click)="citySelected(s)">
+                {{s.nom}}
+            </ion-item>
+        </ion-list>
+    </ion-item>
+    <div [hidden]="isCity.found"
+         style="color:red">
+        <ion-icon name="md-arrow-dropup"></ion-icon>
+        Vérifiez l'orthographe, cette ville n'existe pas et/ou ne comporte aucune offre
+    </div>
+
+    <ion-item style="background-color: transparent;" no-lines >
+        <ion-label text-right style="color:#757575; font-size: small">Recherche par ville</ion-label>
+        <ion-checkbox item-right [(ngModel)]="isCity.activated"></ion-checkbox>
+    </ion-item>
 
     <!--div id="adv-search">
         <ion-row *ngIf="!isHunter">

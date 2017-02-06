@@ -127,6 +127,8 @@ import {InfoModalPage} from "../pages/info-modal/info-modal";
 import {EnvironmentService} from "../providers/environment-service/environment-service";
 import {PrerequisitesInfosPage} from "../pages/prerequisites-infos/prerequisites-infos";
 import {HttpRequestHandler} from "../http/http-request-handler";
+import {ModalPeriodPage} from "../pages/modal-period/modal-period";
+import {IntroPage} from "../pages/intro/intro";
 import {GoogleAnalyticsService} from "../providers/google-analytics-service/google-analytics-serivce";
 
 @NgModule({
@@ -209,12 +211,14 @@ import {GoogleAnalyticsService} from "../providers/google-analytics-service/goog
         YousignPage,
         ProfileReferencePage,
         InfoModalPage,
+        PrerequisitesInfosPage,
+        ModalPeriodPage,
+        IntroPage,
         // Custom components
         GooglePlaces,
         SwipeVertical,
         DateConverter,
-        TimeConverter,
-        PrerequisitesInfosPage
+        TimeConverter
 
     ],
     imports: [
@@ -307,7 +311,9 @@ import {GoogleAnalyticsService} from "../providers/google-analytics-service/goog
         YousignPage,
         ProfileReferencePage,
         InfoModalPage,
-        PrerequisitesInfosPage
+        PrerequisitesInfosPage,
+        ModalPeriodPage,
+        IntroPage
     ],
     providers: [
         {provide: ErrorHandler, useClass: IonicErrorHandler},

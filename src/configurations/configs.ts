@@ -1,6 +1,5 @@
 import {Headers} from "@angular/http";
 import {GlobalConfigs} from "./globalConfigs";
-import {GoogleAnalytics} from "ionic-native";
 /**
  * Created by tim on 04/05/16.
  * Here we will define all configurations of both apps.

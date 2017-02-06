@@ -45,7 +45,7 @@ export class HttpRequestHandler {
      * @returns {Observable<T>}
      */
     sendCallOut(payload: any, classObject?: any, silentMode?: boolean) {
-        if (silentMode === false)
+        if (silentMode !== true)
             HttpRequestHandler.presentLoading();
         HttpRequestHandler.senderClassName = (classObject) ? classObject.constructor.name : "";
         let headers: Headers = Configs.getHttpJsonHeaders();

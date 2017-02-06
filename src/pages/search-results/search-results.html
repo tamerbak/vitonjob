@@ -21,8 +21,10 @@
                 <ion-avatar item-left>
                     <img [src]="item.avatar">
                 </ion-avatar>
-                <h2>{{isEmployer ? item.prenom + ' ' + item.nom.substring(0,1) + '.' : item.entreprise}}</h2>
+                <h2>{{isEmployer ? item.prenom + ' ' + substring(item.nom, 0, 1) + '.' : item.entreprise}}</h2>
                 <h4>{{item.titreOffre}}</h4>
+            </ion-item>
+            <ion-item no-lines style="background-color: lightcyan">
                 <p>
                     <ion-icon name="ios-timer" [style.color]="availability" style="font-size: large;"></ion-icon>
                     &nbsp; Disponible
@@ -33,6 +35,12 @@
             </ion-item>
 
             <ion-row>
+                <ion-col text-center>
+
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
                 <ion-col text-center style="padding-top: 0; padding-bottom: 0;">
                     <button ion-button clear small (click)="itemSelected(item)" style="text-decoration: underline;">Voir plus de
                         détails
@@ -40,19 +48,18 @@
                 </ion-col>
             </ion-row>
 
-            <ion-row>
+            <ion-row *ngIf="isEmployer && !isRecruteur">
                 <ion-col text-center>
                     <button ion-button color="vojgreen"
-                            *ngIf="isEmployer && !isRecruteur"
                             (click)="contract(i)" small>
                         Recrutement immédiat
                     </button>
                 </ion-col>
             </ion-row>
 
-            <ion-row style="padding-left: 16px; padding-top: 5px"><span style="font-size: small">Entretien :</span>
+            <ion-row style="padding-left: 16px; padding-top: 5px" *ngIf="isEmployer || item.accepteCandidature=='true'"><span style="font-size: small">Entretien :</span>
             </ion-row>
-            <ion-item no-lines>
+            <ion-item no-lines *ngIf="isEmployer || item.accepteCandidature=='true'">
                 <button ion-button icon-only clear [color]="themeColor"
                         (click)="itemSelected(item)" item-right>
                     <ion-icon name="map"></ion-icon>
@@ -92,17 +99,23 @@
                 </p>
             </ion-item>
 
-            <ion-item no-lines>
-                <ion-note item-right style="font-size: 2rem;">
-                    {{item.index}}
+            <!--ion-row *ngIf="!isEmployer && false">
+                <ion-col text-right>
+                    <button ion-button icon-right clear (click)="saveOfferInterest(item)" color="primary">
+                        <ion-icon name="md-thumbs-up" *ngIf="!item.jobyerInterested"></ion-icon>
+                        <ion-icon name="md-thumbs-down" *ngIf="item.jobyerInterested"></ion-icon>
+                    </button>
+                </ion-col>
+            </ion-row-->
+            <ion-item no-lines *ngIf="item.rate || item.rate>0">
+                <ion-note item-right>
+                        Taux horaire: {{formatNumbers(item.rate)}} €/h
                 </ion-note>
             </ion-item>
 
         </ion-card>
-
-
-
     </ion-list>
+
     <ion-card *ngIf="resultsCount == 0 ">
         <ion-card-content>Vit-On-Job n'a trouvé aucune offre {{isEmployer? "de service":"d'emploi"}} correspondante à
             votre recherche

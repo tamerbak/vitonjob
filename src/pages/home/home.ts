@@ -38,6 +38,7 @@ import {
     GoogleMapsMarker
 } from "ionic-native";
 import {ModalHelpPage} from "../modal-help/modal-help";
+import {CommunesService} from "../../providers/communes-service/communes-service";
 import {GoogleAnalyticsService} from "../../providers/google-analytics-service/google-analytics-serivce";
 
 declare let SpeechRecognition;
@@ -125,6 +126,8 @@ export class HomePage {
     public jobs: any = [];
     public newCombination: any = [];
     public jobList: any = [];
+    public isCity: {activated: boolean, found: boolean, done: boolean};
+    public cities: any = [];
 
 
     /*static get parameters() {
@@ -147,7 +150,9 @@ export class HomePage {
                 private _popover: PopoverController,
                 private _toast: ToastController,
                 private _gaService: GoogleAnalyticsService,
-                private _loading: LoadingController, public storage: Storage) {
+                private _loading: LoadingController, public storage: Storage, public cityServices: CommunesService) {
+
+
         //  TrackScreen
         GoogleAnalyticsService.trackView("Accueil");
 
@@ -158,6 +163,7 @@ export class HomePage {
         this.popover = _popover;
         this.toast = _toast;
         this.jobs = [];
+        this.isCity = {activated: false, found: true, done: true};
         // get config of selected target
         let config = Configs.setConfigs(this.projectTarget);
         this.storage.get(config.currentUserVar).then((value) => {
@@ -683,10 +689,15 @@ export class HomePage {
     }
 
     onFocus() {
-        if (this.projectTarget == 'employer')
-            this.searchPlaceHolder = "Saisissez le job sur lequel vous recrutez";// débutant disponible demain sur Villepinte";
-        else
-            this.searchPlaceHolder = "Saisissez le job que vous souhaitez";//Je cherche une offre d'emploi pour serveur débutant demain sur Villepinte";
+        if(this.isCity.activated){
+            this.searchPlaceHolder = "Saisissez une ville" ;
+        } else {
+            if (this.projectTarget == 'employer')
+                this.searchPlaceHolder = "Saisissez le job sur lequel vous recrutez";
+            else
+                this.searchPlaceHolder = "Saisissez le job que vous souhaitez";
+        }
+
     }
 
     onBlur() {
@@ -711,14 +722,14 @@ export class HomePage {
      */
     doSemanticSearch() {
         if (this.scQuery == "" || this.scQuery.trim() == "" || !this.scQuery) {
-            this.presentToast("Veuillez saisir un job à rechercher avant de lancer la recherche", 5);
+            this.presentToast("Veuillez saisir un job à rechercher avant de lancer la recherche", 7);
             return;
         }
         //let loading = this.loading.create({content: "Merci de patienter..."});
         //loading.present();
         console.log('Initiating search for ' + this.scQuery);
         this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((results: any) => {
-            if (results.success !== false){
+            if (results.success !== false) {
                 let data = [];
                 if (this.projectTarget == 'jobyer')
                     data = results.offerEnterprise;
@@ -731,7 +742,7 @@ export class HomePage {
                 this.nav.push(SearchResultsPage, {searchType: 'semantic'});
             }
         }).catch(e => {
-            debugger;
+           //debugger;
             console.log(e)
         });
     }
@@ -744,8 +755,15 @@ export class HomePage {
     checkForEnterKey(e) {
         /*if (e.code != "Enter")
          return;
-
          this.doSemanticSearch();*/
+
+        // search by cities mode
+        if (this.isCity.activated) {
+            this.watchCity(e);
+            return;
+        }
+
+        // else launch job's auto-completion
         let val = e.target.value;
         if (val.length < 3) {
             this.isJobFound = true;
@@ -756,6 +774,7 @@ export class HomePage {
 
         this.jobs = [];
         this.newCombination = [];
+        this.cities = [];
         let removeDiacritics = require('diacritics').remove;
         for (let i = 0; i < this.jobList.length; i++) {
             let s = this.jobList[i];
@@ -784,6 +803,7 @@ export class HomePage {
     }
 
     jobSelected(job) {
+        this.jobs = [];
         this.nav.push(SearchCriteriaPage, {job: job});
     }
 
@@ -833,7 +853,7 @@ export class HomePage {
 
     presentToast(message: string, duration?: number, position?: string) {
         if (!duration)
-            duration = 3;
+            duration = 7;
         let toast = this.toast.create({
             message: message,
             position: position,
@@ -1022,7 +1042,7 @@ export class HomePage {
     }
 
     pressEvent(e) {
-        this.presentToast("Ce menu donne accès aux différentes nouvelles concernant les offres et les nouveaux inscrits!", 5, 'middle')
+        this.presentToast("Ce menu donne accès aux différentes nouvelles concernant les offres et les nouveaux inscrits!", 7, 'middle')
     }
 
     showCorrespondantCard(i: number) {
@@ -1064,5 +1084,39 @@ export class HomePage {
         let helpModal = this.modal.create(ModalHelpPage, {'content': content});
         helpModal.present(helpModal);
 
+    }
+
+    watchCity(e) {
+        let val = e.target.value;
+        this.isCity.found = true;
+        if (val.length < 3) {
+            this.cities = [];
+            this.isCity.done = true;
+            return;
+        } else
+            this.isCity.done = false;
+
+        this.cities = [];
+        this.cityServices.autocompleteCity(val).then((data: any) => {
+            if (data) {
+                this.cities = data.filter((item, pos, inputArray) => {
+                    for (let i = 0; i < pos; i++) {
+                        if (item.nom.trim().toLowerCase() === inputArray[i].nom.trim().toLowerCase())
+                            return false;
+                        else
+                            continue;
+                    }
+                    return true
+                });
+            }
+            this.isCity.done = true;
+            this.isCity.found = this.cities.length > 0;
+
+        });
+    }
+
+    citySelected(city) {
+        this.cities = [];
+        this.nav.push(SearchCriteriaPage, {city: city});
     }
 }

@@ -33,7 +33,7 @@ export class ModalSoftwarePage {
   public isEmployer: boolean;
   public viewCtrl: any;
   public listService: any;
-  public software: any = {id:0, nom: ""};
+  public software: any = {id:0, nom: "",niveau:1};
 
   constructor(public nav: NavController,
               gc: GlobalConfigs,
@@ -143,7 +143,9 @@ export class ModalSoftwarePage {
         break;
       }
     }
+    console.log(soft)
     this.savedSoftwares.push(soft);
+    this.software = {id:0, nom: "",niveau:1};
   }
 
   /**

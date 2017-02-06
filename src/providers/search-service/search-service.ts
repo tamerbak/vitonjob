@@ -54,7 +54,7 @@ export class SearchService {
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
 
-            this.httpRequestHandler.sendCallOut(payload, this, true).subscribe((data: any) => {
+            this.httpRequestHandler.sendCallOut(payload, this, false).subscribe((data: any) => {
                 // we've got back the raw data, now generate the core schedule data
                 // and save the data for later reference
                 this.data = data;

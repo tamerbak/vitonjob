@@ -1127,7 +1127,7 @@ export class MissionDetailsPage {
       doneButtonLabel: 'Ok', cancelButtonLabel: 'Annuler', locale: 'fr_FR'
     }).then(newHour => {
           console.log("Got date: ", newHour);
-          debugger;
+         //debugger;
           if(Utils.isEmpty(newHour)){
             return;
           }

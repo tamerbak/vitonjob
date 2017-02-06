@@ -11,7 +11,6 @@
 
 <ion-content padding class="profile" [ngStyle]="backgroundImage">
 
-
   <ion-fab top right edge class="myEdge">
     <button ion-fab [color]="themeColor" class="img-button">
       <!--div *ngIf="!(userImageURL=== 'none')" style="max-width: 150%;"-->
@@ -119,7 +118,7 @@
         <p *ngIf="!isEmployer">{{userData.jobyer.personnalAdress.fullAdress}}</p>
         <p *ngIf="isEmployer && userData.employer.entreprises.length != 0">
           {{userData.employer.entreprises[0].siegeAdress.fullAdress}}</p>
-        <button ion-button clear item-right (click)="goToPersonalAddressTab()" large color="vojblue">
+        <button ion-button clear item-right (click)="goToPersonalAddressTab()" large color="primary">
           <ion-icon name="create"></ion-icon>
         </button>
       </ion-item>
@@ -130,7 +129,7 @@
         <p *ngIf="!isEmployer">{{userData.jobyer.workAdress.fullAdress}}</p>
         <p *ngIf="isEmployer  && userData.employer.entreprises.length != 0">
           {{userData.employer.entreprises[0].workAdress.fullAdress}}</p>
-        <button ion-button clear item-right (click)="goToJobAddressTab()" large color="vojblue">
+        <button ion-button clear item-right (click)="goToJobAddressTab()" large color="primary">
           <ion-icon name="create"></ion-icon>
         </button>
       </ion-item>
@@ -139,7 +138,7 @@
         <h5 *ngIf="isEmployer">Adresse de correspondance</h5>
         <p *ngIf="isEmployer && userData.employer.entreprises.length != 0">
           {{userData.employer.entreprises[0].correspondanceAdress.fullAdress}}</p>
-        <button ion-button clear item-right (click)="goToCorrespondenceAddressTab()" large color="vojblue">
+        <button ion-button clear item-right (click)="goToCorrespondenceAddressTab()" large color="primary">
           <ion-icon name="create"></ion-icon>
         </button>
       </ion-item>
@@ -165,16 +164,16 @@
         <p>
           {{r.phone}} {{r.phone != '' && r.email != ''?' / ':''}} {{r.email}}
         </p>
-        <button ion-button clear item-right (click)="deleteReference(r)" large color="vojblue">
+        <button ion-button clear item-right (click)="deleteReference(r)" large color="primary">
           <ion-icon name="trash"></ion-icon>
         </button>
-        <button ion-button clear item-right (click)="deleteloadDetails(r)" large color="vojblue">
+        <button ion-button clear item-right (click)="deleteloadDetails(r)" large color="primary">
           <ion-icon name="more"></ion-icon>
         </button>
       </ion-item>
 
       <div class="button-footer">
-          <button ion-button clear [style.color]="themeColor" (click)="gotoAddReference()">
+          <button icon-left ion-button clear [style.color]="themeColor" (click)="gotoAddReference()">
               <ion-icon name="create"></ion-icon>
               <div>Ajouter une référence</div>
           </button>
@@ -188,7 +187,7 @@
       <ion-icon name="md-add"></ion-icon>
     </button>
 
-    <ion-fab-list side="right">
+    <ion-fab-list side="down">
 
       <button ion-fab color="primary"
               (click)="showProfileQualities()">

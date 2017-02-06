@@ -13,8 +13,13 @@
       Mission
     </ion-list-header>
     <ion-item (click)="changeOption()" [hidden]="!isEmployer" text-wrap no-lines>
-      <ion-icon name="clipboard" item-left></ion-icon>
+      <ion-icon name="clipboard" item-left color="primary"></ion-icon>
       Modifier le mode de validation des horaires
+    </ion-item>
+    <ion-item [hidden]="!isEmployer" text-wrap no-lines>
+      <ion-icon name="paper-plane" item-left color="primary"></ion-icon>
+      <ion-label>Candidature spontannée</ion-label>
+      <ion-toggle color="vojgreen" [(ngModel)]="spontaneousContact" (ionChange)="toggleContactChanged()"></ion-toggle>
     </ion-item>
 
 
@@ -22,11 +27,11 @@
       Sécurité
     </ion-list-header>
     <ion-item (click)="goToSettingPassword()">
-      <ion-icon name="key" item-left></ion-icon>
+      <ion-icon name="key" item-left color="primary"></ion-icon>
       Modifier votre mot de passe
     </ion-item>
-    <ion-item (click)="lockApp()" class="deactivated" no-lines>
-      <ion-icon name="lock" item-left></ion-icon>
+    <ion-item class="deactivated" no-lines> <!--(click)="lockApp()"-->
+      <ion-icon name="lock" item-left color="primary"></ion-icon>
       Verrouiller votre compte
     </ion-item>
 
@@ -35,11 +40,11 @@
       Compte
     </ion-list-header>
     <ion-item class="deactivated">
-      <ion-icon name="call" item-left></ion-icon>
+      <ion-icon name="call" item-left color="primary"></ion-icon>
       Modifier votre téléphone
     </ion-item>
     <ion-item class="deactivated">
-      <ion-icon name="mail" item-left></ion-icon>
+      <ion-icon name="mail" item-left color="primary"></ion-icon>
       Modifier votre e-mail
     </ion-item>
     <ion-item class="logout-text-color" (click)="logOut()" no-lines>

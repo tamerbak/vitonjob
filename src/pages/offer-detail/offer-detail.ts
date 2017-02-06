@@ -22,6 +22,7 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {GlobalService} from "../../providers/global-service/global-service";
 import {OfferTempQuotePage} from "../offer-temp-quote/offer-temp-quote";
 import {Storage} from "@ionic/storage";
+import {EnvironmentService} from "../../providers/environment-service/environment-service";
 
 /*
  Generated class for the OfferDetailPage page.
@@ -79,6 +80,7 @@ export class OfferDetailPage {
               public loading: LoadingController,
               public modal: ModalController,
               public popover: PopoverController,
+              public environmentService:EnvironmentService,
               public storage:Storage) {
 
     // Set global configs
@@ -109,7 +111,7 @@ export class OfferDetailPage {
     this.languageIconName = 'add';
     this.showCalendar = false;
     this.calendarIconName = 'add';
-
+    this.environmentService.reload();
     this.modified = {
       isJob: false,
       isQuality: false,

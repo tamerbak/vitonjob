@@ -8,6 +8,21 @@
 </ion-header>
 
 <ion-content padding>
+    <!--<ion-list-header>
+        <span class="asterisk">*</span> Obligatoire <br>
+        <span class="asteriskb">*</span> Obligatoire pour établir un contrat
+    </ion-list-header>-->
+    <ion-item class="labelInItem" text-wrap no-lines>
+        <h3>
+            <ion-icon name="ios-information-circle-outline"></ion-icon>
+            Informations :
+        </h3>
+        <p>
+            <span class="asterisk">*</span> Saisie obligatoire <br>
+            <span class="asteriskb">*</span> Saisie facultative mais qui sera nécessaire au moment de la signature du contrat de travail
+        </p>
+
+    </ion-item>
 
     <ion-row>
         <ion-col width-10></ion-col>
@@ -212,7 +227,7 @@
         </ion-item>
 
             <ion-item [hidden]="isEmployer" text-wrap>
-            <ion-label>Pièce d'identité délivrée le<span class="asteriskb">*</span></ion-label>
+            <ion-label>Pièce d'identité délivrée le <span class="asteriskb">*</span></ion-label>
             <ion-datetime [(ngModel)]="tsejProvideDate"
                           displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok" [(max)]="maxtsejProvideDate"
                           [(min)]="mintsejProvideDate"></ion-datetime>
@@ -229,7 +244,7 @@
                           [(max)]="maxtsejToDate" [(min)]="mintsejToDate"></ion-datetime>
         </ion-item>
         <ion-item [hidden]="isEmployer">
-            <ion-label [ngStyle]="nationalitiesstyle" floating>Délivré par</ion-label>
+            <ion-label [ngStyle]="nationalitiesstyle" floating>Délivré par <span class="asteriskb">*</span></ion-label>
             <ion-select [(ngModel)]="prefecture">
                 <ion-option *ngFor="let n of prefectures" value="{{n.pk_user_prefecture}}">{{n.nom}}</ion-option>
             </ion-select>

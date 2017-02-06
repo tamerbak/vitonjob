@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
-import {GoogleAnalytics, AppVersion} from 'ionic-native';
-import {Observable} from 'rxjs/Observable';
+import {GoogleAnalytics} from 'ionic-native';
 import 'rxjs/add/observable/forkJoin';
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";

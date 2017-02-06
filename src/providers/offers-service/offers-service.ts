@@ -1,9 +1,19 @@
-import {} from "ionic-angular";
 import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import "rxjs/add/operator/map";
 import {Configs} from "../../configurations/configs";
 import {Storage} from "@ionic/storage";
+import {Utils} from "../../utils/utils";
+import {Offer} from "../../dto/offer";
+import {CCalloutArguments} from "../../dto/generium/ccallout-arguments";
+import {CCallout} from "../../dto/generium/ccallout";
+import {HttpRequestHandler} from "../../http/http-request-handler";
+import {CalendarSlot} from "../../dto/calendar-slot";
+import {Quality} from "../../dto/quality";
+import {Language} from "../../dto/language";
+import {Requirement} from "../../dto/requirement";
+
+const SAVE_OFFER_CALLOUT_ID = 40020;
 
 /**
  * @author jakjoud abdeslam
@@ -27,9 +37,9 @@ export class OffersService {
     offerList: any;
     addedOffer: any;
     lienVideo: string;
-    convention : any;
+    convention: any;
 
-    constructor(public http: Http, public db:Storage) {
+    constructor(public http: Http, public db: Storage, public httpRequest:HttpRequestHandler) {
         this.count = 0;
 
 
@@ -51,8 +61,8 @@ export class OffersService {
         this.configuration = Configs.setConfigs(projectTarget);
 
         //  Constructing the query
-        var table = projectTarget == "jobyer" ? 'user_offre_entreprise' : 'user_offre_jobyer';
-        var sql = 'select count(pk_' + table + ') from ' + table + ' as nbBadge where pk_' + table + ' in (select fk_' + table + ' from user_pratique_job where fk_user_job=(select fk_user_job from user_pratique_job where pk_user_pratique_job=' + jobId + '))';
+        let table = projectTarget == "jobyer" ? 'user_offre_entreprise' : 'user_offre_jobyer';
+        let sql = 'select count(pk_' + table + ') from ' + table + ' as nbBadge where pk_' + table + ' in (select fk_' + table + ' from user_pratique_job where fk_user_job=(select fk_user_job from user_pratique_job where pk_user_pratique_job=' + jobId + '))';
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -62,7 +72,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -84,7 +94,7 @@ export class OffersService {
         return new Promise(resolve => {
             // Loading user
             this.loadCurrentUser(projectTarget)
-                .then((data:any) => {
+                .then((data: any) => {
                     switch (projectTarget) {
                         case 'employer' :
                             let employerData = JSON.parse((data)).employer;
@@ -92,12 +102,13 @@ export class OffersService {
                             if (employerData && employerData.entreprises && employerData.entreprises[0].offers) {
                                 this.offerList = employerData.entreprises[0].offers;
                             }
-                            for(let i = 0 ; i < this.offerList.length ; i++){
+                            for (let i = 0; i < this.offerList.length; i++) {
                                 this.offerList[i].jobData.nbPoste = this.offerList[i].nbPoste;
-                                this.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then((data:any) =>{
+                                this.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then((data: any) => {
                                     this.offerList[i].jobData.prerequisObligatoires = [];
-                                    for(let j = 0 ; j < data.length ; j++)
-                                        this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
+                                    if (data)
+                                        for (let j = 0; j < data.length; j++)
+                                            this.offerList[i].jobData.prerequisObligatoires.push(data[j]);
                                 });
                             }
                             break;
@@ -106,13 +117,13 @@ export class OffersService {
                             if (jobyerData && jobyerData.offers) {
                                 this.offerList = jobyerData.offers;
                             }
-                            for(let i = 0 ; i < this.offerList.length ; i++){
-                                this.loadOfferNecessaryDocuments(this.offerList[i].idOffer).then((data:any) =>{
-                                   if(data && data.length > 0) {
-                                       this.offerList[i].jobData.prerequisObligatoires = [];
-                                       for (let j = 0; j < data.length; j++)
-                                           this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
-                                   }
+                            for (let i = 0; i < this.offerList.length; i++) {
+                                this.loadOfferNecessaryDocuments(this.offerList[i].idOffer).then((data: any) => {
+                                    if (data && data.length > 0) {
+                                        this.offerList[i].jobData.prerequisObligatoires = [];
+                                        for (let j = 0; j < data.length; j++)
+                                            this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
+                                    }
                                 });
                             }
                             break;
@@ -122,8 +133,8 @@ export class OffersService {
         });
     }
 
-    loadOfferPrerequisObligatoires(oid){
-        let sql = "select libelle from user_prerquis where pk_user_prerquis in (select fk_user_prerquis from user_prerequis_obligatoires where fk_user_offre_entreprise="+oid+")";
+    loadOfferPrerequisObligatoires(oid) {
+        let sql = "select libelle, pk_user_prerquis from user_prerquis where pk_user_prerquis in (select fk_user_prerquis from user_prerequis_obligatoires where fk_user_offre_entreprise=" + oid + ")";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -132,7 +143,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -141,8 +152,8 @@ export class OffersService {
         });
     }
 
-    loadOfferNecessaryDocuments(oid){
-        let sql = "select libelle from user_prerquis where pk_user_prerquis in (select fk_user_prerquis from user_prerequis_jobyer where fk_user_offre_jobyer="+oid+")";
+    loadOfferNecessaryDocuments(oid) {
+        let sql = "select libelle from user_prerquis where pk_user_prerquis in (select fk_user_prerquis from user_prerequis_jobyer where fk_user_offre_jobyer=" + oid + ")";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -151,7 +162,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -172,7 +183,8 @@ export class OffersService {
         this.configuration = Configs.setConfigs(projectTarget);
         let offers: any;
         let currentUserVar = this.configuration.currentUserVar;
-        return this.db.get(currentUserVar).then((data:any) => {
+        offerData.jobData.job = Utils.sqlfyText(offerData.jobData.job);
+        return this.db.get(currentUserVar).then((data: any) => {
 
             if (data) {
                 data = JSON.parse((data));
@@ -217,9 +229,49 @@ export class OffersService {
     setOfferInRemote(offerData: any, projectTarget: string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
+        // transforming ancient offer
+        offerData = this.convertOfferToDTO(offerData, projectTarget);
+        // store in remote database
+        let payloadFinal = new CCallout(SAVE_OFFER_CALLOUT_ID, [
+            new CCalloutArguments('Création/Edition offre', offerData),
+            new CCalloutArguments('Configuration', {
+                'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
+                'mode': offerData.idOffer == 0 ? 'creation' : 'edition',
+                'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
+            })
+        ]);
 
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            this.httpRequest.sendCallOut(payloadFinal, this)
+                .subscribe((data: any) => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    if (!data)
+                        return;
+                    this.addedOffer = data;
+                    //save the video link
+                    let idOffer = data.idOffer;
+                    this.updateVideoLink(idOffer, offerData.videolink, projectTarget);
+                    //attach id offer to the offer in local
+                    offerData.idOffer = idOffer;
+                    this.attachIdOfferInLocal(offerData, projectTarget);
+                    console.log('ADDED OFFER IN SERVER : ' + JSON.stringify(this.addedOffer));
+                    resolve(this.addedOffer);
+                });
+        });
+
+    }
+
+    convertOfferToDTO(offerData: any, projectTarget: string): Offer {
+        let myOffer = new Offer();
+
+        //############################### Ancient code part :
         offerData.class = 'com.vitonjob.callouts.auth.model.OfferData';
         offerData.idOffer = 0;
+        offerData.jobData.job = Utils.sqlfyText(offerData.jobData.job);
         offerData.jobyerId = 0;
         offerData.entrepriseId = 0;
         offerData.status = "OUI";
@@ -235,85 +287,79 @@ export class OffersService {
                 break;
         }
         //remove identity key/value from offerData object
-
         delete offerData['identity'];
         delete offerData.jobData['idLevel'];
+        //###############################################################
+
+        // Ancient offer object is ready, now preparing the new offer DTO object:
+        // Job part
+        myOffer.jobData = offerData.jobData;
+        delete myOffer.jobData['pharmaSoftwares'];
+        delete myOffer.jobData['adress'];
+        delete myOffer.jobData['nbPoste'];
+        delete myOffer.jobData['contact'];
+        delete myOffer.jobData['telephone'];
+        myOffer.jobData.epi = [];
+        myOffer.jobData.class = 'com.vitonjob.callouts.offer.model.JobData';
+
+        // Calendar part
+        //myOffer.calendarData = offerData.calendarData;
+        for (let i = 0; i < offerData.calendarData.length; i++) {
+            let calendarSlot = new CalendarSlot();
+            calendarSlot = JSON.parse(JSON.stringify(offerData.calendarData[i]));
+            calendarSlot.class = 'com.vitonjob.callouts.offer.model.CalendarData';
+            calendarSlot.pause = false; // ????
+            myOffer.calendarData.push(calendarSlot);
+        }
+
+        // Quality part
+        //myOffer.qualityData = offerData.qualityData;
+        for (let i = 0; i < offerData.qualityData.length; i++) {
+            let quality = new Quality();
+            quality.id = offerData.qualityData[i].idQuality;
+            quality.class = 'com.vitonjob.callouts.offer.model.QualityData';
+            myOffer.qualityData.push(quality);
+        }
+
+        // Language part
+        for (let i = 0; i < offerData.languageData.length; i++) {
+            let language = new Language();
+            language.class ='com.vitonjob.callouts.offer.model.LanguageData';
+            language.id = offerData.languageData[i].idLanguage;
+            language.level = (offerData.languageData[i].level === 'junior') ? 1 : 2;
+            myOffer.languageData.push(language);
+        }
+
+        // Requirement part
+        for (let i = 0; i < offerData.jobData.prerequisObligatoires.length; i++) {
+            let requirement = new Requirement();
+            requirement.class = 'com.vitonjob.callouts.offer.model.RequirementData';
+            requirement.id = offerData.jobData.prerequisObligatoires[i].id;
+            myOffer.requirementData.push(requirement);
+        }
 
 
-        // store in remote database
-        let stringData = JSON.stringify(offerData);
-        console.log('Adding offer payload : ' + stringData);
+        // Offer part
+        myOffer.nbPoste = offerData.jobData.nbPoste;
+        myOffer.contact = offerData.jobData.contact;
+        myOffer.telephone = offerData.jobData.telephone;
+        myOffer.status = offerData.status;
+        myOffer.title = offerData.title;
+        myOffer.videolink = offerData.videoLink;
+        myOffer.visible = offerData.visible;
 
-        let encoded = btoa(stringData);
-
-        let payload = {
-            'class': 'fr.protogen.masterdata.model.CCallout',
-            id: 10043,//332,
-            args: [{
-                'class': 'fr.protogen.masterdata.model.CCalloutArguments',
-                label: 'creation offre',
-                value: encoded
-            },
-                {
-                    'class': 'fr.protogen.masterdata.model.CCalloutArguments',
-                    label: 'type utilisateur',
-                    value: (projectTarget === 'employer') ? btoa('employeur') : btoa('jobyer')
-                }]
-        };
-
-        return new Promise(resolve => {
-            // We're using Angular Http provider to request the data,
-            // then on the response it'll map the JSON data to a parsed JS object.
-            // Next we process the data and resolve the promise with the new data.
-            let headers = new Headers();
-
-            console.log('offer payload : ' + JSON.stringify(payload));
-            headers = Configs.getHttpJsonHeaders();
-            this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
-
-                .subscribe((data:any) => {
-                    // we've got back the raw data, now generate the core schedule data
-                    // and save the data for later reference
-                    this.addedOffer = data;
-                    //save the video link
-                    let idOffer = JSON.parse(data._body).idOffer;
-                    this.updateVideoLink(idOffer, offerData.videolink, projectTarget);
-                    //attach id offer to the offer in local
-                    offerData.idOffer = idOffer;
-                    this.attachIdOfferInLocal(offerData, projectTarget);
-                    console.log('ADDED OFFER IN SERVER : ' + JSON.stringify(this.addedOffer));
-
-                    if(offerData.jobData.prerequisObligatoires && offerData.jobData.prerequisObligatoires.length>0){
-                        switch (projectTarget) {
-                            case 'employer' :
-                                this.updatePrerequisObligatoires(idOffer,offerData.jobData.prerequisObligatoires);
-                                this.updateOfferEntrepriseTitle(offerData);
-                                break;
-                            case 'jobyer':
-                                this.updateNecessaryDocuments(idOffer,offerData.jobData.prerequisObligatoires);
-                                break;
-                        }
-                    }
-
-                    if(offerData.jobData.pharmaSoftwares && offerData.jobData.pharmaSoftwares.length != 0){
-                        this.saveSoftwares(idOffer, offerData.jobData.pharmaSoftwares);
-                    }
-
-                    resolve(this.addedOffer);
-                });
-        });
-
+        return myOffer;
     }
 
-    updateNbPoste(nbPoste, offerId){
+    updateNbPoste(nbPoste, offerId) {
         let sql = "update user_offre_entreprise set nombre_de_postes = " + nbPoste + " where pk_user_offre_entreprise = " + offerId;
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
-                resolve(data.data);
-            });
+                    resolve(data.data);
+                });
         });
     }
 
@@ -330,7 +376,7 @@ export class OffersService {
             'name': nameOA,
             'streetNumber': streetNumberOA,
             'role': type,
-            'id': ""+idTiers,
+            'id': "" + idTiers,
             'type': 'travaille'
         };
 
@@ -361,11 +407,11 @@ export class OffersService {
 
     }
 
-    updateOfferAdress(id, idOffer, type){
-        let table = type =='jobyer'?'user_offre_jobyer':'user_offre_entreprise';
-        let field = type =='jobyer'?'fk_user_adresse_jobyer':'fk_user_adresse_entreprise';
+    updateOfferAdress(id, idOffer, type) {
+        let table = type == 'jobyer' ? 'user_offre_jobyer' : 'user_offre_entreprise';
+        let field = type == 'jobyer' ? 'fk_user_adresse_jobyer' : 'fk_user_adresse_entreprise';
 
-        let sql = "update "+table+" set "+field+"="+id+" where pk_"+table+"="+idOffer;
+        let sql = "update " + table + " set " + field + "=" + id + " where pk_" + table + "=" + idOffer;
 
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -375,7 +421,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
 
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
@@ -385,12 +431,12 @@ export class OffersService {
         });
     }
 
-    loadOfferAdress(idOffer, type){
-        let to = type =='jobyer'?'user_offre_jobyer':'user_offre_entreprise';
-        let table = type =='jobyer'?'user_adresse_jobyer':'user_adresse_entreprise';
+    loadOfferAdress(idOffer, type) {
+        let to = type == 'jobyer' ? 'user_offre_jobyer' : 'user_offre_entreprise';
+        let table = type == 'jobyer' ? 'user_adresse_jobyer' : 'user_adresse_entreprise';
         let sql = "select adresse_google_maps from user_adresse where pk_user_adresse in (" +
-            "select fk_user_adresse from "+table+" where pk_"+table+" in (" +
-            "select fk_"+table+" from "+to+" where pk_"+to+"="+idOffer+"" +
+            "select fk_user_adresse from " + table + " where pk_" + table + " in (" +
+            "select fk_" + table + " from " + to + " where pk_" + to + "=" + idOffer + "" +
             ")" +
             ")";
 
@@ -402,20 +448,20 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data : any) => {
+                .subscribe((data: any) => {
 
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     let adr = '';
-                    if(data && data.data && data.data.length>0)
+                    if (data && data.data && data.data.length > 0)
                         adr = data.data[0].adresse_google_maps;
                     resolve(adr);
                 });
         });
     }
 
-    updatePrerequisObligatoires(idOffer,plist){
-        let sql = "delete from user_prerequis_obligatoires where fk_user_offre_entreprise="+idOffer;
+    updatePrerequisObligatoires(idOffer, plist) {
+        let sql = "delete from user_prerequis_obligatoires where fk_user_offre_entreprise=" + idOffer;
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -424,14 +470,14 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
 
-                    for(let i = 0 ; i < plist.length ; i++){
-                        this.getPrerequis(plist[i]).then(id=>{
-                            if(id>0){
+                    for (let i = 0; i < plist.length; i++) {
+                        this.getPrerequis(plist[i]).then(id => {
+                            if (id > 0) {
                                 this.doUpdatePrerequisObligatoire(idOffer, id);
-                            }else{
-                                this.insertPrerequis(plist[i]).then(id=>{
+                            } else {
+                                this.insertPrerequis(plist[i]).then(id => {
                                     this.doUpdatePrerequisObligatoire(idOffer, id);
                                 });
                             }
@@ -442,8 +488,8 @@ export class OffersService {
         });
     }
 
-    updateNecessaryDocuments(idOffer,plist){
-        let sql = "delete from user_prerequis_jobyer where fk_user_offre_jobyer="+idOffer;
+    updateNecessaryDocuments(idOffer, plist) {
+        let sql = "delete from user_prerequis_jobyer where fk_user_offre_jobyer=" + idOffer;
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -452,14 +498,14 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
 
-                    for(let i = 0 ; i < plist.length ; i++){
-                        this.getPrerequis(plist[i]).then(id=>{
-                            if(id>0){
+                    for (let i = 0; i < plist.length; i++) {
+                        this.getPrerequis(plist[i]).then(id => {
+                            if (id > 0) {
                                 this.doUpdateNecessaryDocuments(idOffer, id);
-                            }else{
-                                this.insertPrerequis(plist[i]).then(id=>{
+                            } else {
+                                this.insertPrerequis(plist[i]).then(id => {
                                     this.doUpdateNecessaryDocuments(idOffer, id);
                                 });
                             }
@@ -470,8 +516,8 @@ export class OffersService {
         });
     }
 
-    getPrerequis(p){
-        let sql = "select pk_user_prerquis as id from user_prerquis where lower_unaccent(libelle) = lower_unaccent('"+p+"')";
+    getPrerequis(p) {
+        let sql = "select pk_user_prerquis as id from user_prerquis where lower_unaccent(libelle) = lower_unaccent('" + p + "')";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -480,18 +526,18 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
 
                     let id = -1;
-                    if(data.data && data.data.length>0)
+                    if (data.data && data.data.length > 0)
                         id = data.data[0].id;
                     resolve(id);
                 });
         });
     }
 
-    insertPrerequis(p){
-        let sql = "insert into user_prerquis (libelle) values ('"+p+"') returning pk_user_prerquis";
+    insertPrerequis(p) {
+        let sql = "insert into user_prerquis (libelle) values ('" + p + "') returning pk_user_prerquis";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -500,18 +546,18 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
 
                     let id = -1;
-                    if(data.data && data.data.length>0)
+                    if (data.data && data.data.length > 0)
                         id = data.data[0].pk_user_prerquis;
                     resolve(id);
                 });
         });
     }
 
-    doUpdatePrerequisObligatoire(idOffer, idp){
-        let sql = "insert into user_prerequis_obligatoires (fk_user_offre_entreprise, fk_user_prerquis) values ("+idOffer+","+idp+")";
+    doUpdatePrerequisObligatoire(idOffer, idp) {
+        let sql = "insert into user_prerequis_obligatoires (fk_user_offre_entreprise, fk_user_prerquis) values (" + idOffer + "," + idp + ")";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -520,15 +566,15 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
 
                     resolve(data);
                 });
         });
     }
 
-    doUpdateNecessaryDocuments(idOffer, idp){
-        let sql = "insert into user_prerequis_jobyer (fk_user_offre_jobyer, fk_user_prerquis) values ("+idOffer+","+idp+")";
+    doUpdateNecessaryDocuments(idOffer, idp) {
+        let sql = "insert into user_prerequis_jobyer (fk_user_offre_jobyer, fk_user_prerquis) values (" + idOffer + "," + idp + ")";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -537,7 +583,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
 
                     resolve(data);
                 });
@@ -547,7 +593,7 @@ export class OffersService {
     attachIdOfferInLocal(offer, projectTarget) {
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then((data:any) => {
+        this.db.get(currentUserVar).then((data: any) => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -636,7 +682,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.clear();
@@ -667,7 +713,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -695,7 +741,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.listSectors = data.data;
@@ -716,7 +762,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     this.listJobs = data.data;
@@ -744,7 +790,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -767,12 +813,12 @@ export class OffersService {
             sql = 'SELECT pk_user_job as id, user_job.libelle as libelle, fk_user_metier as idsector, user_metier.libelle as libelleSector  ' +
                 'FROM user_job, user_metier ' +
                 'WHERE fk_user_metier = pk_user_metier ' +
-                'AND fk_user_metier =' + idSector+
+                'AND fk_user_metier =' + idSector +
                 "AND user_job.dirty='N'";
         else
             sql = 'SELECT pk_user_job as id, user_job.libelle as libelle, fk_user_metier as idsector, user_metier.libelle as libelleSector ' +
                 'FROM user_job, user_metier ' +
-                'WHERE fk_user_metier = pk_user_metier'+
+                'WHERE fk_user_metier = pk_user_metier' +
                 "AND user_job.dirty='N'";
 
         return new Promise(resolve => {
@@ -783,7 +829,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -818,7 +864,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -846,7 +892,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -875,7 +921,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -905,7 +951,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
 
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
@@ -939,7 +985,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -972,7 +1018,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(data);
@@ -981,6 +1027,7 @@ export class OffersService {
                 });
         });
     }
+
     /*********************************************************************************************************************
      *  COLLECTIVE CONVENTIONS MANAGEMENT
      *********************************************************************************************************************/
@@ -990,18 +1037,18 @@ export class OffersService {
      * @param idjob
      * @returns {Promise<T>}
      */
-    getConvention(id){
+    getConvention(id) {
         let sql = "select pk_user_convention_collective as id, code, libelle " +
             "from user_convention_collective " +
-            "where pk_user_convention_collective ="+id+"";
+            "where pk_user_convention_collective =" + id + "";
 
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
 
-                    if(data.data && data.data.length>0){
+                    if (data.data && data.data.length > 0) {
                         this.convention = data.data[0];
                     }
                     resolve(this.convention);
@@ -1014,15 +1061,15 @@ export class OffersService {
      * @param idConvention
      * @returns {Promise<T>}
      */
-    getConventionNiveaux(idConvention){
-        let sql = "select pk_user_niveau_convention_collective as id, code, libelle from user_niveau_convention_collective where fk_user_convention_collective="+idConvention;
+    getConventionNiveaux(idConvention) {
+        let sql = "select pk_user_niveau_convention_collective as id, code, libelle from user_niveau_convention_collective where fk_user_convention_collective=" + idConvention;
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     let list = [];
-                    if(data.data && data.data.length>0)
+                    if (data.data && data.data.length > 0)
                         list = data.data;
                     resolve(list);
                 });
@@ -1034,15 +1081,15 @@ export class OffersService {
      * @param idConvention
      * @returns {Promise<T>}
      */
-    getConventionCategory(idConvention){
-        let sql = "select pk_user_categorie_convention as id, code, libelle from user_categorie_convention where fk_user_convention_collective="+idConvention;
+    getConventionCategory(idConvention) {
+        let sql = "select pk_user_categorie_convention as id, code, libelle from user_categorie_convention where fk_user_convention_collective=" + idConvention;
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     let list = [];
-                    if(data.data && data.data.length>0)
+                    if (data.data && data.data.length > 0)
                         list = data.data;
                     resolve(list);
                 });
@@ -1054,15 +1101,15 @@ export class OffersService {
      * @param idConvention
      * @returns {Promise<T>}
      */
-    getConventionEchelon(idConvention){
-        let sql = "select pk_user_echelon_convention as id, code, libelle from user_echelon_convention where fk_user_convention_collective="+idConvention;
+    getConventionEchelon(idConvention) {
+        let sql = "select pk_user_echelon_convention as id, code, libelle from user_echelon_convention where fk_user_convention_collective=" + idConvention;
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     let list = [];
-                    if(data.data && data.data.length>0)
+                    if (data.data && data.data.length > 0)
                         list = data.data;
                     resolve(list);
                 });
@@ -1074,15 +1121,15 @@ export class OffersService {
      * @param idConvention
      * @returns {Promise<T>}
      */
-    getConventionCoefficients(idConvention){
-        let sql = "select pk_user_coefficient_convention as id, code, libelle from user_coefficient_convention where fk_user_convention_collective="+idConvention;
+    getConventionCoefficients(idConvention) {
+        let sql = "select pk_user_coefficient_convention as id, code, libelle from user_coefficient_convention where fk_user_convention_collective=" + idConvention;
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     let list = [];
-                    if(data.data && data.data.length>0)
+                    if (data.data && data.data.length > 0)
                         list = data.data;
                     resolve(list);
                 });
@@ -1094,19 +1141,19 @@ export class OffersService {
      * @param idConvention
      * @returns {Promise<T>}
      */
-    getConventionParameters(idConvention){
+    getConventionParameters(idConvention) {
         let sql = "select pk_user_parametrage_convention as id, remuneration_de_reference as rate, " +
             "fk_user_convention_collective as idcc, fk_user_categorie_convention as idcat, " +
             "fk_user_echelon_convention as idechelon, fk_user_coefficient_convention as idcoeff, fk_user_niveau_convention_collective as idniv " +
-            "from user_parametrage_convention where fk_user_convention_collective="+idConvention;
+            "from user_parametrage_convention where fk_user_convention_collective=" + idConvention;
 
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     let list = [];
-                    if(data.data && data.data.length>0)
+                    if (data.data && data.data.length > 0)
                         list = data.data;
                     resolve(list);
                 });
@@ -1116,45 +1163,45 @@ export class OffersService {
     /*********************************************************************************************************************
      *  COLLECTIVE CONVENTIONS ADVANTAGES
      *********************************************************************************************************************/
-    getHoursCategories(idConv){
-        let sql = "select chc.pk_user_coefficient_heure_conventionnee as id, chc.libelle as libelle, cat.code as code from user_coefficient_heure_conventionnee chc, user_categorie_heures_conventionnees cat where chc.fk_user_categorie_heures_conventionnees=cat.pk_user_categorie_heures_conventionnees and fk_user_convention_collective="+idConv;
+    getHoursCategories(idConv) {
+        let sql = "select chc.pk_user_coefficient_heure_conventionnee as id, chc.libelle as libelle, cat.code as code from user_coefficient_heure_conventionnee chc, user_categorie_heures_conventionnees cat where chc.fk_user_categorie_heures_conventionnees=cat.pk_user_categorie_heures_conventionnees and fk_user_convention_collective=" + idConv;
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     let list = [];
-                    if(data.data && data.data.length>0)
+                    if (data.data && data.data.length > 0)
                         list = data.data;
                     resolve(list);
                 });
         });
     }
 
-    getHoursMajoration(idConv){
-        let sql = "select m.pk_user_majoration_heure_conventionnee as id, m.libelle as libelle, c.code as code from user_majoration_heure_conventionnee m, user_categorie_majoration_heure c where m.fk_user_categorie_majoration_heure=c.pk_user_categorie_majoration_heure and fk_user_convention_collective="+idConv;
+    getHoursMajoration(idConv) {
+        let sql = "select m.pk_user_majoration_heure_conventionnee as id, m.libelle as libelle, c.code as code from user_majoration_heure_conventionnee m, user_categorie_majoration_heure c where m.fk_user_categorie_majoration_heure=c.pk_user_categorie_majoration_heure and fk_user_convention_collective=" + idConv;
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     let list = [];
-                    if(data.data && data.data.length>0)
+                    if (data.data && data.data.length > 0)
                         list = data.data;
                     resolve(list);
                 });
         });
     }
 
-    getIndemnites(idConv){
-        let sql = "select pk_user_indemnite_conventionnee as id, i.libelle as libelle, t.code as code from user_indemnite_conventionnee i, user_type_indemnite t where i.fk_user_type_indemnite = t.pk_user_type_indemnite and fk_user_convention_collective="+idConv;
+    getIndemnites(idConv) {
+        let sql = "select pk_user_indemnite_conventionnee as id, i.libelle as libelle, t.code as code from user_indemnite_conventionnee i, user_type_indemnite t where i.fk_user_type_indemnite = t.pk_user_type_indemnite and fk_user_convention_collective=" + idConv;
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     let list = [];
-                    if(data.data && data.data.length>0)
+                    if (data.data && data.data.length > 0)
                         list = data.data;
                     resolve(list);
                 });
@@ -1189,7 +1236,7 @@ export class OffersService {
     updateOfferInLocal(offer, projectTarget) {
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then((data:any) => {
+        this.db.get(currentUserVar).then((data: any) => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -1226,7 +1273,7 @@ export class OffersService {
     updateOfferJob(offer, projectTarget) {
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then((data:any) => {
+        this.db.get(currentUserVar).then((data: any) => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -1263,13 +1310,13 @@ export class OffersService {
         });
 
         if (projectTarget == 'jobyer') {
-            this.updateOfferJobyerJob(offer).then((data:any) => {
+            this.updateOfferJobyerJob(offer).then((data: any) => {
                 this.updateOfferJobyerTitle(offer);
-                
+
             });
 
         } else {
-            this.updateOfferEntrepriseJob(offer).then((data:any) => {
+            this.updateOfferEntrepriseJob(offer).then((data: any) => {
                 this.updateOfferEntrepriseTitle(offer);
             });
         }
@@ -1287,14 +1334,14 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
                     console.log(JSON.stringify(data));
-                    if(offer.jobData.prerequisObligatoires){
+                    if (offer.jobData.prerequisObligatoires) {
 
-                        this.updateNecessaryDocuments(offer.idOffer,offer.jobData.prerequisObligatoires);
+                        this.updateNecessaryDocuments(offer.idOffer, offer.jobData.prerequisObligatoires);
                     }
                     resolve(data);
                 });
@@ -1312,7 +1359,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1333,13 +1380,13 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
-                    if(offer.jobData.prerequisObligatoires){
+                    if (offer.jobData.prerequisObligatoires) {
 
-                        this.updatePrerequisObligatoires(offer.idOffer,offer.jobData.prerequisObligatoires);
+                        this.updatePrerequisObligatoires(offer.idOffer, offer.jobData.prerequisObligatoires);
                     }
                     resolve(data);
                 });
@@ -1348,11 +1395,11 @@ export class OffersService {
 
     updateOfferEntrepriseTitle(offer) {
         let sql = "update user_offre_entreprise set titre='" + this.sqlfyText(offer.title) +
-                    "', tarif_a_l_heure='" + offer.jobData.remuneration +
-                    "', nombre_de_postes = " + offer.nbPoste +
-                    ", contact_sur_place = '" + offer.contact +
-                    "', telephone_contact = '" + offer.telephone +
-                    "' where pk_user_offre_entreprise=" + offer.idOffer;
+            "', tarif_a_l_heure='" + offer.jobData.remuneration +
+            "', nombre_de_postes = " + offer.nbPoste +
+            ", contact_sur_place = '" + offer.contact +
+            "', telephone_contact = '" + offer.telephone +
+            "' where pk_user_offre_entreprise=" + offer.idOffer;
 
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -1362,7 +1409,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1382,7 +1429,7 @@ export class OffersService {
         this.attachQualities(offer, table);
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then((data:any) => {
+        this.db.get(currentUserVar).then((data: any) => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -1429,7 +1476,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1456,7 +1503,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1477,7 +1524,7 @@ export class OffersService {
 
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then((data:any) => {
+        this.db.get(currentUserVar).then((data: any) => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -1524,7 +1571,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1551,7 +1598,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1571,7 +1618,7 @@ export class OffersService {
 
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then((data:any) => {
+        this.db.get(currentUserVar).then((data: any) => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -1618,7 +1665,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1648,7 +1695,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1665,7 +1712,7 @@ export class OffersService {
     deleteOffer(offer, projectTarget) {
         this.configuration = Configs.setConfigs(projectTarget);
         let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then((data:any) => {
+        this.db.get(currentUserVar).then((data: any) => {
             if (data) {
                 data = JSON.parse((data));
                 if (projectTarget === 'employer') {
@@ -1721,7 +1768,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1741,7 +1788,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1765,7 +1812,7 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
                     console.log(JSON.stringify(data));
@@ -1784,57 +1831,57 @@ export class OffersService {
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     console.log(data);
                     resolve(data);
                 });
         });
     }
 
-    selectPrerequis(kw){
-        let sql = "select libelle from user_prerquis where lower_unaccent(libelle) like lower_unaccent('%"+kw+"%') or lower_unaccent(libelle) % lower_unaccent('"+kw+"')";
+    selectPrerequis(kw) {
+        let sql = "select libelle, pk_user_prerquis as id from user_prerquis where lower_unaccent(libelle) like lower_unaccent('%" + kw + "%') or lower_unaccent(libelle) % lower_unaccent('" + kw + "')";
         console.log(sql);
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     console.log(data.data);
                     resolve(data.data);
                 });
         });
     }
 
-    isPrerequisExist(kw){
-        let sql = "select libelle from user_prerquis where lower_unaccent(libelle) = lower_unaccent('"+kw+"')";
+    isPrerequisExist(kw) {
+        let sql = "select libelle from user_prerquis where lower_unaccent(libelle) = lower_unaccent('" + kw + "')";
         console.log(sql);
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     console.log(data.data);
                     resolve(data.data);
                 });
         });
     }
 
-    saveSoftwares(offerId, softwares){
-        let sql="";
-        for(let i = 0; i < softwares.length; i++){
+    saveSoftwares(offerId, softwares) {
+        let sql = "";
+        for (let i = 0; i < softwares.length; i++) {
             sql = sql + " insert into user_logiciels_des_offres (" +
                 "fk_user_offre_entreprise, " +
                 "fk_user_logiciels_pharmaciens" +
                 ") values (" +
-                offerId+", " +
-                "'"+softwares[i].id+"'" +
+                offerId + ", " +
+                "'" + softwares[i].id + "'" +
                 "); ";
         }
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data: any)=> {
+                .subscribe((data: any) => {
                     resolve(data);
                 });
         });
@@ -1867,24 +1914,24 @@ export class OffersService {
         }
     }
 
-    getOfferByIdFromLocal(currentUser, offerId){
+    getOfferByIdFromLocal(currentUser, offerId) {
         let offers = currentUser.employer.entreprises[0].offers;
-        for(let i = 0; i < offers.length; i++){
-            if(offers[i].idOffer == offerId){
+        for (let i = 0; i < offers.length; i++) {
+            if (offers[i].idOffer == offerId) {
                 return offers[i];
             }
         }
         return null;
     }
 
-    selectJobs(kw){
-        let sql = "select pk_user_job as id, libelle from user_job where ( lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')) order by similarity(lower_unaccent(libelle),lower_unaccent('"+this.sqlfyText(kw)+"')) desc";
+    selectJobs(kw) {
+        let sql = "select pk_user_job as id, libelle from user_job where ( lower_unaccent(libelle) like lower_unaccent('%" + this.sqlfyText(kw) + "%') or lower_unaccent(libelle) % lower_unaccent('" + this.sqlfyText(kw) + "')) order by similarity(lower_unaccent(libelle),lower_unaccent('" + this.sqlfyText(kw) + "')) desc";
         console.log(sql);
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
-                .subscribe((data:any) => {
+                .subscribe((data: any) => {
                     resolve(data.data);
                 });
         });

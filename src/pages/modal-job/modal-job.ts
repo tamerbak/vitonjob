@@ -19,6 +19,8 @@ import {PopoverAutocompletePage} from "../popover-autocomplete/popover-autocompl
 import {AuthenticationService} from "../../providers/authentication-service/authentication-service";
 import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
 import {Storage} from "@ionic/storage";
+import {EnvironmentService} from "../../providers/environment-service/environment-service";
+import {Utils} from "../../utils/utils";
 //import {Element} from "@angular/compiler";
 
 
@@ -102,6 +104,7 @@ export class ModalJobPage {
   public isNiveauxConventionsFound: boolean = true;
 
   public showPrerequisBtn: boolean = false;
+  public firstInit: boolean = false;
 
   public static CONV_FILTER_NIV = 0;
   public static CONV_FILTER_ECH = 1;
@@ -145,7 +148,7 @@ export class ModalJobPage {
   /*
    * PREREQUIS
    */
-  public prerequisOb: string = '';
+  public prerequisOb: any;
   public prerequisObList: any = [];
   public prerequisObligatoires: any = [];
 
@@ -180,6 +183,7 @@ export class ModalJobPage {
               os: OffersService,
               params: NavParams,
               platform: Platform,
+              public environmentService:EnvironmentService,
               private zone: NgZone,
               private authService: AuthenticationService,
               public offersService: OffersService,
@@ -203,16 +207,18 @@ export class ModalJobPage {
       libelle: ''
     };
 
+    this.prerequisOb = '';
+
     // this.currentUser = config.currentUserVar;
 
     let self = this;
-
+    this.environmentService.reload();
     this.storage.get(config.currentUserVar).then((value) => {
       if (value) {
         let currentUser = JSON.parse(value);
 
         self.projectTarget = (currentUser.estRecruteur ? 'employer' : (currentUser.estEmployeur ? 'employer' : 'jobyer'));
-
+        
         if (currentUser.estEmployeur && currentUser.employer.entreprises[0].conventionCollective.id > 0) {
           // Load collective convention
           self.offersService.getConvention(currentUser.employer.entreprises[0].conventionCollective.id).then(c => {
@@ -269,6 +275,48 @@ export class ModalJobPage {
 
     this.offerService = os;
     this.initializeJobForm(params);
+
+    this.storage.get(config.currentUserVar).then((value) => {
+      if (value) {
+        let currentUser = JSON.parse(value);
+        if(this.jobData && this.firstInit){
+          if(self.projectTarget == "employer"){
+            if(this.jobData.contact === ''){
+              this.jobData.contact =(currentUser.prenom + " " + currentUser.nom).trim();
+            }
+            if(this.jobData.telephone === ''){
+              this.jobData.telephone=(Utils.isEmpty(currentUser.tel) == false) ? currentUser.tel.replace('+33', '0') : ''
+            }
+            console.log("*",this.jobData.adress);
+            if(this.jobData.adress.fullAdress == ''){
+              console.log(currentUser.employer.entreprises[0].siegeAdress);
+              let siegeAddress = currentUser.employer.entreprises[0].siegeAdress;
+              this.searchData = siegeAddress.fullAdress;
+              //this.fullAdress = siegeAddress.fullAdress;
+              this.name = siegeAddress.name;
+              this.streetNumber = siegeAddress.streetNumber;
+              this.street = siegeAddress.street;
+              this.zipCode = siegeAddress.zipCode;
+              this.city = siegeAddress.city;
+              this.country = siegeAddress.country;
+            }
+
+          }else{
+            if(this.jobData.adress.fullAdress == ''){
+              let personalAdress = currentUser.jobyer.personnalAdress;
+              this.searchData = personalAdress.fullAdress;
+              //this.fullAdress = personalAdress.fullAdress;
+              this.name = personalAdress.name;
+              this.streetNumber = personalAdress.streetNumber;
+              this.street = personalAdress.street;
+              this.zipCode = personalAdress.zipCode;
+              this.city = personalAdress.city;
+              this.country = personalAdress.country;
+            }
+          }
+        }
+      }
+    });
 
     this.alertOptions = {
       title: 'Devise',
@@ -350,23 +398,23 @@ export class ModalJobPage {
 
   preqOSelected(p) {
     this.showPrerequisBtn = true;
-    this.prerequisOb = p.libelle;
+    this.prerequisOb = p;
     this.prerequisObList = [];
   }
 
   addPrerequis() {
     for (let i = 0; i < this.prerequisObligatoires.length; i++)
-      if (this.prerequisObligatoires[i].toLowerCase() == this.prerequisOb.toLocaleLowerCase())
+      if (this.prerequisObligatoires[i].libelle.toLowerCase() == this.prerequisOb.libelle.toLocaleLowerCase())
         return;
     this.prerequisObligatoires.push(this.prerequisOb);
-    this.prerequisOb = '';
+    this.prerequisOb.libelle = '';
   }
 
   removePrerequis(p, chip:Element) {
 
     let index = -1;
     for (let i = 0; i < this.prerequisObligatoires.length; i++)
-      if (this.prerequisObligatoires[i] == p) {
+      if (this.prerequisObligatoires[i].libelle == p.libelle) {
         index = i;
         break;
       }
@@ -384,8 +432,10 @@ export class ModalJobPage {
     let jobData = params.get('jobData');
 
     if (jobData) {
-
+      this.firstInit  = false;
       this.jobData = jobData;
+      this.savedSoftwares = this.jobData.pharmaSoftwares;
+      console.log(jobData);
       if (this.jobData.prerequisObligatoires)
         this.prerequisObligatoires = this.jobData.prerequisObligatoires;
       if (this.jobData.adress) {
@@ -400,6 +450,8 @@ export class ModalJobPage {
       }
 
     } else {
+      this.firstInit  = true;
+      this.searchData = '';
       this.jobData = {
         'class': "com.vitonjob.callouts.auth.model.JobData",
         job: "",
@@ -422,8 +474,8 @@ export class ModalJobPage {
           country: ''
         },
         nbPoste:1,
-        contact:"",
-        telephone:""
+        contact:'',
+        telephone: ''
       }
     }
   }

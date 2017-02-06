@@ -16,15 +16,28 @@
             <ion-option *ngFor="let s of softwares" [value] = "s">{{s.nom}}</ion-option>
         </ion-select>
     </ion-item>
-    <ion-item>
-        <ion-label floating>Année d'expérience</ion-label>
-        <ion-input type="number" [(ngModel)]="software.experience"></ion-input>
-    </ion-item>
+    <div>
+        <ion-list radio-group [(ngModel)]="software.niveau">
+            <ion-list-header style="margin-left: 0; padding: 0 0 0 0;" color="primary">
+                <h5 style="margin-bottom: 0; margin-top: auto">
+                   Niveau
+                </h5>
+            </ion-list-header>
+            <ion-item>
+                <ion-label>Partiellement maîtrisé</ion-label>
+                <ion-radio value="1"></ion-radio>
+            </ion-item>
+            <ion-item>
+                <ion-label>Totalement maîtrisé</ion-label>
+                <ion-radio value="2"></ion-radio>
+            </ion-item>
+        </ion-list>
+    </div>
 
     <ion-row>
         <ion-col text-center>
             <button ion-button icon-left small
-                    [color]="themeColor" (click)="addSoftware(software)">
+                    [color]="themeColor" (click)="addSoftware(software)" [disabled]="software.nom==''">
                 <ion-icon name="checkmark-circle"></ion-icon>
                 Ajouter
             </button>
@@ -33,7 +46,7 @@
 
     <ion-list>
         <ion-item *ngFor="let s of savedSoftwares">
-            <label>{{s.nom}} - {{s.experience}}</label>
+            <label>{{s.nom}} - {{s.niveau == 1 ? 'partiellement maîtrisé':'totalement maîtrisé'}}</label>
             <button ion-button small item-right danger (click)="removeSoftware(s)" color="vojgrey">
                 <ion-icon name="remove-circle"></ion-icon>
             </button>
