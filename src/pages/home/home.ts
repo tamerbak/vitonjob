@@ -39,6 +39,7 @@ import {
 } from "ionic-native";
 import {ModalHelpPage} from "../modal-help/modal-help";
 import {CommunesService} from "../../providers/communes-service/communes-service";
+import {GoogleAnalyticsService} from "../../providers/google-analytics-service/google-analytics-serivce";
 
 declare let SpeechRecognition;
 declare let require;
@@ -148,6 +149,7 @@ export class HomePage {
                 private _modal: ModalController,
                 private _popover: PopoverController,
                 private _toast: ToastController,
+                private _gaService: GoogleAnalyticsService,
                 private _loading: LoadingController, public storage: Storage, public cityServices: CommunesService) {
         // Get target to determine configs
         this.projectTarget = _globalConfig.getProjectTarget();
@@ -682,10 +684,15 @@ export class HomePage {
     }
 
     onFocus() {
-        if (this.projectTarget == 'employer')
-            this.searchPlaceHolder = (this.isCity.activated) ? "Saisissez une ville" : "Saisissez le job sur lequel vous recrutez";// débutant disponible demain sur Villepinte";
-        else
-            this.searchPlaceHolder = "Saisissez le job que vous souhaitez";//Je cherche une offre d'emploi pour serveur débutant demain sur Villepinte";
+        if(this.isCity.activated){
+            this.searchPlaceHolder = "Saisissez une ville" ;
+        } else {
+            if (this.projectTarget == 'employer')
+                this.searchPlaceHolder = "Saisissez le job sur lequel vous recrutez";
+            else
+                this.searchPlaceHolder = "Saisissez le job que vous souhaitez";
+        }
+
     }
 
     onBlur() {

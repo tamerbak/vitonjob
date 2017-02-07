@@ -129,6 +129,7 @@ import {PrerequisitesInfosPage} from "../pages/prerequisites-infos/prerequisites
 import {HttpRequestHandler} from "../http/http-request-handler";
 import {ModalPeriodPage} from "../pages/modal-period/modal-period";
 import {IntroPage} from "../pages/intro/intro";
+import {GoogleAnalyticsService} from "../providers/google-analytics-service/google-analytics-serivce";
 
 @NgModule({
     declarations: [
@@ -358,7 +359,8 @@ import {IntroPage} from "../pages/intro/intro";
         NumSSConstraints,
         AccountReferencesService,
         EnvironmentService,
-        HttpRequestHandler
+        HttpRequestHandler,
+        GoogleAnalyticsService
     ]
 })
 export class AppModule {

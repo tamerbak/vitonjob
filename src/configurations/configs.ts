@@ -147,6 +147,8 @@ export class Configs {
         'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/fssjs':
         'https://app.vitonjob.com/api/fssjs';
 
+    public static GA_INITIALIZED:boolean=false;
+
     public static getHttpJsonHeaders() {
         let headers = new Headers();
         headers.append("Content-Type", 'application/json');
@@ -180,5 +182,7 @@ export class Configs {
 
         return null;
     }
+
+
 }
 

@@ -238,12 +238,13 @@ export class AdvertService {
 
   getInterestOffer(offerId, jobyerId){
     let sql = "select * from user_candidatures_aux_offres where fk_user_offre_entreprise = " + offerId + " and fk_user_jobyer = " + jobyerId;
-
+    debugger;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
           .map(res => res.json())
           .subscribe(data => {
+            debugger;
             resolve(data);
           });
     });
