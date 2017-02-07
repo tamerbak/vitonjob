@@ -23,6 +23,8 @@ import {GlobalService} from "../../providers/global-service/global-service";
 import {OfferTempQuotePage} from "../offer-temp-quote/offer-temp-quote";
 import {Storage} from "@ionic/storage";
 import {EnvironmentService} from "../../providers/environment-service/environment-service";
+//import {LoadListService} from "../../providers/load-list-service/load-list-service";
+import {Utils} from "../../utils/utils";
 
 /*
  Generated class for the OfferDetailPage page.
@@ -100,6 +102,7 @@ export class OfferDetailPage {
 
     // Get Offer passed in NavParams
     this.offer = params.get('selectedOffer');
+
     this.fromPage = params.get('fromPage');
     this.canModify = (params.get('modifyOffer') == false ? false : true);
 
@@ -133,12 +136,23 @@ export class OfferDetailPage {
       fontWeight: "bolder"
     };
 
+    /*if (!Utils.isEmpty(this.offer.qualityData)) {
+      this.listService.loadList("qualite", this.offer.qualityData).then((data: any) => {
+        this.offer.qualityData = data;
+      });
+    }*/
+
     this.languageStyle = {
       backgroundImage: {'background-image': "url('assets/img/language.png')"},
       fontColor: "white",
       buttonColor: "white",//transparent
       fontWeight: "bolder"
     };
+    /*if (!Utils.isEmpty(this.offer.languageData)) {
+      this.listService.loadList("langue", this.offer.languageData).then((data: any) => {
+        this.offer.languageData = data;
+      });
+    }*/
 
     this.calendarStyle = {
       backgroundImage: {'background-image': "url('assets/img/calendar.png')"},
