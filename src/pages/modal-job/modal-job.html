@@ -268,7 +268,7 @@
   <!-- logiciels des pharmaciens -->
   <ion-item *ngIf="softwares != 0 && isEmployer && environmentService.get('EMPLOYER_PHARMA')=='true'">
     <ion-label floating>Logiciel(s) maîtrisé(s)</ion-label>
-    <ion-select [(ngModel)]="software">
+    <ion-select [(ngModel)]="software" okText="OK" cancelText="Annuler">
       <ion-option *ngFor="let s of softwares" [value] = "s">{{s.nom}}</ion-option>
     </ion-select>
     <button small item-right (click)="addSoftware(software)" ion-button
