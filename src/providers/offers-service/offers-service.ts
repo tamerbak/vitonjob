@@ -318,6 +318,7 @@ export class OffersService {
         for (let i = 0; i < offerData.qualityData.length; i++) {
             let quality = new Quality();
             quality.id = offerData.qualityData[i].idQuality;
+            quality.libelle = offerData.qualityData[i].libelle;
             quality.class = 'com.vitonjob.callouts.offer.model.QualityData';
             myOffer.qualityData.push(quality);
         }
@@ -327,6 +328,7 @@ export class OffersService {
             let language = new Language();
             language.class ='com.vitonjob.callouts.offer.model.LanguageData';
             language.id = offerData.languageData[i].idLanguage;
+            language.libelle = offerData.languageData[i].libelle;
             language.level = (offerData.languageData[i].level === 'junior') ? 1 : 2;
             myOffer.languageData.push(language);
         }
