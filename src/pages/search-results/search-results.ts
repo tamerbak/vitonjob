@@ -220,15 +220,7 @@ export class SearchResultsPage implements OnInit {
                         let r = this.searchResults[i];
                         r.jobyerInterested  = false;
                         r.jobyerInterestLabel = "Cette offre m'intéresse";
-                        this.setInterestButtonLabel(r).then((data: any) => {
-                            if(data && data.data && data.data.length  > 0){
-                                r.jobyerInterested = true;
-                                r.jobyerInterestLabel = "Cette offre ne m'intéresse plus";
-                            }else{
-                                r.jobyerInterested = false;
-                                r.jobyerInterestLabel = "Cette offre m'intéresse";
-                            }
-                        });
+                        this.setInterestButtonLabel(r);
                         r.matching = Number(r.matching).toFixed(2);
                         r.rate = Number(r.rate).toFixed(2);
                         r.index = i + 1;
@@ -985,7 +977,16 @@ export class SearchResultsPage implements OnInit {
         if (!this.currentUser || !this.currentUser.jobyer) {
             return item;
         }
-        return this.advertService.getInterestOffer(item.idOffre, this.currentUser.jobyer.id);
+        return this.advertService.getInterestOffer(item.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+            debugger;
+            if(data && data.data && data.data.length  > 0){
+                item.jobyerInterested = true;
+                item.jobyerInterestLabel = "Cette offre ne m'intéresse plus";
+            }else{
+                item.jobyerInterested = false;
+                item.jobyerInterestLabel = "Cette offre m'intéresse";
+            }
+        });
     }
 
     formatNumbers (num):string {

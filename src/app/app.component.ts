@@ -34,6 +34,7 @@ import {MissionListPage} from "../pages/mission-list/mission-list";
 import {ProfilePage} from "../pages/profile/profile";
 import {PendingContractsPage} from "../pages/pending-contracts/pending-contracts";
 import {Observable} from "rxjs/Rx";
+import {IntroPage} from "../pages/intro/intro";
 //import {isUndefined} from "ionic-angular/util/util";
 
 //declare let cordova;
