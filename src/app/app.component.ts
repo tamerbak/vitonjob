@@ -152,7 +152,6 @@ export class Vitonjob {
 
         //  Initialize sectors and job lists
         this.offerService.loadSectorsToLocal();
-        this.offerService.loadJobsToLocal();
     }
 
     getRootPage() {

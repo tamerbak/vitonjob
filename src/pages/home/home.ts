@@ -129,6 +129,9 @@ export class HomePage {
     public isCity: {activated: boolean, found: boolean, done: boolean};
     public cities: any = [];
 
+    public lookingForJob: boolean = false;
+    public pendingJob : string = '';
+
 
     /*static get parameters() {
      return [[GlobalConfigs], [App], [NavController], [NavParams], [SearchService],
@@ -169,9 +172,7 @@ export class HomePage {
         });
 
         // Get job list
-        this.storage.get("JOB_LIST").then((data: any) => {
-            this.jobList = JSON.parse(data);
-        });
+        this.jobList = [];
 
         this.keyboard = kb;
         // page push
@@ -767,14 +768,22 @@ export class HomePage {
             return;
         }
 
+        if(this.lookingForJob){
+            this.pendingJob = val;
+            return;
+        }
+
         this.jobs = [];
+        this.jobList = [];
         this.newCombination = [];
         this.cities = [];
-        let removeDiacritics = require('diacritics').remove;
-        for (let i = 0; i < this.jobList.length; i++) {
-            let s = this.jobList[i];
-            let sectorIndex = 0;
-            if (removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase()) > -1) {
+        this.lookingForJob = true;
+        this.offersService.autocompleteJobs(val).then((data : any)=>{
+            this.jobList = data;
+
+            for (let i = 0; i < this.jobList.length; i++) {
+                let s = this.jobList[i];
+                let sectorIndex = 0;
                 let currentJob = s;
                 if (this.newCombination.filter((elem, pos) => {
                         sectorIndex = pos;
@@ -786,15 +795,54 @@ export class HomePage {
                 }
             }
 
-        }
+            this.lookingForJob = false;
+
+            if(this.pendingJob && this.pendingJob.length> 0){
+                this.reexecuteAutocomplete(this.pendingJob);
+
+            }
+
+        });
 
         this.jobs = this.newCombination.sort((a, b) => {
             return b.sector - a.sector;
         });
 
         this.isJobFound = (this.jobs.length == 0);
+    }
 
+    reexecuteAutocomplete(val){
+        this.jobs = [];
+        this.jobList = [];
+        this.newCombination = [];
+        this.cities = [];
+        this.lookingForJob = true;
+        this.pendingJob = '';
+        this.offersService.autocompleteJobs(val).then((data : any)=>{
+            this.jobList = data;
 
+            for (let i = 0; i < this.jobList.length; i++) {
+                let s = this.jobList[i];
+                let sectorIndex = 0;
+                let currentJob = s;
+                if (this.newCombination.filter((elem, pos) => {
+                        sectorIndex = pos;
+                        return elem.idSector === s.idsector;
+                    }).length > 0) {
+                    this.newCombination[sectorIndex].jobs.push(currentJob);
+                } else {
+                    this.newCombination.push({idSector: s.idsector, sector: s.sector, jobs: [currentJob]});
+                }
+            }
+
+            this.lookingForJob = false;
+        });
+
+        this.jobs = this.newCombination.sort((a, b) => {
+            return b.sector - a.sector;
+        });
+
+        this.isJobFound = (this.jobs.length == 0);
     }
 
     jobSelected(job) {

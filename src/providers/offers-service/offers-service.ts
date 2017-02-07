@@ -774,6 +774,84 @@ export class OffersService {
         });
     }
 
+    loadAllJobs() {
+        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier and j.dirty='N' order by j.libelle asc";
+        console.log(sql);
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe((data: any) => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    this.listJobs = data.data;
+                    this.db.set('JOB_LIST', JSON.stringify(this.listJobs));
+                    resolve(this.listJobs);
+                });
+        });
+    }
+
+    autocompleteJobs(job : string){
+        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
+            " from user_job j, user_metier m " +
+            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('%"+job+"%')) " +
+            "order by j.libelle asc limit 5";
+
+
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe((data: any) => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    console.log(JSON.stringify(data));
+                    this.listJobs = data.data;
+                    resolve(this.listJobs);
+                });
+        });
+    }
+
+    autocompleteJobsSector(job : string, idSector : number){
+        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
+            " from user_job j, user_metier m " +
+            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('%"+job+"%')) " +
+            "order by j.libelle asc limit 5";
+
+        if(idSector>0){
+            sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
+                " from user_job j, user_metier m " +
+                "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('%"+job+"%')) and fk_user_metier="+idSector +
+                "order by j.libelle asc limit 5";
+        }
+
+
+        return new Promise(resolve => {
+            // We're using Angular Http provider to request the data,
+            // then on the response it'll map the JSON data to a parsed JS object.
+            // Next we process the data and resolve the promise with the new data.
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe((data: any) => {
+                    // we've got back the raw data, now generate the core schedule data
+                    // and save the data for later reference
+                    console.log(JSON.stringify(data));
+                    this.listJobs = data.data;
+                    resolve(this.listJobs);
+                });
+        });
+    }
+
     /**
      * @description     loading sector list
      * @return sector list in the format {id : X, libelle : X}
