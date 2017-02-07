@@ -9,7 +9,7 @@
   <ion-list>
     <ion-item>
       <ion-label floating>Langue</ion-label>
-      <ion-select [(ngModel)]="selectedLangue">
+      <ion-select [(ngModel)]="selectedLangue" okText="OK" cancelText="Annuler">
         <ion-option *ngFor="let q of langues"
                     value="{{q.id}}">
           {{q.libelle}}

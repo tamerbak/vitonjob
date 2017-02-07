@@ -37,7 +37,7 @@
 
     <ion-item>
         <ion-label id="label-civi" [ngStyle]="titlestyle" floating>Titre de civilité <span class="asterisk">*</span></ion-label>
-        <ion-select id="in-select" [(ngModel)]="title" (ionChange)="titleChange()">
+        <ion-select id="in-select" [(ngModel)]="title" (ionChange)="titleChange()" okText="OK" cancelText="Annuler">
             <ion-option value="Mme">Mme</ion-option>
             <ion-option value="Mlle">Mlle</ion-option>
             <ion-option value="M.">M.</ion-option>
@@ -87,7 +87,7 @@
 
         <ion-item [hidden]="!isEmployer">
             <ion-label floating>Convention collective</ion-label>
-            <ion-select id="in-select" [(ngModel)]="conventionId" (ionChange)="watchConvention($event)">
+            <ion-select id="in-select" [(ngModel)]="conventionId" (ionChange)="watchConvention($event)" okText="OK" cancelText="Annuler">
                 <ion-option *ngFor="let c of conventions" (click)="convSelected(c)" value="{{c.id}}">
                     {{c.code}} - {{c.libelle}}
                 </ion-option>
@@ -116,7 +116,7 @@
 
         <ion-item [hidden]="isEmployer">
             <ion-label floating>Pays de naissance <span class="asteriskb">*</span></ion-label>
-            <ion-select [(ngModel)]="index" (ionChange)="watchBirthCountry()">
+            <ion-select [(ngModel)]="index" (ionChange)="watchBirthCountry()" okText="OK" cancelText="Annuler">
                 <ion-option *ngFor="let p of pays" [value] = "p.indicatif_telephonique" value="p.nom">{{p.nom}}</ion-option>
             </ion-select>
         </ion-item>
@@ -170,7 +170,7 @@
 
         <ion-item [hidden]="isEmployer">
             <ion-label [ngStyle]="nationalitiesstyle" floating>Nationalité</ion-label>
-            <ion-select [(ngModel)]="nationality" (ionChange)="onChangeNationality($event)">
+            <ion-select [(ngModel)]="nationality" (ionChange)="onChangeNationality($event)" okText="OK" cancelText="Annuler">
                 <ion-option *ngFor="let n of nationalities" value="{{n.pk_user_nationalite}}">{{n.libelle}}</ion-option>
             </ion-select>
         </ion-item>
@@ -245,7 +245,7 @@
         </ion-item>
         <ion-item [hidden]="isEmployer">
             <ion-label [ngStyle]="nationalitiesstyle" floating>Délivré par <span class="asteriskb">*</span></ion-label>
-            <ion-select [(ngModel)]="prefecture">
+            <ion-select [(ngModel)]="prefecture" okText="OK" cancelText="Annuler">
                 <ion-option *ngFor="let n of prefectures" value="{{n.pk_user_prefecture}}">{{n.nom}}</ion-option>
             </ion-select>
         </ion-item>

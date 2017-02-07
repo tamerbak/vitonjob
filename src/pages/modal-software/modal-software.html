@@ -12,7 +12,7 @@
 <ion-content padding class="modal-software">
     <ion-item>
         <ion-label floating>Logiciel</ion-label>
-        <ion-select [(ngModel)]="software">
+        <ion-select [(ngModel)]="software" okText="OK" cancelText="Annuler">
             <ion-option *ngFor="let s of softwares" [value] = "s">{{s.nom}}</ion-option>
         </ion-select>
     </ion-item>
