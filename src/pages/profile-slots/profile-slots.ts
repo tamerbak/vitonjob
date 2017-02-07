@@ -52,7 +52,6 @@ export class ProfileSlotsPage {
 
     this.maxDate =""+ (today.getFullYear()+ maxYearsNum )+ "-12"+"-31";
     this.minDate = this.formatDate(today.getFullYear(),today.getMonth()+1,today.getDate());
-    console.log(this.minDate,this.maxDate);
 
     //load saved slots
     if (params.get('savedSlots') && params.get('savedSlots').length > 0) {
