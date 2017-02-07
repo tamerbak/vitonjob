@@ -37,6 +37,13 @@ export class HttpRequestHandler {
         HttpRequestHandler.loadingCtrl = this.loading;
     }
 
+    /**
+     * Send SQL request via http post method
+     * @param sql
+     * @param classObject
+     * @param silentMode
+     * @returns {Observable<T>}
+     */
     sendSql(sql : string, classObject?: any, silentMode?: boolean){
         if (silentMode !== true)
             HttpRequestHandler.presentLoading();

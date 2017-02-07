@@ -388,13 +388,6 @@ export class Vitonjob {
                 component: MissionListPage,
                 icon: "paper",
                 isBadged: false
-            },
-            {
-                title: (this.isEmployer ? "Mes annonces" : "Annonces"),
-                description: "Gestion des annonces et leurs relations avec les offres",
-                component: AdvertListPage,
-                icon: "clipboard",
-                isBadged: false
             }
             //{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
         ];
