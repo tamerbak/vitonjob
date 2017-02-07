@@ -106,8 +106,8 @@ export class CivilityPage {
     public mintsejToDate: any;
 
     /*
-   * Multiple uploads
-   */
+     * Multiple uploads
+     */
     public allImages: any[];
     public currentImg: any;
     public currentHeightIndex: number = 0;
@@ -115,6 +115,9 @@ export class CivilityPage {
     public scanData: string = "";
     public accountId: string;
     public userRoleId: string;
+    public scansLoading : boolean = true;
+    public scansLoadingTitle : string;
+
     /*
      Gestion des conventions collectives
      */
@@ -233,10 +236,12 @@ export class CivilityPage {
                 this.nationalities = data.data;
                 //initialize nationality with (9 = francais)
                 this.scanTitle = " de votre titre d'identité";
+                this.scansLoadingTitle = "scans de votre titre d'identité";
                 this.nationalitiesstyle = {'font-size': '1.4rem'};
                 this.loadAttachement(this.scanTitle);
             });
         } else {
+            this.scansLoadingTitle = "scans de votre extrait k-bis";
             this.scanTitle = " de votre extrait k-bis";
             this.loadAttachement(this.scanTitle);
             this.loadListService.loadConventions().then((response: any) => {
@@ -287,22 +292,24 @@ export class CivilityPage {
         this.environmentService.reload();
     }
 
-  loadAttachement(scanTitle) {
-    // Get scan
-    this.attachementService.loadAttachementsByFolder(this.currentUser, 'Scans').then((attachments: any) => {
-      let allImagesTmp = [];
-      for (let i = 0; i < attachments.length; ++i) {
-        if (attachments[i].fileName.substr(0, 4 + scanTitle.length) == "scan" + scanTitle) {
-          this.attachementService.downloadActualFile(attachments[i].id, attachments[i].fileName).then((data: any)=> {
-            allImagesTmp.push({
-              data: data.stream
-            });
-          });
-        }
-      }
-      this.allImages = allImagesTmp;
-    });
-  }
+    loadAttachement(scanTitle) {
+        // Get scan
+        this.scansLoading = true;
+        this.attachementService.loadAttachementsByFolder(this.currentUser, 'Scans').then((attachments: any) => {
+            let allImagesTmp = [];
+            for (let i = 0; i < attachments.length; ++i) {
+                if (attachments[i].fileName.substr(0, 4 + scanTitle.length) == "scan" + scanTitle) {
+                    this.attachementService.downloadActualFile(attachments[i].id, attachments[i].fileName).then((data: any)=> {
+                        allImagesTmp.push({
+                            data: data.stream
+                        });
+                    });
+                }
+            }
+            this.allImages = allImagesTmp;
+            this.scansLoading = false;
+        });
+    }
 
 //    ngAfterViewInit(): void {
 //     var self = this;
@@ -320,47 +327,47 @@ export class CivilityPage {
 //     });
 //    }
 
-  updateScan(accountId, userId, role) {
-    if (this.allImages && this.allImages.length > 0) {
-      if (accountId) {
-        for (let i = 0; i < this.allImages.length; i++) {
-          let index = i + 1;
-          this.attachementService.uploadFileByFolder(this.currentUser, 'scan' + this.scanTitle + ' ' + index, this.allImages[i].data, 'Scans').then((data: any) => {
-            if (data && data.id != 0) {
-              this.attachementService.uploadActualFile(data.id, data.fileName, this.allImages[i].data);
+    updateScan(accountId, userId, role) {
+        if (this.allImages && this.allImages.length > 0) {
+            if (accountId) {
+                for (let i = 0; i < this.allImages.length; i++) {
+                    let index = i + 1;
+                    this.attachementService.uploadFileByFolder(this.currentUser, 'scan' + this.scanTitle + ' ' + index, this.allImages[i].data, 'Scans').then((data: any) => {
+                        if (data && data.id != 0) {
+                            this.attachementService.uploadActualFile(data.id, data.fileName, this.allImages[i].data);
+                        }
+                    });
+                }
             }
-          });
+            this.currentUser.scanUploaded = false;
+            this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
         }
-      }
-      this.currentUser.scanUploaded = false;
-      this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
     }
-  }
     /**
-   * pickers
-   */
-  setBirthplacePicker() {
-      this.showBirthplaceList();
-  }
+     * pickers
+     */
+    setBirthplacePicker() {
+        this.showBirthplaceList();
+    }
 
-  setBirthdepPicker() {
-      this.showBirthdepList();
-  }
+    setBirthdepPicker() {
+        this.showBirthdepList();
+    }
 
-  showBirthplaceList() {
+    showBirthplaceList() {
 
-      let selectionModel = this.modal.create(ModalSelectionPage,
-        {type: 'lieu de naissance', items: [], selection: this,birthDep:this.selectedBirthDep});
-      selectionModel.present();
+        let selectionModel = this.modal.create(ModalSelectionPage,
+            {type: 'lieu de naissance', items: [], selection: this,birthDep:this.selectedBirthDep});
+        selectionModel.present();
 
 
-  }
+    }
 
-  showBirthdepList() {
-      let selectionModel = this.modal.create(ModalSelectionPage,
-        {type: 'département de naissance', items: [], selection: this});
-      selectionModel.present();
-  }
+    showBirthdepList() {
+        let selectionModel = this.modal.create(ModalSelectionPage,
+            {type: 'département de naissance', items: [], selection: this});
+        selectionModel.present();
+    }
 
 
     watchConvention(e) {
@@ -479,7 +486,7 @@ export class CivilityPage {
         this.selectedCommune = commune;
         this.communes = [];
         if (!this.isEmployer) {
-            
+
             this.showNSSError();
         }
     }
@@ -546,7 +553,7 @@ export class CivilityPage {
                                     this.indexForForeigner = "99" + " " + this.index;
                                 }
                             });
-                            
+
                             this.regionId = data.fk_user_identifiants_nationalite;
                             this.isEuropean = this.regionId == "42" ? 1 : 0;
                             if (this.isEuropean == 0) {
@@ -634,7 +641,7 @@ export class CivilityPage {
                             this.tsejFromDate = this.tsejProvideDate;
                         }
                     }
-                    
+
 
                     if (jobyer.identifiantNationalite && jobyer.identifiantNationalite > 0) {
                         this.idnationality = jobyer.identifiantNationalite;
@@ -647,7 +654,7 @@ export class CivilityPage {
 
                     }
 
-                    
+
                 }
                 if (!this.isRecruiter) {
                     if (this.currentUser.scanUploaded) {
@@ -1240,7 +1247,7 @@ export class CivilityPage {
             (document.getElementById("cvInput") as any).value = "";
             console.log("Format du fichier non valide")
         }
-        
+
     }
 
     /**
