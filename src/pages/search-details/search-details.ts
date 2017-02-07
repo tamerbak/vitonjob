@@ -186,12 +186,15 @@ export class SearchDetailsPage implements OnInit {
     //  Loading score
     let resultType = !this.isEmployer;
     //let id = this.result.idOffre;
-    let id = (!this.isEmployer ? this.result.entrepriseId : this.result.idJobyer);
-    this.notationService.loadSearchNotationByProfil(resultType, id).then(score => {
-
-      this.rating = score;
-      this.starsText = this.writeStars(this.rating);
+    this.profileService.loadAccountId(this.result.tel, role).then((id:any)=>{
+      if (id) {
+        this.notationService.loadSearchNotationByProfil(resultType, id).then(score => {
+          this.rating = (score && score !== "null")? score: 0;
+          this.starsText = this.writeStars(this.rating);
+        });
+      }
     });
+    //let id = (!this.isEmployer ? this.result.entrepriseId : this.result.idJobyer);
 
     //if redirected from another page
     let fromPage = this.params.data.fromPage;
