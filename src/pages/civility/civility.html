@@ -130,7 +130,7 @@
 
         
         <ion-item [hidden]="isEmployer || !isFrench">
-            <ion-label floating>Département de naissance </ion-label>
+            <ion-label floating>Département de naissance <span class="asteriskb">*</span></ion-label>
             <ion-input type="text" [(ngModel)]="birthdep" [disabled]="isDepInputDisabled"></ion-input>
             <button small ion-button class="text-size" item-right (click)="setBirthdepPicker()">
                 <ion-icon name="list"></ion-icon>
