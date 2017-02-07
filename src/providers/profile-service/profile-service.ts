@@ -396,11 +396,15 @@ export class ProfileService {
               "'"+interval+"'" +
               "); ";
         }
+        console.clear();
+        console.log("ADD NEW SLOTS");
+        console.log(sql);
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
               .map(res => res.json())
               .subscribe((data: any)=> {
+                  console.log(JSON.stringify(data));
                   resolve(data);
               });
         });
