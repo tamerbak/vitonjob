@@ -628,4 +628,12 @@ export class SearchDetailsPage implements OnInit {
     });
   }
 
+  callRef(item:any) {
+    window.location.href = 'tel:' + item.phone;
+  }
+
+  sendEmailRef(item:any) {
+    window.location.href = 'mailto:' + item.email;
+  }
+
 }

@@ -57,7 +57,8 @@
                 </ion-col>
             </ion-row>
 
-            <ion-row style="padding-left: 16px; padding-top: 5px" *ngIf="isEmployer || item.accepteCandidature=='true'"><span style="font-size: small">Entretien :</span>
+            <ion-row style="padding-left: 16px; padding-top: 5px" *ngIf="isEmployer || item.accepteCandidature=='true'">
+                <span style="font-size: small">Entretien :</span>
             </ion-row>
             <ion-item no-lines *ngIf="isEmployer || item.accepteCandidature=='true'">
                 <button ion-button icon-only clear [color]="themeColor"
@@ -99,7 +100,7 @@
                 </p>
             </ion-item>
 
-             <!--ion-row *ngIf="!isEmployer && false">
+            <!--ion-row *ngIf="!isEmployer && false">
                 <ion-col text-right>
                     <button ion-button icon-right clear (click)="saveOfferInterest(item)" color="primary">
                         <ion-icon name="md-thumbs-up" *ngIf="!item.jobyerInterested"></ion-icon>

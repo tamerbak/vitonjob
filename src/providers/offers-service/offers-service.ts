@@ -881,7 +881,7 @@ export class OffersService {
     loadLanguages(projectTarget: string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
-        var sql = "select pk_user_langue as \"idLanguage\", libelle as libelle, \'junior\' as level from user_langue where dirty='N'";
+        let sql = "select pk_user_langue as \"idLanguage\", libelle as libelle, \'junior\' as level from user_langue where dirty='N' order by libelle asc";
         console.log(sql);
         return new Promise(resolve => {
 

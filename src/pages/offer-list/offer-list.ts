@@ -18,269 +18,288 @@ import {isUndefined} from "ionic-angular/util/util";
  Ionic pages and navigation.
  */
 @Component({
-  templateUrl: 'offer-list.html',
-  selector: 'offer-list'
+    templateUrl: 'offer-list.html',
+    selector: 'offer-list'
 })
 export class OfferListPage {
 
-  public offerList: any;
-  public offerService: OffersService;
-  public projectTarget: string;
-  public backgroundImage: any;
-  public isNewUser = false;
-  public globalOfferList = [];
-  public showPublishedOffers = false;
-  public showUnpublishedOffers = false;
-  public showHunterOffers = false;
-  public detailsIconName1: string = "add";
-  public detailsIconName2: string = "add";
-  public detailsIconName3: string = "add";
-  public isHunter: boolean = false;
-  public isEmployer: boolean;
-  public phoneTitle: string;
-  public themeColor: string;
-  public listMode: boolean;
-  public okButtonName: string;
-  public mode: any;
-  public backGroundColor:string;
+    public offerList: any;
+    public offerService: OffersService;
+    public projectTarget: string;
+    public backgroundImage: any;
+    public isNewUser = false;
+    public globalOfferList = [];
+    public showPublishedOffers = false;
+    public showUnpublishedOffers = false;
+    public showHunterOffers = false;
+    public detailsIconName1: string = "add";
+    public detailsIconName2: string = "add";
+    public detailsIconName3: string = "add";
+    public isHunter: boolean = false;
+    public isEmployer: boolean;
+    public phoneTitle: string;
+    public themeColor: string;
+    public listMode: boolean;
+    public okButtonName: string;
+    public mode: any;
+    public backGroundColor: string;
+    public isLeaving: boolean = false;
 
-  constructor(public nav: NavController,
-              public gc: GlobalConfigs,
-              public search: SearchService,
-              public offersService: OffersService,
-              public globalService: GlobalService,
-              public searchService: SearchService,
-              public loading: LoadingController,
-              public toast: ToastController,
-              public alert: AlertController,
-              public db: Storage) {
+    constructor(public nav: NavController,
+                public gc: GlobalConfigs,
+                public search: SearchService,
+                public offersService: OffersService,
+                public globalService: GlobalService,
+                public searchService: SearchService,
+                public loading: LoadingController,
+                public toast: ToastController,
+                public alert: AlertController,
+                public db: Storage) {
 
-    // Set global configs
-    // Get target to determine configs
-    this.projectTarget = gc.getProjectTarget();
+        // Set global configs
+        // Get target to determine configs
+        this.projectTarget = gc.getProjectTarget();
 
-    // get config of selected target
-    let config = Configs.setConfigs(this.projectTarget);
-    this.isHunter = gc.getHunterMask();
+        // get config of selected target
+        let config = Configs.setConfigs(this.projectTarget);
+        this.isHunter = gc.getHunterMask();
 
-    // Set local variables and messages
-    this.isEmployer = (this.projectTarget == 'employer');
-    this.phoneTitle = "Téléphone";
-    this.themeColor = config.themeColor;
-    this.listMode = true;
-    this.okButtonName = "add";
-    this.backgroundImage = config.backgroundImage;
-    this.backGroundColor = config.backGroundColor;
-    //this.cancelButtonName = "";
-    //this.loadPeople();
+        // Set local variables and messages
+        this.isEmployer = (this.projectTarget == 'employer');
+        this.phoneTitle = "Téléphone";
+        this.themeColor = config.themeColor;
+        this.listMode = true;
+        this.okButtonName = "add";
+        this.backgroundImage = config.backgroundImage;
+        this.backGroundColor = config.backGroundColor;
+        //this.cancelButtonName = "";
+        //this.loadPeople();
 
-    // jQuery code for dragging components
-    // console.log($( "#draggable" ).draggable());
-    this.offerService = offersService;
+        // jQuery code for dragging components
+        // console.log($( "#draggable" ).draggable());
+        this.offerService = offersService;
 
 
+    }
 
-  }
-
-  ionViewWillEnter() {
-    let config = Configs.setConfigs(this.projectTarget);
-    let currentUserVar = config.currentUserVar;
-    this.db.get(currentUserVar).then(value => {
-      if (value && value != "null") {
-        let currentUser = JSON.parse(value);
-        if (!currentUser.titre) {
-          this.isNewUser = true;
-        } else {
-          this.isNewUser = false;
-        }
-      }
-    });
-
-    this.offerService.loadOfferList(this.projectTarget).then((data: any) => {
-      // TEL26082016 ref : http://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
-      this.globalOfferList.length = 0;
-      this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
-      this.globalOfferList.push({header: 'Mes brouillons', list: []});
-      this.globalOfferList.push({header: 'Mes opportunités capturées', list: []});
-
-      this.offerList = data;
-
-      for (var i = 0; i < this.offerList.length; i++) {
-        this.offerList[i].jobData.nbPoste = this.offerList[i].nbPoste;
-        
-        this.offerList[i].jobData.telephone = this.offerList[i].telephone;
-        this.offerList[i].jobData.contact = this.offerList[i].contact;
-
-        let offer = this.offerList[i];
-        if (isUndefined(offer) || !offer || !offer.jobData || offer.jobData.idSector == 0 || offer.jobData.idJob == 0) {
-          continue;
-        }
-        if (offer.visible) {
-          offer.color = 'black';//'darkgreen';
-          offer.correspondantsCount = -1;
-          //publishedList.push(offer);
-
-          //verify if offer is obsolete
-          for (var j = 0; j < offer.calendarData.length; j++) {
-            let slotDate = offer.calendarData[j].date;
-            let startH = this.offersService.convertToFormattedHour(offer.calendarData[j].startHour);
-            slotDate = new Date(slotDate).setHours(Number(startH.split(':')[0]), Number(startH.split(':')[1]));
-            let dateNow = new Date().getTime();
-            if (slotDate <= dateNow) {
-              offer.obsolete = true;
-              break;
-            } else {
-              offer.obsolete = false;
+    ionViewWillEnter() {
+        this.isLeaving = false;
+        let config = Configs.setConfigs(this.projectTarget);
+        let currentUserVar = config.currentUserVar;
+        this.db.get(currentUserVar).then(value => {
+            if (value && value != "null") {
+                let currentUser = JSON.parse(value);
+                if (!currentUser.titre) {
+                    this.isNewUser = true;
+                } else {
+                    this.isNewUser = false;
+                }
             }
-          }
+        });
 
-          if (offer.idHunter && !(offer.idHunter === 0)) {
-            //debugger;
-            this.globalOfferList[2].list.push(offer);
-          } else {
-            //debugger;
-            this.globalOfferList[0].list.push(offer);
-          }
+        this.offerService.loadOfferList(this.projectTarget).then((data: any) => {
+            // TEL26082016 ref : http://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
+            this.globalOfferList.length = 0;
+            this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
+            this.globalOfferList.push({header: 'Mes brouillons', list: []});
+            this.globalOfferList.push({header: 'Mes opportunités capturées', list: []});
 
-          let searchQuery = {
-            class: 'com.vitonjob.recherche.model.SearchQuery',
-            queryType: 'COUNT',
-            idOffer: offer.idOffer,
-            resultsType: this.projectTarget=='jobyer'?'employer':'jobyer'
-          };
-          this.searchService.advancedSearch(searchQuery).then((data:any)=>{
-            offer.correspondantsCount = data.count;
-            this.globalOfferList[0].list.sort((a, b) => {
-              return b.correspondantsCount - a.correspondantsCount;
-            })
-          });
+            this.offerList = data;
+
+            for (let i = 0; i < this.offerList.length; i++) {
+
+                // case of leaving page before finishing the subscription
+                if (this.isLeaving) {
+                    console.log("leaving request subscription");
+                    return;
+                }
+
+                this.offerList[i].jobData.nbPoste = this.offerList[i].nbPoste;
+
+                this.offerList[i].jobData.telephone = this.offerList[i].telephone;
+                this.offerList[i].jobData.contact = this.offerList[i].contact;
+
+                let offer = this.offerList[i];
+                if (isUndefined(offer) || !offer || !offer.jobData || offer.jobData.idSector == 0 || offer.jobData.idJob == 0) {
+                    continue;
+                }
+                if (offer.visible) {
+                    offer.color = 'black';//'darkgreen';
+                    offer.correspondantsCount = -1;
+                    //publishedList.push(offer);
+
+                    //verify if offer is obsolete
+                    for (let j = 0; j < offer.calendarData.length; j++) {
+                        // case of leaving page before finishing the subscription
+                        if (this.isLeaving) {
+                            console.log("leaving request subscription");
+                            return;
+                        }
+
+                        let slotDate = offer.calendarData[j].date;
+                        let startH = this.offersService.convertToFormattedHour(offer.calendarData[j].startHour);
+                        slotDate = new Date(slotDate).setHours(Number(startH.split(':')[0]), Number(startH.split(':')[1]));
+                        let dateNow = new Date().getTime();
+                        if (slotDate <= dateNow) {
+                            offer.obsolete = true;
+                            break;
+                        } else {
+                            offer.obsolete = false;
+                        }
+                    }
+
+                    if (offer.idHunter && !(offer.idHunter === 0)) {
+                        //debugger;
+                        this.globalOfferList[2].list.push(offer);
+                    } else {
+                        //debugger;
+                        this.globalOfferList[0].list.push(offer);
+                    }
+
+                    let searchQuery = {
+                        class: 'com.vitonjob.recherche.model.SearchQuery',
+                        queryType: 'COUNT',
+                        idOffer: offer.idOffer,
+                        resultsType: this.projectTarget == 'jobyer' ? 'employer' : 'jobyer'
+                    };
+                    this.searchService.advancedSearch(searchQuery)
+                        .then((data: any) => {
+                            offer.correspondantsCount = data.count;
+                            this.globalOfferList[0].list.sort((a, b) => {
+                                return b.correspondantsCount - a.correspondantsCount;
+                            })
+                        });
 
 
+                } else {
+                    offer.color = 'grey';
+                    offer.correspondantsCount = -1;
+                    //unpublishedList.push (offer);
+                    this.globalOfferList[1].list.push(offer);
+                    /*this.offerService.getCorrespondingOffers(offer, this.projectTarget).then((data:any) => {
+                     console.log('getCorrespondingOffers result : ' + data);
+                     offer.correspondantsCount = data.length;
+                     // Sort offers corresponding to their search results :
+                     this.globalOfferList[1].list.sort((a, b) => {
+                     return b.correspondantsCount - a.correspondantsCount;
+                     })
+                     });*/
+                }
+            }
+        });
+    }
+
+    // Testing a web service call
+    /*loadPeople() {
+     this.search.load()
+     .then((data:any) => {
+     this.people = data.results;
+     });
+     }*/
+
+    onAddOffer() {
+        this.listMode = (!this.listMode);
+        if (this.mode)
+            this.okButtonName = "add";
+        else
+            this.okButtonName = "checkmark-circle";
+    }
+
+    /**
+     * @Description: Navigating to new offer page
+     */
+    goToNewOffer() {
+        if (this.isNewUser) {
+            this.presentToast("Veuillez remplir les informations de votre profil avant de créer une offre.", 7);
+            return;
         } else {
-          offer.color = 'grey';
-          offer.correspondantsCount = -1;
-          //unpublishedList.push (offer);
-          this.globalOfferList[1].list.push(offer);
-          /*this.offerService.getCorrespondingOffers(offer, this.projectTarget).then((data:any) => {
-           console.log('getCorrespondingOffers result : ' + data);
-           offer.correspondantsCount = data.length;
-           // Sort offers corresponding to their search results :
-           this.globalOfferList[1].list.sort((a, b) => {
-           return b.correspondantsCount - a.correspondantsCount;
-           })
-           });*/
+            this.nav.push(OfferAddPage);
         }
-      }
-    });
-  }
-
-  // Testing a web service call
-  /*loadPeople() {
-   this.search.load()
-   .then((data:any) => {
-   this.people = data.results;
-   });
-   }*/
-
-  onAddOffer() {
-    this.listMode = (!this.listMode);
-    if (this.mode)
-      this.okButtonName = "add";
-    else
-      this.okButtonName = "checkmark-circle";
-  }
-
-  /**
-   * @Description: Navigating to new offer page
-   */
-  goToNewOffer() {
-    if (this.isNewUser) {
-      this.presentToast("Veuillez remplir les informations de votre profil avant de créer une offre.", 7);
-      return;
-    } else {
-      this.nav.push(OfferAddPage);
-    }
-  }
-
-  /**
-   * @Description: Navigating to detail offer page
-   */
-  goToDetailOffer(offer) {
-    this.nav.push(OfferDetailPage, {selectedOffer: offer});
-  }
-
-  getOfferBadge(item) {
-
-    if (isUndefined(item) || !item || !item.pricticesJob || item.pricticesJob.length == 0) {
-      item.correspondantsCount = 0;
-      return;
     }
 
-    this.offersService.getBadgeCount(item.pricticesJob[0].pricticeJobId, this.projectTarget).then(count => {
-      console.log(count);
-      item.correspondantsCount = count;
-    });
-  }
-
-  presentToast(message: string, duration: number) {
-    let toast = this.toast.create({
-      message: message,
-      duration: duration * 1000
-    });
-    toast.present();
-  }
-
-  autoSearchMode(offer) {
-    let mode = offer.rechercheAutomatique ? "Non" : "Oui";
-    this.offerService.saveAutoSearchMode(this.projectTarget, offer.idOffer, mode).then((data: {status: string}) => {
-      if (data && data.status == "success") {
-        offer.rechercheAutomatique = !offer.rechercheAutomatique;
-        this.offerService.updateOfferInLocal(offer, this.projectTarget);
-        //this.nav.pop();
-      } else {
-        this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
-      }
-    });
-  }
-
-  showOfferList(type) {
-
-    if (type == 'Mes offres en ligne') {
-      this.showPublishedOffers = !(this.showPublishedOffers);
-      this.detailsIconName1 = (this.showPublishedOffers) ? 'remove' : 'add';
-
-    } else if (type == 'Mes brouillons') {
-      this.showUnpublishedOffers = !(this.showUnpublishedOffers);
-      this.detailsIconName2 = (this.showUnpublishedOffers) ? 'remove' : 'add';
-    } else if (type == 'Mes opportunités capturées') {
-      this.showHunterOffers = !(this.showHunterOffers);
-      this.detailsIconName3 = (this.showHunterOffers) ? 'remove' : 'add';
+    /**
+     * @Description: Navigating to detail offer page
+     */
+    goToDetailOffer(offer) {
+        this.nav.push(OfferDetailPage, {selectedOffer: offer});
     }
 
+    getOfferBadge(item) {
 
-  }
+        if (isUndefined(item) || !item || !item.pricticesJob || item.pricticesJob.length == 0) {
+            item.correspondantsCount = 0;
+            return;
+        }
 
-  /**
-   * @Description : Launch search from current offer-list
-   */
-  launchSearch(offer) {
-    console.log(offer);
-    if (!offer)
-      return;
-      let loading = this.loading.create({content:"Merci de patienter..."});
-    loading.present();
+        this.offersService.getBadgeCount(item.pricticesJob[0].pricticeJobId, this.projectTarget).then(count => {
+            console.log(count);
+            item.correspondantsCount = count;
+        });
+    }
 
-    let searchQuery = {
-      class: 'com.vitonjob.recherche.model.SearchQuery',
-      queryType: 'OFFER',
-      idOffer: offer.idOffer,
-      resultsType: this.projectTarget=='jobyer'?'employer':'jobyer'
-    };
-    this.searchService.advancedSearch(searchQuery).then((data:any)=>{
-      this.searchService.persistLastSearch(data);
-      loading.dismiss();
-      this.nav.push(SearchResultsPage, {currentOffer: offer});
-    });
+    presentToast(message: string, duration: number) {
+        let toast = this.toast.create({
+            message: message,
+            duration: duration * 1000
+        });
+        toast.present();
+    }
 
-  }
+    autoSearchMode(offer) {
+        let mode = offer.rechercheAutomatique ? "Non" : "Oui";
+        this.offerService.saveAutoSearchMode(this.projectTarget, offer.idOffer, mode).then((data: {status: string}) => {
+            if (data && data.status == "success") {
+                offer.rechercheAutomatique = !offer.rechercheAutomatique;
+                this.offerService.updateOfferInLocal(offer, this.projectTarget);
+                //this.nav.pop();
+            } else {
+                this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+            }
+        });
+    }
+
+    showOfferList(type) {
+
+        if (type == 'Mes offres en ligne') {
+            this.showPublishedOffers = !(this.showPublishedOffers);
+            this.detailsIconName1 = (this.showPublishedOffers) ? 'remove' : 'add';
+
+        } else if (type == 'Mes brouillons') {
+            this.showUnpublishedOffers = !(this.showUnpublishedOffers);
+            this.detailsIconName2 = (this.showUnpublishedOffers) ? 'remove' : 'add';
+        } else if (type == 'Mes opportunités capturées') {
+            this.showHunterOffers = !(this.showHunterOffers);
+            this.detailsIconName3 = (this.showHunterOffers) ? 'remove' : 'add';
+        }
+
+
+    }
+
+    /**
+     * @Description : Launch search from current offer-list
+     */
+    launchSearch(offer) {
+        console.log(offer);
+        if (!offer)
+            return;
+        let loading = this.loading.create({content: "Merci de patienter..."});
+        loading.present();
+
+        let searchQuery = {
+            class: 'com.vitonjob.recherche.model.SearchQuery',
+            queryType: 'OFFER',
+            idOffer: offer.idOffer,
+            resultsType: this.projectTarget == 'jobyer' ? 'employer' : 'jobyer'
+        };
+        this.searchService.advancedSearch(searchQuery).then((data: any) => {
+            this.searchService.persistLastSearch(data);
+            loading.dismiss();
+            this.nav.push(SearchResultsPage, {currentOffer: offer});
+        });
+
+    }
+
+    ionViewWillLeave() {
+        this.isLeaving = true;
+    }
 }
