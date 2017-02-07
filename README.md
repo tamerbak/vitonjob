@@ -112,7 +112,13 @@ $ npm install croppie
 $ npm install diacritics
 $ cordova plugin add cordova-plugin-file
 $ npm install ng2-ckeditor --save
+$ ionic plugin add cordova-plugin-google-analytics
 ```
+
+##Google analytics
+````
+Pour que le tracker fonctionne pendant le débogage sur téléphone Android il faut installer Google Play Services à partir du Android SDK Manager 
+````
 
 ##Notification Push
 ````

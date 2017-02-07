@@ -30,8 +30,8 @@
     </ion-card-->
     <ion-card *ngIf="jobData.isJobValidated">
         <ion-list-header color="vojgreen">
-            <span *ngIf="isEmployer">Je recherche...</span>
-            <span *ngIf="!isEmployer">Je recherche un job en tant que...</span>
+            <span *ngIf="isEmployer || isCityValidated">Je recherche...</span>
+            <span *ngIf="!isEmployer && !isCityValidated">Je recherche un job en tant que...</span>
         </ion-list-header>
         <div class="div-sentence" style="padding: 10px">
 

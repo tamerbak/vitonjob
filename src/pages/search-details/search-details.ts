@@ -80,7 +80,7 @@ export class SearchDetailsPage implements OnInit {
               public referenceService : AccountReferencesService,
               public profileService : ProfileService,
               public db: Storage, public advertService: AdvertService) {
-
+    
     // Get target to determine configs
     this.projectTarget = globalConfig.getProjectTarget();
     let configInversed = (this.projectTarget === 'employer') ? Configs.setConfigs('jobyer') : Configs.setConfigs('employer');
@@ -186,12 +186,15 @@ export class SearchDetailsPage implements OnInit {
     //  Loading score
     let resultType = !this.isEmployer;
     //let id = this.result.idOffre;
-    let id = (!this.isEmployer ? this.result.entrepriseId : this.result.idJobyer);
-    this.notationService.loadSearchNotationByProfil(resultType, id).then(score => {
-
-      this.rating = score;
-      this.starsText = this.writeStars(this.rating);
+    this.profileService.loadAccountId(this.result.tel, role).then((id:any)=>{
+      if (id) {
+        this.notationService.loadSearchNotationByProfil(resultType, id).then(score => {
+          this.rating = (score && score !== "null")? score: 0;
+          this.starsText = this.writeStars(this.rating);
+        });
+      }
     });
+    //let id = (!this.isEmployer ? this.result.entrepriseId : this.result.idJobyer);
 
     //if redirected from another page
     let fromPage = this.params.data.fromPage;
@@ -302,7 +305,8 @@ export class SearchDetailsPage implements OnInit {
   }
 
   addMarkers(addresses: any, bounds: any) {
-
+    console.log("start");
+    console.log("adresses",addresses);
     for (let i = 0; i < addresses.length; i++) {
       let marker = new google.maps.Marker({
         map: this.map,
@@ -626,6 +630,14 @@ export class SearchDetailsPage implements OnInit {
         this.jobyerInterestLabel = "Cette offre m'intéresse";
       }
     });
+  }
+
+  callRef(item:any) {
+    window.location.href = 'tel:' + item.phone;
+  }
+
+  sendEmailRef(item:any) {
+    window.location.href = 'mailto:' + item.email;
   }
 
 }

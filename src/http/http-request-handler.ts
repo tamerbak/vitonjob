@@ -38,6 +38,28 @@ export class HttpRequestHandler {
     }
 
     /**
+     * Send SQL request via http post method
+     * @param sql
+     * @param classObject
+     * @param silentMode
+     * @returns {Observable<T>}
+     */
+    sendSql(sql : string, classObject?: any, silentMode?: boolean){
+        if (silentMode !== true)
+            HttpRequestHandler.presentLoading();
+        HttpRequestHandler.senderClassName = (classObject) ? classObject.constructor.name : "";
+        let headers: Headers = Configs.getHttpTextHeaders();
+        return this.http.post(Configs.sqlURL, sql, {headers: headers})
+            .map(res => res.json())
+            .timeout(timeOutPeriod)
+            .catch(this.handleError)
+            .finally(() => {
+                if (HttpRequestHandler.loaderComponent)
+                    HttpRequestHandler.loaderComponent.dismiss();
+            });
+    }
+
+    /**
      * Send a callOut request via http post method
      * @param payload
      * @param classObject

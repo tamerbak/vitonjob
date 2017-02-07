@@ -12,7 +12,7 @@
 
     <ion-card>
         <ion-row>
-            <ion-col width-33>
+            <ion-col width-33 *ngIf="advert.thumbnail.fileContent.length != 0">
                 <ion-avatar>
                     <img [src]="advert.thumbnail.fileContent" style="margin:5px">
                 </ion-avatar>
@@ -22,13 +22,13 @@
             </ion-col>
         </ion-row>
         <ion-card-content style="padding: 0;">
-            <ion-item text-wrap>
+            <ion-item text-wrap *ngIf="advert.imgbg.fileContent">
                 <img [src]="advert.imgbg.fileContent" style="border:2px solid gray;">
-                <button ion-button (click)="goToOffer()" color="vojgrey" *ngIf="advert.hasOffer">
+                <!--button ion-button (click)="goToOffer()" color="vojgrey" *ngIf="advert.hasOffer">
                     <ion-icon name="clipbboard"></ion-icon>
                     Afficher l'offre associée
                 </button>
-                <h3 text-wrap class="h3-margintop" *ngIf="!advert.hasOffer">Aucune offre n'est encore associée à cette annonce</h3>
+                <h3 text-wrap class="h3-margintop" *ngIf="!advert.hasOffer">Aucune offre n'est encore associée à cette annonce</h3-->
             </ion-item>
 
             <ion-item text-wrap *ngIf="!isEmployer">

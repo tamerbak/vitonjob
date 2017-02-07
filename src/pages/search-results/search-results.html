@@ -21,7 +21,7 @@
                 <ion-avatar item-left>
                     <img [src]="item.avatar">
                 </ion-avatar>
-                <h2>{{isEmployer ? item.prenom + ' ' + item.nom.substring(0,1) + '.' : item.entreprise}}</h2>
+                <h2>{{isEmployer ? item.prenom + ' ' + substring(item.nom, 0, 1) + '.' : item.entreprise}}</h2>
                 <h4>{{item.titreOffre}}</h4>
             </ion-item>
             <ion-item no-lines style="background-color: lightcyan">
@@ -57,7 +57,8 @@
                 </ion-col>
             </ion-row>
 
-            <ion-row style="padding-left: 16px; padding-top: 5px" *ngIf="isEmployer || item.accepteCandidature=='true'"><span style="font-size: small">Entretien :</span>
+            <ion-row style="padding-left: 16px; padding-top: 5px" *ngIf="isEmployer || item.accepteCandidature=='true'">
+                <span style="font-size: small">Entretien :</span>
             </ion-row>
             <ion-item no-lines *ngIf="isEmployer || item.accepteCandidature=='true'">
                 <button ion-button icon-only clear [color]="themeColor"
@@ -107,7 +108,7 @@
                     </button>
                 </ion-col>
             </ion-row-->
-            <ion-item no-lines>
+            <ion-item no-lines *ngIf="item.rate || item.rate>0">
                 <ion-note item-right>
                         Taux horaire: {{formatNumbers(item.rate)}} €/h
                 </ion-note>

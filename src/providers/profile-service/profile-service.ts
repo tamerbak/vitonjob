@@ -2,11 +2,12 @@ import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
-import { Platform} from "ionic-angular";
+import {Platform} from "ionic-angular";
 import {Storage} from "@ionic/storage";
+import {HttpRequestHandler} from "../../http/http-request-handler";
 
-declare var FileTransfer;
-declare var FileUploadOptions;
+declare let FileTransfer;
+declare let FileUploadOptions;
 
 @Injectable()
 export class ProfileService {
@@ -14,9 +15,11 @@ export class ProfileService {
     projectTarget;
 
     profilPictureVar: string;
-    http : any;
+    http: any;
 
-    constructor(http: Http, gc: GlobalConfigs, private platform: Platform, public storage:Storage) {
+    constructor(http: Http, gc: GlobalConfigs,
+                private platform: Platform,
+                public storage: Storage, public httpRequest: HttpRequestHandler) {
         this.http = http;
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -24,58 +27,45 @@ export class ProfileService {
         this.profilPictureVar = this.configuration.profilPictureVar;
     }
 
-    loadRequirementsByJob(idjob){
+    loadRequirementsByJob(idjob) {
 
         let sql = "select distinct(p.libelle) as libelle from user_prerquis p where pk_user_prerquis in " +
-        "(select fk_user_prerquis from user_prerequis_obligatoires where fk_user_offre_entreprise in " +
-        "(select fk_user_offre_entreprise from user_pratique_job where fk_user_job = "+idjob+")" +
-        ")";
+            "(select fk_user_prerquis from user_prerequis_obligatoires where fk_user_offre_entreprise in " +
+            "(select fk_user_offre_entreprise from user_pratique_job where fk_user_job = " + idjob + ")" +
+            ")";
 
         return new Promise(resolve => {
-        let headers = Configs.getHttpTextHeaders();
-        this.http.post(Configs.sqlURL, sql, {headers: headers})
-            .map(res => res.json())
-            .subscribe(data => {
-            resolve(data.data);
+            this.httpRequest.sendSql(sql, this).subscribe(data => {
+                resolve(data.data);
             });
         });
     }
 
-    loadProfileJobs(idJobyer){
-        let sql = "select pk_user_job as id, user_job.libelle as libelle, fk_user_niveau as niveau from user_job, user_profil_job where user_job.pk_user_job= user_profil_job.fk_user_job and user_profil_job.dirty='N' and user_profil_job.fk_user_jobyer="+idJobyer;
+    loadProfileJobs(idJobyer) {
+        let sql = "select pk_user_job as id, user_job.libelle as libelle, fk_user_niveau as niveau from user_job, user_profil_job where user_job.pk_user_job= user_profil_job.fk_user_job and user_profil_job.dirty='N' and user_profil_job.fk_user_jobyer=" + idJobyer;
         return new Promise(resolve => {
-        let headers = Configs.getHttpTextHeaders();
-        this.http.post(Configs.sqlURL, sql, {headers: headers})
-            .map(res => res.json())
-            .subscribe(data => {
-            resolve(data.data);
-            });
+            this.httpRequest.sendSql(sql, this).subscribe(data => {
+                    resolve(data.data);
+                });
         });
     }
 
-    removeJob(j, idJobyer){
-        let sql = "delete from user_profil_job where fk_user_jobyer="+idJobyer+" and fk_user_job="+j.id;
+    removeJob(j, idJobyer) {
+        let sql = "delete from user_profil_job where fk_user_jobyer=" + idJobyer + " and fk_user_job=" + j.id;
         return new Promise(resolve => {
-        let headers = Configs.getHttpTextHeaders();
-        this.http.post(Configs.sqlURL, sql, {headers: headers})
-            .map(res => res.json())
-            .subscribe(data => {
-
-            resolve(data.data);
-            });
+            
+            this.httpRequest.sendSql(sql, this).subscribe(data => {
+                    resolve(data.data);
+                });
         });
     }
 
-    attachJob(j, idJobyer){
-        let sql = "insert into user_profil_job (fk_user_jobyer,fk_user_job,fk_user_niveau) values ("+idJobyer+","+j.id+","+j.niveau+")";
+    attachJob(j, idJobyer) {
+        let sql = "insert into user_profil_job (fk_user_jobyer,fk_user_job,fk_user_niveau) values (" + idJobyer + "," + j.id + "," + j.niveau + ")";
         return new Promise(resolve => {
-        let headers = Configs.getHttpTextHeaders();
-        this.http.post(Configs.sqlURL, sql, {headers: headers})
-            .map(res => res.json())
-            .subscribe(data => {
-
-            resolve(data.data);
-            });
+            this.httpRequest.sendSql(sql, this).subscribe(data => {
+                    resolve(data.data);
+                });
         });
     }
 
@@ -83,11 +73,7 @@ export class ProfileService {
         let sql = "select count(*) from user_entreprise where nom_ou_raison_sociale='" + companyname + "';";
         console.log(sql);
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
-            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data:any) => {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -100,11 +86,7 @@ export class ProfileService {
         sql = sql + " delete from user_account where pk_user_account = '" + accountId + "';";
         console.log(sql);
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
-            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data:any) => {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -115,11 +97,7 @@ export class ProfileService {
         let sql = "select count(*) from user_entreprise where siret='" + siret + "';";
         console.log(sql);
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
-            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data:any) => {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -127,44 +105,40 @@ export class ProfileService {
     }
 
     /*copyFileLocally(imgUri, accountId) {
-        this.platform.ready().then(() => {
-            var ft = new FileTransfer();
-            var filename = accountId + ".jpg";
-            var options = new FileUploadOptions();
+     this.platform.ready().then(() => {
+     var ft = new FileTransfer();
+     var filename = accountId + ".jpg";
+     var options = new FileUploadOptions();
 
-            options.fileKey = "file";
-            options.fileName = filename;
-            options.mimeType = "image/jpeg";
-            options.chunkedMode = false;
-            options.headers = {
-                'Content-Type': undefined,
-                'Authorization': 'Bearer ' + localStorage.getItem('id_token') // this should send through the JWT
-            };
-            options.params = {
-                questionId: this.question.key,
-                taskId: this.taskID,
-                fileName: filename
-            };
+     options.fileKey = "file";
+     options.fileName = filename;
+     options.mimeType = "image/jpeg";
+     options.chunkedMode = false;
+     options.headers = {
+     'Content-Type': undefined,
+     'Authorization': 'Bearer ' + localStorage.getItem('id_token') // this should send through the JWT
+     };
+     options.params = {
+     questionId: this.question.key,
+     taskId: this.taskID,
+     fileName: filename
+     };
 
-            ft.upload(imageData, "http://thisthing.com/api/v1/image/save", this.success.bind(this), this.failed, options);
+     ft.upload(imageData, "http://thisthing.com/api/v1/image/save", this.success.bind(this), this.failed, options);
 
-        }, (err) => {
-            this.imageProcess = "Camera Error";
-            setTimeout(() => {
-                this.imageProcess = null;
-            }, 2000);
-        });
-    }*/
+     }, (err) => {
+     this.imageProcess = "Camera Error";
+     setTimeout(() => {
+     this.imageProcess = null;
+     }, 2000);
+     });
+     }*/
 
     uploadProfilePictureInServer(imgUri, accountId) {
         let sql = "update user_account set photo_de_profil ='" + imgUri + "' where pk_user_account = '" + accountId + "';";
         console.log(sql);
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
-            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data:any) => {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -180,25 +154,18 @@ export class ProfileService {
         }
         console.log(sql);
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
-            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data:any) => {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     console.log(data);
                     resolve(data);
                 });
         });
     }
 
-    loadAccountId(tel, role){
-        let sql = "select pk_user_account as id from user_account where telephone='"+tel+"' and role='"+role+"'";
+    loadAccountId(tel, role) {
+        let sql = "select pk_user_account as id from user_account where telephone='" + tel + "' and role='" + role + "'";
         return new Promise(resolve => {
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
-            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data:any) => {
+            this.httpRequest.sendSql(sql, this)
+                .subscribe((data: any) => {
                     console.log(data);
                     resolve(data.data[0].id);
                 });
@@ -213,12 +180,9 @@ export class ProfileService {
         let sql = "select i.* from user_identifiants_nationalite as i, user_nationalite as n where i.pk_user_identifiants_nationalite = n.fk_user_identifiants_nationalite and n.pk_user_nationalite = '" + natId + "'";
 
         return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-              .map(res => res.json())
-              .subscribe((data: any)=> {
-                  resolve(data);
-              });
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+                    resolve(data);
+                });
         })
     }
 
@@ -228,10 +192,10 @@ export class ProfileService {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
-              .map(res => res.json())
-              .subscribe((data:any) => {
-                  resolve(data);
-              });
+                .map(res => res.json())
+                .subscribe((data: any) => {
+                    resolve(data);
+                });
         });
     }
 
@@ -261,10 +225,7 @@ export class ProfileService {
         let sql = "select pk_user_indispensable as id, libelle from user_indispensable as i, " + table + " as t where i.pk_user_indispensable = t.fk_user_indispensable and t." + foreignKey + " = '" + id + "'";
 
         return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data:any) => {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     resolve(data.data);
                 });
         });
@@ -276,10 +237,7 @@ export class ProfileService {
         let sql = "select pk_user_langue as id, i.libelle,n.libelle as level from user_langue as i, user_niveau as n , " + table + " as t where n.pk_user_niveau = t.fk_user_niveau and i.pk_user_langue = t.fk_user_langue and t." + foreignKey + " = '" + id + "' order by i.libelle";
 
         return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data:any) => {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     resolve(data.data);
                 });
         });
@@ -288,17 +246,17 @@ export class ProfileService {
     saveQualities(qualities, id, projectTarget) {
         let table = projectTarget == 'jobyer' ? 'user_qualite_du_jobyer' : 'user_qualite_employeur';
         let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
-        this.deleteQualities(id, table, foreignKey).then((data:any) => {
-            if(data && qualities && qualities.length != 0)
+        this.deleteQualities(id, table, foreignKey).then((data: any) => {
+            if (data && qualities && qualities.length != 0)
                 this.attachQualities(qualities, id, table, foreignKey);
         });
     }
 
-    saveLanguages(languages, id, projectTarget){
+    saveLanguages(languages, id, projectTarget) {
         let table = projectTarget == 'jobyer' ? 'user_langue_jobyer' : 'user_langue_employeur';
         let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
-        this.deleteLanguages(id, table, foreignKey).then((data:any) => {
-            if(data && languages && languages.length != 0)
+        this.deleteLanguages(id, table, foreignKey).then((data: any) => {
+            if (data && languages && languages.length != 0)
                 this.attachLanguages(languages, id, table, foreignKey);
         })
     }
@@ -306,10 +264,7 @@ export class ProfileService {
     deleteQualities(id, table, foreignKey) {
         let sql = "delete from " + table + " where " + foreignKey + "=" + id;
         return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data:any) => {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     resolve(data);
                 });
         });
@@ -322,10 +277,7 @@ export class ProfileService {
             sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_indispensable) values (" + id + ", " + q.id + "); ";
         }
         return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data:any) => {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     resolve(data);
                 });
         });
@@ -334,10 +286,7 @@ export class ProfileService {
     deleteLanguages(id, table, foreignKey) {
         let sql = "delete from " + table + " where " + foreignKey + "=" + id;
         return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data:any) => {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     resolve(data);
                 });
         });
@@ -348,95 +297,84 @@ export class ProfileService {
         let sql = "";
         for (let i = 0; i < languages.length; i++) {
             let q = languages[i];
-            sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_langue,fk_user_niveau) values (" + id + ", " + q.id + ","+((q.level == "Débutant") ? 1 : 2 )+ "); ";
+            sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_langue,fk_user_niveau) values (" + id + ", " + q.id + "," + ((q.level == "Débutant") ? 1 : 2 ) + "); ";
         }
         return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data:any) => {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     resolve(data);
                 });
         });
     }
 
-    deleteDisponibilites(id){
+    deleteDisponibilites(id) {
         let sql = "update user_disponibilite_du_jobyer " +
-          "set dirty='Y' " +
-          "where fk_user_jobyer="+id;
+            "set dirty='Y' " +
+            "where fk_user_jobyer=" + id;
         return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-              .map(res => res.json())
-              .subscribe((data: any)=> {
-                  resolve(data);
-              });
-        });
-    }
-
-    saveDisponibilites(jobyerId, disponibilite){
-        let sql="";
-        for(let i = 0; i < disponibilite.length; i++){
-            let interval = (disponibilite[i].startDate == disponibilite[i].endDate)?'non':'oui';
-            sql = sql + " insert into user_disponibilite_du_jobyer (" +
-              "fk_user_jobyer, " +
-              "jour, " +
-              "date_de_debut," +
-              "date_de_fin," +
-              "heure_de_debut," +
-              "heure_de_fin," +
-              "\"interval\"" +
-              ") values (" +
-              jobyerId+", " +
-              "'"+new Date(disponibilite[i].startDate).toISOString()+"', " +
-              "'"+new Date(disponibilite[i].startDate).toISOString()+"'," +
-              "'"+new Date(disponibilite[i].endDate).toISOString()+"'," +
-              (disponibilite[i].startHour)+"," +
-              (disponibilite[i].endHour)+"," +
-              "'"+interval+"'" +
-              "); ";
-        }
-        return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-              .map(res => res.json())
-              .subscribe((data: any)=> {
-                  resolve(data);
-              });
-        });
-    }
-
-    deleteSoftwares(id){
-        let sql = "delete from user_experience_logiciel_pharmacien " +
-            "where fk_user_jobyer="+id;
-        return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data: any)=> {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     resolve(data);
                 });
         });
     }
 
-    saveSoftwares(jobyerId, softwares){
-        let sql="";
-        for(let i = 0; i < softwares.length; i++){
+    saveDisponibilites(jobyerId, disponibilite) {
+        let sql = "";
+        for (let i = 0; i < disponibilite.length; i++) {
+            let interval = (disponibilite[i].startDate == disponibilite[i].endDate) ? 'non' : 'oui';
+            sql = sql + " insert into user_disponibilite_du_jobyer (" +
+                "fk_user_jobyer, " +
+                "jour, " +
+                "date_de_debut," +
+                "date_de_fin," +
+                "heure_de_debut," +
+                "heure_de_fin," +
+                "\"interval\"" +
+                ") values (" +
+                jobyerId + ", " +
+                "'" + new Date(disponibilite[i].startDate).toISOString() + "', " +
+                "'" + new Date(disponibilite[i].startDate).toISOString() + "'," +
+                "'" + new Date(disponibilite[i].endDate).toISOString() + "'," +
+                (disponibilite[i].startHour) + "," +
+                (disponibilite[i].endHour) + "," +
+                "'" + interval + "'" +
+                "); ";
+        }
+        console.clear();
+        console.log("ADD NEW SLOTS");
+        console.log(sql);
+        return new Promise(resolve => {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+                    console.log(JSON.stringify(data));
+                    resolve(data);
+                });
+        });
+    }
+
+    deleteSoftwares(id) {
+        let sql = "delete from user_experience_logiciel_pharmacien " +
+            "where fk_user_jobyer=" + id;
+        return new Promise(resolve => {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+                    resolve(data);
+                });
+        });
+    }
+
+    saveSoftwares(jobyerId, softwares) {
+        let sql = "";
+        for (let i = 0; i < softwares.length; i++) {
             sql = sql + " insert into user_experience_logiciel_pharmacien (" +
                 "fk_user_jobyer, " +
                 "fk_user_logiciels_pharmaciens, " +
                 "niveau" +
                 ") values (" +
-                jobyerId+", " +
-                "'"+softwares[i].id+"', " +
-                "'"+softwares[i].niveau+"'" +
+                jobyerId + ", " +
+                "'" + softwares[i].id + "', " +
+                "'" + softwares[i].niveau + "'" +
                 "); ";
         }
         return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data: any)=> {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     resolve(data);
                 });
         });
@@ -446,16 +384,13 @@ export class ProfileService {
         let sql = "select * from user_disponibilite_du_jobyer where dirty='N' and fk_user_jobyer = '" + id + "'";
 
         return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-              .map(res => res.json())
-              .subscribe((data:any) => {
-                  resolve(data.data);
-              });
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+                    resolve(data.data);
+                });
         });
     }
 
-    getJobyerInfo(id){
+    getJobyerInfo(id) {
         let jobyerData = {
             'class': 'com.vitonjob.callouts.jobyerInfo.JobyerToken',
             'jobyerId': id
@@ -475,20 +410,17 @@ export class ProfileService {
         return new Promise(resolve => {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(Configs.calloutURL, stringData, {headers: headers})
-              .subscribe(data => {
-                  resolve(data);
-              });
+                .subscribe(data => {
+                    resolve(data);
+                });
         });
     }
 
-    getUserSoftwares(jobyerId){
+    getUserSoftwares(jobyerId) {
         let sql = "select exp.pk_user_experience_logiciel_pharmacien as \"expId\", exp.fk_user_logiciels_pharmaciens as \"id\", exp.niveau as niveau, log.nom from user_experience_logiciel_pharmacien as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_jobyer = '" + jobyerId + "'";
 
         return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe(data => {
+            this.httpRequest.sendSql(sql, this).subscribe(data => {
                     resolve(data.data);
                 });
         });
@@ -507,10 +439,7 @@ export class ProfileService {
         sql = sql + " where pk_user_account=" + accountid + ";";
 
         return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data: any)=> {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     resolve(data);
                 });
         })
@@ -521,10 +450,7 @@ export class ProfileService {
         let sql = "select accepte_candidatures from user_account where pk_user_account = " + accountid + ";";
 
         return new Promise(resolve => {
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data: any)=> {
+            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
                     resolve(data.data[0]);
                 });
         });
