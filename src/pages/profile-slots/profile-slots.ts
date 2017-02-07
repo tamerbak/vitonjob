@@ -20,6 +20,8 @@ export class ProfileSlotsPage {
   public maxEndDate: any;
   public minStartDate: any;
   public yearsVals=[];
+  public minDate:string;
+  public maxDate:string;
 
   constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController, params: NavParams, public alert: AlertController) {
     // Get target to determine configs
@@ -48,6 +50,10 @@ export class ProfileSlotsPage {
       this.yearsVals.push(today.getFullYear() +i);
     }
 
+    this.maxDate =""+ (today.getFullYear()+ maxYearsNum )+ "-12"+"-31";
+    this.minDate = this.formatDate(today.getFullYear(),today.getMonth()+1,today.getDate());
+    console.log(this.minDate,this.maxDate);
+
     //load saved slots
     if (params.get('savedSlots') && params.get('savedSlots').length > 0) {
       for (let i = 0; i < params.get('savedSlots').length; i++) {
@@ -61,6 +67,19 @@ export class ProfileSlotsPage {
         this.slots.push(slot);
       }
     }
+  }
+
+
+  formatDate(year,month,day) {
+    month = ""+month;
+    day = ""+day;
+    if (month.length < 2){
+      month = '0' + month;
+    } 
+    if (day.length < 2) {
+      day = '0' + day;
+    }
+    return [year, month, day].join('-');
   }
 
   addSlot() {
