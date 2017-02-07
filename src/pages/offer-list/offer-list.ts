@@ -156,7 +156,9 @@ export class OfferListPage {
                         this.globalOfferList[0].list.push(offer);
                     }
 
-                    let searchQuery = {
+                    // TEL 02022017 : so slow...
+                    //todo :the number of correspondents should be calculated in details vue
+                    /*let searchQuery = {
                         class: 'com.vitonjob.recherche.model.SearchQuery',
                         queryType: 'COUNT',
                         idOffer: offer.idOffer,
@@ -169,7 +171,7 @@ export class OfferListPage {
                                 return b.correspondantsCount - a.correspondantsCount;
                             })
                         });
-
+                    */
 
                 } else {
                     offer.color = 'grey';

@@ -13,7 +13,7 @@ import {GlobalService} from "../../providers/global-service/global-service";
 import {OfferAddPage} from "../offer-add/offer-add";
 import {OfferDetailPage} from "../offer-detail/offer-detail";
 
-declare var cordova, window: any;
+declare let cordova, window: any;
 
 @Component({
   templateUrl: 'advert-edit.html',
@@ -192,7 +192,7 @@ export class AdvertEditPage{
     let folderpath = cordova.file.externalRootDirectory;
 
     // Convert the base64 string in a Blob
-    var DataBlob = FileUtils.b64toBlob(content, contentType);
+    let DataBlob = FileUtils.b64toBlob(content, contentType);
     console.log("Starting to write the file");
     window.resolveLocalFileSystemURL(folderpath, (dir) => {
       console.log("Access to the directory granted succesfully");
@@ -210,8 +210,8 @@ export class AdvertEditPage{
   }
 
   saveAdvert(){
-    let loading = this.loadingCtrl.create({content:"Merci de patienter..."});
-    loading.present();
+    //let loading = this.loadingCtrl.create({content:"Merci de patienter..."});
+    //loading.present();
     let clonedAdvert = (JSON.parse(JSON.stringify(this.advert)));
     this.prepareDataForSaving(clonedAdvert);
     this.prepareImageForSaving(clonedAdvert.thumbnail, 'thumbnail');
@@ -219,28 +219,40 @@ export class AdvertEditPage{
     if(!Utils.isEmpty(clonedAdvert.id)) {
       this.advertService.updateAdvert(clonedAdvert).then((result: any) => {
         if (result && result.status == 'success') {
-          loading.dismiss();
+          //loading.dismiss();
           //this.displayRequestAlert();
           this.nav.pop();
           //this.nav.popTo(OfferAddPage,{advertId: clonedAdvert});
         } else {
-          loading.dismiss();
+          //loading.dismiss();
           this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
           return;
         }
       });
     }else{
       this.advertService.saveAdvert(clonedAdvert).then((result: any) => {
+        debugger;
         if(result.id != 0) {
           this.idAdvert = result.id;
-          loading.dismiss();
+          //loading.dismiss();
           //this.displayRequestAlert();
           this.storage.set('advert', {id: this.idAdvert, value:clonedAdvert}).then(()=>{
             this.nav.pop();
+            clonedAdvert.id = result.id;
+            // Now saving the heavy part of request via an update request
+            this.advertService.updateAdvert(clonedAdvert).then((result: any) => {
+              if (result && result.status == 'success') {
+                console.log('Advert number '+ this.idAdvert + ' is updated with files contents');
+              } else {
+                //loading.dismiss();
+                this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
+                return;
+              }
+            });
           });
 
         } else {
-          loading.dismiss();
+          //loading.dismiss();
           this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
           return;
         }
