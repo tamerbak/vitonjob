@@ -347,6 +347,8 @@ export class OffersService {
         myOffer.title = offerData.title;
         myOffer.videolink = offerData.videoLink;
         myOffer.visible = offerData.visible;
+        myOffer.jobyerId = offerData.jobyerId;
+        myOffer.entrepriseId = offerData.entrepriseId;
 
         return myOffer;
     }

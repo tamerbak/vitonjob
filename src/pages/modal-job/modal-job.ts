@@ -869,47 +869,47 @@ export class ModalJobPage {
    */
   setSectorsPicker() {
 
-    if (this.platform.is('android') && this.platform.version().major >= 5) {
-      let picker = this.picker.create();
-      let options: PickerColumnOption[] = new Array<PickerColumnOption>();
+    // if (this.platform.is('android') && this.platform.version().major >= 5) {
+    //   let picker = this.picker.create();
+    //   let options: PickerColumnOption[] = new Array<PickerColumnOption>();
 
-      this.storage.get('SECTOR_LIST').then(listSectors => {
-        if (listSectors) {
-          listSectors = JSON.parse(listSectors);
-          for (let i = 0; i < listSectors.length; i++) {
-            options.push({
-              value: listSectors[i].id,
-              text: listSectors[i].libelle
-            })
-          }
-        }
-        let column = {
-          selectedIndex: 0,
-          options: options
-        };
+    //   this.storage.get('SECTOR_LIST').then(listSectors => {
+    //     if (listSectors) {
+    //       listSectors = JSON.parse(listSectors);
+    //       for (let i = 0; i < listSectors.length; i++) {
+    //         options.push({
+    //           value: listSectors[i].id,
+    //           text: listSectors[i].libelle
+    //         })
+    //       }
+    //     }
+    //     let column = {
+    //       selectedIndex: 0,
+    //       options: options
+    //     };
 
-        picker.addColumn(column);
-        picker.addButton('Annuler');
-        picker.addButton({
-          text: 'Valider',
-          handler: data => {
-            this.isSectorFound = true;
-            this.isJobFound = true;
-            this.jobData.sector = data.undefined.text;
-            this.jobData.idSector = data.undefined.value;
-            this.filterJobList();
-            this.jobData.job = '';
-            this.jobData.idJob = 0;
-          }
-        });
-        picker.setCssClass('sectorPicker');
-        picker.present();
+    //     picker.addColumn(column);
+    //     picker.addButton('Annuler');
+    //     picker.addButton({
+    //       text: 'Valider',
+    //       handler: data => {
+    //         this.isSectorFound = true;
+    //         this.isJobFound = true;
+    //         this.jobData.sector = data.undefined.text;
+    //         this.jobData.idSector = data.undefined.value;
+    //         this.filterJobList();
+    //         this.jobData.job = '';
+    //         this.jobData.idJob = 0;
+    //       }
+    //     });
+    //     picker.setCssClass('sectorPicker');
+    //     picker.present();
 
-      });
-    } else {
+    //   });
+    // } else {
       /* Android versions 4.x.x */
       this.showSectorList();
-    }
+    //}
 
   }
 
@@ -942,59 +942,58 @@ export class ModalJobPage {
    */
   setJobsPicker() {
 
-    let picker = this.picker.create();
-    let options: PickerColumnOption[] = new Array<PickerColumnOption>();
-    if (this.platform.is('android') && this.platform.version().major >= 5) {
-      this.storage.get('JOB_LIST').then(
-        list => {
-          if (list) {
-            list = JSON.parse(list);
-            let q = this.jobData.idSector;
+    // let picker = this.picker.create();
+    // let options: PickerColumnOption[] = new Array<PickerColumnOption>();
+    // if (this.platform.is('android') && this.platform.version().major >= 5) {
+    //   this.storage.get('JOB_LIST').then(
+    //     list => {
+    //       if (list) {
+    //         list = JSON.parse(list);
+    //         let q = this.jobData.idSector;
 
-            // if the value is an empty string don't filter the items
-            if (!(q.toString() === '')) {
-              list = list.filter((v) => {
-                return (v.idsector == q);
-              });
-            }
+    //         // if the value is an empty string don't filter the items
+    //         if (!(q.toString() === '')) {
+    //           list = list.filter((v) => {
+    //             return (v.idsector == q);
+    //           });
+    //         }
 
-            this.listJobs = list;
-            this.jobList = list;
-            for (let i = 0; i < this.listJobs.length; i++) {
-              options.push({
-                value: this.listJobs[i].id,
-                text: this.listJobs[i].libelle
-              })
-            }
-            let column = {
-              selectedIndex: 0,
-              options: options
-            };
+    //         this.listJobs = list;
+    //         this.jobList = list;
+    //         for (let i = 0; i < this.listJobs.length; i++) {
+    //           options.push({
+    //             value: this.listJobs[i].id,
+    //             text: this.listJobs[i].libelle
+    //           })
+    //         }
+    //         let column = {
+    //           selectedIndex: 0,
+    //           options: options
+    //         };
 
-            picker.addColumn(column);
-            picker.addButton('Annuler');
-            picker.addButton({
-              text: 'Valider',
-              handler: data => {
-                this.isJobFound = true;
-                this.jobData.job = data.undefined.text;
-                this.jobData.idJob = data.undefined.value;
-                /*this.enterpriseCard.offer.job = data.undefined.text;
-                 this.enterpriseCard.offer.idJob = data.undefined.value;*/
-              }
-            });
-            picker.setCssClass('jobPicker');
-            picker.present();
+    //         picker.addColumn(column);
+    //         picker.addButton('Annuler');
+    //         picker.addButton({
+    //           text: 'Valider',
+    //           handler: data => {
+    //             this.isJobFound = true;
+    //             this.jobData.job = data.undefined.text;
+    //             this.jobData.idJob = data.undefined.value;
+    //             /*this.enterpriseCard.offer.job = data.undefined.text;
+    //              this.enterpriseCard.offer.idJob = data.undefined.value;*/
+    //           }
+    //         });
+    //         picker.setCssClass('jobPicker');
+    //         picker.present();
 
-          }
-        }
-      );
+    //       }
+    //     }
+    //   );
 
-    } else {
+    // } else {
       /* Android versions 4.x.x */
-      this
-        .showJobList();
-    }
+      this.showJobList();
+    //}
 
 
   }

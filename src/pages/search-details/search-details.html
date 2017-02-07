@@ -40,9 +40,9 @@
             </ion-badge>
         </ion-col>
 
-        <ion-list *ngIf="result.disponibilites.length>0">
-            <ion-list-header color="primary" style="margin-bottom: 1px;" *ngIf="!isEmployer"> Horaire</ion-list-header>
-            <ion-list-header color="primary" style="margin-bottom: 1px;" *ngIf="isEmployer"> Disponibilité
+        <ion-list *ngIf="result.disponibilites && result.disponibilites.length>0">
+            <ion-list-header color="primary" style="margin-bottom: 1px;" *ngIf="isEmployer"> Horaire</ion-list-header>
+            <ion-list-header color="primary" style="margin-bottom: 1px;" *ngIf="!isEmployer"> Disponibilité
             </ion-list-header>
             <div>
                 <table id="t01">

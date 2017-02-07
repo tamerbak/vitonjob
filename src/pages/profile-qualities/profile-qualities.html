@@ -8,7 +8,7 @@
   <ion-list>
     <ion-item>
       <ion-label floating>Qualités</ion-label>
-      <ion-select [(ngModel)]="selectedQuality">
+      <ion-select [(ngModel)]="selectedQuality" okText="OK" cancelText="Annuler">
         <ion-option *ngFor="let q of qualities"
           value="{{q.id}}">
           {{q.libelle}}
