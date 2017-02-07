@@ -25,6 +25,8 @@ import {Storage} from "@ionic/storage";
 import {EnvironmentService} from "../../providers/environment-service/environment-service";
 //import {LoadListService} from "../../providers/load-list-service/load-list-service";
 import {Utils} from "../../utils/utils";
+import {AdvertService} from "../../providers/advert-service/advert-service";
+import {AdvertDetailsPage} from "../advert-details/advert-details";
 
 /*
  Generated class for the OfferDetailPage page.
@@ -67,9 +69,11 @@ export class OfferDetailPage {
   public languageStyle: any;
   public calendarStyle: any;
   public backGroundColor:string;
-
   //advert management
+  public advert:any;
   public canModify: boolean = false;
+  public isAdvertAttached:boolean = false;
+  public isAdvertRequestLoaded:boolean = false;
 
   constructor(public nav: NavController,
               public gc: GlobalConfigs,
@@ -83,7 +87,8 @@ export class OfferDetailPage {
               public modal: ModalController,
               public popover: PopoverController,
               public environmentService:EnvironmentService,
-              public storage:Storage) {
+              public storage:Storage,
+              public advertService: AdvertService) {
 
     // Set global configs
     // Get target to determine configs
@@ -179,6 +184,16 @@ export class OfferDetailPage {
         let currentUser = JSON.parse(value);
         this.idTiers = this.projectTarget == 'employer' ? currentUser.employer.entreprises[0].id : currentUser.jobyer.id;
       }
+    });
+
+    this.advertService.getAdvertByIdOffer(this.offer.idOffer).then((res:any)=>{
+      //debugger;
+      if (res) {
+        this.advert = res;
+        this.isAdvertAttached = true;
+      } else
+        this.isAdvertAttached = false;
+      this.isAdvertRequestLoaded = true;
     });
 
     /*this.offerService.getOfferVideo(this.offer.idOffer, table).then((data:any) =>{
@@ -636,5 +651,10 @@ export class OfferDetailPage {
       validated: originalJobData.validated
     };
     return copyedJobData;
+  }
+
+  goToAdvertDetails() {
+    this.nav.push(AdvertDetailsPage, {advert:this.advert});
+
   }
 }

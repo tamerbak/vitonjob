@@ -105,6 +105,9 @@ export class SearchCriteriaPage {
     public isLanguageValidated: boolean = false;
     public isQualityValidated: boolean = false;
 
+    lookingForJob : boolean = false;
+    pendingJob : string = '';
+
     constructor(private viewCtrl: ViewController,
                 public globalConfig: GlobalConfigs,
                 private searchService: SearchService,
@@ -527,16 +530,58 @@ export class SearchCriteriaPage {
 
     watchJob(e) {
         let val = e.target.value;
-        if (val.length < 3) {
+
+        this.jobs = [];
+        this.jobList = [];
+        this.newCombination = [];
+
+        if (!val || val.length < 3) {
             this.isJobFound = true;
-            this.jobs = [];
-            this.newCombination = [];
+            this.pendingJob = '';
             return;
         }
 
-        this.jobs = [];
-        this.newCombination = [];
-        let removeDiacritics = require('diacritics').remove;
+        if(this.lookingForJob){
+            this.pendingJob = val;
+            return;
+        }
+
+        this.lookingForJob = true;
+        let idSector = 0;
+        if(this.jobData.idSector && this.jobData.idSector>0)
+            idSector = this.jobData.idSector;
+        this.offerService.autocompleteJobsSector(val, idSector).then((data : any)=>{
+            this.jobList = data;
+
+            for (let i = 0; i < this.jobList.length; i++) {
+                let s = this.jobList[i];
+                let sectorIndex = 0;
+                let currentJob = s;
+                if (this.newCombination.filter((elem, pos) => {
+                        sectorIndex = pos;
+                        return elem.idSector === s.idsector;
+                    }).length > 0) {
+                    this.newCombination[sectorIndex].jobs.push(currentJob);
+                } else {
+                    this.newCombination.push({idSector: s.idsector, sector: s.sector, jobs: [currentJob]});
+                }
+            }
+
+            this.lookingForJob = false;
+
+            if(this.pendingJob && this.pendingJob.length> 0){
+                this.reexecuteAutocomplete(this.pendingJob);
+
+            }
+
+            if (this.jobs.length == 0) {
+                this.isJobFound = true;
+            } else {
+                this.isJobFound = false;
+            }
+
+        });
+        /*let removeDiacritics = require('diacritics').remove;
         for (let i = 0; i < this.jobList.length; i++) {
             let s = this.jobList[i];
             let sectorIndex = 0;
@@ -552,17 +597,54 @@ export class SearchCriteriaPage {
                 }
             }
 
-        }
+        }*/
 
         this.jobs = this.newCombination.sort((a, b) => {
             return b.sector - a.sector;
         });
-        if (this.jobs.length == 0) {
-            this.isJobFound = false;
-        } else {
-            this.isJobFound = true;
-        }
+
     }
+
+    reexecuteAutocomplete(val){
+        this.jobs = [];
+        this.jobList = [];
+        this.newCombination = [];
+        this.cities = [];
+        this.lookingForJob = true;
+        this.pendingJob = '';
+        let idSector = 0;
+        if(this.jobData.idSector && this.jobData.idSector>0)
+            idSector = this.jobData.idSector;
+        this.offerService.autocompleteJobsSector(val, idSector).then((data : any)=>{
+            this.jobList = data;
+
+            for (let i = 0; i < this.jobList.length; i++) {
+                let s = this.jobList[i];
+                let sectorIndex = 0;
+                let currentJob = s;
+                if (this.newCombination.filter((elem, pos) => {
+                        sectorIndex = pos;
+                        return elem.idSector === s.idsector;
+                    }).length > 0) {
+                    this.newCombination[sectorIndex].jobs.push(currentJob);
+                } else {
+                    this.newCombination.push({idSector: s.idsector, sector: s.sector, jobs: [currentJob]});
+                }
+            }
+
+            this.lookingForJob = false;
+
+            this.isJobFound = (this.jobs.length != 0);
+        });
+
+        this.jobs = this.newCombination.sort((a, b) => {
+            return b.sector - a.sector;
+        });
+
+
+    }
+
+
 
     jobSelected(job) {
         this.job = job.libelle;

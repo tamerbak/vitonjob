@@ -1,4 +1,7 @@
-import {NavController, PickerController, ModalController, Events, ToastController} from "ionic-angular";
+import {
+    NavController, PickerController, ModalController, Events, ToastController,
+    LoadingController
+} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {Component} from "@angular/core";
@@ -90,6 +93,7 @@ export class ProfilePage {
                 public events: Events,
                 public picker: PickerController,
                 private _toast: ToastController,
+                public loading: LoadingController,
                 public modal: ModalController, public storage: Storage) {
 
 
@@ -527,14 +531,22 @@ export class ProfilePage {
     }
 
     showProfileSlots() {
+        
         this.profileService.getUserDisponibilite(this.userData.jobyer.id).then((res: any) => {
+            
             let modal = this.modal.create(ProfileSlotsPage, {savedSlots: res});
             modal.present();
             modal.onDidDismiss((data: any) => {
+                let loadingComponent = this.loading.create({content: "Merci de patienter..."});
+                loadingComponent.present();
                 this.slots = data.slots;
                 this.profileService.deleteDisponibilites(this.userData.jobyer.id).then((data: any) => {
+                    
                     if (data.status == 'success') {
-                        this.profileService.saveDisponibilites(this.userData.jobyer.id, this.slots);
+
+                        this.profileService.saveDisponibilites(this.userData.jobyer.id, this.slots).then((resp:any)=>{
+                            loadingComponent.dismiss();
+                        });
                     }
                 })
             })

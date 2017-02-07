@@ -91,6 +91,23 @@
             </ion-item>
         </ion-list>
 
+        <ion-list [hidden]="references.length == 0">
+            <ion-list-header color="primary">Références</ion-list-header>
+            <ion-item *ngFor="let r of references" text-wrap>
+                <ion-icon item-left name='star' small color="primary"></ion-icon>
+                <h3>{{r.fullName}}</h3>
+                <button ion-button icon-only item-right clear color="vojgreen" *ngIf="r.phone.trim()" (click)="callRef(r)">
+                    <ion-icon name="call"></ion-icon>
+                </button>
+                <button ion-button icon-only item-right clear small color="vojgreen" *ngIf="r.email.trim()" (click)="sendEmailRef(r)">
+                    <ion-icon name="mail"></ion-icon>
+                </button>
+                <!--button ion-button clear item-right (click)="showReferenceDetails(r)" large color="primary">
+                    <ion-icon name="more"></ion-icon>
+                </button-->
+            </ion-item>
+        </ion-list>
+
 
         <ion-row>
             <ion-col text-center>
@@ -159,22 +176,7 @@
 
     </ion-card>
 
-    <ion-card [hidden]="references.length == 0">
-        <ion-item text-wrap>
-            <h2>Références</h2>
-        </ion-item>
-        <ion-list>
-            <ion-item *ngFor="let r of references">
-                <ion-icon subtle large item-left name='star' style="color: #f1e42e"></ion-icon>
-                <h5>{{r.fullName}}</h5>
-                <p>
-                    {{r.phone}} {{r.phone != '' && r.email != ''?' / ':''}} {{r.email}}
-                </p>
-                <button ion-button clear item-right (click)="showReferenceDetails(r)" large color="primary">
-                    <ion-icon name="more"></ion-icon>
-                </button>
-            </ion-item>
-        </ion-list>
-    </ion-card>
+
+
 
 </ion-content>

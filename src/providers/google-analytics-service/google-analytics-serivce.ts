@@ -11,12 +11,14 @@ export class GoogleAnalyticsService {
     trackerInitialized:boolean = false;
 
     public static initialize(gc: GlobalConfigs){
-        console.log('Initializing Google analytics with ID : '+gc.googleAnalyticsID);
-        GoogleAnalytics.enableUncaughtExceptionReporting(true);
-        GoogleAnalytics.debugMode();
-        GoogleAnalytics.startTrackerWithId(gc.googleAnalyticsID);
-        GoogleAnalytics.setAllowIDFACollection(true);
-        Configs.GA_INITIALIZED = true;
+        //if (GlobalConfigs.env === 'PROD'){
+            console.log('Initializing Google analytics with ID : '+gc.googleAnalyticsID);
+            GoogleAnalytics.enableUncaughtExceptionReporting(true);
+            GoogleAnalytics.debugMode();
+            GoogleAnalytics.startTrackerWithId(gc.googleAnalyticsID);
+            GoogleAnalytics.setAllowIDFACollection(true);
+            Configs.GA_INITIALIZED = true;
+        //}
     }
 
     public static trackView(screen:string):void{

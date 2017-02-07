@@ -8,8 +8,8 @@ import {OfferDetailPage} from "../offer-detail/offer-detail";
 import {FileUtils} from "../../utils/fileUtils";
 import {Storage} from "@ionic/storage";
 
-declare var cordova: any;
-declare var window;
+declare let cordova: any;
+declare let window;
 
 @Component({
   templateUrl: 'advert-details.html',
@@ -78,7 +78,7 @@ export class AdvertDetailsPage{
     let folderpath = cordova.file.externalRootDirectory;
 
     // Convert the base64 string in a Blob
-    var DataBlob = FileUtils.b64toBlob(content, contentType);
+    let DataBlob = FileUtils.b64toBlob(content, contentType);
     console.log("Starting to write the file");
     window.resolveLocalFileSystemURL(folderpath, (dir) => {
       console.log("Access to the directory granted succesfully");

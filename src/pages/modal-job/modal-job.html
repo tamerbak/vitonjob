@@ -18,7 +18,7 @@
     </ion-list-header>
     <ion-item>
       <ion-label floating>Secteur <span class="asterisk">*</span></ion-label>
-      <ion-textarea [(ngModel)]="jobData.sector"></ion-textarea>  
+      <ion-textarea [(ngModel)]="jobData.sector" [disabled]="isInputDisabled"></ion-textarea>  
       <button small ion-button class="text-size" item-right (click)="setSectorsPicker()">
         <ion-icon name="list"></ion-icon>
       </button>
@@ -38,7 +38,7 @@
 
     <ion-item>
       <ion-label floating>Job <span class="asterisk">*</span></ion-label>
-      <ion-textarea [(ngModel)]="jobData.job"></ion-textarea>  
+      <ion-textarea [(ngModel)]="jobData.job" [disabled]="isInputDisabled"></ion-textarea>  
       <button small ion-button item-right (click)="setJobsPicker()">
         <ion-icon name="list"></ion-icon>
       </button>

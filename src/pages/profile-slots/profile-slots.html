@@ -14,7 +14,7 @@
 
         <ion-item text-wrap>
             <ion-label>Date de début</ion-label>
-            <ion-datetime displayFormat="DD, MMMM YYYY" [(yearValues)]=yearsVals [(ngModel)]="showedSlot.startDate" cancelText="Annuler " doneText="Ok" style="max-width:100%;" [(min)]="minStartDate" [(max)]="maxEndDate"></ion-datetime>
+            <ion-datetime displayFormat="DD, MMMM YYYY" [(yearValues)]=yearsVals [(ngModel)]="showedSlot.startDate" cancelText="Annuler " doneText="Ok" style="max-width:100%;" [min]="minDate" [max]="maxDate"></ion-datetime>
         </ion-item>
 
         <ion-item text-wrap>
@@ -24,7 +24,7 @@
 
         <ion-item text-wrap>
             <ion-label>Date de fin</ion-label>
-            <ion-datetime displayFormat="DD, MMMM YYYY" [(yearValues)]=yearsVals [(ngModel)]="showedSlot.endDate" cancelText="Annuler " doneText="Ok" style="max-width:100%;" [(min)]="minStartDate" [(max)]="maxEndDate"></ion-datetime>
+            <ion-datetime displayFormat="DD, MMMM YYYY" [(yearValues)]=yearsVals [(ngModel)]="showedSlot.endDate" cancelText="Annuler " doneText="Ok" style="max-width:100%;" [min]="minDate" [max]="maxDate"></ion-datetime>
         </ion-item>        
 
         <ion-item text-wrap>

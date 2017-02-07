@@ -46,9 +46,15 @@
                         'Expérimenté':'Débutant'}}
                     </li>
                     <li><span style="font-weight: bold">Rémunération </span>: {{offer.jobData.remuneration}} €/h</li>
-                    <li *ngIf="isEmployer"><span style="font-weight: bold">Nombre de postes </span>: {{offer.jobData.nbPoste}}</li>
-                    <li *ngIf="isEmployer"><span style="font-weight: bold">Contact sur place </span>: {{offer.jobData.contact}}</li>
-                    <li *ngIf="isEmployer"><span style="font-weight: bold">N° Téléphone </span>: {{offer.jobData.telephone}}</li>
+                    <li *ngIf="isEmployer"><span style="font-weight: bold">Nombre de postes </span>:
+                        {{offer.jobData.nbPoste}}
+                    </li>
+                    <li *ngIf="isEmployer"><span style="font-weight: bold">Contact sur place </span>:
+                        {{offer.jobData.contact}}
+                    </li>
+                    <li *ngIf="isEmployer"><span style="font-weight: bold">N° Téléphone </span>:
+                        {{offer.jobData.telephone}}
+                    </li>
                 </ul>
             </div>
             <div class="button-footer" *ngIf="canModify">
@@ -68,7 +74,7 @@
                              [style.fontWeight]="calendarStyle.fontWeight">
                 Disponibilité
             </ion-list-header>
-            <button ion-button outline small style="position: relative; top: 0" (click)="showCalendarCard()"  icon-left
+            <button ion-button outline small style="position: relative; top: 0" (click)="showCalendarCard()" icon-left
                     [style.color]="calendarStyle.buttonColor"
                     [style.borderColor]="calendarStyle.fontColor">
                 <ion-icon [name]="calendarIconName"></ion-icon>
@@ -111,7 +117,7 @@
                              [style.fontWeight]="qualityStyle.fontWeight">
                 Mon {{ isEmployer ? 'jobyer' : 'employeur' }} idéal
             </ion-list-header>
-            <button ion-button outline small style="position: relative; top: 0"  icon-left
+            <button ion-button outline small style="position: relative; top: 0" icon-left
                     [style.color]="qualityStyle.buttonColor"
                     [style.borderColor]="qualityStyle.fontColor"
                     (click)="showQualityCard()">
@@ -174,35 +180,45 @@
                 </button>
             </div>
         </ion-card>
-<br>
-      <ion-card>
-        <ion-card-header>Vidéo</ion-card-header>
-        <ion-card-content>
-          <ion-input placeholder="Lien de vidéo Youtube" [(ngModel)]="youtubeLink"
-                     [hidden]="videoAvailable || !canModify"></ion-input>
+        <br>
+        <ion-card>
+            <ion-card-header>Vidéo</ion-card-header>
+            <ion-card-content>
+                <ion-input placeholder="Lien de vidéo Youtube" [(ngModel)]="youtubeLink"
+                           [hidden]="videoAvailable || !canModify"></ion-input>
 
-          <div *ngIf="videoAvailable">
-            <iframe width="100%" height="200" style="display:{{videoAvailable?'block':'none'}}" target="_parent"
-                    [src]="videoUrl()">
-            </iframe>
-          </div>
-        </ion-card-content>
-        <div [hidden]="isLinkValid" class="error-box">
-          <ion-icon name="md-arrow-dropup"></ion-icon>
-          Le lien de la vidéo est non valide
-        </div>
+                <div *ngIf="videoAvailable">
+                    <iframe width="100%" height="200" style="display:{{videoAvailable?'block':'none'}}" target="_parent"
+                            [src]="videoUrl()">
+                    </iframe>
+                </div>
+            </ion-card-content>
+            <div [hidden]="isLinkValid" class="error-box">
+                <ion-icon name="md-arrow-dropup"></ion-icon>
+                Le lien de la vidéo est non valide
+            </div>
 
-        <div class="button-footer">
-          <button ion-button clear icon-left small (click)="updateVideo(false)" [hidden]="videoAvailable || !canModify">
-            <ion-icon name="add"></ion-icon>
-            Ajouter
-          </button>
-          <button ion-button outline icon-left [color]="themeColor" (click)="updateVideo(true)" [hidden]="!videoAvailable || !canModify">
-            <ion-icon name="trash"></ion-icon>
-            Supprimer
-          </button>
-        </div>
-      </ion-card>
+            <div class="button-footer">
+                <button ion-button clear icon-left small (click)="updateVideo(false)"
+                        [hidden]="videoAvailable || !canModify">
+                    <ion-icon name="add"></ion-icon>
+                    Ajouter
+                </button>
+                <button ion-button outline icon-left [color]="themeColor" (click)="updateVideo(true)"
+                        [hidden]="!videoAvailable || !canModify">
+                    <ion-icon name="trash"></ion-icon>
+                    Supprimer
+                </button>
+            </div>
+        </ion-card>
+
+        <ion-col text-center>
+            <button ion-button icon-left outline (click)="goToAdvertDetails()"  [disabled]="!isAdvertAttached">
+                <ion-icon name="add" *ngIf="isAdvertRequestLoaded"></ion-icon>
+                <ion-spinner *ngIf="!isAdvertRequestLoaded"></ion-spinner>
+                Plus de Détails...
+            </button>
+        </ion-col>
     </ion-list>
 
     <!--ion-row>
