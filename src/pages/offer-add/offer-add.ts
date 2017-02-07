@@ -50,7 +50,8 @@ export class OfferAddPage {
     public visibleOffer: boolean;
     public offerToBeAdded: {
         jobData: any, calendarData: any, qualityData: any, languageData: any,
-        visible: boolean, title: string, status: string, idHunter: number, videolink: string
+        visible: boolean, title: string, status: string, idHunter: number, videolink: string,
+        jobyerId: number, entrepriseId: number
     };
     public backgroundImage: any;
     public jobData: any;
@@ -155,7 +156,8 @@ export class OfferAddPage {
 
         this.offerToBeAdded = {
             jobData: {}, calendarData: [], qualityData: [], languageData: [],
-            visible: this.visibleOffer, title: "", status: "open", idHunter: 0, videolink: ""
+            visible: this.visibleOffer, title: "", status: "open", idHunter: 0, videolink: "",
+            jobyerId: (this.isEmployer ? 0 : this.idTiers), entrepriseId: (this.isEmployer ? this.idTiers : 0)
 
         };
 
