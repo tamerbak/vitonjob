@@ -115,7 +115,7 @@
                         <button *ngFor="let da of daysList" ion-button small class="day-button"
                                 [color]="(da.checked)? 'primary' : 'light'"
                                 [disabled]="da.disabled" (click)="dayClicked(da)">
-                            {{da.shortName}} le {{da.value}}
+                           le {{da.shortName }} {{da.value}}
                         </button>
                     </ion-scroll>
                     <ion-icon name="ios-arrow-forward" item-right style="font-size: x-small"></ion-icon>
