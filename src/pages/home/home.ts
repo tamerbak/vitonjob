@@ -151,11 +151,6 @@ export class HomePage {
                 private _toast: ToastController,
                 private _gaService: GoogleAnalyticsService,
                 private _loading: LoadingController, public storage: Storage, public cityServices: CommunesService) {
-
-
-        //  TrackScreen
-        GoogleAnalyticsService.trackView("Accueil");
-
         // Get target to determine configs
         this.projectTarget = _globalConfig.getProjectTarget();
         this.loading = _loading;

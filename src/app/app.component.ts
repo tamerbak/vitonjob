@@ -34,9 +34,7 @@ import {MissionListPage} from "../pages/mission-list/mission-list";
 import {ProfilePage} from "../pages/profile/profile";
 import {PendingContractsPage} from "../pages/pending-contracts/pending-contracts";
 import {Observable} from "rxjs/Rx";
-import {IntroPage} from "../pages/intro/intro";
 //import {isUndefined} from "ionic-angular/util/util";
-import {GoogleAnalyticsService} from "../providers/google-analytics-service/google-analytics-serivce";
 
 //declare let cordova;
 declare let Connection;
@@ -206,7 +204,6 @@ export class Vitonjob {
             this.storage.remove('slots');
 
 
-      GoogleAnalyticsService.initialize(gc);
             // Instabug integration
             //let cordova = require('cordova');
             /*if (window.cordova) {
@@ -562,10 +559,10 @@ export class Vitonjob {
         }
     }
 
-  gotoAccountPage() {
-    this.menu.close();
-    this.nav.setRoot(ProfilePage);
-  }
+    gotoAccountPage() {
+        this.menu.close();
+        this.nav.setRoot(ProfilePage);
+    }
 
     /**
      * @description this method allows to render the multicriteria modal component
