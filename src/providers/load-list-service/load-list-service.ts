@@ -115,4 +115,39 @@ export class LoadListService {
                 });
         });
     }
+
+    /*loadList(src: string, selectedList: any) {
+        let ids: number[] = [];
+        for (let i = 0; i < selectedList.length; ++i) {
+            ids.push(selectedList[i].id);
+        }
+
+        let sql = "SELECT " +
+            "pk_user_" + src + " as id" +
+            ", libelle " +
+            ", dirty " +
+            "FROM user_" + src + " "
+          ;
+        if (ids.length > 0) {
+            sql += "WHERE pk_user_" + src + " IN (" + ids.join() + ");";
+        } else {
+            sql += "WHERE dirty = 'N';";
+
+        }
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe(data => {
+                  if (data.status == "success") {
+                      resolve(data.data);
+                  } else {
+                      resolve(null);
+                  }
+              });
+        });
+
+    }*/
 }
