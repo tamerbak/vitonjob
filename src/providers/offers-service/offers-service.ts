@@ -772,6 +772,7 @@ export class OffersService {
                     // and save the data for later reference
                     this.listJobs = data.data;
                     this.db.set('JOB_LIST', JSON.stringify(this.listJobs));
+                    console.log('Preloaded jobs list');
                     resolve(this.listJobs);
                 });
         });
