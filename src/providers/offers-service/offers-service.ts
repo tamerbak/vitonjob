@@ -255,7 +255,7 @@ export class OffersService {
                     this.addedOffer = data;
                     //save the video link
                     let idOffer = data.idOffer;
-                    this.updateVideoLink(idOffer, offerData.videolink, projectTarget);
+                    //this.updateVideoLink(idOffer, offerData.videolink, projectTarget);
                     //attach id offer to the offer in local
                     offerData.idOffer = idOffer;
                     this.attachIdOfferInLocal(offerData, projectTarget);
@@ -348,7 +348,7 @@ export class OffersService {
         myOffer.telephone = offerData.jobData.telephone;
         myOffer.status = offerData.status;
         myOffer.title = offerData.title;
-        myOffer.videolink = offerData.videoLink;
+        myOffer.videolink = offerData.videolink;
         myOffer.visible = offerData.visible;
         myOffer.jobyerId = offerData.jobyerId;
         myOffer.entrepriseId = offerData.entrepriseId;
