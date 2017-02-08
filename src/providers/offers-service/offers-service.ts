@@ -522,7 +522,7 @@ export class OffersService {
     }
 
     getPrerequis(p) {
-        let sql = "select pk_user_prerquis as id from user_prerquis where lower_unaccent(libelle) = lower_unaccent('" + p + "')";
+        let sql = "select pk_user_prerquis as id from user_prerquis where lower_unaccent(libelle) = lower_unaccent('" + p.libelle + "')";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
