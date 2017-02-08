@@ -343,9 +343,9 @@ export class OffersService {
 
 
         // Offer part
-        myOffer.nbPoste = offerData.jobData.nbPoste;
-        myOffer.contact = offerData.jobData.contact;
-        myOffer.telephone = offerData.jobData.telephone;
+        myOffer.nbPoste = offerData.nbPoste;
+        myOffer.contact = offerData.contact;
+        myOffer.telephone = offerData.telephone;
         myOffer.status = offerData.status;
         myOffer.title = offerData.title;
         myOffer.videolink = offerData.videolink;
