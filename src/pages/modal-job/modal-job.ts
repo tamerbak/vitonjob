@@ -105,6 +105,7 @@ export class ModalJobPage {
 
   public showPrerequisBtn: boolean = false;
   public firstInit: boolean = false;
+  public isInputDisabled:boolean = true;
 
   public static CONV_FILTER_NIV = 0;
   public static CONV_FILTER_ECH = 1;

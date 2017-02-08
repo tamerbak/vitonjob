@@ -1,12 +1,12 @@
 import {Headers, Http} from "@angular/http";
 import {Configs} from "../configurations/configs";
-import {ToastController, LoadingController} from "ionic-angular";
+import {ToastController, LoadingController, Toast} from "ionic-angular";
 import {Injectable} from "@angular/core";
 /**
  * Created by tim on 25/01/2017.
  */
 
-const timeOutPeriod = 120000;
+const TIME_OUT_PERIOD = 120000;
 
 @Injectable()
 export class HttpRequestHandler {
@@ -20,7 +20,7 @@ export class HttpRequestHandler {
         console.error('An error occurred', error); // for demo purposes only
         let vojMessage: string = HttpRequestHandler.getErrMessage(error, HttpRequestHandler.senderClassName);
 
-        HttpRequestHandler.presentToast(vojMessage);
+        HttpRequestHandler.presentErrToast(vojMessage);
         //TODO send email to notify us
         let errorObject: any = {success: false, error: error.message || error};
         return Promise.reject(errorObject);
@@ -45,17 +45,28 @@ export class HttpRequestHandler {
      * @returns {Observable<T>}
      */
     sendSql(sql : string, classObject?: any, silentMode?: boolean){
-        if (silentMode !== true)
+        let newTimeOutPeriod : number = 0;
+        let silentLadingToast:Toast;
+        if (silentMode !== true){
             HttpRequestHandler.presentLoading();
+            newTimeOutPeriod = TIME_OUT_PERIOD;
+        } else {
+            //silent mode : waiting for more time..
+            newTimeOutPeriod = TIME_OUT_PERIOD * 10;
+            silentLadingToast = HttpRequestHandler.presentSilentLoadingToast("En cours de chargement des données..", newTimeOutPeriod, 'top');
+        }
+
         HttpRequestHandler.senderClassName = (classObject) ? classObject.constructor.name : "";
         let headers: Headers = Configs.getHttpTextHeaders();
         return this.http.post(Configs.sqlURL, sql, {headers: headers})
             .map(res => res.json())
-            .timeout(timeOutPeriod)
+            .timeout(newTimeOutPeriod)
             .catch(this.handleError)
             .finally(() => {
                 if (HttpRequestHandler.loaderComponent)
                     HttpRequestHandler.loaderComponent.dismiss();
+                if (silentLadingToast)
+                    silentLadingToast.dismiss();
             });
     }
 
@@ -67,17 +78,29 @@ export class HttpRequestHandler {
      * @returns {Observable<T>}
      */
     sendCallOut(payload: any, classObject?: any, silentMode?: boolean) {
-        if (silentMode !== true)
+        let newTimeOutPeriod : number = 0;
+        let silentLadingToast:Toast;
+        if (silentMode !== true){
             HttpRequestHandler.presentLoading();
+            newTimeOutPeriod = TIME_OUT_PERIOD;
+        } else {
+            //silent mode : waiting for more time..
+            newTimeOutPeriod = TIME_OUT_PERIOD * 10;
+            silentLadingToast = HttpRequestHandler.presentSilentLoadingToast("En cours de chargement des données...", newTimeOutPeriod, 'top');
+        }
+        // Getting service class name
         HttpRequestHandler.senderClassName = (classObject) ? classObject.constructor.name : "";
+        // Sending request
         let headers: Headers = Configs.getHttpJsonHeaders();
         return this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
             .map(res => res.json())
-            .timeout(timeOutPeriod)
+            .timeout(newTimeOutPeriod)
             .catch(this.handleError)
             .finally(() => {
                 if (HttpRequestHandler.loaderComponent)
                     HttpRequestHandler.loaderComponent.dismiss();
+                if (silentLadingToast)
+                    silentLadingToast.dismiss();
             });
     }
 
@@ -87,7 +110,7 @@ export class HttpRequestHandler {
      * @param duration
      * @param position
      */
-    static presentToast(message: string, duration?: number, position?: string) {
+    static presentErrToast(message: string, duration?: number, position?: string) {
         if (!duration)
             duration = 5;
         let toast = this.toast.create({
@@ -103,6 +126,25 @@ export class HttpRequestHandler {
         let toastElement = document.getElementsByClassName('toast-wrapper toast-bottom');
         if (toastElement && toastElement.length > 0)
             (toastElement[0] as any).style.background = "#E8384F";
+    }
+
+    /**
+     * Show a normal toast that contains silent loading message
+     * @param message
+     * @param duration
+     * @param position
+     */
+    static presentSilentLoadingToast(message: string, duration?: number, position?: string):Toast {
+        let toast = this.toast.create({
+            message: message,
+            position: position,
+            dismissOnPageChange: false,
+            showCloseButton: true,
+            closeButtonText: "Ok",
+            duration: duration
+        });
+        toast.present();
+        return toast;
     }
 
     /**
@@ -134,7 +176,7 @@ export class HttpRequestHandler {
                 // 5xx: server type error
                 return "5 • Problème sur serveur, merci de réessayer ultérieurement. (" + senderClassName + ")";
             case -1 :
-                // TimeOut error specified by us. See cont variable timeOutPeriod
+                // TimeOut error specified by us. See cont variable TIME_OUT_PERIOD
                 return "-1 • Merci de vérifier votre connexion internet et réessayer ultérieurement. (" + senderClassName + ")";
             default :
                 // Other problems...

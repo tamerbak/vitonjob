@@ -45,10 +45,10 @@
                     peuvent voir cette offre dans leurs recherches'}}
                 </h4>
                 <p [style.color]="item.color">Cliquer pour voir plus de détail</p>
-                <ion-badge [style.backgroundColor]="themeColor" item-right *ngIf="item.visible">
+                <!--ion-badge [style.backgroundColor]="themeColor" item-right *ngIf="item.visible">
                     <ion-spinner name="crescent" [hidden]="(item.correspondantsCount >= 0)"></ion-spinner>
                     {{(item.correspondantsCount < 0) ? '' : item.correspondantsCount}}
-                </ion-badge>
+                </ion-badge-->
             </ion-item>
             <ion-item (click)="goToDetailOffer(item)" [style.color]="item.color"
                       *ngIf="!item.visible && showUnpublishedOffers">
