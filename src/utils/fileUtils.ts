@@ -39,4 +39,9 @@ export class FileUtils{
     var blob = new Blob(byteArrays, {type: contentType});
     return blob;
   }
+
+  public static encodeFileName(name : string) : string {
+    let fileName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    return fileName;
+  }
 }
