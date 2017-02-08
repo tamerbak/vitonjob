@@ -13,7 +13,8 @@ import {Quality} from "../../dto/quality";
 import {Language} from "../../dto/language";
 import {Requirement} from "../../dto/requirement";
 
-const SAVE_OFFER_CALLOUT_ID = 40020;
+const OFFER_CALLOUT_ID = 40020;
+
 
 /**
  * @author jakjoud abdeslam
@@ -232,7 +233,7 @@ export class OffersService {
         // transforming ancient offer
         offerData = this.convertOfferToDTO(offerData, projectTarget);
         // store in remote database
-        let payloadFinal = new CCallout(SAVE_OFFER_CALLOUT_ID, [
+        let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
             new CCalloutArguments('Création/Edition offre', offerData),
             new CCalloutArguments('Configuration', {
                 'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
@@ -317,6 +318,7 @@ export class OffersService {
         for (let i = 0; i < offerData.qualityData.length; i++) {
             let quality = new Quality();
             quality.id = offerData.qualityData[i].idQuality;
+            quality.libelle = offerData.qualityData[i].libelle;
             quality.class = 'com.vitonjob.callouts.offer.model.QualityData';
             myOffer.qualityData.push(quality);
         }
@@ -326,6 +328,7 @@ export class OffersService {
             let language = new Language();
             language.class ='com.vitonjob.callouts.offer.model.LanguageData';
             language.id = offerData.languageData[i].idLanguage;
+            language.libelle = offerData.languageData[i].libelle;
             language.level = (offerData.languageData[i].level === 'junior') ? 1 : 2;
             myOffer.languageData.push(language);
         }
@@ -2016,5 +2019,54 @@ export class OffersService {
                 });
         });
     }
+
+    /**
+     * Get an offer
+     *
+     * @param idOffer
+     * @param projectTarget
+     * @param offer
+     * @returns {Promise<T>}
+     */
+    /*getOfferById(idOffer: number, projectTarget: string, offer: Offer): any {
+
+        let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
+            new CCalloutArguments('Voir offre', {
+                'class': 'com.vitonjob.callouts.offer.model.OfferToken',
+                'idOffer': idOffer
+            }),
+            new CCalloutArguments('Configuration', {
+                'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
+                'mode': 'view',
+                'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
+            }),
+        ]);
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(Configs.calloutURL, payloadFinal.forge(), {headers: headers})
+              .subscribe((data: any) => {
+                  let remoteOffer: Offer = JSON.parse(data._body);
+                  // Copy every properties from remote to local
+                  Object.keys(remoteOffer).forEach((key) => {
+                      offer[key] = remoteOffer[key];
+                  });
+
+                  // Change slot format from Timestamp to Date
+                  if (offer['calendarData'] && Utils.isEmpty(offer['calendarData']) === false) {
+                      //order offer slots
+                      offer['calendarData'].sort((a, b) => {
+                          return a.date - b.date
+                      });
+                      for (let i = 0; i < offer['calendarData'].length; ++i) {
+                          offer['calendarData'][i].date = new Date(offer['calendarData'][i].date);
+                          offer['calendarData'][i].dateEnd = new Date(offer['calendarData'][i].dateEnd);
+                      }
+                  }
+
+                  resolve(data);
+              });
+        });
+    }*/
 }
 
