@@ -799,24 +799,30 @@ export class OffersService {
     }
 
     autocompleteJobs(job : string){
+        let sqlfiedJob = "%";
+        let kws = job.split(' ');
+
+        for(let i = 0 ; i < kws.length ; i++){
+            sqlfiedJob = sqlfiedJob+kws[i]+"%";
+        }
         let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
             " from user_job j, user_metier m " +
-            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('%"+job+"%')) " +
+            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) " +
             "order by j.libelle asc limit 5";
 
+        console.log(sql);
 
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
-                    console.log(JSON.stringify(data));
+
                     this.listJobs = data.data;
                     resolve(this.listJobs);
                 });
@@ -824,31 +830,36 @@ export class OffersService {
     }
 
     autocompleteJobsSector(job : string, idSector : number){
+        let sqlfiedJob = "%";
+        let kws = job.split(' ');
+        for(let i = 0 ; i < kws.length ; i++){
+            sqlfiedJob = sqlfiedJob+kws[i]+"%";
+        }
         let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
             " from user_job j, user_metier m " +
-            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('%"+job+"%')) " +
+            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) " +
             "order by j.libelle asc limit 5";
 
         if(idSector>0){
             sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
                 " from user_job j, user_metier m " +
-                "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('%"+job+"%')) and fk_user_metier="+idSector +
+                "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) and fk_user_metier="+idSector +
                 "order by j.libelle asc limit 5";
         }
 
+        console.log(sql);
 
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
-                    console.log(JSON.stringify(data));
+
                     this.listJobs = data.data;
                     resolve(this.listJobs);
                 });
