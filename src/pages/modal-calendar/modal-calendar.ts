@@ -108,7 +108,7 @@ export class ModalCalendarPage {
      * Theme_DeviceDefault_Light_Dialog_Alert : 10
      */
     showSlotModal() {
-        let slotModel = this.modal.create(ModalSlotPage);
+        let slotModel = this.modal.create(ModalSlotPage,{slots:this.slots});
         slotModel.onDidDismiss(slotData => {
             //TODO: Control date value before adding them.
             if (slotData) {

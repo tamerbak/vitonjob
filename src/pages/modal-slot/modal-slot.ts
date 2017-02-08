@@ -1,8 +1,9 @@
-import {NavController, ViewController, ToastController, Platform} from "ionic-angular";
+import {NavController, ViewController, ToastController, Platform ,NavParams} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {Component} from "@angular/core";
 import {GlobalService} from "../../providers/global-service/global-service";
+import {OffersService} from "../../providers/offers-service/offers-service";
 import {Utils} from "../../utils/utils";
 
 /*
@@ -18,6 +19,7 @@ import {Utils} from "../../utils/utils";
 export class ModalSlotPage {
 
     public slot: any;
+    public slots: any;
     public showedSlot: any;
     public projectTarget: string;
     public themeColor: string;
@@ -39,9 +41,11 @@ export class ModalSlotPage {
     public maxEndDate: any;
     public minEndDate: any;
     public currentMonth: any;
+    public intervalHours:number = 10;
+    public params: NavParams;
 
 
-    constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController,
+    constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController,params: NavParams,private offersService:OffersService,
                 private globalService: GlobalService, platform: Platform, public toast: ToastController) {
 
         // Get target to determine configs
@@ -56,6 +60,7 @@ export class ModalSlotPage {
         this.todayDate = new Date();
         this.yearValue = new Date().getFullYear();
         this.monthValue = new Date().getMonth() + 1;
+        this.slots = params.get('slots');
         //let dayValue: number = new Date().getDay();
         //max date should be the day of tomorrow
         this.maxDate = new Date().setDate(new Date().getDate() + 1);
@@ -577,7 +582,7 @@ export class ModalSlotPage {
                 return;
             }
         }
-
+        
         //check if chosen hour and date are passed
         if (i == 0 && this.showedSlot.startDate && new Date(this.showedSlot.startDate) <= new Date()) {
             this.hoursErrorMessage = "* L'heure de début doit être supérieure à l'heure actuelle";
@@ -589,6 +594,28 @@ export class ModalSlotPage {
             this.showedSlot.endDate = "";
             return;
         }
+        debugger;
+      if (true) {
+        //total hours of one day should be lower than 10h
+        let isDailyDurationRespected = this.offersService.isDailySlotsDurationRespected(this.slots, this.showedSlot);
+        if (!isDailyDurationRespected) {
+          this.hoursErrorMessage = "* Le total des heures de travail de chaque journée ne doit pas dépasser les 10 heures";
+          this.showedSlot.endDate = "";
+          return false;
+        }
+
+        // if (!this.offersService.isSlotRespectsBreaktime(this.slots, this.showedSlot)) {
+        //   this.hoursErrorMessage = "Veuillez mettre un délai de 11h entre deux créneaux situés sur deux jours calendaires différents";
+        //   return false;
+        // }
+      }
+
+        // if(new Date(this.showedSlot.endDate).getTime() - new Date(this.showedSlot.startDate).getTime() > this.intervalHours * 60 * 60 * 1000){
+        //     this.hoursErrorMessage = "* Le total des heures de travail de chaque journée ne doit pas dépasser les 10 heures";
+        //     this.showedSlot.endDate = "";
+        //     return; 
+        // }
+        
     }
 
     convertHoursToMinutes(hour) {
