@@ -300,6 +300,8 @@ export class CivilityPage {
         this.scansLoading = true;
         this.attachementService.loadAttachementsByFolder(this.currentUser, 'Scans').then((attachments: any) => {
             let allImagesTmp = [];
+            if(attachments.length == 0)
+                this.scansLoading = false;
             for (let i = 0; i < attachments.length; ++i) {
                 if (attachments[i].fileName.substr(0, 4 + fileName.length) == "scan" + fileName) {
                     this.attachementService.downloadActualFile(attachments[i].id, attachments[i].fileName).then((data: any)=> {
@@ -363,8 +365,8 @@ export class CivilityPage {
 
 
     watchConvention(e) {
-        this.conventionId = 0;
-        let val = e.target.value;
+        /*this.conventionId = 0;
+        let val = e;
         if (val.length < 4) {
             this.conventions = [];
             return;
@@ -372,7 +374,7 @@ export class CivilityPage {
 
         this.loadListService.loadConventions().then((data: any) => {
             this.conventions = data;
-        });
+        });*/
     }
 
     watchBirthCP(e) {
@@ -452,6 +454,7 @@ export class CivilityPage {
     }
 
     convSelected(c) {
+        debugger;
         this.convObject = c;
         this.conventionId = c.id;
         this.convention = c.code + " - " + c.libelle;
