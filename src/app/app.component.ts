@@ -29,7 +29,6 @@ import {Storage} from "@ionic/storage";
 import {Configs} from "../configurations/configs";
 import {PhonePage} from "../pages/phone/phone";
 import {OfferListPage} from "../pages/offer-list/offer-list";
-import {AdvertListPage} from "../pages/advert-list/advert-list";
 import {MissionListPage} from "../pages/mission-list/mission-list";
 import {ProfilePage} from "../pages/profile/profile";
 import {PendingContractsPage} from "../pages/pending-contracts/pending-contracts";
