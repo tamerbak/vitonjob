@@ -17,7 +17,7 @@
         </ion-col>
     </ion-row>
 
-    <ion-row>
+    <ion-row *ngIf="isEmployer">
         <ion-col text-center>
             <!--Advert details button-->
             <button ion-button small [color]="themeColor" [disabled]="!validated.isCalendar || !validated.isJob" (click)="goToNewAdvert()"> <!---->

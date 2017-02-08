@@ -13,7 +13,8 @@ import {Quality} from "../../dto/quality";
 import {Language} from "../../dto/language";
 import {Requirement} from "../../dto/requirement";
 
-const SAVE_OFFER_CALLOUT_ID = 40020;
+const OFFER_CALLOUT_ID = 40020;
+
 
 /**
  * @author jakjoud abdeslam
@@ -232,7 +233,7 @@ export class OffersService {
         // transforming ancient offer
         offerData = this.convertOfferToDTO(offerData, projectTarget);
         // store in remote database
-        let payloadFinal = new CCallout(SAVE_OFFER_CALLOUT_ID, [
+        let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
             new CCalloutArguments('Création/Edition offre', offerData),
             new CCalloutArguments('Configuration', {
                 'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
@@ -254,7 +255,7 @@ export class OffersService {
                     this.addedOffer = data;
                     //save the video link
                     let idOffer = data.idOffer;
-                    this.updateVideoLink(idOffer, offerData.videolink, projectTarget);
+                    //this.updateVideoLink(idOffer, offerData.videolink, projectTarget);
                     //attach id offer to the offer in local
                     offerData.idOffer = idOffer;
                     this.attachIdOfferInLocal(offerData, projectTarget);
@@ -317,6 +318,7 @@ export class OffersService {
         for (let i = 0; i < offerData.qualityData.length; i++) {
             let quality = new Quality();
             quality.id = offerData.qualityData[i].idQuality;
+            quality.libelle = offerData.qualityData[i].libelle;
             quality.class = 'com.vitonjob.callouts.offer.model.QualityData';
             myOffer.qualityData.push(quality);
         }
@@ -326,6 +328,7 @@ export class OffersService {
             let language = new Language();
             language.class ='com.vitonjob.callouts.offer.model.LanguageData';
             language.id = offerData.languageData[i].idLanguage;
+            language.libelle = offerData.languageData[i].libelle;
             language.level = (offerData.languageData[i].level === 'junior') ? 1 : 2;
             myOffer.languageData.push(language);
         }
@@ -345,7 +348,7 @@ export class OffersService {
         myOffer.telephone = offerData.jobData.telephone;
         myOffer.status = offerData.status;
         myOffer.title = offerData.title;
-        myOffer.videolink = offerData.videoLink;
+        myOffer.videolink = offerData.videolink;
         myOffer.visible = offerData.visible;
         myOffer.jobyerId = offerData.jobyerId;
         myOffer.entrepriseId = offerData.entrepriseId;
@@ -796,24 +799,30 @@ export class OffersService {
     }
 
     autocompleteJobs(job : string){
+        let sqlfiedJob = "%";
+        let kws = job.split(' ');
+
+        for(let i = 0 ; i < kws.length ; i++){
+            sqlfiedJob = sqlfiedJob+kws[i]+"%";
+        }
         let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
             " from user_job j, user_metier m " +
-            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('%"+job+"%')) " +
+            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) " +
             "order by j.libelle asc limit 5";
 
+        console.log(sql);
 
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
-                    console.log(JSON.stringify(data));
+
                     this.listJobs = data.data;
                     resolve(this.listJobs);
                 });
@@ -821,31 +830,36 @@ export class OffersService {
     }
 
     autocompleteJobsSector(job : string, idSector : number){
+        let sqlfiedJob = "%";
+        let kws = job.split(' ');
+        for(let i = 0 ; i < kws.length ; i++){
+            sqlfiedJob = sqlfiedJob+kws[i]+"%";
+        }
         let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
             " from user_job j, user_metier m " +
-            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('%"+job+"%')) " +
+            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) " +
             "order by j.libelle asc limit 5";
 
         if(idSector>0){
             sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
                 " from user_job j, user_metier m " +
-                "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('%"+job+"%')) and fk_user_metier="+idSector +
+                "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) and fk_user_metier="+idSector +
                 "order by j.libelle asc limit 5";
         }
 
+        console.log(sql);
 
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
+            let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe((data: any) => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
-                    console.log(JSON.stringify(data));
+
                     this.listJobs = data.data;
                     resolve(this.listJobs);
                 });
@@ -2016,5 +2030,54 @@ export class OffersService {
                 });
         });
     }
+
+    /**
+     * Get an offer
+     *
+     * @param idOffer
+     * @param projectTarget
+     * @param offer
+     * @returns {Promise<T>}
+     */
+    /*getOfferById(idOffer: number, projectTarget: string, offer: Offer): any {
+
+        let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
+            new CCalloutArguments('Voir offre', {
+                'class': 'com.vitonjob.callouts.offer.model.OfferToken',
+                'idOffer': idOffer
+            }),
+            new CCalloutArguments('Configuration', {
+                'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
+                'mode': 'view',
+                'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
+            }),
+        ]);
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(Configs.calloutURL, payloadFinal.forge(), {headers: headers})
+              .subscribe((data: any) => {
+                  let remoteOffer: Offer = JSON.parse(data._body);
+                  // Copy every properties from remote to local
+                  Object.keys(remoteOffer).forEach((key) => {
+                      offer[key] = remoteOffer[key];
+                  });
+
+                  // Change slot format from Timestamp to Date
+                  if (offer['calendarData'] && Utils.isEmpty(offer['calendarData']) === false) {
+                      //order offer slots
+                      offer['calendarData'].sort((a, b) => {
+                          return a.date - b.date
+                      });
+                      for (let i = 0; i < offer['calendarData'].length; ++i) {
+                          offer['calendarData'][i].date = new Date(offer['calendarData'][i].date);
+                          offer['calendarData'][i].dateEnd = new Date(offer['calendarData'][i].dateEnd);
+                      }
+                  }
+
+                  resolve(data);
+              });
+        });
+    }*/
 }
 

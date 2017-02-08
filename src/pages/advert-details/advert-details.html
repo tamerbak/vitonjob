@@ -50,8 +50,8 @@
 
             <ion-item *ngIf="advert.attachement.fileContent.length != 0">
                 <p>Pièces jointes: </p>
-                <button ion-button block (click)="downloadAttachement()" outline clear>
-                    <ion-icon name="download"></ion-icon>
+                <button ion-button icon-left (click)="downloadAttachement()" block clear>
+                    <ion-icon name="download" item-left></ion-icon>
                     {{attachFilename}}
                 </button>
             </ion-item>
