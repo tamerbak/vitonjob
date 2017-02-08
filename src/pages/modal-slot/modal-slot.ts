@@ -594,8 +594,7 @@ export class ModalSlotPage {
             this.showedSlot.endDate = "";
             return;
         }
-        debugger;
-      if (true) {
+      if (this.projectTarget == 'employer') {
         //total hours of one day should be lower than 10h
         let isDailyDurationRespected = this.offersService.isDailySlotsDurationRespected(this.slots, this.showedSlot);
         if (!isDailyDurationRespected) {
@@ -609,12 +608,6 @@ export class ModalSlotPage {
         //   return false;
         // }
       }
-
-        // if(new Date(this.showedSlot.endDate).getTime() - new Date(this.showedSlot.startDate).getTime() > this.intervalHours * 60 * 60 * 1000){
-        //     this.hoursErrorMessage = "* Le total des heures de travail de chaque journée ne doit pas dépasser les 10 heures";
-        //     this.showedSlot.endDate = "";
-        //     return; 
-        // }
         
     }
 
