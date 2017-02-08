@@ -343,9 +343,9 @@ export class OffersService {
 
 
         // Offer part
-        myOffer.nbPoste = offerData.jobData.nbPoste;
-        myOffer.contact = offerData.jobData.contact;
-        myOffer.telephone = offerData.jobData.telephone;
+        myOffer.nbPoste = offerData.nbPoste;
+        myOffer.contact = offerData.contact;
+        myOffer.telephone = offerData.telephone;
         myOffer.status = offerData.status;
         myOffer.title = offerData.title;
         myOffer.videolink = offerData.videolink;
@@ -522,7 +522,7 @@ export class OffersService {
     }
 
     getPrerequis(p) {
-        let sql = "select pk_user_prerquis as id from user_prerquis where lower_unaccent(libelle) = lower_unaccent('" + p + "')";
+        let sql = "select pk_user_prerquis as id from user_prerquis where lower_unaccent(libelle) = lower_unaccent('" + p.libelle + "')";
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
@@ -772,6 +772,7 @@ export class OffersService {
                     // and save the data for later reference
                     this.listJobs = data.data;
                     this.db.set('JOB_LIST', JSON.stringify(this.listJobs));
+                    console.log('Preloaded jobs list');
                     resolve(this.listJobs);
                 });
         });

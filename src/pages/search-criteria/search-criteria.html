@@ -214,7 +214,7 @@
         </ion-list>
         <ion-item>
             <button *ngIf="!isJobFound || jobData.job.length >3 " ion-button icon-left outline item-right
-                    (click)="jobValidated()">Valider
+                    (click)="jobValidated()" [disabled]="!isJobFound || lookingForJob">Valider
             </button>
         </ion-item>
     </ion-card>

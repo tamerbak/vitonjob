@@ -1,4 +1,4 @@
-import {NavController, ViewController, AlertController, ModalController, NavParams} from "ionic-angular";
+import {NavController,ToastController, ViewController, AlertController, ModalController, NavParams} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalSlotPage} from "../modal-slot/modal-slot";
@@ -33,7 +33,7 @@ export class ModalCalendarPage {
     public isEmployer: boolean;
     public calendarTheme: number;
 
-    constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController,
+    constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController,public toast:ToastController,
                 public navParams: NavParams, public alert: AlertController, public modal: ModalController) {
         // Set global configs
         // Get target to determine configs
@@ -107,20 +107,53 @@ export class ModalCalendarPage {
      * Theme_DeviceDefault_Dialog_Alert : 9,
      * Theme_DeviceDefault_Light_Dialog_Alert : 10
      */
+
+     getDate(timestamp){
+        let date = new Date(timestamp);
+        let month = date.getMonth();
+        let day = date.getDay();
+        let year = date.getFullYear();
+
+        let formattedTime = day  + '/' + month + '/' + year;
+        return formattedTime;
+     }
+
     showSlotModal() {
         let slotModel = this.modal.create(ModalSlotPage,{slots:this.slots});
         slotModel.onDidDismiss(slotData => {
             //TODO: Control date value before adding them.
+            let dateExists:boolean = false;
             if (slotData) {
-                this.slots.push({
-                    'class': 'com.vitonjob.callouts.auth.model.CalendarData',
-                    idCalendar: 0,
-                    type: "",
-                    date: slotData.date,
-                    dateEnd: slotData.dateEnd,
-                    startHour: slotData.startHour,
-                    endHour: slotData.endHour
-                });
+
+                for (let elm of this.slots){
+                    if(
+                        (  (this.getDate(elm.date) <= this.getDate(slotData.date)) && (this.getDate(elm.dateEnd) > this.getDate(slotData.date))  )
+                         ||
+                        ( (this.getDate(elm.date) < this.getDate(slotData.dateEnd)) && (this.getDate(elm.dateEnd) >= this.getDate(slotData.dateEnd) ) )
+                    )
+                    {
+                        this.presentToast("Ce créneau chevauche avec un autre", 5);
+                        dateExists = true;
+                        break;
+                    }else if((this.getDate(elm.date) == this.getDate(slotData.date) && this.getDate(elm.dateEnd) == this.getDate(slotData.dateEnd)) || this.getDate(elm.dateEnd) == this.getDate(slotData.date) || this.getDate(elm.date) == this.getDate(slotData.dateEnd) ){                        if((((elm.startHour) <= (slotData.startHour)) && ((elm.endHour) >= (slotData.startHour))) || (((elm.startHour) <= (slotData.endHour)) && ((elm.endHour) >= (slotData.endHour)))){
+                            dateExists = true;
+                            this.presentToast("Ce créneau chevauche avec un autre", 5);
+                            break;
+                        }
+                    }
+                }
+
+                if(!dateExists){
+                    this.slots.push({
+                        'class': 'com.vitonjob.callouts.auth.model.CalendarData',
+                        idCalendar: 0,
+                        type: "",
+                        date: slotData.date,
+                        dateEnd: slotData.dateEnd,
+                        startHour: slotData.startHour,
+                        endHour: slotData.endHour
+                    });
+                }
             }
         });
         slotModel.present();
@@ -200,5 +233,13 @@ export class ModalCalendarPage {
             let hourArray = hour.split(':');
             return hourArray[0] * 60 + parseInt(hourArray[1]);
         }
+    }
+
+    presentToast(message: string, duration: number) {
+        let toast = this.toast.create({
+            message: message,
+            duration: duration * 1000
+        });
+        toast.present();
     }
 }

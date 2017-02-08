@@ -155,8 +155,8 @@ export class AuthenticationService {
     //building the sql request
     sql = "update user_jobyer set  " +
       "titre='" + title + "', " +
-      "nom='" + lastname + "', " +
-      "prenom='" + firstname + "', " +
+      "nom='" + Utils.sqlfyText(lastname) + "', " +
+      "prenom='" + Utils.sqlfyText(firstname) + "', " +
 
       (!this.isEmpty(numSS) ? ("numero_securite_sociale ='" + numSS + "', ") : ("numero_securite_sociale ='', ")) +
       (!this.isEmpty(cni) ? ("cni ='" + cni + "', ") : ("cni ='', ")) +
@@ -173,7 +173,7 @@ export class AuthenticationService {
       (!this.isEmpty(birthCountryId) ? ("fk_user_pays ='" + birthCountryId + "', ") : ("fk_user_pays='', ")) +
       (!this.isEmpty(regionId) ? (" fk_user_identifiants_nationalite='" + regionId + "', ") : ("fk_user_identifiants_nationalite = " + null + ", ")) +
 
-      (!this.isEmpty(birthplace) ? (" lieu_de_naissance='" + birthplace + "', ") : ("lieu_de_naissance='', ")) +
+      (!this.isEmpty(birthplace) ? (" lieu_de_naissance='" + Utils.sqlfyText(birthplace) + "', ") : ("lieu_de_naissance='', ")) +
       (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "', ") : ("fk_user_departement = " + null + ", " )) +
 
       (!this.isEmpty(cv) ? ("cv ='" + Utils.sqlfyText(cv) + "' ") : ("cv = '' " )) +
@@ -225,13 +225,13 @@ export class AuthenticationService {
    */
   updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, projectTarget, medecineId, conventionId, collective_heure_hebdo) {
     var sql = "update user_employeur set ";
-    sql = sql + " titre='" + title + "' ";
-    sql = sql + ", nom='" + lastname + "', prenom='" + firstname + "'";
+    sql = sql + " titre='" + Utils.sqlfyText(title) + "' ";
+    sql = sql + ", nom='" + Utils.sqlfyText(lastname) + "', prenom='" + Utils.sqlfyText(firstname) + "'";
     collective_heure_hebdo = (!collective_heure_hebdo ? "0" : collective_heure_hebdo);
     sql = sql + " , duree_collective_travail_hebdo='" + collective_heure_hebdo + "' ";
     sql = sql + " where pk_user_employeur=" + roleId + ";";
    
-    sql = sql + " update user_entreprise set nom_ou_raison_sociale='" + companyname + "' ";
+    sql = sql + " update user_entreprise set nom_ou_raison_sociale='" + Utils.sqlfyText(companyname) + "' ";
     siret = (!siret ? "" : siret);
     sql = sql + " , siret='" + siret + "' ";
     //sql = sql + "urssaf='" + numUrssaf + "', ";
@@ -242,7 +242,7 @@ export class AuthenticationService {
     if (conventionId && conventionId > 0)
       sql = sql + " , fk_user_convention_collective=" + conventionId;
     ape = (!ape ? "" : ape);
-    sql = sql + " , ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
+    sql = sql + " , ape_ou_naf='" + Utils.sqlfyText(ape) + "' where  pk_user_entreprise=" + entrepriseId;
     console.log(sql);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -258,8 +258,8 @@ export class AuthenticationService {
 
   updateRecruiterCivility(title, lastname, firstname, accountid) {
     var sql = "update user_recruteur set ";
-    sql = sql + " titre='" + title + "', ";
-    sql = sql + " nom='" + lastname + "', prenom='" + firstname + "' where fk_user_account=" + accountid + ";";
+    sql = sql + " titre='" + Utils.sqlfyText(title) + "', ";
+    sql = sql + " nom='" + Utils.sqlfyText(lastname) + "', prenom='" + Utils.sqlfyText(firstname) + "' where fk_user_account=" + accountid + ";";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();

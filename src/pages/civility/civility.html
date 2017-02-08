@@ -87,7 +87,7 @@
 
         <ion-item [hidden]="!isEmployer">
             <ion-label floating>Convention collective</ion-label>
-            <ion-select id="in-select" [(ngModel)]="conventionId" (ionChange)="watchConvention($event)" okText="OK" cancelText="Annuler">
+            <ion-select id="conv-select" [(ngModel)]="conventionId" (ionChange)="watchConvention($event)" okText="OK" cancelText="Annuler">
                 <ion-option *ngFor="let c of conventions" (click)="convSelected(c)" value="{{c.id}}">
                     {{c.code}} - {{c.libelle}}
                 </ion-option>

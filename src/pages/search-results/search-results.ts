@@ -978,7 +978,7 @@ export class SearchResultsPage implements OnInit {
             return item;
         }
         return this.advertService.getInterestOffer(item.idOffre, this.currentUser.jobyer.id).then((data: any) => {
-            debugger;
+            
             if(data && data.data && data.data.length  > 0){
                 item.jobyerInterested = true;
                 item.jobyerInterestLabel = "Cette offre ne m'intéresse plus";
