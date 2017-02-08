@@ -203,7 +203,7 @@ export class AdvertService {
         let sql = "select * from user_interet_jobyer_annonces where fk_user_annonce_entreprise = " + advertId + " and fk_user_jobyer = " + jobyerId;
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe(data => {
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                 resolve(data);
             });
         });
@@ -211,10 +211,8 @@ export class AdvertService {
 
     getInterestOffer(offerId, jobyerId) {
         let sql = "select * from user_candidatures_aux_offres where fk_user_offre_entreprise = " + offerId + " and fk_user_jobyer = " + jobyerId;
-        debugger;
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe(data => {
-                debugger;
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                 resolve(data);
             });
         });
