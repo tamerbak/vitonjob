@@ -494,8 +494,14 @@ export class OfferDetailPage {
           text: 'Oui',
           handler: () => {
             console.log('Agree clicked');
-            this.offerService.deleteOffer(this.offer, this.projectTarget);
-            this.nav.setRoot(OfferListPage);
+            this.offerService.deleteOffer(this.offer, this.projectTarget).then((data: any) => {
+              if(data && data.status == "success"){
+                this.nav.setRoot(OfferListPage);
+                this.globalService.showAlertValidation("Vit-On-Job", "L'offre " + this.offer.title + " a été bien supprimé.");
+              }else{
+              this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+              }
+            })
           }
         }
       ]
