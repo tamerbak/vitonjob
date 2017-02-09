@@ -34,6 +34,7 @@ export class AdvertEditPage{
   public contractFormArray: any[] = [];
   public modal: any;
   public idAdvert: string;
+  public IdOffer: any;
 
   constructor(public nav: NavController,
               public navParams: NavParams,
@@ -86,6 +87,9 @@ export class AdvertEditPage{
       contractForm: ''
     };
 
+    if(navParams.get('fromPage')=="offer-details"){
+      this.IdOffer = navParams.get('idOffer');
+    }
     //in the case of editing an existing advert
     if(navParams.get('advert')){
       //javascript passes objects by reference, therefore advert param must be cloned to prevent modifying it
@@ -230,27 +234,34 @@ export class AdvertEditPage{
         }
       });
     }else{
+      
       this.advertService.saveAdvert(clonedAdvert).then((result: any) => {
-        debugger;
         if(result.id != 0) {
           this.idAdvert = result.id;
           //loading.dismiss();
           //this.displayRequestAlert();
-          this.storage.set('advert', {id: this.idAdvert, value:clonedAdvert}).then(()=>{
+          if(this.navParams.get("fromPage")=='offer-details'){
+            this.advertService.updateOfferWithAdvert(this.idAdvert, this.IdOffer).then((data: any) => {
+              console.log("offer updated with advert id");
+              this.nav.pop();
+            });
+            
+          }else{
+            this.storage.set('advert', {id: this.idAdvert, value:clonedAdvert}).then(()=>{
             this.nav.pop();
             clonedAdvert.id = result.id;
-            // Now saving the heavy part of request via an update request
-            this.advertService.updateAdvert(clonedAdvert).then((result: any) => {
-              if (result && result.status == 'success') {
-                console.log('Advert number '+ this.idAdvert + ' is updated with files contents');
-              } else {
-                //loading.dismiss();
-                this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
-                return;
-              }
+              // Now saving the heavy part of request via an update request
+              this.advertService.updateAdvert(clonedAdvert).then((result: any) => {
+                if (result && result.status == 'success') {
+                  console.log('Advert number '+ this.idAdvert + ' is updated with files contents');
+                } else {
+                  //loading.dismiss();
+                  this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
+                  return;
+                }
+              });
             });
-          });
-
+          }
         } else {
           //loading.dismiss();
           this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");

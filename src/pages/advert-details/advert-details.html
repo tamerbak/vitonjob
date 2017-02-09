@@ -12,7 +12,7 @@
 
     <ion-card>
         <ion-row>
-            <ion-col width-33 *ngIf="advert.thumbnail.fileContent.length != 0">
+            <ion-col width-33 *ngIf="advert.thumbnail.fileContent && advert.thumbnail.fileContent.length != 0">
                 <ion-avatar>
                     <img [src]="advert.thumbnail.fileContent" style="margin:5px">
                 </ion-avatar>
