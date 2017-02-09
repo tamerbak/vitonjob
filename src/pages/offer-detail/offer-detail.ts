@@ -672,17 +672,17 @@ export class OfferDetailPage {
   goToAdvertDetails() {
     let loading = this.loading.create({content: "Merci de patienter..."});
     loading.present(loading);
-    this.advertService.getAdvertByIdOffer(this.offer.idOffer).then((res:any)=>{
+    this.advertService.getAdvertByIdOffer(this.offer.idOffer).then((res: any) => {
       //debugger;
       loading.dismiss();
       if (res) {
         this.advert = res;
-        this.nav.push(AdvertDetailsPage, {advert:this.advert});
+        this.nav.push(AdvertDetailsPage, {advert: this.advert});
       } else {
-        this.nav.push(AdvertEditPage, {fromPage:"offer-details",idOffer: this.offer.idOffer});
+        this.nav.push(AdvertEditPage, {fromPage: "offer-details", idOffer: this.offer.idOffer});
       }
     });
-    
+  }
   gotoJobyerInterestList(){
     this.nav.push(AdvertJobyerListPage, {offer: this.offer});
   }
