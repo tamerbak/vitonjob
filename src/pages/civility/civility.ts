@@ -234,12 +234,12 @@ export class CivilityPage {
         this.allImages = [];
         //load nationality list
         if (!this.isEmployer && !this.isRecruiter) {
+            this.scansLoadingTitle = "scans de votre titre d'identité";
+            this.scansLoadingInfos = "Les "+this.scansLoadingTitle+" sont en cours de téléchargement veuillez patienter ...";
             this.loadListService.loadNationalities(this.projectTarget).then((data: {data: any}) => {
                 this.nationalities = data.data;
                 //initialize nationality with (9 = francais)
                 this.scanTitle = " de votre titre d'identité";
-                this.scansLoadingTitle = "scans de votre titre d'identité";
-                this.scansLoadingInfos = "Les "+this.scansLoadingTitle+" sont en cours de téléchargement veuillez patienter ...";
                 this.nationalitiesstyle = {'font-size': '1.4rem'};
                 this.loadAttachement(this.scanTitle);
             });
