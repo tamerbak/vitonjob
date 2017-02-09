@@ -117,6 +117,7 @@ export class CivilityPage {
     public userRoleId: string;
     public scansLoading : boolean = true;
     public scansLoadingTitle : string;
+    public scansLoadingInfos :string="";
     public scanChanged : boolean = false;
 
     /*
@@ -238,11 +239,13 @@ export class CivilityPage {
                 //initialize nationality with (9 = francais)
                 this.scanTitle = " de votre titre d'identité";
                 this.scansLoadingTitle = "scans de votre titre d'identité";
+                this.scansLoadingInfos = "Les "+this.scansLoadingTitle+" sont en cours de téléchargement veuillez patienter ...";
                 this.nationalitiesstyle = {'font-size': '1.4rem'};
                 this.loadAttachement(this.scanTitle);
             });
         } else {
             this.scansLoadingTitle = "scans de votre extrait k-bis";
+            this.scansLoadingInfos = "Les "+this.scansLoadingTitle+" sont en cours de téléchargement veuillez patienter ...";
             this.scanTitle = " de votre extrait k-bis";
             this.loadAttachement(this.scanTitle);
             this.loadListService.loadConventions().then((response: any) => {
@@ -299,9 +302,12 @@ export class CivilityPage {
         // Get scan
         this.scansLoading = true;
         this.attachementService.loadAttachementsByFolder(this.currentUser, 'Scans').then((attachments: any) => {
+            //debugger;
             let allImagesTmp = [];
-            if(attachments.length == 0)
+            if(attachments.length == 0){
                 this.scansLoading = false;
+                this.scansLoadingInfos = "";
+            }
             for (let i = 0; i < attachments.length; ++i) {
                 if (attachments[i].fileName.substr(0, 4 + fileName.length) == "scan" + fileName) {
                     this.attachementService.downloadActualFile(attachments[i].id, attachments[i].fileName).then((data: any)=> {
@@ -310,8 +316,14 @@ export class CivilityPage {
                         });
                         if(i == attachments.length -1 ){
                             this.scansLoading = false;
+                            this.scansLoadingInfos = "";
                         }
                     });
+                }else{
+                   if(i == attachments.length -1 ){
+                        this.scansLoading = false;
+                        this.scansLoadingInfos = "";
+                   } 
                 }
             }
             this.allImages = allImagesTmp;

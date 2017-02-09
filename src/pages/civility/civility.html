@@ -250,8 +250,8 @@
             </ion-select>
         </ion-item>
         <div class="error-box">{{tsMessage}}</div>
-        <ion-row wrap *ngIf="scansLoading">
-            Les {{scansLoadingTitle}} sont en cours de téléchargement veuillez patienter ...
+        <ion-row wrap>
+            {{scanLoadingInfos}}
         </ion-row>
         <ion-row wrap>
                 <ion-col width-33 *ngFor="let i of allImages; let idx = index" class="col-md-2 col-xs-12 profile-doc-list-elem">
