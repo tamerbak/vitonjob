@@ -119,7 +119,7 @@ export class ModalCalendarPage {
      }
 
     showSlotModal() {
-        let slotModel = this.modal.create(ModalSlotPage);
+        let slotModel = this.modal.create(ModalSlotPage,{slots:this.slots});
         slotModel.onDidDismiss(slotData => {
             //TODO: Control date value before adding them.
             let dateExists:boolean = false;
