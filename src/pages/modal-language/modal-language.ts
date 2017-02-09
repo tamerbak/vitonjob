@@ -1,4 +1,4 @@
-import {NavController, ModalController, ViewController, AlertController, NavParams} from "ionic-angular";
+import {NavController, ModalController, ViewController, AlertController, NavParams, LoadingController} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalSelectionPage} from "../modal-selection/modal-selection";
@@ -36,7 +36,10 @@ export class ModalLanguagePage {
               gc: GlobalConfigs,
               viewCtrl: ViewController,
               params: NavParams,
-              os: OffersService, public modal: ModalController, public alert: AlertController) {
+              os: OffersService,
+              public modal: ModalController,
+              public alert: AlertController,
+              public loading: LoadingController) {
     // Set global configs
     // Get target to determine configs
     this.projectTarget = gc.getProjectTarget();
@@ -68,12 +71,15 @@ export class ModalLanguagePage {
    * @Description : loads language list
    */
   showLanguageList() {
+    let loading = this.loading.create({content: "Merci de patienter..."});
+    loading.present();
 
     this.offerService.loadLanguages(this.projectTarget).then((data: any) => {
       this.languageList = data;
       let selectionModel = this.modal.create(ModalSelectionPage,
         {type: 'langue', items: this.languageList, selection: this});
       selectionModel.present();
+      loading.dismiss();
     });
   }
 
