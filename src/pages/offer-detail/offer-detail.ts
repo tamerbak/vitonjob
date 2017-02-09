@@ -27,6 +27,7 @@ import {EnvironmentService} from "../../providers/environment-service/environmen
 //import {Utils} from "../../utils/utils";
 import {AdvertService} from "../../providers/advert-service/advert-service";
 import {AdvertDetailsPage} from "../advert-details/advert-details";
+import {AdvertEditPage} from "../advert-edit/advert-edit";
 import {AdvertJobyerListPage} from "../advert-jobyer-list/advert-jobyer-list";
 
 /*
@@ -49,6 +50,7 @@ export class OfferDetailPage {
   //public originalJobData: any;
   //public adressData: any;
   public fullAdress: any;
+  public loading:any;
   public idTiers: number;
   public projectTarget: string;
   public themeColor: string;
@@ -86,7 +88,7 @@ export class OfferDetailPage {
               public _sanitizer: DomSanitizer,
               public globalService: GlobalService,
               public alert: AlertController,
-              public loading: LoadingController,
+              public _loading: LoadingController,
               public modal: ModalController,
               public popover: PopoverController,
               public environmentService:EnvironmentService,
@@ -107,6 +109,7 @@ export class OfferDetailPage {
     this.sanitizer = _sanitizer;
     this.offerService = offersService;
     this.backGroundColor = config.backGroundColor;
+    this.loading = _loading;
 
     // Get Offer passed in NavParams
     this.offer = params.get('selectedOffer');
@@ -189,15 +192,15 @@ export class OfferDetailPage {
       }
     });
 
-    this.advertService.getAdvertByIdOffer(this.offer.idOffer).then((res:any)=>{
-      //debugger;
-      if (res) {
-        this.advert = res;
-        this.isAdvertAttached = true;
-      } else
-        this.isAdvertAttached = false;
-      this.isAdvertRequestLoaded = true;
-    });
+    // this.advertService.getAdvertByIdOffer(this.offer.idOffer).then((res:any)=>{
+    //   //debugger;
+    //   if (res) {
+    //     this.advert = res;
+    //     this.isAdvertAttached = true;
+    //   } else
+    //     this.isAdvertAttached = false;
+    //   this.isAdvertRequestLoaded = true;
+    // });
 
     this.offerService.countInterestedJobyers(this.offer.idOffer).then((data: any) => {
       this.nbInterest = data.nbInterest;
@@ -667,9 +670,19 @@ export class OfferDetailPage {
   }
 
   goToAdvertDetails() {
-    this.nav.push(AdvertDetailsPage, {advert:this.advert});
-  }
-
+    let loading = this.loading.create({content: "Merci de patienter..."});
+    loading.present(loading);
+    this.advertService.getAdvertByIdOffer(this.offer.idOffer).then((res:any)=>{
+      //debugger;
+      loading.dismiss();
+      if (res) {
+        this.advert = res;
+        this.nav.push(AdvertDetailsPage, {advert:this.advert});
+      } else {
+        this.nav.push(AdvertEditPage, {fromPage:"offer-details",idOffer: this.offer.idOffer});
+      }
+    });
+    
   gotoJobyerInterestList(){
     this.nav.push(AdvertJobyerListPage, {offer: this.offer});
   }

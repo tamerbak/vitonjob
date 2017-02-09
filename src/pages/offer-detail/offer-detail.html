@@ -216,9 +216,9 @@
         </ion-card>
 
         <ion-col text-center>
-            <button ion-button icon-left outline (click)="goToAdvertDetails()"  [disabled]="!isAdvertAttached">
-                <ion-icon name="add" *ngIf="isAdvertRequestLoaded"></ion-icon>
-                <ion-spinner *ngIf="!isAdvertRequestLoaded"></ion-spinner>
+            <button ion-button icon-left outline (click)="goToAdvertDetails()">
+                <ion-icon name="add"></ion-icon>
+                <!--<ion-spinner *ngIf="!isAdvertRequestLoaded"></ion-spinner>-->
                 Plus de Détails...
             </button>
         </ion-col>
