@@ -1,6 +1,6 @@
 <ion-header>
     <ion-navbar [color]="themeColor">
-        <ion-title>Langues</ion-title>
+        <ion-title>Langues {{projectTarget == 'employer' ? 'requises':'priviligiées' }}</ion-title>
         <ion-buttons end>
             <button ion-button icon-only (click)="closeModal()">
                 <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
