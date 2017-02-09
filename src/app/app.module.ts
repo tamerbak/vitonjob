@@ -130,6 +130,7 @@ import {HttpRequestHandler} from "../http/http-request-handler";
 import {ModalPeriodPage} from "../pages/modal-period/modal-period";
 import {IntroPage} from "../pages/intro/intro";
 import {GoogleAnalyticsService} from "../providers/google-analytics-service/google-analytics-serivce";
+import {SqliteDBService} from "../providers/sqlite-db-service/sqlite-db-service";
 
 @NgModule({
     declarations: [
@@ -360,7 +361,8 @@ import {GoogleAnalyticsService} from "../providers/google-analytics-service/goog
         AccountReferencesService,
         EnvironmentService,
         HttpRequestHandler,
-        GoogleAnalyticsService
+        GoogleAnalyticsService,
+        SqliteDBService
     ]
 })
 export class AppModule {

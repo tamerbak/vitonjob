@@ -12,6 +12,7 @@ import {CalendarSlot} from "../../dto/calendar-slot";
 import {Quality} from "../../dto/quality";
 import {Language} from "../../dto/language";
 import {Requirement} from "../../dto/requirement";
+import {SqliteDBService} from "../sqlite-db-service/sqlite-db-service";
 
 const OFFER_CALLOUT_ID = 40020;
 
@@ -40,7 +41,10 @@ export class OffersService {
     lienVideo: string;
     convention: any;
 
-    constructor(public http: Http, public db: Storage, public httpRequest:HttpRequestHandler) {
+    constructor(public http: Http,
+                public db: Storage,
+                public sqliteDb : SqliteDBService,
+                public httpRequest:HttpRequestHandler) {
         this.count = 0;
 
 
@@ -736,7 +740,7 @@ export class OffersService {
     }
 
     loadSectorsToLocal() {
-        let sql = "select pk_user_metier as id, libelle as libelle from user_metier where dirty='N' order by libelle asc";
+        /*let sql = "select pk_user_metier as id, libelle as libelle from user_metier where dirty='N' order by libelle asc";
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -753,11 +757,25 @@ export class OffersService {
                     this.db.set('SECTOR_LIST', JSON.stringify(this.listSectors));
                     resolve(this.listSectors);
                 });
+        });*/
+        return new Promise(resolve => {
+            this.sqliteDb.executeSelect("select pk_user_metier as id, libelle as libelle from user_metier order by libelle asc").then((data:any) => {
+                this.listSectors = [];
+                for(let i =0; i<data.rows.length ; i++){
+                    let item = data.rows.item(i);
+                    this.listSectors.push(item);
+                }
+                console.log("Loading sectors");
+                console.log(this.listSectors);
+                this.db.set('SECTOR_LIST', JSON.stringify(this.listSectors));
+                resolve(this.listSectors);
+            });
         });
+
     }
 
     loadJobsToLocal() {
-        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier and j.dirty='N' order by j.libelle asc";
+        /*let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier and j.dirty='N' order by j.libelle asc";
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -775,6 +793,19 @@ export class OffersService {
                     console.log('Preloaded jobs list');
                     resolve(this.listJobs);
                 });
+        });*/
+        return new Promise(resolve => {
+            this.sqliteDb.executeSelect("select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc").then((data:any) => {
+                this.listJobs = [];
+                for(let i =0; i<data.rows.length ; i++){
+                    let item = data.rows.item(i);
+                    this.listJobs.push(item);
+                }
+                console.log("Loading jobs");
+                console.log(this.listJobs);
+                this.db.set('JOB_LIST', JSON.stringify(this.listJobs));
+                resolve(this.listJobs);
+            });
         });
     }
 
