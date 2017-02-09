@@ -10,6 +10,16 @@ export class AdvertService {
 
     }
 
+    deleteAdvert(advertId) {
+        let sql = "update user_annonce_entreprise set dirty = 'Y' where pk_user_annonce_entreprise="+advertId;
+
+        return new Promise(resolve => {
+            this.httpRequest.sendSql(sql, this).subscribe(data => {
+                resolve(data);
+            });
+        });
+    }
+
     loadAdverts(offset, limit) {
         let sql = "select " +
             "pk_user_annonce_entreprise as id" +
