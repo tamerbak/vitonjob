@@ -175,9 +175,6 @@ export class HomePage {
 
         // Get job list
         this.jobList = [];
-        this.storage.get("JOB_LIST").then((data: any) => {
-            this.jobList = JSON.parse(data);
-        });
 
         this.keyboard = kb;
         // page push
@@ -760,7 +757,7 @@ export class HomePage {
          this.doSemanticSearch();*/
 
         // search by cities mode
-        /*if (this.isCity.activated) {
+        if (this.isCity.activated) {
             this.watchCity(e);
             return;
         }
@@ -816,9 +813,9 @@ export class HomePage {
             return b.sector - a.sector;
         });
 
-*/
 
-        if (this.isCity.activated) {
+
+        /*if (this.isCity.activated) {
             this.watchCity(e);
             return;
         }
@@ -857,7 +854,7 @@ export class HomePage {
             return b.sector - a.sector;
         });
 
-        this.isJobFound = (this.jobs.length == 0);
+        this.isJobFound = (this.jobs.length == 0);*/
     }
 
     reexecuteAutocomplete(val){

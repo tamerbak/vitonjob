@@ -840,12 +840,22 @@ export class OffersService {
         }
         let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
             " from user_job j, user_metier m " +
-            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) " +
+            "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+sqlfiedJob+"')) " +
             "order by j.libelle asc limit 5";
 
         console.log(sql);
-
         return new Promise(resolve => {
+            this.sqliteDb.executeSelect(sql).then((data:any) => {
+                let listJobs = [];
+                for(let i =0; i<data.rows.length ; i++){
+                    let item = data.rows.item(i);
+                    listJobs.push(item);
+                }
+                resolve(listJobs);
+            });
+        });
+
+        /*return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
             // then on the response it'll map the JSON data to a parsed JS object.
             // Next we process the data and resolve the promise with the new data.
@@ -859,7 +869,7 @@ export class OffersService {
                     this.listJobs = data.data;
                     resolve(this.listJobs);
                 });
-        });
+        });*/
     }
 
     autocompleteJobsSector(job : string, idSector : number){
@@ -870,17 +880,29 @@ export class OffersService {
         }
         let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
             " from user_job j, user_metier m " +
-            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) " +
+            "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+sqlfiedJob+"')) " +
             "order by j.libelle asc limit 5";
 
         if(idSector>0){
             sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
                 " from user_job j, user_metier m " +
-                "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) and fk_user_metier="+idSector +
-                "order by j.libelle asc limit 5";
+                "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+sqlfiedJob+"')) and fk_user_metier="+idSector +
+                " order by j.libelle asc limit 5";
         }
 
         console.log(sql);
+        return new Promise(resolve => {
+            this.sqliteDb.executeSelect(sql).then((data:any) => {
+                let listJobs = [];
+                for(let i =0; i<data.rows.length ; i++){
+                    let item = data.rows.item(i);
+                    listJobs.push(item);
+                }
+                resolve(listJobs);
+            });
+        });
+
+        /*console.log(sql);
 
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -896,7 +918,7 @@ export class OffersService {
                     this.listJobs = data.data;
                     resolve(this.listJobs);
                 });
-        });
+        });*/
     }
 
     /**
