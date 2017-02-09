@@ -154,7 +154,7 @@ export class ProfileService {
         }
         console.log(sql);
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     console.log(data);
                     resolve(data);
                 });
