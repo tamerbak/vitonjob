@@ -13,6 +13,9 @@
 
     <!--Offer title-->
     <h5 style="text-align: center;">{{offer.title}} {{offer.obsolete ? '(Obsolète)' : ''}}</h5>
+    <div style="margin: 5px; text-align: center" *ngIf="nbInterest > 0">
+        <button ion-button color="vojgreen" small (click)="gotoJobyerInterestList()">{{nbInterest}} jobyer(s) intéressé(s)</button>
+    </div>
 
     <ion-list>
 

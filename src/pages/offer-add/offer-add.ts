@@ -292,7 +292,7 @@ export class OfferAddPage {
                     //this.steps.isCalendar = this.validated.isLanguage;
                     this.storage.set('languages', JSON.stringify(data));
                     if (this.validated.isLanguage && this.validated.isQuality)
-                        this.presentToast("Félicitations, votre offre est complète. Vous pouvez la valider pour l'enregistrer.", 7);
+                        this.presentToast("Félicitations, votre offre est complète. Vous pouvez la valider pour l'enregistrer.", 3);
                 })
             });
         }

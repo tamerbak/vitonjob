@@ -7,8 +7,8 @@
 <ion-content padding class="advert-jobyer-list" [ngStyle]="backgroundImage">
 
     <ion-list text-wrap>
-        <ion-list-header [hidden]="advert.nbInterest == 0">
-            Jobyers intéressés par l'annonce {{advert.titre}}
+        <ion-list-header>
+            Jobyers intéressés par l'annonce {{offer.title}}
         </ion-list-header>
         <ion-item *ngFor="let item of jobyerList, let i=index">
             <h2>{{i + 1}} - {{preventNull(item.nom)}} {{preventNull(item.prenom)}}</h2>

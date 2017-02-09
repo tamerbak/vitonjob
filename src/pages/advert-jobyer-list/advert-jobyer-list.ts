@@ -18,7 +18,7 @@ export class AdvertJobyerListPage {
     public themeColor: string;
     public jobyerList: any[] = [];
     public backgroundImage: string;
-    public advert: any;
+    public offer: any;
 
     constructor(public gc: GlobalConfigs,
                 public navParams: NavParams,
@@ -34,14 +34,11 @@ export class AdvertJobyerListPage {
         this.backgroundImage = config.backgroundImage;
         this.isEmployer = (this.projectTarget == 'employer');
 
-        this.advert = navParams.get('advert');
-        let loading = this.loadingCtrl.create({content:"Merci de patienter..."});
-        loading.present();
-        this.advertService.getInterestedJobyers(this.advert.id).then((data: any) => {
+        this.offer = navParams.get('offer');
+        this.advertService.getInterestedJobyers(this.offer.idOffer).then((data: any) => {
             if (data && data.status == "success" && data.data) {
                 this.jobyerList = data.data
             }
-            loading.dismiss();
         })
     }
 
