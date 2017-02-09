@@ -103,4 +103,8 @@ export class ModalProfileJobyerPage {
   toDateString(d: number){
     return DateUtils.toDateString(d);
   }
+
+  parseInt(n){
+    return parseInt(n);
+  }
 }

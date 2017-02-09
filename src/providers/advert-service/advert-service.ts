@@ -320,15 +320,15 @@ export class AdvertService {
         });
     }
 
-    getInterestedJobyers(advertId) {
+    getInterestedJobyers(offerId) {
         let sql = "SELECT " +
             "j.*, j.pk_user_jobyer as jobyerid, a.pk_user_account as accountid " +
             //", encode(a.photo_de_profil::bytea, 'escape') as photo" +
-            " FROM user_jobyer j, user_interet_jobyer_annonces uija, user_account as a " +
+            " FROM user_jobyer j, user_candidatures_aux_offres uija, user_account as a " +
             " WHERE j.pk_user_jobyer = uija.fk_user_jobyer " +
             " and j.dirty='N' " +
             " and a.pk_user_account=j.fk_user_account " +
-            " and uija.fk_user_annonce_entreprise=" + advertId + ";"
+            " and uija.fk_user_offre_entreprise=" + offerId + ";"
 
         return new Promise(resolve => {
             this.httpRequest.sendSql(sql, this).subscribe(data => {
