@@ -102,6 +102,12 @@ export class Utils {
     return txt.replace(/'/g, "''");
   }
 
+  public static inverseSqlfyText(txt) {
+    if (!txt || txt.length == 0)
+      return "";
+    return txt.replace(/''/g, "'");
+  }
+
   public static checkMail(email : string){
     let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
