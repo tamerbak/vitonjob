@@ -137,16 +137,18 @@ export class SearchCriteriaPage {
         }
 
         let jobParam = this.params.get('job');
+        let searchParam = this.params.get('searchQuery');
         let cityParam = this.params.get('city');
 
         this.city = (cityParam) ? cityParam.nom : "";
         this.isCityValidated = (cityParam);
         this.filterState[2].isActivated = (cityParam);
+        this.isJobFound = (!searchParam) && (jobParam);
         let defaultJobLabel = this.isEmployer?'un/une jobyer':'une offre';
 
         this.jobData = {
             'class': "com.vitonjob.callouts.auth.model.JobData",
-            job: (jobParam) ? jobParam.libelle : (cityParam) ? defaultJobLabel :"",
+            job: (jobParam) ? jobParam.libelle : (cityParam) ? defaultJobLabel : (searchParam) ? searchParam : "",
             sector: (jobParam) ? jobParam.sector : "",
             idSector: (jobParam) ? jobParam.idsector : "",
             idJob: (jobParam) ? jobParam.id : (cityParam) ? -1 : 0,

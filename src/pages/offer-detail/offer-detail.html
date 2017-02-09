@@ -151,7 +151,7 @@
              [ngStyle]="languageStyle.backgroundImage">
             <ion-list-header style="width: 100%; background-color: transparent; color: white;" no-lines
                              [style.fontWeight]="languageStyle.fontWeight">
-                Langues
+                Langues {{isEmployer ? ' requises' : ' privilégiées'}}
             </ion-list-header>
             <button ion-button outline small style="position: relative; top: 0" (click)="showLanguageCard()" icon-left
                     [style.color]="languageStyle.buttonColor"
@@ -163,7 +163,7 @@
         <ion-card [hidden]="!showLanguage">
             <div class="img-header">
                 <img src="assets/img/language.png"/>
-                <div class="card-title">Langues</div>
+                <div class="card-title">Langues {{isEmployer ? ' requises' : ' privilégiées'}}</div>
             </div>
             <div>
                 <ul>

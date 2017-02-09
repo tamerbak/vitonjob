@@ -122,7 +122,7 @@ export class HomePage {
     public toast: any;
     public globalOfferList: any;
     public profilPictureVar: any;
-    public isJobFound: boolean;
+    public isJobFound: boolean = true;
     public jobs: any = [];
     public newCombination: any = [];
     public jobList: any = [];
@@ -131,6 +131,7 @@ export class HomePage {
 
     public lookingForJob: boolean = false;
     public pendingJob : string = '';
+    public params:any;
 
 
     /*static get parameters() {
@@ -178,6 +179,7 @@ export class HomePage {
         // page push
         this.push = SearchCriteriaPage;
         this.globalConfig = _globalConfig;
+        this.params = {searchQuery:this.scQuery};
 
         //menu.enable(true, 'rightOnMenu');
 
@@ -796,6 +798,8 @@ export class HomePage {
             }
 
             this.lookingForJob = false;
+            this.isJobFound = (this.jobs.length != 0);
+            this.params.searchQuery = this.scQuery;
 
             if(this.pendingJob && this.pendingJob.length> 0){
                 this.reexecuteAutocomplete(this.pendingJob);
@@ -808,7 +812,7 @@ export class HomePage {
             return b.sector - a.sector;
         });
 
-        this.isJobFound = (this.jobs.length == 0);
+
     }
 
     reexecuteAutocomplete(val){
@@ -835,14 +839,17 @@ export class HomePage {
                 }
             }
 
+            this.isJobFound = (this.jobs.length != 0);
             this.lookingForJob = false;
+            this.params.searchQuery = this.scQuery;
         });
 
         this.jobs = this.newCombination.sort((a, b) => {
             return b.sector - a.sector;
         });
 
-        this.isJobFound = (this.jobs.length == 0);
+
+
     }
 
     jobSelected(job) {

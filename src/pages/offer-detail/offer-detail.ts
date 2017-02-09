@@ -24,7 +24,7 @@ import {OfferTempQuotePage} from "../offer-temp-quote/offer-temp-quote";
 import {Storage} from "@ionic/storage";
 import {EnvironmentService} from "../../providers/environment-service/environment-service";
 //import {LoadListService} from "../../providers/load-list-service/load-list-service";
-import {Utils} from "../../utils/utils";
+//import {Utils} from "../../utils/utils";
 import {AdvertService} from "../../providers/advert-service/advert-service";
 import {AdvertDetailsPage} from "../advert-details/advert-details";
 

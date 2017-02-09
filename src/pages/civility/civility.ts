@@ -117,6 +117,7 @@ export class CivilityPage {
     public userRoleId: string;
     public scansLoading : boolean = true;
     public scansLoadingTitle : string;
+    public scanChanged : boolean = false;
 
     /*
      Gestion des conventions collectives
@@ -293,46 +294,39 @@ export class CivilityPage {
     }
 
     loadAttachement(scanTitle) {
+
+        let fileName = FileUtils.encodeFileName(scanTitle);
         // Get scan
         this.scansLoading = true;
         this.attachementService.loadAttachementsByFolder(this.currentUser, 'Scans').then((attachments: any) => {
             let allImagesTmp = [];
+            if(attachments.length == 0)
+                this.scansLoading = false;
             for (let i = 0; i < attachments.length; ++i) {
-                if (attachments[i].fileName.substr(0, 4 + scanTitle.length) == "scan" + scanTitle) {
+                if (attachments[i].fileName.substr(0, 4 + fileName.length) == "scan" + fileName) {
                     this.attachementService.downloadActualFile(attachments[i].id, attachments[i].fileName).then((data: any)=> {
                         allImagesTmp.push({
                             data: data.stream
                         });
+                        if(i == attachments.length -1 ){
+                            this.scansLoading = false;
+                        }
                     });
                 }
             }
             this.allImages = allImagesTmp;
-            this.scansLoading = false;
+
         });
     }
 
-//    ngAfterViewInit(): void {
-//     var self = this;
-//     jQuery(document).ready(function () {
-//       jQuery('.fileinput').on('change.bs.fileinput', function (e, file) {
-//         if (file === undefined) {
-//             console.log("not ok");
-//           jQuery('.fileinput').fileinput('clear');
-//         } else {
-//           self.scanData = file.result;
-//         }
-
-
-//       });
-//     });
-//    }
-
     updateScan(accountId, userId, role) {
-        if (this.allImages && this.allImages.length > 0) {
+
+        if (this.scanChanged && this.allImages && this.allImages.length > 0) {
             if (accountId) {
                 for (let i = 0; i < this.allImages.length; i++) {
                     let index = i + 1;
-                    this.attachementService.uploadFileByFolder(this.currentUser, 'scan' + this.scanTitle + ' ' + index, this.allImages[i].data, 'Scans').then((data: any) => {
+                    let filename = FileUtils.encodeFileName('scan' + this.scanTitle + ' ' + index);
+                    this.attachementService.uploadFileByFolder(this.currentUser, filename, this.allImages[i].data, 'Scans').then((data: any) => {
                         if (data && data.id != 0) {
                             this.attachementService.uploadActualFile(data.id, data.fileName, this.allImages[i].data);
                         }
@@ -371,8 +365,8 @@ export class CivilityPage {
 
 
     watchConvention(e) {
-        this.conventionId = 0;
-        let val = e.target.value;
+        /*this.conventionId = 0;
+        let val = e;
         if (val.length < 4) {
             this.conventions = [];
             return;
@@ -380,7 +374,7 @@ export class CivilityPage {
 
         this.loadListService.loadConventions().then((data: any) => {
             this.conventions = data;
-        });
+        });*/
     }
 
     watchBirthCP(e) {
@@ -460,6 +454,7 @@ export class CivilityPage {
     }
 
     convSelected(c) {
+        debugger;
         this.convObject = c;
         this.conventionId = c.id;
         this.convention = c.code + " - " + c.libelle;
@@ -1219,6 +1214,7 @@ export class CivilityPage {
     /**
      * @description read the file to upload and convert it to base64
      */
+
     onChangeUpload(e) {
         let file = e.target.files[0];
         if(file.type.startsWith("image/")){
@@ -1229,6 +1225,7 @@ export class CivilityPage {
                     this.appendImg();
                 }
                 myReader.readAsDataURL(file);
+                this.scanChanged = true;
             });
         }
     }
@@ -1263,6 +1260,7 @@ export class CivilityPage {
                 // imageData is a base64 encoded string
                 this.scanData = "data:image/jpeg;base64," + imageData;
                 this.appendImg();
+                this.scanChanged = true;
             });
         }, (err) => {
             console.log(err);
