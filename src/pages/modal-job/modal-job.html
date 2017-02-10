@@ -78,7 +78,6 @@
         <ion-list>
           <ion-item
             *ngFor="let elementFiltered of conventionFilter.filteredList"
-          <!--[value]="elementFiltered.id"-->
           (click)="updateHourRateThreshold(conventionFilter, elementFiltered)"
           >
           {{elementFiltered.libelle}}
