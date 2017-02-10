@@ -1144,10 +1144,13 @@ export class SearchCriteriaPage {
     slotValidated() {
         this.showedSlot.isSlotValidated = true;
         let date = new Date(this.showedSlot.startDate);
-        this.showedSlot.startHour = date.getHours() * 60 + date.getMinutes();
+        let timezone = date.getTimezoneOffset();
+        this.showedSlot.startHour = date.getHours() * 60 + date.getMinutes() + timezone;
 
         date = new Date(this.showedSlot.endDate);
-        this.showedSlot.startHour = date.getHours() * 60 + date.getMinutes();
+        timezone = date.getTimezoneOffset();
+        this.showedSlot.endHour = date.getHours() * 60 + date.getMinutes() + timezone;
+
     }
 
     cityValidated() {

@@ -43,11 +43,11 @@
         </ion-item>
     </ion-row>
 
-    <ion-row *ngIf="lookingForJob">
+    <!--ion-row *ngIf="lookingForJob">
         <ion-col text-center>
             <ion-spinner></ion-spinner>
         </ion-col>
-    </ion-row>
+    </ion-row-->
     <ion-list *ngIf="jobs.length>0" text-wrap style="background-color: white;">
         <div *ngFor="let sec of jobs">
             <ion-list-header color="light"> {{sec.sector}}</ion-list-header>
