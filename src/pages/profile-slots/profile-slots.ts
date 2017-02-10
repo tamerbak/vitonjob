@@ -55,14 +55,19 @@ export class ProfileSlotsPage {
 
     //load saved slots
     if (params.get('savedSlots') && params.get('savedSlots').length > 0) {
+
       for (let i = 0; i < params.get('savedSlots').length; i++) {
         let s = params.get('savedSlots')[i];
+        let debut = Date.parse(s.date_de_debut.split(" ")[0]);
+        let fin = Date.parse(s.date_de_fin.split(" ")[0]);
         let slot = {
-          startDate: s.date_de_debut,
-          endDate: s.date_de_fin,
+          startDate: debut,
+          endDate: fin,
           startHour: s.heure_de_debut,
           endHour: s.heure_de_fin
         };
+
+
         this.slots.push(slot);
       }
     }
@@ -105,7 +110,7 @@ export class ProfileSlotsPage {
       endHour: null
     };
   }
-  
+
 
   removeSlot(item) {
     let confirm = this.alert.create({
