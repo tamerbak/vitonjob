@@ -12,7 +12,7 @@
 
     <ion-card>
         <ion-row>
-            <ion-col width-33 *ngIf="advert.thumbnail.fileContent.length != 0">
+            <ion-col width-33 *ngIf="advert.thumbnail.fileContent && advert.thumbnail.fileContent.length != 0">
                 <ion-avatar>
                     <img [src]="advert.thumbnail.fileContent" style="margin:5px">
                 </ion-avatar>
@@ -43,16 +43,22 @@
                 <span class="large" [innerHTML]="advert.description"></span>
             </ion-item>
 
-            <ion-item *ngIf="contractForm.length != 0">
+            <ion-item *ngIf="contractForm && contractForm.length != 0">
                 <p>Forme de contrat: </p>
                 <h3 text-wrap *ngFor="let cf of contractForm">{{cf}}</h3>
             </ion-item>
 
-            <ion-item *ngIf="advert.attachement.fileContent.length != 0">
+            <ion-item *ngIf="advert.attachement.fileContent && advert.attachement.fileContent.length != 0">
                 <p>Pièces jointes: </p>
                 <button ion-button icon-left (click)="downloadAttachement()" block clear>
                     <ion-icon name="download" item-left></ion-icon>
                     {{attachFilename}}
+                </button>
+            </ion-item>
+            <ion-item text-center >
+                <button ion-button color="danger" icon-left (click)="displayDeleteAlert()">
+                    <ion-icon name="trash"></ion-icon>
+                    Supprimer l'annonce
                 </button>
             </ion-item>
         </ion-card-content>

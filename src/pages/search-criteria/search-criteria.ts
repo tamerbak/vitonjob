@@ -1155,7 +1155,7 @@ export class SearchCriteriaPage {
         // Didier wanna discover french city's population :
         this.jobData.isJobValidated = true;
         this.jobData.idJob = -1;
-        this.jobData.job = "un/une jobyer"
+        this.jobData.job = this.isEmployer?'un/une jobyer':'une offre';
     }
 
     enterpriseValidated() {

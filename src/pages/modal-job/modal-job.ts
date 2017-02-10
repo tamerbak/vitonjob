@@ -775,6 +775,7 @@ export class ModalJobPage {
               text: listForPicker[i].libelle
             })
           }
+          console.log(options);
         }
         let column = {
           selectedIndex: 0,
@@ -820,16 +821,18 @@ export class ModalJobPage {
   }
 
   updateHourRateThreshold(conventionFilter: any, obj: any) {
-
+    //debugger;
     // Hide error message and close list
     conventionFilter.isFound = true;
     conventionFilter.filteredList = [];
 
-
-    if (!this.parametersConvention || this.parametersConvention.length == 0)
-      return;
-
     conventionFilter.selected = obj.libelle;
+
+    if (!this.parametersConvention || this.parametersConvention.length == 0){
+      conventionFilter.selected = '';
+      return;
+    }
+    
 
     //  Ensure to take the maximum threshold before checking other options
     for (let i = 0; i < this.parametersConvention.length; i++) {

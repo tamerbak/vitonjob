@@ -35,7 +35,7 @@ export class ProfileService {
             ")";
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe(data => {
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                 resolve(data.data);
             });
         });
@@ -44,7 +44,7 @@ export class ProfileService {
     loadProfileJobs(idJobyer) {
         let sql = "select pk_user_job as id, user_job.libelle as libelle, fk_user_niveau as niveau from user_job, user_profil_job where user_job.pk_user_job= user_profil_job.fk_user_job and user_profil_job.dirty='N' and user_profil_job.fk_user_jobyer=" + idJobyer;
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe(data => {
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                     resolve(data.data);
                 });
         });
@@ -54,7 +54,7 @@ export class ProfileService {
         let sql = "delete from user_profil_job where fk_user_jobyer=" + idJobyer + " and fk_user_job=" + j.id;
         return new Promise(resolve => {
             
-            this.httpRequest.sendSql(sql, this).subscribe(data => {
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                     resolve(data.data);
                 });
         });
@@ -63,7 +63,7 @@ export class ProfileService {
     attachJob(j, idJobyer) {
         let sql = "insert into user_profil_job (fk_user_jobyer,fk_user_job,fk_user_niveau) values (" + idJobyer + "," + j.id + "," + j.niveau + ")";
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe(data => {
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                     resolve(data.data);
                 });
         });
@@ -73,7 +73,7 @@ export class ProfileService {
         let sql = "select count(*) from user_entreprise where nom_ou_raison_sociale='" + companyname + "';";
         console.log(sql);
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -86,7 +86,7 @@ export class ProfileService {
         sql = sql + " delete from user_account where pk_user_account = '" + accountId + "';";
         console.log(sql);
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -97,7 +97,7 @@ export class ProfileService {
         let sql = "select count(*) from user_entreprise where siret='" + siret + "';";
         console.log(sql);
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -138,7 +138,7 @@ export class ProfileService {
         let sql = "update user_account set photo_de_profil ='" + imgUri + "' where pk_user_account = '" + accountId + "';";
         console.log(sql);
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     console.log(data);
                     resolve(data);
                 });
@@ -164,7 +164,7 @@ export class ProfileService {
     loadAccountId(tel, role) {
         let sql = "select pk_user_account as id from user_account where telephone='" + tel + "' and role='" + role + "'";
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this)
+            this.httpRequest.sendSql(sql, this, true)
                 .subscribe((data: any) => {
                     console.log(data);
                     resolve(data.data[0].id);
@@ -180,7 +180,7 @@ export class ProfileService {
         let sql = "select i.* from user_identifiants_nationalite as i, user_nationalite as n where i.pk_user_identifiants_nationalite = n.fk_user_identifiants_nationalite and n.pk_user_nationalite = '" + natId + "'";
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     resolve(data);
                 });
         })
@@ -225,7 +225,7 @@ export class ProfileService {
         let sql = "select pk_user_indispensable as id, libelle from user_indispensable as i, " + table + " as t where i.pk_user_indispensable = t.fk_user_indispensable and t." + foreignKey + " = '" + id + "'";
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     resolve(data.data);
                 });
         });
@@ -237,7 +237,7 @@ export class ProfileService {
         let sql = "select pk_user_langue as id, i.libelle,n.libelle as level from user_langue as i, user_niveau as n , " + table + " as t where n.pk_user_niveau = t.fk_user_niveau and i.pk_user_langue = t.fk_user_langue and t." + foreignKey + " = '" + id + "' order by i.libelle";
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     resolve(data.data);
                 });
         });
@@ -264,7 +264,7 @@ export class ProfileService {
     deleteQualities(id, table, foreignKey) {
         let sql = "delete from " + table + " where " + foreignKey + "=" + id;
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     resolve(data);
                 });
         });
@@ -277,7 +277,7 @@ export class ProfileService {
             sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_indispensable) values (" + id + ", " + q.id + "); ";
         }
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     resolve(data);
                 });
         });
@@ -286,7 +286,7 @@ export class ProfileService {
     deleteLanguages(id, table, foreignKey) {
         let sql = "delete from " + table + " where " + foreignKey + "=" + id;
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     resolve(data);
                 });
         });
@@ -300,7 +300,7 @@ export class ProfileService {
             sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_langue,fk_user_niveau) values (" + id + ", " + q.id + "," + ((q.level == "Débutant") ? 1 : 2 ) + "); ";
         }
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     resolve(data);
                 });
         });
@@ -311,7 +311,7 @@ export class ProfileService {
             "set dirty='Y' " +
             "where fk_user_jobyer=" + id;
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     resolve(data);
                 });
         });
@@ -343,7 +343,7 @@ export class ProfileService {
         console.log("ADD NEW SLOTS");
         console.log(sql);
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     console.log(JSON.stringify(data));
                     resolve(data);
                 });
@@ -354,7 +354,7 @@ export class ProfileService {
         let sql = "delete from user_experience_logiciel_pharmacien " +
             "where fk_user_jobyer=" + id;
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     resolve(data);
                 });
         });
@@ -374,7 +374,7 @@ export class ProfileService {
                 "); ";
         }
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     resolve(data);
                 });
         });
@@ -384,7 +384,7 @@ export class ProfileService {
         let sql = "select * from user_disponibilite_du_jobyer where dirty='N' and fk_user_jobyer = '" + id + "'";
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     resolve(data.data);
                 });
         });
@@ -420,7 +420,7 @@ export class ProfileService {
         let sql = "select exp.pk_user_experience_logiciel_pharmacien as \"expId\", exp.fk_user_logiciels_pharmaciens as \"id\", exp.niveau as niveau, log.nom from user_experience_logiciel_pharmacien as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_jobyer = '" + jobyerId + "'";
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe(data => {
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                     resolve(data.data);
                 });
         });
@@ -439,7 +439,7 @@ export class ProfileService {
         sql = sql + " where pk_user_account=" + accountid + ";";
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     resolve(data);
                 });
         })
@@ -450,7 +450,7 @@ export class ProfileService {
         let sql = "select accepte_candidatures from user_account where pk_user_account = " + accountid + ";";
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                     resolve(data.data[0]);
                 });
         });

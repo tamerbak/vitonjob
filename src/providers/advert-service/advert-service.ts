@@ -10,6 +10,16 @@ export class AdvertService {
 
     }
 
+    deleteAdvert(advertId) {
+        let sql = "update user_annonce_entreprise set dirty = 'Y' where pk_user_annonce_entreprise="+advertId;
+
+        return new Promise(resolve => {
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
+                resolve(data);
+            });
+        });
+    }
+
     loadAdverts(offset, limit) {
         let sql = "select " +
             "pk_user_annonce_entreprise as id" +
@@ -68,7 +78,7 @@ export class AdvertService {
             " LIMIT " + limit + " OFFSET " + offset;
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe(data => {
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                 let adverts = [];
                 if (data && data.data) {
                     for (let i = 0; i < data.data.length; i++) {
@@ -111,7 +121,7 @@ export class AdvertService {
             "where dirty='N' and pk_user_annonce_entreprise=" + advert.id;
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe((data: any) => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
                 if (data && data.data && data.data.length != 0) {
                     let r = data.data[0];
                     advert.attachement = {
@@ -155,7 +165,7 @@ export class AdvertService {
         let body = JSON.stringify(dataLog);
 
         return new Promise(resolve => {
-            this.httpRequest.sendCallOut(body, this).subscribe((data: any) => {
+            this.httpRequest.sendCallOut(body, this, true).subscribe((data: any) => {
                 resolve(JSON.parse(data._body));
             });
         });
@@ -165,7 +175,7 @@ export class AdvertService {
         let sql = "insert into user_interet_jobyer_annonces (date, fk_user_annonce_entreprise, fk_user_jobyer) values ('" + DateUtils.sqlfy(new Date()) + "', " + advertId + ", " + jobyerId + ")";
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe(data => {
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                 resolve(data);
             });
         });
@@ -175,7 +185,7 @@ export class AdvertService {
         let sql = "insert into user_candidatures_aux_offres (date, fk_user_offre_entreprise, fk_user_jobyer) values ('" + DateUtils.sqlfy(new Date()) + "', " + offerId + ", " + jobyerId + ")";
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe(data => {
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                 resolve(data);
             });
         });
@@ -184,7 +194,7 @@ export class AdvertService {
     deleteAdvertInterest(advertId, jobyerId) {
         let sql = "delete from user_interet_jobyer_annonces where fk_user_annonce_entreprise = " + advertId + " and fk_user_jobyer = " + jobyerId;
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe(data => {
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                 resolve(data);
             });
         });
@@ -193,7 +203,7 @@ export class AdvertService {
     deleteOfferInterest(offerId, jobyerId) {
         let sql = "delete from user_candidatures_aux_offres where fk_user_offre_entreprise = " + offerId + " and fk_user_jobyer = " + jobyerId;
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe(data => {
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                 resolve(data);
             });
         });
@@ -314,24 +324,24 @@ export class AdvertService {
             "pk_user_offre_entreprise = " + offerId + ";";
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe(data => {
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                 resolve(data);
             });
         });
     }
 
-    getInterestedJobyers(advertId) {
+    getInterestedJobyers(offerId) {
         let sql = "SELECT " +
             "j.*, j.pk_user_jobyer as jobyerid, a.pk_user_account as accountid " +
             //", encode(a.photo_de_profil::bytea, 'escape') as photo" +
-            " FROM user_jobyer j, user_interet_jobyer_annonces uija, user_account as a " +
+            " FROM user_jobyer j, user_candidatures_aux_offres uija, user_account as a " +
             " WHERE j.pk_user_jobyer = uija.fk_user_jobyer " +
             " and j.dirty='N' " +
             " and a.pk_user_account=j.fk_user_account " +
-            " and uija.fk_user_annonce_entreprise=" + advertId + ";"
+            " and uija.fk_user_offre_entreprise=" + offerId + ";"
 
         return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this).subscribe(data => {
+            this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                 resolve(data);
             });
         });

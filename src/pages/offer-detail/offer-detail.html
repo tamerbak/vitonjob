@@ -13,6 +13,9 @@
 
     <!--Offer title-->
     <h5 style="text-align: center;">{{offer.title}} {{offer.obsolete ? '(Obsolète)' : ''}}</h5>
+    <div style="margin: 5px; text-align: center" *ngIf="nbInterest > 0">
+        <button ion-button color="vojgreen" small (click)="gotoJobyerInterestList()">{{nbInterest}} jobyer(s) intéressé(s)</button>
+    </div>
 
     <ion-list>
 
@@ -213,9 +216,9 @@
         </ion-card>
 
         <ion-col text-center>
-            <button ion-button icon-left outline (click)="goToAdvertDetails()"  [disabled]="!isAdvertAttached">
-                <ion-icon name="add" *ngIf="isAdvertRequestLoaded"></ion-icon>
-                <ion-spinner *ngIf="!isAdvertRequestLoaded"></ion-spinner>
+            <button ion-button icon-left outline (click)="goToAdvertDetails()">
+                <ion-icon name="add"></ion-icon>
+                <!--<ion-spinner *ngIf="!isAdvertRequestLoaded"></ion-spinner>-->
                 Plus de Détails...
             </button>
         </ion-col>

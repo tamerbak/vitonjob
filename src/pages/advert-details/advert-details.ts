@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, NavParams, LoadingController, ToastController} from "ionic-angular";
+import {NavController,AlertController, NavParams, LoadingController, ToastController} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {AdvertService} from "../../providers/advert-service/advert-service";
@@ -34,6 +34,7 @@ export class AdvertDetailsPage{
               public advertService: AdvertService,
               public loadingCtrl: LoadingController,
               public toast: ToastController,
+              public alert:AlertController,
               public storage: Storage) {
 
   // Set global configs
@@ -124,6 +125,40 @@ export class AdvertDetailsPage{
         this.jobyerInterested = false;
         this.jobyerInterestLabel = "Cette annonce m'intéresse";
       }
+    });
+  }
+
+  displayDeleteAlert() {
+    let confirm = this.alert.create({
+      title: "Vit-On-Job",
+      message: "Êtes-vous sûr de vouloir supprimer l'annonce "+ "'" + this.advert.titre + "'?",
+      buttons: [
+        {
+          text: 'Non',
+          handler: () => {
+            console.log('No clicked');
+          }
+        },
+        {
+          text: 'Oui',
+          handler: () => {
+            console.log('Yes clicked');
+            this.deleteAdvert();
+          }
+        }
+      ]
+    });
+    confirm.present();
+  }
+
+  deleteAdvert(){
+    this.advertService.deleteAdvert(this.advert.id).then((data: any) => {
+      if (!data || data.status == "failure") {
+        this.presentToast("Une erreur est survenue lors de la suppression de l'annonce",5);
+      }else {
+        this.presentToast("l'annonce " + "'" + this.advert.titre + "'" + " a été supprimée avec succès",5);
+      }
+      this.nav.pop();
     });
   }
 
