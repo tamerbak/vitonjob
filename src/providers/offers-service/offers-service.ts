@@ -2185,5 +2185,18 @@ export class OffersService {
               });
         });
     }*/
+
+    countInterestedJobyers(offerId) {
+        let sql = "select count(*) as \"nbInterest\" from user_candidatures_aux_offres where fk_user_offre_entreprise = " + offerId;
+        console.log(sql);
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe((data: any) => {
+                  resolve(data.data[0]);
+              });
+        });
+    }
 }
 

@@ -28,6 +28,7 @@ import {EnvironmentService} from "../../providers/environment-service/environmen
 import {AdvertService} from "../../providers/advert-service/advert-service";
 import {AdvertDetailsPage} from "../advert-details/advert-details";
 import {AdvertEditPage} from "../advert-edit/advert-edit";
+import {AdvertJobyerListPage} from "../advert-jobyer-list/advert-jobyer-list";
 
 /*
  Generated class for the OfferDetailPage page.
@@ -71,6 +72,8 @@ export class OfferDetailPage {
   public languageStyle: any;
   public calendarStyle: any;
   public backGroundColor:string;
+  public nbInterest: number = 0;
+
   //advert management
   public advert:any;
   public canModify: boolean = false;
@@ -198,6 +201,10 @@ export class OfferDetailPage {
     //     this.isAdvertAttached = false;
     //   this.isAdvertRequestLoaded = true;
     // });
+
+    this.offerService.countInterestedJobyers(this.offer.idOffer).then((data: any) => {
+      this.nbInterest = data.nbInterest;
+    });
 
     /*this.offerService.getOfferVideo(this.offer.idOffer, table).then((data:any) =>{
      this.videoAvailable = false;
@@ -676,5 +683,7 @@ export class OfferDetailPage {
       }
     });
     
+  gotoJobyerInterestList(){
+    this.nav.push(AdvertJobyerListPage, {offer: this.offer});
   }
 }
