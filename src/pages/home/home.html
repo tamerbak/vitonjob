@@ -35,9 +35,9 @@
             <ion-input type="text" (focus)="onFocus($event)"
                        (blur)="onBlur($event)" (keyup)="checkForEnterKey($event)"
                        [(ngModel)]="scQuery"></ion-input>
-            <!--button class="search-button" ion-button icon-only clear item-right (click)="doSemanticSearch()">
+            <button class="search-button" ion-button icon-only clear item-right (click)="doSemanticSearch()">
                 <ion-icon id="icon-search" name="search" class="searchIcon"></ion-icon>
-            </button-->
+            </button>
             <button ion-button icon-only item-right clear [navPush]="push" [navParams]="params"><ion-icon name="funnel" class="searchIcon"></ion-icon></button>
 
         </ion-item>
