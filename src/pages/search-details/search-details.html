@@ -63,7 +63,7 @@
             </div>
         </ion-list>
 
-        <ion-list no-lines [hidden]="languages.length==0" style="margin-bottom: 16px;">
+        <ion-list no-lines *ngIf="languages && languages.length!=0" style="margin-bottom: 16px;">
             <ion-list-header color="primary">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Langues {{isEmployer?"maîtrisées":"requises"}}
             </ion-list-header>
@@ -72,7 +72,7 @@
                 {{item.libelle}}
             </ion-item>
         </ion-list>
-        <ion-list no-lines [hidden]="qualities.length==0" style="margin-bottom: 16px;">
+        <ion-list no-lines *ngIf="qualities && qualities.length!=0" style="margin-bottom: 16px;">
             <ion-list-header color="primary">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Qualités {{isEmployer?"acquises":"requises"}}
             </ion-list-header>
@@ -91,7 +91,7 @@
             </ion-item>
         </ion-list>
 
-        <ion-list [hidden]="references.length == 0">
+        <ion-list *ngIf="references && references.length != 0">
             <ion-list-header color="primary">Références</ion-list-header>
             <ion-item *ngFor="let r of references" text-wrap>
                 <ion-icon item-left name='star' small color="primary"></ion-icon>
