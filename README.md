@@ -113,7 +113,16 @@ $ npm install diacritics
 $ cordova plugin add cordova-plugin-file
 $ npm install ng2-ckeditor --save
 $ ionic plugin add cordova-plugin-google-analytics
+$ ionic plugin add cordova-sqlite-ext
 ```
+
+##Architecture du cache local et utilisation de SQLite
+````
+Afin de pouvoir utiliser la base de données Sqlite pour un chargement rapide des données instllez le plugin cordova-sqlite-ext (Il ne faut surtout pas installé cordova-sqlite-storage dont parle la doc officielle de ionic)
+Ensuite copiez voj.db du dossier /src vers le dossier /www
+Si vous désirez déboguer sur navigateur (ionic serve) assurez vous de mettre la variable DLMode de GlobalConfigs à 'remote' pour que l'application switch vers la BD serveur (Sqlite n'est pas géré en mode navigateur)
+Si vous testez ou déboguez sur device mettez cette variable à 'local'
+````
 
 ##Google analytics
 ````

@@ -979,7 +979,6 @@ export class SearchCriteriaPage {
      * @Description : loads jobs list
      */
     showJobList() {
-        debugger;
         let c = this.jobData.idSector;
         let loading = this.loading.create({content: "Merci de patienter..."});
         loading.present();
