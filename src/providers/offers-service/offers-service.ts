@@ -12,6 +12,9 @@ import {CalendarSlot} from "../../dto/calendar-slot";
 import {Quality} from "../../dto/quality";
 import {Language} from "../../dto/language";
 import {Requirement} from "../../dto/requirement";
+import {SqliteDBService} from "../sqlite-db-service/sqlite-db-service";
+import {DAOFactory} from "../../dao/data-access-object";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
 
 const OFFER_CALLOUT_ID = 40020;
 
@@ -40,7 +43,11 @@ export class OffersService {
     lienVideo: string;
     convention: any;
 
-    constructor(public http: Http, public db: Storage, public httpRequest:HttpRequestHandler) {
+    constructor(public http: Http,
+                public db: Storage,
+                public sqliteDb : SqliteDBService,
+                public daoFactory : DAOFactory,
+                public httpRequest:HttpRequestHandler) {
         this.count = 0;
 
 
@@ -737,45 +744,35 @@ export class OffersService {
     }
 
     loadSectorsToLocal() {
-        let sql = "select pk_user_metier as id, libelle as libelle from user_metier where dirty='N' order by libelle asc";
-        console.log(sql);
+        let sql = "select pk_user_metier as id, libelle as libelle from user_metier order by libelle asc";
         return new Promise(resolve => {
-            // We're using Angular Http provider to request the data,
-            // then on the response it'll map the JSON data to a parsed JS object.
-            // Next we process the data and resolve the promise with the new data.
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data: any) => {
-                    // we've got back the raw data, now generate the core schedule data
-                    // and save the data for later reference
-                    this.listSectors = data.data;
-                    this.db.set('SECTOR_LIST', JSON.stringify(this.listSectors));
-                    resolve(this.listSectors);
-                });
+
+            this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true).loadData(sql).then((data:any) => {
+                this.listSectors = data;
+
+                console.log("Loading sectors");
+                console.log(this.listSectors);
+                this.db.set('SECTOR_LIST', JSON.stringify(this.listSectors));
+                resolve(this.listSectors);
+            });
         });
+
     }
 
     loadJobsToLocal() {
-        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier and j.dirty='N' order by j.libelle asc";
-        console.log(sql);
+
+        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc";
         return new Promise(resolve => {
-            // We're using Angular Http provider to request the data,
-            // then on the response it'll map the JSON data to a parsed JS object.
-            // Next we process the data and resolve the promise with the new data.
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data: any) => {
-                    // we've got back the raw data, now generate the core schedule data
-                    // and save the data for later reference
-                    this.listJobs = data.data;
-                    this.db.set('JOB_LIST', JSON.stringify(this.listJobs));
-                    console.log('Preloaded jobs list');
-                    resolve(this.listJobs);
-                });
+
+            //this.sqliteDb.executeSelect("select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc").then((data:any) => {
+            this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true)
+                .loadData(sql).then((data:any) => {
+                this.listJobs = data;
+                console.log("Loading jobs");
+                console.log(this.listJobs);
+                this.db.set('JOB_LIST', JSON.stringify(this.listJobs));
+                resolve(this.listJobs);
+            });
         });
     }
 
@@ -809,25 +806,17 @@ export class OffersService {
         }
         let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
             " from user_job j, user_metier m " +
-            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) " +
+            "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) " +
             "order by j.libelle asc limit 5";
 
         console.log(sql);
-
         return new Promise(resolve => {
-            // We're using Angular Http provider to request the data,
-            // then on the response it'll map the JSON data to a parsed JS object.
-            // Next we process the data and resolve the promise with the new data.
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data: any) => {
-                    // we've got back the raw data, now generate the core schedule data
-                    // and save the data for later reference
+            this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true).loadData(sql).then((data:any) => {
+            //this.sqliteDb.executeSelect(sql).then((data:any) => {
+                let listJobs = data;
 
-                    this.listJobs = data.data;
-                    resolve(this.listJobs);
-                });
+                resolve(listJobs);
+            });
         });
     }
 
@@ -839,33 +828,26 @@ export class OffersService {
         }
         let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
             " from user_job j, user_metier m " +
-            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) " +
+            "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) " +
             "order by j.libelle asc limit 5";
 
         if(idSector>0){
             sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
                 " from user_job j, user_metier m " +
-                "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) and fk_user_metier="+idSector +
-                "order by j.libelle asc limit 5";
+                "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) and fk_user_metier="+idSector +
+                " order by j.libelle asc limit 5";
         }
 
         console.log(sql);
-
         return new Promise(resolve => {
-            // We're using Angular Http provider to request the data,
-            // then on the response it'll map the JSON data to a parsed JS object.
-            // Next we process the data and resolve the promise with the new data.
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data: any) => {
-                    // we've got back the raw data, now generate the core schedule data
-                    // and save the data for later reference
-
-                    this.listJobs = data.data;
-                    resolve(this.listJobs);
-                });
+            this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true).loadData(sql).then((data:any) => {
+            //this.sqliteDb.executeSelect(sql).then((data:any) => {
+                let listJobs = data;
+                resolve(listJobs);
+            });
         });
+
+
     }
 
     /**
@@ -2053,7 +2035,6 @@ export class OffersService {
       }
       let currentSDate = newSlotCopy.date.setHours(0, 0, 0, 0);
       for (let k = 0; k < rawSlots.length; k++) {
-          debugger;
         let rawSlot = rawSlots[k];
         let slots = this.separateTwoDaysSlot(rawSlot);
         for (let i = 0; i < slots.length; i++) {
