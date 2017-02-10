@@ -30,7 +30,7 @@
 
         <ion-row>
             <ion-col text-center style="padding-top: 16px;">
-                <h2 style="font-weight: bold">{{isEmployer ? 'Offre de service: ' : 'Offre: '}} {{fullTitle}} </h2>
+                <h2 style="font-weight: bold" *ngIf="result.idOffre>0">{{isEmployer ? 'Offre de service: ' : 'Offre: '}} {{fullTitle}} </h2>
             </ion-col>
         </ion-row>
 
