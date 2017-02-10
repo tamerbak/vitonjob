@@ -150,7 +150,7 @@ export class SearchCriteriaPage {
             'class': "com.vitonjob.callouts.auth.model.JobData",
             job: (jobParam) ? jobParam.libelle : (cityParam) ? defaultJobLabel : (searchParam) ? searchParam : "",
             sector: (jobParam) ? jobParam.sector : "",
-            idSector: (jobParam) ? jobParam.idsector : "",
+            idSector: (jobParam) ? jobParam.idSector : "",
             idJob: (jobParam) ? jobParam.id : (cityParam) ? -1 : 0,
             level: 'junior',
             remuneration: null,
@@ -657,6 +657,7 @@ export class SearchCriteriaPage {
         this.jobData.idJob = job.id;
         this.jobData.idSector = job.idsector;
         this.jobData.sector = job.sector;
+        this.isJobFound = true;
         //this.filterJobList();
 
     }
@@ -978,14 +979,14 @@ export class SearchCriteriaPage {
      * @Description : loads jobs list
      */
     showJobList() {
+        debugger;
         let c = this.jobData.idSector;
         let loading = this.loading.create({content: "Merci de patienter..."});
         loading.present();
         this.db.get("JOB_LIST").then((data: any) => {
-
             this.jobList = JSON.parse(data);
             this.jobList = this.jobList.filter((v) => {
-                return (v.idsector == c);
+                return (v.idSector+'' == c+'');
             });
 
             let selectionModel = this.modal.create(ModalSelectionPage,

@@ -567,7 +567,7 @@ export class ModalJobPage {
 
       this.jobList = JSON.parse(data);
       this.jobList = this.jobList.filter((v) => {
-        return (v.idsector == c);
+        return (v.idSector == c);
       });
 
       let selectionModel = this.modal.create(ModalSelectionPage,

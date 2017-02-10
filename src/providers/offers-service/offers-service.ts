@@ -849,7 +849,8 @@ export class OffersService {
                 let listJobs = [];
                 for(let i =0; i<data.rows.length ; i++){
                     let item = data.rows.item(i);
-                    listJobs.push(item);
+                    if(item.libelle.trim().length>0)
+                        listJobs.push(item);
                 }
                 resolve(listJobs);
             });
@@ -896,7 +897,8 @@ export class OffersService {
                 let listJobs = [];
                 for(let i =0; i<data.rows.length ; i++){
                     let item = data.rows.item(i);
-                    listJobs.push(item);
+                    if(item.libelle.trim().length>0)
+                        listJobs.push(item);
                 }
                 resolve(listJobs);
             });

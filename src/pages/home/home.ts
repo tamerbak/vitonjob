@@ -752,9 +752,6 @@ export class HomePage {
      * @param e Key Up javascript event allowing us to access the keyboard used key
      */
     checkForEnterKey(e) {
-        /*if (e.code != "Enter")
-         return;
-         this.doSemanticSearch();*/
 
         // search by cities mode
         if (this.isCity.activated) {
@@ -762,12 +759,15 @@ export class HomePage {
             return;
         }
 
+        this.jobs = [];
+        this.jobList = [];
+        this.newCombination = [];
+        this.cities = [];
+
         // else launch job's auto-completion
         let val = e.target.value;
-        if (val.length < 3) {
+        if (val.trim().length == 0) {
             this.isJobFound = true;
-            this.jobs = [];
-            this.newCombination = [];
             return;
         }
 
@@ -776,10 +776,7 @@ export class HomePage {
             return;
         }
 
-        this.jobs = [];
-        this.jobList = [];
-        this.newCombination = [];
-        this.cities = [];
+
         this.lookingForJob = true;
         this.offersService.autocompleteJobs(val).then((data : any)=>{
             this.jobList = data;
@@ -790,11 +787,11 @@ export class HomePage {
                 let currentJob = s;
                 if (this.newCombination.filter((elem, pos) => {
                         sectorIndex = pos;
-                        return elem.idSector === s.idsector;
+                        return elem.idSector === s.idSector;
                     }).length > 0) {
                     this.newCombination[sectorIndex].jobs.push(currentJob);
                 } else {
-                    this.newCombination.push({idSector: s.idsector, sector: s.sector, jobs: [currentJob]});
+                    this.newCombination.push({idSector: s.idSector, sector: s.sector, jobs: [currentJob]});
                 }
             }
 
@@ -873,11 +870,11 @@ export class HomePage {
                 let currentJob = s;
                 if (this.newCombination.filter((elem, pos) => {
                         sectorIndex = pos;
-                        return elem.idSector === s.idsector;
+                        return elem.idSector === s.idSector;
                     }).length > 0) {
                     this.newCombination[sectorIndex].jobs.push(currentJob);
                 } else {
-                    this.newCombination.push({idSector: s.idsector, sector: s.sector, jobs: [currentJob]});
+                    this.newCombination.push({idSector: s.idSector, sector: s.sector, jobs: [currentJob]});
                 }
             }
 
