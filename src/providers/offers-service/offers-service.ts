@@ -806,7 +806,7 @@ export class OffersService {
         }
         let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
             " from user_job j, user_metier m " +
-            "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+sqlfiedJob+"')) " +
+            "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) " +
             "order by j.libelle asc limit 5";
 
         console.log(sql);
@@ -828,13 +828,13 @@ export class OffersService {
         }
         let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
             " from user_job j, user_metier m " +
-            "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+sqlfiedJob+"')) " +
+            "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) " +
             "order by j.libelle asc limit 5";
 
         if(idSector>0){
             sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
                 " from user_job j, user_metier m " +
-                "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+sqlfiedJob+"')) and fk_user_metier="+idSector +
+                "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) and fk_user_metier="+idSector +
                 " order by j.libelle asc limit 5";
         }
 

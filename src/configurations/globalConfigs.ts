@@ -36,7 +36,7 @@ export class GlobalConfigs {
      * @type {string}
      */
     static env:string = 'DEV'; // DEV ou PROD
-    static DLMode:string = 'remote';    //  remote or local
+    static DLMode:string = 'local';    //  remote or local
     static GA_APP_ID_EMP:string = 'UA-91039209-1';
     static GA_APP_ID_JOB:string = 'UA-91039209-2';
 
