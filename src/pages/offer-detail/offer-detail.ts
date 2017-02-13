@@ -686,7 +686,7 @@ export class OfferDetailPage {
       loading.dismiss();
       if (res) {
         this.advert = res;
-        this.nav.push(AdvertDetailsPage, {advert: this.advert});
+        this.nav.push(AdvertEditPage, {fromPage: "offer-details", advert: this.advert});
       } else {
         this.nav.push(AdvertEditPage, {fromPage: "offer-details", idOffer: this.offer.idOffer});
       }
