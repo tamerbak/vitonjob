@@ -787,11 +787,11 @@ export class HomePage {
                 let currentJob = s;
                 if (this.newCombination.filter((elem, pos) => {
                         sectorIndex = pos;
-                        return elem.idSector === s.idSector;
+                        return elem.idsector === s.idsector;
                     }).length > 0) {
                     this.newCombination[sectorIndex].jobs.push(currentJob);
                 } else {
-                    this.newCombination.push({idSector: s.idSector, sector: s.sector, jobs: [currentJob]});
+                    this.newCombination.push({idsector: s.idsector, sector: s.sector, jobs: [currentJob]});
                 }
             }
 
@@ -837,11 +837,11 @@ export class HomePage {
                 let currentJob = s;
                 if (this.newCombination.filter((elem, pos) => {
                         sectorIndex = pos;
-                        return elem.idSector === s.idsector;
+                        return elem.idsector === s.idsector;
                     }).length > 0) {
                     this.newCombination[sectorIndex].jobs.push(currentJob);
                 } else {
-                    this.newCombination.push({idSector: s.idsector, sector: s.sector, jobs: [currentJob]});
+                    this.newCombination.push({idsector: s.idsector, sector: s.sector, jobs: [currentJob]});
                 }
             }
 
@@ -870,11 +870,11 @@ export class HomePage {
                 let currentJob = s;
                 if (this.newCombination.filter((elem, pos) => {
                         sectorIndex = pos;
-                        return elem.idSector === s.idSector;
+                        return elem.idsector === s.idsector;
                     }).length > 0) {
                     this.newCombination[sectorIndex].jobs.push(currentJob);
                 } else {
-                    this.newCombination.push({idSector: s.idSector, sector: s.sector, jobs: [currentJob]});
+                    this.newCombination.push({idsector: s.idsector, sector: s.sector, jobs: [currentJob]});
                 }
             }
 

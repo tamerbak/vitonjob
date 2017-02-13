@@ -120,7 +120,7 @@ export class OfferListPage {
                 this.offerList[i].jobData.contact = this.offerList[i].contact;
 
                 let offer = this.offerList[i];
-                if (isUndefined(offer) || !offer || !offer.jobData || offer.jobData.idSector == 0 || offer.jobData.idJob == 0) {
+                if (isUndefined(offer) || !offer || !offer.jobData || offer.jobData.idsector == 0 || offer.jobData.idJob == 0) {
                     continue;
                 }
                 if (offer.visible) {

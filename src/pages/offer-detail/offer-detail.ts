@@ -659,7 +659,7 @@ export class OfferDetailPage {
     let copyedJobData = {
       idJob: originalJobData.idJob,
       job: originalJobData.job,
-      idSector: originalJobData.idSector,
+      idsector: originalJobData.idsector,
       sector: originalJobData.sector,
       level: originalJobData.level,
       remuneration: originalJobData.remuneration,
