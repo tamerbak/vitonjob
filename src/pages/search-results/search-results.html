@@ -108,7 +108,7 @@
                     </button>
                 </ion-col>
             </ion-row-->
-            <ion-item no-lines *ngIf="item.rate || item.rate>0">
+            <ion-item no-lines *ngIf="item.rate && item.rate>0">
                 <ion-note item-right>
                         Taux horaire: {{formatNumbers(item.rate)}} €/h
                 </ion-note>
