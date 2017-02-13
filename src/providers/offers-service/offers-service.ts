@@ -268,6 +268,11 @@ export class OffersService {
                     offerData.idOffer = idOffer;
                     offerData.jobData.job = Utils.inverseSqlfyText(offerData.jobData.job);
                     this.attachIdOfferInLocal(offerData, projectTarget);
+
+                    if(offerData.jobData.pharmaSoftwares && offerData.jobData.pharmaSoftwares.length != 0){
+                        this.saveSoftwares(idOffer, offerData.jobData.pharmaSoftwares);
+                    }
+
                     console.log('ADDED OFFER IN SERVER : ' + JSON.stringify(this.addedOffer));
                     resolve(this.addedOffer);
                 });
@@ -303,7 +308,6 @@ export class OffersService {
         // Ancient offer object is ready, now preparing the new offer DTO object:
         // Job part
         myOffer.jobData = offerData.jobData;
-        delete myOffer.jobData['pharmaSoftwares'];
         delete myOffer.jobData['adress'];
         delete myOffer.jobData['nbPoste'];
         delete myOffer.jobData['contact'];
@@ -761,10 +765,10 @@ export class OffersService {
 
     loadJobsToLocal() {
 
-        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc";
+        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc";
         return new Promise(resolve => {
 
-            //this.sqliteDb.executeSelect("select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc").then((data:any) => {
+            //this.sqliteDb.executeSelect("select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc").then((data:any) => {
             this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true)
                 .loadData(sql).then((data:any) => {
                 this.listJobs = data;
@@ -777,7 +781,7 @@ export class OffersService {
     }
 
     loadAllJobs() {
-        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier and j.dirty='N' order by j.libelle asc";
+        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier and j.dirty='N' order by j.libelle asc";
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -804,7 +808,7 @@ export class OffersService {
         for(let i = 0 ; i < kws.length ; i++){
             sqlfiedJob = sqlfiedJob+kws[i]+"%";
         }
-        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
+        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector " +
             " from user_job j, user_metier m " +
             "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) " +
             "order by j.libelle asc limit 5";
@@ -820,21 +824,21 @@ export class OffersService {
         });
     }
 
-    autocompleteJobsSector(job : string, idSector : number){
+    autocompleteJobsSector(job : string, idsector : number){
         let sqlfiedJob = "%";
         let kws = job.split(' ');
         for(let i = 0 ; i < kws.length ; i++){
             sqlfiedJob = sqlfiedJob+kws[i]+"%";
         }
-        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
+        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector " +
             " from user_job j, user_metier m " +
             "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) " +
             "order by j.libelle asc limit 5";
 
-        if(idSector>0){
-            sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
+        if(idsector>0){
+            sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector " +
                 " from user_job j, user_metier m " +
-                "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) and fk_user_metier="+idSector +
+                "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) and fk_user_metier="+idsector +
                 " order by j.libelle asc limit 5";
         }
 
@@ -882,16 +886,16 @@ export class OffersService {
      * loading jobs list from server
      * @return jobs list in the format {id : X, idsector : X, libelle : X}
      */
-    loadJobs(projectTarget: string, idSector: number) {
+    loadJobs(projectTarget: string, idsector: number) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
         let sql = "";
-        if (idSector && idSector > 0)
+        if (idsector && idsector > 0)
             sql = 'SELECT pk_user_job as id, user_job.libelle as libelle, fk_user_metier as idsector, user_metier.libelle as libelleSector  ' +
                 'FROM user_job, user_metier ' +
                 'WHERE fk_user_metier = pk_user_metier ' +
-                'AND fk_user_metier =' + idSector +
+                'AND fk_user_metier =' + idsector +
                 "AND user_job.dirty='N'";
         else
             sql = 'SELECT pk_user_job as id, user_job.libelle as libelle, fk_user_metier as idsector, user_metier.libelle as libelleSector ' +
@@ -922,15 +926,15 @@ export class OffersService {
      * loading sector by its Id
      * @return sector in the format {id : X, libelle : X}
      */
-    loadSectorById(projectTarget: string, idSector: number) {
+    loadSectorById(projectTarget: string, idsector: number) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
         let sql = "";
-        if (idSector && idSector > 0)
+        if (idsector && idsector > 0)
             sql = 'SELECT pk_user_metier as id, libelle as libelle ' +
                 'FROM user_metier ' +
-                'WHERE pk_user_metier =' + idSector;
+                'WHERE pk_user_metier =' + idsector;
         else
             return;
 
@@ -1396,9 +1400,15 @@ export class OffersService {
         } else {
             this.updateOfferEntrepriseJob(offer).then((data: any) => {
                 this.updateOfferEntrepriseTitle(offer);
+                if(offer.jobData.pharmaSoftwares && offer.jobData.pharmaSoftwares.length != 0){
+                    this.deleteSoftwares(offer.idOffer).then((data: any) =>{
+                        if(data && data.status == "success"){
+                            this.saveSoftwares(offer.idOffer, offer.jobData.pharmaSoftwares);
+                        }
+                    })
+                }
             });
         }
-
     }
 
     updateOfferJobyerJob(offer) {
@@ -1962,6 +1972,31 @@ export class OffersService {
                 .subscribe((data: any) => {
                     resolve(data);
                 });
+        });
+    }
+
+    getOfferSoftwares(offerId){
+        let sql = "select exp.pk_user_logiciels_des_offres as \"expId\", exp.fk_user_logiciels_pharmaciens as id, log.nom from user_logiciels_des_offres as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_offre_entreprise = '" + offerId + "'";
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe(data => {
+                  resolve(data.data);
+              });
+        });
+    }
+
+    deleteSoftwares(offerId){
+        let sql = "delete from user_logiciels_des_offres where fk_user_offre_entreprise =" + offerId;
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe(data => {
+                  resolve(data);
+              });
         });
     }
 

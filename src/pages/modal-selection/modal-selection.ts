@@ -83,7 +83,7 @@ export class ModalSelectionPage {
       case 'secteur' :
         this.params.get('selection').jobData.class = 'com.vitonjob.callouts.auth.model.JobData';
         this.params.get('selection').jobData.sector = item.libelle;
-        this.params.get('selection').jobData.idSector = item.id;
+        this.params.get('selection').jobData.idsector = item.id;
         if (!(this.params.get('selection').jobData.job === ''))
           this.params.get('selection').jobData.job = '';
         break;
@@ -94,7 +94,7 @@ export class ModalSelectionPage {
         if (!this.params.get('selection').jobData.sector ||
           this.params.get('selection').jobData.sector === '') {
           this.params.get('selection').jobData.sector = item.libellesector;
-          this.params.get('selection').jobData.idSector = item.idsector;
+          this.params.get('selection').jobData.idsector = item.idsector;
         }
         break;
       case 'niveau' :

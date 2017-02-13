@@ -43,7 +43,7 @@ export class ModalOfferPropositionPage {
     let jobData = {
       sector: this.proposedJob.libellemetier,
       job: this.proposedJob.libellejob,
-      idSector: this.proposedJob.idmetier,
+      idsector: this.proposedJob.idmetier,
       idJob: this.proposedJob.id,
       level: "junior",
       remuneration: 0,

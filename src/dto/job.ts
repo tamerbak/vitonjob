@@ -4,7 +4,7 @@ export class Job  extends AbstractGCallout {
   'class': string;
   job: string;
   sector: string;
-  idSector: number;
+  idsector: number;
   idJob: number;
   level: string;
   remuneration: number;
@@ -18,7 +18,7 @@ export class Job  extends AbstractGCallout {
 
     this.job = "";
     this.sector = "";
-    this.idSector = 0;
+    this.idsector = 0;
     this.idJob = 0;
     this.level = 'junior';
     this.remuneration = null;

@@ -54,7 +54,7 @@ export class SearchCriteriaPage {
     public jobs: any = [];
     public jobList: any = [];
     public sector: any;
-    public idSector: any;
+    public idsector: any;
     public job: any;
     public idJob: any;
     public availabilityDate: any;
@@ -71,7 +71,7 @@ export class SearchCriteriaPage {
         'class': "com.vitonjob.callouts.auth.model.JobData",
         idJob: number,
         job: string,
-        idSector: number,
+        idsector: number,
         sector: string,
         level: string,
         remuneration: number,
@@ -150,7 +150,7 @@ export class SearchCriteriaPage {
             'class': "com.vitonjob.callouts.auth.model.JobData",
             job: (jobParam) ? jobParam.libelle : (cityParam) ? defaultJobLabel : (searchParam) ? searchParam : "",
             sector: (jobParam) ? jobParam.sector : "",
-            idSector: (jobParam) ? jobParam.idSector : "",
+            idsector: (jobParam) ? jobParam.idsector : "",
             idJob: (jobParam) ? jobParam.id : (cityParam) ? -1 : 0,
             level: 'junior',
             remuneration: null,
@@ -200,7 +200,7 @@ export class SearchCriteriaPage {
             startHour: null,
             isSlotValidated: false
         };
-        /*offerService.loadJobs(this.projectTarget, this.jobData.idSector).then((data)=>{
+        /*offerService.loadJobs(this.projectTarget, this.jobData.idsector).then((data)=>{
          this.jobs = data;
          });*/
     }
@@ -549,10 +549,10 @@ export class SearchCriteriaPage {
         }
 
         this.lookingForJob = true;
-        let idSector = 0;
-        if(this.jobData.idSector && this.jobData.idSector>0)
-            idSector = this.jobData.idSector;
-        this.offerService.autocompleteJobsSector(val, idSector).then((data : any)=>{
+        let idsector = 0;
+        if(this.jobData.idsector && this.jobData.idsector>0)
+            idsector = this.jobData.idsector;
+        this.offerService.autocompleteJobsSector(val, idsector).then((data : any)=>{
             this.jobList = data;
 
             for (let i = 0; i < this.jobList.length; i++) {
@@ -561,11 +561,11 @@ export class SearchCriteriaPage {
                 let currentJob = s;
                 if (this.newCombination.filter((elem, pos) => {
                         sectorIndex = pos;
-                        return elem.idSector === s.idsector;
+                        return elem.idsector === s.idsector;
                     }).length > 0) {
                     this.newCombination[sectorIndex].jobs.push(currentJob);
                 } else {
-                    this.newCombination.push({idSector: s.idsector, sector: s.sector, jobs: [currentJob]});
+                    this.newCombination.push({idsector: s.idsector, sector: s.sector, jobs: [currentJob]});
                 }
             }
 
@@ -591,11 +591,11 @@ export class SearchCriteriaPage {
                 let currentJob = s;
                 if (this.newCombination.filter((elem, pos) => {
                         sectorIndex = pos;
-                        return elem.idSector === s.idsector;
+                        return elem.idsector === s.idsector;
                     }).length > 0) {
                     this.newCombination[sectorIndex].jobs.push(currentJob);
                 } else {
-                    this.newCombination.push({idSector: s.idsector, sector: s.sector, jobs: [currentJob]});
+                    this.newCombination.push({idsector: s.idsector, sector: s.sector, jobs: [currentJob]});
                 }
             }
 
@@ -614,10 +614,10 @@ export class SearchCriteriaPage {
         this.cities = [];
         this.lookingForJob = true;
         this.pendingJob = '';
-        let idSector = 0;
-        if(this.jobData.idSector && this.jobData.idSector>0)
-            idSector = this.jobData.idSector;
-        this.offerService.autocompleteJobsSector(val, idSector).then((data : any)=>{
+        let idsector = 0;
+        if(this.jobData.idsector && this.jobData.idsector>0)
+            idsector = this.jobData.idsector;
+        this.offerService.autocompleteJobsSector(val, idsector).then((data : any)=>{
             this.jobList = data;
 
             for (let i = 0; i < this.jobList.length; i++) {
@@ -626,11 +626,11 @@ export class SearchCriteriaPage {
                 let currentJob = s;
                 if (this.newCombination.filter((elem, pos) => {
                         sectorIndex = pos;
-                        return elem.idSector === s.idsector;
+                        return elem.idsector === s.idsector;
                     }).length > 0) {
                     this.newCombination[sectorIndex].jobs.push(currentJob);
                 } else {
-                    this.newCombination.push({idSector: s.idsector, sector: s.sector, jobs: [currentJob]});
+                    this.newCombination.push({idsector: s.idsector, sector: s.sector, jobs: [currentJob]});
                 }
             }
 
@@ -655,7 +655,7 @@ export class SearchCriteriaPage {
         this.newCombination = [];
         this.jobData.job = job.libelle;
         this.jobData.idJob = job.id;
-        this.jobData.idSector = job.idsector;
+        this.jobData.idsector = job.idsector;
         this.jobData.sector = job.sector;
         this.isJobFound = true;
         //this.filterJobList();
@@ -689,7 +689,7 @@ export class SearchCriteriaPage {
                     this.isSectorFound = true;
                     this.isJobFound = true;
                     this.sector = data.undefined.text;
-                    this.idSector = data.undefined.value;
+                    this.idsector = data.undefined.value;
                     this.filterJobList();
                     this.job = '';
                     this.idJob = 0;
@@ -707,7 +707,7 @@ export class SearchCriteriaPage {
             list => {
                 if (list) {
                     list = JSON.parse(list);
-                    let q = this.jobData.idSector;
+                    let q = this.jobData.idsector;
 
                     // if the value is an empty string don't filter the items
                     if (q > 0) {
@@ -732,7 +732,7 @@ export class SearchCriteriaPage {
             list => {
                 if (list) {
                     list = JSON.parse(list);
-                    let q = this.idSector;
+                    let q = this.idsector;
 
                     // if the value is an empty string don't filter the items
                     if (!(q === '')) {
@@ -779,11 +779,11 @@ export class SearchCriteriaPage {
     sectorSelected(sector) {
         this.isJobFound = true;
         this.sector = sector.libelle;
-        this.idSector = sector.id;
+        this.idsector = sector.id;
         this.job = '';
         this.sectors = [];
         this.jobData.sector = sector.libelle;
-        this.jobData.idSector = sector.id;
+        this.jobData.idsector = sector.id;
 
         this.db.get("JOB_LIST").then((data: any) => {
 
@@ -966,7 +966,7 @@ export class SearchCriteriaPage {
                 this.isSectorFound = true;
                 this.isJobFound = true;
                 this.sector = this.jobData.sector;
-                this.idSector = this.jobData.idSector;
+                this.idsector = this.jobData.idsector;
                 this.filterJobList();
                 this.job = '';
                 this.idJob = 0;
@@ -979,13 +979,13 @@ export class SearchCriteriaPage {
      * @Description : loads jobs list
      */
     showJobList() {
-        let c = this.jobData.idSector;
+        let c = this.jobData.idsector;
         let loading = this.loading.create({content: "Merci de patienter..."});
         loading.present();
         this.db.get("JOB_LIST").then((data: any) => {
             this.jobList = JSON.parse(data);
             this.jobList = this.jobList.filter((v) => {
-                return (v.idSector+'' == c+'');
+                return (v.idsector+'' == c+'');
             });
 
             let selectionModel = this.modal.create(ModalSelectionPage,
@@ -1008,9 +1008,9 @@ export class SearchCriteriaPage {
 
     clearSector() {
         this.jobData.sector = "";
-        this.jobData.idSector = 0;
+        this.jobData.idsector = 0;
         this.sector = "";
-        this.idSector = 0;
+        this.idsector = 0;
         this.jobData.job = "";
         this.jobData.idJob = 0;
         this.job = "";
