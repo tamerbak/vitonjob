@@ -63,14 +63,21 @@
             </div>
         </ion-list>
 
-        <ion-list no-lines *ngIf="languages && languages.length!=0" style="margin-bottom: 16px;">
+        <ion-list no-lines style="margin-bottom: 16px;">
             <ion-list-header color="primary">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Langues {{isEmployer?"maîtrisées":"requises"}}
             </ion-list-header>
-            <ion-item *ngFor="let item of languages">
-                <ion-icon name="md-arrow-dropright" item-left></ion-icon>
-                {{item.libelle}}
-            </ion-item>
+            <div *ngIf="languages && languages.length!=0">
+                <ion-item *ngFor="let item of languages" >
+                    <ion-icon name="md-arrow-dropright" item-left></ion-icon>
+                    {{item.libelle}}
+                </ion-item>
+            </div>
+            <div *ngIf="!languages || languages.length == 0">
+                <ion-item>
+                    Non renseignées
+                </ion-item>
+            </div>
         </ion-list>
         <ion-list no-lines *ngIf="qualities && qualities.length!=0" style="margin-bottom: 16px;">
             <ion-list-header color="primary">
