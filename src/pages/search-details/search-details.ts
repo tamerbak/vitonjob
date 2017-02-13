@@ -441,7 +441,7 @@ export class SearchDetailsPage implements OnInit {
     else {
       let alert = this.alert.create({
         title: 'Attention',
-        message: 'Pour contacter ce profil, vous devez être connecté.',
+        message: 'Vous devez être connecté pour pouvoir procéder au recrutement de ce profil',
         buttons: [
           {
             text: 'Annuler',
