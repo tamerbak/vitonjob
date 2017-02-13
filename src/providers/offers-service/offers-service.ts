@@ -1400,9 +1400,15 @@ export class OffersService {
         } else {
             this.updateOfferEntrepriseJob(offer).then((data: any) => {
                 this.updateOfferEntrepriseTitle(offer);
+                if(offer.jobData.pharmaSoftwares && offer.jobData.pharmaSoftwares.length != 0){
+                    this.deleteSoftwares(offer.idOffer).then((data: any) =>{
+                        if(data && data.status == "success"){
+                            this.saveSoftwares(offer.idOffer, offer.jobData.pharmaSoftwares);
+                        }
+                    })
+                }
             });
         }
-
     }
 
     updateOfferJobyerJob(offer) {
@@ -1966,6 +1972,31 @@ export class OffersService {
                 .subscribe((data: any) => {
                     resolve(data);
                 });
+        });
+    }
+
+    getOfferSoftwares(offerId){
+        let sql = "select exp.pk_user_logiciels_des_offres as \"expId\", exp.fk_user_logiciels_pharmaciens as id, log.nom from user_logiciels_des_offres as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_offre_entreprise = '" + offerId + "'";
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe(data => {
+                  resolve(data.data);
+              });
+        });
+    }
+
+    deleteSoftwares(offerId){
+        let sql = "delete from user_logiciels_des_offres where fk_user_offre_entreprise =" + offerId;
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe(data => {
+                  resolve(data);
+              });
         });
     }
 
