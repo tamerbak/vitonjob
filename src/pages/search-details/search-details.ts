@@ -82,6 +82,7 @@ export class SearchDetailsPage implements OnInit {
               public db: Storage, public advertService: AdvertService) {
     
     // Get target to determine configs
+    //debugger;
     this.projectTarget = globalConfig.getProjectTarget();
     let configInversed = (this.projectTarget === 'employer') ? Configs.setConfigs('jobyer') : Configs.setConfigs('employer');
     let config = Configs.setConfigs(this.projectTarget);
@@ -305,8 +306,7 @@ export class SearchDetailsPage implements OnInit {
   }
 
   addMarkers(addresses: any, bounds: any) {
-    console.log("start");
-    console.log("adresses",addresses);
+
     for (let i = 0; i < addresses.length; i++) {
       let marker = new google.maps.Marker({
         map: this.map,
