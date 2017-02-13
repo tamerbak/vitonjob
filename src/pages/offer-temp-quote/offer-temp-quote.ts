@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, NavParams} from "ionic-angular";
+import {NavController, NavParams, LoadingController} from "ionic-angular";
 import {FinanceService} from "../../providers/finance-service/finance-service";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
@@ -15,14 +15,20 @@ export class OfferTempQuotePage {
   public total: number = 0;
   public isEmployer:boolean;
   public themeColor:string;
+  public loading:any;
 
   constructor(private nav: NavController,
               private service: FinanceService,
-              navParams: NavParams, public gc:GlobalConfigs) {
+              navParams: NavParams, public gc:GlobalConfigs,
+              public _loading: LoadingController) {
 
     this.isEmployer = (gc.getProjectTarget() === 'employer');
     this.themeColor = Configs.setConfigs(gc.getProjectTarget()).themeColor;
     let id = navParams.data.idOffer;
+    this.loading = _loading;
+
+    let loading = this.loading.create({content:"Merci de patienter..."});
+    loading.present();
     this.service.loadPrevQuote(id).then((data: any) => {
       this.quote = data;
       for (let i = 0; i < this.quote.lignes.length; i++) {
@@ -30,8 +36,10 @@ export class OfferTempQuotePage {
       }
       this.taxes = this.amountBeforeTaxes * this.taxeRate;
       this.total = this.amountBeforeTaxes + this.taxes;
+      loading.dismiss();
       console.log(JSON.stringify(this.quote));
     });
+
     this.initQuote();
   }
 
