@@ -17,7 +17,7 @@ import {DAOFactory} from "../../dao/data-access-object";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 
 const OFFER_CALLOUT_ID = 40020;
-
+const LOADING_OFFERS_CALLOUT = 20031;
 
 /**
  * @author jakjoud abdeslam
@@ -2211,6 +2211,39 @@ export class OffersService {
               .map(res => res.json())
               .subscribe((data: any) => {
                   resolve(data.data[0]);
+              });
+        });
+    }
+
+    loadOffers(userId, role, status, offset, limit){
+        let offerData = {
+            'class': 'com.vitonjob.callouts.loading.offers.OfferToken',
+            'userId': userId.toString(),
+            'role': role,
+            'status': status,
+            'req': 'min',
+            'offset': offset,
+            'limit': limit
+        };
+        let offerDataStr = JSON.stringify(offerData);
+        let encodedDatum = btoa(offerDataStr);
+        let data = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            'id': LOADING_OFFERS_CALLOUT,
+            'args': [{
+                'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                label: 'LoadingOffers',
+                value: encodedDatum
+            }]
+        };
+        let stringData = JSON.stringify(data);
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(Configs.calloutURL, stringData, {headers: headers})
+              .subscribe((data: any)=> {
+                  if(data && data.status == 200 && !Utils.isEmpty(data._body)){
+                      resolve(JSON.parse(data._body).offers);
+                  }
               });
         });
     }

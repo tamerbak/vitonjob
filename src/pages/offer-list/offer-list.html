@@ -20,12 +20,65 @@
         </ion-col>
     </ion-row>
 
+    <div padding>
+        <ion-segment [(ngModel)]="offersType" (ionChange)="onSegmentChange()">
+            <ion-segment-button value="public">
+                Mes offres en ligne
+            </ion-segment-button>
+            <ion-segment-button value="private">
+                Mes brouillons
+            </ion-segment-button>
+            <ion-segment-button value="hunted" disabled>
+                Mes opportunités capturées
+            </ion-segment-button>
+        </ion-segment>
+    </div>
+
+    <div [ngSwitch]="offersType">
+        <ion-list *ngSwitchCase="offersType" text-wrap>
+            <ion-item (click)="goToDetailOffer(item)" [color]="item.color" no-lines *ngFor="let item of offerList">
+                <h2 [style.color]="item.color" class="h3-margintop">{{item.title}}</h2>
+
+                <h4 [style.color]="item.color">
+                    <ion-icon [style.color]="item.color" [name]="item.visible ? 'eye' : 'eye-off'"></ion-icon>
+                    {{isEmployer ? 'Les jobyers ' : 'Les employeurs ' }} {{item.visible ? 'peuvent ': 'ne peuvent pas '}} voir cette offre dans leurs recherches
+                </h4>
+
+                <p [style.color]="item.color">Cliquer pour voir plus de détail</p>
+
+                <!--ion-badge [style.backgroundColor]="themeColor" item-right *ngIf="item.visible">
+                    <ion-spinner name="crescent" [hidden]="(item.correspondantsCount >= 0)"></ion-spinner>
+                    {{(item.correspondantsCount < 0) ? '' : item.correspondantsCount}}
+                </ion-badge-->
+
+                <!--<ion-item no-lines *ngIf="item.visible">
+                    <ion-label style="text-align: right;">Activer l'alerte</ion-label>
+                    <ion-toggle secondary [checked]="item.rechercheAutomatique"
+                                (ionChange)="autoSearchMode(item)"></ion-toggle>
+                </ion-item>-->
+
+                <ion-item no-lines *ngIf="item.obsolete && item.visible">
+                    <p style="color: red;">Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité
+                    </p>
+                </ion-item>
+
+                <ion-item style="border-bottom: 0;margin-top: 0;margin-bottom: 0;text-align: center;"
+                          *ngIf="item.visible">
+                    <button ion-button color="vojgreen" small (click)="launchSearch(item)">Lancer la recherche</button>
+                </ion-item>
+            </ion-item>
+        </ion-list>
+        <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+            <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+    </div>
+
     <!--ion-card [hidden]="!listMode">
         <!--ion-card-header style = "text-align: center;">
             Ma liste des offres :
         </ion-card-header-->
 
-    <ion-list text-wrap *ngFor="let globalList of globalOfferList">
+    <!--<ion-list text-wrap *ngFor="let globalList of globalOfferList">
         <div style="display: flex;" *ngIf="globalList.list.length >0">
             <ion-list-header style="color: #757575; background-color: transparent;">{{globalList.header}}</ion-list-header>
             <button ion-button icon-left outline small style="position: relative; top: 0;" (click)="showOfferList(globalList.header)" color="vojgrey">
@@ -49,8 +102,8 @@
                     <ion-spinner name="crescent" [hidden]="(item.correspondantsCount >= 0)"></ion-spinner>
                     {{(item.correspondantsCount < 0) ? '' : item.correspondantsCount}}
                 </ion-badge-->
-            </ion-item>
-            <ion-item (click)="goToDetailOffer(item)" [style.color]="item.color"
+           <!-- </ion-item>-->
+            <!--<ion-item (click)="goToDetailOffer(item)" [style.color]="item.color"
                       *ngIf="!item.visible && showUnpublishedOffers">
                 <h2 [style.color]="item.color" class="h3-margintop">{{item.title}}</h2>
                 <h4 [style.color]="item.color">
@@ -79,7 +132,7 @@
                 <button ion-button color="vojgreen" small (click)="launchSearch(item)">Lancer la recherche</button>
             </ion-item>
         </div>
-    </ion-list>
+    </ion-list>-->
     <!--/ion-card>
 
 
