@@ -53,7 +53,7 @@ export class ModalSelectionPage {
     this.params = params;
     this.initializeItems(params.get('items'));
     this.searchQuery = "";
-    this.searchPlaceholder = 'Recherchez votre ' + params.get('type');
+    this.searchPlaceholder = ((params.get('type') !== 'département de naissance' && (params.get('type') !== 'lieu de naissance') ? 'Recherchez votre ':'')) + params.get('type');
     this.cancelButtonText = 'Annuler';
     this.message = "";
 
