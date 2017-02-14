@@ -12,6 +12,9 @@ import {CalendarSlot} from "../../dto/calendar-slot";
 import {Quality} from "../../dto/quality";
 import {Language} from "../../dto/language";
 import {Requirement} from "../../dto/requirement";
+import {SqliteDBService} from "../sqlite-db-service/sqlite-db-service";
+import {DAOFactory} from "../../dao/data-access-object";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
 
 const OFFER_CALLOUT_ID = 40020;
 
@@ -40,7 +43,11 @@ export class OffersService {
     lienVideo: string;
     convention: any;
 
-    constructor(public http: Http, public db: Storage, public httpRequest:HttpRequestHandler) {
+    constructor(public http: Http,
+                public db: Storage,
+                public sqliteDb : SqliteDBService,
+                public daoFactory : DAOFactory,
+                public httpRequest:HttpRequestHandler) {
         this.count = 0;
 
 
@@ -261,6 +268,11 @@ export class OffersService {
                     offerData.idOffer = idOffer;
                     offerData.jobData.job = Utils.inverseSqlfyText(offerData.jobData.job);
                     this.attachIdOfferInLocal(offerData, projectTarget);
+
+                    if(offerData.jobData.pharmaSoftwares && offerData.jobData.pharmaSoftwares.length != 0){
+                        this.saveSoftwares(idOffer, offerData.jobData.pharmaSoftwares);
+                    }
+
                     console.log('ADDED OFFER IN SERVER : ' + JSON.stringify(this.addedOffer));
                     resolve(this.addedOffer);
                 });
@@ -296,7 +308,6 @@ export class OffersService {
         // Ancient offer object is ready, now preparing the new offer DTO object:
         // Job part
         myOffer.jobData = offerData.jobData;
-        delete myOffer.jobData['pharmaSoftwares'];
         delete myOffer.jobData['adress'];
         delete myOffer.jobData['nbPoste'];
         delete myOffer.jobData['contact'];
@@ -737,50 +748,40 @@ export class OffersService {
     }
 
     loadSectorsToLocal() {
-        let sql = "select pk_user_metier as id, libelle as libelle from user_metier where dirty='N' order by libelle asc";
-        console.log(sql);
+        let sql = "select pk_user_metier as id, libelle as libelle from user_metier order by libelle asc";
         return new Promise(resolve => {
-            // We're using Angular Http provider to request the data,
-            // then on the response it'll map the JSON data to a parsed JS object.
-            // Next we process the data and resolve the promise with the new data.
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data: any) => {
-                    // we've got back the raw data, now generate the core schedule data
-                    // and save the data for later reference
-                    this.listSectors = data.data;
-                    this.db.set('SECTOR_LIST', JSON.stringify(this.listSectors));
-                    resolve(this.listSectors);
-                });
+
+            this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true).loadData(sql).then((data:any) => {
+                this.listSectors = data;
+
+                console.log("Loading sectors");
+                console.log(this.listSectors);
+                this.db.set('SECTOR_LIST', JSON.stringify(this.listSectors));
+                resolve(this.listSectors);
+            });
         });
+
     }
 
     loadJobsToLocal() {
-        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier and j.dirty='N' order by j.libelle asc";
-        console.log(sql);
+
+        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc";
         return new Promise(resolve => {
-            // We're using Angular Http provider to request the data,
-            // then on the response it'll map the JSON data to a parsed JS object.
-            // Next we process the data and resolve the promise with the new data.
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data: any) => {
-                    // we've got back the raw data, now generate the core schedule data
-                    // and save the data for later reference
-                    this.listJobs = data.data;
-                    this.db.set('JOB_LIST', JSON.stringify(this.listJobs));
-                    console.log('Preloaded jobs list');
-                    resolve(this.listJobs);
-                });
+
+            //this.sqliteDb.executeSelect("select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc").then((data:any) => {
+            this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true)
+                .loadData(sql).then((data:any) => {
+                this.listJobs = data;
+                console.log("Loading jobs");
+                console.log(this.listJobs);
+                this.db.set('JOB_LIST', JSON.stringify(this.listJobs));
+                resolve(this.listJobs);
+            });
         });
     }
 
     loadAllJobs() {
-        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier and j.dirty='N' order by j.libelle asc";
+        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier and j.dirty='N' order by j.libelle asc";
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -807,65 +808,50 @@ export class OffersService {
         for(let i = 0 ; i < kws.length ; i++){
             sqlfiedJob = sqlfiedJob+kws[i]+"%";
         }
-        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
+        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector " +
             " from user_job j, user_metier m " +
-            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) " +
+            "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) " +
             "order by j.libelle asc limit 5";
 
         console.log(sql);
-
         return new Promise(resolve => {
-            // We're using Angular Http provider to request the data,
-            // then on the response it'll map the JSON data to a parsed JS object.
-            // Next we process the data and resolve the promise with the new data.
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data: any) => {
-                    // we've got back the raw data, now generate the core schedule data
-                    // and save the data for later reference
+            this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true).loadData(sql).then((data:any) => {
+            //this.sqliteDb.executeSelect(sql).then((data:any) => {
+                let listJobs = data;
 
-                    this.listJobs = data.data;
-                    resolve(this.listJobs);
-                });
+                resolve(listJobs);
+            });
         });
     }
 
-    autocompleteJobsSector(job : string, idSector : number){
+    autocompleteJobsSector(job : string, idsector : number){
         let sqlfiedJob = "%";
         let kws = job.split(' ');
         for(let i = 0 ; i < kws.length ; i++){
             sqlfiedJob = sqlfiedJob+kws[i]+"%";
         }
-        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
+        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector " +
             " from user_job j, user_metier m " +
-            "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) " +
+            "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) " +
             "order by j.libelle asc limit 5";
 
-        if(idSector>0){
-            sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idSector, m.libelle as sector " +
+        if(idsector>0){
+            sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector " +
                 " from user_job j, user_metier m " +
-                "where fk_user_metier = pk_user_metier and j.dirty='N' and (lower_unaccent(j.libelle) like  lower_unaccent('"+sqlfiedJob+"')) and fk_user_metier="+idSector +
-                "order by j.libelle asc limit 5";
+                "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) and fk_user_metier="+idsector +
+                " order by j.libelle asc limit 5";
         }
 
         console.log(sql);
-
         return new Promise(resolve => {
-            // We're using Angular Http provider to request the data,
-            // then on the response it'll map the JSON data to a parsed JS object.
-            // Next we process the data and resolve the promise with the new data.
-            let headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data: any) => {
-                    // we've got back the raw data, now generate the core schedule data
-                    // and save the data for later reference
-
-                    this.listJobs = data.data;
-                    resolve(this.listJobs);
-                });
+            this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true).loadData(sql).then((data:any) => {
+            //this.sqliteDb.executeSelect(sql).then((data:any) => {
+                let listJobs = data;
+                resolve(listJobs);
+            });
         });
+
+
     }
 
     /**
@@ -900,16 +886,16 @@ export class OffersService {
      * loading jobs list from server
      * @return jobs list in the format {id : X, idsector : X, libelle : X}
      */
-    loadJobs(projectTarget: string, idSector: number) {
+    loadJobs(projectTarget: string, idsector: number) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
         let sql = "";
-        if (idSector && idSector > 0)
+        if (idsector && idsector > 0)
             sql = 'SELECT pk_user_job as id, user_job.libelle as libelle, fk_user_metier as idsector, user_metier.libelle as libelleSector  ' +
                 'FROM user_job, user_metier ' +
                 'WHERE fk_user_metier = pk_user_metier ' +
-                'AND fk_user_metier =' + idSector +
+                'AND fk_user_metier =' + idsector +
                 "AND user_job.dirty='N'";
         else
             sql = 'SELECT pk_user_job as id, user_job.libelle as libelle, fk_user_metier as idsector, user_metier.libelle as libelleSector ' +
@@ -940,15 +926,15 @@ export class OffersService {
      * loading sector by its Id
      * @return sector in the format {id : X, libelle : X}
      */
-    loadSectorById(projectTarget: string, idSector: number) {
+    loadSectorById(projectTarget: string, idsector: number) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
 
         let sql = "";
-        if (idSector && idSector > 0)
+        if (idsector && idsector > 0)
             sql = 'SELECT pk_user_metier as id, libelle as libelle ' +
                 'FROM user_metier ' +
-                'WHERE pk_user_metier =' + idSector;
+                'WHERE pk_user_metier =' + idsector;
         else
             return;
 
@@ -1414,9 +1400,15 @@ export class OffersService {
         } else {
             this.updateOfferEntrepriseJob(offer).then((data: any) => {
                 this.updateOfferEntrepriseTitle(offer);
+                if(offer.jobData.pharmaSoftwares && offer.jobData.pharmaSoftwares.length != 0){
+                    this.deleteSoftwares(offer.idOffer).then((data: any) =>{
+                        if(data && data.status == "success"){
+                            this.saveSoftwares(offer.idOffer, offer.jobData.pharmaSoftwares);
+                        }
+                    })
+                }
             });
         }
-
     }
 
     updateOfferJobyerJob(offer) {
@@ -1983,6 +1975,31 @@ export class OffersService {
         });
     }
 
+    getOfferSoftwares(offerId){
+        let sql = "select exp.pk_user_logiciels_des_offres as \"expId\", exp.fk_user_logiciels_pharmaciens as id, log.nom from user_logiciels_des_offres as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_offre_entreprise = '" + offerId + "'";
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe(data => {
+                  resolve(data.data);
+              });
+        });
+    }
+
+    deleteSoftwares(offerId){
+        let sql = "delete from user_logiciels_des_offres where fk_user_offre_entreprise =" + offerId;
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe(data => {
+                  resolve(data);
+              });
+        });
+    }
+
     sqlfy(d) {
         return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " 00:00:00+00";
     }
@@ -2053,7 +2070,6 @@ export class OffersService {
       }
       let currentSDate = newSlotCopy.date.setHours(0, 0, 0, 0);
       for (let k = 0; k < rawSlots.length; k++) {
-          debugger;
         let rawSlot = rawSlots[k];
         let slots = this.separateTwoDaysSlot(rawSlot);
         for (let i = 0; i < slots.length; i++) {

@@ -34,6 +34,7 @@ import {ProfilePage} from "../pages/profile/profile";
 import {PendingContractsPage} from "../pages/pending-contracts/pending-contracts";
 import {Observable} from "rxjs/Rx";
 import {IntroPage} from "../pages/intro/intro";
+import {SqliteDBService} from "../providers/sqlite-db-service/sqlite-db-service";
 //import {isUndefined} from "ionic-angular/util/util";
 
 //declare let cordova;
@@ -79,6 +80,7 @@ export class Vitonjob {
                 private changeDetRef: ChangeDetectorRef,
                 public events: Events,
                 public offerService: OffersService,
+                public sqliteDb : SqliteDBService,
                 private zone: NgZone,
                 private _alert: AlertController,
                 private _toast: ToastController,
@@ -149,9 +151,7 @@ export class Vitonjob {
         this.offerCount = 0;
         this.isCalculating = true;
 
-        //  Initialize sectors and job lists
-        this.offerService.loadSectorsToLocal();
-        this.offerService.loadJobsToLocal();
+
     }
 
     getRootPage() {
@@ -182,6 +182,12 @@ export class Vitonjob {
             // Okay, so the platform is ready and our plugins are available.
             // Here you can do any higher level native things you might need.
             // target:string = "employer"; //Jobyer
+
+            this.sqliteDb.initialize();
+            //  Initialize sectors and job lists
+            this.offerService.loadSectorsToLocal();
+            this.offerService.loadJobsToLocal();
+
 
             //if (GlobalConfigs.env === 'DEV'){
             let loader = this.loading.create({content: "Merci de patienter..."});

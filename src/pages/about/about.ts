@@ -28,7 +28,7 @@ export class AboutPage {
       "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
     ];*/
     //let date = new Date();
-    this.releaseDate = "6 Octobre 2016"; //date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
+    this.releaseDate = "30 Janv 2017"; //date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
     //this.appName = AppVersion.getAppName();
     //this.version = AppVersion.getPackageName();
     this.push = HomePage;

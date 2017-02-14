@@ -22,7 +22,7 @@
                     <img [src]="item.avatar">
                 </ion-avatar>
                 <h2>{{isEmployer ? item.prenom + ' ' + substring(item.nom, 0, 1) + '.' : item.entreprise}}</h2>
-                <h4>{{item.titreOffre}}</h4>
+                <h4>{{item.idOffre>0?item.titreOffre:''}}</h4>
             </ion-item>
             <ion-item no-lines style="background-color: lightcyan">
                 <p>
@@ -87,7 +87,7 @@
                 </button>
             </ion-item>
 
-            <ion-item no-lines text-wrap style="font-size: inherit;" *ngIf="isEmployer">
+            <ion-item no-lines text-wrap style="font-size: inherit;" *ngIf="isEmployer && isUserAuthenticated">
                 <ion-label>Pour recruter en groupe</ion-label>
                 <ion-checkbox [(ngModel)]="item.checkedContract"
                               (ionChange)="selectContract($event, item)"></ion-checkbox>
@@ -108,7 +108,7 @@
                     </button>
                 </ion-col>
             </ion-row-->
-            <ion-item no-lines *ngIf="item.rate || item.rate>0">
+            <ion-item no-lines *ngIf="item.rate && item.rate>0">
                 <ion-note item-right>
                         Taux horaire: {{formatNumbers(item.rate)}} €/h
                 </ion-note>

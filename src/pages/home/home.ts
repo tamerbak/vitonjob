@@ -156,6 +156,7 @@ export class HomePage {
                 private _gaService: GoogleAnalyticsService,
                 private _loading: LoadingController, public storage: Storage, public cityServices: CommunesService) {
         // Get target to determine configs
+        GoogleAnalyticsService.trackView("Accueil");
         this.projectTarget = _globalConfig.getProjectTarget();
         this.loading = _loading;
         this.modal = _modal;
@@ -751,9 +752,6 @@ export class HomePage {
      * @param e Key Up javascript event allowing us to access the keyboard used key
      */
     checkForEnterKey(e) {
-        /*if (e.code != "Enter")
-         return;
-         this.doSemanticSearch();*/
 
         // search by cities mode
         if (this.isCity.activated) {
@@ -761,12 +759,15 @@ export class HomePage {
             return;
         }
 
+        this.jobs = [];
+        this.jobList = [];
+        this.newCombination = [];
+        this.cities = [];
+
         // else launch job's auto-completion
         let val = e.target.value;
-        if (val.length < 3) {
+        if (val.trim().length == 0) {
             this.isJobFound = true;
-            this.jobs = [];
-            this.newCombination = [];
             return;
         }
 
@@ -775,10 +776,7 @@ export class HomePage {
             return;
         }
 
-        this.jobs = [];
-        this.jobList = [];
-        this.newCombination = [];
-        this.cities = [];
+
         this.lookingForJob = true;
         this.offersService.autocompleteJobs(val).then((data : any)=>{
             this.jobList = data;
@@ -789,11 +787,11 @@ export class HomePage {
                 let currentJob = s;
                 if (this.newCombination.filter((elem, pos) => {
                         sectorIndex = pos;
-                        return elem.idSector === s.idsector;
+                        return elem.idsector === s.idsector;
                     }).length > 0) {
                     this.newCombination[sectorIndex].jobs.push(currentJob);
                 } else {
-                    this.newCombination.push({idSector: s.idsector, sector: s.sector, jobs: [currentJob]});
+                    this.newCombination.push({idsector: s.idsector, sector: s.sector, jobs: [currentJob]});
                 }
             }
 
@@ -813,6 +811,47 @@ export class HomePage {
         });
 
 
+
+        /*if (this.isCity.activated) {
+            this.watchCity(e);
+            return;
+        }
+
+        // else launch job's auto-completion
+        let val = e.target.value;
+        if (val.length < 3) {
+            this.isJobFound = true;
+            this.jobs = [];
+            this.newCombination = [];
+            return;
+        }
+
+        this.jobs = [];
+        this.newCombination = [];
+        this.cities = [];
+        let removeDiacritics = require('diacritics').remove;
+        for (let i = 0; i < this.jobList.length; i++) {
+            let s = this.jobList[i];
+            let sectorIndex = 0;
+            if (removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase()) > -1) {
+                let currentJob = s;
+                if (this.newCombination.filter((elem, pos) => {
+                        sectorIndex = pos;
+                        return elem.idsector === s.idsector;
+                    }).length > 0) {
+                    this.newCombination[sectorIndex].jobs.push(currentJob);
+                } else {
+                    this.newCombination.push({idsector: s.idsector, sector: s.sector, jobs: [currentJob]});
+                }
+            }
+
+        }
+
+        this.jobs = this.newCombination.sort((a, b) => {
+            return b.sector - a.sector;
+        });
+
+        this.isJobFound = (this.jobs.length == 0);*/
     }
 
     reexecuteAutocomplete(val){
@@ -831,11 +870,11 @@ export class HomePage {
                 let currentJob = s;
                 if (this.newCombination.filter((elem, pos) => {
                         sectorIndex = pos;
-                        return elem.idSector === s.idsector;
+                        return elem.idsector === s.idsector;
                     }).length > 0) {
                     this.newCombination[sectorIndex].jobs.push(currentJob);
                 } else {
-                    this.newCombination.push({idSector: s.idsector, sector: s.sector, jobs: [currentJob]});
+                    this.newCombination.push({idsector: s.idsector, sector: s.sector, jobs: [currentJob]});
                 }
             }
 

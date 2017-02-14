@@ -681,10 +681,10 @@ export class SearchResultsPage implements OnInit {
         if (item.checkedContract) {
             this.contratsAttente.push({jobyer: item, offer: o});
         } else {
-
-            this.contratsAttente.splice(this.contratsAttente.findIndex((element) => {
-                return (element.jobyer.email === item.jobyer.email) && (element.jobyer.tel === item.jobyer.tel);
-            }), 1);
+            let index = this.contratsAttente.findIndex((elm) => {
+                return (elm.jobyer.email === item.email) && (elm.jobyer.tel === item.tel);
+            })
+            this.contratsAttente.splice(index, 1);
         }
         this.db.set('PENDING_CONTRACTS', JSON.stringify(this.contratsAttente));
     }
@@ -864,7 +864,7 @@ export class SearchResultsPage implements OnInit {
         else {
             let alert = this.alert.create({
                 title: 'Attention',
-                message: 'Pour contacter ce profil, vous devez être connecté.',
+                message: 'Vous devez être connecté pour pouvoir procéder au recrutement de ce profil',
                 buttons: [
                     {
                         text: 'Annuler',

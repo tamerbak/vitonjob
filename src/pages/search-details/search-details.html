@@ -30,7 +30,7 @@
 
         <ion-row>
             <ion-col text-center style="padding-top: 16px;">
-                <h2 style="font-weight: bold">{{isEmployer ? 'Offre de service: ' : 'Offre: '}} {{fullTitle}} </h2>
+                <h2 style="font-weight: bold" *ngIf="result.idOffre>0">{{isEmployer ? 'Offre de service: ' : 'Offre: '}} {{fullTitle}} </h2>
             </ion-col>
         </ion-row>
 
@@ -63,16 +63,23 @@
             </div>
         </ion-list>
 
-        <ion-list no-lines [hidden]="languages.length==0" style="margin-bottom: 16px;">
+        <ion-list no-lines style="margin-bottom: 16px;">
             <ion-list-header color="primary">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Langues {{isEmployer?"maîtrisées":"requises"}}
             </ion-list-header>
-            <ion-item *ngFor="let item of languages">
-                <ion-icon name="md-arrow-dropright" item-left></ion-icon>
-                {{item.libelle}}
-            </ion-item>
+            <div *ngIf="languages && languages.length!=0">
+                <ion-item *ngFor="let item of languages" >
+                    <ion-icon name="md-arrow-dropright" item-left></ion-icon>
+                    {{item.libelle}}
+                </ion-item>
+            </div>
+            <div *ngIf="!languages || languages.length == 0">
+                <ion-item>
+                    Non renseignées
+                </ion-item>
+            </div>
         </ion-list>
-        <ion-list no-lines [hidden]="qualities.length==0" style="margin-bottom: 16px;">
+        <ion-list no-lines *ngIf="qualities && qualities.length!=0" style="margin-bottom: 16px;">
             <ion-list-header color="primary">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Qualités {{isEmployer?"acquises":"requises"}}
             </ion-list-header>
@@ -91,7 +98,7 @@
             </ion-item>
         </ion-list>
 
-        <ion-list [hidden]="references.length == 0">
+        <ion-list *ngIf="references && references.length != 0">
             <ion-list-header color="primary">Références</ion-list-header>
             <ion-item *ngFor="let r of references" text-wrap>
                 <ion-icon item-left name='star' small color="primary"></ion-icon>

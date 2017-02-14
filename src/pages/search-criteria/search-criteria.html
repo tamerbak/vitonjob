@@ -175,12 +175,12 @@
                 <ion-label floating>Job <span style="font-size: xx-large;color: red">*</span></ion-label>
                 <ion-textarea rows="3" [(ngModel)]="jobData.job" (keyup)="watchJob($event)" text-wrap></ion-textarea>
                 <div item-right style="display: table-row-group;margin-left: 0;margin-right: 0">
-                    <!--div>
+                    <div>
                         <button small item-right (click)="showJobList()" ion-button color="vojbrown"
                                 *ngIf="jobData.sector && isSectorFound" style="margin-left: 2px;margin-right: 2px;">
                             <ion-icon name="list"></ion-icon>
                         </button>
-                    </div-->
+                    </div>
                     <div style="height: 100%;display: inline-table;">
                         <button ion-button clear (click)="clearJob()" color="vojbrown"
                                 style="position: absolute; vertical-align: middle" *ngIf="jobData.job">
@@ -201,11 +201,11 @@
                 </div>
 
             </ion-list>
-            <ion-row *ngIf="lookingForJob">
+            <!--ion-row *ngIf="lookingForJob">
                 <ion-col text-center>
                     <ion-spinner></ion-spinner>
                 </ion-col>
-            </ion-row>
+            </ion-row-->
             <div [hidden]="isJobFound"
                  style="color:red">
                 <ion-icon name="md-arrow-dropup"></ion-icon>
@@ -214,7 +214,7 @@
         </ion-list>
         <ion-item>
             <button *ngIf="!isJobFound || jobData.job.length >3 " ion-button icon-left outline item-right
-                    (click)="jobValidated()" [disabled]="!isJobFound || lookingForJob">Valider
+                    (click)="jobValidated()" >Valider <!--[disabled]="!isJobFound || lookingForJob"-->
             </button>
         </ion-item>
     </ion-card>

@@ -409,28 +409,37 @@ export class OfferDetailPage {
       city: '',
       country: ''
     };
-    let modal = this.modal.create(ModalJobPage, {jobData: this.offer.jobData});
-    modal.onDidDismiss((data: any) => {
-      this.modified.isJob = data.validated;
-      //this.steps.isCalendar = this.validated.isJob;
-      //this.localOffer.set('jobData', JSON.stringify(data));
-      if (this.modified.isJob) {
-        this.offer.jobData = data;
-        this.offer.nbPoste = data.nbPoste;
-        this.offer.telephone = data.telephone;
-        this.offer.contact = data.contact;
-        this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
-        this.offerService.updateOfferJob(this.offer, this.projectTarget);
-        if (this.offer.jobData.adress && this.offer.jobData.adress.zipCode && this.offer.jobData.adress.zipCode.length > 0) {
-          this.fullAdress = data.adress.fullAdress;
-          this.offerService.saveOfferAdress(this.offer, this.offer.jobData.adress, this.offer.jobData.adress.streetNumber, this.offer.jobData.adress.street,
-            this.offer.jobData.adress.city, this.offer.jobData.adress.zipCode, this.offer.jobData.adress.name, this.offer.jobData.adress.country, this.idTiers, this.projectTarget);
+
+    let loading = this.loading.create({content:"Merci de patienter..."});
+    loading.present();
+
+    this.offerService.getOfferSoftwares(this.offer.idOffer).then((data: any) => {
+      this.offer.jobData.pharmaSoftwares = data;
+
+      let modal = this.modal.create(ModalJobPage, {jobData: this.offer.jobData});
+      modal.onDidDismiss((data: any) => {
+        this.modified.isJob = data.validated;
+        //this.steps.isCalendar = this.validated.isJob;
+        //this.localOffer.set('jobData', JSON.stringify(data));
+        if (this.modified.isJob) {
+          this.offer.jobData = data;
+          this.offer.nbPoste = data.nbPoste;
+          this.offer.telephone = data.telephone;
+          this.offer.contact = data.contact;
+          this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
+          this.offerService.updateOfferJob(this.offer, this.projectTarget);
+          if (this.offer.jobData.adress && this.offer.jobData.adress.zipCode && this.offer.jobData.adress.zipCode.length > 0) {
+            this.fullAdress = data.adress.fullAdress;
+            this.offerService.saveOfferAdress(this.offer, this.offer.jobData.adress, this.offer.jobData.adress.streetNumber, this.offer.jobData.adress.street,
+              this.offer.jobData.adress.city, this.offer.jobData.adress.zipCode, this.offer.jobData.adress.name, this.offer.jobData.adress.country, this.idTiers, this.projectTarget);
+          }
+        } else {
+          this.offer.jobData = this.copyJobDataObjectByValue(originalJobData);
         }
-      } else {
-        this.offer.jobData = this.copyJobDataObjectByValue(originalJobData);
-      }
-    });
-    modal.present();
+      });
+      loading.dismiss();
+      modal.present();
+    })
   }
 
   /**
@@ -659,7 +668,7 @@ export class OfferDetailPage {
     let copyedJobData = {
       idJob: originalJobData.idJob,
       job: originalJobData.job,
-      idSector: originalJobData.idSector,
+      idsector: originalJobData.idsector,
       sector: originalJobData.sector,
       level: originalJobData.level,
       remuneration: originalJobData.remuneration,
@@ -677,7 +686,7 @@ export class OfferDetailPage {
       loading.dismiss();
       if (res) {
         this.advert = res;
-        this.nav.push(AdvertDetailsPage, {advert: this.advert});
+        this.nav.push(AdvertEditPage, {fromPage: "offer-details", advert: this.advert});
       } else {
         this.nav.push(AdvertEditPage, {fromPage: "offer-details", idOffer: this.offer.idOffer});
       }

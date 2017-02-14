@@ -24,7 +24,7 @@ export class AdvancedSearchPage {
   public listSectors: any;
   public listJobs: any;
   public projectTarget: any;
-  public idSector: number;
+  public idsector: number;
   public sector: string;
   public job: string;
   public idJob: number;
@@ -47,7 +47,7 @@ export class AdvancedSearchPage {
         this.db.set('listSectors', JSON.stringify(listSectors));
       }
     });
-    _service.loadJobs(this.projectTarget, this.idSector).then(listJobs => {
+    _service.loadJobs(this.projectTarget, this.idsector).then(listJobs => {
       if (listJobs) {
         this.listSectors = listJobs;
         this.db.set('listJobs', JSON.stringify(listJobs));
@@ -98,7 +98,7 @@ export class AdvancedSearchPage {
         text: 'Valider',
         handler: data => {
           this.sector = data.undefined.text;
-          this.idSector = data.undefined.value;
+          this.idsector = data.undefined.value;
           this.filterJobList();
           this.job = '';
           this.idJob = 0;
@@ -122,7 +122,7 @@ export class AdvancedSearchPage {
       list => {
         if (list) {
           list = JSON.parse(list);
-          let q: any = this.idSector;
+          let q: any = this.idsector;
 
           // if the value is an empty string don't filter the items
           if (!(q === '')) {
@@ -179,7 +179,7 @@ export class AdvancedSearchPage {
       list => {
         if (list) {
           list = JSON.parse(list);
-          let q: any = this.idSector;
+          let q: any = this.idsector;
 
           // if the value is an empty string don't filter the items
           if (!(q === '')) {

@@ -42,7 +42,7 @@ export class ModalJobPage {
     'class': "com.vitonjob.callouts.auth.model.JobData",
     idJob: number,
     job: string,
-    idSector: number,
+    idsector: number,
     sector: string,
     level: string,
     remuneration: number,
@@ -459,7 +459,7 @@ export class ModalJobPage {
         'class': "com.vitonjob.callouts.auth.model.JobData",
         job: "",
         sector: "",
-        idSector: 0,
+        idsector: 0,
         idJob: 0,
         level: 'junior',
         remuneration: null,
@@ -499,7 +499,7 @@ export class ModalJobPage {
    * @Description: Validating the modal page (All fields are filled)
    */
   validateJob() {
-    if (this.jobData.idJob == 0 || this.jobData.idSector == 0) {
+    if (this.jobData.idJob == 0 || this.jobData.idsector == 0) {
       let alert = this.alert.create({
         title: 'Erreur',
         subTitle: "Veuillez choisir un secteur et un job valides",
@@ -562,7 +562,7 @@ export class ModalJobPage {
    * @Description : loads jobs list
    */
   showJobList() {
-    let c = this.jobData.idSector;
+    let c = this.jobData.idsector;
     this.storage.get("JOB_LIST").then((data: any) => {
 
       this.jobList = JSON.parse(data);
@@ -618,7 +618,7 @@ export class ModalJobPage {
     this.isJobFound = true;
 
     this.jobData.sector = sector.libelle;
-    this.jobData.idSector = sector.id;
+    this.jobData.idsector = sector.id;
     this.jobData.job = '';
     this.jobData.idJob = 0;
     this.sectors = [];
@@ -902,7 +902,7 @@ export class ModalJobPage {
     //         this.isSectorFound = true;
     //         this.isJobFound = true;
     //         this.jobData.sector = data.undefined.text;
-    //         this.jobData.idSector = data.undefined.value;
+    //         this.jobData.idsector = data.undefined.value;
     //         this.filterJobList();
     //         this.jobData.job = '';
     //         this.jobData.idJob = 0;
@@ -925,7 +925,7 @@ export class ModalJobPage {
       list => {
         if (list) {
           list = JSON.parse(list);
-          let q = this.jobData.idSector;
+          let q = this.jobData.idsector;
 
           // if the value is an empty string don't filter the items
           if (!(q.toString() === '')) {
@@ -955,7 +955,7 @@ export class ModalJobPage {
     //     list => {
     //       if (list) {
     //         list = JSON.parse(list);
-    //         let q = this.jobData.idSector;
+    //         let q = this.jobData.idsector;
 
     //         // if the value is an empty string don't filter the items
     //         if (!(q.toString() === '')) {
@@ -1009,7 +1009,7 @@ export class ModalJobPage {
     let popover = this.popover.create(PopoverAutocompletePage, {
       list: (type === 'secteur') ? this.listSectors : this.listJobs,
       type: type,
-      idSector: this.jobData.idSector
+      idsector: this.jobData.idsector
     });
     popover.present({
       ev: ev
@@ -1020,7 +1020,7 @@ export class ModalJobPage {
 
         if (type === 'secteur') {
           this.jobData.sector = data.libelle;
-          this.jobData.idSector = data.id;
+          this.jobData.idsector = data.id;
           this.filterJobList();
           this.jobData.job = '';
           this.jobData.idJob = 0;
