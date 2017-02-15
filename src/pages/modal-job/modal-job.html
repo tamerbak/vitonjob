@@ -118,7 +118,7 @@
     <ion-row>
       <ion-col>
         <ion-item style="padding-left: 0;">
-          <ion-label floating>Taux horaire brut en € <span class="asterisk">*</span></ion-label>
+          <ion-label floating>{{projectTarget == 'jobyer' ? 'Taux horaire souhaité (brut en €) ':'Taux horaire brut en € '}}<span class="asterisk">*</span></ion-label>
           <ion-input
             type="number"
             min="0"
