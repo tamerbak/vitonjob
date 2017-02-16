@@ -11,6 +11,7 @@ import {PushNotificationService} from "../../providers/push-notification-service
 import {WalletCreatePage} from "../wallet-create/wallet-create";
 import {FinanceService} from "../../providers/finance-service/finance-service";
 import {InAppBrowser} from "ionic-native";
+import {MissionService} from "../../providers/mission-service/mission-service";
 
 
 /**
@@ -36,6 +37,7 @@ export class YousignPage {
 
   public currentOffer: any = null;
   public pushNotificationService: PushNotificationService;
+  public notSigned : boolean;
 
 
   constructor(public gc: GlobalConfigs,
@@ -45,6 +47,7 @@ export class YousignPage {
               private userService: UserService,
               private smsService: SmsService,
               private financeService: FinanceService,
+              private missionService: MissionService,
               pushNotificationService: PushNotificationService, public loading: LoadingController) {
 
     // Get target to determine configs
@@ -75,6 +78,7 @@ export class YousignPage {
     if (navParams.get("currentOffer") && !isUndefined(navParams.get("currentOffer"))) {
       this.currentOffer = navParams.get("currentOffer");
     }
+    this.notSigned = false;
   }
 
   goToPayment() {
@@ -130,22 +134,7 @@ export class YousignPage {
           //get the link yousign of the contract for the employer
           let yousignEmployerLink = yousignData.Employeur.url;
 
-          //Create to Iframe to show the contract in the NavPage
-          /*let iframe = document.createElement('iframe');
-           iframe.frameBorder = "0";
-           iframe.width = "100%";
-           iframe.height = "100%";
-           iframe.id = "youSign";
-           iframe.style.overflow = "hidden";
-           iframe.style.height = "100%";
-           iframe.style.width = "100%";
-           iframe.setAttribute("src", yousignEmployerLink);
 
-           document.getElementById("iframPlaceHolder").appendChild(iframe);*/
-
-          // TEL:23082016 : Using inappbrowser plugin :
-          InAppBrowser.open(yousignEmployerLink, '_blank');
-          //browser.show();
           // get the yousign link of the contract and the phoneNumber of the jobyer
           let yousignJobyerLink = yousignData.Jobyer.url;
           let jobyerPhoneNumber = this.jobyer.tel;
@@ -154,7 +143,6 @@ export class YousignPage {
           this.contractData.demandeEmployer = yousignData.Employeur.idContrat;
 
           // TEL23082016 : Navigate to credit card page directly :
-          //this.nav.push(WalletCreatePage);
 
           // Send sms to jobyer
 
@@ -195,6 +183,20 @@ export class YousignPage {
 
                     });
                     this.contractService.generateMission(idContract, this.currentOffer);
+
+                    let browser = new InAppBrowser(yousignEmployerLink, '_blank');
+                    browser.on('exit').subscribe(()=>{
+                      this.missionService.checkSignature(idContract, 'employer').then((signed:boolean)=>{
+                        if(signed)
+                          this.goToPayment();
+                        else {
+                          this.notSigned = true;
+                        }
+                      });
+                    }, (err)=>{
+                      console.log(err);
+                      this.notSigned = true;
+                    });
                   }
                 },
                 (err) => {
@@ -203,7 +205,7 @@ export class YousignPage {
             },
             (err) => {
               console.log(err);
-            })
+            });
         }).catch(function (err) {
           console.log(err);
         });

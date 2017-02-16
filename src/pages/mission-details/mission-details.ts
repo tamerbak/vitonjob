@@ -811,8 +811,7 @@ export class MissionDetailsPage {
   launchContractPage() {
     this.isSignContractClicked = true;
     this.platform.ready().then(() => {
-      //let browser = new InAppBrowser(this.contract.lien_jobyer, '_blank');
-      InAppBrowser.open(this.contract.lien_jobyer, '_blank');
+      let browser = new InAppBrowser(this.contract.lien_jobyer, '_blank');
     });
   }
 
