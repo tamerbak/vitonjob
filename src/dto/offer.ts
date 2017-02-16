@@ -32,7 +32,7 @@ export class Offer extends AbstractGCallout {
   rechercheAutomatique: boolean;
   obsolete: boolean;
   identity: number;
-  adresse: string;
+  adresse: {};
   jobyerId: number;
   entrepriseId: number;
   hunterId:number;
@@ -41,7 +41,7 @@ export class Offer extends AbstractGCallout {
     super('com.vitonjob.callouts.offer.model.OfferData');
 
     this.idOffer = 0;
-    this.jobData = null;
+    this.jobData = new Job();
     this.parametrageConvention = 0;
     this.calendarData = [];
     this.qualityData = [];
@@ -49,18 +49,18 @@ export class Offer extends AbstractGCallout {
     this.requirementData = [];
     this.equipmentData = [];
     this.pharmaSoftwareData = [];
-    this.visible = false;
+    this.visible = true;
     this.title = "";
     this.status = "open";
     this.videolink = "";
     this.nbPoste = 1;
     this.telephone = "";
     this.contact = "";
-    this.etat = "";
+    this.etat = "Publique";
     this.rechercheAutomatique = false;
     this.obsolete = false;
     this.identity = 0;
-    this.adresse = "";
+    this.adresse = {};
     this.jobyerId = 0;
     this.entrepriseId = 0;
     this.hunterId = 0;

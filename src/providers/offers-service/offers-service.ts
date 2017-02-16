@@ -17,7 +17,7 @@ import {SqliteDBService} from "../sqlite-db-service/sqlite-db-service";
 import {DAOFactory} from "../../dao/data-access-object";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 
-const OFFER_CALLOUT_ID = 20034;
+const OFFER_CALLOUT_ID = 20035;
 const LOADING_OFFERS_CALLOUT = 20031;
 
 /**
@@ -238,9 +238,6 @@ export class OffersService {
     setOfferInRemote(offerData: any, projectTarget: string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
-        // transforming ancient offer
-        offerData = this.convertOfferToDTO(offerData, projectTarget);
-        offerData.jobData.job = Utils.sqlfyText(offerData.jobData.job);
         // store in remote database
         let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
             new CCalloutArguments('Création/Edition offre', offerData),
@@ -252,33 +249,14 @@ export class OffersService {
         ]);
 
         return new Promise(resolve => {
-            // We're using Angular Http provider to request the data,
-            // then on the response it'll map the JSON data to a parsed JS object.
-            // Next we process the data and resolve the promise with the new data.
             this.httpRequest.sendCallOut(payloadFinal, this)
                 .subscribe((data: any) => {
-                    // we've got back the raw data, now generate the core schedule data
-                    // and save the data for later reference
+            //TODO: Gestion des exception
                     if (!data)
                         return;
-                    this.addedOffer = data;
-                    //save the video link
-                    let idOffer = data.idOffer;
-                    //this.updateVideoLink(idOffer, offerData.videolink, projectTarget);
-                    //attach id offer to the offer in local
-                    offerData.idOffer = idOffer;
-                    offerData.jobData.job = Utils.inverseSqlfyText(offerData.jobData.job);
-                    this.attachIdOfferInLocal(offerData, projectTarget);
-
-                    if(offerData.jobData.pharmaSoftwares && offerData.jobData.pharmaSoftwares.length != 0){
-                        this.saveSoftwares(idOffer, offerData.jobData.pharmaSoftwares);
-                    }
-
-                    console.log('ADDED OFFER IN SERVER : ' + JSON.stringify(this.addedOffer));
-                    resolve(this.addedOffer);
+                    resolve(data);
                 });
         });
-
     }
 
     convertOfferToDTO(offerData: any, projectTarget: string): Offer {

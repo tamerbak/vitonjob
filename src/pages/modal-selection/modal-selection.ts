@@ -81,14 +81,14 @@ export class ModalSelectionPage {
     let isLangExist = false;
     switch (this.params.get('type')) {
       case 'secteur' :
-        this.params.get('selection').jobData.class = 'com.vitonjob.callouts.auth.model.JobData';
+        this.params.get('selection').jobData.class = 'com.vitonjob.callouts.offer.model.JobData';
         this.params.get('selection').jobData.sector = item.libelle;
         this.params.get('selection').jobData.idsector = item.id;
         if (!(this.params.get('selection').jobData.job === ''))
           this.params.get('selection').jobData.job = '';
         break;
       case 'job' :
-        this.params.get('selection').jobData.class = 'com.vitonjob.callouts.auth.model.JobData';
+        this.params.get('selection').jobData.class = 'com.vitonjob.callouts.offer.model.JobData';
         this.params.get('selection').jobData.job = item.libelle;
         this.params.get('selection').jobData.idJob = item.id;
         if (!this.params.get('selection').jobData.sector ||

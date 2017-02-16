@@ -23,6 +23,9 @@ import {Utils} from "../../utils/utils";
 import {AdvertService} from "../../providers/advert-service/advert-service";
 import {AdvertEditPage} from "../advert-edit/advert-edit";
 import {EnvironmentService} from "../../providers/environment-service/environment-service";
+import {Offer} from "../../dto/offer";
+import {Job} from "../../dto/job";
+import {CalendarSlot} from "../../dto/calendar-slot";
 
 /*
  Generated class for the OfferAddPage page.
@@ -46,15 +49,10 @@ export class OfferAddPage {
         isLanguage: boolean,
         isCalendar: boolean
     };
-    public offerService: OffersService;
     public visibleOffer: boolean;
-    public offerToBeAdded: {
-        jobData: any, calendarData: any, qualityData: any, languageData: any,
-        visible: boolean, title: string, status: string, idHunter: number, videolink: string,
-        jobyerId: number, entrepriseId: number
-    };
+    public offerToBeAdded: Offer = new Offer();
     public backgroundImage: any;
-    public jobData: any;
+    public jobData: Job = new Job();
     public idTiers: number;
     public projectTarget: any;
     public isHunter: boolean = false;
@@ -67,7 +65,7 @@ export class OfferAddPage {
 
     constructor(public nav: NavController,
                 private gc: GlobalConfigs,
-                private os: OffersService,
+                private offerService: OffersService,
                 public navParams: NavParams,
                 private viewCtrl: ViewController,
                 public alert: AlertController,
@@ -89,21 +87,12 @@ export class OfferAddPage {
 
         //Initializing PAGE:
         this.initializePage(config);
-        this.offerService = os;
 
-
-        this.storage.get(config.currentUserVar).then((value) => {
-            if (value) {
-                let currentUser = JSON.parse(value);
-                this.idTiers = this.projectTarget == 'employer' ? currentUser.employer.entreprises[0].id : currentUser.jobyer.id;
-                this.idHunter = currentUser.hunterId;
-                this.offerToBeAdded.idHunter = this.idHunter;
-            }
-        });
         this.storage.remove('advert').then(() => {
             this.advertId = "";
             this.advert = null;
         });
+
         this.environmentService.reload();
     }
 
@@ -154,16 +143,18 @@ export class OfferAddPage {
 
         this.visibleOffer = false;
 
-        this.offerToBeAdded = {
-            jobData: {}, calendarData: [], qualityData: [], languageData: [],
-            visible: this.visibleOffer, title: "", status: "open", idHunter: 0, videolink: "",
-            jobyerId: (this.isEmployer ? 0 : this.idTiers), entrepriseId: (this.isEmployer ? this.idTiers : 0)
-
-        };
+        this.storage.get(config.currentUserVar).then((value) => {
+            if (value) {
+                let currentUser = JSON.parse(value);
+                this.idTiers = this.projectTarget == 'employer' ? currentUser.employer.entreprises[0].id : currentUser.jobyer.id;
+                this.idHunter = currentUser.hunterId;
+                this.offerToBeAdded.hunterId = this.idHunter;
+                this.offerToBeAdded.jobyerId = (this.isEmployer ? 0 : this.idTiers);
+                this.offerToBeAdded.entrepriseId = (this.isEmployer ? this.idTiers : 0);
+            }
+        });
 
         this.initLocalStorageOffer();
-
-
     }
 
     /**
@@ -175,9 +166,7 @@ export class OfferAddPage {
             this.storage.get('jobData').then(value => {
                 value = JSON.parse(value);
                 if (value) {
-                    this.offerToBeAdded.jobData = value;
-                    let level = (this.offerToBeAdded.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant';
-                    this.offerToBeAdded.title = this.offerToBeAdded.jobData.job + " " + level;
+                    this.offerToBeAdded = this.offerService.forgeOfferDataFromJobData(this.offerToBeAdded, value);
                     this.validated.isJob = value.validated;
                     this.steps.isCalendar = this.validated.isJob;
                     this.steps.styleDisableCalendar.opacity = (!this.steps.isCalendar && !this.validated.isJob) ? 0.5 : 1;
@@ -224,15 +213,16 @@ export class OfferAddPage {
      * @param message
      * @param duration
      */
-    presentToast(message: string, duration: number) {
+    presentToast(message: string, duration: number, showClose: boolean) {
         let toast = this.toast.create({
             message: message,//"Agenda bien insérée, Votre offre est valide",
-            duration: duration * 1000
+            duration: duration * 1000,
+            showCloseButton: showClose,
+            closeButtonText: 'OK'
         });
 
         toast.onDidDismiss(() => {
             console.log('Dismissed toast');
-            //this.isOfferValidated = (!this.isOfferValidated);
         });
 
         toast.present();
@@ -246,10 +236,12 @@ export class OfferAddPage {
 
     showJobModal() {
         this.storage.get('jobData').then(value => {
-            console.log(value);
             let modal = this.modal.create(ModalJobPage, {jobData: JSON.parse(value)});
             modal.present();
-            modal.onDidDismiss((data: {validated: boolean, isJob: boolean}) => {
+            modal.onDidDismiss((data: Job) => {
+                if(Utils.isEmpty(data)){
+                    return;
+                }
                 this.jobData = data;
                 this.validated.isJob = data.validated;
                 this.steps.isCalendar = this.validated.isJob;
@@ -262,15 +254,46 @@ export class OfferAddPage {
     }
 
     /**
+     * Create Calendar modal
+     */
+    showCalendarModal() {
+        if (this.validated.isJob) {
+            this.storage.get('slots').then(value => {
+                let modal = this.modal.create(ModalCalendarPage, {slots: JSON.parse(value), obj: "add"});
+                modal.present();
+                modal.onDidDismiss((data: any) => {
+                    if(Utils.isEmpty(data)){
+                        return;
+                    }
+                    if (data && data.slots) {
+                        this.validated.isCalendar = (data.slots.length) ? data.slots.length > 0 : false;
+                        this.steps.isCalendar = this.validated.isCalendar;
+                        this.steps.styleDisableCalendar.opacity = (!this.steps.isCalendar && !this.validated.isJob) ? 0.5 : 1;
+                        this.steps.styleDisableQuality.opacity = !(this.validated.isCalendar && this.validated.isJob) ? 0.5 : 1;
+                        this.steps.styleDisableLanguage.opacity = !(this.validated.isCalendar && this.validated.isJob) ? 0.5 : 1;
+                        this.storage.set('slots', JSON.stringify(data.slots));
+                        if (this.validated.isCalendar && this.validated.isQuality)
+                            this.presentToast("Vous pouvez ajouter votre nouvelle offre dès maintenant! " +
+                              "Pour plus de précision pensez à saisir les qualités et langues...", 5, true);
+                    }
+                })
+            });
+        }
+
+    }
+
+    /**
      * Create Qualities modal
      */
     showQualityModal() {
-
         if (this.validated.isCalendar && this.validated.isJob) {
             this.storage.get('qualities').then(value => {
                 let modal = this.modal.create(ModalQualityPage, {qualities: JSON.parse(value)});
                 modal.present();
                 modal.onDidDismiss((data: any) => {
+                    if(Utils.isEmpty(data)){
+                        return;
+                    }
                     this.validated.isQuality = (data.length) ? data.length > 0 : false;
                     //this.steps.isLanguage = this.validated.isQuality;
                     this.storage.set('qualities', JSON.stringify(data));
@@ -288,41 +311,20 @@ export class OfferAddPage {
                 let modal = this.modal.create(ModalLanguagePage, {languages: JSON.parse(value)});
                 modal.present();
                 modal.onDidDismiss((data: any) => {
+                    if(Utils.isEmpty(data)){
+                        return;
+                    }
                     this.validated.isLanguage = (data.length) ? data.length > 0 : false;
                     //this.steps.isCalendar = this.validated.isLanguage;
                     this.storage.set('languages', JSON.stringify(data));
                     if (this.validated.isLanguage && this.validated.isQuality)
-                        this.presentToast("Félicitations, votre offre est complète. Vous pouvez la valider pour l'enregistrer.", 3);
+                        this.presentToast("Félicitations, votre offre est complète. Vous pouvez la valider pour l'enregistrer.", 5, true);
                 })
             });
         }
     }
 
-    /**
-     * Create Calendar modal
-     */
-    showCalendarModal() {
-        if (this.validated.isJob) {
-            this.storage.get('slots').then(value => {
-                let modal = this.modal.create(ModalCalendarPage, {slots: JSON.parse(value), obj: "add"});
-                modal.present();
-                modal.onDidDismiss((data: any) => {
-                    if (data && data.slots) {
-                        this.validated.isCalendar = (data.slots.length) ? data.slots.length > 0 : false;
-                        this.steps.isCalendar = this.validated.isCalendar;
-                        this.steps.styleDisableCalendar.opacity = (!this.steps.isCalendar && !this.validated.isJob) ? 0.5 : 1;
-                        this.steps.styleDisableQuality.opacity = !(this.validated.isCalendar && this.validated.isJob) ? 0.5 : 1;
-                        this.steps.styleDisableLanguage.opacity = !(this.validated.isCalendar && this.validated.isJob) ? 0.5 : 1;
-                        this.storage.set('slots', JSON.stringify(data.slots));
-                        if (this.validated.isCalendar && this.validated.isQuality)
-                            this.presentToast("Vous pouvez ajouter votre nouvelle offre dès maintenant! " +
-                                "Pour plus de précision pensez à saisir les qualités et langues...", 7);
-                    }
-                })
-            });
-        }
 
-    }
 
     /**
      * Description : Adding offer in local and remote databases
@@ -330,56 +332,53 @@ export class OfferAddPage {
     addOffer() {
         this.initLocalStorageOffer().then((res: any) => {
             this.offerToBeAdded = res;
-            //let loading = this.loading.create({content: "Merci de patienter..."});
-            //loading.present();
-            this.offerService.setOfferInLocal(this.offerToBeAdded, this.projectTarget)
-                .then(() => {
-                    console.log('••• Adding offer : local storing success!');
+            this.offerService.setOfferInRemote(this.offerToBeAdded, this.projectTarget).then((data: any) => {
+                //TODO: gestion des exceptions
+                if (!data) return;
+                console.log('••• Adding offer : remote storing success!');
+                let offer: Offer = data;
 
-                    this.offerService.setOfferInRemote(this.offerToBeAdded, this.projectTarget)
-                        .then((data: any) => {
-                            if (!data) return;
-                            console.log('••• Adding offer : remote storing success!');
-                            let offer = data;
+                /*
+                Annonces
+                 */
+                if (!Utils.isEmpty(this.advertId)) {
+                    this.advertService.updateOfferWithAdvert(this.advertId, offer.idOffer).then((data: any) => {
+                        console.log("offer updated with advert id");
+                    });
+                }
 
-                            if (!Utils.isEmpty(this.advertId)) {
+                /*
+                Adresse
+                 */
+                if (this.jobData && this.jobData.adress) {
+                    this.offerService.saveOfferAdress(offer, this.jobData.adress, this.jobData.adress.streetNumber, this.jobData.adress.street,
+                        this.jobData.adress.city, this.jobData.adress.zipCode, this.jobData.adress.name, this.jobData.adress.country, this.idTiers, this.projectTarget);
+                }
 
-                                this.advertService.updateOfferWithAdvert(this.advertId, offer.idOffer).then((data: any) => {
-                                    console.log("offer updated with advert id");
-                                });
-                            }
+                this.clearOfferStorage();
 
-                            //debugger;
-                            if (this.jobData && this.jobData.adress) {
-                                this.offerService.saveOfferAdress(offer, this.jobData.adress, this.jobData.adress.streetNumber, this.jobData.adress.street,
-                                    this.jobData.adress.city, this.jobData.adress.zipCode, this.jobData.adress.name, this.jobData.adress.country, this.idTiers, this.projectTarget);
-                            }
-                            this.clearOfferStorage();
-                            //loading.dismiss();
+                //decide to which page redirect to
+                let fromPage = this.navParams.data.fromPage;
+                let searchRes = this.navParams.data.jobyer;
+                let obj = this.navParams.data.obj;
+                this.advertId = this.navParams.data.adv;
 
-                            //decide to which page redirect to
-                            let fromPage = this.navParams.data.fromPage;
-                            let searchRes = this.navParams.data.jobyer;
-                            let obj = this.navParams.data.obj;
-                            this.advertId = this.navParams.data.adv;
-
-                            if (fromPage == "Search" || obj == "forRecruitment") {
-                                this.nav.push(NotificationContractPage, {
-                                    jobyer: searchRes,
-                                    currentOffer: this.offerToBeAdded
-                                }).then(() => {
-                                    // first we find the index of the current view controller:
-                                    const index = this.viewCtrl.index;
-                                    // then we remove it from the navigation stack
-                                    this.nav.remove(index);
-                                });
-                            } else if (this.isHunter) {
-                                this.nav.setRoot(HomePage);
-                            } else {
-                                this.nav.setRoot(OfferListPage);
-                            }
-                        });
-                });
+                if (fromPage == "Search" || obj == "forRecruitment") {
+                    this.nav.push(NotificationContractPage, {
+                        jobyer: searchRes,
+                        currentOffer: this.offerToBeAdded
+                    }).then(() => {
+                        // first we find the index of the current view controller:
+                        const index = this.viewCtrl.index;
+                        // then we remove it from the navigation stack
+                        this.nav.remove(index);
+                    });
+                } else if (this.isHunter) {
+                    this.nav.setRoot(HomePage);
+                } else {
+                    this.nav.setRoot(OfferListPage);
+                }
+            });
         })
     }
 

@@ -40,7 +40,7 @@ declare let require: any;
 })
 export class ModalJobPage {
 
-  public jobData: Job;
+  public jobData: Job = new Job();
   public offerService: any;
   public sectors: any = [];
   public jobs: any = [];
@@ -267,42 +267,47 @@ export class ModalJobPage {
       if (value) {
         let currentUser = JSON.parse(value);
         if(this.jobData && this.firstInit){
-          if(self.projectTarget == "employer"){
-            if(this.jobData.contact === ''){
-              this.jobData.contact =(currentUser.prenom + " " + currentUser.nom).trim();
+          if(self.projectTarget == "employer") {
+            if (this.jobData.contact === '') {
+              this.jobData.contact = (currentUser.prenom + " " + currentUser.nom).trim();
             }
-            if(this.jobData.telephone === ''){
-              this.jobData.telephone=(Utils.isEmpty(currentUser.tel) == false) ? currentUser.tel.replace('+33', '0') : ''
+            if (this.jobData.telephone === '') {
+              this.jobData.telephone = (Utils.isEmpty(currentUser.tel) == false) ? currentUser.tel.replace('+33', '0') : ''
             }
-            console.log("*",this.jobData.adress);
-            if(this.jobData.adress.fullAdress == ''){
-              console.log(currentUser.employer.entreprises[0].siegeAdress);
-              let siegeAddress = currentUser.employer.entreprises[0].siegeAdress;
-              this.searchData = siegeAddress.fullAdress;
-              //this.fullAdress = siegeAddress.fullAdress;
-              this.name = siegeAddress.name;
-              this.streetNumber = siegeAddress.streetNumber;
-              this.street = siegeAddress.street;
-              this.zipCode = siegeAddress.zipCode;
-              this.city = siegeAddress.city;
-              this.country = siegeAddress.country;
+            console.log("*", this.jobData.adress);
+
+            if (this.jobData.adress) {
+              if (this.jobData.adress.fullAdress == '') {
+                console.log(currentUser.employer.entreprises[0].siegeAdress);
+                let siegeAddress = currentUser.employer.entreprises[0].siegeAdress;
+                this.searchData = siegeAddress.fullAdress;
+                //this.fullAdress = siegeAddress.fullAdress;
+                this.name = siegeAddress.name;
+                this.streetNumber = siegeAddress.streetNumber;
+                this.street = siegeAddress.street;
+                this.zipCode = siegeAddress.zipCode;
+                this.city = siegeAddress.city;
+                this.country = siegeAddress.country;
+              }
             }
 
-          }else{
-            if(this.jobData.adress.fullAdress == ''){
-              let personalAdress = currentUser.jobyer.personnalAdress;
-              this.searchData = personalAdress.fullAdress;
-              //this.fullAdress = personalAdress.fullAdress;
-              this.name = personalAdress.name;
-              this.streetNumber = personalAdress.streetNumber;
-              this.street = personalAdress.street;
-              this.zipCode = personalAdress.zipCode;
-              this.city = personalAdress.city;
-              this.country = personalAdress.country;
+            } else {
+              if (this.jobData.adress) {
+                if (this.jobData.adress.fullAdress == '') {
+                  let personalAdress = currentUser.jobyer.personnalAdress;
+                  this.searchData = personalAdress.fullAdress;
+                  //this.fullAdress = personalAdress.fullAdress;
+                  this.name = personalAdress.name;
+                  this.streetNumber = personalAdress.streetNumber;
+                  this.street = personalAdress.street;
+                  this.zipCode = personalAdress.zipCode;
+                  this.city = personalAdress.city;
+                  this.country = personalAdress.country;
+                }
+              }
             }
           }
         }
-      }
     });
 
     this.alertOptions = {
@@ -429,7 +434,8 @@ export class ModalJobPage {
         this.prerequisObligatoires = this.jobData.prerequisObligatoires;
       if (this.jobData.adress) {
 
-        this.searchData = this.jobData.adress.fullAdress;
+        if(this.jobData.adress)
+          this.searchData = this.jobData.adress.fullAdress;
         this.name = this.jobData.adress.name;
         this.street = this.jobData.adress.street;
         this.streetNumber = this.jobData.adress.streetNumber;

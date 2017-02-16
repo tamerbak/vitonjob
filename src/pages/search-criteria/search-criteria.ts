@@ -68,7 +68,7 @@ export class SearchCriteriaPage {
     public calendarTheme: any;
     public isEmployer: boolean;
     public jobData: {
-        'class': "com.vitonjob.callouts.auth.model.JobData",
+        'class': "com.vitonjob.callouts.offer.model.JobData",
         idJob: number,
         job: string,
         idsector: number,
@@ -147,7 +147,7 @@ export class SearchCriteriaPage {
         let defaultJobLabel = this.isEmployer?'un/une jobyer':'une offre';
 
         this.jobData = {
-            'class': "com.vitonjob.callouts.auth.model.JobData",
+            'class': "com.vitonjob.callouts.offer.model.JobData",
             job: (jobParam) ? jobParam.libelle : (cityParam) ? defaultJobLabel : (searchParam) ? searchParam : "",
             sector: (jobParam) ? jobParam.sector : "",
             idsector: (jobParam) ? jobParam.idsector : "",
