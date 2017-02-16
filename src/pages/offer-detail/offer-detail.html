@@ -13,8 +13,10 @@
 
     <!--Offer title-->
     <h5 style="text-align: center;">{{offer.title}} {{offer.obsolete ? '(Obsolète)' : ''}}</h5>
-    <div style="margin: 5px; text-align: center" *ngIf="nbInterest > 0">
-        <button ion-button color="vojgreen" small (click)="gotoJobyerInterestList()">{{nbInterest}} jobyer(s) intéressé(s)</button>
+    <div style="margin: 5px; text-align: center">
+        <button ion-button color="vojgreen" small (click)="gotoJobyerInterestList()" [disabled]="nbInterest == 0">
+            {{nbInterest}} jobyer(s) intéressé(s)
+        </button>
     </div>
 
     <ion-list>
@@ -50,13 +52,13 @@
                     </li>
                     <li><span style="font-weight: bold">Rémunération </span>: {{offer.jobData.remuneration}} €/h</li>
                     <li *ngIf="isEmployer"><span style="font-weight: bold">Nombre de postes </span>:
-                        {{offer.jobData.nbPoste}}
+                        {{offer.nbPoste}}
                     </li>
                     <li *ngIf="isEmployer"><span style="font-weight: bold">Contact sur place </span>:
-                        {{offer.jobData.contact}}
+                        {{offer.contact}}
                     </li>
                     <li *ngIf="isEmployer"><span style="font-weight: bold">N° Téléphone </span>:
-                        {{offer.jobData.telephone}}
+                        {{offer.telephone}}
                     </li>
                 </ul>
             </div>

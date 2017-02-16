@@ -105,7 +105,7 @@ export class LoadListService {
     }
 
     loadPharmacieSoftwares(){
-        let sql = "select pk_user_logiciels_pharmaciens as id, nom from user_logiciels_pharmaciens where UPPER(dirty) ='N' order by nom asc";
+        let sql = "select pk_user_logiciels_pharmaciens as id, nom as libelle from user_logiciels_pharmaciens where UPPER(dirty) ='N' order by nom asc";
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})

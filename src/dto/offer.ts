@@ -5,6 +5,7 @@ import {Requirement} from "./requirement";
 import {CalendarSlot} from "./calendar-slot";
 import {Quality} from "./quality";
 import {Language} from "./language";
+import {PharmaSoftwares} from "./pharmaSoftwares";
 
 export class Offer extends AbstractGCallout {
   'class': string;
@@ -20,6 +21,7 @@ export class Offer extends AbstractGCallout {
   languageData: Array <Language> = [];
   requirementData: Requirement[];
   equipmentData: Equipment[];
+  pharmaSoftwareData: PharmaSoftwares[];
 
   visible: boolean;
   telephone: string;
@@ -46,6 +48,7 @@ export class Offer extends AbstractGCallout {
     this.languageData = [];
     this.requirementData = [];
     this.equipmentData = [];
+    this.pharmaSoftwareData = [];
     this.visible = false;
     this.title = "";
     this.status = "open";

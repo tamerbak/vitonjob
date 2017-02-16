@@ -5,6 +5,7 @@ import {Component} from "@angular/core";
 import {GlobalService} from "../../providers/global-service/global-service";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {Utils} from "../../utils/utils";
+import {CalendarSlot} from "../../dto/calendar-slot";
 
 /*
  Generated class for the ModalSlotPage page.
@@ -19,7 +20,7 @@ import {Utils} from "../../utils/utils";
 export class ModalSlotPage {
 
     public slot: any;
-    public slots: any;
+    public slots: CalendarSlot[];
     public showedSlot: any;
     public projectTarget: string;
     public themeColor: string;
@@ -45,8 +46,14 @@ export class ModalSlotPage {
     public params: NavParams;
 
 
-    constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController,params: NavParams,private offersService:OffersService,
-                private globalService: GlobalService, platform: Platform, public toast: ToastController) {
+    constructor(public nav: NavController,
+                gc: GlobalConfigs,
+                viewCtrl: ViewController,
+                params: NavParams,
+                private offersService:OffersService,
+                private globalService: GlobalService,
+                platform: Platform,
+                public toast: ToastController) {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -192,12 +199,18 @@ export class ModalSlotPage {
          {value: "06", shortName: "Sam", fullName: "Samedi", checked: (dayValue == 6), color: "lightgrey"},
          {value: "07", shortName: "Dim", fullName: "Dimanche", checked: (dayValue == 7), color: "lightgrey"}
          ];*/
+        //initialize slot object
+        /*this.slot.date = new Date();
+        this.slot.dateEnd = new Date();
+        this.slot.startHour = 0;
+        this.slot.endHour = 0;*/
         this.slot = {
             date: new Date(),
             dateEnd: new Date(),
             startHour: 0,
             endHour: 0
         };
+
         let today = new Date();
         let stringDate = today.getDate() + '/' + today.getMonth() + '/' + today.getFullYear();
         this.showedSlot = {
@@ -500,14 +513,12 @@ export class ModalSlotPage {
         let dateEnd = new Date(this.showedSlot.endDate);
         let sh = this.showedSlot.startDate.split('T')[1];
         let eh = this.showedSlot.endDate.split('T')[1];
-        this.slot = {
-            date: date.getTime(),
-            dateEnd: dateEnd.getTime(),
-            startHour: parseInt(sh.split(':')[0]) * 60 +
-            parseInt(sh.split(':')[1]),
-            endHour: parseInt(eh.split(':')[0]) * 60 +
-            parseInt(eh.split(':')[1])
-        };
+        this.slot.date = date.getTime();
+        this.slot.dateEnd = dateEnd.getTime();
+        this.slot.startHour = parseInt(sh.split(':')[0]) * 60 +
+          parseInt(sh.split(':')[1]);
+        this.slot.endHour = parseInt(eh.split(':')[0]) * 60 +
+            parseInt(eh.split(':')[1]);
         this.viewCtrl.dismiss(this.slot);
     }
 

@@ -26,9 +26,13 @@ import {EnvironmentService} from "../../providers/environment-service/environmen
 //import {LoadListService} from "../../providers/load-list-service/load-list-service";
 //import {Utils} from "../../utils/utils";
 import {AdvertService} from "../../providers/advert-service/advert-service";
-import {AdvertDetailsPage} from "../advert-details/advert-details";
+//import {AdvertDetailsPage} from "../advert-details/advert-details";
 import {AdvertEditPage} from "../advert-edit/advert-edit";
 import {AdvertJobyerListPage} from "../advert-jobyer-list/advert-jobyer-list";
+import {Job} from "../../dto/job";
+import {Offer} from "../../dto/offer";
+import {Utils} from "../../utils/utils";
+import {CalendarSlot} from "../../dto/calendar-slot";
 
 /*
  Generated class for the OfferDetailPage page.
@@ -41,8 +45,7 @@ import {AdvertJobyerListPage} from "../advert-jobyer-list/advert-jobyer-list";
   templateUrl: 'offer-detail.html'
 })
 export class OfferDetailPage {
-  public offer: any;
-  public offerService: OffersService;
+  public offer: Offer;
   public videoAvailable: boolean = false;
   public youtubeLink: string = '';
   public isLinkValid = true;
@@ -83,7 +86,7 @@ export class OfferDetailPage {
   constructor(public nav: NavController,
               public gc: GlobalConfigs,
               public params: NavParams,
-              public offersService: OffersService,
+              public offerService: OffersService,
               public searchService: SearchService,
               public _sanitizer: DomSanitizer,
               public globalService: GlobalService,
@@ -107,7 +110,6 @@ export class OfferDetailPage {
     this.backgroundImage = config.backgroundImage;
     this.isEmployer = (this.projectTarget === 'employer');
     this.sanitizer = _sanitizer;
-    this.offerService = offersService;
     this.backGroundColor = config.backGroundColor;
     this.loading = _loading;
 
@@ -173,12 +175,6 @@ export class OfferDetailPage {
     };
 
     //let table = !this.isEmployer?'user_offre_jobyer':'user_offre_entreprise';
-    if (!this.offer.videolink) {
-      this.videoAvailable = false;
-    } else {
-      this.videoAvailable = true;
-      this.youtubeLink = this.offer.videolink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");
-    }
 
     this.offerService.loadOfferAdress(this.offer.idOffer, this.projectTarget).then(adr=> {
       this.fullAdress = adr;
@@ -214,6 +210,10 @@ export class OfferDetailPage {
      }
 
      });*/
+    this.offerService.getOffer(this.offer.idOffer, this.projectTarget).then((data: any) => {
+      this.offer = data;
+      this.setVideoLink();
+    });
   }
 
   /**
@@ -398,7 +398,7 @@ export class OfferDetailPage {
    * Create Job modal
    */
   showJobModal() {
-    let originalJobData = this.copyJobDataObjectByValue(this.offer.jobData);
+    let jobData: Job = this.offerService.forgeJobDataFromOfferData(this.offer);
 
     this.offer.jobData.adress = {
       fullAdress: this.fullAdress,
@@ -410,36 +410,48 @@ export class OfferDetailPage {
       country: ''
     };
 
-    let loading = this.loading.create({content:"Merci de patienter..."});
-    loading.present();
+    let modal = this.modal.create(ModalJobPage, {jobData: jobData});
+    modal.onDidDismiss((data: Job) => {
+      if(Utils.isEmpty(data)){
+        return;
+      }
+      //data.validated sert à vérifier si les données de la modale on été valide
+      this.modified.isJob = data.validated;
+      if (this.modified.isJob) {
+        let offerToUpdate: Offer = this.offerService.forgeOfferDataFromJobData(this.offer, data);
+        this.offerService.updateOffer(offerToUpdate, this.projectTarget).then((data: any) => {
 
-    this.offerService.getOfferSoftwares(this.offer.idOffer).then((data: any) => {
-      this.offer.jobData.pharmaSoftwares = data;
+        });
 
-      let modal = this.modal.create(ModalJobPage, {jobData: this.offer.jobData});
-      modal.onDidDismiss((data: any) => {
-        this.modified.isJob = data.validated;
-        //this.steps.isCalendar = this.validated.isJob;
-        //this.localOffer.set('jobData', JSON.stringify(data));
-        if (this.modified.isJob) {
-          this.offer.jobData = data;
-          this.offer.nbPoste = data.nbPoste;
-          this.offer.telephone = data.telephone;
-          this.offer.contact = data.contact;
-          this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
-          this.offerService.updateOfferJob(this.offer, this.projectTarget);
-          if (this.offer.jobData.adress && this.offer.jobData.adress.zipCode && this.offer.jobData.adress.zipCode.length > 0) {
-            this.fullAdress = data.adress.fullAdress;
-            this.offerService.saveOfferAdress(this.offer, this.offer.jobData.adress, this.offer.jobData.adress.streetNumber, this.offer.jobData.adress.street,
-              this.offer.jobData.adress.city, this.offer.jobData.adress.zipCode, this.offer.jobData.adress.name, this.offer.jobData.adress.country, this.idTiers, this.projectTarget);
-          }
-        } else {
-          this.offer.jobData = this.copyJobDataObjectByValue(originalJobData);
-        }
-      });
-      loading.dismiss();
-      modal.present();
-    })
+        /*if (this.offer.jobData.adress && this.offer.jobData.adress.zipCode && this.offer.jobData.adress.zipCode.length > 0) {
+          this.fullAdress = data.adress.fullAdress;
+          this.offerService.saveOfferAdress(this.offer, this.offer.jobData.adress, this.offer.jobData.adress.streetNumber, this.offer.jobData.adress.street,
+            this.offer.jobData.adress.city, this.offer.jobData.adress.zipCode, this.offer.jobData.adress.name, this.offer.jobData.adress.country, this.idTiers, this.projectTarget);
+        }*/
+      } else {
+        return;
+      }
+    });
+    modal.present();
+  }
+
+  /**
+   * Create Calendar modal
+   */
+  showCalendarModal() {
+    let slots: CalendarSlot = JSON.parse(JSON.stringify(this.offer.calendarData));
+
+    let modal = this.modal.create(ModalCalendarPage, {slots: slots});
+    modal.onDidDismiss((data: {slots: CalendarSlot[], isObsolete: boolean}) => {
+      if(Utils.isEmpty(data)){
+        return;
+      }else{
+        this.offer.calendarData = data.slots;
+        this.offer.obsolete = data.isObsolete;
+        this.offerService.updateOffer(this.offer, this.projectTarget);
+      }
+    });
+    modal.present();
   }
 
   /**
@@ -473,21 +485,6 @@ export class OfferDetailPage {
       this.offerService.updateOfferLanguages(this.offer, this.projectTarget);
       //}
 
-    })
-  }
-
-  /**
-   * Create Calendar modal
-   */
-  showCalendarModal() {
-    let modal = this.modal.create(ModalCalendarPage, {slots: this.offer.calendarData});
-    modal.present();
-    modal.onDidDismiss((data: {slots: any, isObsolete: boolean}) => {
-      if(data.slots){
-        this.offer.calendarData = data.slots;
-        this.offer.obsolete = data.isObsolete;
-        this.offerService.updateOfferCalendar(this.offer, this.projectTarget);
-      }
     })
   }
 
@@ -547,7 +544,7 @@ export class OfferDetailPage {
             loading.present();
             let offer = this.offer;
             offer.title = this.offer.title + " (Copie)";
-            offer.idOffer = "";
+            offer.idOffer = 0;
             this.offerService.setOfferInLocal(offer, this.projectTarget)
               .then(()=> {
                 console.log('••• Adding offer : local storing success!');
@@ -694,5 +691,14 @@ export class OfferDetailPage {
   }
   gotoJobyerInterestList(){
     this.nav.push(AdvertJobyerListPage, {offer: this.offer});
+  }
+
+  setVideoLink(){
+    if (!this.offer.videolink) {
+      this.videoAvailable = false;
+    } else {
+      this.videoAvailable = true;
+      this.youtubeLink = this.offer.videolink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");
+    }
   }
 }

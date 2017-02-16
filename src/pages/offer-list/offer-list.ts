@@ -162,7 +162,6 @@ export class OfferListPage {
                     this.publicList = this.publicList.concat(data);
                     this.handleOffers(this.publicList);
                     this.offerList = (JSON.parse(JSON.stringify(this.publicList)));
-                    //this.offerList = this.publicList;
                     this.publicOffset = this.publicOffset + this.queryLimit;
                     resolve();
                 });

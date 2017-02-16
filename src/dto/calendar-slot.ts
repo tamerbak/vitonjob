@@ -14,8 +14,8 @@ export class CalendarSlot extends AbstractGCallout {
     super('com.vitonjob.callouts.offer.model.CalendarData');
 
     this.idCalendar = 0;
-    this.date = 0;
-    this.dateEnd = 0;
+    this.date = new Date();
+    this.dateEnd = new Date();
     this.startHour = 0;
     this.endHour = 0;
     this.type = '';

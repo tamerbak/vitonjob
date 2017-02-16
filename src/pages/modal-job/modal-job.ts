@@ -21,6 +21,8 @@ import {PickerColumnOption} from "ionic-angular/components/picker/picker-options
 import {Storage} from "@ionic/storage";
 import {EnvironmentService} from "../../providers/environment-service/environment-service";
 import {Utils} from "../../utils/utils";
+import {Job} from "../../dto/job";
+import {PharmaSoftwares} from "../../dto/pharmaSoftwares";
 //import {Element} from "@angular/compiler";
 
 
@@ -38,23 +40,7 @@ declare let require: any;
 })
 export class ModalJobPage {
 
-  public jobData: {
-    'class': "com.vitonjob.callouts.auth.model.JobData",
-    idJob: number,
-    job: string,
-    idsector: number,
-    sector: string,
-    level: string,
-    remuneration: number,
-    currency: string,
-    validated: boolean,
-    prerequisObligatoires: any,
-    pharmaSoftwares: any,
-    adress: any,
-    nbPoste:number,
-    contact:any,
-    telephone:any
-  };
+  public jobData: Job;
   public offerService: any;
   public sectors: any = [];
   public jobs: any = [];
@@ -173,9 +159,9 @@ export class ModalJobPage {
   /*
   PHARMACIENS
    */
-  public softwares: any = [];
-  public software: any;
-  public savedSoftwares: any = [];
+  public softwares: PharmaSoftwares[] = [];
+  public software: PharmaSoftwares;
+  public savedSoftwares: PharmaSoftwares[] = [];
 
   constructor(public nav: NavController,
               viewCtrl: ViewController,
@@ -339,7 +325,7 @@ export class ModalJobPage {
 
     if(this.isEmployer){
       this.listService.loadPharmacieSoftwares().then((data: any) => {
-        let softwares = data.data;
+        let softwares: PharmaSoftwares[] = data.data;
         if (softwares && softwares.length > 0) {
           this.softwares = softwares;
         } else {
@@ -455,31 +441,6 @@ export class ModalJobPage {
     } else {
       this.firstInit  = true;
       this.searchData = '';
-      this.jobData = {
-        'class': "com.vitonjob.callouts.auth.model.JobData",
-        job: "",
-        sector: "",
-        idsector: 0,
-        idJob: 0,
-        level: 'junior',
-        remuneration: null,
-        currency: 'euro',
-        validated: false,
-        prerequisObligatoires: [],
-        pharmaSoftwares: [],
-        adress: {
-          fullAdress: '',
-          name: '',
-          street: '',
-          streetNumber: '',
-          zipCode: '',
-          city: '',
-          country: ''
-        },
-        nbPoste:1,
-        contact:'',
-        telephone: ''
-      }
     }
   }
 
@@ -488,10 +449,7 @@ export class ModalJobPage {
    * @description : Closing the modal page :
    */
   closeModal() {
-    //this.jobData.validated = false;
-
-    this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === '') && !(this.jobData.remuneration <= 0) && !this.isEmpty(this.jobData.remuneration));
-    this.viewCtrl.dismiss(this.jobData);
+    this.viewCtrl.dismiss();
   }
 
   /**

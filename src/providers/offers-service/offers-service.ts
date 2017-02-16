@@ -11,12 +11,13 @@ import {HttpRequestHandler} from "../../http/http-request-handler";
 import {CalendarSlot} from "../../dto/calendar-slot";
 import {Quality} from "../../dto/quality";
 import {Language} from "../../dto/language";
+import {Job} from "../../dto/job";
 import {Requirement} from "../../dto/requirement";
 import {SqliteDBService} from "../sqlite-db-service/sqlite-db-service";
 import {DAOFactory} from "../../dao/data-access-object";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 
-const OFFER_CALLOUT_ID = 40020;
+const OFFER_CALLOUT_ID = 20034;
 const LOADING_OFFERS_CALLOUT = 20031;
 
 /**
@@ -1353,62 +1354,26 @@ export class OffersService {
     }
 
     updateOfferJob(offer, projectTarget) {
-        this.configuration = Configs.setConfigs(projectTarget);
-        let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then((data: any) => {
-            if (data) {
-                data = JSON.parse((data));
-                if (projectTarget === 'employer') {
-                    let rawData = data.employer;
-                    //console.log(rawData.entreprises);
-                    if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
-                        //adding userId for remote storing
-                        for (let i = 0; i < data.employer.entreprises[0].offers.length; i++) {
-                            if (data.employer.entreprises[0].offers[i].idOffer == offer.idOffer) {
-                                data.employer.entreprises[0].offers[i] = offer;
-                                break;
-                            }
-                        }
 
-                        // Save new offer list in SqlStorage :
-                        this.db.set(currentUserVar, JSON.stringify(data));
-                    }
-                } else { // jobyer
-                    let rawData = data.jobyer;
-                    if (rawData && rawData.offers) {
 
-                        for (let i = 0; i < data.jobyer.offers.length; i++) {
-                            if (data.jobyer.offers[i].idOffer == offer.idOffer) {
-                                data.jobyer.offers[i] = offer;
-                                break;
-                            }
-                        }
-
-                        // Save new offer list in SqlStorage :
-                        this.db.set(currentUserVar, JSON.stringify(data));
-                    }
-                }
-            }
-        });
+        /*this.configuration = Configs.setConfigs(projectTarget);
 
         if (projectTarget == 'jobyer') {
             this.updateOfferJobyerJob(offer).then((data: any) => {
                 this.updateOfferJobyerTitle(offer);
-
             });
-
         } else {
             this.updateOfferEntrepriseJob(offer).then((data: any) => {
                 this.updateOfferEntrepriseTitle(offer);
-                if(offer.jobData.pharmaSoftwares && offer.jobData.pharmaSoftwares.length != 0){
+                /*if(offer.jobData.pharmaSoftwares && offer.jobData.pharmaSoftwares.length != 0){
                     this.deleteSoftwares(offer.idOffer).then((data: any) =>{
                         if(data && data.status == "success"){
                             this.saveSoftwares(offer.idOffer, offer.jobData.pharmaSoftwares);
                         }
                     })
-                }
-            });
-        }
+                }*/
+          //  });
+        //}
     }
 
     updateOfferJobyerJob(offer) {
@@ -1927,7 +1892,7 @@ export class OffersService {
     }
 
     selectPrerequis(kw) {
-        let sql = "select libelle, pk_user_prerquis as id from user_prerquis where lower_unaccent(libelle) like lower_unaccent('%" + kw + "%') or lower_unaccent(libelle) % lower_unaccent('" + kw + "')";
+        let sql = "select libelle, pk_user_prerquis as id from user_prerquis where dirty = 'N' and (lower_unaccent(libelle) like lower_unaccent('%" + kw + "%') or lower_unaccent(libelle) % lower_unaccent('" + kw + "'))";
         console.log(sql);
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
@@ -2244,6 +2209,73 @@ export class OffersService {
                   if(data && data.status == 200 && !Utils.isEmpty(data._body)){
                       resolve(JSON.parse(data._body).offers);
                   }
+              });
+        });
+    }
+
+    getOffer(offerId: number, projectTarget: string) {
+        this.configuration = Configs.setConfigs(projectTarget);
+        let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
+            new CCalloutArguments('Details offre', {'class':'com.vitonjob.callouts.offer.model.OfferToken', 'idOffer': offerId}),
+            new CCalloutArguments('Configuration', {
+                'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
+                'mode': 'view',
+                'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
+            })
+        ]);
+
+        return new Promise(resolve => {
+            this.httpRequest.sendCallOut(payloadFinal, this)
+              .subscribe((data: any) => {
+                  if (!data)
+                      return;
+                  resolve(data);
+              });
+        });
+    }
+
+    forgeJobDataFromOfferData(offer: Offer){
+        //jobData object to return
+        let jobData: Job;
+        let offerTemp: Offer = (JSON.parse(JSON.stringify(offer)));
+        jobData = (JSON.parse(JSON.stringify(offerTemp.jobData)));
+        //TODO: nbPoste, contact and telephone should be properties of jobData in the callout
+        jobData.nbPoste = offerTemp.nbPoste;
+        jobData.contact = offerTemp.contact;
+        jobData.telephone = offerTemp.telephone;
+        jobData.prerequisObligatoires = offerTemp.requirementData;
+        jobData.pharmaSoftwares = (!offerTemp.pharmaSoftwareData ? [] : offerTemp.pharmaSoftwareData);
+        return jobData;
+    }
+
+    forgeOfferDataFromJobData(offer: Offer, jobData: Job){
+        offer.jobData = jobData;
+        offer.nbPoste = +jobData.nbPoste;
+        offer.contact = jobData.contact;
+        offer.telephone = jobData.telephone;
+        offer.title = jobData.job + ' ' + ((jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
+        offer.requirementData = jobData.prerequisObligatoires;
+        offer.pharmaSoftwareData = jobData.pharmaSoftwares;
+        return offer;
+    }
+
+    updateOffer(offer: Offer, projectTarget: string){
+        this.configuration = Configs.setConfigs(projectTarget);
+        let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
+            new CCalloutArguments('Edition offre', offer),
+            new CCalloutArguments('Configuration', {
+                'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
+                'mode': 'edition',
+                'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
+            })
+        ]);
+
+        return new Promise(resolve => {
+            this.httpRequest.sendCallOut(payloadFinal, this)
+              .subscribe((data: any) => {
+                  if (!data)
+                      return;
+                  resolve(data);
               });
         });
     }
