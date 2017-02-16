@@ -33,6 +33,10 @@ export class OfferTempQuotePage {
       this.quote = data;
       for (let i = 0; i < this.quote.lignes.length; i++) {
         this.amountBeforeTaxes += parseFloat(this.quote.lignes[i].valeur);
+        if(this.quote.lignes[i].unite  && this.quote.lignes[i].unite == 'IJ')
+          this.quote.lignes[i].unite = 'J';
+        if(this.quote.lignes[i].unite  && this.quote.lignes[i].unite == 'IH')
+          this.quote.lignes[i].unite = 'H';
       }
       this.taxes = this.amountBeforeTaxes * this.taxeRate;
       this.total = this.amountBeforeTaxes + this.taxes;
