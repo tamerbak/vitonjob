@@ -127,7 +127,7 @@ export class CivilityPage {
     public conventionId: any;
     public conventions: any = [];
     public convObject: any;
-    public collective_heure_hebdo: number;
+    public collective_heure_hebdo: number = 35;
 
     //birth country and department
     public pays: any = [];
@@ -269,7 +269,7 @@ export class CivilityPage {
         this.mintsejProvideDate = (today.getFullYear() - 70) + "-01-01";
 
         this.conventionService.loadConventionData(this.currentUser.employer.id).then((data: any) => {
-            if (data.length > 0) {
+            if (data.length > 0 && data[0].duree_collective_travail_hebdo !== "null") {
                 this.collective_heure_hebdo = Number(data[0].duree_collective_travail_hebdo);
             } else {
                 this.collective_heure_hebdo = 35;
