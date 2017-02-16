@@ -964,7 +964,7 @@ export class OffersService {
     loadLanguages(projectTarget: string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
-        let sql = "select pk_user_langue as \"idLanguage\", libelle as libelle, \'junior\' as level from user_langue where dirty='N' order by libelle asc";
+        let sql = "select pk_user_langue as id, libelle as libelle, \'1\' as level from user_langue where dirty='N' order by libelle asc";
         console.log(sql);
         return new Promise(resolve => {
 
@@ -994,7 +994,7 @@ export class OffersService {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
         let type = (projectTarget != "jobyer") ? 'jobyer' : 'employeur';
-        let sql = "select pk_user_indispensable as \"idQuality\", libelle as libelle from user_indispensable where type='" + type + "' and dirty='N'";
+        let sql = "select pk_user_indispensable as id, libelle as libelle from user_indispensable where type='" + type + "' and dirty='N'";
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,

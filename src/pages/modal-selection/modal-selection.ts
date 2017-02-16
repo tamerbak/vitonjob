@@ -125,7 +125,7 @@ export class ModalSelectionPage {
         if (this.params.get('selection').qualities.filter((v) => {
             return (v.libelle.toLowerCase().indexOf(item.libelle.toLowerCase()) > -1)
           }).length == 0) {
-          item.class = 'com.vitonjob.callouts.auth.model.QualityData';
+          item.class = 'com.vitonjob.callouts.offer.model.QualityData';
           this.params.get('selection').qualities.push(item);
         } else {
           isQualityExist = true;
@@ -136,7 +136,7 @@ export class ModalSelectionPage {
           return (v.libelle.toLowerCase().indexOf(item.libelle.toLowerCase()) > -1)
         });
         if (filteredList.length == 0) {
-          item.class = 'com.vitonjob.callouts.auth.model.LanguageData';
+          item.class = 'com.vitonjob.callouts.offer.model.LanguageData';
           this.params.get('selection').languages.push(item);
         } else {
           isLangExist = true;

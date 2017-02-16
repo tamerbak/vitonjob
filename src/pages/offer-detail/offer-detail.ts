@@ -33,6 +33,8 @@ import {Job} from "../../dto/job";
 import {Offer} from "../../dto/offer";
 import {Utils} from "../../utils/utils";
 import {CalendarSlot} from "../../dto/calendar-slot";
+import {Quality} from "../../dto/quality";
+import {Language} from "../../dto/language";
 
 /*
  Generated class for the OfferDetailPage page.
@@ -458,34 +460,34 @@ export class OfferDetailPage {
    * Create Qualities modal
    */
   showQualityModal() {
+    let qualities: Quality[] = JSON.parse(JSON.stringify(this.offer.qualityData));
 
-    let modal = this.modal.create(ModalQualityPage, {qualities: this.offer.qualityData});
-    modal.present();
-    modal.onDidDismiss((data: any) => {
-      //this.modified.isQuality = (data.length) ? data.length > 0 : false;
-      //if (this.modified.isQuality){
+    let modal = this.modal.create(ModalQualityPage, {qualities: qualities});
+    modal.onDidDismiss((data: Quality[]) => {
+      if(Utils.isEmpty(data)){
+        return;
+      }
       this.offer.qualityData = data;
-      this.offerService.updateOfferQualities(this.offer, this.projectTarget);
-      //}
-
-    })
+      this.offerService.updateOffer(this.offer, this.projectTarget);
+    });
+    modal.present();
   }
 
   /**
    * Create Language modal
    */
   showLanguageModal() {
+    let languages: Language[] = JSON.parse(JSON.stringify(this.offer.languageData));
 
-    let modal = this.modal.create(ModalLanguagePage, {languages: this.offer.languageData});
-    modal.present();
-    modal.onDidDismiss((data: any) => {
-      //this.modified.isLanguage = (data.length) ? data.length > 0 : false;
-      //if (this.modified.isLanguage){
+    let modal = this.modal.create(ModalLanguagePage, {languages: languages});
+    modal.onDidDismiss((data: Language[]) => {
+      if(Utils.isEmpty(data)){
+        return;
+      }
       this.offer.languageData = data;
-      this.offerService.updateOfferLanguages(this.offer, this.projectTarget);
-      //}
-
-    })
+      this.offerService.updateOffer(this.offer, this.projectTarget);
+    });
+    modal.present();
   }
 
   /**

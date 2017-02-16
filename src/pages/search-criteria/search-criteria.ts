@@ -409,11 +409,11 @@ export class SearchCriteriaPage {
             // TODO id not recognized
            //debugger;
             for (let i = 0; i < this.languages.length; i++)
-                langIdList.push(this.languages[i].idLanguage.toString());
+                langIdList.push(this.languages[i].id.toString());
         }
         if (this.qualities.length > 0) {
             for (let i = 0; i < this.qualities.length; i++)
-                qualIdList.push(this.qualities[i].idQuality.toString());
+                qualIdList.push(this.qualities[i].id.toString());
         }
 
         // If job is not recognized :
