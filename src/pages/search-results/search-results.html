@@ -21,7 +21,7 @@
                 <ion-avatar item-left>
                     <img [src]="item.avatar">
                 </ion-avatar>
-                <h2>{{isEmployer ? item.prenom + ' ' + substring(item.nom, 0, 1) + '.' : item.entreprise}}</h2>
+                <h2>{{isEmployer ? (item.prenom + ' ' + item.nom ) : item.entreprise}}</h2>
                 <h4>{{item.idOffre>0?item.titreOffre:''}}</h4>
             </ion-item>
             <ion-item no-lines style="background-color: lightcyan">
