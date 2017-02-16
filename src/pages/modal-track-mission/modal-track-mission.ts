@@ -29,6 +29,8 @@ export class ModalTrackMissionPage {
     this.isEmployer = (this.projectTarget == 'employer');
 
     this.initialOpt = navParams.get('optionMission');
+    console.log(this.initialOpt)
+    this.options = this.initialOpt;
   }
 
   watchOption(e) {
