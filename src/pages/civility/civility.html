@@ -243,7 +243,7 @@
             <ion-datetime [(ngModel)]="tsejToDate" displayFormat="DD/MM/YYYY" cancelText="Annuler" doneText="Ok"
                           [(max)]="maxtsejToDate" [(min)]="mintsejToDate"></ion-datetime>
         </ion-item>
-        <ion-item [hidden]="isEmployer">
+        <ion-item [hidden]="isEmployer || isCIN == '0'">
             <ion-label [ngStyle]="nationalitiesstyle" floating>Délivré par <span class="asteriskb">*</span></ion-label>
             <ion-select [(ngModel)]="prefecture" okText="OK" cancelText="Annuler">
                 <ion-option *ngFor="let n of prefectures" value="{{n.pk_user_prefecture}}">{{n.nom}}</ion-option>
