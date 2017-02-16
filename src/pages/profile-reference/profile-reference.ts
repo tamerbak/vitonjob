@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import {NavController, NavParams, ViewController} from 'ionic-angular';
 import {Utils} from "../../utils/utils";
 import {AccountReferencesService} from "../../providers/account-references-service/account-references-service";
+import {Configs} from "../../configurations/configs";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
 
 
 @Component({
@@ -12,13 +14,20 @@ export class ProfileReferencePage {
     public viewCtrl: any;
     public reference : any;
     public currentUser : any;
+    public themeColor: string;
+    public inversedThemeColor: string;
+    public projectTarget: string;
 
     constructor(public navCtrl: NavController,
                 public navParams: NavParams,
                 public referenceService : AccountReferencesService,
-                viewCtrl: ViewController) {
+                viewCtrl: ViewController, gc:GlobalConfigs) {
         this.viewCtrl = viewCtrl;
         this.currentUser = navParams.get('currentUser');
+        this.projectTarget = gc.getProjectTarget();
+        let config = Configs.setConfigs(this.projectTarget);
+        this.themeColor = config.themeColor;
+        this.inversedThemeColor = config.inversedThemeColor;
         this.reference = {
             class : 'com.vitonjob.references.dto.AccountReference',
             idAccount : this.currentUser.id,

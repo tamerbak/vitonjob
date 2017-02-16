@@ -193,7 +193,7 @@ export class PhonePage {
             console.log(data);
             this.afterAuthSuccess(data);
             let toast = this.toast.create({
-              message: "Bienvenue " + data.prenom + " vous venez de vous connecter !",
+              message: "Bienvenue " + data.prenom + ", vous venez de vous connecter.",
               duration: 10000,
             });
 
