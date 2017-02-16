@@ -63,13 +63,13 @@
 
     <div [hidden]="isRecruiter">
         <ion-item [hidden]="!isEmployer">
-            <ion-label floating>Raison sociale</ion-label>
+            <ion-label floating>Raison sociale <span class="asterisk">*</span></ion-label>
             <ion-input type="text" [(ngModel)]="companyname"
                        (change)="IsCompanyExist($event, 'companyname')"></ion-input>
         </ion-item>
 
         <ion-item [hidden]="!isEmployer">
-            <ion-label floating>SIRET: 999 999 999 99999</ion-label>
+            <ion-label floating>SIRET: 999 999 999 99999 <span class="asterisk">*</span></ion-label>
             <ion-input type="tel" [(ngModel)]="siret" (keyup)="watchSIRET($event)" maxlength="17"
                        (change)="IsCompanyExist($event, 'siret')"></ion-input>
         </ion-item>
@@ -78,7 +78,7 @@
         </div>
 
         <ion-item [hidden]="!isEmployer">
-            <ion-label floating>NAF: 9999A</ion-label>
+            <ion-label floating>NAF: 9999A <span class="asterisk">*</span></ion-label>
             <ion-input type="text" [(ngModel)]="ape" (keyup)="watchAPE($event)" maxlength="5"></ion-input>
         </ion-item>
         <div [hidden]="isAPEValid"
@@ -86,7 +86,7 @@
         </div>
 
         <ion-item [hidden]="!isEmployer">
-            <ion-label floating>Convention collective</ion-label>
+            <ion-label floating>Convention collective <span class="asterisk">*</span></ion-label>
             <ion-select id="conv-select" [(ngModel)]="conventionId" (ionChange)="watchConvention($event)" okText="OK" cancelText="Annuler">
                 <ion-option *ngFor="let c of conventions" (click)="convSelected(c)" value="{{c.id}}">
                     {{c.code}} - {{c.libelle}}
@@ -146,7 +146,7 @@
         </ion-item>
 
         <ion-item [hidden]="!isEmployer">
-            <ion-label floating>Organisme de médecine de travail</ion-label>
+            <ion-label floating>Organisme de médecine de travail <span class="asteriskb">*</span></ion-label>
             <ion-input type="text" [(ngModel)]="medecineTravail" (keyup)="watchMedecineTravail($event)"></ion-input>
         </ion-item>
         <ion-item [hidden]="!isEmployer || medecines.length==0">
@@ -268,7 +268,7 @@
         <ion-row>
             
             <ion-col text-center>
-                <ion-label>{{uploadVerb}} une photo {{scanTitle}}</ion-label>
+                <ion-label>{{uploadVerb}} une photo {{scanTitle}} <span class="asteriskb">*</span></ion-label>
                 <button ion-button icon-only class="file-upload button-picture" [color]="themeColor">
                     <input id="fileinput" accept="image/*" type="file" class="file-input" (change)="onChangeUpload($event)">
                     <ion-icon name='folder'></ion-icon>
