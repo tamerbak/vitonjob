@@ -3,6 +3,7 @@ import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Http, Headers} from "@angular/http";
 import {LocalNotifications} from "ionic-native";
+import {HttpRequestHandler} from "../../http/http-request-handler";
 
 /**
  * @author daoudi amine
@@ -16,7 +17,7 @@ export class MissionService {
 
     data: any;
 
-    constructor(public http: Http, public gc: GlobalConfigs) {
+    constructor(public http: Http, public gc: GlobalConfigs, public httpRequest: HttpRequestHandler) {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -731,5 +732,25 @@ export class MissionService {
             total = total + (missionHours[i].heure_fin - missionHours[i].heure_debut);
         }
         return total;
+    }
+
+    /**
+     * Vérifier la signature de contrat par un tiers
+     * @param idContrat identifiant de contrat
+     * @param role employer/jobyer
+     * @returns {Promise<T>|Promise}
+     */
+    checkSignature(idContrat : any, role : string){
+        let field = role == 'employer'?'signature_employeur':'signature_jobyer';
+        let sql = "select lower("+field+") as signed from user_contrat where pk_user_contrat="+idContrat;
+        return new Promise(resolve => {
+            this.httpRequest.sendSql(sql, this, false).subscribe(data => {
+                    let signed : boolean = false;
+                    if(data && data.data && data.data.length>0){
+                        signed = data.data[0].signed == 'oui';
+                    }
+                    resolve(signed);
+                });
+        });
     }
 }
