@@ -4,6 +4,7 @@ import {Http, Headers} from "@angular/http";
 import {Helpers} from "../helpers-service/helpers-service";
 import {isUndefined} from "ionic-angular/util/util";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
+import {HttpRequestHandler} from "../../http/http-request-handler";
 
 declare let unescape;
 
@@ -18,7 +19,7 @@ export class ContractService {
   configuration: any;
 
 
-  constructor(public http: Http, private helpers: Helpers) {
+  constructor(public http: Http, private helpers: Helpers, private httpRequest : HttpRequestHandler) {
 
   }
 
@@ -26,7 +27,7 @@ export class ContractService {
     let sql = "select nextval('sequence_num_contrat') as numct";
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any) => {
           this.data = data.data;
@@ -60,7 +61,7 @@ export class ContractService {
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any) => {
           this.data = data;
@@ -83,7 +84,7 @@ export class ContractService {
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any) => {
           console.log('retrieved data : ' + JSON.stringify(data));
@@ -113,7 +114,7 @@ export class ContractService {
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any) => {
           this.data = data;
@@ -220,7 +221,7 @@ export class ContractService {
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any) => {
           this.data = data;
@@ -244,7 +245,7 @@ export class ContractService {
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any) => {
           this.data = data;
@@ -263,7 +264,7 @@ export class ContractService {
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any) => {
           this.data = data.data;
@@ -279,7 +280,7 @@ export class ContractService {
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any) => {
           this.data = data.data;
@@ -298,10 +299,7 @@ export class ContractService {
 
 
     return new Promise(resolve => {
-      let headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe((data: any) => {
+      this.httpRequest.sendSql(sql, this).subscribe(data => {
           this.data = data.data;
           resolve(this.data);
         });
@@ -533,12 +531,41 @@ export class ContractService {
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any) => {
           console.log(JSON.stringify(data));
           resolve(data);
         });
+    });
+  }
+
+  prepareRecruitement(entrepriseId, email, tel, idOffer){
+    let bean = {
+      class: "com.vitonjob.gcr.model.Query",
+      entrepriseId : entrepriseId,
+      email : email,
+      tel : tel,
+      idOffer : idOffer
+    };
+
+    let body = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      id: 11201,
+      args: [
+        {
+          class: 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Préparation du recrutement',
+          value: btoa(JSON.stringify(bean))
+        }
+      ]
+    };
+
+
+    return new Promise(resolve => {
+      this.httpRequest.sendCallOut(body, this).subscribe((data: any) => {
+        resolve(data);
+      });
     });
   }
 }
