@@ -412,6 +412,8 @@ export class ContractPage {
     let entrepriseId = this.employer.entreprises[0].id;
     let offerId = this.currentOffer.idOffer;
     this.contractService.prepareRecruitement(entrepriseId, email, tel, offerId).then((resp:any)=>{
+      console.log(JSON.stringify(resp));
+
       let datum = resp.jobyer;
       this.jobyer.id = datum.id;
       this.jobyer.numSS = datum.numss;
@@ -448,6 +450,7 @@ export class ContractPage {
       }
 
       this.workAdress = resp.adress.adresse_google_maps;
+      this.contractData.MonthlyAverageDuration = resp.duree_collective;
     });
 
     console.log(JSON.stringify(this.contractData));
