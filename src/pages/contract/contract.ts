@@ -336,7 +336,7 @@ export class ContractPage {
     let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
     if (contractLength <= 1)
-      trial = 0;
+      trial = 1;
     else if (contractLength < 30)
       trial = 2;
     else if (contractLength < 60)
@@ -412,7 +412,6 @@ export class ContractPage {
     let entrepriseId = this.employer.entreprises[0].id;
     let offerId = this.currentOffer.idOffer;
     this.contractService.prepareRecruitement(entrepriseId, email, tel, offerId).then((resp:any)=>{
-      console.log(JSON.stringify(resp));
 
       let datum = resp.jobyer;
       this.jobyer.id = datum.id;
