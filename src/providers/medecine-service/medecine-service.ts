@@ -13,7 +13,7 @@ export class MedecineService {
     }
 
     autocomplete(kw) {//lower_unaccent
-        let sql = "select pk_user_medecine_de_travail as id, libelle from user_medecine_de_travail where lower_unaccent(libelle) % lower_unaccent('" + kw + "') limit 5";
+        let sql = "select distinct on(libelle) libelle,pk_user_medecine_de_travail as id from user_medecine_de_travail where lower_unaccent(libelle) % lower_unaccent('" + kw + "') limit 5";
         return new Promise(resolve => {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
