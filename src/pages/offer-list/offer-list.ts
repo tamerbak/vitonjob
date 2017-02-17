@@ -101,7 +101,7 @@ export class OfferListPage {
             // TEL26082016 ref : http://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
             this.globalOfferList.length = 0;
             this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
-            this.globalOfferList.push({header: 'Mes brouillons', list: []});
+            this.globalOfferList.push({header: 'Mes offres privées', list: []});
             this.globalOfferList.push({header: 'Mes opportunités capturées', list: []});
 
             this.offerList = data;
@@ -266,7 +266,7 @@ export class OfferListPage {
             this.showPublishedOffers = !(this.showPublishedOffers);
             this.detailsIconName1 = (this.showPublishedOffers) ? 'remove' : 'add';
 
-        } else if (type == 'Mes brouillons') {
+        } else if (type == 'Mes offres privées') {
             this.showUnpublishedOffers = !(this.showUnpublishedOffers);
             this.detailsIconName2 = (this.showUnpublishedOffers) ? 'remove' : 'add';
         } else if (type == 'Mes opportunités capturées') {
