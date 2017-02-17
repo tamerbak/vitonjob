@@ -132,6 +132,7 @@ import {IntroPage} from "../pages/intro/intro";
 import {GoogleAnalyticsService} from "../providers/google-analytics-service/google-analytics-serivce";
 import {SqliteDBService} from "../providers/sqlite-db-service/sqlite-db-service";
 import {DAOFactory} from "../dao/data-access-object";
+import {SlimPayService} from "../providers/slimpay-service/slimpay-service";
 
 @NgModule({
     declarations: [
@@ -364,7 +365,8 @@ import {DAOFactory} from "../dao/data-access-object";
         HttpRequestHandler,
         GoogleAnalyticsService,
         SqliteDBService,
-        DAOFactory
+        DAOFactory,
+        SlimPayService
     ]
 })
 export class AppModule {
