@@ -105,7 +105,7 @@ export class ModalSoftwarePage {
                 this.events.publish('user:civility', this.currentUser);
 
                 loading.dismiss();
-                
+                this.closeModal();
             }
         });
   }
