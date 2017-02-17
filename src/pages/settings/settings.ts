@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, Events, ModalController} from "ionic-angular";
+import {NavController, Events, ModalController,ToastController} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {AuthenticationService} from "../../providers/authentication-service/authentication-service";
@@ -38,6 +38,7 @@ export class SettingsPage {
                 private globalService: GlobalService, events: Events,
                 private missionService: MissionService,
                 public modal: ModalController,
+                public toast: ToastController,
                 public storage: Storage, public profileService: ProfileService) {
         this.projectTarget = gc.getProjectTarget();
         let config = Configs.setConfigs(this.projectTarget);
@@ -94,6 +95,7 @@ export class SettingsPage {
                                     if (!data || data.status == 'failure') {
                                         this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
                                     } else {
+                                        this.presentToast("Votre mode de validation des horaires à été changé avec succès",5);
                                         console.log("default option mission saved successfully");
                                     }
                                 });
@@ -108,5 +110,13 @@ export class SettingsPage {
     toggleContactChanged() {
         let value:string = (this.spontaneousContact)? 'Oui': 'Non';
         this.profileService.updateSpontaneousContact(value, this.currentUser.id);
+    }
+
+    presentToast(message: string, duration: number) {
+        let toast = this.toast.create({
+            message: message,
+            duration: duration * 1000
+        });
+        toast.present();
     }
 }
