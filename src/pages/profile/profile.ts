@@ -476,7 +476,7 @@ export class ProfilePage {
                 }
                 if(data.reference.email){
                     //  Send notification by email
-                    let message = 'Bonjour, '+this.userData.nom+' '+this.userData.prenom+' vous a désigné comme référence pour sur la plateforme de l\'emploi http://webapp.vitonjob.com.' +
+                    let message = 'Bonjour, '+this.userData.nom+' '+this.userData.prenom+' vous a désigné comme référence sur la plateforme de l\'emploi http://webapp.vitonjob.com.' +
                         '\n Nous désirons avoir votre retour sur ses compétences par email  : contact@vitonjob.com.' +
                         '\n\n' +
                         'Vit-On-Job';
