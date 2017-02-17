@@ -77,7 +77,7 @@ export class JobAddressPage {
         this.themeColor = config.themeColor;
         this.currentUserVar = config.currentUserVar;
         this.isEmployer = (this.projectTarget == 'employer');
-        this.titlePage = this.isEmployer ? "Adresse lieu de travail" : "Départ au travail";
+        this.titlePage = this.isEmployer ? "Adresse du lieu de travail" : "Départ au travail";
         //this.tabs=tabs;
 
         //get current employer data from params passed by phone/mail connection
@@ -196,7 +196,7 @@ export class JobAddressPage {
     displayGeolocationAlert() {
         let confirm = this.alert.create({
             title: "Vit-On-Job",
-            message: "Acceptez-vous d'être géolocalisé? Si oui, vous n'aurez qu'à valider votre " + (this.isEmployer ? "adresse lieu de travail." : "adresse de départ au travail."),
+            message: "Acceptez-vous d'être géolocalisé? Si oui, vous n'aurez qu'à valider votre " + (this.isEmployer ? "adresse du lieu de travail." : "adresse de départ au travail."),
             buttons: [
                 {
                     text: 'Non',
