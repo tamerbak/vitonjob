@@ -138,11 +138,12 @@
         </ion-item>
         <ion-item class="contract-item">
             <ion-label>Motif&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
-            <ion-select [(ngModel)]="contractData.justification" >
+            <ion-input type="text" [(ngModel)]="contractData.justification"></ion-input>
+            <!--<ion-select [(ngModel)]="contractData.justification" >
                 <ion-option *ngFor="let r of justificatifs" value="{{r.libelle}}">
                     {{r.libelle}}
                 </ion-option>
-            </ion-select>
+            </ion-select>-->
         </ion-item>
         <!--It was "Début" and "Fin de souplesse", it doesn't exist anymore VWEB-->
         <!--ion-item class="contract-item">
@@ -195,9 +196,20 @@
         </ion-item>
 
         <ion-item class="contract-item">
-            <ion-label>Surveillance médicale</ion-label>
-            <ion-input type="text" [(ngModel)]="contractData.medicalSurv"></ion-input>
+            <ion-label>surveillance médicale renforcée</ion-label>
+            <!--<ion-input type="text" [(ngModel)]="contractData.medicalSurv"></ion-input>-->
         </ion-item>
+
+        <ion-list radio-group [(ngModel)]="contractData.medicalSurv">
+            <ion-item>
+                <ion-label>Oui</ion-label>
+                <ion-radio value="OUI" checked></ion-radio>
+            </ion-item>
+            <ion-item>
+                <ion-label>Non</ion-label>
+                <ion-radio value="NON"></ion-radio>
+            </ion-item>
+        </ion-list>
 
         <ion-item class="contract-item">
             <ion-label>Equipement de protection</ion-label>
