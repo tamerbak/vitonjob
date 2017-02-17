@@ -112,7 +112,7 @@ export class ContractPage {
       finSouplesse: "",
       equipements: "",
 
-      interim: "HubJob.fr",
+      interim: "HubJob.com",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: 5,
@@ -363,7 +363,7 @@ export class ContractPage {
       debutSouplesse: "",
       finSouplesse: "",
       equipements: "",
-      interim: "HubJob.fr",
+      interim: "HubJob.com",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: trial,
