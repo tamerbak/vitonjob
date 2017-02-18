@@ -11,6 +11,7 @@ import {SearchResultsPage} from "../search-results/search-results";
 import {Storage} from "@ionic/storage";
 import {isUndefined} from "ionic-angular/util/util";
 import {Utils} from "../../utils/utils";
+import {Offer} from "../../dto/offer";
 
 /*
  Generated class for the OfferListPage page.
@@ -24,32 +25,24 @@ import {Utils} from "../../utils/utils";
 })
 export class OfferListPage {
 
-    public offerList: any = [];
-    public publicList: any = [];
-    public privateList: any = [];
-    public huntedList: any = [];
+    public offerList: Offer[] = [];
+    public publicList: Offer[] = [];
+    public privateList: Offer[] = [];
+    public huntedList: Offer[] = [];
+
     public projectTarget: string;
     public backgroundImage: any;
+    public themeColor: string;
+    public backGroundColor: string;
+    public config: any;
+
     public isNewUser = false;
-    public globalOfferList = [];
-    public showPublishedOffers = false;
-    public showUnpublishedOffers = false;
-    public showHunterOffers = false;
-    public detailsIconName1: string = "add";
-    public detailsIconName2: string = "add";
-    public detailsIconName3: string = "add";
     public isHunter: boolean = false;
     public isEmployer: boolean;
-    public themeColor: string;
-    public listMode: boolean;
-    public okButtonName: string;
-    public mode: any;
-    public backGroundColor: string;
-    public isLeaving: boolean = false;
-    public userId: string;
-    public config: any;
-    public offersType: string = "public";
     public currentUser: any;
+    public userId: string;
+
+    public isLeaving: boolean = false;
 
     //determine the number of elements that should be skipped by the query
     public publicOffset: number = 0;
@@ -57,7 +50,9 @@ export class OfferListPage {
     public huntedOffset: number = 0;
     //determine the number of elemens to be retrieved by the query
     public queryLimit: number = 5;
+
     public recentActiveSegment: String;
+    public offersType: string = "public";
 
     constructor(public nav: NavController,
                 public gc: GlobalConfigs,
@@ -81,8 +76,6 @@ export class OfferListPage {
         // Set local variables and messages
         this.isEmployer = (this.projectTarget == 'employer');
         this.themeColor = this.config.themeColor;
-        this.listMode = true;
-        this.okButtonName = "add";
         this.backgroundImage = this.config.backgroundImage;
         this.backGroundColor = this.config.backGroundColor;
         //this.cancelButtonName = "";
@@ -127,6 +120,7 @@ export class OfferListPage {
             if(this.offersType == "public" && this.publicList.length == 0){
                 this.offerList = [];
                 this.loadOffers();
+                return;
             }
             if(this.offersType == "public" && this.publicList.length > 0){
                 this.offerList = (JSON.parse(JSON.stringify(this.publicList)));
@@ -134,60 +128,46 @@ export class OfferListPage {
             if(this.offersType == "private" && this.privateList.length == 0){
                 this.offerList = [];
                 this.loadOffers();
+                return;
             }
             if(this.offersType == "private" && this.privateList.length > 0){
                 this.offerList = (JSON.parse(JSON.stringify(this.privateList)));
+                return;
             }
             if(this.offersType == "hunted" && this.huntedList.length == 0){
                 this.offerList = [];
                 this.loadOffers();
+                return;
             }
             if(this.offersType == "hunted" && this.huntedList.length > 0){
                 this.offerList = (JSON.parse(JSON.stringify(this.huntedList)));
+                return;
             }
         }
     }
+
     loadOffers(){
-        let loading;
         return new Promise(resolve => {
             if(this.offersType == 'public'){
-                if(this.publicList.length == 0) {
-                    loading = this.loading.create({content: "Merci de patienter..."});
-                    loading.present();
-                }
-                this.offerService.loadOffers(this.userId, (this.isEmployer ? "employer" : "jobyer"), "public", this.publicOffset, this.queryLimit).then((data: any) => {
-                    if(this.publicList.length == 0) {
-                        loading.dismiss();
-                    }
-                    this.publicList = this.publicList.concat(data);
-                    this.handleOffers(this.publicList);
-                    this.offerList = (JSON.parse(JSON.stringify(this.publicList)));
-                    this.publicOffset = this.publicOffset + this.queryLimit;
+                this.loadOffersByCriteria(this.publicList, this.userId, "public").then(() =>{
                     resolve();
                 });
+                return;
             }
+
             if(this.offersType == 'private'){
-                if(this.privateList.length == 0) {
-                    loading = this.loading.create({content: "Merci de patienter..."});
-                    loading.present();
-                }
-                this.offerService.loadOffers(this.userId, (this.isEmployer ? "employer" : "jobyer"), "private", this.privateOffset, this.queryLimit).then((data: any) => {
-                    if(this.privateList.length == 0) {
-                        loading.dismiss();
-                    }
-                    this.privateList = this.privateList.concat(data);
-                    this.handleOffers(this.privateList);
-                    this.offerList = (JSON.parse(JSON.stringify(this.privateList)));
-                    this.privateOffset = this.privateOffset + this.queryLimit;
+                this.loadOffersByCriteria(this.privateList, this.userId, "private").then(() =>{
                     resolve();
                 });
+                return;
             }
+
+            //TODO: A voir avec Tamer
             if(this.offersType == 'hunted'){
                 this.offerList = [];
-                this.handleOffers(this.offerList);
                 resolve();
             }
-        })
+        });
     }
 
     doInfinite(infiniteScroll) {
@@ -203,7 +183,6 @@ export class OfferListPage {
     handleOffers(offerList){
         for (let i = 0; i < offerList.length; i++) {
             // case of leaving page before finishing the subscription
-            //TODO: Demander à Tamer à quoi sert le isLeaving
             if (this.isLeaving) {
                 console.log("leaving request subscription");
                 return;
@@ -235,6 +214,7 @@ export class OfferListPage {
                     }
                 }
 
+                //l'objet offer retourné par le callout ne contient meme pas la propriete idHunter, alors pourquoi on fait cette verification ?? (offer.idHunter sera tjrs undefined)
                 if (offer.idHunter && !(offer.idHunter === 0)) {
                     //debugger;
                     //this.globalOfferList[2].list.push(offer);
@@ -242,21 +222,54 @@ export class OfferListPage {
                     //debugger;
                     //this.globalOfferList[0].list.push(offer);
                 }
-            }
-            if (!offer.visible) {
+            }else{
                 offer.color = 'grey';
                 offer.correspondantsCount = -1;
             }
         }
     }
 
-    onAddOffer() {
+    loadOffersByCriteria(list, userId, mode){
+        return new Promise(resolve => {
+            let loading;
+            //loading should be displayed in the first call of the service. after that the infinit scroll loading icon is displyed
+            if(list.length == 0) {
+                loading = this.loading.create({content: "Merci de patienter..."});
+                loading.present();
+            }
+
+            this.offerService.loadOffers(userId, (this.isEmployer ? "employer" : "jobyer"), mode, (mode == "private" ? this.privateOffset : this.publicOffset), this.queryLimit).then((data: any) => {
+                if(list.length == 0) {
+                    loading.dismiss();
+                }
+                //in case the user chooses another segment before the data loading is completed
+                if(!Utils.isEmpty(this.recentActiveSegment) && this.recentActiveSegment != mode){
+                    resolve();
+                    return;
+                }
+
+                list = list.concat(data);
+                this.handleOffers(list);
+                this.offerList = (JSON.parse(JSON.stringify(list)));
+                if(mode == "private") {
+                    this.privateOffset = this.privateOffset + this.queryLimit;
+                    this.privateList = list;
+                }else{
+                    this.publicOffset = this.publicOffset + this.queryLimit;
+                    this.publicList = list;
+                }
+                resolve();
+            });
+        });
+    }
+
+    /*onAddOffer() {
         this.listMode = (!this.listMode);
         if (this.mode)
             this.okButtonName = "add";
         else
             this.okButtonName = "checkmark-circle";
-    }
+    }*/
 
     /**
      * @Description: Navigating to new offer page
@@ -278,7 +291,6 @@ export class OfferListPage {
     }
 
     getOfferBadge(item) {
-
         if (isUndefined(item) || !item || !item.pricticesJob || item.pricticesJob.length == 0) {
             item.correspondantsCount = 0;
             return;
@@ -288,14 +300,6 @@ export class OfferListPage {
             console.log(count);
             item.correspondantsCount = count;
         });
-    }
-
-    presentToast(message: string, duration: number) {
-        let toast = this.toast.create({
-            message: message,
-            duration: duration * 1000
-        });
-        toast.present();
     }
 
     autoSearchMode(offer) {
@@ -311,8 +315,7 @@ export class OfferListPage {
         });
     }
 
-    showOfferList(type) {
-
+    /*showOfferList(type) {
         if (type == 'Mes offres en ligne') {
             this.showPublishedOffers = !(this.showPublishedOffers);
             this.detailsIconName1 = (this.showPublishedOffers) ? 'remove' : 'add';
@@ -331,9 +334,7 @@ export class OfferListPage {
             this.showHunterOffers = !(this.showHunterOffers);
             this.detailsIconName3 = (this.showHunterOffers) ? 'remove' : 'add';
         }
-
-
-    }
+    }*/
 
     /**
      * @Description : Launch search from current offer-list
@@ -356,10 +357,15 @@ export class OfferListPage {
             loading.dismiss();
             this.nav.push(SearchResultsPage, {currentOffer: offer});
         });
-
     }
 
-
+    presentToast(message: string, duration: number) {
+        let toast = this.toast.create({
+            message: message,
+            duration: duration * 1000
+        });
+        toast.present();
+    }
 
     ionViewWillLeave() {
         this.isLeaving = true;

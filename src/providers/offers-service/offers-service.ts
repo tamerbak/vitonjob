@@ -19,7 +19,7 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Adress} from "../../dto/adress";
 
 const OFFER_CALLOUT_ID = 20042;
-const LOADING_OFFERS_CALLOUT = 20031;
+const LOADING_OFFERS_CALLOUT = 20043;
 
 /**
  * @author jakjoud abdeslam
