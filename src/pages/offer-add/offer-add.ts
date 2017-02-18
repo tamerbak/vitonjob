@@ -25,7 +25,6 @@ import {AdvertEditPage} from "../advert-edit/advert-edit";
 import {EnvironmentService} from "../../providers/environment-service/environment-service";
 import {Offer} from "../../dto/offer";
 import {Job} from "../../dto/job";
-import {CalendarSlot} from "../../dto/calendar-slot";
 
 /*
  Generated class for the OfferAddPage page.
@@ -332,7 +331,7 @@ export class OfferAddPage {
     addOffer() {
         this.initLocalStorageOffer().then((res: any) => {
             this.offerToBeAdded = res;
-            this.offerService.setOfferInRemote(this.offerToBeAdded, this.projectTarget).then((data: any) => {
+            this.offerService.saveOffer(this.offerToBeAdded, this.projectTarget).then((data: any) => {
                 //TODO: gestion des exceptions
                 if (!data) return;
                 console.log('••• Adding offer : remote storing success!');

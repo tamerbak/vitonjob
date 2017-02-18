@@ -16,8 +16,9 @@ import {Requirement} from "../../dto/requirement";
 import {SqliteDBService} from "../sqlite-db-service/sqlite-db-service";
 import {DAOFactory} from "../../dao/data-access-object";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
+import {Adress} from "../../dto/adress";
 
-const OFFER_CALLOUT_ID = 20035;
+const OFFER_CALLOUT_ID = 20042;
 const LOADING_OFFERS_CALLOUT = 20031;
 
 /**
@@ -226,38 +227,6 @@ export class OffersService {
             }
         });
     };
-
-
-    /**
-     * @Author TEL
-     * @Description Sending the offer to the remote dataBase
-     * @param projectTarget : project target (jobyer/employer)
-     * @param offerData
-     * @caution ALWAYS CALLED AFTER setOfferInLocal()!
-     */
-    setOfferInRemote(offerData: any, projectTarget: string) {
-        //  Init project parameters
-        this.configuration = Configs.setConfigs(projectTarget);
-        // store in remote database
-        let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
-            new CCalloutArguments('Création/Edition offre', offerData),
-            new CCalloutArguments('Configuration', {
-                'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
-                'mode': offerData.idOffer == 0 ? 'creation' : 'edition',
-                'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
-            })
-        ]);
-
-        return new Promise(resolve => {
-            this.httpRequest.sendCallOut(payloadFinal, this)
-                .subscribe((data: any) => {
-            //TODO: Gestion des exception
-                    if (!data)
-                        return;
-                    resolve(data);
-                });
-        });
-    }
 
     convertOfferToDTO(offerData: any, projectTarget: string): Offer {
         let myOffer = new Offer();
@@ -2212,6 +2181,77 @@ export class OffersService {
         });
     }
 
+    /**
+     * @Author TEL
+     * @Description Sending the offer to the remote dataBase
+     * @param projectTarget : project target (jobyer/employer)
+     * @param offerData
+     * @caution ALWAYS CALLED AFTER setOfferInLocal()!
+     */
+    saveOffer(offerData: any, projectTarget: string) {
+        //  Init project parameters
+        this.configuration = Configs.setConfigs(projectTarget);
+        // store in remote database
+        let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
+            new CCalloutArguments('Création/Edition offre', offerData),
+            new CCalloutArguments('Configuration', {
+                'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
+                'mode': offerData.idOffer == 0 ? 'creation' : 'edition',
+                'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
+            })
+        ]);
+
+        return new Promise(resolve => {
+            this.httpRequest.sendCallOut(payloadFinal, this)
+              .subscribe((data: any) => {
+                  //TODO: Gestion des exception
+                  if (!data) {
+                      return;
+                  }else{
+                      this.saveOfferAddress(data.idOffer, offerData.entrepriseId, offerData.jobData.adress, projectTarget);
+                  }
+                  resolve(data);
+              });
+        });
+    }
+
+    saveOfferAddress(idOffer: number, entrepriseId: number, adress: Adress, projectTarget: string){
+        this.configuration = Configs.setConfigs(projectTarget);
+        let addressData: any = {
+            'class': 'com.vitonjob.localisation.AdressToken',
+            'street': adress.street,
+            'cp': adress.zipCode,
+            'ville': adress.city,
+            'pays': adress.country,
+            'name': adress.name,
+            'streetNumber': adress.streetNumber,
+            'role': (projectTarget == 'employer' ? 'employeur' : projectTarget),
+            'id': ""+entrepriseId+"",
+            'type': 'mission',
+            'offerId': idOffer,
+            'fullAdress': adress.fullAdress
+        };
+        addressData = JSON.stringify(addressData);
+        var encodedAddress = btoa(addressData);
+        var data = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            'id': 20041,
+            'args': [{
+                'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                label: 'Adresse',
+                value: encodedAddress
+            }]
+        };
+        let stringData = JSON.stringify(data);
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(this.configuration.calloutURL, stringData, {headers: headers})
+              .subscribe((data: any) => {
+                  resolve(data);
+              });
+        });
+    }
+
     forgeJobDataFromOfferData(offer: Offer){
         //jobData object to return
         let jobData: Job;
@@ -2223,6 +2263,8 @@ export class OffersService {
         jobData.telephone = offerTemp.telephone;
         jobData.prerequisObligatoires = offerTemp.requirementData;
         jobData.pharmaSoftwares = (!offerTemp.pharmaSoftwareData ? [] : offerTemp.pharmaSoftwareData);
+        jobData.adress = offerTemp.adresse;
+        jobData.adress.class = "com.vitonjob.callouts.offer.model.AdressData";
         return jobData;
     }
 
@@ -2232,30 +2274,11 @@ export class OffersService {
         offer.contact = jobData.contact;
         offer.telephone = jobData.telephone;
         offer.title = jobData.job + ' ' + ((jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
+        //offer.adresse = jobData.adress;
         offer.requirementData = jobData.prerequisObligatoires;
         offer.pharmaSoftwareData = jobData.pharmaSoftwares;
+        offer.jobData.adress.class = "com.vitonjob.callouts.offer.model.AdressData";
+        delete offer['adresse'];
         return offer;
     }
-
-    updateOffer(offer: Offer, projectTarget: string){
-        this.configuration = Configs.setConfigs(projectTarget);
-        let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
-            new CCalloutArguments('Edition offre', offer),
-            new CCalloutArguments('Configuration', {
-                'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
-                'mode': 'edition',
-                'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
-            })
-        ]);
-
-        return new Promise(resolve => {
-            this.httpRequest.sendCallOut(payloadFinal, this)
-              .subscribe((data: any) => {
-                  if (!data)
-                      return;
-                  resolve(data);
-              });
-        });
-    }
 }
-

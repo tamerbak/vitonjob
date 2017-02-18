@@ -23,8 +23,8 @@ import {EnvironmentService} from "../../providers/environment-service/environmen
 import {Utils} from "../../utils/utils";
 import {Job} from "../../dto/job";
 import {PharmaSoftwares} from "../../dto/pharmaSoftwares";
-//import {Element} from "@angular/compiler";
-
+import {AddressService} from "../../providers/address-service/address-service"
+import {Adress} from "../../dto/adress";
 
 declare let require: any;
 
@@ -41,7 +41,6 @@ declare let require: any;
 export class ModalJobPage {
 
   public jobData: Job = new Job();
-  public offerService: any;
   public sectors: any = [];
   public jobs: any = [];
   public listJobs = [];
@@ -49,6 +48,7 @@ export class ModalJobPage {
   public sectorList = [];
   public isSectorFound = true;
   public isJobFound = true;
+  public firstInit;
 
   public projectTarget: string;
   public currentUser: any;
@@ -62,6 +62,7 @@ export class ModalJobPage {
   public os: OffersService;
   public params: NavParams;
   public platform: Platform;
+  public config: any;
 
   public alertOptions = {
     title: '',
@@ -90,7 +91,6 @@ export class ModalJobPage {
   public isNiveauxConventionsFound: boolean = true;
 
   public showPrerequisBtn: boolean = false;
-  public firstInit: boolean = false;
   public isInputDisabled:boolean = true;
 
   public static CONV_FILTER_NIV = 0;
@@ -144,8 +144,6 @@ export class ModalJobPage {
    * ADRESSE OFFRE
    */
   public searchData: string = '';
-  public geolocAddress: string = '';
-  public geolocResult: string = '';
   public selectedPlace: any;
   public name: string;
   public streetNumber: string;
@@ -167,7 +165,7 @@ export class ModalJobPage {
               viewCtrl: ViewController,
               fb: FormBuilder,
               gc: GlobalConfigs,
-              os: OffersService,
+              public offerService: OffersService,
               params: NavParams,
               platform: Platform,
               public environmentService:EnvironmentService,
@@ -179,14 +177,23 @@ export class ModalJobPage {
               public popover: PopoverController,
               public alert: AlertController,
               public storage: Storage,
-              public listService: LoadListService) {
+              public listService: LoadListService,
+              public addressService: AddressService) {
 
     // Set global configs
     // Get target to determine configs
     this.projectTarget = gc.getProjectTarget();
 
     // get config of selected target
-    let config = Configs.setConfigs(this.projectTarget);
+    this.config = Configs.setConfigs(this.projectTarget);
+
+    this.jobData = params.get('jobData');
+    if(this.jobData){
+      this.firstInit = false;
+    }else{
+      this.jobData = new Job();
+      this.firstInit = true;
+    }
 
     this.convention = {
       id: 0,
@@ -196,11 +203,9 @@ export class ModalJobPage {
 
     this.prerequisOb = '';
 
-    // this.currentUser = config.currentUserVar;
-
     let self = this;
     this.environmentService.reload();
-    this.storage.get(config.currentUserVar).then((value) => {
+    this.storage.get(this.config.currentUserVar).then((value) => {
       if (value) {
         let currentUser = JSON.parse(value);
 
@@ -249,7 +254,7 @@ export class ModalJobPage {
     });
 
     // Set local variables
-    this.themeColor = config.themeColor;
+    this.themeColor = this.config.themeColor;
     this.isEmployer = (this.projectTarget === 'employer');
     this.platform = platform;
 
@@ -260,55 +265,7 @@ export class ModalJobPage {
       job: ['', Validators.required]
     });
 
-    this.offerService = os;
     this.initializeJobForm(params);
-
-    this.storage.get(config.currentUserVar).then((value) => {
-      if (value) {
-        let currentUser = JSON.parse(value);
-        if(this.jobData && this.firstInit){
-          if(self.projectTarget == "employer") {
-            if (this.jobData.contact === '') {
-              this.jobData.contact = (currentUser.prenom + " " + currentUser.nom).trim();
-            }
-            if (this.jobData.telephone === '') {
-              this.jobData.telephone = (Utils.isEmpty(currentUser.tel) == false) ? currentUser.tel.replace('+33', '0') : ''
-            }
-            console.log("*", this.jobData.adress);
-
-            if (this.jobData.adress) {
-              if (this.jobData.adress.fullAdress == '') {
-                console.log(currentUser.employer.entreprises[0].siegeAdress);
-                let siegeAddress = currentUser.employer.entreprises[0].siegeAdress;
-                this.searchData = siegeAddress.fullAdress;
-                //this.fullAdress = siegeAddress.fullAdress;
-                this.name = siegeAddress.name;
-                this.streetNumber = siegeAddress.streetNumber;
-                this.street = siegeAddress.street;
-                this.zipCode = siegeAddress.zipCode;
-                this.city = siegeAddress.city;
-                this.country = siegeAddress.country;
-              }
-            }
-
-            } else {
-              if (this.jobData.adress) {
-                if (this.jobData.adress.fullAdress == '') {
-                  let personalAdress = currentUser.jobyer.personnalAdress;
-                  this.searchData = personalAdress.fullAdress;
-                  //this.fullAdress = personalAdress.fullAdress;
-                  this.name = personalAdress.name;
-                  this.streetNumber = personalAdress.streetNumber;
-                  this.street = personalAdress.street;
-                  this.zipCode = personalAdress.zipCode;
-                  this.city = personalAdress.city;
-                  this.country = personalAdress.country;
-                }
-              }
-            }
-          }
-        }
-    });
 
     this.alertOptions = {
       title: 'Devise',
@@ -322,12 +279,6 @@ export class ModalJobPage {
       this.sectorList = JSON.parse(data);
     });
 
-
-    //this.level = 'junior';
-
-    //this.jobData.job = this.jobForm.controls['username'];
-    //this.jobData.sector = this.jobForm.controls['password'];
-
     if(this.isEmployer){
       this.listService.loadPharmacieSoftwares().then((data: any) => {
         let softwares: PharmaSoftwares[] = data.data;
@@ -340,11 +291,68 @@ export class ModalJobPage {
     }
   }
 
-  showResults(place) {
+  /**
+   * @Description : Initializing job form
+   */
+  initializeJobForm(params: any) {
+    //case of editing an existing offer
+    if(!this.firstInit){
+      //initializing mission address
+      if (this.jobData.adress && this.jobData.adress.id != 0) {
+        this.searchData = this.jobData.adress.fullAdress;
+        this.name = this.jobData.adress.name;
+        this.street = this.jobData.adress.street;
+        this.streetNumber = this.jobData.adress.streetNumber;
+        this.zipCode = this.jobData.adress.zipCode;
+        this.city = this.jobData.adress.city;
+        this.country = this.jobData.adress.country;
+      }
+      if(this.isEmployer) {
+        //initializing pharma softwares
+        if (this.jobData.pharmaSoftwares)
+          this.savedSoftwares = this.jobData.pharmaSoftwares;
+        //initializing prerequis
+        if (this.jobData.prerequisObligatoires)
+          this.prerequisObligatoires = this.jobData.prerequisObligatoires;
+      }
+      //case of a new offer
+    }else{
+      this.storage.get(this.config.currentUserVar).then((value) => {
+        if (value) {
+          let currentUser = JSON.parse(value);
+          this.jobData = new Job();
+          if(this.projectTarget == "employer") {
+            //initilizing contact
+            this.jobData.contact = (currentUser.prenom + " " + currentUser.nom).trim();
+            //initializing telephone
+            this.jobData.telephone = ((Utils.isEmpty(currentUser.tel) == false) ? currentUser.tel.replace('+33', '0') : '');
+            //initializing address
+            this.searchData = '';
+            let siegeAddress = currentUser.employer.entreprises[0].siegeAdress;
+            this.searchData = siegeAddress.fullAdress;
+            this.name = siegeAddress.name;
+            this.streetNumber = siegeAddress.streetNumber;
+            this.street = siegeAddress.street;
+            this.zipCode = siegeAddress.zipCode;
+            this.city = siegeAddress.city;
+            this.country = siegeAddress.country;
+          } else {
+            let personalAdress = currentUser.jobyer.personnalAdress;
+            this.searchData = personalAdress.fullAdress;
+            this.name = personalAdress.name;
+            this.streetNumber = personalAdress.streetNumber;
+            this.street = personalAdress.street;
+            this.zipCode = personalAdress.zipCode;
+            this.city = personalAdress.city;
+            this.country = personalAdress.country;
+          }
+        }
+      });
+    }
+  }
 
+  showResults(place) {
     this.selectedPlace = place;
-    this.geolocAddress = "";
-    this.geolocResult = null;
     let adrObj: any = this.authService.decorticateGeolocAddress(this.selectedPlace);
     this.zone.run(() => {
       this.name = !adrObj.name ? '' : adrObj.name.replace("&#39;", "'");
@@ -353,7 +361,7 @@ export class ModalJobPage {
       this.zipCode = adrObj.zipCode;
       this.city = adrObj.city.replace("&#39;", "'");
       this.country = (adrObj.country.replace("&#39;", "'") == "" ? 'France' : adrObj.country.replace("&#39;", "'"));
-
+      this.searchData = this.selectedPlace.name + " " + this.selectedPlace.formatted_address;
     });
   }
 
@@ -419,39 +427,6 @@ export class ModalJobPage {
   }
 
   /**
-   * @Description : Initializing job form
-   */
-  initializeJobForm(params: any) {
-
-    let jobData = params.get('jobData');
-
-    if (jobData) {
-      this.firstInit  = false;
-      this.jobData = jobData;
-      this.savedSoftwares = this.jobData.pharmaSoftwares;
-      console.log(jobData);
-      if (this.jobData.prerequisObligatoires)
-        this.prerequisObligatoires = this.jobData.prerequisObligatoires;
-      if (this.jobData.adress) {
-
-        if(this.jobData.adress)
-          this.searchData = this.jobData.adress.fullAdress;
-        this.name = this.jobData.adress.name;
-        this.street = this.jobData.adress.street;
-        this.streetNumber = this.jobData.adress.streetNumber;
-        this.zipCode = this.jobData.adress.zipCode;
-        this.city = this.jobData.adress.city;
-        this.country = this.jobData.adress.country;
-      }
-
-    } else {
-      this.firstInit  = true;
-      this.searchData = '';
-    }
-  }
-
-
-  /**
    * @description : Closing the modal page :
    */
   closeModal() {
@@ -463,6 +438,7 @@ export class ModalJobPage {
    * @Description: Validating the modal page (All fields are filled)
    */
   validateJob() {
+    //Job and sector check
     if (this.jobData.idJob == 0 || this.jobData.idsector == 0) {
       let alert = this.alert.create({
         title: 'Erreur',
@@ -472,7 +448,9 @@ export class ModalJobPage {
       alert.present();
       return;
     }
-    if ((this.jobData.remuneration <= 0) || this.isEmpty(this.jobData.remuneration)) {
+
+    //remuneration check
+    if ((this.jobData.remuneration <= 0) || Utils.isEmpty(this.jobData.remuneration)) {
       let alert = this.alert.create({
         title: 'Erreur',
         subTitle: "Veuillez saisir une rémunération valide",
@@ -481,45 +459,29 @@ export class ModalJobPage {
       alert.present();
       return;
     }
+
     if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
       this.jobData.prerequisObligatoires = this.prerequisObligatoires;
     } else {
       this.jobData.prerequisObligatoires = [];
     }
-    this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === '') && !(this.jobData.remuneration <= 0) && !this.isEmpty(this.jobData.remuneration));
-    this.jobData.adress = {
-      fullAdress: this.constructFullAdress(),
-      name: this.name,
-      street: this.street,
-      streetNumber: this.streetNumber,
-      zipCode: this.zipCode,
-      city: this.city,
-      country: this.country
-    };
+
     this.jobData.pharmaSoftwares = this.savedSoftwares;
+
+    //TODO: cette partie n'est pas complète, il faut ajouter le nombre de poste pour les employeur ...
+    this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === '') && !(this.jobData.remuneration <= 0) && !Utils.isEmpty(this.jobData.remuneration));
+
+    //Adresse
+    this.jobData.adress = new Adress();
+    this.jobData.adress.fullAdress = this.searchData;
+    this.jobData.adress.name = this.name;
+    this.jobData.adress.street = this.street;
+    this.jobData.adress.streetNumber =  this.streetNumber;
+    this.jobData.adress.zipCode = this.zipCode;
+    this.jobData.adress.city = this.city;
+    this.jobData.adress.country = this.country;
+
     this.viewCtrl.dismiss(this.jobData);
-  }
-
-  constructFullAdress() {
-    let fa = '';
-    if (this.name && this.name.length > 0) {
-      fa = this.name;
-    }
-    if (this.streetNumber && this.streetNumber.length > 0) {
-      fa = fa + ' ' + this.streetNumber;
-    }
-    if (this.street && this.street.length > 0) {
-      fa = fa + ' ' + this.street;
-    }
-    if (this.city && this.city.length > 0) {
-      fa = fa + ' ' + this.city;
-    }
-
-    if (this.country && this.country.length > 0) {
-      fa = fa + ' ' + this.country;
-    }
-
-    return fa.trim();
   }
 
   /**
@@ -994,9 +956,10 @@ export class ModalJobPage {
         }
       }
     });
-
   }
 
+
+  //<editor-fold desc="Software management">
   addSoftware(soft) {
     for(let i = 0; i < this.savedSoftwares.length; i++){
       if(this.savedSoftwares[i].id == soft.id){
@@ -1030,11 +993,5 @@ export class ModalJobPage {
     });
     confirm.present();
   }
-
-  isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
-  }
+  //</editor-fold>
 }

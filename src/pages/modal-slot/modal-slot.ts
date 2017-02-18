@@ -202,7 +202,6 @@ export class ModalSlotPage {
          {value: "07", shortName: "Dim", fullName: "Dimanche", checked: (dayValue == 7), color: "lightgrey"}
          ];*/
 
-        let today = new Date();
         this.showedSlot = {
             date: new Date().toISOString(),
             startDate: this.minStartDate,

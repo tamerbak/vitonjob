@@ -6,6 +6,7 @@ import {CalendarSlot} from "./calendar-slot";
 import {Quality} from "./quality";
 import {Language} from "./language";
 import {PharmaSoftwares} from "./pharmaSoftwares";
+import {Adress} from "./adress";
 
 export class Offer extends AbstractGCallout {
   'class': string;
@@ -32,7 +33,7 @@ export class Offer extends AbstractGCallout {
   rechercheAutomatique: boolean;
   obsolete: boolean;
   identity: number;
-  adresse: {};
+  adresse: Adress;
   jobyerId: number;
   entrepriseId: number;
   hunterId:number;
@@ -60,7 +61,7 @@ export class Offer extends AbstractGCallout {
     this.rechercheAutomatique = false;
     this.obsolete = false;
     this.identity = 0;
-    this.adresse = {};
+    this.adresse = new Adress;
     this.jobyerId = 0;
     this.entrepriseId = 0;
     this.hunterId = 0;

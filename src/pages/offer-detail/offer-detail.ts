@@ -35,6 +35,7 @@ import {Utils} from "../../utils/utils";
 import {CalendarSlot} from "../../dto/calendar-slot";
 import {Quality} from "../../dto/quality";
 import {Language} from "../../dto/language";
+import {AddressUtils} from "../../utils/addressUtils";
 
 /*
  Generated class for the OfferDetailPage page.
@@ -54,7 +55,7 @@ export class OfferDetailPage {
   public fromPage: string;
   //public originalJobData: any;
   //public adressData: any;
-  public fullAdress: any;
+  public fullAddress: any;
   public loading:any;
   public idTiers: number;
   public projectTarget: string;
@@ -178,9 +179,9 @@ export class OfferDetailPage {
 
     //let table = !this.isEmployer?'user_offre_jobyer':'user_offre_entreprise';
 
-    this.offerService.loadOfferAdress(this.offer.idOffer, this.projectTarget).then(adr=> {
-      this.fullAdress = adr;
-    });
+    /*this.offerService.loadOfferAdress(this.offer.idOffer, this.projectTarget).then(adr=> {
+      this.fullAddress = adr;
+    });*/
 
 
     this.storage.get(config.currentUserVar).then((value) => {
@@ -402,16 +403,6 @@ export class OfferDetailPage {
   showJobModal() {
     let jobData: Job = this.offerService.forgeJobDataFromOfferData(this.offer);
 
-    this.offer.jobData.adress = {
-      fullAdress: this.fullAdress,
-      name: '',
-      street: '',
-      streetNumber: '',
-      zipCode: '',
-      city: '',
-      country: ''
-    };
-
     let modal = this.modal.create(ModalJobPage, {jobData: jobData});
     modal.onDidDismiss((data: Job) => {
       if(Utils.isEmpty(data)){
@@ -421,12 +412,12 @@ export class OfferDetailPage {
       this.modified.isJob = data.validated;
       if (this.modified.isJob) {
         let offerToUpdate: Offer = this.offerService.forgeOfferDataFromJobData(this.offer, data);
-        this.offerService.updateOffer(offerToUpdate, this.projectTarget).then((data: any) => {
-
+        this.offerService.saveOffer(offerToUpdate, this.projectTarget).then((data: any) => {
+          //TODO: gestion des exception
         });
 
         /*if (this.offer.jobData.adress && this.offer.jobData.adress.zipCode && this.offer.jobData.adress.zipCode.length > 0) {
-          this.fullAdress = data.adress.fullAdress;
+          this.fullAddress = data.adress.fullAddress;
           this.offerService.saveOfferAdress(this.offer, this.offer.jobData.adress, this.offer.jobData.adress.streetNumber, this.offer.jobData.adress.street,
             this.offer.jobData.adress.city, this.offer.jobData.adress.zipCode, this.offer.jobData.adress.name, this.offer.jobData.adress.country, this.idTiers, this.projectTarget);
         }*/
@@ -450,7 +441,7 @@ export class OfferDetailPage {
       }else{
         this.offer.calendarData = data.slots;
         this.offer.obsolete = data.isObsolete;
-        this.offerService.updateOffer(this.offer, this.projectTarget);
+        this.offerService.saveOffer(this.offer, this.projectTarget);
       }
     });
     modal.present();
@@ -468,7 +459,7 @@ export class OfferDetailPage {
         return;
       }
       this.offer.qualityData = data;
-      this.offerService.updateOffer(this.offer, this.projectTarget);
+      this.offerService.saveOffer(this.offer, this.projectTarget);
     });
     modal.present();
   }
@@ -485,7 +476,7 @@ export class OfferDetailPage {
         return;
       }
       this.offer.languageData = data;
-      this.offerService.updateOffer(this.offer, this.projectTarget);
+      this.offerService.saveOffer(this.offer, this.projectTarget);
     });
     modal.present();
   }
@@ -551,7 +542,7 @@ export class OfferDetailPage {
               .then(()=> {
                 console.log('••• Adding offer : local storing success!');
 
-                this.offerService.setOfferInRemote(offer, this.projectTarget)
+                this.offerService.saveOffer(offer, this.projectTarget)
                   .then((data: any) => {
                     console.log('••• Adding offer : remote storing success!');
 
