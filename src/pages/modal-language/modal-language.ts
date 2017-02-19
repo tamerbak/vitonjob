@@ -4,6 +4,7 @@ import {Configs} from "../../configurations/configs";
 import {ModalSelectionPage} from "../modal-selection/modal-selection";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {Component} from "@angular/core";
+import {Language} from "../../dto/language";
 
 /*
  Generated class for the ModalLanguagePage page.
@@ -17,26 +18,19 @@ import {Component} from "@angular/core";
 })
 export class ModalLanguagePage {
 
-  public languages: Array<{
-    'class': "com.vitonjob.callouts.auth.model.LanguageData",
-    idLanguage: number,
-    libelle: string,
-    idlevel: number,
-    level: string
-  }>;
+  public languages: Language[] = [];
   public projectTarget: string;
   public themeColor: string;
   public inversedThemeColor: string;
   public isEmployer: boolean;
   public viewCtrl: any;
-  public offerService: any;
-  public languageList: any;
+  public languageList: Language[];
 
   constructor(public nav: NavController,
               gc: GlobalConfigs,
               viewCtrl: ViewController,
               params: NavParams,
-              os: OffersService,
+              public offerService: OffersService,
               public modal: ModalController,
               public alert: AlertController,
               public loading: LoadingController) {
@@ -51,7 +45,7 @@ export class ModalLanguagePage {
     this.inversedThemeColor = config.inversedThemeColor;
     this.isEmployer = (this.projectTarget === 'employer');
     this.viewCtrl = viewCtrl;
-    this.offerService = os;
+
     this.initializeLanguageList(params)
   }
 
@@ -59,7 +53,7 @@ export class ModalLanguagePage {
    * @Description : Initializing qualities list
    */
   initializeLanguageList(params: NavParams) {
-    let languages = params.get('languages');
+    let languages: Language[] = params.get('languages');
     if (languages && languages.length > 0) {
       this.languages = languages;
     } else {
@@ -74,7 +68,7 @@ export class ModalLanguagePage {
     let loading = this.loading.create({content: "Merci de patienter..."});
     loading.present();
 
-    this.offerService.loadLanguages(this.projectTarget).then((data: any) => {
+    this.offerService.loadLanguages(this.projectTarget).then((data: Language[]) => {
       this.languageList = data;
       let selectionModel = this.modal.create(ModalSelectionPage,
         {type: 'langue', items: this.languageList, selection: this});
@@ -87,14 +81,16 @@ export class ModalLanguagePage {
    * @description : Closing the modal page :
    */
   closeModal() {
-    this.viewCtrl.dismiss(this.languages);
+    this.viewCtrl.dismiss();
   }
 
   /**
    * @Description : Validating language modal
    */
   validateLanguage() {
-
+    for(let i = 0; i < this.languages.length; i++){
+      this.languages[i].level = +this.languages[i].level;
+    }
     this.viewCtrl.dismiss(this.languages);
   }
 

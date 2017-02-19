@@ -1,16 +1,15 @@
-
 import {AbstractGCallout} from "./generium/abstract-gcallout";
 
 export class Adress extends AbstractGCallout {
 
   id: number;
-  streetNumber: string;
   name: string;
-  fullAdress: string;
+  streetNumber: string;
   street: string;
   zipCode: string;
   city: string;
   country: string;
+  fullAdress: string;
 
   constructor() {
     super('com.vitonjob.callouts.auth.model.Adress');

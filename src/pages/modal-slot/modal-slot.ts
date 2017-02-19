@@ -5,6 +5,7 @@ import {Component} from "@angular/core";
 import {GlobalService} from "../../providers/global-service/global-service";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {Utils} from "../../utils/utils";
+import {CalendarSlot} from "../../dto/calendar-slot";
 
 /*
  Generated class for the ModalSlotPage page.
@@ -18,8 +19,8 @@ import {Utils} from "../../utils/utils";
 })
 export class ModalSlotPage {
 
-    public slot: any;
-    public slots: any;
+    public slot: CalendarSlot = new CalendarSlot();
+    public slots: CalendarSlot[];
     public showedSlot: any;
     public projectTarget: string;
     public themeColor: string;
@@ -43,10 +44,16 @@ export class ModalSlotPage {
     public currentMonth: any;
     public intervalHours:number = 10;
     public params: NavParams;
+    public hoursErrorMessage: string = '';
 
-
-    constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController,params: NavParams,private offersService:OffersService,
-                private globalService: GlobalService, platform: Platform, public toast: ToastController) {
+  constructor(public nav: NavController,
+                gc: GlobalConfigs,
+                viewCtrl: ViewController,
+                params: NavParams,
+                private offersService:OffersService,
+                private globalService: GlobalService,
+                platform: Platform,
+                public toast: ToastController) {
 
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -57,13 +64,15 @@ export class ModalSlotPage {
         this.isEmployer = (this.projectTarget === 'employer');
         this.viewCtrl = viewCtrl;
         this.calendarTheme = config.calendarTheme;
+
         this.todayDate = new Date();
         this.yearValue = new Date().getFullYear();
         this.monthValue = new Date().getMonth() + 1;
         this.slots = params.get('slots');
         //let dayValue: number = new Date().getDay();
         //max date should be the day of tomorrow
-        this.maxDate = new Date().setDate(new Date().getDate() + 1);
+
+      this.maxDate = new Date().setDate(new Date().getDate() + 1);
         this.minStartDate = new Date(this.todayDate.setUTCHours(this.todayDate.getUTCHours() + 1)).toISOString();
         this.maxStartDate = new Date(this.maxDate).toISOString();
         this.minEndDate = new Date(this.todayDate.setUTCHours(this.todayDate.getUTCHours(), this.todayDate.getUTCMinutes() + 15)).toISOString();
@@ -192,26 +201,17 @@ export class ModalSlotPage {
          {value: "06", shortName: "Sam", fullName: "Samedi", checked: (dayValue == 6), color: "lightgrey"},
          {value: "07", shortName: "Dim", fullName: "Dimanche", checked: (dayValue == 7), color: "lightgrey"}
          ];*/
-        this.slot = {
-            date: new Date(),
-            dateEnd: new Date(),
-            startHour: 0,
-            endHour: 0
-        };
-        let today = new Date();
-        let stringDate = today.getDate() + '/' + today.getMonth() + '/' + today.getFullYear();
+
         this.showedSlot = {
             date: new Date().toISOString(),
             startDate: this.minStartDate,
             endDate: this.minEndDate,
-            angular4Date: stringDate,
             startHour: null,
             endHour: null,
             annual: false,
             monthly: false,
             weekly: false
         };
-        this.isAndroid4 = (platform.is('android')) && (platform.version().major < 5);
     }
 
     /***
@@ -485,30 +485,25 @@ export class ModalSlotPage {
         this.viewCtrl.dismiss();
     }
 
-    isValidateDisabled() {
-        if (Utils.isEmpty(this.showedSlot.startDate) || Utils.isEmpty(this.showedSlot.endDate)) {
-            return true;
-        }
-        return false;
-    }
-
     /**
      * @Description : Validating slot modal
      */
     validateModal() {
-        let date = new Date(this.showedSlot.startDate);
-        let dateEnd = new Date(this.showedSlot.endDate);
-        let sh = this.showedSlot.startDate.split('T')[1];
-        let eh = this.showedSlot.endDate.split('T')[1];
-        this.slot = {
-            date: date.getTime(),
-            dateEnd: dateEnd.getTime(),
-            startHour: parseInt(sh.split(':')[0]) * 60 +
-            parseInt(sh.split(':')[1]),
-            endHour: parseInt(eh.split(':')[0]) * 60 +
-            parseInt(eh.split(':')[1])
-        };
-        this.viewCtrl.dismiss(this.slot);
+        if(!this.isSlotValid()){
+            return;
+        }else{
+            let date = new Date(this.showedSlot.startDate);
+            let dateEnd = new Date(this.showedSlot.endDate);
+            let sh = this.showedSlot.startDate.split('T')[1];
+            let eh = this.showedSlot.endDate.split('T')[1];
+            this.slot.date = date.getTime();
+            this.slot.dateEnd = dateEnd.getTime();
+            this.slot.startHour = parseInt(sh.split(':')[0]) * 60 +
+              parseInt(sh.split(':')[1]);
+            this.slot.endHour = parseInt(eh.split(':')[0]) * 60 +
+              parseInt(eh.split(':')[1]);
+            this.viewCtrl.dismiss(this.slot);
+        }
     }
 
     /**
@@ -540,12 +535,8 @@ export class ModalSlotPage {
         return hours + ":" + minutes;
     }
 
-    hoursErrorMessage: string = '';
-
-
     checkHour(i) {
         this.hoursErrorMessage = '';
-
         if (i === 0) {
             this.minEndDate = new Date(new Date(this.showedSlot.startDate).setUTCHours(new Date(this.showedSlot.startDate).getUTCHours(), new Date(this.showedSlot.startDate).getUTCMinutes() + 15)).toISOString();
             this.maxEndDate = new Date(new Date(this.showedSlot.startDate).setUTCHours(new Date(this.showedSlot.startDate).getUTCHours() + 10)).toISOString();
@@ -569,46 +560,45 @@ export class ModalSlotPage {
         } else if (i === 1) {
             this.showedSlot.endHour = new Date(this.showedSlot.endHour).getUTCHours();
         }
+    }
+
+    isSlotValid(){
+        this.hoursErrorMessage = '';
+        if (Utils.isEmpty(this.showedSlot.startDate) || Utils.isEmpty(this.showedSlot.endDate)) {
+            this.hoursErrorMessage = "* Veuillez renseigner l'heure de début et de fin avant de valider";
+            return false;
+        }
 
         //check if dates and hours are coherent
         if (new Date(this.showedSlot.startDate) && new Date(this.showedSlot.endDate) && new Date(this.showedSlot.startDate) >= new Date(this.showedSlot.endDate)) {
-            if (i == 0) {
-                this.hoursErrorMessage = "* L'heure de début doit être inférieure à l'heure de fin";
-                this.showedSlot.startHour = "";
-                return;
-            } else {
-                this.hoursErrorMessage = "* L'heure de fin doit être supérieure à l'heure de début";
-                this.showedSlot.endHour = "";
-                return;
-            }
-        }
-        
-        //check if chosen hour and date are passed
-        if (i == 0 && this.showedSlot.startDate && new Date(this.showedSlot.startDate) <= new Date()) {
-            this.hoursErrorMessage = "* L'heure de début doit être supérieure à l'heure actuelle";
-            this.showedSlot.startDate = "";
-            return;
-        }
-        if (i == 1 && this.showedSlot.endDate && new Date(this.showedSlot.endDate) <= new Date()) {
-            this.hoursErrorMessage = "* L'heure de fin doit être supérieure à l'heure actuelle";
-            this.showedSlot.endDate = "";
-            return;
-        }
-      if (this.projectTarget == 'employer') {
-        //total hours of one day should be lower than 10h
-        let isDailyDurationRespected = this.offersService.isDailySlotsDurationRespected(this.slots, this.showedSlot);
-        if (!isDailyDurationRespected) {
-          this.hoursErrorMessage = "* Le total des heures de travail de chaque journée ne doit pas dépasser les 10 heures";
-          this.showedSlot.endDate = "";
-          return false;
-        }
+            this.hoursErrorMessage = "* L'heure de début doit être inférieure à l'heure de fin";
+            return false;
+          }
 
-        // if (!this.offersService.isSlotRespectsBreaktime(this.slots, this.showedSlot)) {
-        //   this.hoursErrorMessage = "Veuillez mettre un délai de 11h entre deux créneaux situés sur deux jours calendaires différents";
-        //   return false;
-        // }
-      }
-        
+          //check if chosen hour and date are passed
+          if (this.showedSlot.startDate && new Date(this.showedSlot.startDate) <= new Date()) {
+            this.hoursErrorMessage = "* L'heure de début doit être supérieure à l'heure actuelle";
+            return false;
+          }
+          if (this.showedSlot.endDate && new Date(this.showedSlot.endDate) <= new Date()) {
+            this.hoursErrorMessage = "* L'heure de fin doit être supérieure à l'heure actuelle";
+            return false;
+          }
+          /*if (this.projectTarget == 'employer') {
+            //total hours of one day should be lower than 10h
+            let isDailyDurationRespected = this.offersService.isDailySlotsDurationRespected(this.slots, this.showedSlot);
+            if (!isDailyDurationRespected) {
+              this.hoursErrorMessage = "* Le total des heures de travail de chaque journée ne doit pas dépasser les 10 heures";
+              this.showedSlot.endDate = "";
+              return false;
+            }*/
+
+            // if (!this.offersService.isSlotRespectsBreaktime(this.slots, this.showedSlot)) {
+            //   this.hoursErrorMessage = "Veuillez mettre un délai de 11h entre deux créneaux situés sur deux jours calendaires différents";
+            //   return false;
+            // }
+          //}
+          return true;
     }
 
     convertHoursToMinutes(hour) {

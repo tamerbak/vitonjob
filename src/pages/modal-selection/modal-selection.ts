@@ -81,14 +81,14 @@ export class ModalSelectionPage {
     let isLangExist = false;
     switch (this.params.get('type')) {
       case 'secteur' :
-        this.params.get('selection').jobData.class = 'com.vitonjob.callouts.auth.model.JobData';
+        this.params.get('selection').jobData.class = 'com.vitonjob.callouts.offer.model.JobData';
         this.params.get('selection').jobData.sector = item.libelle;
         this.params.get('selection').jobData.idsector = item.id;
         if (!(this.params.get('selection').jobData.job === ''))
           this.params.get('selection').jobData.job = '';
         break;
       case 'job' :
-        this.params.get('selection').jobData.class = 'com.vitonjob.callouts.auth.model.JobData';
+        this.params.get('selection').jobData.class = 'com.vitonjob.callouts.offer.model.JobData';
         this.params.get('selection').jobData.job = item.libelle;
         this.params.get('selection').jobData.idJob = item.id;
         if (!this.params.get('selection').jobData.sector ||
@@ -125,7 +125,7 @@ export class ModalSelectionPage {
         if (this.params.get('selection').qualities.filter((v) => {
             return (v.libelle.toLowerCase().indexOf(item.libelle.toLowerCase()) > -1)
           }).length == 0) {
-          item.class = 'com.vitonjob.callouts.auth.model.QualityData';
+          item.class = 'com.vitonjob.callouts.offer.model.QualityData';
           this.params.get('selection').qualities.push(item);
         } else {
           isQualityExist = true;
@@ -136,7 +136,7 @@ export class ModalSelectionPage {
           return (v.libelle.toLowerCase().indexOf(item.libelle.toLowerCase()) > -1)
         });
         if (filteredList.length == 0) {
-          item.class = 'com.vitonjob.callouts.auth.model.LanguageData';
+          item.class = 'com.vitonjob.callouts.offer.model.LanguageData';
           this.params.get('selection').languages.push(item);
         } else {
           isLangExist = true;

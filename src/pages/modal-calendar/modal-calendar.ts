@@ -3,6 +3,8 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {ModalSlotPage} from "../modal-slot/modal-slot";
 import {Component} from "@angular/core";
+import {CalendarSlot} from "../../dto/calendar-slot";
+import {Utils} from "../../utils/utils";
 
 /*
  Generated class for the ModalCalendarPage page.
@@ -15,16 +17,7 @@ import {Component} from "@angular/core";
 })
 export class ModalCalendarPage {
 
-    public slots: Array<{
-        'class': "com.vitonjob.callouts.auth.model.CalendarData",
-        idCalendar: number,
-        type: string,
-        date: number,
-        dateEnd: number,
-        startHour: number,
-        endHour: number
-    }>;
-
+    public slots: CalendarSlot[] = [];
     public isObsolete = false;
     public obj: string;
     public projectTarget: string;
@@ -33,8 +26,13 @@ export class ModalCalendarPage {
     public isEmployer: boolean;
     public calendarTheme: number;
 
-    constructor(public nav: NavController, gc: GlobalConfigs, viewCtrl: ViewController,public toast:ToastController,
-                public navParams: NavParams, public alert: AlertController, public modal: ModalController) {
+    constructor(public nav: NavController,
+                    gc: GlobalConfigs,
+                    viewCtrl: ViewController,
+                    public toast:ToastController,
+                    public navParams: NavParams,
+                    public alert: AlertController,
+                    public modal: ModalController) {
         // Set global configs
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
@@ -47,11 +45,11 @@ export class ModalCalendarPage {
         this.viewCtrl = viewCtrl;
         this.calendarTheme = config.calendarTheme;
         this.obj = this.navParams.get("obj");
+
         this.slots = this.navParams.get("slots");
         if (!this.slots) {
             this.slots = [];
         }
-
 
         this.verifySlotsValidity();
         if (this.isObsolete) {
@@ -63,7 +61,7 @@ export class ModalCalendarPage {
      * @Description : Closing the modal page :
      */
     closeModal() {
-        this.viewCtrl.dismiss({slots: null, isObsolete: this.isObsolete});
+        this.viewCtrl.dismiss();
     }
 
     /**
@@ -73,8 +71,8 @@ export class ModalCalendarPage {
         this.viewCtrl.dismiss({slots: this.slots, isObsolete: this.isObsolete});
     }
 
+    //verify if slots are obsolete
     verifySlotsValidity() {
-        //verify if slots are obsolete
         this.isObsolete = false;
         for (let i = 0; i < this.slots.length; i++) {
             let slotDate = this.slots[i].date;
@@ -119,12 +117,16 @@ export class ModalCalendarPage {
      }
 
     showSlotModal() {
-        let slotModel = this.modal.create(ModalSlotPage,{slots:this.slots});
-        slotModel.onDidDismiss(slotData => {
+         //make a copy of this.slots before passing it in argument to the modal
+        let slotsTemp: CalendarSlot = JSON.parse(JSON.stringify(this.slots));
+        let slotModel = this.modal.create(ModalSlotPage,{slots:slotsTemp});
+        slotModel.onDidDismiss((slotData: CalendarSlot)=> {
+            if(Utils.isEmpty(slotData)){
+                return;
+            }
             //TODO: Control date value before adding them.
             let dateExists:boolean = false;
             if (slotData) {
-
                 for (let elm of this.slots){
                     if(
                         (  (this.getDate(elm.date) <= this.getDate(slotData.date)) && (this.getDate(elm.dateEnd) > this.getDate(slotData.date))  )
@@ -144,15 +146,7 @@ export class ModalCalendarPage {
                 }
 
                 if(!dateExists){
-                    this.slots.push({
-                        'class': 'com.vitonjob.callouts.auth.model.CalendarData',
-                        idCalendar: 0,
-                        type: "",
-                        date: slotData.date,
-                        dateEnd: slotData.dateEnd,
-                        startHour: slotData.startHour,
-                        endHour: slotData.endHour
-                    });
+                    this.slots.push(slotData);
                 }
             }
         });

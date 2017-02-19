@@ -1,4 +1,7 @@
 import {AbstractGCallout} from "./generium/abstract-gcallout";
+import {Requirement} from "./requirement";
+import {PharmaSoftwares} from "./pharmaSoftwares";
+import {MissionAddress} from "./missionAddress";
 
 export class Job  extends AbstractGCallout {
   'class': string;
@@ -9,9 +12,15 @@ export class Job  extends AbstractGCallout {
   level: string;
   remuneration: number;
   currency: string;
+  telephone: string;
+  contact: string;
+  status: string;
+  nbPoste: number;
   validated: boolean;
-  prerequisObligatoires: any[];
-  epi: any[];
+  requirementData: Requirement[];
+  equipmentData: any[];
+  pharmaSoftwareData: PharmaSoftwares[];
+  adress: MissionAddress;
 
   constructor() {
     super('com.vitonjob.callouts.offer.model.JobData');
@@ -23,8 +32,13 @@ export class Job  extends AbstractGCallout {
     this.level = 'junior';
     this.remuneration = null;
     this.currency = 'euro';
+    this.nbPoste = 1;
+    this.telephone = "";
+    this.contact = "";
     this.validated = false;
-    this.prerequisObligatoires = [];
-    this.epi = [];
+    this.requirementData = [];
+    this.equipmentData = [];
+    this.pharmaSoftwareData = [];
+    this.adress = new MissionAddress();
   }
 }

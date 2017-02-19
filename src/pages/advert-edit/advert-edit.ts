@@ -87,7 +87,7 @@ export class AdvertEditPage{
       contractForm: ''
     };
 
-    if(navParams.get('fromPage')=="offer-details"){
+    if(navParams.get('fromPage')=="offer-details" && !Utils.isEmpty(navParams.get('idOffer'))){
       this.IdOffer = navParams.get('idOffer');
     }
     //in the case of editing an existing advert

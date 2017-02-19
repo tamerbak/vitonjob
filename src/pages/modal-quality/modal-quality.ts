@@ -4,6 +4,7 @@ import {Configs} from "../../configurations/configs";
 import {ModalSelectionPage} from "../modal-selection/modal-selection";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {Component} from "@angular/core";
+import {Quality} from "../../dto/quality";
 
 /*
  Generated class for the ModalQualityPage page.
@@ -16,24 +17,19 @@ import {Component} from "@angular/core";
 })
 export class ModalQualityPage {
 
-  public qualities: Array<{
-    'class': "com.vitonjob.callouts.auth.model.LanguageData",
-    idQuality: number,
-    libelle: string
-  }>;
+  public qualities: Quality[] = [];
   public projectTarget: string;
   public themeColor: string;
   public viewCtrl: any;
   public isEmployer: boolean;
   public params: any;
-  public offerService: any;
-  public qualityList = [];
+  public qualityList: Quality[] = [];
 
   constructor(public nav: NavController,
               gc: GlobalConfigs,
               viewCtrl: ViewController,
               params: NavParams,
-              os: OffersService,
+              public offerService: OffersService,
               public loading: LoadingController,
               public alert: AlertController, 
               public modal: ModalController) {
@@ -48,7 +44,6 @@ export class ModalQualityPage {
     this.isEmployer = (this.projectTarget === 'employer');
     this.viewCtrl = viewCtrl;
     this.params = params;
-    this.offerService = os;
 
     this.initializeQualityList(params);
   }
@@ -57,7 +52,7 @@ export class ModalQualityPage {
    * @Description : Initializing qualities list
    */
   initializeQualityList(params: NavParams) {
-    let qualities = params.get('qualities');
+    let qualities: Quality[] = params.get('qualities');
     if (qualities && qualities.length > 0)
       this.qualities = qualities;
     else
@@ -85,7 +80,7 @@ export class ModalQualityPage {
    * @description : Closing the modal page :
    */
   closeModal() {
-    this.viewCtrl.dismiss(this.qualities);
+    this.viewCtrl.dismiss();
   }
 
   /**

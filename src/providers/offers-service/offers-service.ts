@@ -15,9 +15,10 @@ import {Requirement} from "../../dto/requirement";
 import {SqliteDBService} from "../sqlite-db-service/sqlite-db-service";
 import {DAOFactory} from "../../dao/data-access-object";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
+import {Adress} from "../../dto/adress";
 
-const OFFER_CALLOUT_ID = 40020;
-
+const OFFER_CALLOUT_ID = 20046;
+const LOADING_OFFERS_CALLOUT = 20043;
 
 /**
  * @author jakjoud abdeslam
@@ -226,60 +227,6 @@ export class OffersService {
         });
     };
 
-
-    /**
-     * @Author TEL
-     * @Description Sending the offer to the remote dataBase
-     * @param projectTarget : project target (jobyer/employer)
-     * @param offerData
-     * @caution ALWAYS CALLED AFTER setOfferInLocal()!
-     */
-    setOfferInRemote(offerData: any, projectTarget: string) {
-        //  Init project parameters
-        this.configuration = Configs.setConfigs(projectTarget);
-        // transforming ancient offer
-        offerData = this.convertOfferToDTO(offerData, projectTarget);
-        offerData.jobData.job = Utils.sqlfyText(offerData.jobData.job);
-        // store in remote database
-        let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
-            new CCalloutArguments('Création/Edition offre', offerData),
-            new CCalloutArguments('Configuration', {
-                'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
-                'mode': offerData.idOffer == 0 ? 'creation' : 'edition',
-                'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
-            })
-        ]);
-
-        return new Promise(resolve => {
-            // We're using Angular Http provider to request the data,
-            // then on the response it'll map the JSON data to a parsed JS object.
-            // Next we process the data and resolve the promise with the new data.
-            this.httpRequest.sendCallOut(payloadFinal, this)
-                .subscribe((data: any) => {
-                    // we've got back the raw data, now generate the core schedule data
-                    // and save the data for later reference
-                    if (!data)
-                        return;
-                    this.addedOffer = data;
-                    //save the video link
-                    let idOffer = data.idOffer;
-                    //this.updateVideoLink(idOffer, offerData.videolink, projectTarget);
-                    //attach id offer to the offer in local
-                    offerData.idOffer = idOffer;
-                    offerData.jobData.job = Utils.inverseSqlfyText(offerData.jobData.job);
-                    this.attachIdOfferInLocal(offerData, projectTarget);
-
-                    if(offerData.jobData.pharmaSoftwares && offerData.jobData.pharmaSoftwares.length != 0){
-                        this.saveSoftwares(idOffer, offerData.jobData.pharmaSoftwares);
-                    }
-
-                    console.log('ADDED OFFER IN SERVER : ' + JSON.stringify(this.addedOffer));
-                    resolve(this.addedOffer);
-                });
-        });
-
-    }
-
     convertOfferToDTO(offerData: any, projectTarget: string): Offer {
         let myOffer = new Offer();
 
@@ -312,7 +259,7 @@ export class OffersService {
         delete myOffer.jobData['nbPoste'];
         delete myOffer.jobData['contact'];
         delete myOffer.jobData['telephone'];
-        myOffer.jobData.epi = [];
+        myOffer.jobData.equipmentData = [];
         myOffer.jobData.class = 'com.vitonjob.callouts.offer.model.JobData';
 
         // Calendar part
@@ -963,7 +910,7 @@ export class OffersService {
     loadLanguages(projectTarget: string) {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
-        let sql = "select pk_user_langue as \"idLanguage\", libelle as libelle, \'junior\' as level from user_langue where dirty='N' order by libelle asc";
+        let sql = "select pk_user_langue as id, libelle as libelle, \'1\' as level from user_langue where dirty='N' order by libelle asc";
         console.log(sql);
         return new Promise(resolve => {
 
@@ -993,7 +940,7 @@ export class OffersService {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
         let type = (projectTarget != "jobyer") ? 'jobyer' : 'employeur';
-        let sql = "select pk_user_indispensable as \"idQuality\", libelle as libelle from user_indispensable where type='" + type + "' and dirty='N'";
+        let sql = "select pk_user_indispensable as id, libelle as libelle from user_indispensable where type='" + type + "' and dirty='N'";
         console.log(sql);
         return new Promise(resolve => {
             // We're using Angular Http provider to request the data,
@@ -1353,62 +1300,26 @@ export class OffersService {
     }
 
     updateOfferJob(offer, projectTarget) {
-        this.configuration = Configs.setConfigs(projectTarget);
-        let currentUserVar = this.configuration.currentUserVar;
-        this.db.get(currentUserVar).then((data: any) => {
-            if (data) {
-                data = JSON.parse((data));
-                if (projectTarget === 'employer') {
-                    let rawData = data.employer;
-                    //console.log(rawData.entreprises);
-                    if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
-                        //adding userId for remote storing
-                        for (let i = 0; i < data.employer.entreprises[0].offers.length; i++) {
-                            if (data.employer.entreprises[0].offers[i].idOffer == offer.idOffer) {
-                                data.employer.entreprises[0].offers[i] = offer;
-                                break;
-                            }
-                        }
 
-                        // Save new offer list in SqlStorage :
-                        this.db.set(currentUserVar, JSON.stringify(data));
-                    }
-                } else { // jobyer
-                    let rawData = data.jobyer;
-                    if (rawData && rawData.offers) {
 
-                        for (let i = 0; i < data.jobyer.offers.length; i++) {
-                            if (data.jobyer.offers[i].idOffer == offer.idOffer) {
-                                data.jobyer.offers[i] = offer;
-                                break;
-                            }
-                        }
-
-                        // Save new offer list in SqlStorage :
-                        this.db.set(currentUserVar, JSON.stringify(data));
-                    }
-                }
-            }
-        });
+        /*this.configuration = Configs.setConfigs(projectTarget);
 
         if (projectTarget == 'jobyer') {
             this.updateOfferJobyerJob(offer).then((data: any) => {
                 this.updateOfferJobyerTitle(offer);
-
             });
-
         } else {
             this.updateOfferEntrepriseJob(offer).then((data: any) => {
                 this.updateOfferEntrepriseTitle(offer);
-                if(offer.jobData.pharmaSoftwares && offer.jobData.pharmaSoftwares.length != 0){
+                /*if(offer.jobData.pharmaSoftwares && offer.jobData.pharmaSoftwares.length != 0){
                     this.deleteSoftwares(offer.idOffer).then((data: any) =>{
                         if(data && data.status == "success"){
                             this.saveSoftwares(offer.idOffer, offer.jobData.pharmaSoftwares);
                         }
                     })
-                }
-            });
-        }
+                }*/
+          //  });
+        //}
     }
 
     updateOfferJobyerJob(offer) {
@@ -1799,7 +1710,7 @@ export class OffersService {
      */
     deleteOffer(offer, projectTarget) {
         this.configuration = Configs.setConfigs(projectTarget);
-        let currentUserVar = this.configuration.currentUserVar;
+        /*let currentUserVar = this.configuration.currentUserVar;
         this.db.get(currentUserVar).then((data: any) => {
             if (data) {
                 data = JSON.parse((data));
@@ -1842,7 +1753,7 @@ export class OffersService {
                     }
                 }
             }
-        });
+        });*/
 
 
         let table = projectTarget == 'jobyer' ? 'user_offre_jobyer' : 'user_offre_entreprise';
@@ -1893,16 +1804,11 @@ export class OffersService {
         let table = projectTarget == 'jobyer' ? "user_offre_jobyer" : "user_offre_entreprise";
         let sql = "update " + table + " set lien_video='" + Utils.sqlfyText(youtubeLink) + "' where pk_" + table + "=" + idOffer;
         return new Promise(resolve => {
-            // We're using Angular Http provider to request the data,
-            // then on the response it'll map the JSON data to a parsed JS object.
-            // Next we process the data and resolve the promise with the new data.
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe((data: any) => {
-                    // we've got back the raw data, now generate the core schedule data
-                    // and save the data for later reference
                     console.log(JSON.stringify(data));
                     this.lienVideo = youtubeLink;
                     resolve(this.lienVideo);
@@ -1927,7 +1833,7 @@ export class OffersService {
     }
 
     selectPrerequis(kw) {
-        let sql = "select libelle, pk_user_prerquis as id from user_prerquis where lower_unaccent(libelle) like lower_unaccent('%" + kw + "%') or lower_unaccent(libelle) % lower_unaccent('" + kw + "')";
+        let sql = "select libelle, pk_user_prerquis as id from user_prerquis where dirty = 'N' and (lower_unaccent(libelle) like lower_unaccent('%" + kw + "%') or lower_unaccent(libelle) % lower_unaccent('" + kw + "'))";
         console.log(sql);
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
@@ -2214,5 +2120,138 @@ export class OffersService {
               });
         });
     }
-}
 
+    loadOffers(userId, role, status, offset, limit){
+        let offerData = {
+            'class': 'com.vitonjob.callouts.loading.offers.OfferToken',
+            'userId': userId.toString(),
+            'role': role,
+            'status': status,
+            'req': 'min',
+            'offset': offset,
+            'limit': limit
+        };
+        let offerDataStr = JSON.stringify(offerData);
+        let encodedDatum = btoa(offerDataStr);
+        let data = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            'id': LOADING_OFFERS_CALLOUT,
+            'args': [{
+                'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                label: 'LoadingOffers',
+                value: encodedDatum
+            }]
+        };
+        let stringData = JSON.stringify(data);
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(Configs.calloutURL, stringData, {headers: headers})
+              .subscribe((data: any)=> {
+                  if(data && data.status == 200 && !Utils.isEmpty(data._body)){
+                      resolve(JSON.parse(data._body).offers);
+                  }
+              });
+        });
+    }
+
+    getOffer(offerId: number, projectTarget: string) {
+        this.configuration = Configs.setConfigs(projectTarget);
+        let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
+            new CCalloutArguments('Details offre', {'class':'com.vitonjob.callouts.offer.model.OfferToken', 'idOffer': offerId}),
+            new CCalloutArguments('Configuration', {
+                'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
+                'mode': 'view',
+                'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
+            })
+        ]);
+
+        return new Promise(resolve => {
+            this.httpRequest.sendCallOut(payloadFinal, this)
+              .subscribe((data: any) => {
+                  if (data) {
+                      resolve(data);
+                  }
+              });
+        });
+    }
+
+    /**
+     * @Author TEL
+     * @Description Sending the offer to the remote dataBase
+     * @param projectTarget : project target (jobyer/employer)
+     * @param offerData
+     * @caution ALWAYS CALLED AFTER setOfferInLocal()!
+     */
+    saveOffer(offerData: any, projectTarget: string) {
+        //  Init project parameters
+        this.configuration = Configs.setConfigs(projectTarget);
+        // store in remote database
+        let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
+            new CCalloutArguments('Création/Edition offre', offerData),
+            new CCalloutArguments('Configuration', {
+                'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
+                'mode': offerData.idOffer == 0 ? 'creation' : 'edition',
+                'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
+            })
+        ]);
+
+        return new Promise(resolve => {
+            this.httpRequest.sendCallOut(payloadFinal, this)
+              .subscribe((data: any) => {
+                  //TODO: Gestion des exception
+                  if (data) {
+                      resolve(data);
+                  }
+              });
+        });
+    }
+
+    saveOfferAddress(idOffer: number, userId: number, adress: Adress, projectTarget: string){
+        this.configuration = Configs.setConfigs(projectTarget);
+        let addressData: any = {
+            'class': 'com.vitonjob.localisation.AdressToken',
+            'street': adress.street,
+            'cp': adress.zipCode,
+            'ville': adress.city,
+            'pays': adress.country,
+            'name': adress.name,
+            'streetNumber': adress.streetNumber,
+            'role': (projectTarget == 'employer' ? 'employeur' : projectTarget),
+            'id': ""+userId+"",
+            'type': 'mission',
+            'offerId': idOffer,
+            'fullAdress': adress.fullAdress
+        };
+        addressData = JSON.stringify(addressData);
+        var encodedAddress = btoa(addressData);
+        var data = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            'id': 20044,
+            'args': [{
+                'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                label: 'Adresse',
+                value: encodedAddress
+            }]
+        };
+        let stringData = JSON.stringify(data);
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(this.configuration.calloutURL, stringData, {headers: headers})
+              .subscribe((data: any) => {
+                  resolve(data);
+              });
+        });
+    }
+    isOfferObsolete(offer){
+        for (let j = 0; j < offer.calendarData.length; j++) {
+            let slotDate = offer.calendarData[j].date;
+            let startH = this.convertToFormattedHour(offer.calendarData[j].startHour);
+            slotDate = new Date(slotDate).setHours(Number(startH.split(':')[0]), Number(startH.split(':')[1]));
+            let dateNow = new Date().getTime();
+            if (slotDate <= dateNow) {
+                return true;
+            }
+        }
+        return false;
+    }
+}

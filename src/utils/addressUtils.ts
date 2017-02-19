@@ -41,5 +41,32 @@ export class AddressUtils {
     return adrObj;
   }
 
+  public static constructFullAddress(name: string, streetNumber: string, street: string, zipCode: string, city: string, country: string) {
+    let fa = '';
+    if (name && name.length > 0) {
+      fa = name;
+    }
 
+    if (streetNumber && streetNumber.length > 0) {
+      fa = fa + ' ' + streetNumber;
+    }
+
+    if (street && street.length > 0) {
+      fa = fa + ' ' + street;
+    }
+
+    if (zipCode && zipCode.length > 0) {
+      fa = fa + ' ' + zipCode;
+    }
+
+    if (city && city.length > 0) {
+      fa = fa + ' ' + city;
+    }
+
+    if (country && country.length > 0) {
+      fa = fa + ' ' + country;
+    }
+
+    return fa.trim();
+  }
 }
