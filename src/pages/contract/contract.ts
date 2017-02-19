@@ -112,7 +112,7 @@ export class ContractPage {
       finSouplesse: "",
       equipements: "",
 
-      interim: "HubJob.fr",
+      interim: "HubJob.com",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: 5,
@@ -129,7 +129,7 @@ export class ContractPage {
       workEndHour: "00:00",
       workHourVariable: "",
       postRisks: "",
-      medicalSurv: "",
+      medicalSurv: "NON",
       epi: false,
       baseSalary: 0,
       MonthlyAverageDuration: "0",
@@ -155,41 +155,7 @@ export class ContractPage {
 
     };
 
-    this.contractService.getJobyerComplementData(this.jobyer, this.projectTarget).then((data) => {
-      if (data && !isUndefined(data)) {
-        let datum = data[0];
-        this.jobyer.id = datum.id;
-        this.jobyer.numSS = datum.numss;
-        this.jobyer.nationaliteLibelle = datum.nationalite;
-        this.jobyer.titreTravail = '';
-        if (datum.cni && datum.cni.length > 0 && datum.cni != "null")
-          this.jobyer.titreTravail = datum.cni;
-        else if (datum.numero_titre_sejour && datum.numero_titre_sejour.length > 0 && datum.numero_titre_sejour != "null")
-          this.jobyer.titreTravail = datum.numero_titre_sejour;
-        if (datum.debut_validite && datum.debut_validite.length > 0 && datum.debut_validite != "null") {
-          let d = new Date(datum.debut_validite);
-          this.jobyer.debutTitreTravail = d;
-        }
-        if (datum.fin_validite && datum.fin_validite.length > 0 && datum.fin_validite != "null") {
-          let d = new Date(datum.fin_validite);
-          this.jobyer.finTitreTravail = d;
-        }
 
-        this.contractData.numeroTitreTravail = this.jobyer.titreTravail;
-        this.contractData.debutTitreTravail = this.dateFormat(this.jobyer.debutTitreTravail);
-        this.contractData.finTitreTravail = this.dateFormat(this.jobyer.finTitreTravail);
-      }
-    });
-
-
-    //  Load recours list
-    this.contractService.loadRecoursList().then((data: any) => {
-      this.recours = data;
-    });
-
-    this.contractService.loadPeriodicites().then((data: any) => {
-      this.periodicites = data;
-    });
 
     // get the currentEmployer
     userService.getCurrentUser(this.projectTarget).then(results => {
@@ -198,18 +164,9 @@ export class ContractPage {
       if (this.currentUser) {
         this.employer = this.currentUser.employer;
         this.companyName = this.employer.entreprises[0].nom;
-        //this.workAdress = this.employer.entreprises[0].workAdress.fullAdress;
         this.hqAdress = this.employer.entreprises[0].siegeAdress.fullAdress;
         let civility = this.currentUser.titre;
         this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
-        this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: {libelle: string,adresse: string,code_postal: any;}) => {
-          if (data && data != null) {
-
-            this.contractData.centreMedecineEntreprise = data.libelle;
-            this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
-          }
-
-        });
       }
 
       //  check if there is a current offer
@@ -244,18 +201,6 @@ export class ContractPage {
           trial = 5;
         this.contractData.trialPeriod = trial;
 
-        this.service.getRates().then((data: Array<any>) => {
-
-          for (let i = 0; i < data.length; i++) {
-            if (this.currentOffer.jobData.remuneration < data[i].taux_horaire) {
-              this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
-              this.contractData.elementsCotisation = this.rate;
-              break;
-            }
-          }
-
-
-        });
 
 
         this.initContract();
@@ -391,7 +336,7 @@ export class ContractPage {
     let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
     if (contractLength <= 1)
-      trial = 0;
+      trial = 1;
     else if (contractLength < 30)
       trial = 2;
     else if (contractLength < 60)
@@ -418,7 +363,7 @@ export class ContractPage {
       debutSouplesse: "",
       finSouplesse: "",
       equipements: "",
-      interim: "HubJob.fr",
+      interim: "HubJob.com",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: trial,
@@ -435,7 +380,7 @@ export class ContractPage {
       workEndHour: "00:00",
       workHourVariable: "",
       postRisks: "",
-      medicalSurv: "",
+      medicalSurv: "NON",
       epi: false,
       baseSalary: this.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2),
       MonthlyAverageDuration: "0",
@@ -462,20 +407,52 @@ export class ContractPage {
       periodicite: ''
     };
 
-    console.log(JSON.stringify(this.contractData));
+    let email = this.jobyer.email;
+    let tel = this.jobyer.tel;
+    let entrepriseId = this.employer.entreprises[0].id;
+    let offerId = this.currentOffer.idOffer;
+    this.contractService.prepareRecruitement(entrepriseId, email, tel, offerId).then((resp:any)=>{
 
-    this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: {libelle: string, adresse: string, code_postal: string}) => {
-      if (data && data != null) {
-
-        this.contractData.centreMedecineEntreprise = data.libelle;
-        this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
+      let datum = resp.jobyer;
+      this.jobyer.id = datum.id;
+      this.jobyer.numSS = datum.numss;
+      this.jobyer.nationaliteLibelle = datum.nationalite;
+      this.jobyer.titreTravail = '';
+      if (datum.cni && datum.cni.length > 0 && datum.cni != "null")
+        this.jobyer.titreTravail = datum.cni;
+      else if (datum.numero_titre_sejour && datum.numero_titre_sejour.length > 0 && datum.numero_titre_sejour != "null")
+        this.jobyer.titreTravail = datum.numero_titre_sejour;
+      if (datum.debut_validite && datum.debut_validite.length > 0 && datum.debut_validite != "null") {
+        let d = new Date(datum.debut_validite);
+        this.jobyer.debutTitreTravail = d;
+      }
+      if (datum.fin_validite && datum.fin_validite.length > 0 && datum.fin_validite != "null") {
+        let d = new Date(datum.fin_validite);
+        this.jobyer.finTitreTravail = d;
       }
 
+      this.contractData.numeroTitreTravail = this.jobyer.titreTravail;
+      this.contractData.debutTitreTravail = this.dateFormat(this.jobyer.debutTitreTravail);
+      this.contractData.finTitreTravail = this.dateFormat(this.jobyer.finTitreTravail);
+      this.recours = resp.recours;
+      this.periodicites = resp.periodicites;
+
+      this.contractData.centreMedecineEntreprise = resp.medecine.libelle;
+      this.contractData.adresseCentreMedecineEntreprise = resp.medecine.adresse + ' ' + resp.medecine.code_postal;
+
+      for (let i = 0; i < resp.rates.length; i++) {
+        if (this.currentOffer.jobData.remuneration < resp.rates[i].taux_horaire) {
+          this.rate = parseFloat(resp.rates[i].coefficient) * this.currentOffer.jobData.remuneration;
+          this.contractData.elementsCotisation = this.rate;
+          break;
+        }
+      }
+
+      this.workAdress = resp.adress.adresse_google_maps;
+      this.contractData.MonthlyAverageDuration = resp.duree_collective;
     });
 
-    this.offersService.loadOfferAdress(this.currentOffer.idOffer, 'employer').then(adr => {
-      this.workAdress = adr
-    });
+    console.log(JSON.stringify(this.contractData));
   }
 
   parseNumber(str) {

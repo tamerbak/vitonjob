@@ -58,7 +58,7 @@
             </div>
         </div>
     </ion-list>
-    <ion-list text-wrap no-lines [hidden]="isJobFound || lookingForJob">
+    <ion-list text-wrap no-lines [hidden]="isCity.activated || isJobFound || lookingForJob">
         <ion-item>
             <ion-label color="danger">
                 * Veuillez saisir un mot-clé valide
@@ -87,7 +87,7 @@
             </ion-item>
         </ion-list>
     </ion-item>
-    <div [hidden]="isCity.found"
+    <div [hidden]="!isCity.activated || isCity.found"
          style="color:red">
         <ion-icon name="md-arrow-dropup"></ion-icon>
         Vérifiez l'orthographe, cette ville n'existe pas et/ou ne comporte aucune offre

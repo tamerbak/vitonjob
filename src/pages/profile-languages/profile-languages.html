@@ -17,7 +17,7 @@
 
       </ion-select>
     </ion-item>
-    <div>
+    <div *ngIf="projectTarget=='jobyer'">
         <ion-list radio-group [(ngModel)]="level">
             <ion-list-header style="margin-left: 0; padding: 0 0 0 0;" color="primary">
                 <h5 style="margin-bottom: 0; margin-top: auto">
@@ -43,7 +43,7 @@
   </ion-list>
   <ion-list>
     <ion-item *ngFor="let q of savedLangues">
-      <label>{{q.libelle + ' - ' + q.level  }}</label>
+      <label>{{q.libelle + (projectTarget=='jobyer'? (' - ' + q.level) :'' )}}</label>
       <button ion-button small item-right danger (click)="removeLangue(q)" color="vojgrey">
         <ion-icon name="remove-circle"></ion-icon>
       </button>
