@@ -27,9 +27,7 @@ export class ModalTrackMissionPage {
     //let config = Configs.setConfigs(this.projectTarget);
     // Set local variables and messages
     this.isEmployer = (this.projectTarget == 'employer');
-
     this.initialOpt = navParams.get('optionMission');
-    console.log(this.initialOpt)
     this.options = this.initialOpt;
   }
 
