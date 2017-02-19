@@ -298,7 +298,7 @@ export class ModalJobPage {
     //case of editing an existing offer
     if(!this.firstInit){
       //initializing mission address
-      if (this.jobData.adress && this.jobData.adress.id != 0) {
+      if (this.jobData.adress && !Utils.isEmpty(this.jobData.adress.fullAdress)) {
         this.searchData = this.jobData.adress.fullAdress.trim();
         this.name = this.jobData.adress.name;
         this.street = this.jobData.adress.street;
