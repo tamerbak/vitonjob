@@ -85,6 +85,8 @@ export class OfferDetailPage {
   public isAdvertAttached:boolean = false;
   public isAdvertRequestLoaded:boolean = false;
 
+  public isObsolete: boolean;
+
   constructor(public nav: NavController,
               public gc: GlobalConfigs,
               public params: NavParams,
@@ -183,12 +185,12 @@ export class OfferDetailPage {
     });*/
 
 
-    this.storage.get(config.currentUserVar).then((value) => {
+    /*this.storage.get(config.currentUserVar).then((value) => {
       if (value) {
         let currentUser = JSON.parse(value);
         this.idTiers = this.projectTarget == 'employer' ? currentUser.employer.entreprises[0].id : currentUser.jobyer.id;
       }
-    });
+    });*/
 
     // this.advertService.getAdvertByIdOffer(this.offer.idOffer).then((res:any)=>{
     //   //debugger;
@@ -212,8 +214,10 @@ export class OfferDetailPage {
      }
 
      });*/
+    this.isObsolete = this.offer.obsolete;
     this.offerService.getOffer(this.offer.idOffer, this.projectTarget).then((data: any) => {
       this.offer = data;
+      this.offer.obsolete = this.isObsolete;
       this.setVideoLink();
     });
   }
@@ -409,12 +413,12 @@ export class OfferDetailPage {
       //data.validated sert à vérifier si les données de la modale on été valide
       this.modified.isJob = data.validated;
       if (this.modified.isJob) {
-        let offerTemp = JSON.parse(JSON.stringify(this.offer));
+        let offerTemp: Offer = JSON.parse(JSON.stringify(this.offer));
         offerTemp.jobData = data;
         offerTemp.title = data.job + ' ' + ((data.level != 'junior') ? 'Expérimenté' : 'Débutant');
-
         this.offerService.saveOffer(offerTemp, this.projectTarget).then((data: any) => {
           this.offer = data;
+          this.offer.obsolete = this.isObsolete;
         });
       } else {
         return;
@@ -438,6 +442,8 @@ export class OfferDetailPage {
         this.offer.obsolete = data.isObsolete;
         this.offerService.saveOffer(this.offer, this.projectTarget).then((data: any) => {
           this.offer = data;
+          this.isObsolete = this.offerService.isOfferObsolete(this.offer);
+          this.offer.obsolete = this.isObsolete;
         });
       }
     });
@@ -458,6 +464,7 @@ export class OfferDetailPage {
       this.offer.qualityData = data;
       this.offerService.saveOffer(this.offer, this.projectTarget).then((data: any) => {
         this.offer = data;
+        this.offer.obsolete = this.isObsolete;
       });
     });
     modal.present();
@@ -477,6 +484,7 @@ export class OfferDetailPage {
       this.offer.languageData = data;
       this.offerService.saveOffer(this.offer, this.projectTarget).then((data: any) => {
         this.offer = data;
+        this.offer.obsolete = this.isObsolete;
       });
     });
     modal.present();
@@ -534,7 +542,7 @@ export class OfferDetailPage {
           text: 'Oui',
           handler: () => {
             console.log('Agree clicked');
-              let loading = this.loading.create({content:"Merci de patienter..."});
+            let loading = this.loading.create({content:"Merci de patienter..."});
             loading.present();
             let offer = this.offer;
             offer.title = this.offer.title + " (Copie)";
@@ -560,10 +568,13 @@ export class OfferDetailPage {
 
   changePrivacy() {
     let statut = this.offer.visible ? 'Non' : 'Oui';
+    let loading = this.loading.create({content:"Merci de patienter..."});
+    loading.present();
     this.offerService.updateOfferStatut(this.offer.idOffer, statut, this.projectTarget).then(()=> {
+      loading.dismiss();
       console.log('offer status changed successfuly');
       this.offer.visible = (statut == 'Non' ? false : true);
-      this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
+      //this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
     });
   }
 
@@ -634,7 +645,6 @@ export class OfferDetailPage {
       }
       console.log('offer youtube link updated successfuly');
       this.offer.videolink = this.youtubeLink;
-      this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
     });
   }
 

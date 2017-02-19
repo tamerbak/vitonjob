@@ -1804,16 +1804,11 @@ export class OffersService {
         let table = projectTarget == 'jobyer' ? "user_offre_jobyer" : "user_offre_entreprise";
         let sql = "update " + table + " set lien_video='" + Utils.sqlfyText(youtubeLink) + "' where pk_" + table + "=" + idOffer;
         return new Promise(resolve => {
-            // We're using Angular Http provider to request the data,
-            // then on the response it'll map the JSON data to a parsed JS object.
-            // Next we process the data and resolve the promise with the new data.
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
                 .map(res => res.json())
                 .subscribe((data: any) => {
-                    // we've got back the raw data, now generate the core schedule data
-                    // and save the data for later reference
                     console.log(JSON.stringify(data));
                     this.lienVideo = youtubeLink;
                     resolve(this.lienVideo);
@@ -2246,5 +2241,17 @@ export class OffersService {
                   resolve(data);
               });
         });
+    }
+    isOfferObsolete(offer){
+        for (let j = 0; j < offer.calendarData.length; j++) {
+            let slotDate = offer.calendarData[j].date;
+            let startH = this.convertToFormattedHour(offer.calendarData[j].startHour);
+            slotDate = new Date(slotDate).setHours(Number(startH.split(':')[0]), Number(startH.split(':')[1]));
+            let dateNow = new Date().getTime();
+            if (slotDate <= dateNow) {
+                return true;
+            }
+        }
+        return false;
     }
 }

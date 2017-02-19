@@ -195,24 +195,7 @@ export class OfferListPage {
                 offer.correspondantsCount = -1;
 
                 //verify if offer is obsolete
-                for (let j = 0; j < offer.calendarData.length; j++) {
-                    // case of leaving page before finishing the subscription
-                    if (this.isLeaving) {
-                        console.log("leaving request subscription");
-                        return;
-                    }
-
-                    let slotDate = offer.calendarData[j].date;
-                    let startH = this.offerService.convertToFormattedHour(offer.calendarData[j].startHour);
-                    slotDate = new Date(slotDate).setHours(Number(startH.split(':')[0]), Number(startH.split(':')[1]));
-                    let dateNow = new Date().getTime();
-                    if (slotDate <= dateNow) {
-                        offer.obsolete = true;
-                        break;
-                    } else {
-                        offer.obsolete = false;
-                    }
-                }
+                offer.obsolete = this.offerService.isOfferObsolete(offer);
 
                 //l'objet offer retourné par le callout ne contient meme pas la propriete idHunter, alors pourquoi on fait cette verification ?? (offer.idHunter sera tjrs undefined)
                 if (offer.idHunter && !(offer.idHunter === 0)) {
@@ -287,6 +270,7 @@ export class OfferListPage {
      * @Description: Navigating to detail offer page
      */
     goToDetailOffer(offer) {
+        this.initializingView();
         this.nav.push(OfferDetailPage, {selectedOffer: offer});
     }
 
@@ -365,6 +349,22 @@ export class OfferListPage {
             duration: duration * 1000
         });
         toast.present();
+    }
+
+    initializingView(){
+        this.offerList = [];
+        this.publicList.length = 0;
+        this.privateList.length = 0;
+        this.huntedList.length = 0;
+
+        this.isLeaving = true;
+
+        this.publicOffset = 0;
+        this.privateOffset = 0;
+        this.huntedOffset = 0;
+
+        this.recentActiveSegment = "";
+        this.offersType = "public";
     }
 
     ionViewWillLeave() {
