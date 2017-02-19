@@ -17,7 +17,7 @@ import {DAOFactory} from "../../dao/data-access-object";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Adress} from "../../dto/adress";
 
-const OFFER_CALLOUT_ID = 20046;
+const OFFER_CALLOUT_ID = 20047;
 const LOADING_OFFERS_CALLOUT = 20043;
 
 /**
