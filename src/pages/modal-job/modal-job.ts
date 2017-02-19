@@ -24,7 +24,7 @@ import {Utils} from "../../utils/utils";
 import {Job} from "../../dto/job";
 import {PharmaSoftwares} from "../../dto/pharmaSoftwares";
 import {AddressService} from "../../providers/address-service/address-service"
-import {Adress} from "../../dto/adress";
+import {MissionAddress} from "../../dto/missionAddress";
 
 declare let require: any;
 
@@ -299,21 +299,21 @@ export class ModalJobPage {
     if(!this.firstInit){
       //initializing mission address
       if (this.jobData.adress && this.jobData.adress.id != 0) {
-        this.searchData = this.jobData.adress.fullAdress;
+        this.searchData = this.jobData.adress.fullAdress.trim();
         this.name = this.jobData.adress.name;
         this.street = this.jobData.adress.street;
         this.streetNumber = this.jobData.adress.streetNumber;
-        this.zipCode = this.jobData.adress.zipCode;
-        this.city = this.jobData.adress.city;
-        this.country = this.jobData.adress.country;
+        this.zipCode = this.jobData.adress.cp;
+        this.city = this.jobData.adress.ville;
+        this.country = this.jobData.adress.pays;
       }
       if(this.isEmployer) {
         //initializing pharma softwares
-        if (this.jobData.pharmaSoftwares)
-          this.savedSoftwares = this.jobData.pharmaSoftwares;
+        if (this.jobData.pharmaSoftwareData)
+          this.savedSoftwares = this.jobData.pharmaSoftwareData;
         //initializing prerequis
-        if (this.jobData.prerequisObligatoires)
-          this.prerequisObligatoires = this.jobData.prerequisObligatoires;
+        if (this.jobData.requirementData)
+          this.prerequisObligatoires = this.jobData.requirementData;
       }
       //case of a new offer
     }else{
@@ -329,7 +329,7 @@ export class ModalJobPage {
             //initializing address
             this.searchData = '';
             let siegeAddress = currentUser.employer.entreprises[0].siegeAdress;
-            this.searchData = siegeAddress.fullAdress;
+            this.searchData = siegeAddress.fullAdress.trim();
             this.name = siegeAddress.name;
             this.streetNumber = siegeAddress.streetNumber;
             this.street = siegeAddress.street;
@@ -338,7 +338,7 @@ export class ModalJobPage {
             this.country = siegeAddress.country;
           } else {
             let personalAdress = currentUser.jobyer.personnalAdress;
-            this.searchData = personalAdress.fullAdress;
+            this.searchData = personalAdress.fullAdress.trim();
             this.name = personalAdress.name;
             this.streetNumber = personalAdress.streetNumber;
             this.street = personalAdress.street;
@@ -461,25 +461,27 @@ export class ModalJobPage {
     }
 
     if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
-      this.jobData.prerequisObligatoires = this.prerequisObligatoires;
+      this.jobData.requirementData = this.prerequisObligatoires;
     } else {
-      this.jobData.prerequisObligatoires = [];
+      this.jobData.requirementData = [];
     }
 
-    this.jobData.pharmaSoftwares = this.savedSoftwares;
+    this.jobData.pharmaSoftwareData = this.savedSoftwares;
 
     //TODO: cette partie n'est pas complète, il faut ajouter le nombre de poste pour les employeur ...
     this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === '') && !(this.jobData.remuneration <= 0) && !Utils.isEmpty(this.jobData.remuneration));
 
     //Adresse
-    this.jobData.adress = new Adress();
-    this.jobData.adress.fullAdress = this.searchData;
-    this.jobData.adress.name = this.name;
-    this.jobData.adress.street = this.street;
-    this.jobData.adress.streetNumber =  this.streetNumber;
-    this.jobData.adress.zipCode = this.zipCode;
-    this.jobData.adress.city = this.city;
-    this.jobData.adress.country = this.country;
+    // removeDiacritics("Iлｔèｒｎåｔïｏｎɑｌíƶａｔï߀ԉ");
+    let removeDiacritics = require('diacritics').remove;
+    this.jobData.adress = new MissionAddress();
+    this.jobData.adress.fullAdress = removeDiacritics(this.searchData.trim());
+    this.jobData.adress.name = removeDiacritics(this.name);
+    this.jobData.adress.street = removeDiacritics(this.street);
+    this.jobData.adress.streetNumber =  removeDiacritics(this.streetNumber);
+    this.jobData.adress.cp = removeDiacritics(this.zipCode);
+    this.jobData.adress.ville= removeDiacritics(this.city);
+    this.jobData.adress.pays = this.country;
 
     this.viewCtrl.dismiss(this.jobData);
   }

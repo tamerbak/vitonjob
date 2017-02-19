@@ -35,7 +35,6 @@ import {Utils} from "../../utils/utils";
 import {CalendarSlot} from "../../dto/calendar-slot";
 import {Quality} from "../../dto/quality";
 import {Language} from "../../dto/language";
-import {AddressUtils} from "../../utils/addressUtils";
 
 /*
  Generated class for the OfferDetailPage page.
@@ -401,8 +400,7 @@ export class OfferDetailPage {
    * Create Job modal
    */
   showJobModal() {
-    let jobData: Job = this.offerService.forgeJobDataFromOfferData(this.offer);
-
+    let jobData = JSON.parse(JSON.stringify(this.offer.jobData));
     let modal = this.modal.create(ModalJobPage, {jobData: jobData});
     modal.onDidDismiss((data: Job) => {
       if(Utils.isEmpty(data)){
@@ -411,16 +409,13 @@ export class OfferDetailPage {
       //data.validated sert à vérifier si les données de la modale on été valide
       this.modified.isJob = data.validated;
       if (this.modified.isJob) {
-        let offerToUpdate: Offer = this.offerService.forgeOfferDataFromJobData(this.offer, data);
-        this.offerService.saveOffer(offerToUpdate, this.projectTarget).then((data: any) => {
-          //TODO: gestion des exception
-        });
+        let offerTemp = JSON.parse(JSON.stringify(this.offer));
+        offerTemp.jobData = data;
+        offerTemp.title = data.job + ' ' + ((data.level != 'junior') ? 'Expérimenté' : 'Débutant');
 
-        /*if (this.offer.jobData.adress && this.offer.jobData.adress.zipCode && this.offer.jobData.adress.zipCode.length > 0) {
-          this.fullAddress = data.adress.fullAddress;
-          this.offerService.saveOfferAdress(this.offer, this.offer.jobData.adress, this.offer.jobData.adress.streetNumber, this.offer.jobData.adress.street,
-            this.offer.jobData.adress.city, this.offer.jobData.adress.zipCode, this.offer.jobData.adress.name, this.offer.jobData.adress.country, this.idTiers, this.projectTarget);
-        }*/
+        this.offerService.saveOffer(offerTemp, this.projectTarget).then((data: any) => {
+          this.offer = data;
+        });
       } else {
         return;
       }
@@ -441,7 +436,9 @@ export class OfferDetailPage {
       }else{
         this.offer.calendarData = data.slots;
         this.offer.obsolete = data.isObsolete;
-        this.offerService.saveOffer(this.offer, this.projectTarget);
+        this.offerService.saveOffer(this.offer, this.projectTarget).then((data: any) => {
+          this.offer = data;
+        });
       }
     });
     modal.present();
@@ -459,7 +456,9 @@ export class OfferDetailPage {
         return;
       }
       this.offer.qualityData = data;
-      this.offerService.saveOffer(this.offer, this.projectTarget);
+      this.offerService.saveOffer(this.offer, this.projectTarget).then((data: any) => {
+        this.offer = data;
+      });
     });
     modal.present();
   }
@@ -476,7 +475,9 @@ export class OfferDetailPage {
         return;
       }
       this.offer.languageData = data;
-      this.offerService.saveOffer(this.offer, this.projectTarget);
+      this.offerService.saveOffer(this.offer, this.projectTarget).then((data: any) => {
+        this.offer = data;
+      });
     });
     modal.present();
   }
@@ -682,6 +683,7 @@ export class OfferDetailPage {
       }
     });
   }
+
   gotoJobyerInterestList(){
     this.nav.push(AdvertJobyerListPage, {offer: this.offer});
   }

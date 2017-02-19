@@ -165,7 +165,8 @@ export class OfferAddPage {
             this.storage.get('jobData').then(value => {
                 value = JSON.parse(value);
                 if (value) {
-                    this.offerToBeAdded = this.offerService.forgeOfferDataFromJobData(this.offerToBeAdded, value);
+                    this.offerToBeAdded.title = value.job + ' ' + ((value.level != 'junior') ? 'Expérimenté' : 'Débutant');
+                    this.offerToBeAdded.jobData = value;
                     this.validated.isJob = value.validated;
                     this.steps.isCalendar = this.validated.isJob;
                     this.steps.styleDisableCalendar.opacity = (!this.steps.isCalendar && !this.validated.isJob) ? 0.5 : 1;
@@ -344,14 +345,6 @@ export class OfferAddPage {
                     this.advertService.updateOfferWithAdvert(this.advertId, offer.idOffer).then((data: any) => {
                         console.log("offer updated with advert id");
                     });
-                }
-
-                /*
-                Adresse
-                 */
-                if (this.jobData && this.jobData.adress) {
-                    this.offerService.saveOfferAdress(offer, this.jobData.adress, this.jobData.adress.streetNumber, this.jobData.adress.street,
-                        this.jobData.adress.city, this.jobData.adress.zipCode, this.jobData.adress.name, this.jobData.adress.country, this.idTiers, this.projectTarget);
                 }
 
                 this.clearOfferStorage();

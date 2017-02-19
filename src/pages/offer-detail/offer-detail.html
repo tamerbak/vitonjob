@@ -52,13 +52,13 @@
                     </li>
                     <li><span style="font-weight: bold">Rémunération </span>: {{offer.jobData.remuneration}} €/h</li>
                     <li *ngIf="isEmployer"><span style="font-weight: bold">Nombre de postes </span>:
-                        {{offer.nbPoste}}
+                        {{offer.jobData.nbPoste}}
                     </li>
                     <li *ngIf="isEmployer"><span style="font-weight: bold">Contact sur place </span>:
-                        {{offer.contact}}
+                        {{offer.jobData.contact}}
                     </li>
                     <li *ngIf="isEmployer"><span style="font-weight: bold">N° Téléphone </span>:
-                        {{offer.telephone}}
+                        {{offer.jobData.telephone}}
                     </li>
                 </ul>
             </div>
@@ -221,7 +221,7 @@
             <button ion-button icon-left outline (click)="goToAdvertDetails()">
                 <ion-icon name="add"></ion-icon>
                 <!--<ion-spinner *ngIf="!isAdvertRequestLoaded"></ion-spinner>-->
-                Plus de Détails...
+                Plus de détails...
             </button>
         </ion-col>
     </ion-list>

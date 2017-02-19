@@ -11,14 +11,13 @@ import {HttpRequestHandler} from "../../http/http-request-handler";
 import {CalendarSlot} from "../../dto/calendar-slot";
 import {Quality} from "../../dto/quality";
 import {Language} from "../../dto/language";
-import {Job} from "../../dto/job";
 import {Requirement} from "../../dto/requirement";
 import {SqliteDBService} from "../sqlite-db-service/sqlite-db-service";
 import {DAOFactory} from "../../dao/data-access-object";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Adress} from "../../dto/adress";
 
-const OFFER_CALLOUT_ID = 20042;
+const OFFER_CALLOUT_ID = 20046;
 const LOADING_OFFERS_CALLOUT = 20043;
 
 /**
@@ -260,7 +259,7 @@ export class OffersService {
         delete myOffer.jobData['nbPoste'];
         delete myOffer.jobData['contact'];
         delete myOffer.jobData['telephone'];
-        myOffer.jobData.epi = [];
+        myOffer.jobData.equipmentData = [];
         myOffer.jobData.class = 'com.vitonjob.callouts.offer.model.JobData';
 
         // Calendar part
@@ -2174,9 +2173,9 @@ export class OffersService {
         return new Promise(resolve => {
             this.httpRequest.sendCallOut(payloadFinal, this)
               .subscribe((data: any) => {
-                  if (!data)
-                      return;
-                  resolve(data);
+                  if (data) {
+                      resolve(data);
+                  }
               });
         });
     }
@@ -2205,17 +2204,14 @@ export class OffersService {
             this.httpRequest.sendCallOut(payloadFinal, this)
               .subscribe((data: any) => {
                   //TODO: Gestion des exception
-                  if (!data) {
-                      return;
-                  }else{
-                      this.saveOfferAddress(data.idOffer, offerData.entrepriseId, offerData.jobData.adress, projectTarget);
+                  if (data) {
+                      resolve(data);
                   }
-                  resolve(data);
               });
         });
     }
 
-    saveOfferAddress(idOffer: number, entrepriseId: number, adress: Adress, projectTarget: string){
+    saveOfferAddress(idOffer: number, userId: number, adress: Adress, projectTarget: string){
         this.configuration = Configs.setConfigs(projectTarget);
         let addressData: any = {
             'class': 'com.vitonjob.localisation.AdressToken',
@@ -2226,7 +2222,7 @@ export class OffersService {
             'name': adress.name,
             'streetNumber': adress.streetNumber,
             'role': (projectTarget == 'employer' ? 'employeur' : projectTarget),
-            'id': ""+entrepriseId+"",
+            'id': ""+userId+"",
             'type': 'mission',
             'offerId': idOffer,
             'fullAdress': adress.fullAdress
@@ -2235,7 +2231,7 @@ export class OffersService {
         var encodedAddress = btoa(addressData);
         var data = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            'id': 20041,
+            'id': 20044,
             'args': [{
                 'class': 'fr.protogen.masterdata.model.CCalloutArguments',
                 label: 'Adresse',
@@ -2250,35 +2246,5 @@ export class OffersService {
                   resolve(data);
               });
         });
-    }
-
-    forgeJobDataFromOfferData(offer: Offer){
-        //jobData object to return
-        let jobData: Job;
-        let offerTemp: Offer = (JSON.parse(JSON.stringify(offer)));
-        jobData = (JSON.parse(JSON.stringify(offerTemp.jobData)));
-        //TODO: nbPoste, contact and telephone should be properties of jobData in the callout
-        jobData.nbPoste = offerTemp.nbPoste;
-        jobData.contact = offerTemp.contact;
-        jobData.telephone = offerTemp.telephone;
-        jobData.prerequisObligatoires = offerTemp.requirementData;
-        jobData.pharmaSoftwares = (!offerTemp.pharmaSoftwareData ? [] : offerTemp.pharmaSoftwareData);
-        jobData.adress = offerTemp.adresse;
-        jobData.adress.class = "com.vitonjob.callouts.offer.model.AdressData";
-        return jobData;
-    }
-
-    forgeOfferDataFromJobData(offer: Offer, jobData: Job){
-        offer.jobData = jobData;
-        offer.nbPoste = +jobData.nbPoste;
-        offer.contact = jobData.contact;
-        offer.telephone = jobData.telephone;
-        offer.title = jobData.job + ' ' + ((jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
-        //offer.adresse = jobData.adress;
-        offer.requirementData = jobData.prerequisObligatoires;
-        offer.pharmaSoftwareData = jobData.pharmaSoftwares;
-        offer.jobData.adress.class = "com.vitonjob.callouts.offer.model.AdressData";
-        delete offer['adresse'];
-        return offer;
     }
 }
