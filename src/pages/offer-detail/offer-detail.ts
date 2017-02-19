@@ -542,23 +542,13 @@ export class OfferDetailPage {
           text: 'Oui',
           handler: () => {
             console.log('Agree clicked');
-            let loading = this.loading.create({content:"Merci de patienter..."});
-            loading.present();
-            let offer = this.offer;
+            let offer = JSON.parse(JSON.stringify(this.offer));
             offer.title = this.offer.title + " (Copie)";
             offer.idOffer = 0;
-            this.offerService.setOfferInLocal(offer, this.projectTarget)
-              .then(()=> {
-                console.log('••• Adding offer : local storing success!');
-
-                this.offerService.saveOffer(offer, this.projectTarget)
-                  .then((data: any) => {
-                    console.log('••• Adding offer : remote storing success!');
-
-                    loading.dismiss();
-                    this.nav.setRoot(OfferListPage);
-                  })
-              });
+            this.offerService.saveOffer(offer, this.projectTarget).then((data: any) => {
+                console.log('••• Adding offer : remote storing success!');
+                this.nav.setRoot(OfferListPage);
+            });
           }
         }
       ]
@@ -654,11 +644,14 @@ export class OfferDetailPage {
 
   autoSearchMode() {
     let mode = this.offer.rechercheAutomatique ? "Non" : "Oui";
+    let loading = this.loading.create({content:"Merci de patienter..."});
+    loading.present();
     this.offerService.saveAutoSearchMode(this.projectTarget, this.offer.idOffer, mode).then((data: {status: string}) => {
+      loading.dismiss();
       if (data && data.status == "success") {
         this.offer.rechercheAutomatique = !this.offer.rechercheAutomatique;
-        this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
-        this.nav.pop();
+        //this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
+        //this.nav.pop();
       } else {
         this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
       }

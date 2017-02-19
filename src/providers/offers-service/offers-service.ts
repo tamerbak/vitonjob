@@ -1710,7 +1710,7 @@ export class OffersService {
      */
     deleteOffer(offer, projectTarget) {
         this.configuration = Configs.setConfigs(projectTarget);
-        let currentUserVar = this.configuration.currentUserVar;
+        /*let currentUserVar = this.configuration.currentUserVar;
         this.db.get(currentUserVar).then((data: any) => {
             if (data) {
                 data = JSON.parse((data));
@@ -1753,7 +1753,7 @@ export class OffersService {
                     }
                 }
             }
-        });
+        });*/
 
 
         let table = projectTarget == 'jobyer' ? 'user_offre_jobyer' : 'user_offre_entreprise';
