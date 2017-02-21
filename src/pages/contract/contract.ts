@@ -151,7 +151,8 @@ export class ContractPage {
       elementsCotisation: 0.0,
       elementsNonCotisation: 10.0,
       titre: '',
-      periodicite: ''
+      periodicite: '',
+      epiProvidedBy : ''
 
     };
 
@@ -404,7 +405,8 @@ export class ContractPage {
       elementsCotisation: this.rate,
       elementsNonCotisation: 10.0,
       titre: this.currentOffer.title,
-      periodicite: ''
+      periodicite: '',
+      epiProvidedBy: ''
     };
 
     let email = this.jobyer.email;

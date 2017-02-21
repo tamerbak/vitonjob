@@ -216,9 +216,18 @@
             <ion-input type="text" [(ngModel)]="contractData.equipements"></ion-input>
         </ion-item>
 
-        <ion-item class="contract-item">
+        <!--ion-item class="contract-item">
             <ion-label>Equipements fournis par ETT</ion-label>
             <ion-checkbox [(ngModel)]="contractData.epi"></ion-checkbox>
+        </ion-item-->
+        <ion-item class="contract-item">
+            <ion-label>Fourni par</ion-label>
+            <ion-select [(ngModel)]="contractData.epiProvidedBy">
+                <ion-option value="Le client">Le client</ion-option>
+                <ion-option value="L'entreprise de travail temporaire">L'entreprise de travail temporaire</ion-option>
+                <ion-option value="Le salarié">Le salarié</ion-option>
+            </ion-select>
+
         </ion-item>
 
     </ion-list>

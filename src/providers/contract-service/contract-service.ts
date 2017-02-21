@@ -172,7 +172,8 @@ export class ContractService {
       " equipements_fournis_par_l_ai," +
       " fk_user_periodicite_des_paiements," +
       " embauche_autorise," +
-      " rapatriement_a_la_charge_de_l_ai" +
+      " rapatriement_a_la_charge_de_l_ai," +
+      " epi" +
       ")" +
       " VALUES ("
       + "'" + contract.missionStartDate + "',"
@@ -211,7 +212,8 @@ export class ContractService {
       + "'" + epi + "',"
       + "'" + contract.periodicite + "',"
       + "'OUI',"
-      + "'OUI'"
+      + "'OUI',"
+      + "'"+this.sqlfyText(contract.epiProvidedBy)+"'"
       + ")"
       + " RETURNING pk_user_contrat";
 

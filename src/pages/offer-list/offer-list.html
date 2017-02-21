@@ -36,7 +36,7 @@
 
     <div [ngSwitch]="offersType">
         <ion-list *ngSwitchCase="offersType" text-wrap>
-            <ion-item (click)="goToDetailOffer(item)" [color]="item.color" no-lines *ngFor="let item of offerList">
+            <ion-item [color]="item.color" no-lines *ngFor="let item of offerList">
                 <h2 [style.color]="item.color" class="h3-margintop">{{item.title}}</h2>
 
                 <h4 [style.color]="item.color">
@@ -62,10 +62,10 @@
                     </p>
                 </ion-item>
 
-                <ion-item style="border-bottom: 0;margin-top: 0;margin-bottom: 0;text-align: center;"
-                          *ngIf="item.visible">
-                    <button ion-button color="vojgreen" small (click)="launchSearch(item)">Lancer la recherche</button>
-                </ion-item>
+                <button *ngIf="item.visible" ion-button color="vojgreen" style="width:95%" (click)="goToDetailOffer(item)">Détails</button>
+                <br/>
+                <button *ngIf="item.visible" ion-button color="vojgreen" style="width:95%" (click)="launchSearch(item)">Lancer la recherche</button>
+
             </ion-item>
         </ion-list>
         <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
