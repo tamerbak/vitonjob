@@ -5,6 +5,8 @@ import {Requirement} from "./requirement";
 import {CalendarSlot} from "./calendar-slot";
 import {Quality} from "./quality";
 import {Language} from "./language";
+import {PharmaSoftwares} from "./pharmaSoftwares";
+import {Adress} from "./adress";
 
 export class Offer extends AbstractGCallout {
   'class': string;
@@ -20,6 +22,7 @@ export class Offer extends AbstractGCallout {
   languageData: Array <Language> = [];
   requirementData: Requirement[];
   equipmentData: Equipment[];
+  pharmaSoftwareData: PharmaSoftwares[];
 
   visible: boolean;
   telephone: string;
@@ -30,7 +33,7 @@ export class Offer extends AbstractGCallout {
   rechercheAutomatique: boolean;
   obsolete: boolean;
   identity: number;
-  adresse: string;
+  adresse: Adress;
   jobyerId: number;
   entrepriseId: number;
   hunterId:number;
@@ -39,25 +42,26 @@ export class Offer extends AbstractGCallout {
     super('com.vitonjob.callouts.offer.model.OfferData');
 
     this.idOffer = 0;
-    this.jobData = null;
+    this.jobData = new Job();
     this.parametrageConvention = 0;
     this.calendarData = [];
     this.qualityData = [];
     this.languageData = [];
     this.requirementData = [];
     this.equipmentData = [];
-    this.visible = false;
+    this.pharmaSoftwareData = [];
+    this.visible = true;
     this.title = "";
     this.status = "open";
     this.videolink = "";
     this.nbPoste = 1;
     this.telephone = "";
     this.contact = "";
-    this.etat = "";
+    this.etat = "Publique";
     this.rechercheAutomatique = false;
     this.obsolete = false;
     this.identity = 0;
-    this.adresse = "";
+    this.adresse = new Adress;
     this.jobyerId = 0;
     this.entrepriseId = 0;
     this.hunterId = 0;

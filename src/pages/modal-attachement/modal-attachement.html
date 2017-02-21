@@ -22,9 +22,10 @@
     <ion-item no-lines style="padding-left:0" [hidden]="scanUri">
         <ion-row>
             <ion-col text-center>
-                <button ion-button icon-only outline class="file-upload button-picture" color="primary"
+                <button ion-button icon-right outline class="file-upload button-picture" color="primary"
                         icon-right small>
                     <input type="file" class="file-input" (change)="onChangeUpload($event)">
+                    Choisir un fichier
                     <ion-icon name='folder'></ion-icon>
                 </button>
             </ion-col>

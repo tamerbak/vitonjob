@@ -68,7 +68,7 @@ export class SearchCriteriaPage {
     public calendarTheme: any;
     public isEmployer: boolean;
     public jobData: {
-        'class': "com.vitonjob.callouts.auth.model.JobData",
+        'class': "com.vitonjob.callouts.offer.model.JobData",
         idJob: number,
         job: string,
         idsector: number,
@@ -147,7 +147,7 @@ export class SearchCriteriaPage {
         let defaultJobLabel = this.isEmployer?'un/une jobyer':'une offre';
 
         this.jobData = {
-            'class': "com.vitonjob.callouts.auth.model.JobData",
+            'class': "com.vitonjob.callouts.offer.model.JobData",
             job: (jobParam) ? jobParam.libelle : (cityParam) ? defaultJobLabel : (searchParam) ? searchParam : "",
             sector: (jobParam) ? jobParam.sector : "",
             idsector: (jobParam) ? jobParam.idsector : "",
@@ -409,11 +409,11 @@ export class SearchCriteriaPage {
             // TODO id not recognized
            //debugger;
             for (let i = 0; i < this.languages.length; i++)
-                langIdList.push(this.languages[i].idLanguage.toString());
+                langIdList.push(this.languages[i].id.toString());
         }
         if (this.qualities.length > 0) {
             for (let i = 0; i < this.qualities.length; i++)
-                qualIdList.push(this.qualities[i].idQuality.toString());
+                qualIdList.push(this.qualities[i].id.toString());
         }
 
         // If job is not recognized :
