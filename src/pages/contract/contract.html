@@ -130,7 +130,7 @@
         </ion-item>
         <ion-item class="contract-item">
             <ion-label>Recours&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
-            <ion-select [(ngModel)]="contractData.motif" (ionChange)="recoursSelected($event)">
+            <ion-select [(ngModel)]="contractData.motif" >
                 <ion-option *ngFor="let r of recours" value="{{r.libelle}}">
                     {{r.libelle}}
                 </ion-option>
