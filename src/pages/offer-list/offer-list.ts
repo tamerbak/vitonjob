@@ -222,7 +222,7 @@ export class OfferListPage {
             }
 
             this.offerService.loadOffers(userId, (this.isEmployer ? "employer" : "jobyer"), mode, (mode == "private" ? this.privateOffset : this.publicOffset), this.queryLimit).then((data: any) => {
-                if(list.length == 0) {
+                if(list.length == 0 && loading) {
                     loading.dismiss();
                 }
                 //in case the user chooses another segment before the data loading is completed
