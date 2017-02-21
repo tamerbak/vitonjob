@@ -261,6 +261,7 @@ export class SearchResultsPage implements OnInit {
             });
         });
 
+        //pourquoi ce bloc?
         //get the currentEmployer
         this.userService.getCurrentUser(this.projectTarget).then(results => {
 
@@ -273,10 +274,16 @@ export class SearchResultsPage implements OnInit {
             }
 
             this.searchService.retrieveLastSearch().then(results => {
-
                 let jsonResults = JSON.parse(results);
                 if (jsonResults) {
-                    this.searchResults = jsonResults;
+                    this.searchResults = [];
+                    for (let i = 0; i < jsonResults.length; i++) {
+                        let r = jsonResults[i];
+                        let dirty = this.checkResultHealth(r);
+                        if(!dirty){
+                            this.searchResults.push(r);
+                        }
+                    }
                     this.resultsCount = this.searchResults.length;
                 }
                 this.loadMap(mapEle);
