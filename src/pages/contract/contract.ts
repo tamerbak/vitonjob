@@ -388,7 +388,7 @@ export class ContractPage {
       salarySH35: "+00%",
       salarySH43: "+00%",
       restRight: "00%",
-      interimAddress: "",
+      interimAddress: this.workAdress,
       customer: "",
       primes: 0,
       headOffice: this.hqAdress,
@@ -489,6 +489,7 @@ export class ContractPage {
         this.contractData.numero = this.numContrat;
         this.contractData.adresseInterim = this.workAdress;
         this.contractData.workAdress = this.workAdress;
+        this.contractData.interimAddress = this.workAdress;
       }
       this.nav.push(YousignPage, { //ContractualisationPage
         jobyer: this.jobyer,
@@ -578,6 +579,10 @@ export class ContractPage {
 
     if (!this.companyName || this.companyName.length == 0)
       return true;
+
+    if(this.contractData.isScheduleFixed = 'true' && (Utils.isEmpty(this.contractData.workStartHour) || Utils.isEmpty(this.contractData.workEndHour))){
+      return true;
+    }
 
     //return !this.embaucheAutorise || !this.rapatriement;
   }
