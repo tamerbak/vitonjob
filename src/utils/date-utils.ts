@@ -23,4 +23,10 @@ export class DateUtils {
     let str = d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
     return str;
   }
+
+  public static toHourString(time: number) {
+    let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+    let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+    return hours + ":" + minutes;
+  }
 }
