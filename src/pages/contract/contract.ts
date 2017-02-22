@@ -580,7 +580,7 @@ export class ContractPage {
     if (!this.companyName || this.companyName.length == 0)
       return true;
 
-    if(this.contractData.isScheduleFixed = 'true' && (Utils.isEmpty(this.contractData.workStartHour) || Utils.isEmpty(this.contractData.workEndHour))){
+    if(this.contractData.isScheduleFixed == 'true' && (Utils.isEmpty(this.contractData.workStartHour) || Utils.isEmpty(this.contractData.workEndHour))){
       return true;
     }
 

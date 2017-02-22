@@ -380,7 +380,7 @@ export class ContractService {
       "entreprise": contract.companyName,
       "adresseEntreprise": contract.workAdress,
       "jobyerPrenom": jobyer.prenom,
-      "jobyerNom": jobyer.nom,
+      "jobyerNom": jobyer.titre + " " + jobyer.nom,
       "nss": jobyer.numSS,
       "dateNaissance": this.helpers.parseDate(contract.jobyerBirthDate),
       "lieuNaissance": jobyer.lieuNaissance,
