@@ -185,7 +185,9 @@ export class PhonePage {
           this.authService.getPasswordStatus("+" + indPhone, this.projectTarget).then((dataPwd: any) => {
 
            //debugger;
-            data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
+            if(data && dataPwd.data && dataPwd.data.length > 0) {
+              data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
+            }
 
             if(data.estRecruteur && data.titre === ""){
               data.changePassword = true;
