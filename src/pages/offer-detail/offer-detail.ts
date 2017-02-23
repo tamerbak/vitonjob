@@ -512,7 +512,7 @@ export class OfferDetailPage {
             this.offerService.deleteOffer(this.offer, this.projectTarget).then((data: any) => {
               if(data && data.status == "success"){
                 this.nav.setRoot(OfferListPage);
-                this.globalService.showAlertValidation("Vit-On-Job", "L'offre " + this.offer.title + " a été bien supprimé.");
+                this.globalService.showAlertValidation("Vit-On-Job", "L'offre " + this.offer.title + " a bien été supprimée.");
               }else{
               this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
               }
