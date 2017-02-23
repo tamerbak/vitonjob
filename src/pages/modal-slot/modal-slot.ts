@@ -6,6 +6,7 @@ import {GlobalService} from "../../providers/global-service/global-service";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {Utils} from "../../utils/utils";
 import {CalendarSlot} from "../../dto/calendar-slot";
+import {DateUtils} from "../../utils/date-utils";
 
 /*
  Generated class for the ModalSlotPage page.
@@ -400,7 +401,7 @@ export class ModalSlotPage {
                 this.monthesList = this.monthesList.concat(newMonthesList);
             } else {
                 // - 2017
-                this.monthesList = JSON.parse(JSON.stringify(newMonthesList))
+                this.monthesList = Utils.cloneObject(newMonthesList);
             }
         }
         else {
@@ -498,10 +499,8 @@ export class ModalSlotPage {
             let eh = this.showedSlot.endDate.split('T')[1];
             this.slot.date = date.getTime();
             this.slot.dateEnd = dateEnd.getTime();
-            this.slot.startHour = parseInt(sh.split(':')[0]) * 60 +
-              parseInt(sh.split(':')[1]);
-            this.slot.endHour = parseInt(eh.split(':')[0]) * 60 +
-              parseInt(eh.split(':')[1]);
+            this.slot.startHour = DateUtils.timeStrToMinutes(sh);
+            this.slot.endHour = DateUtils.timeStrToMinutes(eh);
             this.viewCtrl.dismiss(this.slot);
         }
     }

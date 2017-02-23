@@ -266,7 +266,7 @@ export class OffersService {
         //myOffer.calendarData = offerData.calendarData;
         for (let i = 0; i < offerData.calendarData.length; i++) {
             let calendarSlot = new CalendarSlot();
-            calendarSlot = JSON.parse(JSON.stringify(offerData.calendarData[i]));
+            calendarSlot = Utils.cloneObject(offerData.calendarData[i]);
             calendarSlot.class = 'com.vitonjob.callouts.offer.model.CalendarData';
             calendarSlot.pause = false; // ????
             myOffer.calendarData.push(calendarSlot);
@@ -2048,7 +2048,7 @@ export class OffersService {
 
   cloneSlot(slot){
     //trick to clone an object by value
-    let newSlot = (JSON.parse(JSON.stringify(slot)));
+    let newSlot = Utils.cloneObject(slot);
     newSlot = {
       date: new Date(newSlot.date),
       dateEnd: new Date(newSlot.dateEnd),
@@ -2198,7 +2198,6 @@ export class OffersService {
         return new Promise(resolve => {
             this.httpRequest.sendCallOut(payloadFinal, this)
               .subscribe((data: any) => {
-                  //TODO: Gestion des exception
                   if (data) {
                       resolve(data);
                   }

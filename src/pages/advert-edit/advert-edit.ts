@@ -93,7 +93,7 @@ export class AdvertEditPage{
     //in the case of editing an existing advert
     if(navParams.get('advert')){
       //javascript passes objects by reference, therefore advert param must be cloned to prevent modifying it
-      let clonedAdvert = (JSON.parse(JSON.stringify(navParams.get('advert'))));
+      let clonedAdvert = Utils.cloneObject(navParams.get('advert'));
       this.advert = clonedAdvert;
 
       this.idAdvert = this.advert.id;
@@ -216,7 +216,7 @@ export class AdvertEditPage{
   saveAdvert(){
     //let loading = this.loadingCtrl.create({content:"Merci de patienter..."});
     //loading.present();
-    let clonedAdvert = (JSON.parse(JSON.stringify(this.advert)));
+    let clonedAdvert = Utils.cloneObject(this.advert);
     this.prepareDataForSaving(clonedAdvert);
     this.prepareImageForSaving(clonedAdvert.thumbnail, 'thumbnail');
     this.prepareImageForSaving(clonedAdvert.imgbg, 'cover');
