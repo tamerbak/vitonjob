@@ -185,10 +185,34 @@
             <ion-input type="text" [(ngModel)]="contractData.workTimeHours"></ion-input>
         </ion-item-->
 
-        <ion-item class="contract-item">
+        <!--<ion-item class="contract-item">
             <ion-label>Heures habituelles de travail&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
             <ion-input type="text" [(ngModel)]="contractData.usualWorkTimeHours"></ion-input>
+        </ion-item>-->
+
+        <ion-item class="contract-item">
+            <ion-label>Horaires de mission &nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-select [(ngModel)]="contractData.isScheduleFixed" >
+                <ion-option value="true">
+                    Horaires fixes
+                </ion-option>
+                <ion-option value="false">
+                    Horaires variables selon planning
+                </ion-option>
+            </ion-select>
         </ion-item>
+
+        <div *ngIf="contractData.isScheduleFixed == 'true'">
+            <ion-item class="contract-item">
+                <ion-label>Heure de début de travail&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+                <ion-datetime [(ngModel)]="contractData.workStartHour" displayFormat="HH:mm" pickerFormat="HH mm" minuteValues="0,15,30,45"></ion-datetime>
+            </ion-item>
+
+            <ion-item class="contract-item">
+                <ion-label>Heure de fin de travail&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+                <ion-datetime [(ngModel)]="contractData.workEndHour" displayFormat="HH:mm" pickerFormat="HH mm" minuteValues="0,15,30,45"></ion-datetime>
+            </ion-item>
+        </div>
 
         <ion-item class="contract-item">
             <ion-label>Risques</ion-label>

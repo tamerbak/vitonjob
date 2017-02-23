@@ -5,6 +5,7 @@ import {Helpers} from "../helpers-service/helpers-service";
 import {isUndefined} from "ionic-angular/util/util";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {HttpRequestHandler} from "../../http/http-request-handler";
+import {DateUtils} from "../../utils/date-utils";
 
 declare let unescape;
 
@@ -135,6 +136,7 @@ export class ContractService {
     this.configuration = Configs.setConfigs(projectTarget);
     //let dt = new Date();
     let epi = (contract.epi ? 'OUI' : 'NON');
+    let isScheduleFixed = (contract.isScheduleFixed == 'true' ? 'OUI' : 'NON');
     let sql = "INSERT INTO user_contrat (" +
       " date_de_debut," +
       " date_de_fin," +
@@ -173,6 +175,7 @@ export class ContractService {
       " fk_user_periodicite_des_paiements," +
       " embauche_autorise," +
       " rapatriement_a_la_charge_de_l_ai," +
+      " horaires_fixes," +
       " epi" +
       ")" +
       " VALUES ("
@@ -213,6 +216,7 @@ export class ContractService {
       + "'" + contract.periodicite + "',"
       + "'OUI',"
       + "'OUI',"
+      + "'" + isScheduleFixed + "',"
       + "'"+this.sqlfyText(contract.epiProvidedBy)+"'"
       + ")"
       + " RETURNING pk_user_contrat";
@@ -359,6 +363,14 @@ export class ContractService {
     if (currentOffer) {
       horaires = this.prepareHoraire(currentOffer.calendarData);
     }
+
+    let sh = 'Horaires variables selon planning';
+    let eh = '';
+    if(contract.isScheduleFixed == 'true'){
+      sh = contract.workStartHour;
+      eh = " à " + contract.workEndHour;
+    }
+
     //get configuration
     this.configuration = Configs.setConfigs(projectTarget);
     let jsonData = {
@@ -368,7 +380,7 @@ export class ContractService {
       "entreprise": contract.companyName,
       "adresseEntreprise": contract.workAdress,
       "jobyerPrenom": jobyer.prenom,
-      "jobyerNom": jobyer.nom,
+      "jobyerNom": jobyer.titre + " " + jobyer.nom,
       "nss": jobyer.numSS,
       "dateNaissance": this.helpers.parseDate(contract.jobyerBirthDate),
       "lieuNaissance": jobyer.lieuNaissance,
@@ -388,8 +400,8 @@ export class ContractService {
         "variables": contract.workTimeVariable,
       },
       "horaireHabituel": {
-        "debut": contract.workStartHour,
-        "fin": contract.workEndHour,
+        "debut": sh,
+        "fin": eh,
         "variables": contract.workHourVariable,
       },
       "posteARisque": contract.postRisks,
@@ -410,8 +422,8 @@ export class ContractService {
       "ContenuMission": contract.headOffice,
       "categorie": contract.category,
       "filiere": contract.sector,
-      "HeureDebutMission": contract.workStartHour,
-      "HeureFinMission": contract.workEndHour,
+      "HeureDebutMission": sh,
+      "HeureFinMission": eh,
       "num": contract.num,
 
       "numero": contract.num,
@@ -435,7 +447,8 @@ export class ContractService {
       "zonesTitre": contract.zonesTitre,
       "elementsCotisation": contract.elementsCotisation,
       "elementsNonCotisation": contract.elementsNonCotisation,
-      "horaires": horaires
+      "horaires": horaires,
+      "organisationParticuliere": contract.usualWorkTimeHours
     };
 
     console.log(JSON.stringify(jsonData));

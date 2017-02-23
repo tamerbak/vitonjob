@@ -13,6 +13,7 @@ import {Component} from "@angular/core";
 import {MedecineService} from "../../providers/medecine-service/medecine-service";
 import {ParametersService} from "../../providers/parameters-service/parameters-service";
 import {OffersService} from "../../providers/offers-service/offers-service";
+import {Utils} from "../../utils/utils";
 
 
 /**
@@ -125,8 +126,6 @@ export class ContractPage {
       workTimeHours: 0,
       workTimeVariable: 0,
       usualWorkTimeHours: "8H00/17H00 variables",
-      workStartHour: "00:00",
-      workEndHour: "00:00",
       workHourVariable: "",
       postRisks: "",
       medicalSurv: "NON",
@@ -152,8 +151,10 @@ export class ContractPage {
       elementsNonCotisation: 10.0,
       titre: '',
       periodicite: '',
-      epiProvidedBy : ''
-
+      epiProvidedBy : '',
+      isScheduleFixed: "true",
+      workStartHour: null,
+      workEndHour: null
     };
 
 
@@ -377,8 +378,6 @@ export class ContractPage {
       workTimeHours: this.calculateOfferHours(),
       workTimeVariable: 0,
       usualWorkTimeHours: "8H00/17H00 variables",
-      workStartHour: "00:00",
-      workEndHour: "00:00",
       workHourVariable: "",
       postRisks: "",
       medicalSurv: "NON",
@@ -389,7 +388,7 @@ export class ContractPage {
       salarySH35: "+00%",
       salarySH43: "+00%",
       restRight: "00%",
-      interimAddress: "",
+      interimAddress: this.workAdress,
       customer: "",
       primes: 0,
       headOffice: this.hqAdress,
@@ -406,7 +405,10 @@ export class ContractPage {
       elementsNonCotisation: 10.0,
       titre: this.currentOffer.title,
       periodicite: '',
-      epiProvidedBy: ''
+      epiProvidedBy: '',
+      isScheduleFixed: "true",
+      workStartHour: null,
+      workEndHour: null
     };
 
     let email = this.jobyer.email;
@@ -440,7 +442,7 @@ export class ContractPage {
       this.periodicites = resp.periodicites;
 
       this.contractData.centreMedecineEntreprise = resp.medecine.libelle;
-      this.contractData.adresseCentreMedecineEntreprise = resp.medecine.adresse + ' ' + resp.medecine.code_postal;
+      this.contractData.adresseCentreMedecineEntreprise = Utils.preventNull(resp.medecine.adresse) + ' ' + Utils.preventNull(resp.medecine.code_postal);
 
       for (let i = 0; i < resp.rates.length; i++) {
         if (this.currentOffer.jobData.remuneration < resp.rates[i].taux_horaire) {
@@ -487,6 +489,7 @@ export class ContractPage {
         this.contractData.numero = this.numContrat;
         this.contractData.adresseInterim = this.workAdress;
         this.contractData.workAdress = this.workAdress;
+        this.contractData.interimAddress = this.workAdress;
       }
       this.nav.push(YousignPage, { //ContractualisationPage
         jobyer: this.jobyer,
@@ -576,6 +579,10 @@ export class ContractPage {
 
     if (!this.companyName || this.companyName.length == 0)
       return true;
+
+    if(this.contractData.isScheduleFixed == 'true' && (Utils.isEmpty(this.contractData.workStartHour) || Utils.isEmpty(this.contractData.workEndHour))){
+      return true;
+    }
 
     //return !this.embaucheAutorise || !this.rapatriement;
   }
