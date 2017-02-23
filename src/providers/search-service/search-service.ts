@@ -164,7 +164,7 @@ export class SearchService {
 
         let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            id: 10045,
+            id: 20049,
             args: [
                 {
                     class: 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -180,8 +180,7 @@ export class SearchService {
             this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
                 .map(res => res.json())
                 .subscribe(data => {
-                    this.data = data;
-                    resolve(this.data);
+                    resolve(data);
                 });
         });
     }
