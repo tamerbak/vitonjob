@@ -2241,6 +2241,7 @@ export class OffersService {
               });
         });
     }
+
     isOfferObsolete(offer){
         for (let j = 0; j < offer.calendarData.length; j++) {
             let slotDate = offer.calendarData[j].date;
@@ -2252,5 +2253,18 @@ export class OffersService {
             }
         }
         return false;
+    }
+
+    getTemporaryOfferInfo(offerId){
+        let sql = "select telephone_contact as telephone, contact_sur_place as contact from user_offre_entreprise where pk_user_offre_entreprise = " + offerId;
+        console.log(sql);
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe((data: any) => {
+                  resolve(data.data[0]);
+              });
+        });
     }
 }

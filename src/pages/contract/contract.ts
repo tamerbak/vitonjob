@@ -16,6 +16,7 @@ import {OffersService} from "../../providers/offers-service/offers-service";
 import {Utils} from "../../utils/utils";
 import {DateUtils} from "../../utils/date-utils";
 import {Contract} from "../../dto/contract";
+import {Offer} from "../../dto/offer";
 
 /**
  * @author daoudi amine
@@ -118,8 +119,18 @@ export class ContractPage {
       this.contractData.salaryNHours = Utils.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2) + " € B/H";
       this.contractData.sector = this.currentOffer.jobData.sector;
       this.contractData.titre = this.currentOffer.title;
+
       this.contractData.workTimeHours = this.calculateOfferHours();
       this.initTrialPeriod(this.currentOffer);
+
+      //TODO: this bloc is temporary, it should be removed after alignement (after adding "liste des contrats en attente" page)
+      this.offersService.getTemporaryOfferInfo(this.currentOffer.idOffer).then((data: any) =>{
+        this.contractData.contactPhone = data.telephone;
+        this.contractData.offerContact = data.contact;
+      });
+      //TODO: this bloc should be restored after alignement
+      //this.contractData.offerContact = this.currentOffer.contact;
+      //this.contractData.contactPhone = this.currentOffer.telephone;
     }
   }
 

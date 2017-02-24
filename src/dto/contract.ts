@@ -63,6 +63,9 @@ export class Contract {
   workAdress: String;
   jobyerBirthDate: String;
   adresseInterim: String;
+  offerContact: String;
+  contactPhone: String;
+
 
   constructor(){
     this.num = "";
@@ -132,5 +135,8 @@ export class Contract {
     this.jobyerBirthDate = "";
 
     this.adresseInterim = "";
+
+    this.offerContact = "";
+    this.contactPhone = "";
   }
 }
