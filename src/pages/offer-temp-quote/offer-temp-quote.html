@@ -20,7 +20,7 @@
         </ion-row>
         <ion-row *ngFor="let r of quote.lignes">
             <ion-col width-40 *ngIf="notNullValue(r)">{{r.libelleRubrique}}</ion-col>
-            <ion-col width-20 *ngIf="notNullValue(r)" text-center>{{r.nbUnite}}</ion-col>
+            <ion-col width-20 *ngIf="notNullValue(r)" text-center>{{r.nbUnite | number:'1.2-2'}}</ion-col>
             <ion-col width-20 *ngIf="notNullValue(r)" text-center>{{r.unite}}</ion-col>
             <ion-col width-20 *ngIf="notNullValue(r)" text-right>{{r.valeur | number:'1.2-2'}}</ion-col>
         </ion-row>
