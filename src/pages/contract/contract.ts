@@ -54,7 +54,11 @@ export class ContractPage {
   public actionSheet: any;
   public transportMeans = [];
 
-
+  //jobyer info
+  public isFrench: boolean;
+  public isEuropean: boolean;
+  public isCIN: boolean;
+  public labelTitreIdentite: String;
 
   constructor(public gc: GlobalConfigs,
               public nav: NavController,
@@ -156,21 +160,39 @@ export class ContractPage {
 
     let email = this.jobyer.email;
     let tel = this.jobyer.tel;
+    let jobyerId = this.jobyer.idJobyer;
     let entrepriseId = this.employer.entreprises[0].id;
     let offerId = this.currentOffer.idOffer;
-    this.contractService.prepareRecruitement(entrepriseId, email, tel, offerId).then((resp:any)=>{
+    this.contractService.prepareRecruitement(entrepriseId, email, tel, offerId, jobyerId).then((resp:any)=>{
 
       let datum = resp.jobyer;
       this.jobyer.id = datum.id;
       this.jobyer.numSS = datum.numss;
-      this.jobyer.nationaliteLibelle = datum.nationalite;
-      this.jobyer.titreTravail = '';
+      this.jobyer.nationaliteLibelle = Utils.preventNull(datum.nationalite);
 
-      if (!Utils.isEmpty(datum.cni))
-        this.jobyer.titreTravail = "CNI ou Passeport " + datum.cni;
-      else if (!Utils.isEmpty(datum.numero_titre_sejour))
-        this.jobyer.titreTravail = "Titre de séjour " + datum.numero_titre_sejour;
-      this.contractData.numeroTitreTravail = this.jobyer.titreTravail;
+      this.jobyer.titreTravail = '';
+      //specify if jobyer isFrench or european or a foreigner
+      this.isFrench = (datum.pays_index == 33 ? true : false);
+      this.isEuropean = (datum.identifiant_nationalite == 42 ? false : true);
+      this.isCIN = this.isFrench || this.isEuropean;
+      let estResident = datum.est_resident;
+      if(this.isEuropean){
+        if(this.isCIN){
+          this.labelTitreIdentite = "CNI ou Passeport";
+          this.jobyer.titreTravail = datum.cni;
+        }else{
+          this.labelTitreIdentite = "N° de la carte de ressortissant";
+          this.jobyer.titreTravail = datum.numero_titre_sejour;
+        }
+      }else{
+        if(estResident){
+          this.labelTitreIdentite = "N° de la carte résident";
+        }else{
+          this.labelTitreIdentite = "N° du titre de séjour";
+        }
+        this.jobyer.titreTravail = datum.numero_titre_sejour;
+      }
+      this.contractData.numeroTitreTravail = this.labelTitreIdentite + " " + this.jobyer.titreTravail;
 
       if (!Utils.isEmpty(datum.debut_validite)) {
         let d = new Date(datum.debut_validite);
