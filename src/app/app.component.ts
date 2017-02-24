@@ -10,7 +10,7 @@ import {
     AlertController,
     LoadingController
 } from "ionic-angular";
-import {StatusBar, Splashscreen} from "ionic-native";
+import {StatusBar, Splashscreen, Deeplinks} from "ionic-native";
 import {HomePage} from "../pages/home/home";
 import {OffersService} from "../providers/offers-service/offers-service";
 import {NgZone} from "../../node_modules/@angular/core/src/zone/ng_zone";
@@ -35,6 +35,8 @@ import {PendingContractsPage} from "../pages/pending-contracts/pending-contracts
 import {Observable} from "rxjs/Rx";
 import {IntroPage} from "../pages/intro/intro";
 import {SqliteDBService} from "../providers/sqlite-db-service/sqlite-db-service";
+import {OfferAddPage} from "../pages/offer-add/offer-add";
+import {CivilityPage} from "../pages/civility/civility";
 //import {isUndefined} from "ionic-angular/util/util";
 
 //declare let cordova;
@@ -80,7 +82,7 @@ export class Vitonjob {
                 private changeDetRef: ChangeDetectorRef,
                 public events: Events,
                 public offerService: OffersService,
-                public sqliteDb : SqliteDBService,
+                public sqliteDb: SqliteDBService,
                 private zone: NgZone,
                 private _alert: AlertController,
                 private _toast: ToastController,
@@ -209,6 +211,33 @@ export class Vitonjob {
             this.storage.remove('qualities');
             this.storage.remove('slots');
 
+            // Deeplinking for hunter requests
+            Deeplinks.routeWithNavController(this.nav, {
+                '/add-new-account/:hunterAccess': CivilityPage,
+                '/add-offer/:hunterAccess': OfferAddPage
+                //'/products/:productId': ProductPage
+            }).subscribe((match) => {
+                console.log('Successfully routed', match);
+                if (typeof match.$args.hunterAccess != 'undefined') {
+                    // get hunter parameters
+                    let hunterAccess = JSON.parse(decodeURIComponent(match.$args.hunterAccess));
+                    // disconnect user if he is connected as employer or jobyer, even clear currentUser if hunter did many access requests...
+                    this.logOut();
+                    // load a temporary currentUser var to use it whene accessing to offerAdd or CivilityPage..
+                    let currentUser = {id: 0, employer: {id: 0, entreprises: []}, jobyer: {id: 0}, hunterId: 0};
+                    currentUser.hunterId = hunterAccess.hunterId;
+                    currentUser.id = hunterAccess.accountId;
+                    if (this.projectTarget === 'employer') {
+                        currentUser.employer.entreprises.push({id: hunterAccess.enterpriseId});
+                        currentUser.employer.id = hunterAccess.employerId;
+                    } else if (this.projectTarget === 'jobyer') {
+                        currentUser.jobyer.id = hunterAccess.jobyerId;
+                    }
+                    this.storage.set(this.currentUserVar, currentUser);
+                }
+            }, (nomatch) => {
+                console.warn('Unmatched Route', nomatch);
+            });
 
             // Instabug integration
             //let cordova = require('cordova');
@@ -579,6 +608,17 @@ export class Vitonjob {
         let m = this.modal.create(SearchGuidePage);
         this.menu.close();
         m.present();
+    }
+
+    logOut() {
+        this.storage.set('connexion', null);
+        this.storage.set(this.currentUserVar, null);
+        this.storage.set(this.profilPictureVar, null);
+        this.storage.set("RECRUITER_LIST", null);
+        this.storage.set('OPTION_MISSION', null);
+        this.storage.set('PROFIL_PICTURE', null);
+        this.events.publish('user:logout');
+        this.nav.setRoot(HomePage);
     }
 
 
