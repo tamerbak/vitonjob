@@ -164,8 +164,8 @@ export class ContractPage {
     let entrepriseId = this.employer.entreprises[0].id;
     let offerId = this.currentOffer.idOffer;
     this.contractService.prepareRecruitement(entrepriseId, email, tel, offerId, jobyerId).then((resp:any)=>{
-
       let datum = resp.jobyer;
+
       this.jobyer.id = datum.id;
       this.jobyer.numSS = datum.numss;
       this.jobyer.nationaliteLibelle = Utils.preventNull(datum.nationalite);
@@ -195,13 +195,16 @@ export class ContractPage {
       this.contractData.numeroTitreTravail = this.labelTitreIdentite + " " + this.jobyer.titreTravail;
 
       if (!Utils.isEmpty(datum.debut_validite)) {
-        let d = new Date(datum.debut_validite);
+        let sdate = datum.debut_validite.split(' ')[0];
+
+        let d = new Date(sdate);
         this.jobyer.debutTitreTravail = d;
         this.contractData.debutTitreTravail = DateUtils.dateFormat(this.jobyer.debutTitreTravail);
       }
 
       if (!Utils.isEmpty(datum.fin_validite)) {
-        let d = new Date(datum.fin_validite);
+        let sdate = datum.fin_validite.split(' ')[0];
+        let d = new Date(sdate);
         this.jobyer.finTitreTravail = d;
         this.contractData.finTitreTravail = DateUtils.dateFormat(this.jobyer.finTitreTravail);
       }
