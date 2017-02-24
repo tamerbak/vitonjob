@@ -811,12 +811,9 @@ export class MissionDetailsPage {
   launchContractPage() {
     this.isSignContractClicked = true;
     this.platform.ready().then(() => {
-      let loading = this.loading.create({content:"Merci de patienter..."});
-      loading.present();
       let browser = new InAppBrowser(this.contract.lien_jobyer, '_blank');
       browser.on('exit').subscribe(()=>{
         this.refreshSignatureStatus();
-        loading.dismiss();
       });
     });
   }
