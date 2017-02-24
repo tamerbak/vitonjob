@@ -2256,7 +2256,7 @@ export class OffersService {
     }
 
     getTemporaryOfferInfo(offerId){
-        let sql = "select telephone_contact as telephone, contact_sur_place as contact from user_offre_entreprise where pk_user_offre_entreprise = " + offerId;
+        let sql = "select oe.telephone_contact as telephone, oe.contact_sur_place as contact, m.libelle as secteur from user_offre_entreprise as oe, user_pratique_job as pj, user_job as j, user_metier as m where oe.pk_user_offre_entreprise = " + offerId + " and oe.pk_user_offre_entreprise = pj.fk_user_offre_entreprise and pj.fk_user_job = j.pk_user_job and j.fk_user_metier = m.pk_user_metier";
         console.log(sql);
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();

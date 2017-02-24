@@ -127,6 +127,7 @@ export class ContractPage {
       this.offersService.getTemporaryOfferInfo(this.currentOffer.idOffer).then((data: any) =>{
         this.contractData.contactPhone = data.telephone;
         this.contractData.offerContact = data.contact;
+        this.contractData.sector = data.secteur;
       });
       //TODO: this bloc should be restored after alignement
       //this.contractData.offerContact = this.currentOffer.contact;
