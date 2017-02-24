@@ -406,7 +406,7 @@ export class ModalJobPage {
     for (let i = 0; i < this.prerequisObligatoires.length; i++)
       if (this.prerequisObligatoires[i].libelle.toLowerCase() == this.prerequisOb.libelle.toLocaleLowerCase())
         return;
-    let p = (JSON.parse(JSON.stringify(this.prerequisOb)));
+    let p = Utils.cloneObject(this.prerequisOb);
     this.prerequisObligatoires.push(p);
 
     this.prerequisOb.libelle = '';

@@ -118,4 +118,17 @@ export class Utils {
     let re = /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/;
     return re.test(phone);
   }
+
+  public static cloneObject(obj){
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  public static parseNumber(str) {
+    try {
+      return parseFloat(str);
+    }
+    catch (err) {
+      return 0.0;
+    }
+  }
 }

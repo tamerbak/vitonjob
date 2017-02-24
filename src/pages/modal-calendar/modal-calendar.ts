@@ -118,7 +118,7 @@ export class ModalCalendarPage {
 
     showSlotModal() {
          //make a copy of this.slots before passing it in argument to the modal
-        let slotsTemp: CalendarSlot = JSON.parse(JSON.stringify(this.slots));
+        let slotsTemp: CalendarSlot = Utils.cloneObject(this.slots);
         let slotModel = this.modal.create(ModalSlotPage,{slots:slotsTemp});
         slotModel.onDidDismiss((slotData: CalendarSlot)=> {
             if(Utils.isEmpty(slotData)){

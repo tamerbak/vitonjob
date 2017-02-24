@@ -5,7 +5,6 @@ import {Helpers} from "../helpers-service/helpers-service";
 import {isUndefined} from "ionic-angular/util/util";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {HttpRequestHandler} from "../../http/http-request-handler";
-import {DateUtils} from "../../utils/date-utils";
 
 declare let unescape;
 
@@ -27,11 +26,8 @@ export class ContractService {
   getNumContract() {
     let sql = "select nextval('sequence_num_contrat') as numct";
     return new Promise(resolve => {
-      let headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe((data: any) => {
-          this.data = data.data;
+      this.httpRequest.sendSql(sql, this, true).subscribe(data => {
+        this.data = data.data;
           resolve(this.data);
         });
     });
@@ -555,18 +551,19 @@ export class ContractService {
     });
   }
 
-  prepareRecruitement(entrepriseId, email, tel, idOffer){
+  prepareRecruitement(entrepriseId, email, tel, idOffer, jobyerId){
     let bean = {
       class: "com.vitonjob.gcr.model.Query",
       entrepriseId : entrepriseId,
       email : email,
       tel : tel,
-      idOffer : idOffer
+      idOffer : idOffer,
+      jobyerId: jobyerId
     };
 
     let body = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 11201,
+      id: 20050,
       args: [
         {
           class: 'fr.protogen.masterdata.model.CCalloutArguments',
