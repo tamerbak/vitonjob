@@ -122,4 +122,13 @@ export class Utils {
   public static cloneObject(obj){
     return JSON.parse(JSON.stringify(obj));
   }
+
+  public static parseNumber(str) {
+    try {
+      return parseFloat(str);
+    }
+    catch (err) {
+      return 0.0;
+    }
+  }
 }

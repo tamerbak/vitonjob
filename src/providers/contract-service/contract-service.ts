@@ -5,7 +5,6 @@ import {Helpers} from "../helpers-service/helpers-service";
 import {isUndefined} from "ionic-angular/util/util";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {HttpRequestHandler} from "../../http/http-request-handler";
-import {DateUtils} from "../../utils/date-utils";
 
 declare let unescape;
 
@@ -27,11 +26,8 @@ export class ContractService {
   getNumContract() {
     let sql = "select nextval('sequence_num_contrat') as numct";
     return new Promise(resolve => {
-      let headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe((data: any) => {
-          this.data = data.data;
+      this.httpRequest.sendSql(sql, this, true).subscribe(data => {
+        this.data = data.data;
           resolve(this.data);
         });
     });
