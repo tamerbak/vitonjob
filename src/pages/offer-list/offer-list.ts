@@ -123,7 +123,7 @@ export class OfferListPage {
                 return;
             }
             if(this.offersType == "public" && this.publicList.length > 0){
-                this.offerList = (JSON.parse(JSON.stringify(this.publicList)));
+                this.offerList = Utils.cloneObject(this.publicList);
             }
             if(this.offersType == "private" && this.privateList.length == 0){
                 this.offerList = [];
@@ -131,7 +131,7 @@ export class OfferListPage {
                 return;
             }
             if(this.offersType == "private" && this.privateList.length > 0){
-                this.offerList = (JSON.parse(JSON.stringify(this.privateList)));
+                this.offerList = Utils.cloneObject(this.privateList);
                 return;
             }
             if(this.offersType == "hunted" && this.huntedList.length == 0){
@@ -140,7 +140,7 @@ export class OfferListPage {
                 return;
             }
             if(this.offersType == "hunted" && this.huntedList.length > 0){
-                this.offerList = (JSON.parse(JSON.stringify(this.huntedList)));
+                this.offerList = Utils.cloneObject(this.huntedList);
                 return;
             }
         }
@@ -233,7 +233,7 @@ export class OfferListPage {
 
                 list = list.concat(data);
                 this.handleOffers(list);
-                this.offerList = (JSON.parse(JSON.stringify(list)));
+                this.offerList = Utils.cloneObject(list);
                 if(mode == "private") {
                     this.privateOffset = this.privateOffset + this.queryLimit;
                     this.privateList = list;

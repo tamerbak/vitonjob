@@ -404,7 +404,7 @@ export class OfferDetailPage {
    * Create Job modal
    */
   showJobModal() {
-    let jobData = JSON.parse(JSON.stringify(this.offer.jobData));
+    let jobData = Utils.cloneObject(this.offer.jobData);
     let modal = this.modal.create(ModalJobPage, {jobData: jobData});
     modal.onDidDismiss((data: Job) => {
       if(Utils.isEmpty(data)){
@@ -413,7 +413,7 @@ export class OfferDetailPage {
       //data.validated sert à vérifier si les données de la modale on été valide
       this.modified.isJob = data.validated;
       if (this.modified.isJob) {
-        let offerTemp: Offer = JSON.parse(JSON.stringify(this.offer));
+        let offerTemp: Offer = Utils.cloneObject(this.offer);
         offerTemp.jobData = data;
         offerTemp.title = data.job + ' ' + ((data.level != 'junior') ? 'Expérimenté' : 'Débutant');
         this.offerService.saveOffer(offerTemp, this.projectTarget).then((data: any) => {
@@ -431,7 +431,7 @@ export class OfferDetailPage {
    * Create Calendar modal
    */
   showCalendarModal() {
-    let slots: CalendarSlot = JSON.parse(JSON.stringify(this.offer.calendarData));
+    let slots: CalendarSlot = Utils.cloneObject(this.offer.calendarData);
 
     let modal = this.modal.create(ModalCalendarPage, {slots: slots});
     modal.onDidDismiss((data: {slots: CalendarSlot[], isObsolete: boolean}) => {
@@ -454,7 +454,7 @@ export class OfferDetailPage {
    * Create Qualities modal
    */
   showQualityModal() {
-    let qualities: Quality[] = JSON.parse(JSON.stringify(this.offer.qualityData));
+    let qualities: Quality[] = Utils.cloneObject(this.offer.qualityData);
 
     let modal = this.modal.create(ModalQualityPage, {qualities: qualities});
     modal.onDidDismiss((data: Quality[]) => {
@@ -474,7 +474,7 @@ export class OfferDetailPage {
    * Create Language modal
    */
   showLanguageModal() {
-    let languages: Language[] = JSON.parse(JSON.stringify(this.offer.languageData));
+    let languages: Language[] = Utils.cloneObject(this.offer.languageData);
 
     let modal = this.modal.create(ModalLanguagePage, {languages: languages});
     modal.onDidDismiss((data: Language[]) => {
@@ -542,12 +542,16 @@ export class OfferDetailPage {
           text: 'Oui',
           handler: () => {
             console.log('Agree clicked');
-            let offer = JSON.parse(JSON.stringify(this.offer));
-            offer.title = this.offer.title + " (Copie)";
+            let offer = Utils.cloneObject(this.offer);
+            offer.title = this.offer.title;
             offer.idOffer = 0;
             this.offerService.saveOffer(offer, this.projectTarget).then((data: any) => {
-                console.log('••• Adding offer : remote storing success!');
+              if(data && data.status == "success"){
+                console.log('••• Copy offer : remote storing success!');
                 this.nav.setRoot(OfferListPage);
+              }else{
+                this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+              }
             });
           }
         }
@@ -563,8 +567,7 @@ export class OfferDetailPage {
     this.offerService.updateOfferStatut(this.offer.idOffer, statut, this.projectTarget).then(()=> {
       loading.dismiss();
       console.log('offer status changed successfuly');
-      this.offer.visible = (statut == 'Non' ? false : true);
-      //this.offerService.updateOfferInLocal(this.offer, this.projectTarget);
+      this.offer.visible = (statut.toLocaleLowerCase() == 'non' ? false : true);
     });
   }
 
