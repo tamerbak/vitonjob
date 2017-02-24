@@ -2241,6 +2241,7 @@ export class OffersService {
               });
         });
     }
+
     isOfferObsolete(offer){
         for (let j = 0; j < offer.calendarData.length; j++) {
             let slotDate = offer.calendarData[j].date;
@@ -2252,5 +2253,18 @@ export class OffersService {
             }
         }
         return false;
+    }
+
+    getTemporaryOfferInfo(offerId){
+        let sql = "select oe.telephone_contact as telephone, oe.contact_sur_place as contact, m.libelle as secteur from user_offre_entreprise as oe, user_pratique_job as pj, user_job as j, user_metier as m where oe.pk_user_offre_entreprise = " + offerId + " and oe.pk_user_offre_entreprise = pj.fk_user_offre_entreprise and pj.fk_user_job = j.pk_user_job and j.fk_user_metier = m.pk_user_metier";
+        console.log(sql);
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe((data: any) => {
+                  resolve(data.data[0]);
+              });
+        });
     }
 }

@@ -33,13 +33,26 @@
             <ion-input type="text" [(ngModel)]="companyName"></ion-input>
         </ion-item>
         <ion-item class="contract-item">
+            <ion-label>Lieu de la mission&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-input type="text" [(ngModel)]="workAdress"></ion-input>
+        </ion-item>
+        <ion-item class="contract-item">
             <ion-label>Contact</ion-label>
             <ion-input type="text" [(ngModel)]="employerFullName"></ion-input>
         </ion-item>
         <ion-item class="contract-item">
-            <ion-label>Lieu de la mission&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
-            <ion-input type="text" [(ngModel)]="workAdress"></ion-input>
+            <ion-label>Contact sur place&nbsp;</ion-label>
+            <ion-input type="text" [(ngModel)]="contractData.offerContact"></ion-input>
         </ion-item>
+        <ion-item class="contract-item">
+            <ion-label>N° Téléphone&nbsp;</ion-label>
+            <ion-input type="text" [(ngModel)]="contractData.contactPhone"></ion-input>
+        </ion-item>
+        <ion-item class="contract-item">
+            <ion-label>Moyen d'accès&nbsp;</ion-label>
+            <ion-input type="text" [(ngModel)]="contractData.moyenAcces"></ion-input>
+        </ion-item>
+
     </ion-list>
 
     <ion-list>
@@ -78,8 +91,8 @@
         </ion-item>
 
         <ion-item class="contract-item">
-            <ion-label color="vojlightgray">CNI ou Passeport&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
-            <ion-input type="text" [(ngModel)]="contractData.numeroTitreTravail" disabled="true"></ion-input>
+            <ion-label color="vojlightgray">{{labelTitreIdentite}}&nbsp;<span style="color: #ff0000;" >*</span></ion-label>
+            <ion-input type="text" [(ngModel)]="jobyer.titreTravail" disabled="true"></ion-input>
         </ion-item>
 
         <ion-item class="contract-item">

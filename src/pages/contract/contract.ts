@@ -14,7 +14,9 @@ import {MedecineService} from "../../providers/medecine-service/medecine-service
 import {ParametersService} from "../../providers/parameters-service/parameters-service";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {Utils} from "../../utils/utils";
-
+import {DateUtils} from "../../utils/date-utils";
+import {Contract} from "../../dto/contract";
+import {Offer} from "../../dto/offer";
 
 /**
  * @author daoudi amine
@@ -38,7 +40,7 @@ export class ContractPage {
   public jobyerFirstName: string;
   public jobyerLastName: string;
   public contractTitle: string;
-  public contractData: any;
+  public contractData: Contract = new Contract();
   public currentOffer: any;
   public workAdress: any;
   public jobyerBirthDate: string;
@@ -53,14 +55,11 @@ export class ContractPage {
   public actionSheet: any;
   public transportMeans = [];
 
-  dateFormat(d) {
-    if (!d || isUndefined(d))
-      return '';
-    let m = d.getMonth() + 1;
-    let da = d.getDate();
-    let sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
-    return sd;
-  }
+  //jobyer info
+  public isFrench: boolean;
+  public isEuropean: boolean;
+  public isCIN: boolean;
+  public labelTitreIdentite: String;
 
   constructor(public gc: GlobalConfigs,
               public nav: NavController,
@@ -69,7 +68,9 @@ export class ContractPage {
               private contractService: ContractService,
               private medecineService: MedecineService,
               private service: ParametersService,
-              private offersService: OffersService, private _modal: ModalController, private _actionSheet: ActionSheetController) {
+              private offersService: OffersService,
+              private _modal: ModalController,
+              private _actionSheet: ActionSheetController) {
 
     // Get target to determine configs
     this.projectTarget = gc.getProjectTarget();
@@ -77,137 +78,19 @@ export class ContractPage {
     // get config of selected target
     let config = Configs.setConfigs(this.projectTarget);
 
-
     this.themeColor = config.themeColor;
     this.contractTitle = "Contrat de Mission";
     this.isEmployer = (this.projectTarget == 'employer');
     this.modal = _modal;
     this.actionSheet = _actionSheet;
 
-    this.jobyer = navParams.get('jobyer');
-    this.jobyerFirstName = this.jobyer.prenom;
-    this.jobyerLastName = this.jobyer.nom;
-    let bd = new Date(this.jobyer.dateNaissance);
-    this.jobyerBirthDate = this.dateFormat(bd);
-    this.jobyer.id = 0;
-    this.jobyer.numSS = '';
-    this.jobyer.nationaliteLibelle = '';
+    this.jobyer = this.navParams.get('jobyer');
 
     // initialize contract data
-    this.contractData = {
-      num: "",
-      numero: "",
-      centreMedecineEntreprise: "",
-      adresseCentreMedecineEntreprise: "",
-      centreMedecineETT: "181 - CMIE",
-      adresseCentreMedecineETT: "80 RUE DE CLICHY 75009 PARIS",
-      contact: this.employerFullName,
-      indemniteFinMission: "10.00 %",
-      indemniteCongesPayes: "10.00 %",
-      moyenAcces: "",
-      numeroTitreTravail: "",
-      debutTitreTravail: "",
-      finTitreTravail: "",
-      periodesNonTravaillees: "",
-      debutSouplesse: "",
-      finSouplesse: "",
-      equipements: "",
+    this.initContractData();
 
-      interim: "HubJob.com",
-      missionStartDate: this.getStartDate(),
-      missionEndDate: this.getEndDate(),
-      trialPeriod: 5,
-      termStartDate: this.getEndDate(),
-      termEndDate: this.getEndDate(),
-      motif: "",
-      justification: "",
-      qualification: "",
-      characteristics: "",
-      workTimeHours: 0,
-      workTimeVariable: 0,
-      usualWorkTimeHours: "8H00/17H00 variables",
-      workHourVariable: "",
-      postRisks: "",
-      medicalSurv: "NON",
-      epi: false,
-      baseSalary: 0,
-      MonthlyAverageDuration: "0",
-      salaryNHours: "00,00€ B/H",
-      salarySH35: "+00%",
-      salarySH43: "+00%",
-      restRight: "00%",
-      interimAddress: "",
-      customer: "",
-      primes: 0,
-      headOffice: "",
-      missionContent: "",
-      category: "Employé",
-      sector: "",
-      companyName: '',
-      titreTransport: 'NON',
-      zonesTitre: '',
-      risques: '',
-      elementsCotisation: 0.0,
-      elementsNonCotisation: 10.0,
-      titre: '',
-      periodicite: '',
-      epiProvidedBy : '',
-      isScheduleFixed: "true",
-      workStartHour: null,
-      workEndHour: null
-    };
-
-
-
-    // get the currentEmployer
-    userService.getCurrentUser(this.projectTarget).then(results => {
-      this.currentUser = JSON.parse(results);
-
-      if (this.currentUser) {
-        this.employer = this.currentUser.employer;
-        this.companyName = this.employer.entreprises[0].nom;
-        this.hqAdress = this.employer.entreprises[0].siegeAdress.fullAdress;
-        let civility = this.currentUser.titre;
-        this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
-      }
-
-      //  check if there is a current offer
-
-      if (navParams.get("currentOffer") && !isUndefined(navParams.get("currentOffer"))) {
-        this.currentOffer = navParams.get("currentOffer");
-        this.contractData.qualification = this.currentOffer.title;
-
-        let calendar = this.currentOffer.calendarData;
-        let minDay = new Date(calendar[0].date);
-        let maxDay = new Date(calendar[0].date);
-
-        for (let i = 1; i < calendar.length; i++) {
-          let date = new Date(calendar[i].date);
-          if (minDay.getTime() > date.getTime())
-            minDay = date;
-          if (maxDay.getTime() < date.getTime())
-            maxDay = date;
-        }
-
-        let trial = 2;
-        let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
-        let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-        if (contractLength <= 1)
-          trial = 0;
-        else if (contractLength < 30)
-          trial = 2;
-        else if (contractLength < 60)
-          trial = 3;
-        else
-          trial = 5;
-        this.contractData.trialPeriod = trial;
-
-
-
-        this.initContract();
-      }
-    });
+    //initialize recruitment data
+    this.initRecruitmentData();
 
     this.transportMeans = [
       "Véhicule",
@@ -220,8 +103,176 @@ export class ContractPage {
       "Transport en commun Zone 4 à 5",
       "Transport en commun toutes zones"
     ];
-
   }
+
+  initContractData(){
+    this.contractData.missionStartDate = this.getStartDate();
+    this.contractData.missionEndDate = this.getEndDate();
+    this.contractData.termStartDate = this.getEndDate();
+    this.contractData.termEndDate = this.getEndDate();
+
+    //  check if there is a current offer
+    if (this.navParams.get("currentOffer") && !isUndefined(this.navParams.get("currentOffer"))) {
+      this.currentOffer = this.navParams.get("currentOffer");
+      this.contractData.qualification = this.currentOffer.title;
+      this.contractData.baseSalary = +Utils.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2);
+      this.contractData.salaryNHours = Utils.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2) + " € B/H";
+      this.contractData.sector = this.currentOffer.jobData.sector;
+      this.contractData.titre = this.currentOffer.title;
+
+      this.contractData.workTimeHours = this.calculateOfferHours();
+      this.initTrialPeriod(this.currentOffer);
+
+      //TODO: this bloc is temporary, it should be removed after alignement (after adding "liste des contrats en attente" page)
+      this.offersService.getTemporaryOfferInfo(this.currentOffer.idOffer).then((data: any) =>{
+        this.contractData.contactPhone = data.telephone;
+        this.contractData.offerContact = data.contact;
+        this.contractData.sector = data.secteur;
+      });
+      //TODO: this bloc should be restored after alignement
+      //this.contractData.offerContact = this.currentOffer.contact;
+      //this.contractData.contactPhone = this.currentOffer.telephone;
+    }
+  }
+
+  initRecruitmentData(){
+    // get the currentEmployer
+    this.userService.getCurrentUser(this.projectTarget).then(results => {
+      this.currentUser = JSON.parse(results);
+
+      if (this.currentUser) {
+        this.employer = this.currentUser.employer;
+
+        //init employer data
+        this.companyName = this.employer.entreprises[0].nom;
+        this.contractData.companyName = this.companyName;
+
+        this.hqAdress = this.employer.entreprises[0].siegeAdress.fullAdress;
+        this.contractData.headOffice = this.hqAdress;
+
+        let civility = this.currentUser.titre;
+        this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
+        this.contractData.contact = this.employerFullName;
+
+        //init jobyer data
+        this.initJobyerData();
+      }
+    });
+  }
+
+  initJobyerData(){
+    //initialize jobyer data
+    this.jobyer.id = 0;
+    this.jobyer.numSS = '';
+    this.jobyer.nationaliteLibelle = '';
+
+    let bd = new Date(this.jobyer.dateNaissance);
+    this.jobyerBirthDate = DateUtils.dateFormat(bd);
+    this.contractData.jobyerBirthDate = this.jobyerBirthDate;
+
+    let email = this.jobyer.email;
+    let tel = this.jobyer.tel;
+    let jobyerId = this.jobyer.idJobyer;
+    let entrepriseId = this.employer.entreprises[0].id;
+    let offerId = this.currentOffer.idOffer;
+    this.contractService.prepareRecruitement(entrepriseId, email, tel, offerId, jobyerId).then((resp:any)=>{
+      let datum = resp.jobyer;
+
+      this.jobyer.id = datum.id;
+      this.jobyer.numSS = datum.numss;
+      this.jobyer.nationaliteLibelle = Utils.preventNull(datum.nationalite);
+
+      this.jobyer.titreTravail = '';
+      //specify if jobyer isFrench or european or a foreigner
+      this.isFrench = (datum.pays_index == 33 ? true : false);
+      this.isEuropean = (datum.identifiant_nationalite == 42 ? false : true);
+      this.isCIN = this.isFrench || this.isEuropean;
+      let estResident = datum.est_resident;
+      if(this.isEuropean){
+        if(this.isCIN){
+          this.labelTitreIdentite = "CNI ou Passeport";
+          this.jobyer.titreTravail = datum.cni;
+        }else{
+          this.labelTitreIdentite = "N° de la carte de ressortissant";
+          this.jobyer.titreTravail = datum.numero_titre_sejour;
+        }
+      }else{
+        if(estResident){
+          this.labelTitreIdentite = "N° de la carte résident";
+        }else{
+          this.labelTitreIdentite = "N° du titre de séjour";
+        }
+        this.jobyer.titreTravail = datum.numero_titre_sejour;
+      }
+      this.contractData.numeroTitreTravail = this.labelTitreIdentite + " " + this.jobyer.titreTravail;
+
+      if (!Utils.isEmpty(datum.debut_validite)) {
+        let sdate = datum.debut_validite.split(' ')[0];
+
+        let d = new Date(sdate);
+        this.jobyer.debutTitreTravail = d;
+        this.contractData.debutTitreTravail = DateUtils.dateFormat(this.jobyer.debutTitreTravail);
+      }
+
+      if (!Utils.isEmpty(datum.fin_validite)) {
+        let sdate = datum.fin_validite.split(' ')[0];
+        let d = new Date(sdate);
+        this.jobyer.finTitreTravail = d;
+        this.contractData.finTitreTravail = DateUtils.dateFormat(this.jobyer.finTitreTravail);
+      }
+
+      this.recours = resp.recours;
+      this.periodicites = resp.periodicites;
+
+      this.contractData.centreMedecineEntreprise = resp.medecine.libelle;
+      this.contractData.adresseCentreMedecineEntreprise = Utils.preventNull(resp.medecine.adresse) + ' ' + Utils.preventNull(resp.medecine.code_postal);
+
+      for (let i = 0; i < resp.rates.length; i++) {
+        if (this.currentOffer.jobData.remuneration < resp.rates[i].taux_horaire) {
+          this.rate = parseFloat(resp.rates[i].coefficient) * this.currentOffer.jobData.remuneration;
+          this.contractData.elementsCotisation = this.rate;
+          break;
+        }
+      }
+
+      this.workAdress = resp.adress.adresse_google_maps;
+      this.contractData.workAdress = this.workAdress;
+      this.contractData.interimAddress = this.workAdress;
+
+      this.contractData.MonthlyAverageDuration = resp.duree_collective;
+
+      console.log(JSON.stringify(this.contractData));
+    });
+  }
+
+  initTrialPeriod(offer){
+    let calendar = offer.calendarData;
+    let minDay = new Date(calendar[0].date);
+    let maxDay = new Date(calendar[0].date);
+
+    for (let i = 1; i < calendar.length; i++) {
+      let date = new Date(calendar[i].date);
+      if (minDay.getTime() > date.getTime())
+        minDay = date;
+      if (maxDay.getTime() < date.getTime())
+        maxDay = date;
+    }
+
+    let trial = 2;
+    let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
+    let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    if (contractLength <= 1)
+      trial = 1;
+    else if (contractLength < 30)
+      trial = 2;
+    else if (contractLength < 60)
+      trial = 3;
+    else
+      trial = 5;
+    this.contractData.trialPeriod = trial;
+  }
+
 
   recoursSelected(evt) {
 
@@ -313,159 +364,9 @@ export class ContractPage {
 
 
       });
-      this.initContract();
+    //  this.initContract();
     });
     m.present();
-  }
-
-  initContract() {
-    //  Calculate trial period
-
-    let calendar = this.currentOffer.calendarData;
-    let minDay = new Date(calendar[0].date);
-    let maxDay = new Date(calendar[0].date);
-
-    for (let i = 1; i < calendar.length; i++) {
-      let date = new Date(calendar[i].date);
-      if (minDay.getTime() > date.getTime())
-        minDay = date;
-      if (maxDay.getTime() < date.getTime())
-        maxDay = date;
-    }
-
-    let trial = 2;
-    let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
-    let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-    if (contractLength <= 1)
-      trial = 1;
-    else if (contractLength < 30)
-      trial = 2;
-    else if (contractLength < 60)
-      trial = 3;
-    else
-      trial = 5;
-
-    this.contractData = {
-      num: this.numContrat,
-      centreMedecineEntreprise: "",
-      adresseCentreMedecineEntreprise: "",
-      centreMedecineETT: "181 - CMIE",
-      adresseCentreMedecineETT: "80 RUE DE CLICHY 75009 PARIS",
-
-      numero: "",
-      contact: this.employerFullName,
-      indemniteFinMission: "10.00 %",
-      indemniteCongesPayes: "10.00 %",
-      moyenAcces: "",
-      numeroTitreTravail: this.jobyer.titreTravail,
-      debutTitreTravail: this.dateFormat(this.jobyer.debutTitreTravail),
-      finTitreTravail: this.dateFormat(this.jobyer.finTitreTravail),
-      periodesNonTravaillees: "",
-      debutSouplesse: "",
-      finSouplesse: "",
-      equipements: "",
-      interim: "HubJob.com",
-      missionStartDate: this.getStartDate(),
-      missionEndDate: this.getEndDate(),
-      trialPeriod: trial,
-      termStartDate: this.getEndDate(),
-      termEndDate: this.getEndDate(),
-      motif: "",
-      justification: "",
-      qualification: this.currentOffer.title,
-      characteristics: "",
-      workTimeHours: this.calculateOfferHours(),
-      workTimeVariable: 0,
-      usualWorkTimeHours: "8H00/17H00 variables",
-      workHourVariable: "",
-      postRisks: "",
-      medicalSurv: "NON",
-      epi: false,
-      baseSalary: this.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2),
-      MonthlyAverageDuration: "0",
-      salaryNHours: this.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2) + " € B/H",
-      salarySH35: "+00%",
-      salarySH43: "+00%",
-      restRight: "00%",
-      interimAddress: this.workAdress,
-      customer: "",
-      primes: 0,
-      headOffice: this.hqAdress,
-      missionContent: "",
-      category: 'Employé',
-      sector: this.currentOffer.jobData.sector,
-      companyName: this.companyName,
-      workAdress: this.workAdress,
-      jobyerBirthDate: this.jobyerBirthDate,
-      titreTransport: 'NON',
-      zonesTitre: '',
-      risques: '',
-      elementsCotisation: this.rate,
-      elementsNonCotisation: 10.0,
-      titre: this.currentOffer.title,
-      periodicite: '',
-      epiProvidedBy: '',
-      isScheduleFixed: "true",
-      workStartHour: null,
-      workEndHour: null
-    };
-
-    let email = this.jobyer.email;
-    let tel = this.jobyer.tel;
-    let entrepriseId = this.employer.entreprises[0].id;
-    let offerId = this.currentOffer.idOffer;
-    this.contractService.prepareRecruitement(entrepriseId, email, tel, offerId).then((resp:any)=>{
-
-      let datum = resp.jobyer;
-      this.jobyer.id = datum.id;
-      this.jobyer.numSS = datum.numss;
-      this.jobyer.nationaliteLibelle = datum.nationalite;
-      this.jobyer.titreTravail = '';
-      if (datum.cni && datum.cni.length > 0 && datum.cni != "null")
-        this.jobyer.titreTravail = datum.cni;
-      else if (datum.numero_titre_sejour && datum.numero_titre_sejour.length > 0 && datum.numero_titre_sejour != "null")
-        this.jobyer.titreTravail = datum.numero_titre_sejour;
-      if (datum.debut_validite && datum.debut_validite.length > 0 && datum.debut_validite != "null") {
-        let d = new Date(datum.debut_validite);
-        this.jobyer.debutTitreTravail = d;
-      }
-      if (datum.fin_validite && datum.fin_validite.length > 0 && datum.fin_validite != "null") {
-        let d = new Date(datum.fin_validite);
-        this.jobyer.finTitreTravail = d;
-      }
-
-      this.contractData.numeroTitreTravail = this.jobyer.titreTravail;
-      this.contractData.debutTitreTravail = this.dateFormat(this.jobyer.debutTitreTravail);
-      this.contractData.finTitreTravail = this.dateFormat(this.jobyer.finTitreTravail);
-      this.recours = resp.recours;
-      this.periodicites = resp.periodicites;
-
-      this.contractData.centreMedecineEntreprise = resp.medecine.libelle;
-      this.contractData.adresseCentreMedecineEntreprise = Utils.preventNull(resp.medecine.adresse) + ' ' + Utils.preventNull(resp.medecine.code_postal);
-
-      for (let i = 0; i < resp.rates.length; i++) {
-        if (this.currentOffer.jobData.remuneration < resp.rates[i].taux_horaire) {
-          this.rate = parseFloat(resp.rates[i].coefficient) * this.currentOffer.jobData.remuneration;
-          this.contractData.elementsCotisation = this.rate;
-          break;
-        }
-      }
-
-      this.workAdress = resp.adress.adresse_google_maps;
-      this.contractData.MonthlyAverageDuration = resp.duree_collective;
-    });
-
-    console.log(JSON.stringify(this.contractData));
-  }
-
-  parseNumber(str) {
-    try {
-      return parseFloat(str);
-    }
-    catch (err) {
-      return 0.0;
-    }
   }
 
   calculateOfferHours(): any {
@@ -480,7 +381,6 @@ export class ContractPage {
   }
 
   goToYousignPage() {
-
     this.contractService.getNumContract().then((data: Array<any>) => {
 
       if (data && data.length > 0) {
@@ -497,7 +397,6 @@ export class ContractPage {
         currentOffer: this.currentOffer
       });
     });
-
   }
 
   /**

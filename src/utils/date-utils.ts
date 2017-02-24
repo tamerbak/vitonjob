@@ -1,4 +1,6 @@
 import {Utils} from "./utils";
+import {isUndefined} from "ionic-angular/util/util";
+
 export class DateUtils {
 
   constructor() {
@@ -44,5 +46,14 @@ export class DateUtils {
 
     let totalMinutes = minutes + hours * 60;
     return totalMinutes;
+  }
+
+  public static dateFormat(d) {
+    if (!d || isUndefined(d))
+      return '';
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
+    return sd;
   }
 }
