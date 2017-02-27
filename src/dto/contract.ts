@@ -1,5 +1,6 @@
 export class Contract {
 
+  id: number;
   num: String;
   numero: String;
   centreMedecineEntreprise: String;
@@ -66,8 +67,16 @@ export class Contract {
   offerContact: String;
   contactPhone: String;
 
+  partnerEmployerLink: String;
+  partnerJobyerLink: String;
+  demandeJobyer: String;
+  demandeEmployer: String;
+  enveloppeEmployeur: String;
+  enveloppeJobyer: String;
+
 
   constructor(){
+    this.id = 0;
     this.num = "";
     this.numero = "";
     this.centreMedecineEntreprise = "";

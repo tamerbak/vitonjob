@@ -58,18 +58,7 @@ export class YousignPage {
 
     // Set local variables and messages
     //get the currentEmployer & call youssign service
-    this.pushNotificationService = pushNotificationService;
-    userService.getCurrentUser(this.projectTarget).then(results => {
-      this.currentUser = JSON.parse(results);
-      let currentEmployer = this.currentUser.employer;
-
-      if (currentEmployer) {
-        this.employer = currentEmployer;
-        this.callYousign();
-      }
-      console.log(currentEmployer);
-    });
-
+    //this.pushNotificationService = pushNotificationService;
     this.themeColor = config.themeColor;
     this.yousignTitle = "Contrat de Mission";
     this.isEmployer = (this.projectTarget == 'employer');
@@ -79,6 +68,37 @@ export class YousignPage {
       this.currentOffer = navParams.get("currentOffer");
     }
     this.notSigned = false;
+  }
+
+  ngOnInit(){
+    this.userService.getCurrentUser(this.projectTarget).then(results => {
+      this.currentUser = JSON.parse(results);
+      let currentEmployer = this.currentUser.employer;
+      if (currentEmployer) {
+        this.employer = currentEmployer;
+        this.setDocusignFrame();
+      }
+    });
+  }
+
+  setDocusignFrame(){
+    //change jobyer 'contacted' status
+    this.jobyer.contacted = true;
+    this.jobyer.date_invit = new Date();
+
+    let browser = new InAppBrowser(this.contractData.partnerEmployerLink, '_blank', 'hardwareback=no');
+    browser.on('exit').subscribe(()=>{
+      this.missionService.checkSignature(this.contractData.id, 'employer').then((signed:boolean)=>{
+        if(signed)
+          this.goToPayment();
+        else {
+          this.notSigned = true;
+        }
+      });
+    }, (err)=>{
+      console.log(err);
+      this.notSigned = true;
+    });
   }
 
   goToPayment() {
@@ -93,7 +113,7 @@ export class YousignPage {
    * @author daoudi amine
    * @description call yousign service and send sms to the jobyer
    */
-  callYousign() {
+  /*callYousign() {
       let loading = this.loading.create({content:"Merci de patienter..."});
     loading.present();
     this.financeService.loadQuote(this.currentOffer.idOffer, this.contractData.baseSalary).then((data: any) => {
@@ -160,7 +180,7 @@ export class YousignPage {
           //save contract in Database
           this.contractService.getJobyerId(this.jobyer, this.projectTarget).then(
             (jobyerData: any) => {
-              this.contractService.saveContract(this.contractData, jobyerData.data[0].pk_user_jobyer, this.employer.entreprises[0].id, this.projectTarget, yousignJobyerLink, yousignEmployerLink, this.currentUser.id).then(
+              /*this.contractService.saveContract(this.contractData, jobyerData.data[0].pk_user_jobyer, this.employer.entreprises[0].id, this.projectTarget, yousignJobyerLink, yousignEmployerLink, this.currentUser.id).then(
                 (data: any) => {
                   if (this.currentOffer && this.currentOffer != null) {
                     let idContract = 0;
@@ -214,7 +234,7 @@ export class YousignPage {
 
     });
 
-  }
+  }*/
 
 
 }

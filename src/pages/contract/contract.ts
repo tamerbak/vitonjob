@@ -1,4 +1,4 @@
-import {NavController, NavParams, ActionSheetController, ModalController} from "ionic-angular";
+import {NavController, NavParams, ActionSheetController, ModalController, LoadingController} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {UserService} from "../../providers/user-service/user-service";
@@ -16,7 +16,9 @@ import {OffersService} from "../../providers/offers-service/offers-service";
 import {Utils} from "../../utils/utils";
 import {DateUtils} from "../../utils/date-utils";
 import {Contract} from "../../dto/contract";
-import {Offer} from "../../dto/offer";
+import {GlobalService} from "../../providers/global-service/global-service";
+import {FinanceService} from "../../providers/finance-service/finance-service";
+import {ContractListPage} from "../contract-list/contract-list";
 
 /**
  * @author daoudi amine
@@ -70,7 +72,10 @@ export class ContractPage {
               private service: ParametersService,
               private offersService: OffersService,
               private _modal: ModalController,
-              private _actionSheet: ActionSheetController) {
+              private _actionSheet: ActionSheetController,
+              private globalService: GlobalService,
+              public financeService: FinanceService,
+              public loading: LoadingController) {
 
     // Get target to determine configs
     this.projectTarget = gc.getProjectTarget();
@@ -123,15 +128,11 @@ export class ContractPage {
       this.contractData.workTimeHours = this.calculateOfferHours();
       this.initTrialPeriod(this.currentOffer);
 
-      //TODO: this bloc is temporary, it should be removed after alignement (after adding "liste des contrats en attente" page)
-      this.offersService.getTemporaryOfferInfo(this.currentOffer.idOffer).then((data: any) =>{
+      this.offersService.getOfferInfo(this.currentOffer.idOffer).then((data: any) =>{
         this.contractData.contactPhone = data.telephone;
         this.contractData.offerContact = data.contact;
         this.contractData.sector = data.secteur;
       });
-      //TODO: this bloc should be restored after alignement
-      //this.contractData.offerContact = this.currentOffer.contact;
-      //this.contractData.contactPhone = this.currentOffer.telephone;
     }
   }
 
@@ -380,11 +381,10 @@ export class ContractPage {
     return h.toFixed(0);
   }
 
-  goToYousignPage() {
+  /*goToYousignPage() {
     this.contractService.getNumContract().then((data: Array<any>) => {
 
       if (data && data.length > 0) {
-        this.numContrat = this.formatNumContrat(data[0].numct);
         this.contractData.num = this.numContrat;
         this.contractData.numero = this.numContrat;
         this.contractData.adresseInterim = this.workAdress;
@@ -397,6 +397,170 @@ export class ContractPage {
         currentOffer: this.currentOffer
       });
     });
+  }*/
+
+  gotoContractListPage(){
+    let isValid = !this.mandatoryDataMissing();
+    if(!isValid){
+      return;
+    }
+    let loading = this.loading.create({content:"Merci de patienter..."});
+    loading.present();
+    //get next num contract
+    this.contractService.getNumContract().then((data: any) => {
+      if (data && data.length > 0) {
+        this.numContrat = this.formatNumContrat(data[0].numct);
+        this.contractData.numero = this.numContrat;
+        this.contractData.num = this.numContrat;
+        this.contractData.adresseInterim= this.workAdress;
+        this.contractData.workAdress = this.workAdress;
+        this.contractData.interimAddress = this.workAdress;
+
+      }else{
+        this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+        loading.dismiss();
+        return;
+      }
+
+      //save contrct data
+      this.contractService.saveContract(
+        this.contractData,
+        this.jobyer.id,
+        this.employer.entreprises[0].id,
+        this.projectTarget,
+        this.currentUser.id,
+        this.currentOffer.idOffer).then((data: any) => {
+          if (data && data.status == "success" && data.data && data.data.length > 0) {
+            //contract data saved
+            this.contractData.id = data.data[0].pk_user_contrat;
+            //make the offer state to "en contrat"
+            this.offersService.updateOfferState(this.currentOffer.idOffer, "en contrat").then((data: any) => {
+              if (data && data.status == "success") {
+                //place offer in archive if nb contract of the selected offer is equal to its nb poste
+                this.checkOfferState(this.currentOffer);
+                //generate hour mission based on the offer slots
+                this.contractService.generateMission(this.contractData.id, this.currentOffer);
+                //update recrutement groupé state
+                //this.recruitmentSrvice.updateRecrutementGroupeState(this.jobyer.rgId);
+                //generate docusign envelop
+                this.saveDocusignInfo().then(() => {
+                  loading.dismiss();
+                  //go to contract list page
+                  this.nav.push(ContractListPage);
+                })
+              }else {
+                this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+                return;
+              }
+            })
+          } else {
+            this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+            loading.dismiss();
+            return;
+          }
+        },
+        (err) => {
+          this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+          loading.dismiss();
+          return;
+        })
+    });
+  }
+
+  checkOfferState(offer){
+    this.contractService.getContractsByOffer(offer.idOffer).then((data: any) => {
+      if(data && data.data && data.data.length != 0 && data.data.length >= offer.nbPoste){
+        this.offersService.updateOfferState(offer.idOffer, "en archive");
+      }
+    })
+  }
+
+  saveDocusignInfo() {
+    return new Promise(resolve => {
+      this.financeService.loadQuote(
+        this.currentOffer.idOffer,
+        this.contractData.baseSalary
+      ).then((data: any) => {
+        if(!data || Utils.isEmpty(data.quoteId) || data.quoteId == 0){
+          this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+          return;
+        }
+
+        this.financeService.loadPrevQuote(this.currentOffer.idOffer).then((results : any)=>{
+          if(!results || !results.lignes || results.lignes.length == 0){
+            this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+            return;
+          }
+
+          this.contractService.callYousign(
+            this.currentUser,
+            this.employer,
+            this.jobyer,
+            this.contractData,
+            this.projectTarget,
+            this.currentOffer,
+            data.quoteId
+          ).then((data: any) => {
+            if(!data || data == null || Utils.isEmpty(data.Employeur) || Utils.isEmpty(data.Jobyer) || Utils.isEmpty(data.Employeur.idContrat) || Utils.isEmpty(data.Jobyer.idContrat) || !Utils.isValidUrl(data.Employeur.url) || !Utils.isValidUrl(data.Jobyer.url)){
+              this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+              return;
+            }
+            this.setDocusignData(data);
+
+            //update contract in Database with docusign data
+            this.contractService.updateContract(this.contractData, this.projectTarget).then((data: any) => {
+                if (!data || data.status != "success") {
+                  this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+                  return;
+                }
+                resolve();
+              },
+              (err) => {
+                this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+                return;
+              })
+          }).catch(function (err) {
+            this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+            return;
+          });
+        });
+      });
+    });
+  }
+
+  setDocusignData(data){
+    let partner = GlobalConfigs.global['electronic-signature'];
+
+    let dataValue = null;
+    let partnerData = null;
+    this.contractData.partnerEmployerLink = null;
+
+    if (partner === 'yousign') {
+      dataValue = data[0]['value'];
+      partnerData = JSON.parse(dataValue);
+      //get the link yousign of the contract for the employer
+      this.contractData.partnerEmployerLink = partnerData.iFrameURLs[1].iFrameURL;
+    } else if (partner === 'docusign') {
+      dataValue = data;
+      partnerData = dataValue;
+      //get the link docusign of the contract for the employer
+      this.contractData.partnerEmployerLink = partnerData.Employeur.url;
+    }
+
+    // get the partner link of the contract and the phoneNumber of the jobyer
+    this.contractData.partnerJobyerLink = null;
+    if (partner === 'yousign') {
+      this.contractData.partnerJobyerLink = partnerData.iFrameURLs[0].iFrameURL;
+      this.contractData.demandeJobyer = partnerData.idDemands[0].idDemand;
+      this.contractData.demandeEmployer = partnerData.idDemands[1].idDemand;
+
+    } else if (partner === 'docusign') {
+      this.contractData.partnerJobyerLink = partnerData.Jobyer.url;
+      this.contractData.demandeJobyer = partnerData.Jobyer.idContrat;
+      this.contractData.demandeEmployer = partnerData.Employeur.idContrat;
+      this.contractData.enveloppeEmployeur = partnerData.Employeur.folderURL;
+      this.contractData.enveloppeJobyer = partnerData.Jobyer.folderURL;
+    }
   }
 
   /**

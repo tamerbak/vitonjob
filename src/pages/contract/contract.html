@@ -390,7 +390,7 @@
 
         <ion-item class="contract-item">
             <ion-label>Moyen de transport</ion-label>
-            <ion-select [(ngModel)]="contractData.titreTransport">
+            <ion-select [(ngModel)]="contractData.zonesTitre">
                 <ion-option *ngFor="let t of transportMeans" value="{{t}}">{{t}}</ion-option>
             </ion-select>
         </ion-item>
@@ -405,7 +405,7 @@
 
     <ion-row>
         <ion-col text-center>
-            <button [color]="vojgreen" class="contract-validation-button" (click)="goToYousignPage()" [disabled]="mandatoryDataMissing()" ion-button>
+            <button [color]="vojgreen" class="contract-validation-button" (click)="gotoContractListPage()" [disabled]="mandatoryDataMissing()" ion-button>
                 Soumettre le contrat
             </button>
         </ion-col>
