@@ -12,6 +12,7 @@ import {AttachementsPage} from "../pages/attachements/attachements";
 import {BankAccountPage} from "../pages/bank-account/bank-account";
 import {CivilityPage} from "../pages/civility/civility";
 import {ContractPage} from "../pages/contract/contract";
+import {ContractListPage} from "../pages/contract-list/contract-list"
 import {ContractWizardPage} from "../pages/contract-wizard/contract-wizard";
 import {ContractualisationPage} from "../pages/contractualisation/contractualisation";
 import {CorrespondenceAddressPage} from "../pages/correspondence-address/correspondence-address";
@@ -147,6 +148,7 @@ import {SlimPayService} from "../providers/slimpay-service/slimpay-service";
         BankAccountPage,
         CivilityPage,
         ContractPage,
+        ContractListPage,
         ContractWizardPage,
         ContractualisationPage,
         CorrespondenceAddressPage,
@@ -247,6 +249,7 @@ import {SlimPayService} from "../providers/slimpay-service/slimpay-service";
         BankAccountPage,
         CivilityPage,
         ContractPage,
+        ContractListPage,
         ContractWizardPage,
         ContractualisationPage,
         CorrespondenceAddressPage,

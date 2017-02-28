@@ -32,6 +32,7 @@ import {OfferListPage} from "../pages/offer-list/offer-list";
 import {MissionListPage} from "../pages/mission-list/mission-list";
 import {ProfilePage} from "../pages/profile/profile";
 import {PendingContractsPage} from "../pages/pending-contracts/pending-contracts";
+import {ContractListPage} from "../pages/contract-list/contract-list"
 import {Observable} from "rxjs/Rx";
 import {IntroPage} from "../pages/intro/intro";
 import {SqliteDBService} from "../providers/sqlite-db-service/sqlite-db-service";
@@ -427,6 +428,13 @@ export class Vitonjob {
         ];
         this.isEmployer = (this.projectTarget == 'employer');
         if (this.isEmployer) {
+            this.loggedInPages.push({
+                title: "Contrat en attente",
+                description: "Liste des contrats en attente de signature",
+                component: ContractListPage,
+                icon: "logo-buffer",
+                isBadged: false
+            });
             this.loggedInPages.push({
                 title: "Recrutement groupé",
                 description: "Recruter un groupe de Jobyers",

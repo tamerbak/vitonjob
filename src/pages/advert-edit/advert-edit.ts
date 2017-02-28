@@ -299,8 +299,9 @@ export class AdvertEditPage{
     if (Utils.isEmpty(this.advert.offerId)) {
       this.nav.push(OfferAddPage, {adv: this.idAdvert});
     } else {
-      let offer = this.offerService.getOfferByIdFromLocal(this.currentUser, this.advert.offerId);
-      this.nav.push(OfferDetailPage, {selectedOffer: offer});
+      this.offerService.getOffer(this.advert.offerId, this.projectTarget).then((offer: any) => {
+        this.nav.push(OfferDetailPage, {selectedOffer: offer});
+      });
     }
   }
 

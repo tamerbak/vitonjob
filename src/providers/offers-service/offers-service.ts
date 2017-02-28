@@ -1927,16 +1927,6 @@ export class OffersService {
         }
     }
 
-    getOfferByIdFromLocal(currentUser, offerId) {
-        let offers = currentUser.employer.entreprises[0].offers;
-        for (let i = 0; i < offers.length; i++) {
-            if (offers[i].idOffer == offerId) {
-                return offers[i];
-            }
-        }
-        return null;
-    }
-
     selectJobs(kw) {
         let sql = "select pk_user_job as id, libelle from user_job where ( lower_unaccent(libelle) like lower_unaccent('%" + Utils.sqlfyText(kw) + "%') or lower_unaccent(libelle) % lower_unaccent('" + Utils.sqlfyText(kw) + "')) order by similarity(lower_unaccent(libelle),lower_unaccent('" + Utils.sqlfyText(kw) + "')) desc";
         console.log(sql);
@@ -2166,7 +2156,9 @@ export class OffersService {
         ]);
 
         return new Promise(resolve => {
-            this.httpRequest.sendCallOut(payloadFinal, this)
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(Configs.calloutURL, JSON.stringify(payloadFinal), {headers: headers})
+              .map(res => res.json())
               .subscribe((data: any) => {
                   if (data) {
                       resolve(data);
@@ -2255,7 +2247,7 @@ export class OffersService {
         return false;
     }
 
-    getTemporaryOfferInfo(offerId){
+    getOfferInfo(offerId){
         let sql = "select oe.telephone_contact as telephone, oe.contact_sur_place as contact, m.libelle as secteur from user_offre_entreprise as oe, user_pratique_job as pj, user_job as j, user_metier as m where oe.pk_user_offre_entreprise = " + offerId + " and oe.pk_user_offre_entreprise = pj.fk_user_offre_entreprise and pj.fk_user_job = j.pk_user_job and j.fk_user_metier = m.pk_user_metier";
         console.log(sql);
         return new Promise(resolve => {
@@ -2264,6 +2256,18 @@ export class OffersService {
               .map(res => res.json())
               .subscribe((data: any) => {
                   resolve(data.data[0]);
+              });
+        });
+    }
+
+    updateOfferState(offerId, state){
+        let sql = "update user_offre_entreprise set etat = '" + state + "' where pk_user_offre_entreprise = " + offerId;
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe(data => {
+                  resolve(data);
               });
         });
     }
