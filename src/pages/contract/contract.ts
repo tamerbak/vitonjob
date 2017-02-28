@@ -19,6 +19,7 @@ import {Contract} from "../../dto/contract";
 import {GlobalService} from "../../providers/global-service/global-service";
 import {FinanceService} from "../../providers/finance-service/finance-service";
 import {ContractListPage} from "../contract-list/contract-list";
+import {ContractEpiPage} from "./contract-epi/contract-epi";
 
 /**
  * @author daoudi amine
@@ -62,6 +63,9 @@ export class ContractPage {
   public isEuropean: boolean;
   public isCIN: boolean;
   public labelTitreIdentite: String;
+
+  //epi
+  public savedEpis: any[] = [];
 
   constructor(public gc: GlobalConfigs,
               public nav: NavController,
@@ -194,14 +198,14 @@ export class ContractPage {
           this.labelTitreIdentite = "CNI ou Passeport";
           this.jobyer.titreTravail = datum.cni;
         }else{
-          this.labelTitreIdentite = "N° de la carte de ressortissant";
+          this.labelTitreIdentite = "Carte de ressortissant";
           this.jobyer.titreTravail = datum.numero_titre_sejour;
         }
       }else{
         if(estResident){
-          this.labelTitreIdentite = "N° de la carte résident";
+          this.labelTitreIdentite = "Carte de résident";
         }else{
-          this.labelTitreIdentite = "N° du titre de séjour";
+          this.labelTitreIdentite = "Titre de séjour";
         }
         this.jobyer.titreTravail = datum.numero_titre_sejour;
       }
@@ -415,7 +419,11 @@ export class ContractPage {
         this.contractData.adresseInterim= this.workAdress;
         this.contractData.workAdress = this.workAdress;
         this.contractData.interimAddress = this.workAdress;
-
+        if(this.savedEpis && this.savedEpis.length > 0){
+          this.contractData.equipements = "<ul><li>" + this.savedEpis.join('</li><li>') + "</li></ul>";
+        }else{
+          this.contractData.equipements = "Aucun équipement de sécurité";
+        }
       }else{
         this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
         loading.dismiss();
@@ -561,6 +569,19 @@ export class ContractPage {
       this.contractData.enveloppeEmployeur = partnerData.Employeur.folderURL;
       this.contractData.enveloppeJobyer = partnerData.Jobyer.folderURL;
     }
+  }
+
+  openEpiModal(){
+    let savedEpis = Utils.cloneObject(this.savedEpis);
+    let modal = this.modal.create(ContractEpiPage, {savedEpis: savedEpis});
+    modal.present();
+    modal.onDidDismiss((data: any[]) => {
+      if(Utils.isEmpty(data) || data.length == 0){
+        return;
+      }else{
+        this.savedEpis = data;
+      }
+    });
   }
 
   /**

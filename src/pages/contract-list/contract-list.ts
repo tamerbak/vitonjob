@@ -56,6 +56,8 @@ export class ContractListPage {
     }
 
     goToDocusignPage(contract) {
+        let loading = this.loading.create({content:"Merci de patienter..."});
+        loading.present();
         //get offer info of the selected contract
         this.offerService.getOffer(contract.idOffer, this.projectTarget).then((data: any) => {
             let offer = data;
@@ -125,6 +127,8 @@ export class ContractListPage {
                     this.offerService.loadOfferAdress(contract.idOffer, "employeur").then((data: any) => {
                         contract.adresseInterim = data;
                         contract.workAdress = data;
+
+                        loading.dismiss();
 
                         //set variables in local storage and navigate to docusign page
                         this.nav.push(YousignPage, {jobyer: jobyer, currentOffer: offer, contractData: contract});

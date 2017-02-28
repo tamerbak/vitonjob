@@ -249,15 +249,19 @@
         </ion-list>
 
         <ion-item class="contract-item">
-            <ion-label>Equipement de protection</ion-label>
-            <ion-input type="text" [(ngModel)]="contractData.equipements"></ion-input>
+            <button [color]="vojgreen" class="contract-validation-button" (click)="openEpiModal()" ion-button>
+                <ion-icon name="add-circle"></ion-icon>
+                 Ajouter des équipements de protection individuel
+            </button>
+            <!--<ion-label>Equipement de protection individuel</ion-label>
+            <ion-input type="text" [(ngModel)]="contractData.equipements"></ion-input>-->
         </ion-item>
 
         <!--ion-item class="contract-item">
             <ion-label>Equipements fournis par ETT</ion-label>
             <ion-checkbox [(ngModel)]="contractData.epi"></ion-checkbox>
         </ion-item-->
-        <ion-item class="contract-item">
+        <!--<ion-item class="contract-item">
             <ion-label>Fourni par</ion-label>
             <ion-select [(ngModel)]="contractData.epiProvidedBy">
                 <ion-option value="Le client">Le client</ion-option>
@@ -265,7 +269,7 @@
                 <ion-option value="Le salarié">Le salarié</ion-option>
             </ion-select>
 
-        </ion-item>
+        </ion-item>-->
 
     </ion-list>
 

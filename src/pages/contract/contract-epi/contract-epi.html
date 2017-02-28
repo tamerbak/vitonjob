@@ -1,0 +1,60 @@
+<ion-header>
+    <ion-navbar [color]="themeColor">
+        <ion-title>Equipement de protection individuel</ion-title>
+        <ion-buttons end>
+            <button ion-button (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-label floating>Equipement de protection individuel</ion-label>
+      <ion-select [(ngModel)]="selectedEpi" okText="OK" cancelText="Annuler">
+        <ion-option *ngFor="let e of epis"
+                    value="{{e.libelle}}">
+          {{e.libelle}}
+        </ion-option>
+
+      </ion-select>
+    </ion-item>
+
+      <ion-item>
+          <ion-label floating>Equipement fourni par</ion-label>
+          <ion-select [(ngModel)]="providedBy" okText="OK" cancelText="Annuler">
+              <ion-option value="Le client">
+                  Le client
+              </ion-option>
+              <ion-option value="L'entreprise de travail temporaire">
+                  L'entreprise de travail temporaire
+              </ion-option>
+              <ion-option value="Le salarié">
+                  Le salarié
+              </ion-option>
+          </ion-select>
+      </ion-item>
+
+    <button ion-button icon-left small item color="primary"
+            [disabled]="isEmpty(selectedEpi) || isEmpty(providedBy)"
+            (click)="addEpi()" >
+      <ion-icon  name="add-circle"></ion-icon>Ajouter
+    </button>
+  </ion-list>
+  <ion-list>
+    <ion-item *ngFor="let epi of savedEpis, let i=index">
+      <label>{{epi}}</label>
+      <button ion-button small item-right danger (click)="removeEpi(i)" color="vojgrey">
+        <ion-icon name="remove-circle"></ion-icon>
+      </button>
+    </ion-item>
+  </ion-list>
+
+    <button ion-button color="primary"
+            [disabled]="isEmpty(this.savedEpis)" class="full-width"
+            (click)="validateModal()" >
+        <ion-icon  name="checkmark-circle"></ion-icon>Valider
+    </button>
+</ion-content>
