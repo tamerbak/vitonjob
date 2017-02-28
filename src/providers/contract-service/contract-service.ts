@@ -6,6 +6,7 @@ import {isUndefined} from "ionic-angular/util/util";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {HttpRequestHandler} from "../../http/http-request-handler";
 import {Utils} from "../../utils/utils";
+import {Contract} from "../../dto/contract";
 
 declare let unescape;
 
@@ -128,7 +129,7 @@ export class ContractService {
    * @param employerEntrepriseId
    * @return JSON results in form of created contract Id
    */
-  saveContract(contract: any, jobyerId: Number, employerEntrepriseId: Number, projectTarget: string, accountId, offerId) {
+  saveContract(contract: Contract, jobyerId: Number, employerEntrepriseId: Number, projectTarget: string, accountId, offerId) {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
     //let dt = new Date();
@@ -174,7 +175,7 @@ export class ContractService {
       " embauche_autorise," +
       " rapatriement_a_la_charge_de_l_ai," +
       " horaires_fixes," +
-      //" liste_epi," +
+      " liste_epi," +
       " moyen_d_acces," +
       " contact_sur_place," +
       " telephone_contact," +
@@ -233,7 +234,7 @@ export class ContractService {
       + "'OUI',"
       + "'OUI',"
       + "'" + isScheduleFixed + "',"
-      //+ "'" +Utils.sqlfyText(listeEPI) + "',"
+      + "'" + Utils.sqlfyText(contract.equipements) + "',"
       + "'" + Utils.sqlfyText(contract.moyenAcces) + "',"
       + "'" + Utils.sqlfyText(contract.offerContact) + "',"
       + "'" + Utils.sqlfyText(contract.contactPhone) + "',"
@@ -409,12 +410,8 @@ export class ContractService {
 
 
     if(epis && epis.length>0){
-      html = html + "<br><p><b>Equipements de protection individuels</b></p><ul>";
-      for (let i = 0; i < epis.length; i++) {
-        let p = epis[i];
-        html = html + "<li>"+ p.libelle + "</li>";
-      }
-      html = html + "</ul>";
+      html = html + "<br><p><b>Equipements de protection individuels</b></p>";
+      html = html + epis ;
     }
 
     html = html + "<br><p><b>Adresse de la mission : </b>"+address+"</p>";
@@ -438,7 +435,7 @@ export class ContractService {
 
     if (currentOffer) {
       horaires = this.prepareHoraire(currentOffer.calendarData, contract.prerequis,
-        contract.epiList,
+        contract.equipements,
         contract.adresseInterim,
         contract.moyenAcces,
         contract.offerContact,
@@ -485,7 +482,7 @@ export class ContractService {
         "fin": eh,
         "variables": contract.workHourVariable,
       },
-      "posteARisque": contract.postRisks,
+      "posteARisque": "Non",
       "surveillanceMedicale": contract.medicalSurv,
       "epi": contract.epi,
       "salaireBase": contract.baseSalary,

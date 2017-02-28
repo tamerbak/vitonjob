@@ -116,38 +116,19 @@ export class LoadListService {
         });
     }
 
-    /*loadList(src: string, selectedList: any) {
-        let ids: number[] = [];
-        for (let i = 0; i < selectedList.length; ++i) {
-            ids.push(selectedList[i].id);
-        }
-
-        let sql = "SELECT " +
-            "pk_user_" + src + " as id" +
-            ", libelle " +
-            ", dirty " +
-            "FROM user_" + src + " "
-          ;
-        if (ids.length > 0) {
-            sql += "WHERE pk_user_" + src + " IN (" + ids.join() + ");";
-        } else {
-            sql += "WHERE dirty = 'N';";
-
-        }
-
+    loadEPI(){
+        let sql = "select pk_user_epi as id, libelle from user_epi where dirty='N' order by libelle asc";
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
-
             this.http.post(Configs.sqlURL, sql, {headers: headers})
               .map(res => res.json())
               .subscribe(data => {
-                  if (data.status == "success") {
-                      resolve(data.data);
-                  } else {
-                      resolve(null);
+                  let res = [];
+                  if(data && data.data){
+                      res = data.data;
                   }
+                  resolve(res);
               });
         });
-
-    }*/
+    }
 }
