@@ -134,6 +134,7 @@ import {GoogleAnalyticsService} from "../providers/google-analytics-service/goog
 import {SqliteDBService} from "../providers/sqlite-db-service/sqlite-db-service";
 import {DAOFactory} from "../dao/data-access-object";
 import {SlimPayService} from "../providers/slimpay-service/slimpay-service";
+import {ContractEpiPage} from "../pages/contract/contract-epi/contract-epi";
 import {SporadicService} from "../providers/sporadic-service/sporadic-service";
 
 @NgModule({
@@ -150,6 +151,7 @@ import {SporadicService} from "../providers/sporadic-service/sporadic-service";
         CivilityPage,
         ContractPage,
         ContractListPage,
+        ContractEpiPage,
         ContractWizardPage,
         ContractualisationPage,
         CorrespondenceAddressPage,
@@ -250,6 +252,7 @@ import {SporadicService} from "../providers/sporadic-service/sporadic-service";
         BankAccountPage,
         CivilityPage,
         ContractPage,
+        ContractEpiPage,
         ContractListPage,
         ContractWizardPage,
         ContractualisationPage,
