@@ -2176,6 +2176,7 @@ export class OffersService {
      */
     saveOffer(offerData: any, projectTarget: string) {
         //  Init project parameters
+        console.log("id hunter", JSON.stringify(offerData));
         this.configuration = Configs.setConfigs(projectTarget);
         // store in remote database
         let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [

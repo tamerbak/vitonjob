@@ -218,23 +218,13 @@ export class Vitonjob {
                 '/add-offer/:hunterAccess': OfferAddPage
                 //'/products/:productId': ProductPage
             }).subscribe((match) => {
-                console.log('Successfully routed', match);
+                debugger;
+                console.log('Successfully routed ', match);
+                console.log('parameter ', match.$args.hunterAccess);
                 if (typeof match.$args.hunterAccess != 'undefined') {
-                    // get hunter parameters
-                    let hunterAccess = JSON.parse(decodeURIComponent(match.$args.hunterAccess));
-                    // disconnect user if he is connected as employer or jobyer, even clear currentUser if hunter did many access requests...
-                    this.logOut();
-                    // load a temporary currentUser var to use it whene accessing to offerAdd or CivilityPage..
-                    let currentUser = {id: 0, employer: {id: 0, entreprises: []}, jobyer: {id: 0}, hunterId: 0};
-                    currentUser.hunterId = hunterAccess.hunterId;
-                    currentUser.id = hunterAccess.accountId;
-                    if (this.projectTarget === 'employer') {
-                        currentUser.employer.entreprises.push({id: hunterAccess.enterpriseId});
-                        currentUser.employer.id = hunterAccess.employerId;
-                    } else if (this.projectTarget === 'jobyer') {
-                        currentUser.jobyer.id = hunterAccess.jobyerId;
-                    }
-                    this.storage.set(this.currentUserVar, currentUser);
+                    console.log('parameter ', match.$args.hunterAccess);
+                    console.log('decoded parameter ', decodeURIComponent(match.$args.hunterAccess));
+
                 }
             }, (nomatch) => {
                 console.warn('Unmatched Route', nomatch);
@@ -626,7 +616,7 @@ export class Vitonjob {
         this.storage.set('OPTION_MISSION', null);
         this.storage.set('PROFIL_PICTURE', null);
         this.events.publish('user:logout');
-        this.nav.setRoot(HomePage);
+        //this.nav.setRoot(HomePage);
     }
 
 

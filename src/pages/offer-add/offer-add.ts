@@ -5,7 +5,7 @@ import {
     ModalController,
     LoadingController,
     AlertController,
-    ViewController
+    ViewController, Events
 } from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
@@ -73,7 +73,8 @@ export class OfferAddPage {
                 public advertService: AdvertService,
                 public loading: LoadingController,
                 public storage: Storage,
-                public environmentService: EnvironmentService) {
+                public environmentService: EnvironmentService,
+                public events:Events) {
 
         // Set global configs
         // Get target to determine configs
@@ -143,14 +144,37 @@ export class OfferAddPage {
         this.visibleOffer = false;
 
         this.storage.get(config.currentUserVar).then((value) => {
-            if (value) {
-                let currentUser = JSON.parse(value);
-                this.idTiers = this.projectTarget == 'employer' ? currentUser.employer.entreprises[0].id : currentUser.jobyer.id;
-                this.idHunter = currentUser.hunterId;
-                this.offerToBeAdded.hunterId = this.idHunter;
-                this.offerToBeAdded.jobyerId = (this.isEmployer ? 0 : this.idTiers);
-                this.offerToBeAdded.entrepriseId = (this.isEmployer ? this.idTiers : 0);
+
+            let currentUser:any;
+            if (this.navParams.data.hunterAccess) {
+                // get hunter parameters
+                let hunterAccess = JSON.parse(decodeURIComponent(this.navParams.data.hunterAccess));
+                // disconnect user if he is connected as employer or jobyer, even clear currentUser if hunter did many access requests...
+                console.log(JSON.stringify(hunterAccess));
+                this.logOut();
+                // load a temporary currentUser var to use it whene accessing to offerAdd or CivilityPage..
+                currentUser = {id: 0, employer: {id: 0, entreprises: []}, jobyer: {id: 0}, hunterId: 0};
+                currentUser.hunterId = hunterAccess.hunterId;
+                currentUser.id = hunterAccess.user.accountId;
+                if (this.projectTarget === 'employer') {
+                    currentUser.employer.entreprises.push({id: hunterAccess.user.enterpriseId});
+                    currentUser.employer.id = hunterAccess.user.employerId;
+                } else if (this.projectTarget === 'jobyer') {
+                    currentUser.jobyer.id = hunterAccess.user.jobyerId;
+                }
+                // this.storage.set(config.currentUserVar, JSON.stringify(currentUser));
+            } else {
+                if (value) {
+                    currentUser = JSON.parse(value);
+                }
             }
+
+            this.idTiers = this.projectTarget == 'employer' ? currentUser.employer.entreprises[0].id : currentUser.jobyer.id;
+            this.idHunter = currentUser.hunterId;
+            this.offerToBeAdded.idHunter = this.idHunter;
+            this.offerToBeAdded.jobyerId = (this.isEmployer ? 0 : this.idTiers);
+            this.offerToBeAdded.entrepriseId = (this.isEmployer ? this.idTiers : 0);
+
         });
 
         this.initLocalStorageOffer();
@@ -365,7 +389,7 @@ export class OfferAddPage {
                         // then we remove it from the navigation stack
                         this.nav.remove(index);
                     });
-                } else if (this.isHunter) {
+                } else if (this.navParams.data.hunterAccess) {
                     this.nav.setRoot(HomePage);
                 } else {
                     this.nav.setRoot(OfferListPage);
@@ -420,5 +444,14 @@ export class OfferAddPage {
 
     goToNewAdvert() {
         this.nav.push(AdvertEditPage);
+    }
+
+    logOut() {
+        this.storage.set('connexion', null);
+        this.storage.set("RECRUITER_LIST", null);
+        this.storage.set('OPTION_MISSION', null);
+        this.storage.set('PROFIL_PICTURE', null);
+        this.events.publish('user:logout');
+        //this.nav.setRoot(HomePage);
     }
 }

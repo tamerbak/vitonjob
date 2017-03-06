@@ -36,7 +36,7 @@ export class Offer extends AbstractGCallout {
   adresse: Adress;
   jobyerId: number;
   entrepriseId: number;
-  hunterId:number;
+  idHunter:number;
 
   constructor() {
     super('com.vitonjob.callouts.offer.model.OfferData');
@@ -64,6 +64,6 @@ export class Offer extends AbstractGCallout {
     this.adresse = new Adress;
     this.jobyerId = 0;
     this.entrepriseId = 0;
-    this.hunterId = 0;
+    this.idHunter = 0;
   }
 }
