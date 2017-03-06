@@ -59,17 +59,22 @@ export class SporadicService {
           if(data && data.length>0){
             for(let i = 0 ; i < data.length ; i++){
               let o = data[i];
+              
               sql = "";
               if(o.idVOJ && o.idVOJ>0)
                 sql = "insert into offre_jobyer " +
-                    "(id_voj, titre, id_secteur, id_job, mots_cles, taux, nom_jobyer)" +
+                    "(id_voj, titre, id_secteur, id_job, mots_cles, taux, nom_jobyer, adress, offer)" +
                     " values " +
-                    "("+o.idVOJ+", '"+Utils.sqlfyText(o.title) +"', "+o.idSector+", "+o.idJob+", '"+Utils.sqlfyText(o.keyWords)+"', "+o.rate+", '"+Utils.sqlfyText(o.jobyer)+"')";
+                    "("+o.idVOJ+", '"+Utils.sqlfyText(o.title) +"', " +
+                    ""+o.idSector+", "+o.idJob+", '"+Utils.sqlfyText(o.keyWords)+"', " +
+                    ""+o.rate+", '"+Utils.sqlfyText(o.jobyer)+"','"+Utils.sqlfyText(o.adress)+"', "+(o.offer?1:0)+")";
               else if(o.idJobyer && o.idJobyer>0)
                 sql = "insert into offre_jobyer " +
-                    "(id_jobyer, titre, id_secteur, id_job, mots_cles, taux, nom_jobyer)" +
+                    "(id_jobyer, titre, id_secteur, id_job, mots_cles, taux, nom_jobyer, adress, offer)" +
                     " values " +
-                    "("+o.idJobyer+", '"+Utils.sqlfyText(o.title)+"', "+o.idSector+", "+o.idJob+", '"+Utils.sqlfyText(o.keyWords)+"', "+o.rate+", '"+Utils.sqlfyText(o.jobyer)+"')";
+                    "("+o.idJobyer+", '"+Utils.sqlfyText(o.title)+"', "+o.idSector+", " +
+                    ""+o.idJob+", '"+Utils.sqlfyText(o.keyWords)+"', "+o.rate+", " +
+                    "'"+Utils.sqlfyText(o.jobyer)+"','"+Utils.sqlfyText(o.adress)+"', "+(o.offer?1:0)+")";
               this.db.execute(sql).then((resp:boolean)=>{
                 if(i == data.length - 1){
                   console.log("DONE INSERTING DATA");
@@ -190,9 +195,13 @@ export class SporadicService {
             for(let i = 0 ; i < data.length ; i++){
               let o = data[i];
               sql = "insert into offre_entreprise " +
-                  "(id_voj, titre, id_secteur, id_job, mots_cles, taux, gains, nom_entreprise)" +
+                  "(id_voj, titre, id_secteur, id_job, mots_cles, taux, gains, nom_entreprise, adress)" +
                   " values " +
-                  "("+o.idVOJ+", '"+Utils.sqlfyText(o.title)+"', "+o.idSector+", "+o.idJob+", '"+Utils.sqlfyText(o.keyWords)+"', "+o.rate+", "+o.gains+", '"+Utils.sqlfyText(o.enterprise)+"')";
+                  "("+o.idVOJ+", '"+Utils.sqlfyText(o.title)+"', "+o.idSector+", "+o.idJob+", " +
+                  "'"+Utils.sqlfyText(o.keyWords)+"', "+o.rate+", "+o.gains+", " +
+                  "'"+Utils.sqlfyText(o.enterprise)+"','"+Utils.sqlfyText(o.adress)+"')";
+              console.log(sql);
+
               this.db.execute(sql).then((resp:boolean)=>{
                 if(i == data.length - 1){
                   console.log("DONE INSERTING DATA");

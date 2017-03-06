@@ -792,80 +792,34 @@ export class HomePage {
             this.lookingForJob = false;
         });
 
-        /*this.offersService.autocompleteJobs(val).then((data : any)=>{
-            this.jobList = data;
 
-            for (let i = 0; i < this.jobList.length; i++) {
-                let s = this.jobList[i];
-                let sectorIndex = 0;
-                let currentJob = s;
-                if (this.newCombination.filter((elem, pos) => {
-                        sectorIndex = pos;
-                        return elem.idsector === s.idsector;
-                    }).length > 0) {
-                    this.newCombination[sectorIndex].jobs.push(currentJob);
-                } else {
-                    this.newCombination.push({idsector: s.idsector, sector: s.sector, jobs: [currentJob]});
-                }
+    }
+
+    selectOffer(o){
+        let searchFields = {
+            class: 'com.vitonjob.recherche.model.SearchQuery',
+            resultsType: this.projectTarget == 'jobyer' ? 'entreprise' : 'jobyer',
+            idOffer: 0,
+            idProfileJob : 0,
+            queryType : 'SINGLE RESULT'
+        };
+
+        if(this.projectTarget == 'jobyer' || o.offer === true){
+            searchFields.idOffer = o.id;
+            searchFields.idProfileJob = 0;
+        } else {
+            searchFields.idOffer = 0;
+            searchFields.idProfileJob = o.id;
+        }
+
+        let loading = this.loading.create({content: "Merci de patienter..."});
+        loading.present();
+        this.searchService.advancedSearch(searchFields).then((data:any)=>{
+            if(data && data.length>0){
+                this.nav.push(SearchDetailsPage, {searchResult: data[0], currentOffer: null});
             }
-
-            this.lookingForJob = false;
-            this.isJobFound = (this.jobs.length != 0);
-            this.params.searchQuery = this.scQuery;
-
-            if(this.pendingJob && this.pendingJob.length> 0){
-                this.reexecuteAutocomplete(this.pendingJob);
-
-            }
-
+            loading.dismiss();
         });
-
-        this.jobs = this.newCombination.sort((a, b) => {
-            return b.sector - a.sector;
-        });*/
-
-
-
-        /*if (this.isCity.activated) {
-            this.watchCity(e);
-            return;
-        }
-
-        // else launch job's auto-completion
-        let val = e.target.value;
-        if (val.length < 3) {
-            this.isJobFound = true;
-            this.jobs = [];
-            this.newCombination = [];
-            return;
-        }
-
-        this.jobs = [];
-        this.newCombination = [];
-        this.cities = [];
-        let removeDiacritics = require('diacritics').remove;
-        for (let i = 0; i < this.jobList.length; i++) {
-            let s = this.jobList[i];
-            let sectorIndex = 0;
-            if (removeDiacritics(s.libelle).toLocaleLowerCase().indexOf(removeDiacritics(val).toLocaleLowerCase()) > -1) {
-                let currentJob = s;
-                if (this.newCombination.filter((elem, pos) => {
-                        sectorIndex = pos;
-                        return elem.idsector === s.idsector;
-                    }).length > 0) {
-                    this.newCombination[sectorIndex].jobs.push(currentJob);
-                } else {
-                    this.newCombination.push({idsector: s.idsector, sector: s.sector, jobs: [currentJob]});
-                }
-            }
-
-        }
-
-        this.jobs = this.newCombination.sort((a, b) => {
-            return b.sector - a.sector;
-        });
-
-        this.isJobFound = (this.jobs.length == 0);*/
     }
 
     reexecuteAutocomplete(val){

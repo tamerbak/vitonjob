@@ -45,17 +45,20 @@
 
 
     <ion-list *ngIf="offers.length>0">
-        <div *ngFor="let o of offers" class="offer-card-container" [ngStyle]="{'background-image': 'url('+o.img+')'}">
+        <div *ngFor="let o of offers" class="offer-card-container"
+             (click)="selectOffer(o)" [ngStyle]="{'background-image': 'url('+o.img+')'}">
             <div class="offer-card-header">
-                <span>{{o.title}}</span>
+                <span class="offer-card-header-title">{{o.title}}</span>
+                <span class="offer-card-header-rating" *ngIf="!isEmployer">{{o.gains | number:'1.2-2'}}&nbsp;€</span>
             </div>
-            <div class="offer-card-footer" *ngIf="isEmployer">
-                <span class="offer-card-footer-jobyer">{{o.jobyer}}</span>
+            <div class="offer-card-content">
+                <span *ngIf="isEmployer">{{o.jobyer}}</span>
+                <span *ngIf="!isEmployer">{{o.enterprise}}</span>
             </div>
-            <div class="offer-card-footer" *ngIf="!isEmployer">
-                <span class="offer-card-footer-rating">{{o.gains | number:'1.2-2'}}&nbsp;€</span>
-                <span class="offer-card-footer-enterprise">{{o.enterprise}}</span>
+            <div class="offer-card-footer">
+                {{o.adress}}
             </div>
+
         </div>
     </ion-list>
     <!--ion-row *ngIf="lookingForJob">

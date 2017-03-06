@@ -11,7 +11,7 @@ export class SqliteDBService{
 
     initialize(){
         this._db.openDatabase({
-            name: "vitonjobdb.db",
+            name: "localdb.db",
             location: "default",
             createFromLocation : 1
         }).then(() => {
@@ -35,7 +35,7 @@ export class SqliteDBService{
         else
             return new Promise(resolve=>{
                 this._db.openDatabase({
-                    name: "vitonjobdb.db",
+                    name: "localdb.db",
                     location: "default",
                     createFromLocation : 1
                 }).then(() => {
@@ -68,7 +68,7 @@ export class SqliteDBService{
         else
             return new Promise(resolve=>{
                 this._db.openDatabase({
-                    name: "vitonjobdb.db",
+                    name: "localdb.db",
                     location: "default",
                     createFromLocation : 1
                 }).then(() => {

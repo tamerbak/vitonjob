@@ -164,7 +164,7 @@ export class SearchService {
 
         let payload = {
             'class': 'fr.protogen.masterdata.model.CCallout',
-            id: 20049,
+            id: 10045,
             args: [
                 {
                     class: 'fr.protogen.masterdata.model.CCalloutArguments',
