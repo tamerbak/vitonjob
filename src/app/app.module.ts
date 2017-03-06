@@ -134,6 +134,7 @@ import {GoogleAnalyticsService} from "../providers/google-analytics-service/goog
 import {SqliteDBService} from "../providers/sqlite-db-service/sqlite-db-service";
 import {DAOFactory} from "../dao/data-access-object";
 import {SlimPayService} from "../providers/slimpay-service/slimpay-service";
+import {SporadicService} from "../providers/sporadic-service/sporadic-service";
 
 @NgModule({
     declarations: [
@@ -369,7 +370,8 @@ import {SlimPayService} from "../providers/slimpay-service/slimpay-service";
         GoogleAnalyticsService,
         SqliteDBService,
         DAOFactory,
-        SlimPayService
+        SlimPayService,
+        SporadicService
     ]
 })
 export class AppModule {

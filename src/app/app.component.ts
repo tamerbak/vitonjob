@@ -10,7 +10,7 @@ import {
     AlertController,
     LoadingController
 } from "ionic-angular";
-import {StatusBar, Splashscreen, Deeplinks} from "ionic-native";
+import {StatusBar, Splashscreen, Deeplinks, BackgroundMode} from "ionic-native";
 import {HomePage} from "../pages/home/home";
 import {OffersService} from "../providers/offers-service/offers-service";
 import {NgZone} from "../../node_modules/@angular/core/src/zone/ng_zone";
@@ -38,6 +38,7 @@ import {IntroPage} from "../pages/intro/intro";
 import {SqliteDBService} from "../providers/sqlite-db-service/sqlite-db-service";
 import {OfferAddPage} from "../pages/offer-add/offer-add";
 import {CivilityPage} from "../pages/civility/civility";
+import {SporadicService} from "../providers/sporadic-service/sporadic-service";
 //import {isUndefined} from "ionic-angular/util/util";
 
 //declare let cordova;
@@ -84,6 +85,7 @@ export class Vitonjob {
                 public events: Events,
                 public offerService: OffersService,
                 public sqliteDb: SqliteDBService,
+                public sporadicService : SporadicService,
                 private zone: NgZone,
                 private _alert: AlertController,
                 private _toast: ToastController,
@@ -180,6 +182,17 @@ export class Vitonjob {
         });
     }
 
+    updateCachedData(gc){
+        console.log("FIRING UP UPDATE SPORADIC SERVER");
+        if(this.projectTarget == 'jobyer'){
+            this.sporadicService.loadNewEnterpriseOffers();
+            this.sporadicService.fetchDeletedEnterpriseOffers();
+        } else {
+            this.sporadicService.loadNewJobyers();
+            this.sporadicService.fetchDeletedJobyerOffers();
+        }
+    }
+
     initializeApp(gc: any) {
         this.platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
@@ -191,6 +204,34 @@ export class Vitonjob {
             this.offerService.loadSectorsToLocal();
             this.offerService.loadJobsToLocal();
 
+            //  Let us initialize the background process
+            BackgroundMode.setDefaults({
+                title:"Vit-On-Job",
+                ticker:"Mise à jour des données de l'application",
+                silent:true
+            });
+
+            this.updateCachedData(gc);
+            BackgroundMode.onactivate().subscribe(()=>{
+                console.log("BG ACTIVATED");
+                setInterval(this.updateCachedData(gc),1800000);//1800000
+            });
+
+            BackgroundMode.ondeactivate().subscribe(()=>{
+                console.log("BG DEACTIVATED");
+                setInterval(this.updateCachedData(gc),1800000);//1800000
+            });
+
+            if(BackgroundMode.isEnabled()){
+             BackgroundMode.disable();
+             BackgroundMode.enable();
+             }else {
+                BackgroundMode.enable();
+            }
+
+            if(BackgroundMode.isActive()){
+                console.log("BG MODE IS ACTIVE");
+            }
 
             //if (GlobalConfigs.env === 'DEV'){
             let loader = this.loading.create({content: "Merci de patienter..."});

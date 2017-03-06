@@ -43,12 +43,27 @@
         </ion-item>
     </ion-row>
 
+
+    <ion-list *ngIf="offers.length>0">
+        <div *ngFor="let o of offers" class="offer-card-container" [ngStyle]="{'background-image': 'url('+o.img+')'}">
+            <div class="offer-card-header">
+                <span>{{o.title}}</span>
+            </div>
+            <div class="offer-card-footer" *ngIf="isEmployer">
+                <span class="offer-card-footer-jobyer">{{o.jobyer}}</span>
+            </div>
+            <div class="offer-card-footer" *ngIf="!isEmployer">
+                <span class="offer-card-footer-rating">{{o.gains | number:'1.2-2'}}&nbsp;€</span>
+                <span class="offer-card-footer-enterprise">{{o.enterprise}}</span>
+            </div>
+        </div>
+    </ion-list>
     <!--ion-row *ngIf="lookingForJob">
         <ion-col text-center>
             <ion-spinner></ion-spinner>
         </ion-col>
     </ion-row-->
-    <ion-list *ngIf="jobs.length>0" text-wrap style="background-color: white;">
+    <!--ion-list *ngIf="jobs.length>0" text-wrap style="background-color: white;">
         <div *ngFor="let sec of jobs">
             <ion-list-header color="light"> {{sec.sector}}</ion-list-header>
             <div *ngFor="let j of sec.jobs">
@@ -57,7 +72,7 @@
                 </ion-item>
             </div>
         </div>
-    </ion-list>
+    </ion-list-->
     <ion-list text-wrap no-lines [hidden]="isCity.activated || isJobFound || lookingForJob">
         <ion-item>
             <ion-label color="danger">

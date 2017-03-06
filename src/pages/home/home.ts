@@ -133,6 +133,7 @@ export class HomePage {
     public pendingJob : string = '';
     public params:any;
 
+    public offers : any = [];
 
     /*static get parameters() {
      return [[GlobalConfigs], [App], [NavController], [NavParams], [SearchService],
@@ -242,6 +243,12 @@ export class HomePage {
                 }
             }
         });
+
+        /*this.offers.push({
+            title:"Accouveur / Accouveuse débutant",
+            enterprise:"SYNAPSE Indus",
+            gains:"1 000.00 Euros"
+        });*/
     }
 
     /*/ Load map only after view is initialize
@@ -766,7 +773,8 @@ export class HomePage {
 
         // else launch job's auto-completion
         let val = e.target.value;
-        if (val.trim().length == 0) {
+        if (val.trim().length < 3) {
+            this.offers = [];
             this.isJobFound = true;
             return;
         }
@@ -778,7 +786,13 @@ export class HomePage {
 
 
         this.lookingForJob = true;
-        this.offersService.autocompleteJobs(val).then((data : any)=>{
+        this.offersService.autocompleteOffers(val, this.projectTarget).then((data : any)=>{
+            this.offers = data;
+            console.log(data);
+            this.lookingForJob = false;
+        });
+
+        /*this.offersService.autocompleteJobs(val).then((data : any)=>{
             this.jobList = data;
 
             for (let i = 0; i < this.jobList.length; i++) {
@@ -808,7 +822,7 @@ export class HomePage {
 
         this.jobs = this.newCombination.sort((a, b) => {
             return b.sector - a.sector;
-        });
+        });*/
 
 
 
