@@ -135,6 +135,7 @@ import {SqliteDBService} from "../providers/sqlite-db-service/sqlite-db-service"
 import {DAOFactory} from "../dao/data-access-object";
 import {SlimPayService} from "../providers/slimpay-service/slimpay-service";
 import {ContractEpiPage} from "../pages/contract/contract-epi/contract-epi";
+import {SporadicService} from "../providers/sporadic-service/sporadic-service";
 
 @NgModule({
     declarations: [
@@ -372,7 +373,8 @@ import {ContractEpiPage} from "../pages/contract/contract-epi/contract-epi";
         GoogleAnalyticsService,
         SqliteDBService,
         DAOFactory,
-        SlimPayService
+        SlimPayService,
+        SporadicService
     ]
 })
 export class AppModule {

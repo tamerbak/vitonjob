@@ -763,10 +763,66 @@ export class OffersService {
         console.log(sql);
         return new Promise(resolve => {
             this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true).loadData(sql).then((data:any) => {
-            //this.sqliteDb.executeSelect(sql).then((data:any) => {
+                //this.sqliteDb.executeSelect(sql).then((data:any) => {
                 let listJobs = data;
 
                 resolve(listJobs);
+            });
+        });
+    }
+
+    autocompleteOffers(job : string, projectTarget : string){
+        let sqlfiedJob = "%";
+        let kws = job.split(' ');
+
+        for(let i = 0 ; i < kws.length ; i++){
+            sqlfiedJob = sqlfiedJob+kws[i]+"%";
+        }
+
+        let sql = "";
+        if(projectTarget == 'employer')
+            sql = "select id_voj, titre, id_secteur, id_job, id_jobyer, nom_jobyer, adress, offer " +
+                "from offre_jobyer " +
+                "where lower(mots_cles) like lower('"+Utils.sqlfyText(sqlfiedJob)+"')";
+        else
+            sql = "select id_voj, titre, id_secteur, id_job, nom_entreprise, gains, adress " +
+                "from offre_entreprise " +
+                "where lower(mots_cles) like lower('"+Utils.sqlfyText(sqlfiedJob)+"')";
+
+        console.log(sql);
+        return new Promise(resolve => {
+            this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true).loadData(sql).then((data:any) => {
+
+                let offers = [];
+                
+                for(let i = 0 ; i < data.length ; i++){
+                    let o  ={
+                        id : data[i].id_voj,
+                        title : data[i].titre,
+                        sector : data[i].id_secteur,
+                        img : 'https://s3-eu-west-1.amazonaws.com/vitonjob.photos/'+data[i].id_secteur+'.jpg',
+                        job : data[i].id_job,
+                        adress : data[i].adress,
+                        enterprise : "",
+                        gains : 0.0,
+                        jobyerId : 0,
+                        jobyer : "",
+                        offer : false
+                    };
+
+                    if(projectTarget == 'jobyer'){
+                        o.enterprise = data[i].nom_entreprise;
+                        o.gains = data[i].gains;
+
+                    } else {
+                        o.jobyerId = data[i].id_jobyer;
+                        o.jobyer = data[i].nom_jobyer;
+                        o.offer = data[i].offer == 1;
+                    }
+                    offers.push(o);
+                }
+                
+                resolve(offers);
             });
         });
     }

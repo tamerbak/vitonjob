@@ -114,6 +114,7 @@ $ cordova plugin add cordova-plugin-file
 $ npm install ng2-ckeditor --save
 $ ionic plugin add cordova-plugin-google-analytics
 $ ionic plugin add cordova-sqlite-ext
+$ ionic plugin add cordova-plugin-background-mode
 ```
 
 ##Architecture du cache local et utilisation de SQLite
