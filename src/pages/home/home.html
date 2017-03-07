@@ -44,7 +44,7 @@
     </ion-row>
 
 
-    <ion-list *ngIf="offers.length>0">
+    <ion-list *ngIf="offers.length>0 && !isCity.activated">
         <div *ngFor="let o of offers" class="offer-card-container"
              (click)="selectOffer(o)" [ngStyle]="{'background-image': 'url('+o.img+')'}">
             <div class="offer-card-header">

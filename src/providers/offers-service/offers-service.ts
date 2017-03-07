@@ -783,11 +783,15 @@ export class OffersService {
         if(projectTarget == 'employer')
             sql = "select id_voj, titre, id_secteur, id_job, id_jobyer, nom_jobyer, adress, offer " +
                 "from offre_jobyer " +
-                "where lower(mots_cles) like lower('"+Utils.sqlfyText(sqlfiedJob)+"')";
+                "where lower(mots_cles) like lower('"+Utils.sqlfyText(sqlfiedJob)+"') " +
+                " or " +
+                " lower(titre) like lower('"+Utils.sqlfyText(sqlfiedJob)+"')";
         else
             sql = "select id_voj, titre, id_secteur, id_job, nom_entreprise, gains, adress " +
                 "from offre_entreprise " +
-                "where lower(mots_cles) like lower('"+Utils.sqlfyText(sqlfiedJob)+"')";
+                "where lower(mots_cles) like lower('"+Utils.sqlfyText(sqlfiedJob)+"') " +
+                " or " +
+                " lower(titre) like lower('"+Utils.sqlfyText(sqlfiedJob)+"')";
 
         console.log(sql);
         return new Promise(resolve => {
