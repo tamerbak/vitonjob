@@ -44,7 +44,7 @@
                     {{isEmployer ? 'Les jobyers ' : 'Les employeurs ' }} {{item.visible ? 'peuvent ': 'ne peuvent pas '}} voir cette offre dans leurs recherches
                 </h4>
 
-                <p [style.color]="item.color">Cliquer pour voir plus de détail</p>
+                <!--<p [style.color]="item.color">Cliquer pour voir plus de détail</p>-->
 
                 <!--ion-badge [style.backgroundColor]="themeColor" item-right *ngIf="item.visible">
                     <ion-spinner name="crescent" [hidden]="(item.correspondantsCount >= 0)"></ion-spinner>
@@ -62,7 +62,7 @@
                     </p>
                 </ion-item>
 
-                <button *ngIf="item.visible" ion-button color="vojgreen" style="width:95%" (click)="goToDetailOffer(item)">Détails</button>
+                <button ion-button color="vojgreen" style="width:95%" (click)="goToDetailOffer(item)">Détails</button>
                 <br/>
                 <button *ngIf="item.visible" ion-button color="vojgreen" style="width:95%" (click)="launchSearch(item)">Lancer la recherche</button>
 
