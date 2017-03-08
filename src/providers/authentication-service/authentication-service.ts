@@ -256,6 +256,30 @@ export class AuthenticationService {
     })
   }
 
+  updateFavoris(userData : any){
+    let arg = btoa(JSON.stringify(userData));
+
+    let data = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      'id': 93000,
+      'args': [{
+        'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+        label: 'Adresse',
+        value: arg
+      }]
+    };
+    let stringData = JSON.stringify(data);
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, stringData, {headers: headers})
+          .map(res => res.json())
+          .subscribe((data: any) => {
+            this.data = data;
+            resolve(this.data);
+          });
+    });
+  }
+
   updateRecruiterCivility(title, lastname, firstname, accountid) {
     var sql = "update user_recruteur set ";
     sql = sql + " titre='" + Utils.sqlfyText(title) + "', ";
