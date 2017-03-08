@@ -10,6 +10,7 @@ import {ModalTrackMissionPage} from "../modal-track-mission/modal-track-mission"
 import {MissionService} from "../../providers/mission-service/mission-service";
 import {Storage} from "@ionic/storage";
 import {ProfileService} from "../../providers/profile-service/profile-service";
+import {OffersService} from "../../providers/offers-service/offers-service";
 /*
  Generated class for the SettingsPage page.
 
@@ -37,6 +38,7 @@ export class SettingsPage {
                 private authService: AuthenticationService,
                 private globalService: GlobalService, events: Events,
                 private missionService: MissionService,
+                private offersService : OffersService,
                 public modal: ModalController,
                 public toast: ToastController,
                 public storage: Storage, public profileService: ProfileService) {
@@ -63,6 +65,10 @@ export class SettingsPage {
     }
 
     logOut() {
+        this.storage.set('FAV_MODE','false').then(()=>{
+            this.offersService.loadSectorsToLocal();
+            this.offersService.loadJobsToLocal();
+        });
         this.storage.set('connexion', null);
         this.storage.set(this.currentUserVar, null);
         this.storage.set(this.profilPictureVar, null);

@@ -61,6 +61,23 @@ export class LoadListService {
         })
     }
 
+    loadFavList(){
+        let sql = "select pk_user_favoris as id, libelle from user_favoris where dirty='N'";
+        console.log(sql);
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe((data:any) => {
+                    this.data = [];
+                    if (data.data)
+                        this.data = data.data;
+                    resolve(this.data);
+                });
+        });
+    }
+
     loadConventions() {
         let sql = "select pk_user_convention_collective as id, code, libelle from user_convention_collective";
         console.clear();

@@ -249,6 +249,15 @@
                 <ion-option *ngFor="let n of prefectures" value="{{n.pk_user_prefecture}}">{{n.nom}}</ion-option>
             </ion-select>
         </ion-item>
+
+        <ion-item [hidden]="isEmployer">
+            <ion-label [ngStyle]="nationalitiesstyle" floating>Métier</ion-label>
+            <ion-select [(ngModel)]="selectedFav" okText="OK" cancelText="Annuler">
+                <ion-option value="0">Aucun</ion-option>
+                <ion-option *ngFor="let n of favoris" value="{{n.id}}">{{n.libelle}}</ion-option>
+            </ion-select>
+        </ion-item>
+
         <div class="error-box">{{tsMessage}}</div>
         <ion-row wrap>
             {{scansLoadingInfos}}
