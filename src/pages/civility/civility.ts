@@ -912,6 +912,19 @@ export class CivilityPage {
                                 });
                             }
                         }
+
+                        //  Gestion des favoris
+                        this.currentUser.estEmployeur = true;
+                        this.authService.updateFavoris(this.currentUser).then((results : any)=>{
+                            if(results.id && results.id>0){
+                                this.storage.set('FAV_MODE','true');
+                                this.storage.set('SECTOR_LIST',JSON.stringify(results.sectors));
+                                this.storage.set('ACTIVITIES_LIST',JSON.stringify(results.activities));
+                                this.storage.set('JOB_LIST',JSON.stringify(results.jobs));
+                            } else {
+                                this.storage.set('FAV_MODE','false');
+                            }
+                        });
                     }
                 });
         } else {

@@ -128,6 +128,7 @@ export class SearchCriteriaPage {
         this.offerService = _offerService;
         this.themeColor = config.themeColor;
         this.buildFilters();
+
         this.db.get("SECTOR_LIST").then((data: any) => {
             this.sectorList = JSON.parse(data);
         });
