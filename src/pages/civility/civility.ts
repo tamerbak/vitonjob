@@ -179,6 +179,10 @@ export class CivilityPage {
     public isDepInputDisabled = true;
     public isBirthplaceInputDisabled = true;
 
+    //  Favoris
+    public favoris : any = [];
+    public selectedFav : string;
+
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
      */
@@ -225,6 +229,10 @@ export class CivilityPage {
         this.calendarTheme = config.calendarTheme;
         this.isAndroid4 = (this.platform.version('android').major < 5);
         this.params = params;
+        this._loadListService.loadFavList().then((data:any)=>{
+            this.favoris = data;
+        });
+
         if (this.params.data.currentUser) {
             this.currentUser = this.params.data.currentUser;
             this.accountId = this.currentUser.id;
@@ -334,6 +342,7 @@ export class CivilityPage {
         }
 
         this.environmentService.reload();
+
     }
 
     loadAttachement(scanTitle) {
@@ -689,6 +698,12 @@ export class CivilityPage {
                         this.nationality = this.currentUser.jobyer.natId ? (this.currentUser.jobyer.natId == 0 ? 91 : parseInt(this.currentUser.jobyer.natId)) : 0;
                         if (this.nationality) this.nationalitiesstyle = {'font-size': '1.4rem'};
                         else this.nationalitiesstyle = {'font-size': '2rem', 'position': 'absolute', 'top': '0.2em'};
+
+                        if(this.currentUser.jobyer.favoris && this.currentUser.jobyer.favoris != '0'){
+                            this.selectedFav = this.currentUser.jobyer.favoris;
+                        } else {
+                            this.selectedFav = "0";
+                        }
                     }
 
                     let jobyer = this.currentUser.jobyer;
@@ -1000,6 +1015,20 @@ export class CivilityPage {
                                 this.currentUser.jobyer.dateNaissance = this.birthdate;
                             }
                             this.currentUser.jobyer.lieuNaissance = this.birthplace;
+
+                            this.currentUser.jobyer.favoris = this.selectedFav;
+                            this.currentUser.estEmployeur = false;
+                            if(this.selectedFav && this.selectedFav != '0')
+                                this.authService.updateFavoris(this.currentUser).then((results : any)=>{
+                                    if(results.id && results.id>0){
+                                        this.storage.set('FAV_MODE','true');
+                                        this.storage.set('SECTOR_LIST',JSON.stringify(results.sectors));
+                                        this.storage.set('ACTIVITIES_LIST',JSON.stringify(results.activities));
+                                        this.storage.set('JOB_LIST',JSON.stringify(results.jobs));
+                                    } else {
+                                        this.storage.set('FAV_MODE','false');
+                                    }
+                                });
 
                             //upload scan
                             //this.updateScan(jobyerId);
