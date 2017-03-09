@@ -1043,6 +1043,11 @@ export class CivilityPage {
                                 //redirecting to personal address tab
                                 if (this.params.data.hunterAccess) {
                                     this.nav.setRoot(HomePage);
+                                    // go back to hunter app
+                                    let hunterReturn: string = encodeURIComponent(JSON.stringify(this.currentUser));
+                                    let target = this.projectTarget === 'employer' ? 'Employeur' : 'Jobyer';
+                                    let link: string = 'hunter://vitonjob.com/users/'+ target + '/' + hunterReturn;
+                                    window.open(link, '_system');
                                 } else {
                                     this.nav.push(PersonalAddressPage);
                                 }

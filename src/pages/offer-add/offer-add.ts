@@ -391,6 +391,11 @@ export class OfferAddPage {
                     });
                 } else if (this.navParams.data.hunterAccess) {
                     this.nav.setRoot(HomePage);
+                    // go back to hunter app
+                    let hunterReturn: string = encodeURIComponent(JSON.stringify(this.offerToBeAdded));
+                    let target = this.projectTarget === 'employer' ? 'Employeur' : 'Jobyer';
+                    let link: string = 'hunter://vitonjob.com/offers/'+ target + '/' + hunterReturn;
+                    window.open(link, '_system');
                 } else {
                     this.nav.setRoot(OfferListPage);
                 }
