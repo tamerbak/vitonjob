@@ -136,4 +136,14 @@ export class Utils {
     var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
     return regexp.test(u);
   }
+
+  //arrondi à la décimal suéprieur : 2.12 => 2.2
+  public static ceil(value, decimals) {
+    return Number(Math.ceil(+(value+'e'+decimals))+'e-'+decimals);
+  }
+
+  //arrondi à la décimal inférieur : 2.12 => 2.1, 2.15 =>2.2
+  public static round(value, decimals) {
+    return Number(Math.round(+(value+'e'+decimals))+'e-'+decimals);
+  }
 }

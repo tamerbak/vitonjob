@@ -32,14 +32,14 @@ export class OfferTempQuotePage {
     this.service.loadPrevQuote(id).then((data: any) => {
       this.quote = data;
       for (let i = 0; i < this.quote.lignes.length; i++) {
-        this.amountBeforeTaxes += parseFloat(this.quote.lignes[i].valeur);
+        this.amountBeforeTaxes = +this.amountBeforeTaxes.toFixed(2) + +this.quote.lignes[i].valeur.toFixed(2);
         if(this.quote.lignes[i].unite  && this.quote.lignes[i].unite == 'IJ')
           this.quote.lignes[i].unite = 'J';
         if(this.quote.lignes[i].unite  && this.quote.lignes[i].unite == 'IH')
           this.quote.lignes[i].unite = 'H';
       }
-      this.taxes = this.amountBeforeTaxes * this.taxeRate;
-      this.total = this.amountBeforeTaxes + this.taxes;
+      this.taxes = +this.amountBeforeTaxes.toFixed(2) * +this.taxeRate.toFixed(2);
+      this.total = +this.amountBeforeTaxes.toFixed(2) + +this.taxes.toFixed(2);
       loading.dismiss();
       console.log(JSON.stringify(this.quote));
     });
