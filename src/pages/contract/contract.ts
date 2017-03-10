@@ -5,7 +5,6 @@ import {UserService} from "../../providers/user-service/user-service";
 import {CivilityPage} from "../civility/civility";
 import {JobAddressPage} from "../job-address/job-address";
 import {PersonalAddressPage} from "../personal-address/personal-address";
-import {YousignPage} from "../yousign/yousign";
 import {isUndefined} from "../../../node_modules/ionic-angular/util/util";
 import {ModalOffersPage} from "../modal-offers/modal-offers";
 import {ContractService} from "../../providers/contract-service/contract-service";
@@ -166,18 +165,13 @@ export class ContractPage {
   }
 
   initJobyerData(){
-    //initialize jobyer data
-    this.jobyer.id = 0;
-    this.jobyer.numSS = '';
-    this.jobyer.nationaliteLibelle = '';
-
     let bd = new Date(this.jobyer.dateNaissance);
     this.jobyerBirthDate = DateUtils.dateFormat(bd);
     this.contractData.jobyerBirthDate = this.jobyerBirthDate;
 
     let email = this.jobyer.email;
     let tel = this.jobyer.tel;
-    let jobyerId = this.jobyer.idJobyer;
+    let jobyerId = (Utils.isEmpty(this.jobyer.id) ? this.jobyer.idJobyer : this.jobyer.id);
     let entrepriseId = this.employer.entreprises[0].id;
     let offerId = this.currentOffer.idOffer;
     this.contractService.prepareRecruitement(entrepriseId, email, tel, offerId, jobyerId).then((resp:any)=>{
