@@ -11,7 +11,7 @@ export class SqliteDBService{
 
     initialize(){
         this._db.openDatabase({
-            name: "voj.db",
+            name: "localdb.db",
             location: "default",
             createFromLocation : 1
         }).then(() => {
@@ -28,14 +28,14 @@ export class SqliteDBService{
                 this._db.executeSql(sql, {}).then((data:any) => {
                     resolve(data);
                 }, (err) => {
-                    console.error('Unable to execute sql: ', err);
+                    console.error('Unable to execute sql: '+sql, err);
                     resolve([]);
                 });
             });
         else
             return new Promise(resolve=>{
                 this._db.openDatabase({
-                    name: "voj.db",
+                    name: "localdb.db",
                     location: "default",
                     createFromLocation : 1
                 }).then(() => {
@@ -44,12 +44,45 @@ export class SqliteDBService{
                     this._db.executeSql(sql, {}).then((data:any) => {
                         resolve(data);
                     }, (err) => {
-                        console.error('Unable to execute sql: ', err);
+                        console.error('Unable to execute sql: '+sql, err);
                         resolve([]);
                     });
                 }, (err) => {
                     console.error('Unable to open database: ', err);
                     resolve([]);
+                });
+            });
+
+    }
+
+    public execute(sql : string) : any {
+        if(this._energized)
+            return new Promise(resolve=>{
+                this._db.executeSql(sql, {}).then(() => {
+                    resolve(true);
+                }, (err) => {
+                    console.error('Unable to execute sql: '+sql, err);
+                    resolve(false);
+                });
+            });
+        else
+            return new Promise(resolve=>{
+                this._db.openDatabase({
+                    name: "localdb.db",
+                    location: "default",
+                    createFromLocation : 1
+                }).then(() => {
+                    this._energized = true;
+                    console.log("SQLITE ENERGIZED");
+                    this._db.executeSql(sql, {}).then(() => {
+                        resolve(true);
+                    }, (err) => {
+                        console.error('Unable to execute sql: '+sql, err);
+                        resolve(false);
+                    });
+                }, (err) => {
+                    console.error('Unable to open database: '+sql, err);
+                    resolve(false);
                 });
             });
 

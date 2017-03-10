@@ -270,6 +270,19 @@ export class PhonePage {
         }
       });
 
+      
+      if(this.projectTarget == 'employer')
+        data.estEmployeur = true;
+      this.authService.updateFavoris(data).then((results : any)=>{
+        if(results.id && results.id>0){
+          this.storage.set('FAV_MODE','true');
+          this.storage.set('SECTOR_LIST',JSON.stringify(results.sectors));
+          this.storage.set('ACTIVITIES_LIST',JSON.stringify(results.activities));
+          this.storage.set('JOB_LIST',JSON.stringify(results.jobs));
+        } else {
+          this.storage.set('FAV_MODE','false');
+        }
+      });
       this.storage.set(this.currentUserVar, JSON.stringify(data));
       this.events.publish('user:login', data);
 

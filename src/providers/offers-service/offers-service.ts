@@ -43,6 +43,7 @@ export class OffersService {
     addedOffer: any;
     lienVideo: string;
     convention: any;
+    jobids : string;
 
     constructor(public http: Http,
                 public db: Storage,
@@ -695,36 +696,45 @@ export class OffersService {
     }
 
     loadSectorsToLocal() {
-        let sql = "select pk_user_metier as id, libelle as libelle from user_metier order by libelle asc";
-        return new Promise(resolve => {
 
-            this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true).loadData(sql).then((data:any) => {
-                this.listSectors = data;
+        this.db.get('FAV_MODE').then((fav : string)=>{
+            if(!fav || Utils.isEmpty(fav) || fav =='false') {
+                let sql = "select pk_user_metier as id, libelle as libelle from user_metier order by libelle asc";
+                return new Promise(resolve => {
 
-                console.log("Loading sectors");
-                console.log(this.listSectors);
-                this.db.set('SECTOR_LIST', JSON.stringify(this.listSectors));
-                resolve(this.listSectors);
-            });
+                    this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true).loadData(sql).then((data:any) => {
+                        this.listSectors = data;
+
+                        console.log("Loading sectors");
+                        console.log(this.listSectors);
+                        this.db.set('SECTOR_LIST', JSON.stringify(this.listSectors));
+                        resolve(this.listSectors);
+                    });
+                });
+            }
         });
-
     }
 
     loadJobsToLocal() {
 
-        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc";
-        return new Promise(resolve => {
+        this.db.get('FAV_MODE').then((fav : string)=>{
+            if(!fav || Utils.isEmpty(fav) || fav =='false') {
+                let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc";
+                return new Promise(resolve => {
 
-            //this.sqliteDb.executeSelect("select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc").then((data:any) => {
-            this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true)
-                .loadData(sql).then((data:any) => {
-                this.listJobs = data;
-                console.log("Loading jobs");
-                console.log(this.listJobs);
-                this.db.set('JOB_LIST', JSON.stringify(this.listJobs));
-                resolve(this.listJobs);
-            });
+                    //this.sqliteDb.executeSelect("select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector from user_job j, user_metier m where fk_user_metier = pk_user_metier order by j.libelle asc").then((data:any) => {
+                    this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true)
+                        .loadData(sql).then((data:any) => {
+                        this.listJobs = data;
+                        console.log("Loading jobs");
+                        console.log(this.listJobs);
+                        this.db.set('JOB_LIST', JSON.stringify(this.listJobs));
+                        resolve(this.listJobs);
+                    });
+                });
+            }
         });
+
     }
 
     loadAllJobs() {
@@ -763,7 +773,7 @@ export class OffersService {
         console.log(sql);
         return new Promise(resolve => {
             this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true).loadData(sql).then((data:any) => {
-            //this.sqliteDb.executeSelect(sql).then((data:any) => {
+                //this.sqliteDb.executeSelect(sql).then((data:any) => {
                 let listJobs = data;
 
                 resolve(listJobs);
@@ -771,33 +781,139 @@ export class OffersService {
         });
     }
 
-    autocompleteJobsSector(job : string, idsector : number){
+    autocompleteOffers(job : string, projectTarget : string){
         let sqlfiedJob = "%";
         let kws = job.split(' ');
+
         for(let i = 0 ; i < kws.length ; i++){
             sqlfiedJob = sqlfiedJob+kws[i]+"%";
         }
-        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector " +
-            " from user_job j, user_metier m " +
-            "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) " +
-            "order by j.libelle asc limit 5";
 
-        if(idsector>0){
-            sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector " +
-                " from user_job j, user_metier m " +
-                "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('"+Utils.sqlfyText(sqlfiedJob)+"')) and fk_user_metier="+idsector +
-                " order by j.libelle asc limit 5";
-        }
+        let sql = "";
+        if(projectTarget == 'employer')
+            sql = "select id_voj, titre, id_secteur, id_job, id_jobyer, nom_jobyer, adress, offer " +
+                "from offre_jobyer " +
+                "where lower(mots_cles) like lower('"+Utils.sqlfyText(sqlfiedJob)+"') " +
+                " or " +
+                " lower(titre) like lower('"+Utils.sqlfyText(sqlfiedJob)+"')";
+        else
+            sql = "select id_voj, titre, id_secteur, id_job, nom_entreprise, gains, adress " +
+                "from offre_entreprise " +
+                "where lower(mots_cles) like lower('"+Utils.sqlfyText(sqlfiedJob)+"') " +
+                " or " +
+                " lower(titre) like lower('"+Utils.sqlfyText(sqlfiedJob)+"')";
 
         console.log(sql);
         return new Promise(resolve => {
             this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true).loadData(sql).then((data:any) => {
-            //this.sqliteDb.executeSelect(sql).then((data:any) => {
-                let listJobs = data;
-                resolve(listJobs);
+
+                let offers = [];
+                
+                for(let i = 0 ; i < data.length ; i++){
+                    let o  ={
+                        id : data[i].id_voj,
+                        title : data[i].titre,
+                        sector : data[i].id_secteur,
+                        img : 'https://s3-eu-west-1.amazonaws.com/vitonjob.photos/'+data[i].id_secteur+'.jpg',
+                        job : data[i].id_job,
+                        adress : data[i].adress,
+                        enterprise : "",
+                        gains : 0.0,
+                        jobyerId : 0,
+                        jobyer : "",
+                        offer : false
+                    };
+
+                    if(projectTarget == 'jobyer'){
+                        o.enterprise = data[i].nom_entreprise;
+                        o.gains = data[i].gains;
+
+                    } else {
+                        o.jobyerId = data[i].id_jobyer;
+                        o.jobyer = data[i].nom_jobyer;
+                        o.offer = data[i].offer == 1;
+                    }
+                    offers.push(o);
+                }
+                
+                resolve(offers);
             });
         });
+    }
 
+    autocompleteJobsSector(job : string, idsector : number){
+        
+        return new Promise(resolve => {
+            this.db.get('FAV_MODE').then((fav: string)=> {
+                if (fav && !Utils.isEmpty(fav) && fav == 'true') {
+
+                    this.db.get('JOB_LIST').then((data: any)=> {
+
+                        let ids = "";
+                        let list = JSON.parse(data);
+                        for (let i = 0; i < list.length; i++) {
+                            ids += "," + list[i].id;
+                        }
+                        if (ids.length > 0)
+                            ids = ids.substring(1);
+
+                        let sqlfiedJob = "%";
+                        let kws = job.split(' ');
+                        for (let i = 0; i < kws.length; i++) {
+                            sqlfiedJob = sqlfiedJob + kws[i] + "%";
+                        }
+                        let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector " +
+                            " from user_job j, user_metier m " +
+                            "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('" + Utils.sqlfyText(sqlfiedJob) + "')) " +
+                            "and pk_user_job in (" + ids + ") " +
+                            "order by j.libelle asc limit 5";
+
+                        if (idsector > 0) {
+                            sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector " +
+                                " from user_job j, user_metier m " +
+                                "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('" + Utils.sqlfyText(sqlfiedJob) + "')) and fk_user_metier=" + idsector +
+                                " and pk_user_job in (" + ids + ") " +
+                                " order by j.libelle asc limit 5";
+                        }
+
+                        console.log(sql);
+                        this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true).loadData(sql).then((data: any) => {
+                            //this.sqliteDb.executeSelect(sql).then((data:any) => {
+                            let listJobs = data;
+                            resolve(listJobs);
+                        });
+
+                    });
+
+                } else {
+                    let sqlfiedJob = "%";
+                    let kws = job.split(' ');
+                    for (let i = 0; i < kws.length; i++) {
+                        sqlfiedJob = sqlfiedJob + kws[i] + "%";
+                    }
+                    let sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector " +
+                        " from user_job j, user_metier m " +
+                        "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('" + Utils.sqlfyText(sqlfiedJob) + "')) " +
+                        "order by j.libelle asc limit 5";
+
+                    if (idsector > 0) {
+                        sql = "select pk_user_job as id, j.libelle as libelle, fk_user_metier as idsector, m.libelle as sector " +
+                            " from user_job j, user_metier m " +
+                            "where fk_user_metier = pk_user_metier and (lower(j.libelle) like  lower('" + Utils.sqlfyText(sqlfiedJob) + "')) and fk_user_metier=" + idsector +
+                            " order by j.libelle asc limit 5";
+                    }
+
+                    console.log(sql);
+                    this.daoFactory.constructDAO(GlobalConfigs.DLMode, this, true).loadData(sql).then((data: any) => {
+                        //this.sqliteDb.executeSelect(sql).then((data:any) => {
+                        let listJobs = data;
+                        resolve(listJobs);
+                    });
+
+                }
+            });
+
+        });
 
     }
 
@@ -2176,6 +2292,7 @@ export class OffersService {
      */
     saveOffer(offerData: any, projectTarget: string) {
         //  Init project parameters
+        console.log("id hunter", JSON.stringify(offerData));
         this.configuration = Configs.setConfigs(projectTarget);
         // store in remote database
         let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [

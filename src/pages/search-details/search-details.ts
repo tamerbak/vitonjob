@@ -150,7 +150,6 @@ export class SearchDetailsPage implements OnInit {
 
     console.log(JSON.stringify(this.result));
 
-
     this.db.get('PENDING_CONTRACTS').then(contrats => {
 
       if (contrats) {

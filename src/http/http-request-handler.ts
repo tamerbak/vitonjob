@@ -86,7 +86,7 @@ export class HttpRequestHandler {
         } else {
             //silent mode : waiting for more time..
             newTimeOutPeriod = TIME_OUT_PERIOD * 10;
-            silentLadingToast = HttpRequestHandler.presentSilentLoadingToast("En cours de chargement des données...", newTimeOutPeriod, 'top');
+            //silentLadingToast = HttpRequestHandler.presentSilentLoadingToast("En cours de chargement des données...", newTimeOutPeriod, 'top');
         }
         // Getting service class name
         HttpRequestHandler.senderClassName = (classObject) ? classObject.constructor.name : "";
