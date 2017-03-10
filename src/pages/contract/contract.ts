@@ -494,33 +494,38 @@ export class ContractPage {
             return;
           }
 
-          this.contractService.callYousign(
-            this.currentUser,
-            this.employer,
-            this.jobyer,
-            this.contractData,
-            this.projectTarget,
-            this.currentOffer,
-            data.quoteId
-          ).then((data: any) => {
-            if(!data || data == null || Utils.isEmpty(data.Employeur) || Utils.isEmpty(data.Jobyer) || Utils.isEmpty(data.Employeur.idContrat) || Utils.isEmpty(data.Jobyer.idContrat) || !Utils.isValidUrl(data.Employeur.url) || !Utils.isValidUrl(data.Jobyer.url)){
-              this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
-              return;
-            }
-            this.setDocusignData(data);
+          //get jobyer address
+          this.contractService.getJobyerAdress(this.jobyer.id).then((address: string) => {
+            this.jobyer.address = address;
 
-            //update contract in Database with docusign data
-            this.contractService.updateContract(this.contractData, this.projectTarget).then((data: any) => {
-                if (!data || data.status != "success") {
-                  this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
-                  return;
-                }
-                resolve();
-              },
-              (err) => {
+            this.contractService.callYousign(
+              this.currentUser,
+              this.employer,
+              this.jobyer,
+              this.contractData,
+              this.projectTarget,
+              this.currentOffer,
+              data.quoteId
+            ).then((data: any) => {
+              if (!data || data == null || Utils.isEmpty(data.Employeur) || Utils.isEmpty(data.Jobyer) || Utils.isEmpty(data.Employeur.idContrat) || Utils.isEmpty(data.Jobyer.idContrat) || !Utils.isValidUrl(data.Employeur.url) || !Utils.isValidUrl(data.Jobyer.url)) {
                 this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
                 return;
-              })
+              }
+              this.setDocusignData(data);
+
+              //update contract in Database with docusign data
+              this.contractService.updateContract(this.contractData, this.projectTarget).then((data: any) => {
+                  if (!data || data.status != "success") {
+                    this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+                    return;
+                  }
+                  resolve();
+                },
+                (err) => {
+                  this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+                  return;
+                })
+            });
           }).catch(function (err) {
             this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
             return;
