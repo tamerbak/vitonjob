@@ -183,6 +183,9 @@ export class CivilityPage {
     public favoris : any = [];
     public selectedFav : string;
 
+
+    public moreDetails : boolean = false;
+
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
      */
@@ -343,6 +346,10 @@ export class CivilityPage {
 
         this.environmentService.reload();
 
+    }
+
+    toogleMoreDetails(){
+        this.moreDetails = !this.moreDetails;
     }
 
     loadAttachement(scanTitle) {
