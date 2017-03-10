@@ -914,42 +914,47 @@ export class CivilityPage {
                         // PUT IN SESSION
                         this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
                         this.events.publish('user:civility', this.currentUser);
-                        loading.dismiss();
+
                         if (this.fromPage == "profil" && !this.company) {
                             this.nav.pop();
+                            loading.dismiss();
                         } else {
-                            //redirecting to personal address tab
-                            //this.tabs.select(1);
-                            let jobyer = this.params.data.jobyer;
-                            let searchIndex = this.params.data.searchIndex;
-                            let obj = this.params.data.obj;
-                            let offer = this.params.data.currentOffer;
-                            if (this.params.data.hunterAccess || !this.moreDetails) {
-                                this.nav.setRoot(HomePage);
-                            } else {
-                                this.nav.push(PersonalAddressPage, {
-                                    jobyer: jobyer,
-                                    obj: obj,
-                                    searchIndex: searchIndex,
-                                    currentOffer: offer,
-                                    company: this.company,
-                                    fromPage: this.fromPage
-                                });
-                            }
+                            //  Gestion des favoris
+                            this.currentUser.estEmployeur = true;
+                            this.authService.updateFavoris(this.currentUser).then((results : any)=>{
+                                if(results.id && results.id>0){
+                                    this.storage.set('FAV_MODE','true');
+                                    this.storage.set('SECTOR_LIST',JSON.stringify(results.sectors));
+                                    this.storage.set('ACTIVITIES_LIST',JSON.stringify(results.activities));
+                                    this.storage.set('JOB_LIST',JSON.stringify(results.jobs));
+                                } else {
+                                    this.storage.set('FAV_MODE','false');
+                                }
+
+                                loading.dismiss();
+                                //redirecting to personal address tab or home page
+                                //this.tabs.select(1);
+                                let jobyer = this.params.data.jobyer;
+                                let searchIndex = this.params.data.searchIndex;
+                                let obj = this.params.data.obj;
+                                let offer = this.params.data.currentOffer;
+                                if (this.params.data.hunterAccess || !this.moreDetails) {
+                                    this.nav.setRoot(HomePage);
+                                } else {
+                                    this.nav.push(PersonalAddressPage, {
+                                        jobyer: jobyer,
+                                        obj: obj,
+                                        searchIndex: searchIndex,
+                                        currentOffer: offer,
+                                        company: this.company,
+                                        fromPage: this.fromPage
+                                    });
+                                }
+                            });
+
+
                         }
 
-                        //  Gestion des favoris
-                        this.currentUser.estEmployeur = true;
-                        this.authService.updateFavoris(this.currentUser).then((results : any)=>{
-                            if(results.id && results.id>0){
-                                this.storage.set('FAV_MODE','true');
-                                this.storage.set('SECTOR_LIST',JSON.stringify(results.sectors));
-                                this.storage.set('ACTIVITIES_LIST',JSON.stringify(results.activities));
-                                this.storage.set('JOB_LIST',JSON.stringify(results.jobs));
-                            } else {
-                                this.storage.set('FAV_MODE','false');
-                            }
-                        });
                     }
                 });
         } else {
@@ -1148,43 +1153,50 @@ export class CivilityPage {
                         // PUT IN SESSION
                         this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
                         this.events.publish('user:civility', this.currentUser);
-                        loading.dismiss();
+
                         if (this.fromPage == "profil" && !this.company) {
+                            loading.dismiss();
                             this.nav.pop();
                         } else {
-                            //redirecting to personal address tab
-                            //this.tabs.select(1);
-                            let jobyer = this.params.data.jobyer;
-                            let searchIndex = this.params.data.searchIndex;
-                            let obj = this.params.data.obj;
-                            let offer = this.params.data.currentOffer;
-                            if (this.params.data.hunterAccess || !this.moreDetails) {
-                                this.nav.setRoot(HomePage);
-                                this.nav.push(OfferAddPage);
-                            } else {
-                                this.nav.push(PersonalAddressPage, {
-                                    jobyer: jobyer,
-                                    obj: obj,
-                                    searchIndex: searchIndex,
-                                    currentOffer: offer,
-                                    company: this.company,
-                                    fromPage: this.fromPage
-                                });
-                            }
+                            //  Gestion des favoris
+                            this.currentUser.estEmployeur = true;
+                            this.authService.updateFavoris(this.currentUser).then((results : any)=>{
+                                if(results.id && results.id>0){
+                                    this.storage.set('FAV_MODE','true');
+                                    this.storage.set('SECTOR_LIST',JSON.stringify(results.sectors));
+                                    this.storage.set('ACTIVITIES_LIST',JSON.stringify(results.activities));
+                                    this.storage.set('JOB_LIST',JSON.stringify(results.jobs));
+                                } else {
+                                    this.storage.set('FAV_MODE','false');
+                                }
+
+                                loading.dismiss();
+
+                                //redirecting to personal address tab or to offer creation
+                                //this.tabs.select(1);
+                                let jobyer = this.params.data.jobyer;
+                                let searchIndex = this.params.data.searchIndex;
+                                let obj = this.params.data.obj;
+                                let offer = this.params.data.currentOffer;
+                                if (this.params.data.hunterAccess || !this.moreDetails) {
+                                    this.nav.setRoot(HomePage);
+                                    this.nav.push(OfferAddPage);
+                                } else {
+                                    this.nav.push(PersonalAddressPage, {
+                                        jobyer: jobyer,
+                                        obj: obj,
+                                        searchIndex: searchIndex,
+                                        currentOffer: offer,
+                                        company: this.company,
+                                        fromPage: this.fromPage
+                                    });
+                                }
+                            });
+
+
                         }
 
-                        //  Gestion des favoris
-                        this.currentUser.estEmployeur = true;
-                        this.authService.updateFavoris(this.currentUser).then((results : any)=>{
-                            if(results.id && results.id>0){
-                                this.storage.set('FAV_MODE','true');
-                                this.storage.set('SECTOR_LIST',JSON.stringify(results.sectors));
-                                this.storage.set('ACTIVITIES_LIST',JSON.stringify(results.activities));
-                                this.storage.set('JOB_LIST',JSON.stringify(results.jobs));
-                            } else {
-                                this.storage.set('FAV_MODE','false');
-                            }
-                        });
+
                     }
                 });
         } else {
@@ -1361,7 +1373,10 @@ export class CivilityPage {
             return (!this.title || !this.firstname || !this.lastname);
         }
         if (this.isEmployer) {
-            return (!this.title || !this.firstname || !this.lastname || !this.companyname || (this.siret && this.siret.length < 17) || (this.ape && (this.ape.length < 5 || !this.isAPEValid)) || !this.isValideFirstName || !this.isValideLastName);
+            return (!this.title || !this.firstname || !this.lastname || !this.companyname ||
+                    (this.siret && this.siret.length < 17) || (this.ape && (this.ape.length < 5 || !this.isAPEValid)) ||
+                    !this.isValideFirstName || !this.isValideLastName ||
+                    !this.conventionId || this.conventionId==0 || Utils.isEmpty(this.conventionId+""));
         } else {
             if (!this.title || !this.firstname || !this.lastname || (!this.isValidCni && this.cni) || (this.numSS && this.numSS.length != 15 && this.numSS.length != 0) || !this.isValideFirstName || !this.isValideLastName) {
                 return true;
