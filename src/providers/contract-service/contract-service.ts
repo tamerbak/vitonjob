@@ -526,7 +526,8 @@ export class ContractService {
       "elementsCotisation": contract.elementsCotisation,
       "elementsNonCotisation": contract.elementsNonCotisation,
       "horaires": horaires,
-      "organisationParticuliere": contract.usualWorkTimeHours
+      "organisationParticuliere": ""
+      //"organisationParticuliere": contract.usualWorkTimeHours
     };
 
     console.log(JSON.stringify(jsonData));
