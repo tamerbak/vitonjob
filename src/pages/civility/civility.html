@@ -347,6 +347,18 @@
     <ion-row>
         <ion-col width-10></ion-col>
         <ion-col text-center>
+            <button ion-button icon-left block [hidden]="!isEmployer || moreDetails || !registerationAccess" (click)="saveAndCreateOffer()" [color]="themeColor"
+                    [disabled]="isUpdateDisabled()" >
+                <ion-icon name="done-all"></ion-icon>
+                Valider et créer une offre
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+
+    <ion-row>
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
             <button ion-button icon-left block (click)="toogleMoreDetails()" [color]="themeColor" >
                 <ion-icon name="{{moreDetails?'minus':'plus'}}"></ion-icon>
                 {{moreDetails?'Moins de détails':'Plus de détails'}}

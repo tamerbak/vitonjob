@@ -33,6 +33,7 @@ import {ModalUpdatePassword} from "../modal-update-password/modal-update-passwor
 import {ConventionService} from "../../providers/convention-service/convention-service";
 import {EnvironmentService} from "../../providers/environment-service/environment-service";
 import {ModalSelectionPage} from "../modal-selection/modal-selection";
+import {OfferAddPage} from "../offer-add/offer-add";
 declare var cordova: any;
 declare var window;
 declare var jQuery: any;
@@ -185,6 +186,7 @@ export class CivilityPage {
 
 
     public moreDetails : boolean = false;
+    public registerationAccess : boolean = false;
 
     /**
      * @description While constructing the view, we load the list of nationalities, and get the currentUser passed as parameter from the connection page, and initiate the form with the already logged user
@@ -279,6 +281,7 @@ export class CivilityPage {
         //this.tabs=tabs;
         this.isRecruiter = (this.currentUser.estRecruteur) ? this.currentUser.estRecruteur : false;
         this.fromPage = this.params.data.fromPage;
+        this.registerationAccess = (!this.fromPage || this.fromPage!="profil");
         this.toast = _toast;
         this.titlePage = this.isEmployer ? "Fiche de l'entreprise" : "Profil";
         this.allImages = [];
@@ -921,7 +924,7 @@ export class CivilityPage {
                             let searchIndex = this.params.data.searchIndex;
                             let obj = this.params.data.obj;
                             let offer = this.params.data.currentOffer;
-                            if (this.params.data.hunterAccess) {
+                            if (this.params.data.hunterAccess || !this.moreDetails) {
                                 this.nav.setRoot(HomePage);
                             } else {
                                 this.nav.push(PersonalAddressPage, {
@@ -1056,7 +1059,248 @@ export class CivilityPage {
                                     let link: string = 'hunter://vitonjob.com/users/'+ target + '/' + hunterReturn;
                                     window.open(link, '_system');
                                 } else {
-                                    this.nav.push(PersonalAddressPage);
+                                    if(this.moreDetails)
+                                        this.nav.push(PersonalAddressPage);
+                                    else
+                                        this.nav.setRoot(HomePage);
+                                }
+                            }
+                        }
+                    });
+            }
+        }
+    }
+
+    saveAndCreateOffer() {
+        let loading = this.loading.create({content: "Merci de patienter..."});
+        loading.present(loading);
+        if (this.isRecruiter) {
+            this.authService.updateRecruiterCivility(this.title, this.lastname, this.firstname, this.currentUser.id).then((data: {status: string, error: string}) => {
+                if (!data || data.status == "failure") {
+                    console.log(data.error);
+                    loading.dismiss();
+                    this.globalService.showAlertValidation("Vit-On-Job", "Erreur lors de la sauvegarde des données");
+                    return;
+                } else {
+                    // data saved
+                    console.log("response update civility : " + data.status);
+                    this.currentUser.titre = this.title;
+                    this.currentUser.nom = this.lastname;
+                    this.currentUser.prenom = this.firstname;
+                    this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
+                    this.events.publish('user:civility', this.currentUser);
+                    loading.dismiss();
+                    console.log(this.currentUser, "***", this.fromPage);
+                    if (this.fromPage == "profil") {
+                        this.nav.pop();
+                    }
+                    if (this.currentUser.changePassword == true) {
+                        this.showResetPasswordModal();
+                    }
+                }
+            });
+            return;
+        }
+        if (this.isEmployer) {
+            //get the role id
+            let employerId = this.currentUser.employer.id;
+            //get entreprise id of the current employer
+            let entrepriseId = this.currentUser.employer.entreprises[0].id;
+            // update employer
+            this.authService.updateEmployerCivility(this.title, this.lastname, this.firstname, this.companyname,
+                this.siret, this.ape, employerId, entrepriseId, this.projectTarget, this.medecineId, this.conventionId, this.collective_heure_hebdo)
+                .then((data: {status: string, error: string}) => {
+                    if (!data || data.status == "failure") {
+                        console.log(data.error);
+                        loading.dismiss();
+                        this.globalService.showAlertValidation("Vit-On-Job", "Erreur lors de la sauvegarde des données");
+                        return;
+                    } else {
+                        // data saved
+                        console.log("response update civility : " + data.status);
+                        this.currentUser.titre = this.title;
+                        this.currentUser.nom = this.lastname;
+                        this.currentUser.prenom = this.firstname;
+                        this.currentUser.employer.entreprises[0].nom = this.companyname;
+                        this.currentUser.employer.entreprises[0].siret = this.siret;
+                        this.currentUser.employer.entreprises[0].naf = this.ape;
+                        this.currentUser.employer.entreprises[0].conventionCollective = this.convObject;
+                        // Convention
+                        let code = '';
+                        let libelle = '';
+                        if (this.conventionId && this.conventionId > 0) {
+                            for (let i = 0; i < this.conventions.length; i++)
+                                if (this.conventions[i].id == this.conventionId) {
+                                    code = this.conventions[i].code;
+                                    libelle = this.conventions[i].libelle;
+                                    break;
+                                }
+                        }
+
+                        this.currentUser.employer.entreprises[0].conventionCollective = {
+                            id: this.conventionId,
+                            code: code,
+                            libelle: libelle
+                        };
+                        //upload scan
+                        this.updateScan(this.accountId, this.userRoleId, 'employeur');
+                        //this.updateScan(employerId);
+                        // PUT IN SESSION
+                        this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
+                        this.events.publish('user:civility', this.currentUser);
+                        loading.dismiss();
+                        if (this.fromPage == "profil" && !this.company) {
+                            this.nav.pop();
+                        } else {
+                            //redirecting to personal address tab
+                            //this.tabs.select(1);
+                            let jobyer = this.params.data.jobyer;
+                            let searchIndex = this.params.data.searchIndex;
+                            let obj = this.params.data.obj;
+                            let offer = this.params.data.currentOffer;
+                            if (this.params.data.hunterAccess || !this.moreDetails) {
+                                this.nav.setRoot(HomePage);
+                                this.nav.push(OfferAddPage);
+                            } else {
+                                this.nav.push(PersonalAddressPage, {
+                                    jobyer: jobyer,
+                                    obj: obj,
+                                    searchIndex: searchIndex,
+                                    currentOffer: offer,
+                                    company: this.company,
+                                    fromPage: this.fromPage
+                                });
+                            }
+                        }
+
+                        //  Gestion des favoris
+                        this.currentUser.estEmployeur = true;
+                        this.authService.updateFavoris(this.currentUser).then((results : any)=>{
+                            if(results.id && results.id>0){
+                                this.storage.set('FAV_MODE','true');
+                                this.storage.set('SECTOR_LIST',JSON.stringify(results.sectors));
+                                this.storage.set('ACTIVITIES_LIST',JSON.stringify(results.activities));
+                                this.storage.set('JOB_LIST',JSON.stringify(results.jobs));
+                            } else {
+                                this.storage.set('FAV_MODE','false');
+                            }
+                        });
+                    }
+                });
+        } else {
+            if (!this.isRecruiter) {
+                //get the role id
+                let jobyerId = this.currentUser.jobyer.id;
+                // update jobyer
+                let birthCountryId;
+                if (this.index)
+                    birthCountryId = this.profileService.getCountryByIndex(this.index, this.pays).id;
+                let isResident = (this.isResident == 0 ? 'Non' : 'Oui');
+                let regionId;
+                if (!this.regionId) {
+                    if (this.isEuropean == 1) {
+                        //etranger
+                        regionId = 42;
+                    } else {
+                        regionId = 41;
+                    }
+                } else {
+                    regionId = this.regionId;
+                }
+                let birthdepId = !Utils.isEmpty(this.selectedBirthDep) ? this.selectedBirthDep.id : null;
+                this.cni = this.isCIN == 0 ? "" : this.cni;
+                this.numStay = this.isCIN == 0 ? this.numStay : "";
+
+                if (!this.tsejFromDate && this.tsejProvideDate) {
+                    this.tsejFromDate = this.tsejProvideDate;
+                }
+
+                this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni,
+                    this.nationality, jobyerId, this.birthdate, this.birthplace, this.prefecture, this.tsejProvideDate,
+                    this.tsejFromDate, this.tsejToDate, birthdepId, this.numStay, birthCountryId, regionId, isResident, this.cvUri)
+                    .then((data: {status: string, error: string}) => {
+                        if (!data || data.status == "failure") {
+                            console.log(data.error);
+                            loading.dismiss();
+                            this.globalService.showAlertValidation("Vit-On-Job", "Erreur lors de la sauvegarde des données");
+                            return;
+                        } else {
+                            // data saved
+                            console.log("response update civility : " + data.status);
+                            this.currentUser.titre = this.title;
+                            this.currentUser.nom = this.lastname;
+                            this.currentUser.prenom = this.firstname;
+                            this.currentUser.jobyer.cni = this.cni;
+                            this.currentUser.jobyer.numSS = this.numSS;
+                            this.currentUser.jobyer.natId = this.nationality;
+                            this.currentUser.jobyer.cv = this.cvUri;
+
+
+                            if (this.idnationality > 0)
+                                this.currentUser.jobyer.identifiantNationalite = this.idnationality;
+                            if (this.prefecture > 0)
+                                this.currentUser.jobyer.idPrefecture = this.prefecture;
+                            if (this.tsejFromDate)
+                                this.currentUser.jobyer.duTS = (new Date(this.tsejFromDate)).getTime();
+                            if (this.tsejToDate)
+                                this.currentUser.jobyer.auTS = (new Date(this.tsejToDate)).getTime();
+                            if (this.tsejProvideDate)
+                                this.currentUser.jobyer.delivranceTS = (new Date(this.tsejProvideDate)).getTime();
+
+
+                            //this.currentUser.jobyer.natLibelle = this.nationality;
+                            //
+                            if (this.platform.version('android').major < 5) {
+                                let birth = new Date(this.birthdate.split('/')[1] + '-' +
+                                    this.birthdate.split('/')[0] + '-' +
+                                    this.birthdate.split('/')[2]);
+                                this.currentUser.jobyer.dateNaissance = birth.toISOString();
+
+                            } else {
+                                this.currentUser.jobyer.dateNaissance = this.birthdate;
+                            }
+                            this.currentUser.jobyer.lieuNaissance = this.birthplace;
+
+                            this.currentUser.jobyer.favoris = this.selectedFav;
+                            this.currentUser.estEmployeur = false;
+                            if(this.selectedFav && this.selectedFav != '0')
+                                this.authService.updateFavoris(this.currentUser).then((results : any)=>{
+                                    if(results.id && results.id>0){
+                                        this.storage.set('FAV_MODE','true');
+                                        this.storage.set('SECTOR_LIST',JSON.stringify(results.sectors));
+                                        this.storage.set('ACTIVITIES_LIST',JSON.stringify(results.activities));
+                                        this.storage.set('JOB_LIST',JSON.stringify(results.jobs));
+                                    } else {
+                                        this.storage.set('FAV_MODE','false');
+                                    }
+                                });
+
+                            //upload scan
+                            //this.updateScan(jobyerId);
+                            this.updateScan(this.accountId, this.userRoleId, "jobyer");
+                            // PUT IN SESSION
+                            this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
+                            this.events.publish('user:civility', this.currentUser);
+                            loading.dismiss();
+                            if (this.fromPage == "profil") {
+                                this.nav.pop();
+                            } else {
+                                //redirecting to personal address tab
+                                if (this.params.data.hunterAccess) {
+                                    this.nav.setRoot(HomePage);
+                                    // go back to hunter app
+                                    let hunterReturn: string = encodeURIComponent(JSON.stringify(this.currentUser));
+                                    let target = this.projectTarget === 'employer' ? 'Employeur' : 'Jobyer';
+                                    let link: string = 'hunter://vitonjob.com/users/'+ target + '/' + hunterReturn;
+                                    window.open(link, '_system');
+                                } else {
+                                    if(this.moreDetails)
+                                        this.nav.push(PersonalAddressPage);
+                                    else{
+                                        this.nav.setRoot(HomePage);
+                                        this.nav.push(OfferAddPage);
+                                    }
+
                                 }
                             }
                         }
