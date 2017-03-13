@@ -133,7 +133,7 @@ export class Contract {
     this.zonesTitre = "";
     this.risques = "";
     this.elementsCotisation = 0.0;
-    this.elementsNonCotisation = 10.0;
+    this.elementsNonCotisation = 1.0;
     this.titre = "";
     this.periodicite = "";
 
