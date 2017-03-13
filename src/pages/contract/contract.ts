@@ -114,14 +114,15 @@ export class ContractPage {
   }
 
   initContractData(){
-    this.contractData.missionStartDate = this.getStartDate();
-    this.contractData.missionEndDate = this.getEndDate();
-    this.contractData.termStartDate = this.getEndDate();
-    this.contractData.termEndDate = this.getEndDate();
-
     //  check if there is a current offer
     if (this.navParams.get("currentOffer") && !isUndefined(this.navParams.get("currentOffer"))) {
       this.currentOffer = this.navParams.get("currentOffer");
+
+      this.contractData.missionStartDate = this.getStartDate();
+      this.contractData.missionEndDate = this.getEndDate();
+      this.contractData.termStartDate = this.getEndDate();
+      this.contractData.termEndDate = this.getEndDate();
+
       this.contractData.qualification = this.currentOffer.title;
       this.contractData.baseSalary = +Utils.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2);
       this.contractData.salaryNHours = Utils.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2) + " € B/H";

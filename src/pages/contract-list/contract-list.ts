@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, NavParams, ModalController, LoadingController} from "ionic-angular";
+import {NavController, NavParams, LoadingController} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Utils} from "../../utils/utils";
