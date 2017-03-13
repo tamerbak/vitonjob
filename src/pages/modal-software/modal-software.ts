@@ -6,6 +6,7 @@ import {Component} from "@angular/core";
 import {GlobalService} from "../../providers/global-service/global-service";
 import {AuthenticationService} from "../../providers/authentication-service/authentication-service";
 import {Storage} from "@ionic/storage";
+import {Utils} from "../../utils/utils";
 
 @Component({
   templateUrl: 'modal-software.html'
@@ -23,7 +24,7 @@ export class ModalSoftwarePage {
 
   public softwares: Array<{
     id: number,
-    nom: string,
+    libelle: string,
   }>;
   public savedSoftwares: any[];
   public projectTarget: string;
@@ -33,7 +34,7 @@ export class ModalSoftwarePage {
   public isEmployer: boolean;
   public viewCtrl: any;
   public listService: any;
-  public software: any = {id:0, nom: "",niveau:1};
+  public software: any = {id:0, libelle: "",niveau:1};
 
   constructor(public nav: NavController,
               gc: GlobalConfigs,
@@ -145,7 +146,7 @@ export class ModalSoftwarePage {
     }
     console.log(soft)
     this.savedSoftwares.push(soft);
-    this.software = {id:0, nom: "",niveau:1};
+    this.software = {id:0, libelle: "",niveau:1};
   }
 
   /**
@@ -173,5 +174,9 @@ export class ModalSoftwarePage {
       ]
     });
     confirm.present();
+  }
+
+  isEmpty(str){
+    return Utils.isEmpty(str);
   }
 }

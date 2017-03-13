@@ -417,7 +417,7 @@ export class ProfileService {
     }
 
     getUserSoftwares(jobyerId) {
-        let sql = "select exp.pk_user_experience_logiciel_pharmacien as \"expId\", exp.fk_user_logiciels_pharmaciens as \"id\", exp.niveau as niveau, log.nom from user_experience_logiciel_pharmacien as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_jobyer = '" + jobyerId + "'";
+        let sql = "select exp.pk_user_experience_logiciel_pharmacien as \"expId\", exp.fk_user_logiciels_pharmaciens as \"id\", exp.niveau as niveau, log.nom as libelle from user_experience_logiciel_pharmacien as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_jobyer = '" + jobyerId + "'";
 
         return new Promise(resolve => {
             this.httpRequest.sendSql(sql, this, true).subscribe(data => {
