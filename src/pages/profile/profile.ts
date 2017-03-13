@@ -112,7 +112,11 @@ export class ProfilePage {
         this.userImageURL = "none";
         this.toast = _toast;
 
-        this.environmentService.reload();
+        let loadingComponent = this.loading.create({content: "Merci de patienter..."});
+        loadingComponent.present();
+        this.environmentService.reload().then(() => {
+            loadingComponent.dismiss();
+        });
     }
 
     /**
@@ -559,13 +563,19 @@ export class ProfilePage {
             let modal = this.modal.create(ModalSoftwarePage, {savedSoftwares: res,currentUser:this.userData});
             modal.present();
             modal.onDidDismiss((data:any) => {
+                let loadingComponent = this.loading.create({content: "Merci de patienter..."});
+                loadingComponent.present();
                 this.profileService.deleteSoftwares(this.userData.jobyer.id).then((res:any) => {
-                    if (res.status == 'success') {
-                        this.profileService.saveSoftwares(this.userData.jobyer.id, data);
+                    if (res.status == 'success' && data && data.length > 0) {
+                        this.profileService.saveSoftwares(this.userData.jobyer.id, data).then((data) => {
+                            loadingComponent.dismiss();
+                        });
+                    }else{
+                        loadingComponent.dismiss();
                     }
-                })
-            })
-        })
+                });
+            });
+        });
     }
 
     isMapHidden() {
