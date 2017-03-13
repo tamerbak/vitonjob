@@ -5,7 +5,6 @@ import {UserService} from "../../providers/user-service/user-service";
 import {CivilityPage} from "../civility/civility";
 import {JobAddressPage} from "../job-address/job-address";
 import {PersonalAddressPage} from "../personal-address/personal-address";
-import {YousignPage} from "../yousign/yousign";
 import {isUndefined} from "../../../node_modules/ionic-angular/util/util";
 import {ModalOffersPage} from "../modal-offers/modal-offers";
 import {ContractService} from "../../providers/contract-service/contract-service";
@@ -115,14 +114,15 @@ export class ContractPage {
   }
 
   initContractData(){
-    this.contractData.missionStartDate = this.getStartDate();
-    this.contractData.missionEndDate = this.getEndDate();
-    this.contractData.termStartDate = this.getEndDate();
-    this.contractData.termEndDate = this.getEndDate();
-
     //  check if there is a current offer
     if (this.navParams.get("currentOffer") && !isUndefined(this.navParams.get("currentOffer"))) {
       this.currentOffer = this.navParams.get("currentOffer");
+
+      this.contractData.missionStartDate = this.getStartDate();
+      this.contractData.missionEndDate = this.getEndDate();
+      this.contractData.termStartDate = this.getEndDate();
+      this.contractData.termEndDate = this.getEndDate();
+
       this.contractData.qualification = this.currentOffer.title;
       this.contractData.baseSalary = +Utils.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2);
       this.contractData.salaryNHours = Utils.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2) + " € B/H";
@@ -166,18 +166,13 @@ export class ContractPage {
   }
 
   initJobyerData(){
-    //initialize jobyer data
-    this.jobyer.id = 0;
-    this.jobyer.numSS = '';
-    this.jobyer.nationaliteLibelle = '';
-
     let bd = new Date(this.jobyer.dateNaissance);
     this.jobyerBirthDate = DateUtils.dateFormat(bd);
     this.contractData.jobyerBirthDate = this.jobyerBirthDate;
 
     let email = this.jobyer.email;
     let tel = this.jobyer.tel;
-    let jobyerId = this.jobyer.idJobyer;
+    let jobyerId = (Utils.isEmpty(this.jobyer.id) ? this.jobyer.idJobyer : this.jobyer.id);
     let entrepriseId = this.employer.entreprises[0].id;
     let offerId = this.currentOffer.idOffer;
     this.contractService.prepareRecruitement(entrepriseId, email, tel, offerId, jobyerId).then((resp:any)=>{
@@ -500,33 +495,38 @@ export class ContractPage {
             return;
           }
 
-          this.contractService.callYousign(
-            this.currentUser,
-            this.employer,
-            this.jobyer,
-            this.contractData,
-            this.projectTarget,
-            this.currentOffer,
-            data.quoteId
-          ).then((data: any) => {
-            if(!data || data == null || Utils.isEmpty(data.Employeur) || Utils.isEmpty(data.Jobyer) || Utils.isEmpty(data.Employeur.idContrat) || Utils.isEmpty(data.Jobyer.idContrat) || !Utils.isValidUrl(data.Employeur.url) || !Utils.isValidUrl(data.Jobyer.url)){
-              this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
-              return;
-            }
-            this.setDocusignData(data);
+          //get jobyer address
+          this.contractService.getJobyerAdress(this.jobyer.id).then((address: string) => {
+            this.jobyer.address = address;
 
-            //update contract in Database with docusign data
-            this.contractService.updateContract(this.contractData, this.projectTarget).then((data: any) => {
-                if (!data || data.status != "success") {
-                  this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
-                  return;
-                }
-                resolve();
-              },
-              (err) => {
+            this.contractService.callYousign(
+              this.currentUser,
+              this.employer,
+              this.jobyer,
+              this.contractData,
+              this.projectTarget,
+              this.currentOffer,
+              data.quoteId
+            ).then((data: any) => {
+              if (!data || data == null || Utils.isEmpty(data.Employeur) || Utils.isEmpty(data.Jobyer) || Utils.isEmpty(data.Employeur.idContrat) || Utils.isEmpty(data.Jobyer.idContrat) || !Utils.isValidUrl(data.Employeur.url) || !Utils.isValidUrl(data.Jobyer.url)) {
                 this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
                 return;
-              })
+              }
+              this.setDocusignData(data);
+
+              //update contract in Database with docusign data
+              this.contractService.updateContract(this.contractData, this.projectTarget).then((data: any) => {
+                  if (!data || data.status != "success") {
+                    this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+                    return;
+                  }
+                  resolve();
+                },
+                (err) => {
+                  this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
+                  return;
+                })
+            });
           }).catch(function (err) {
             this.globalService.showAlertValidation("Vit-On-Job", "Une erreur est survenue lors de la sauvegarde des données.");
             return;

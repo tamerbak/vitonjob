@@ -203,8 +203,8 @@ export class ContractService {
       + "'" + this.helpers.dateToSqlTimestamp(new Date()) + "',"
       + "'" + this.helpers.timeStrToMinutes(contract.workStartHour) + "',"
       + "'" + this.helpers.timeStrToMinutes(contract.workEndHour) + "',"
-      + "'" + this.sqlfyText(contract.motif) + "',"
-      + "'" + this.sqlfyText(contract.num) + "',"
+      + "'" + Utils.sqlfyText(contract.motif) + "',"
+      + "'" + Utils.sqlfyText(contract.num) + "',"
       + "'" + contract.trialPeriod + "',"
       + "'" + contract.baseSalary + "',"
       + "'" + contract.workTimeHours + "',"
@@ -215,18 +215,18 @@ export class ContractService {
       + "'NON',"
       + "10,"
       + "10,"
-      + "'" + this.sqlfyText(contract.titreTransport) + "',"
-      + "'" + this.sqlfyText(contract.zonesTitre) + "',"
-      + "'" + this.sqlfyText(contract.medicalSurv) + "',"
+      + "'" + Utils.sqlfyText(contract.titreTransport) + "',"
+      + "'" + Utils.sqlfyText(contract.zonesTitre) + "',"
+      + "'" + Utils.sqlfyText(contract.medicalSurv) + "',"
       + "" + this.checkNull(contract.debutSouplesse) + ","
       + "" + this.checkNull(contract.finSouplesse) + ","
-      + "'" + this.sqlfyText(contract.usualWorkTimeHours) + "',"
+      + "'" + Utils.sqlfyText(contract.usualWorkTimeHours) + "',"
       + "'" + contract.elementsCotisation + "',"
       + "'" + contract.elementsNonCotisation + "',"
-      + "'" + this.sqlfyText(contract.justification) + "',"
-      + "'" + this.sqlfyText(contract.titre) + "',"
-      + "'" + this.sqlfyText(contract.demandeEmployer) + "',"
-      + "'" + this.sqlfyText(contract.demandeJobyer) + "',"
+      + "'" + Utils.sqlfyText(contract.justification) + "',"
+      + "'" + Utils.sqlfyText(contract.titre) + "',"
+      + "'" + Utils.sqlfyText(contract.demandeEmployer) + "',"
+      + "'" + Utils.sqlfyText(contract.demandeJobyer) + "',"
       + "(select option_mission :: numeric from user_account where pk_user_account = '" + accountId + "'),"
       //+ "'" + this.sqlfyText(yousignEmployerLink) + "',"
       + "'" + epi + "',"
@@ -251,7 +251,7 @@ export class ContractService {
       + "'" + Utils.sqlfyText(contract.adresseCentreMedecineEntreprise) + "',"
       + "'" + Utils.sqlfyText(contract.postRisks) + "',"
       + "'" + offerId + "',"
-      + "'"+this.sqlfyText(contract.epiProvidedBy)+"'"
+      + "'" + Utils.sqlfyText(contract.epiProvidedBy) + "'"
       + ")"
       + " RETURNING pk_user_contrat";
 
@@ -526,7 +526,8 @@ export class ContractService {
       "elementsCotisation": contract.elementsCotisation,
       "elementsNonCotisation": contract.elementsNonCotisation,
       "horaires": horaires,
-      "organisationParticuliere": contract.usualWorkTimeHours
+      "organisationParticuliere": ""
+      //"organisationParticuliere": contract.usualWorkTimeHours
     };
 
     console.log(JSON.stringify(jsonData));
@@ -584,12 +585,6 @@ export class ContractService {
           resolve(this.data);
         });
     });
-  }
-
-  sqlfyText(txt) {
-    if (!txt || txt.length == 0)
-      return "";
-    return txt.replace("'", "''");
   }
 
   generateMission(idContract, offer) {
@@ -731,6 +726,7 @@ export class ContractService {
       "user_rue.pk_user_rue = user_adresse.fk_user_rue AND   " +
       "user_ville.pk_user_ville = user_adresse.fk_user_ville AND   " +
       "lower_unaccent(user_adresse_jobyer.personnelle)='oui' AND   " +
+      "user_adresse_jobyer.dirty ='N' AND   " +
       "user_adresse_jobyer.fk_user_jobyer= "+ id;
 
     return new Promise(resolve => {
