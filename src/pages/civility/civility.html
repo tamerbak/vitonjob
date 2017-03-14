@@ -27,7 +27,7 @@
     <ion-item [hidden]="isEmployer">
         <ion-label floating>Métier</ion-label>
         <ion-select [(ngModel)]="selectedFav" okText="OK" cancelText="Annuler">
-            <ion-option value="0">Aucun</ion-option>
+            <ion-option value="0">Autres métiers</ion-option>
             <ion-option *ngFor="let n of favoris" value="{{n.id}}">{{n.libelle}}</ion-option>
         </ion-select>
     </ion-item>
