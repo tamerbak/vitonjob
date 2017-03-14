@@ -44,8 +44,8 @@
     </ion-row>
 
     <ion-item>
-        <ion-label id="label-civi" [ngStyle]="titlestyle" floating>Titre de civilité <span class="asterisk">*</span></ion-label>
-        <ion-select id="in-select" [(ngModel)]="title" (ionChange)="titleChange()" okText="OK" cancelText="Annuler">
+        <ion-label id="label-civi" stacked="">Titre de civilité <span class="asterisk">*</span></ion-label>
+        <ion-select id="in-select" [(ngModel)]="title" okText="OK" cancelText="Annuler" placeholder="Choisissez votre titre de civilité">
             <ion-option value="Mme">Mme</ion-option>
             <ion-option value="Mlle">Mlle</ion-option>
             <ion-option value="M.">M.</ion-option>

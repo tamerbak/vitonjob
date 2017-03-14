@@ -41,7 +41,7 @@ export class GlobalConfigs {
     static GA_APP_ID_JOB:string = 'UA-91039209-2';
 
     constructor() {
-        this.projectTarget = "jobyer"; // "jobyer" / "employer"
+        this.projectTarget = "employer"; // "jobyer" / "employer"
         this.cnxBtnName = "Se connecter / S'inscrire";
         this.thirdThemeColor = '#f4f4f4';
         this.googleAnalyticsID = this.projectTarget == "employer"?GlobalConfigs.GA_APP_ID_EMP:GlobalConfigs.GA_APP_ID_JOB;
