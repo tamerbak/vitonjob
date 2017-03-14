@@ -82,7 +82,7 @@
                        (change)="IsCompanyExist($event, 'siret')"></ion-input>
         </ion-item>
         <div [hidden]="isSIRETValid"
-             class="error-box">* Saisissez les 14 chiffres du SIRET
+             class="error-box"><ion-icon name="warning"></ion-icon>{{(siret && siret.length > 11) ? ' Compléter le SIRET avec les 5 derniers chiffres' : ' Saisissez les 14 chiffres du SIRET'}}
         </div>
 
         <ion-item [hidden]="!isEmployer">
