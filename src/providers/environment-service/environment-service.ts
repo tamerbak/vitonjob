@@ -58,6 +58,8 @@ export class EnvironmentService {
   }
 
   reload() {
+    return new Promise(resolve =>{
+
       let projectTarget = this._globalConfig.getProjectTarget();
       let config = Configs.setConfigs(projectTarget);
       this.storage.get(config.currentUserVar).then((value) => {
@@ -67,15 +69,15 @@ export class EnvironmentService {
             if (Utils.isEmpty(currentUser) == false) {
                 this.loadUserEnvironment(currentUser.id).then((data: any) => {
                     this.environment = data;
+                    resolve();
                 });
             } else {
                 this.environment = [];
+                resolve();
             }
         }
       });
-
-      
-    
+    });
   }
 
   clear(): void {

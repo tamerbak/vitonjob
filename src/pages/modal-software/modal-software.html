@@ -13,7 +13,7 @@
     <ion-item>
         <ion-label floating>Logiciel</ion-label>
         <ion-select [(ngModel)]="software" okText="OK" cancelText="Annuler">
-            <ion-option *ngFor="let s of softwares" [value] = "s">{{s.nom}}</ion-option>
+            <ion-option *ngFor="let s of softwares" [value] = "s">{{s.libelle}}</ion-option>
         </ion-select>
     </ion-item>
     <div>
@@ -37,7 +37,7 @@
     <ion-row>
         <ion-col text-center>
             <button ion-button icon-left small
-                    [color]="themeColor" (click)="addSoftware(software)" [disabled]="software.nom==''">
+                    [color]="themeColor" (click)="addSoftware(software)" [disabled]="isEmpty(software.libelle) || isEmpty(software.niveau)">
                 <ion-icon name="checkmark-circle"></ion-icon>
                 Ajouter
             </button>
@@ -46,7 +46,7 @@
 
     <ion-list>
         <ion-item *ngFor="let s of savedSoftwares">
-            <label>{{s.nom}} - {{s.niveau == 1 ? 'partiellement maîtrisé':'totalement maîtrisé'}}</label>
+            <label>{{s.libelle}} - {{s.niveau == 1 ? 'partiellement maîtrisé':'totalement maîtrisé'}}</label>
             <button ion-button small item-right danger (click)="removeSoftware(s)" color="vojgrey">
                 <ion-icon name="remove-circle"></ion-icon>
             </button>
