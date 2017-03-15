@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {ViewController
+import {ViewController, ModalController
 } from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
@@ -24,7 +24,6 @@ export class ModalEntreprisePage {
     public isEmployer: boolean;
 
     public loading: any;
-    public modal: any;
 
     public entreprise: Entreprise = new Entreprise();
 
@@ -41,7 +40,8 @@ export class ModalEntreprisePage {
                 private _loading: LoadingController,
                 public storage: Storage,
                 public entrepriseService: EntrepriseService,
-                public viewCtrl: ViewController) {
+                public viewCtrl: ViewController,
+                public modal: ModalController) {
         // Set global configs
         // Get target to determine configs
         this.projectTarget = gc.getProjectTarget();
