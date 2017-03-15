@@ -181,6 +181,35 @@
     </ion-card>
   </div>
 
+  <div *ngIf="isEmployer">
+    <ion-card style="margin-bottom: 0;">
+      <ion-item-divider light>Mes entreprises</ion-item-divider>
+    </ion-card>
+
+    <ion-card class="adv-map" style="margin-top: 0;margin-bottom: 1px">
+      <ion-item *ngFor="let e of entreprises, let i=index" text-wrap>
+        <ion-icon subtle large item-left name='briefcase' style="color: #757575"></ion-icon>
+        <h5 >{{e.nom}}</h5>
+        <!--<button ion-button clear item-right (click)="deleteEntreprise(e)" large color="primary" style="padding:10px">
+          <ion-icon name="trash"></ion-icon>
+        </button>-->
+        <!--<button ion-button clear item-right (click)="editEntreprise(e)" large color="primary" style="padding:10px">
+          <ion-icon name="create"></ion-icon>
+        </button>-->
+        <button ion-button clear item-right (click)="swapEntreprise(e, i)" large color="primary">
+          <ion-icon name="{{e.nom == userData.employer.entreprises[0].nom ? 'radio-button-on' : 'radio-button-off'}}"></ion-icon>
+        </button>
+      </ion-item>
+
+      <div class="button-footer">
+        <button icon-left ion-button clear [style.color]="themeColor" (click)="gotoAddEntreprise()">
+          <ion-icon name="create"></ion-icon>
+          <div>Ajouter une entreprise</div>
+        </button>
+      </div>
+    </ion-card>
+  </div>
+
 
   <ion-fab top left edge>
     <button ion-fab mini [color]="themeColor">

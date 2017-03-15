@@ -1,0 +1,59 @@
+<ion-header>
+    <ion-navbar [color]="themeColor">
+        <ion-title>Nouvelle entreprise</ion-title>
+        <ion-buttons end>
+            <button ion-button (click)="closeModal()">
+                <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-row>
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button ion-button icon-left block (click)="openCoporamaModal()" [color]="themeColor">
+                <ion-icon name="search"></ion-icon>
+                Rechercher votre entreprise
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+
+    <ion-item>
+        <ion-label floating>Raison sociale <span class="asterisk">*</span></ion-label>
+        <ion-input type="text" [(ngModel)]="entreprise.nom"
+                   (change)="IsCompanyExist()"></ion-input>
+    </ion-item>
+
+    <ion-item>
+        <ion-label floating>NAF: 9999A <span class="asterisk">*</span></ion-label>
+        <ion-input type="text" [(ngModel)]="entreprise.naf" (keyup)="watchAPE($event)" maxlength="5"></ion-input>
+    </ion-item>
+    <div [hidden]="isAPEValid"
+         class="error-box">* Saisissez les 4 chiffres suivis d'une lettre
+    </div>
+
+    <ion-item>
+        <ion-label floating>Convention collective <span class="asterisk">*</span></ion-label>
+        <ion-select id="conv-select" [(ngModel)]="entreprise.conventionCollective.id" okText="OK" cancelText="Annuler">
+            <ion-option *ngFor="let c of conventions" value="{{c.id}}" (click)="convSelected(c)">
+                {{c.code}} - {{c.libelle}}
+            </ion-option>
+        </ion-select>
+    </ion-item>
+
+    <ion-row>
+        <ion-col width-10></ion-col>
+        <ion-col text-center>
+            <button ion-button icon-left block (click)="saveEntreprise()" [color]="themeColor"
+                    [disabled]="isValidateDisabled()" type="submit">
+                <ion-icon name="done-all"></ion-icon>
+                Valider
+            </button>
+        </ion-col>
+        <ion-col width-10></ion-col>
+    </ion-row>
+
+</ion-content>

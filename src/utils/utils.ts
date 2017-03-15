@@ -146,4 +146,25 @@ export class Utils {
   public static round(value, decimals) {
     return Number(Math.round(+(value+'e'+decimals))+'e-'+decimals);
   }
+
+  public static isNumeric(n) {
+    let numbers = /^[0-9]+$/;
+    if (n.match(numbers)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  public static isLetter(s) {
+    let letters = /^[A-Za-z]+$/;
+    if (s.match(letters)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
 }

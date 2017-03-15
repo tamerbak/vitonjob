@@ -1,5 +1,6 @@
 import {AbstractGCallout} from "./generium/abstract-gcallout";
 import {Adress} from "./adress";
+import {ConventionCollective} from "./conventionCollective";
 
 export class Entreprise extends AbstractGCallout {
 
@@ -11,7 +12,7 @@ export class Entreprise extends AbstractGCallout {
   siegeAdress: Adress;
   workAdress: Adress;
   correspondanceAdress: Adress;
-  conventionCollective: number;
+  conventionCollective: ConventionCollective;
   // private List<OfferData> offers = new ArrayList<OfferData>();
 
   constructor() {
@@ -25,5 +26,6 @@ export class Entreprise extends AbstractGCallout {
     this.siegeAdress = new Adress();
     this.workAdress = new Adress();
     this.correspondanceAdress = new Adress();
+    this.conventionCollective = new ConventionCollective();
   }
 }

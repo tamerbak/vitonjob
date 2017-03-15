@@ -136,6 +136,8 @@ import {DAOFactory} from "../dao/data-access-object";
 import {SlimPayService} from "../providers/slimpay-service/slimpay-service";
 import {ContractEpiPage} from "../pages/contract/contract-epi/contract-epi";
 import {SporadicService} from "../providers/sporadic-service/sporadic-service";
+import {EntrepriseService} from "../providers/entreprise-service/entreprise-service";
+import {ModalEntreprisePage} from "../pages/modal-entreprise/modal-entreprise";
 
 @NgModule({
     declarations: [
@@ -186,6 +188,7 @@ import {SporadicService} from "../providers/sporadic-service/sporadic-service";
         ModalSlotPage,
         ModalTrackMissionPage,
         ModalUpdatePassword,
+        ModalEntreprisePage,
         NotificationContractPage,
         OfferAddPage,
         OfferDetailPage,
@@ -288,6 +291,7 @@ import {SporadicService} from "../providers/sporadic-service/sporadic-service";
         ModalSlotPage,
         ModalTrackMissionPage,
         ModalUpdatePassword,
+        ModalEntreprisePage,
         NotificationContractPage,
         OfferAddPage,
         OfferDetailPage,
@@ -337,6 +341,7 @@ import {SporadicService} from "../providers/sporadic-service/sporadic-service";
         ConventionService,
         CorporamaService,
         DataProviderService,
+        EntrepriseService,
         FinanceService,
         GlobalService,
         Helpers,
