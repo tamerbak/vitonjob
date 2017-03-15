@@ -27,7 +27,7 @@
     <ion-item [hidden]="isEmployer">
         <ion-label floating>Métier</ion-label>
         <ion-select [(ngModel)]="selectedFav" okText="OK" cancelText="Annuler">
-            <ion-option value="0">Aucun</ion-option>
+            <ion-option value="0">Autres métiers</ion-option>
             <ion-option *ngFor="let n of favoris" value="{{n.id}}">{{n.libelle}}</ion-option>
         </ion-select>
     </ion-item>
@@ -44,8 +44,8 @@
     </ion-row>
 
     <ion-item>
-        <ion-label id="label-civi" [ngStyle]="titlestyle" floating>Titre de civilité <span class="asterisk">*</span></ion-label>
-        <ion-select id="in-select" [(ngModel)]="title" (ionChange)="titleChange()" okText="OK" cancelText="Annuler">
+        <ion-label id="label-civi" stacked="">Titre de civilité <span class="asterisk">*</span></ion-label>
+        <ion-select id="in-select" [(ngModel)]="title" okText="OK" cancelText="Annuler" placeholder="Choisissez votre titre de civilité">
             <ion-option value="Mme">Mme</ion-option>
             <ion-option value="Mlle">Mlle</ion-option>
             <ion-option value="M.">M.</ion-option>
@@ -82,7 +82,7 @@
                        (change)="IsCompanyExist($event, 'siret')"></ion-input>
         </ion-item>
         <div [hidden]="isSIRETValid"
-             class="error-box">* Saisissez les 14 chiffres du SIRET
+             class="error-box"><ion-icon name="warning"></ion-icon>{{(siret && siret.length > 11) ? ' Compléter le SIRET avec les 5 derniers chiffres' : ' Saisissez les 14 chiffres du SIRET'}}
         </div>
 
         <ion-item [hidden]="!isEmployer">
