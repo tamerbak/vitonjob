@@ -34,6 +34,7 @@ import {ConventionService} from "../../providers/convention-service/convention-s
 import {EnvironmentService} from "../../providers/environment-service/environment-service";
 import {ModalSelectionPage} from "../modal-selection/modal-selection";
 import {OfferAddPage} from "../offer-add/offer-add";
+import {EntrepriseService} from "../../providers/entreprise-service/entreprise-service";
 declare var cordova: any;
 declare var window;
 declare var jQuery: any;
@@ -212,7 +213,8 @@ export class CivilityPage {
                 private _alert: AlertController,
                 public storage: Storage,
                 private conventionService: ConventionService,
-                public environmentService: EnvironmentService) {
+                public environmentService: EnvironmentService,
+                public entrepriseService: EntrepriseService) {
         // Set global configs
         // Get target to determine configs
         console.log('Entering civility');
@@ -1458,7 +1460,7 @@ export class CivilityPage {
                 }
                 continue;
             }
-            if (!this.isNumeric(s[i])) {
+            if (!Utils.isNumeric(s[i])) {
                 s = s.replace(s[i], '');
             }
         }
@@ -1497,7 +1499,7 @@ export class CivilityPage {
          }
          }*/
         //check if ape valid
-        if (this.isNumeric(s.substring(0, 4)) && this.isLetter(s.substring(4, 5)) && s.length == 5) {
+        if (Utils.isNumeric(s.substring(0, 4)) && Utils.isLetter(s.substring(4, 5)) && s.length == 5) {
             e.target.value = this.changeToUppercase(s);
             this.isAPEValid = true;
         } else {
@@ -1519,26 +1521,6 @@ export class CivilityPage {
     static isValidName(name: string) {
         let regEx = /^[A-Za-zÀ-ú.' \-\p{L}\p{Zs}\p{Lu}\p{Ll}']+$/;
         return !(name.match(regEx) == null);
-    }
-
-    isNumeric(n) {
-        let numbers = /^[0-9]+$/;
-        if (n.match(numbers)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    isLetter(s) {
-        let letters = /^[A-Za-z]+$/;
-        if (s.match(letters)) {
-            return true;
-        }
-        else {
-            return false;
-        }
     }
 
     /**
@@ -1780,7 +1762,7 @@ export class CivilityPage {
     IsCompanyExist(e, field) {
         //verify if company exists
         if (field == "companyname") {
-            this.profileService.countEntreprisesByRaisonSocial(this.companyname).then((data: {data: Array<any>}) => {
+            this.entrepriseService.countEntreprisesByRaisonSocial(this.companyname).then((data: {data: Array<any>}) => {
                 if (data.data[0].count != 0 && this.companyname != this.currentUser.employer.entreprises[0].nom) {
                     if (!this.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
                         this.globalService.showAlertValidation("Vit-On-Job", "L'entreprise " + this.companyname + " existe déjà. Veuillez saisir une autre raison sociale.");

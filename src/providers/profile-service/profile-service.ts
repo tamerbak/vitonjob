@@ -5,6 +5,7 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Platform} from "ionic-angular";
 import {Storage} from "@ionic/storage";
 import {HttpRequestHandler} from "../../http/http-request-handler";
+import {Utils} from "../../utils/utils";
 
 declare let FileTransfer;
 declare let FileUploadOptions;
@@ -65,17 +66,6 @@ export class ProfileService {
         return new Promise(resolve => {
             this.httpRequest.sendSql(sql, this, true).subscribe(data => {
                     resolve(data.data);
-                });
-        });
-    }
-
-    countEntreprisesByRaisonSocial(companyname: string) {
-        let sql = "select count(*) from user_entreprise where nom_ou_raison_sociale='" + companyname + "';";
-        console.log(sql);
-        return new Promise(resolve => {
-            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
-                    console.log(data);
-                    resolve(data);
                 });
         });
     }
@@ -435,7 +425,7 @@ export class ProfileService {
 
     updateSpontaneousContact(value, accountid) {
         let sql = "update user_account set ";
-        sql = sql + " accepte_candidatures='" + this.sqlfyText(value) + "'";
+        sql = sql + " accepte_candidatures='" + Utils.sqlfyText(value) + "'";
         sql = sql + " where pk_user_account=" + accountid + ";";
 
         return new Promise(resolve => {
@@ -454,11 +444,5 @@ export class ProfileService {
                     resolve(data.data[0]);
                 });
         });
-    }
-
-    sqlfyText(txt) {
-        if (!txt || txt.length == 0)
-            return "";
-        return txt.replace("'", "''");
     }
 }
