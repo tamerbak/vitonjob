@@ -117,8 +117,8 @@
     </ion-list-header>
     <ion-row>
       <ion-col>
-        <ion-item style="padding-left: 0;">
-          <ion-label floating>{{projectTarget == 'jobyer' ? 'Taux horaire souhaité (brut en €) ':'Taux horaire brut en € '}}<span class="asterisk">*</span></ion-label>
+        <ion-item style="padding-left: 0;" text-wrap>
+          <ion-label floating>{{projectTarget == 'jobyer' ? 'Taux horaire souhaité (brut en €) ':'Taux horaire brut en € '}}<span class="asterisk" *ngIf="isEmployer">*</span></ion-label>
           <ion-input
             type="number"
             min="0"
@@ -315,7 +315,7 @@
   <ion-row>
     <ion-col text-center>
       <button [color]="themeColor" ion-button icon-left small
-              [disabled]="(projectTarget === 'employer' && (!jobData.nbPoste || jobData.nbPoste <1)) || !jobData.job || !jobData.sector || !jobData.remuneration || !isSectorFound || !isJobFound || jobs.length > 0 || sectors.length > 0 || !searchData || searchData.length ==0"
+              [disabled]="(projectTarget === 'employer' && (!jobData.nbPoste || jobData.nbPoste <1)) || !jobData.job || !jobData.sector || !isSectorFound || !isJobFound || jobs.length > 0 || sectors.length > 0 || !searchData || searchData.length ==0"
               (click)="validateJob()">
         <ion-icon name="checkmark-circle"></ion-icon>
         Valider

@@ -449,15 +449,21 @@ export class ModalJobPage {
       return;
     }
 
-    //remuneration check
-    if ((this.jobData.remuneration <= 0) || Utils.isEmpty(this.jobData.remuneration)) {
-      let alert = this.alert.create({
-        title: 'Erreur',
-        subTitle: "Veuillez saisir une rémunération valide",
-        buttons: ['OK']
-      });
-      alert.present();
-      return;
+    //remuneration check: la remuneration es obligatoire pour les offres employeurs seulement
+    if(this.isEmployer) {
+      if ((this.jobData.remuneration <= 0) || Utils.isEmpty(this.jobData.remuneration)) {
+        let alert = this.alert.create({
+          title: 'Erreur',
+          subTitle: "Veuillez saisir une rémunération valide",
+          buttons: ['OK']
+        });
+        alert.present();
+        return;
+      }
+    }else{
+     if(Utils.isEmpty(this.jobData.remuneration)){
+       this.jobData.remuneration = 0;
+     }
     }
 
     if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
@@ -468,8 +474,11 @@ export class ModalJobPage {
 
     this.jobData.pharmaSoftwareData = this.savedSoftwares;
 
-    //TODO: cette partie n'est pas complète, il faut ajouter le nombre de poste pour les employeur ...
-    this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === '') && !(this.jobData.remuneration <= 0) && !Utils.isEmpty(this.jobData.remuneration));
+    if(this.isEmployer) {
+      this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === '') && !(this.jobData.remuneration <= 0) && !Utils.isEmpty(this.jobData.remuneration) && !(this.jobData.nbPoste <= 0) && !Utils.isEmpty(this.jobData.nbPoste));
+    }else{
+      this.jobData.validated = ( !(this.jobData.job === '') && !(this.jobData.sector === ''));
+    }
 
     //Adresse
     // removeDiacritics("Iлｔèｒｎåｔïｏｎɑｌíƶａｔï߀ԉ");
