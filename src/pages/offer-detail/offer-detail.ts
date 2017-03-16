@@ -215,7 +215,11 @@ export class OfferDetailPage {
 
      });*/
     this.isObsolete = this.offer.obsolete;
+
+    let loading = this.loading.create({content:"Merci de patienter..."});
+    loading.present();
     this.offerService.getOffer(this.offer.idOffer, this.projectTarget).then((data: any) => {
+      loading.dismiss();
       this.offer = data;
       this.offer.obsolete = this.isObsolete;
       this.setVideoLink();
