@@ -34,6 +34,9 @@ import {InterestingJobsPage} from "../interesting-jobs/interesting-jobs";
 import {PrerequisitesInfosPage} from "../prerequisites-infos/prerequisites-infos";
 
 import {EnvironmentService} from "../../providers/environment-service/environment-service";
+import {Entreprise} from "../../dto/entreprise";
+import {ModalEntreprisePage} from "../modal-entreprise/modal-entreprise";
+import {EntrepriseService} from "../../providers/entreprise-service/entreprise-service";
 
 
 /*
@@ -79,6 +82,11 @@ export class ProfilePage {
      */
     public references : any = [];
 
+    /*
+    Multi-entreprise management
+     */
+    public entreprises: Entreprise[] = [];
+
     constructor(public environmentService:EnvironmentService,
                 public nav: NavController,
                 public gc: GlobalConfigs,
@@ -94,7 +102,8 @@ export class ProfilePage {
                 public picker: PickerController,
                 private _toast: ToastController,
                 public loading: LoadingController,
-                public modal: ModalController, public storage: Storage) {
+                public modal: ModalController, public storage: Storage,
+                public entrepriseService: EntrepriseService) {
 
 
         this.projectTarget = gc.getProjectTarget();
@@ -180,6 +189,12 @@ export class ProfilePage {
                 this.referenceService.loadReferences(this.userData.id).then((results:any)=>{
                     this.references = results;
                 });
+
+                //  Load entreprises
+                /*this.profileService.loadEntreprises(this.userData.employer.id).then((data:any)=>{
+                    this.entreprises = data;
+                });*/
+                this.entreprises = this.userData.employer.entreprises;
 
                 //load profile picture
                 this.storage.get(this.profilPictureVar).then((data: any) => {
@@ -601,11 +616,59 @@ export class ProfilePage {
         }
     }
 
+    gotoAddEntreprise() {
+        let modal = this.modal.create(ModalEntreprisePage);
+        modal.present();
+        modal.onDidDismiss((data:any) => {
+            if(Utils.isEmpty(data)){
+                return;
+            }
+
+            let loadingComponent = this.loading.create({content: "Merci de patienter..."});
+            loadingComponent.present();
+
+            let entreprise = data;
+            this.entrepriseService.createEntreprise(
+              this.userData.id,
+              this.userData.employer.id,
+              entreprise.nom,
+              entreprise.naf,
+              entreprise.conventionCollective.id
+            ).then((result: any) => {
+                loadingComponent.dismiss();
+
+                if(result.status == 'success') {
+                    // Get entreprise id
+                    entreprise.id = +result.data[0].pk_user_entreprise;
+
+                    if (Utils.isEmpty(this.userData.employer.entreprises)) {
+                        this.userData.employer.entreprises = [];
+                    }
+                    this.userData.employer.entreprises.push(entreprise);
+
+                    // put currentUser in session
+                    this.storage.set(this.currentUserVar, JSON.stringify(this.userData));
+                    //swap to the new entreprise
+                    let index = this.userData.employer.entreprises.length -1;
+                    this.swapEntreprise(entreprise, index);
+                }
+            });
+        });
+    }
+
+
+
+    swapEntreprise(e, index){
+        let entrepriseTmp = this.userData.employer.entreprises[0];
+        this.userData.employer.entreprises[0] = e;
+        this.userData.employer.entreprises[index] = entrepriseTmp;
+        this.storage.set(this.currentUserVar, JSON.stringify(this.userData)).then(() => {
+            this.presentToast('Vous êtes bien connecté en tant que ' + this.userData.employer.entreprises[0].nom + '.')
+        });
+    }
+
     isEmpty(str) {
-        if (str == '' || str == 'null' || !str)
-            return true;
-        else
-            return false;
+        return Utils.isEmpty(str);
     }
 
     presentToast(message: string, duration?: number, position?: string) {
