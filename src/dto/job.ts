@@ -21,6 +21,7 @@ export class Job  extends AbstractGCallout {
   equipmentData: any[];
   pharmaSoftwareData: PharmaSoftwares[];
   adress: MissionAddress;
+  regimeContrat: number;
 
   constructor() {
     super('com.vitonjob.callouts.offer.model.JobData');
@@ -40,5 +41,6 @@ export class Job  extends AbstractGCallout {
     this.equipmentData = [];
     this.pharmaSoftwareData = [];
     this.adress = new MissionAddress();
+    this.regimeContrat = 40;
   }
 }

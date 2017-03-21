@@ -56,6 +56,17 @@
       Veuillez saisir un job valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus
     </div>
 
+    <ion-item>
+      <ion-label floating>Régime de contrat</ion-label>
+      <ion-select [(ngModel)]="jobData.regimeContrat" *ngIf="isEmployer"
+                  style="padding: 0;overflow: visible; max-width: 100%;"
+                  okText="Ok" cancelText="Annuler ">
+        <ion-option value="40" selected="true">Intérim</ion-option>
+        <ion-option value="41" selected="true">CDI</ion-option>
+        <ion-option value="42" selected="true">CDD</ion-option>
+        <ion-option value="43" selected="true">Formation</ion-option>
+      </ion-select>
+    </ion-item>
 
     <!-- Coefficient and conventions -->
     <div *ngFor="let conventionFilter of conventionFilters">
