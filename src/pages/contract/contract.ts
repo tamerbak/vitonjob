@@ -230,7 +230,7 @@ export class ContractPage {
       for (let i = 0; i < resp.rates.length; i++) {
         if (this.currentOffer.jobData.remuneration < resp.rates[i].taux_horaire) {
           this.rate = parseFloat(resp.rates[i].coefficient) * this.currentOffer.jobData.remuneration;
-          this.contractData.elementsCotisation = this.rate;
+          this.contractData.elementsCotisation = parseFloat(resp.rates[i].coefficient);
           break;
         }
       }
@@ -357,7 +357,7 @@ export class ContractPage {
         for (let i = 0; i < data.length; i++) {
           if (this.currentOffer.jobData.remuneration < data[i].taux_horaire) {
             this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
-            this.contractData.elementsCotisation = this.rate;
+            this.contractData.elementsCotisation = parseFloat(data[i].coefficient);
             break;
           }
         }
