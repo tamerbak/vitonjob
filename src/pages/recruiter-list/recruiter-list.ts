@@ -7,6 +7,7 @@ import {ModalRecruiterRepertoryPage} from "../modal-recruiter-repertory/modal-re
 import {ModalRecruiterManualPage} from "../modal-recruiter-manual/modal-recruiter-manual";
 import {GlobalService} from "../../providers/global-service/global-service";
 import {Storage} from "@ionic/storage";
+import {SmsService} from "../../providers/sms-service/sms-service";
 
 @Component({
     templateUrl: 'recruiter-list.html',
@@ -27,6 +28,7 @@ export class RecruiterListPage {
                 public nav: NavController,
                 private globalService: GlobalService,
                 private recruiterService: RecruiterService,
+                private smsService: SmsService,
                 public modal:ModalController,
                 public loading:LoadingController,
                 public storage:Storage) {
@@ -129,13 +131,15 @@ export class RecruiterListPage {
                         return;
                     }
                 }
+                loading.dismiss();
             }
         });
     }
 
     sendNotification(accountid, tel) {
         this.recruiterService.generatePasswd(accountid).then((passwd) => {
-            this.recruiterService.sendNotificationBySMS(tel, this.currentUser, passwd).then((data:any) => {
+            let msg = this.currentUser.titre + " " + this.currentUser.nom + " " + this.currentUser.prenom + " vous invite à télécharger et installer l'application Vit-On-Job Employeur: http://www.vitonjob.com/telecharger . Votre mot de passe est " + passwd;
+            this.smsService.sendSms(tel, msg).then((data:any) => {
                 if (!data || data.status != 200) {
                     this.globalService.showAlertValidation("Vit-On-Job", "Serveur non disponible ou problème de connexion.");
                     return;
