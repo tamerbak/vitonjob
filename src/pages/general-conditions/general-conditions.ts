@@ -182,7 +182,7 @@ export class GeneralConditionsPage {
                 "http://www.Vit-On-Job.com/nouscontacter/ " +
                 "L’Entreprise Utilisatrice est invitée à ajouter des informations relatives à l’entreprise, " +
                 "sous la forme d’une « Fiche de l’entreprise », comprenant les éléments suivants : " +
-                " Titre (Mme, Mlle, M.) ; " +
+                " Titre (Mme, M.) ; " +
                 " Nom ; " +
                 " Prénom ; " +
                 " Nom entreprise ; " +
@@ -373,7 +373,7 @@ export class GeneralConditionsPage {
                 subCode: 1,
                 subContent: "Lors de l’utilisation de l’Application ou Site, l’Entreprise Utilisatrice est invité à " +
                 "inscrire les éléments suivants de la « Fiche de l’entreprise » : " +
-                " Titre (Mme, Mlle, M.) ; " +
+                " Titre (Mme, M.) ; " +
                 " Nom ; " +
                 " Prénom ; " +
                 " Nom entreprise ; " +
