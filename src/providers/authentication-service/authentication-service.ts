@@ -150,7 +150,8 @@ export class AuthenticationService {
    * @description update jobyer information
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
-  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, prefecture, dateStay, dateFromStay, dateToStay, birthdepId, numStay, birthCountryId, regionId, isStay, cv) {
+  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, prefecture, dateStay, dateFromStay, dateToStay, birthdepId,
+                       numStay, birthCountryId, regionId, isStay, cv, alternance : boolean, diploma) {
     let sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
@@ -178,8 +179,10 @@ export class AuthenticationService {
 
       (!this.isEmpty(cv) ? ("cv ='" + Utils.sqlfyText(cv) + "' ") : ("cv = '' " )) +
 
-      " where pk_user_jobyer ='" + roleId + "';";
+      (alternance?", fk_user_diplome_alternance="+diploma+" ":" ")+
 
+      " where pk_user_jobyer ='" + roleId + "';";
+    console.log(sql);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})

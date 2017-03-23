@@ -257,6 +257,41 @@
             </ion-select>
         </ion-item>
 
+        <ion-card [hidden]="isEmployer">
+            <ion-card-header>Interessé par</ion-card-header>
+            <ion-card-content>
+                <ion-item>
+                    <ion-label>Travail temporaire</ion-label>
+                    <ion-checkbox [(ngModel)]="interim" (ionChange)="contractModeChanged(40, interim)"></ion-checkbox>
+                </ion-item>
+                <ion-item>
+                    <ion-label>CDI</ion-label>
+                    <ion-checkbox [(ngModel)]="cdi" (ionChange)="contractModeChanged(41, cdi)"></ion-checkbox>
+                </ion-item>
+                <ion-item>
+                    <ion-label>CDD</ion-label>
+                    <ion-checkbox [(ngModel)]="cdd" (ionChange)="contractModeChanged(42, cdd)"></ion-checkbox>
+                </ion-item>
+                <ion-item>
+                    <ion-label>Contrat d'alternance</ion-label>
+                    <ion-checkbox [(ngModel)]="alternance" (ionChange)="contractModeChanged(43, alternance)"></ion-checkbox>
+                </ion-item>
+                <ion-item *ngIf="alternance">
+                    <ion-label floating>Diplôme préparé</ion-label>
+                    <ion-select [(ngModel)]="preparedDiploma" style="padding: 0;overflow: visible; max-width: 100%;"
+                                okText="Ok" cancelText="Annuler ">
+                        <ion-option value="40" >CAP Vente</ion-option>
+                        <ion-option value="41" >BAC commerce</ion-option>
+                        <ion-option value="42" >BTS AG</ion-option>
+                        <ion-option value="43" >BTS NRC</ion-option>
+                        <ion-option value="44" >BTS MUC</ion-option>
+                        <ion-option value="45" >Licence Eco/Droit/Gestion</ion-option>
+                    </ion-select>
+                </ion-item>
+            </ion-card-content>
+
+        </ion-card>
+
         <div class="error-box" [hidden]="!moreDetails">{{tsMessage}}</div>
         <ion-row wrap [hidden]="!moreDetails">
             {{scansLoadingInfos}}
