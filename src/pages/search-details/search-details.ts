@@ -111,7 +111,7 @@ export class SearchDetailsPage implements OnInit {
     if (!this.isEmployer)
       this.fullName = this.result.entreprise;
     else
-      this.fullName = this.result.titre + ' ' + this.result.prenom + ' ' + this.result.nom;
+      this.fullName = this.result.titre + ' ' + this.result.prenom + ' ' + this.result.nom.charAt(0) + '.';
     this.email = this.result.email;
     this.telephone = this.result.tel;
     this.matching = this.result.matching + "%";

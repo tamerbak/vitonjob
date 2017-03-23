@@ -21,7 +21,7 @@
                 <ion-avatar item-left>
                     <img [src]="item.avatar">
                 </ion-avatar>
-                <h2>{{isEmployer ? (item.prenom + ' ' + item.nom ) : item.entreprise}}</h2>
+                <h2>{{isEmployer ? (item.prenom + ' ' + item.nom.charAt(0) + '.' ) : item.entreprise}}</h2>
                 <h4>{{item.idOffre>0?item.titreOffre:''}}</h4>
             </ion-item>
             <ion-item no-lines style="background-color: lightcyan">
@@ -129,7 +129,7 @@
                     <div id="cover"></div>
                     <div id="info-lastname">
                         <ion-badge id="text-lastname" style="background-color: #757575;">{{item.titre}} {{item.prenom}}
-                            {{item.nom}}
+                            {{item.nom.charAt(0) + '.'}}
                         </ion-badge>
                     </div>
                     <button ion-button outline id="btn-r" (click)="recruitJobyer(item)"
