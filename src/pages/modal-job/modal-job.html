@@ -56,15 +56,28 @@
       Veuillez saisir un job valide, ou en choisir à partir de la liste en cliquant sur le bouton ci-dessus
     </div>
 
-    <ion-item>
+    <ion-item *ngIf="isEmployer">
       <ion-label floating>Régime de contrat</ion-label>
-      <ion-select [(ngModel)]="jobData.regimeContrat" *ngIf="isEmployer"
+      <ion-select [(ngModel)]="jobData.regimeContrat"
                   style="padding: 0;overflow: visible; max-width: 100%;"
                   okText="Ok" cancelText="Annuler ">
-        <ion-option value="40" selected="true">Intérim</ion-option>
-        <ion-option value="41" selected="true">CDI</ion-option>
-        <ion-option value="42" selected="true">CDD</ion-option>
-        <ion-option value="43" selected="true">Formation</ion-option>
+        <ion-option value="40" >Intérim</ion-option>
+        <ion-option value="41" >CDI</ion-option>
+        <ion-option value="42" >CDD</ion-option>
+        <ion-option value="43" >Alternance</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="isEmployer && jobData.regimeContrat==43">
+      <ion-label floating>Diplôme préparé</ion-label>
+      <ion-select [(ngModel)]="jobData.preparedDiploma" *ngIf="isEmployer"
+                  style="padding: 0;overflow: visible; max-width: 100%;"
+                  okText="Ok" cancelText="Annuler ">
+        <ion-option value="40" >CAP Vente</ion-option>
+        <ion-option value="41" >BAC commerce</ion-option>
+        <ion-option value="42" >BTS AG</ion-option>
+        <ion-option value="43" >BTS NRC</ion-option>
+        <ion-option value="44" >BTS MUC</ion-option>
+        <ion-option value="45" >Licence Eco/Droit/Gestion</ion-option>
       </ion-select>
     </ion-item>
 
