@@ -180,27 +180,6 @@ export class RecruiterService {
         });
     }
 
-    sendNotificationBySMS(tel, user, passwd) {
-        tel = tel.replace('+', '00');
-        let url = "http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoisms";
-        var msg = user.titre + " " + user.nom + " " + user.prenom + " vous invite à télécharger et installer l'application Vit-On-Job. http://www.vitonjob.com/telecharger/telecharger-appli-employeurs/\n Votre mot de passe est " + passwd;
-        let payload = "<fr.protogen.connector.model.SmsModel>"
-            + "<telephone>" + tel + "</telephone>"
-            + "<text>" + msg + "</text>"
-            + "</fr.protogen.connector.model.SmsModel>";
-
-        return new Promise(resolve => {
-            let headers = new Headers();
-            headers.append("Content-Type", 'text/xml');
-            this.http.post(url, payload, {headers: headers})
-                .subscribe((data:any) => {
-                    this.data = data;
-                    console.log(this.data);
-                    resolve(this.data);
-                });
-        })
-    }
-
     generatePasswd(accountid) {
         var passwd = (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1) + 'MO';
         var hashedPasswd = md5(passwd);
