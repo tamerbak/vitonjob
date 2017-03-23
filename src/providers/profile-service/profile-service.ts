@@ -445,4 +445,47 @@ export class ProfileService {
                 });
         });
     }
+
+    setContractMode(idJobyer : number, idMode : number) {
+        let sql = "insert into user_preferences_contrat_jobyer (fk_user_jobyer, fk_user_regime_du_contrat) values ("+idJobyer+","+idMode+")";
+        return new Promise(resolve => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
+                console.log(JSON.stringify(data));
+                resolve(true);
+            });
+        });
+    }
+
+    unsetContractMode(idJobyer : number, idMode : number) {
+        let sql = "delete from user_preferences_contrat_jobyer where fk_user_jobyer="+idJobyer+" and fk_user_regime_du_contrat="+idMode+"";
+        return new Promise(resolve => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
+                console.log(JSON.stringify(data));
+                resolve(true);
+            });
+        });
+    }
+
+    selectContractModes(idJobyer : number){
+        let sql = "select fk_user_regime_du_contrat as idMode from user_preferences_contrat_jobyer where fk_user_jobyer="+idJobyer;
+        return new Promise(resolve => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
+                console.log(JSON.stringify(data));
+                resolve(data.data);
+            });
+        });
+    }
+
+    selectJobyerPreparedDiploma(idJobyer : number){
+        let sql = "select fk_user_diplome_alternance as diploma from user_jobyer where pk_user_jobyer="+idJobyer;
+        return new Promise(resolve => {
+            this.httpRequest.sendSql(sql, this, true).subscribe((data: any) => {
+                console.log(JSON.stringify(data));
+                if(data.data && data.data.length>0)
+                    resolve(data.data[0].diploma);
+                else
+                    resolve(40);
+            });
+        });
+    }
 }

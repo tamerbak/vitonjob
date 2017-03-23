@@ -181,6 +181,13 @@ export class CivilityPage {
     public isDepInputDisabled = true;
     public isBirthplaceInputDisabled = true;
 
+    //  Regime contract
+    public interim : boolean;
+    public cdi : boolean;
+    public cdd : boolean;
+    public alternance : boolean;
+    public preparedDiploma : number = 40;
+
     //  Favoris
     public favoris : any = [];
     public selectedFav : string;
@@ -347,6 +354,21 @@ export class CivilityPage {
                 this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
                 this.conventionId = this.currentUser.employer.entreprises[0].conventionCollective.id;
             }
+        }
+
+        if(this.currentUser.jobyer && this.currentUser.jobyer.id>0){
+            this.profileService.selectContractModes(this.currentUser.jobyer.id).then((data:any)=>{
+               for(let i = 0 ; i < data.length ; i++){
+                   if(data[i].idmode == 40)
+                       this.interim = true;
+                   if(data[i].idmode == 41)
+                       this.cdi = true;
+                   if(data[i].idmode == 42)
+                       this.cdd = true;
+                   if(data[i].idmode == 43)
+                       this.alternance = true;
+               }
+            });
         }
 
         this.environmentService.reload();
@@ -579,6 +601,18 @@ export class CivilityPage {
         }
     }
 
+    contractModeChanged(idMode, checked){
+        this.storage.get(this.currentUserVar).then((value) => {
+            this.currentUser = JSON.parse(value);
+            let idJobyer = this.currentUser.jobyer.id;
+            if(checked){
+                this.profileService.setContractMode(idJobyer, idMode);
+            } else {
+                this.profileService.unsetContractMode(idJobyer, idMode);
+            }
+        });
+    }
+
     /**
      * @description initiate the civility form with the data of the logged user
      */
@@ -756,6 +790,12 @@ export class CivilityPage {
 
                     }
 
+                    if(jobyer && jobyer.id>0){
+                        this.profileService.selectJobyerPreparedDiploma(jobyer.id).then((diploma:number)=>{
+                            debugger;
+                           this.preparedDiploma = diploma;
+                        });
+                    }
 
                 }
                 if (!this.isRecruiter) {
@@ -989,7 +1029,8 @@ export class CivilityPage {
 
                 this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni,
                     this.nationality, jobyerId, this.birthdate, this.birthplace, this.prefecture, this.tsejProvideDate,
-                    this.tsejFromDate, this.tsejToDate, birthdepId, this.numStay, birthCountryId, regionId, isResident, this.cvUri)
+                    this.tsejFromDate, this.tsejToDate, birthdepId, this.numStay, birthCountryId, regionId, isResident,
+                    this.cvUri, this.alternance, this.preparedDiploma)
                     .then((data: {status: string, error: string}) => {
                         if (!data || data.status == "failure") {
                             console.log(data.error);
@@ -1231,7 +1272,8 @@ export class CivilityPage {
 
                 this.authService.updateJobyerCivility(this.title, this.lastname, this.firstname, this.numSS, this.cni,
                     this.nationality, jobyerId, this.birthdate, this.birthplace, this.prefecture, this.tsejProvideDate,
-                    this.tsejFromDate, this.tsejToDate, birthdepId, this.numStay, birthCountryId, regionId, isResident, this.cvUri)
+                    this.tsejFromDate, this.tsejToDate, birthdepId, this.numStay, birthCountryId, regionId, isResident,
+                    this.cvUri, this.alternance, this.preparedDiploma)
                     .then((data: {status: string, error: string}) => {
                         if (!data || data.status == "failure") {
                             console.log(data.error);
