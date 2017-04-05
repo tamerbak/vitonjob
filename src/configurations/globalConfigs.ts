@@ -35,7 +35,7 @@ export class GlobalConfigs {
      * Change here the env variable that indicates the nature of DB connections : PROD or DEV
      * @type {string}
      */
-    static env:string = 'DEV'; // DEV ou PROD
+    static env:string = 'PROD'; // DEV ou PROD
     static DLMode:string = 'local';    //  remote or local
     static GA_APP_ID_EMP:string = 'UA-91039209-1';
     static GA_APP_ID_JOB:string = 'UA-91039209-2';
