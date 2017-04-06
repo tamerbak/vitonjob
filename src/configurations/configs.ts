@@ -37,7 +37,7 @@ class EmployerConfigs implements AbstractConfigs {
     // Application opposite theme color
     inversedThemeColor: string = 'vojgreen';
     // Vit-On-Job Employer image
-    imageURL: string = 'assets/img/logo_employeur.png';
+    imageURL: string = 'assets/img/logoMG.png';
     // User employer image
     userImageURL = 'assets/img/employer.png';
     bgMenuURL: string = 'assets/img/bg_employer.png';
@@ -48,7 +48,7 @@ class EmployerConfigs implements AbstractConfigs {
     calendarTheme: number = 4;
     backgroundImage = {'background-image': "url('assets/img/bg_employer.png')"};
     fontColor = "white";
-    backGroundColor = '#757575';
+    backGroundColor = '#00519E';
     avatars = [
         {
             url: 'assets/img/employer.png'
@@ -84,8 +84,8 @@ class JobyerConfigs implements AbstractConfigs {
     // Application opposite theme color
     inversedThemeColor: string = "vojgrey";
     // Vit-On-Job Jobyer image
-    imageURL: string = "assets/img/logo_jobyer.png";
-    fontColor: string = '#757575';
+    imageURL: string = "assets/img/logoMG.png";
+    fontColor: string = '#fbba00';
     // User employer image
     userImageURL = 'assets/img/jobyer.png';
     menuBackgroundImage = {'background-image': "url('assets/img/bg_menu_jobyer.png')"};
@@ -95,7 +95,7 @@ class JobyerConfigs implements AbstractConfigs {
     calloutURL: string = Configs.calloutURL;
     sqlURL: string = Configs.sqlURL;
     calendarTheme: number = 5;
-    backGroundColor = '#14baa6';
+    backGroundColor = '#FBBA00';
     avatars = [
         {
             url: 'assets/img/jobyer.png'

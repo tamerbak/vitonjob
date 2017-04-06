@@ -1,6 +1,6 @@
 <ion-content class="home" [ngStyle]="backgroundImage">
     <button ion-button style="background-color: transparent;" menuToggle *ngIf="!isHunter">
-        <ion-icon style="color: #757575;font-size: xx-large;" name="menu"></ion-icon>
+        <ion-icon style="color: #fbba00;font-size: xx-large;" name="menu"></ion-icon>
     </button>
     <!--div>
         <video autoplay muted loop preload="auto" webkit-playsinline class="bg-vid">
@@ -112,7 +112,7 @@
     </div>
 
     <ion-item style="background-color: transparent;" no-lines >
-        <ion-label text-right style="color:#757575; font-size: small">Recherche par ville</ion-label>
+        <ion-label text-right style="color:#00519E; font-size: small">Recherche par ville</ion-label>
         <ion-checkbox item-right [(ngModel)]="isCity.activated"></ion-checkbox>
     </ion-item>
 
@@ -288,4 +288,12 @@
         </ion-fab>
 
 
+    <ion-footer>
+        <ion-toolbar no-border transparent>
+            <ion-title>
+                <h6 text-center style="margin:0; font-weight: bold; color: white !important;"> Powered by <img src="assets/img/logo_bg.png" style="width: 70px;"> </h6>
+                <p text-center style="font-size: 10px; margin:0; font-weight: bold; color: white;">{{baseline}}</p>
+            </ion-title>
+        </ion-toolbar>
+    </ion-footer>
 </ion-content>

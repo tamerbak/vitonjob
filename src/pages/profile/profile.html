@@ -112,7 +112,7 @@
     <div id="map"></div>
     <ion-card class="adv-map" style="margin-top: 0;margin-bottom: 1px">
       <ion-item text-wrap>
-        <ion-icon subtle large item-left name='pin' style="color: #14baa6"></ion-icon>
+        <ion-icon subtle large item-left name='pin' style="color: #fbba00"></ion-icon>
         <h5 *ngIf="!isEmployer">Adresse personnelle</h5>
         <h5 *ngIf="isEmployer">Adresse du siège</h5>
         <p *ngIf="!isEmployer">{{userData.jobyer.personnalAdress.fullAdress}}</p>
@@ -123,7 +123,7 @@
         </button>
       </ion-item>
       <ion-item text-wrap>
-        <ion-icon subtle large item-left name='pin' style="color: #757575"></ion-icon>
+        <ion-icon subtle large item-left name='pin' style="color: #fbba00"></ion-icon>
         <h5 *ngIf="!isEmployer">Adresse départ au travail</h5>
         <h5 *ngIf="isEmployer">Adresse du lieu de travail</h5>
         <p *ngIf="!isEmployer">{{userData.jobyer.workAdress.fullAdress}}</p>
@@ -188,7 +188,7 @@
 
     <ion-card class="adv-map" style="margin-top: 0;margin-bottom: 1px">
       <ion-item *ngFor="let e of entreprises, let i=index" text-wrap>
-        <ion-icon subtle large item-left name='briefcase' style="color: #757575"></ion-icon>
+        <ion-icon subtle large item-left name='briefcase' style="color: #fbba00"></ion-icon>
         <h5 >{{e.nom}}</h5>
         <!--<button ion-button clear item-right (click)="deleteEntreprise(e)" large color="primary" style="padding:10px">
           <ion-icon name="trash"></ion-icon>
