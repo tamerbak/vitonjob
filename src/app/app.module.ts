@@ -117,7 +117,6 @@ import {Helpers} from "../providers/helpers-service/helpers-service";
 import {LoadListService} from "../providers/load-list-service/load-list-service";
 import {SqlStorageService} from "../providers/sql-storage-service/sql-storage-service";
 import {ValidationDataService} from "../providers/validation-data-service/validation-data-service";
-import {Storage} from "@ionic/storage";
 import {DateConverter} from "../pipes/date-converter/date-converter";
 import {TimeConverter} from "../pipes/time-converter/time-converter";
 import {CKEditorModule} from "ng2-ckeditor";
@@ -136,8 +135,10 @@ import {DAOFactory} from "../dao/data-access-object";
 import {SlimPayService} from "../providers/slimpay-service/slimpay-service";
 import {ContractEpiPage} from "../pages/contract/contract-epi/contract-epi";
 import {SporadicService} from "../providers/sporadic-service/sporadic-service";
+import {IonicStorageModule} from "@ionic/storage";
 import {EntrepriseService} from "../providers/entreprise-service/entreprise-service";
 import {ModalEntreprisePage} from "../pages/modal-entreprise/modal-entreprise";
+import {PartnersService} from "../providers/partners-service/partners-service";
 
 @NgModule({
     declarations: [
@@ -240,7 +241,8 @@ import {ModalEntreprisePage} from "../pages/modal-entreprise/modal-entreprise";
             monthShortNames: ['Jan', 'F\u00e9v', 'Mar', 'Avr', 'Mai', 'Jui', 'Juil', 'Ao\u00fb', 'Sept', 'Oct', 'Nov', 'D\u00e9c'],
             dayNames: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
             dayShortNames: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
-        }, {})
+        }, {}),
+        IonicStorageModule.forRoot()
     ],
     bootstrap: [IonicApp],
     entryComponents: [
@@ -358,13 +360,13 @@ import {ModalEntreprisePage} from "../pages/modal-entreprise/modal-entreprise";
         PaymentService,
         ProfileService,
         PushNotificationService,
+        PartnersService,
         RecruiterService,
         SearchService,
         SmsService,
         SqlStorageService,
         UserService,
         ValidationDataService,
-        Storage,
         Configs,
         GlobalConfigs,
         AddressUtils,

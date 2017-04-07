@@ -4,6 +4,7 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../../configurations/configs";
 import {HomePage} from "../home/home";
 import {Platform} from "ionic-angular/index";
+import {PartnersService} from "../../providers/partners-service/partners-service";
 
 
 @Component({
@@ -19,11 +20,15 @@ export class AboutPage {
   public versionNumber: string;
   public logo: string;
   public projectName: string;
+  public projectTarget: string;
   public isEmployer: boolean;
   public themeColor: string;
   public push: any;
+  public aboutText;
+  public aboutTextRole;
 
-  constructor(gc: GlobalConfigs, platform: Platform) {
+  constructor(gc: GlobalConfigs, platform: Platform,
+              private partnersService: PartnersService) {
     /*let monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
       "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
     ];*/
@@ -38,6 +43,7 @@ export class AboutPage {
     this.logo = config.imageURL;
     this.projectName = config.projectName;
     this.isEmployer = (gc.getProjectTarget() === 'employer');
+    this.projectTarget = gc.getProjectTarget();
 
     AppVersion.getVersionNumber().then(_version => {
       this.versionNumber = _version;
@@ -49,5 +55,14 @@ export class AboutPage {
       }
     });
 
+  }
+
+  ngOnInit(){
+    this.partnersService.getAPropos(Configs.partnerCode, this.projectTarget).then((data: any) => {
+      if(data && data.data && data.data.length != 0){
+        this.aboutText = data.data[0].a_propos;
+        this.aboutTextRole = (this.projectTarget == 'jobyer' ? data.data[0].a_propos_jobyer : data.data[0].a_propos_employeur);
+      }
+    });
   }
 }
