@@ -26,6 +26,8 @@ interface AbstractConfigs {
     currentUserVar: string;
     profilPictureVar: string;
     backGroundColor: string;
+
+    partnerCode: string;
 }
 
 class EmployerConfigs implements AbstractConfigs {
@@ -73,6 +75,8 @@ class EmployerConfigs implements AbstractConfigs {
     };
     currentUserVar: string = "currentEmployer";
     profilPictureVar: string = "pictuteEmployer";
+
+    partnerCode = Configs.partnerCode;
 }
 
 class JobyerConfigs implements AbstractConfigs {
@@ -123,10 +127,12 @@ class JobyerConfigs implements AbstractConfigs {
     };
     currentUserVar: string = "currentJobyer";
     profilPictureVar: string = "pictuteJobyer";
+    partnerCode = Configs.partnerCode;
 }
 
 
 export class Configs {
+    public static partnerCode = "PARTNER";
 
     public static calloutURL: string = (GlobalConfigs.env === 'DEV') ?
         'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business' :

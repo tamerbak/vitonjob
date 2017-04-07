@@ -138,6 +138,7 @@ import {SporadicService} from "../providers/sporadic-service/sporadic-service";
 import {IonicStorageModule} from "@ionic/storage";
 import {EntrepriseService} from "../providers/entreprise-service/entreprise-service";
 import {ModalEntreprisePage} from "../pages/modal-entreprise/modal-entreprise";
+import {PartnersService} from "../providers/partners-service/partners-service";
 
 @NgModule({
     declarations: [
@@ -359,6 +360,7 @@ import {ModalEntreprisePage} from "../pages/modal-entreprise/modal-entreprise";
         PaymentService,
         ProfileService,
         PushNotificationService,
+        PartnersService,
         RecruiterService,
         SearchService,
         SmsService,
