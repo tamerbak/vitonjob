@@ -33,7 +33,7 @@ export class AboutPage {
       "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
     ];*/
     //let date = new Date();
-    this.releaseDate = "30 Janv 2017"; //date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
+    this.releaseDate = "30 Avril 2017"; //date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
     //this.appName = AppVersion.getAppName();
     //this.version = AppVersion.getPackageName();
     this.push = HomePage;
@@ -41,8 +41,8 @@ export class AboutPage {
     let config = Configs.setConfigs(gc.getProjectTarget());
     this.themeColor = config.themeColor;
     this.logo = config.imageURL;
-    this.projectName = config.projectName;
     this.isEmployer = (gc.getProjectTarget() === 'employer');
+    this.projectName = this.isEmployer ? 'Partnaire Employeur' : 'Partnaire Jobyer';
     this.projectTarget = gc.getProjectTarget();
 
     AppVersion.getVersionNumber().then(_version => {
