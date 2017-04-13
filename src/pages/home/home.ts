@@ -130,12 +130,10 @@ export class HomePage {
     public cities: any = [];
 
     public lookingForJob: boolean = false;
-    public pendingJob: string = '';
-    public params: any;
+    public pendingJob : string = '';
+    public params:any;
 
-    public offers: any = [];
-
-    public baseline: string = "";
+    public offers : any = [];
 
     /*static get parameters() {
      return [[GlobalConfigs], [App], [NavController], [NavParams], [SearchService],
@@ -183,7 +181,7 @@ export class HomePage {
         // page push
         this.push = SearchCriteriaPage;
         this.globalConfig = _globalConfig;
-        this.params = {searchQuery: this.scQuery};
+        this.params = {searchQuery:this.scQuery};
 
         //menu.enable(true, 'rightOnMenu');
 
@@ -195,7 +193,6 @@ export class HomePage {
         this.highlightSentence = (this.isHunter) ? "Vous êtes sur le point de concrétiser l'opportunité que vous avez capturée" : config.highlightSentence;
         this.currentUserVar = config.currentUserVar;
         this.isEmployer = this.projectTarget === 'employer';
-        this.baseline = this.isEmployer ? "Technologie au service de la FLEXIBILITÉ RESPONSABLE" : "Technologie au service de l'EMPLOI";
         this.searchPlaceHolder = "Veuillez saisir votre recherche...";
         this.recording = false;
         this.nav = nav;
@@ -248,10 +245,10 @@ export class HomePage {
         });
 
         /*this.offers.push({
-         title:"Accouveur / Accouveuse débutant",
-         enterprise:"SYNAPSE Indus",
-         gains:"1 000.00 Euros"
-         });*/
+            title:"Accouveur / Accouveuse débutant",
+            enterprise:"SYNAPSE Indus",
+            gains:"1 000.00 Euros"
+        });*/
     }
 
     /*/ Load map only after view is initialize
@@ -782,14 +779,14 @@ export class HomePage {
             return;
         }
 
-        if (this.lookingForJob) {
+        if(this.lookingForJob){
             this.pendingJob = val;
             return;
         }
 
 
         this.lookingForJob = true;
-        this.offersService.autocompleteOffers(val, this.projectTarget).then((data: any) => {
+        this.offersService.autocompleteOffers(val, this.projectTarget).then((data : any)=>{
             this.offers = data;
             console.log(data);
             this.lookingForJob = false;
@@ -798,16 +795,16 @@ export class HomePage {
 
     }
 
-    selectOffer(o) {
+    selectOffer(o){
         let searchFields = {
             class: 'com.vitonjob.recherche.model.SearchQuery',
             resultsType: this.projectTarget == 'jobyer' ? 'entreprise' : 'jobyer',
             idOffer: 0,
-            idProfileJob: 0,
-            queryType: 'SINGLE RESULT'
+            idProfileJob : 0,
+            queryType : 'SINGLE RESULT'
         };
 
-        if (this.projectTarget == 'jobyer' || o.offer === true) {
+        if(this.projectTarget == 'jobyer' || o.offer === true){
             searchFields.idOffer = o.id;
             searchFields.idProfileJob = 0;
         } else {
@@ -817,22 +814,22 @@ export class HomePage {
 
         let loading = this.loading.create({content: "Merci de patienter..."});
         loading.present();
-        this.searchService.advancedSearch(searchFields).then((data: any) => {
-            if (data && data.length > 0) {
+        this.searchService.advancedSearch(searchFields).then((data:any)=>{
+            if(data && data.length>0){
                 this.nav.push(SearchDetailsPage, {searchResult: data[0], currentOffer: null});
             }
             loading.dismiss();
         });
     }
 
-    reexecuteAutocomplete(val) {
+    reexecuteAutocomplete(val){
         this.jobs = [];
         this.jobList = [];
         this.newCombination = [];
         this.cities = [];
         this.lookingForJob = true;
         this.pendingJob = '';
-        this.offersService.autocompleteJobs(val).then((data: any) => {
+        this.offersService.autocompleteJobs(val).then((data : any)=>{
             this.jobList = data;
 
             for (let i = 0; i < this.jobList.length; i++) {
@@ -857,6 +854,7 @@ export class HomePage {
         this.jobs = this.newCombination.sort((a, b) => {
             return b.sector - a.sector;
         });
+
 
 
     }
