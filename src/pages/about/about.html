@@ -11,7 +11,7 @@
     <div class="about-header">
         <button ion-button icon-only id="menu-btn" style="background-color: transparent;box-shadow: none;" [navPush]="push"
                 [color]="themeColor">
-            <ion-icon name="arrow-back" style="color: #fbba00"></ion-icon>
+            <ion-icon name="arrow-back" style="color: #757575"></ion-icon>
         </button>
         <img [src]="logo">
     </div>
@@ -40,15 +40,14 @@
             </ion-item-->
         </ion-list>
 
-            <div [innerHTML]="aboutText" class="text"></div>
-            <!--Vit-On-Job Employeur/Jobyer <span style="font-size: 1.2rem;color: #fbba00;"></span> est une application
+        <p class="text">
+            Vit-On-Job Employeur/Jobyer <span style="font-size: 1.2rem;color: #14baa6;"></span> est une application
             permettant,
             en quelques clics, d’être « Vite On Job ». Elle répond aux besoins d’employeurs qui souhaitent recruter
             rapidement et de ceux qui veulent vite un emploi. Le service assure l’ensemble de l'embauche, de la
             recherche
-            géolocalisée à la paie, formalités comprises.-->
-        <div [innerHTML]="aboutTextRole" class="text"></div>
-            <!--Enfin une contribution positive et ludique à la résolution d’une problématique majeure de notre société!-->
-        
+            géolocalisée à la paie, formalités comprises.
+        </p>
+        <p>Enfin une contribution positive et ludique à la résolution d’une problématique majeure de notre société!</p>
     </div>
 </ion-content>

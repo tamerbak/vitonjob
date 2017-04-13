@@ -10,7 +10,7 @@ define(["require", "exports"], function (require, exports) {
             // Application title
             this.projectName = 'Vit-On-Job Employeur';
             // Application theme color
-            this.themeColor = '#fbba00';
+            this.themeColor = '#757575';
             // VitOnJob Employer image
             this.imageURL = 'img/logo_employeur.png';
             this.userImageURL = 'img/employer.png';
@@ -25,7 +25,7 @@ define(["require", "exports"], function (require, exports) {
             // Application title
             this.projectName = "Vit-On-Job Jobyer";
             // Application theme color
-            this.themeColor = "#fbba00";
+            this.themeColor = "#14baa6";
             // VitOnJob Jobyer image
             this.imageURL = "img/logo_jobyer.png";
             this.userImageURL = 'img/jobyer.png';
