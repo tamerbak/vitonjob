@@ -138,6 +138,8 @@ import {ContractEpiPage} from "../pages/contract/contract-epi/contract-epi";
 import {SporadicService} from "../providers/sporadic-service/sporadic-service";
 import {EntrepriseService} from "../providers/entreprise-service/entreprise-service";
 import {ModalEntreprisePage} from "../pages/modal-entreprise/modal-entreprise";
+import {MessagePoolService} from "../providers/message-pool-service/message-pool-service";
+import {MessageModalPage} from "../pages/message-modal/message-modal";
 
 @NgModule({
     declarations: [
@@ -229,7 +231,8 @@ import {ModalEntreprisePage} from "../pages/modal-entreprise/modal-entreprise";
         GooglePlaces,
         SwipeVertical,
         DateConverter,
-        TimeConverter
+        TimeConverter,
+        MessageModalPage
 
     ],
     imports: [
@@ -327,6 +330,7 @@ import {ModalEntreprisePage} from "../pages/modal-entreprise/modal-entreprise";
         InfoModalPage,
         PrerequisitesInfosPage,
         ModalPeriodPage,
+        MessageModalPage,
         IntroPage
     ],
     providers: [
@@ -379,7 +383,8 @@ import {ModalEntreprisePage} from "../pages/modal-entreprise/modal-entreprise";
         SqliteDBService,
         DAOFactory,
         SlimPayService,
-        SporadicService
+        SporadicService,
+        MessagePoolService
     ]
 })
 export class AppModule {

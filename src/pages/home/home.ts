@@ -9,7 +9,7 @@ import {
     PopoverController,
     ToastController,
     Slides,
-    Events
+    Events, Platform
 } from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
@@ -40,6 +40,9 @@ import {
 import {ModalHelpPage} from "../modal-help/modal-help";
 import {CommunesService} from "../../providers/communes-service/communes-service";
 import {GoogleAnalyticsService} from "../../providers/google-analytics-service/google-analytics-serivce";
+import {MessagePoolService} from "../../providers/message-pool-service/message-pool-service";
+import {GMessage} from "../../dto/gmessage";
+import {MessageModalPage} from "../message-modal/message-modal";
 
 declare let SpeechRecognition;
 declare let require;
@@ -142,6 +145,7 @@ export class HomePage {
 
     constructor(public _globalConfig: GlobalConfigs,
                 private app: App,
+                private platform : Platform,
                 private nav: NavController,
                 private navParams: NavParams,
                 private searchService: SearchService,
@@ -150,6 +154,7 @@ export class HomePage {
                 private offersService: OffersService,
                 private profileService: ProfileService,
                 private homeService: HomeService,
+                private messagePoolService : MessagePoolService,
                 private _elementRef: ElementRef,
                 private _modal: ModalController,
                 private _popover: PopoverController,
@@ -171,6 +176,28 @@ export class HomePage {
             if (value) {
                 let currentUser = JSON.parse(value);
                 this.isHunter = _globalConfig.getHunterMask() || currentUser.hunterFlag;
+            }
+        });
+
+        //  Check for info messages
+        this.messagePoolService.checkMessages(this.projectTarget).then((data:any)=>{
+            for(let i = 0 ; i < data.length ; i++){
+                let msg : GMessage = data[i];
+                if(msg.mtype == 'HCF'){
+                    let m = this.modal.create(MessageModalPage, {message : msg});
+                    let dismiss = function(){
+                        this.platform.exitApp();
+                    };
+                    m.onDidDismiss(dismiss.bind(this));
+                    m.present();
+                    break;
+                }
+                if(msg.mtype == 'MODAL_INFO'){
+                    let m = this.modal.create(MessageModalPage, {message : msg});
+                    m.present();
+                    continue;
+                }
+                this.presentToast(msg.contenu);
             }
         });
 
@@ -243,6 +270,8 @@ export class HomePage {
                 }
             }
         });
+
+
 
         /*this.offers.push({
             title:"Accouveur / Accouveuse débutant",
