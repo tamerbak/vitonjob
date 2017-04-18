@@ -6,6 +6,7 @@ import {OfferAddPage} from "../offer-add/offer-add";
 import {Component} from "@angular/core";
 import {OfferDetailPage} from "../offer-detail/offer-detail";
 import {Configs} from "../../configurations/configs";
+import {DateUtils} from "../../utils/date-utils";
 
 /**
  * @author Abdeslam Jakjoud
@@ -46,7 +47,7 @@ export class ModalOffersPage {
         let offer = offers[i];
         for (let j = 0; j < offer.calendarData.length; j++) {
           let slotDate = offer.calendarData[j].date;
-          let startH = this.offerService.convertToFormattedHour(offer.calendarData[j].startHour);
+          let startH = DateUtils.convertToFormattedHour(offer.calendarData[j].startHour);
           slotDate = new Date(slotDate).setHours(Number(startH.split(':')[0]), Number(startH.split(':')[1]));
           let dateNow = new Date().getTime();
           if (slotDate <= dateNow) {

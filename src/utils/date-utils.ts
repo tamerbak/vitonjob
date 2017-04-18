@@ -56,4 +56,15 @@ export class DateUtils {
     let sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
     return sd;
   }
+
+  public static convertToFormattedHour(value) {
+    let hours = Math.floor(value / 60);
+    let minutes = value % 60;
+    if (!hours && !minutes) {
+      return '';
+    } else {
+      return ((hours < 10 ? ('0' + hours) : hours) + ':' + (minutes < 10 ? ('0' + minutes) : minutes));
+    }
+  }
+
 }
