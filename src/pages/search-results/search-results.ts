@@ -21,6 +21,9 @@ import {Storage} from "@ionic/storage";
 import {AdvertService} from "../../providers/advert-service/advert-service";
 import {Utils} from "../../utils/utils";
 import {GoogleAnalyticsService} from "../../providers/google-analytics-service/google-analytics-serivce";
+import {Offer} from "../../dto/offer";
+import {CalendarSlot} from "../../dto/calendar-slot";
+import {DateUtils} from "../../utils/date-utils";
 
 /**
  * @author jakjoud abdeslam
@@ -200,64 +203,62 @@ export class SearchResultsPage implements OnInit {
                 let jsonResults = JSON.parse(results);
                 if (jsonResults) {
                     this.searchResults = [];
-                    for (let i = 0; i < jsonResults.length; i++) {
-                        let r = jsonResults[i];
-                        let dirty = this.checkResultHealth(r);
-                        if(!dirty){
-                            this.searchResults.push(r);
-                        }
-                    }
-                    this.resultsCount = this.searchResults.length;
-                    if (this.resultsCount == 0) {
-                        this.mapView = 'none';
-                    } else if (this.isMapView) {
-                        this.mapView = 'block';
-                    } else {
-                        this.mapView = 'none'
-                    }
+                    this.checkResultHealth(jsonResults).then((data: any) => {
+                        this.searchResults = data;
 
-                    for (let i = 0; i < this.searchResults.length; i++) {
-                        let r = this.searchResults[i];
-                        r.jobyerInterested  = false;
-                        r.jobyerInterestLabel = "Cette offre m'intéresse";
-                        this.setInterestButtonLabel(r);
-                        r.matching = Number(r.matching).toFixed(2);
-                        r.rate = Number(r.rate).toFixed(2);
-                        r.index = i + 1;
-                        if (r.titre === 'M.') {
-                            r.avatar = this.configInversed.avatars[0].url;
+                        this.resultsCount = this.searchResults.length;
+                        if (this.resultsCount == 0) {
+                            this.mapView = 'none';
+                        } else if (this.isMapView) {
+                            this.mapView = 'block';
                         } else {
-                            r.avatar = this.configInversed.avatars[1].url;
+                            this.mapView = 'none'
                         }
 
-                    }
-                    console.log(this.searchResults);
+                        for (let i = 0; i < this.searchResults.length; i++) {
+                            let r = this.searchResults[i];
+                            r.jobyerInterested  = false;
+                            r.jobyerInterestLabel = "Cette offre m'intéresse";
+                            this.setInterestButtonLabel(r);
+                            r.matching = Number(r.matching).toFixed(2);
+                            r.rate = Number(r.rate).toFixed(2);
+                            r.index = i + 1;
+                            if (r.titre === 'M.') {
+                                r.avatar = this.configInversed.avatars[0].url;
+                            } else {
+                                r.avatar = this.configInversed.avatars[1].url;
+                            }
 
-                    //  Determine constraints for proposed offer
-                    this.createCriteria();
-                    for (let j = 0; j < this.searchResults.length; j++) {
-                        let r = this.searchResults[j];
-                        r.checkedContract = false;
-                        for (let i = 0; i < this.contratsAttente.length; i++) {
-                            if (this.contratsAttente[i].idOffre == r.idOffre) {
-                                r.checkedContract = true;
-                                break;
+                        }
+                        console.log(this.searchResults);
+
+                        //  Determine constraints for proposed offer
+                        this.createCriteria();
+                        for (let j = 0; j < this.searchResults.length; j++) {
+                            let r = this.searchResults[j];
+                            r.checkedContract = false;
+                            for (let i = 0; i < this.contratsAttente.length; i++) {
+                                if (this.contratsAttente[i].idOffre == r.idOffre) {
+                                    r.checkedContract = true;
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    //load profile pictures
-                    for (let i = 0; i < this.searchResults.length; i++) {
-                        let role = this.isEmployer ? "jobyer" : "employeur";
-                        this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then((data: any) => {
-                            if (data && data.data && data.data.length>0 && !this.isEmpty(data.data[0].encode)) {
-                                this.searchResults[i].avatar = data.data[0].encode;
-                            }
-                        });
-                    }
+                        //load profile pictures
+                        for (let i = 0; i < this.searchResults.length; i++) {
+                            let role = this.isEmployer ? "jobyer" : "employeur";
+                            this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then((data: any) => {
+                                if (data && data.data && data.data.length>0 && !this.isEmpty(data.data[0].encode)) {
+                                    this.searchResults[i].avatar = data.data[0].encode;
+                                }
+                            });
+                        }
+                    });
                 } else {
                     this.mapView = 'none';
                 }
+                this.loadMap(mapEle);
             });
         });
 
@@ -273,7 +274,7 @@ export class SearchResultsPage implements OnInit {
                 console.log(currentEmployer);
             }
 
-            this.searchService.retrieveLastSearch().then(results => {
+            /*this.searchService.retrieveLastSearch().then(results => {
                 let jsonResults = JSON.parse(results);
                 if (jsonResults) {
                     this.searchResults = [];
@@ -287,22 +288,45 @@ export class SearchResultsPage implements OnInit {
                     this.resultsCount = this.searchResults.length;
                 }
                 this.loadMap(mapEle);
-            })
+            })*/
         });
 
     }
 
-    checkResultHealth(result : any):boolean{
-        if(isUndefined(result))
-            return true;
+    checkResultHealth(jsonResults: any[]){
+        return new Promise(resolve => {
+            let filteredResult = [];
+            for (let i = 0; i < jsonResults.length; i++) {
+                let result = jsonResults[i];
+                if (isUndefined(result))
+                    continue;
 
-        if(this.isEmployer && (Utils.isEmpty(result.nom) || Utils.isEmpty(result.prenom)))
-            return true;
+                if (this.isEmployer && (Utils.isEmpty(result.nom) || Utils.isEmpty(result.prenom) || result.idJobyer == 0))
+                    continue;
 
-        if(!this.isEmployer && (Utils.isEmpty(result.entreprise)))
-            return true;
+                if (!this.isEmployer && (Utils.isEmpty(result.entreprise)))
+                    continue;
 
-        return false;
+                if(!this.isEmployer) {
+                    this.offersService.getOfferMinCalendar(result.idOffre, this.projectTarget).then((slot: CalendarSlot) => {
+                        let offerTemp = new Offer();
+                        offerTemp.calendarData = [slot];
+                        let obsolete = this.offersService.isOfferObsolete(offerTemp);
+                        if (!obsolete) {
+                            filteredResult.push(result);
+                        }
+                        if (i == jsonResults.length - 1) {
+                            resolve(filteredResult);
+                        }
+                    });
+                }else{
+                    filteredResult.push(result);
+                    if (i == jsonResults.length - 1) {
+                        resolve(filteredResult);
+                    }
+                }
+           }
+        });
     }
 
     loadMap(mapElement) {

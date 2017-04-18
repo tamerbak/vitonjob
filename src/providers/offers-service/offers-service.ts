@@ -16,6 +16,7 @@ import {SqliteDBService} from "../sqlite-db-service/sqlite-db-service";
 import {DAOFactory} from "../../dao/data-access-object";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Adress} from "../../dto/adress";
+import {DateUtils} from "../../utils/date-utils";
 
 const OFFER_CALLOUT_ID = 20047;
 const LOADING_OFFERS_CALLOUT = 20043;
@@ -2026,15 +2027,6 @@ export class OffersService {
         return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " 00:00:00+00";
     }
 
-    convertToFormattedHour(value) {
-        var hours = Math.floor(value / 60);
-        var minutes = value % 60;
-        if (!hours && !minutes) {
-            return '';
-        } else {
-            return ((hours < 10 ? ('0' + hours) : hours) + ':' + (minutes < 10 ? ('0' + minutes) : minutes));
-        }
-    }
 
     convertHoursToMinutes(hour) {
         if (hour) {
@@ -2354,7 +2346,7 @@ export class OffersService {
     isOfferObsolete(offer){
         for (let j = 0; j < offer.calendarData.length; j++) {
             let slotDate = offer.calendarData[j].date;
-            let startH = this.convertToFormattedHour(offer.calendarData[j].startHour);
+            let startH = DateUtils.convertToFormattedHour(offer.calendarData[j].startHour);
             slotDate = new Date(slotDate).setHours(Number(startH.split(':')[0]), Number(startH.split(':')[1]));
             let dateNow = new Date().getTime();
             if (slotDate <= dateNow) {
@@ -2362,6 +2354,20 @@ export class OffersService {
             }
         }
         return false;
+    }
+
+    getOfferMinCalendar(idOffer, projectTarget){
+        let tableName = (projectTarget == "jobyer" ? 'user_offre_entreprise' : 'user_offre_jobyer');
+        let sql = "select min(jour) as date, min(heure_debut) as \"startHour\" from user_disponibilites_des_offres where fk_" + tableName + " = " + idOffer + " group by fk_" + tableName;
+        console.log(sql);
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe((data: any) => {
+                  resolve(data.data[0]);
+              });
+        });
     }
 
     getOfferInfo(offerId){
