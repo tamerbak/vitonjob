@@ -1,0 +1,17 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{title}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <div [innerHTML]="content">
+  </div>
+  <br/>
+  <button ion-button primary block (click)="close()">
+    Fermer
+  </button>
+</ion-content>

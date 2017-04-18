@@ -22,8 +22,8 @@
 </ion-menu>
 
 <ion-menu [content]="menuContent" id="loggedInMenu" class="menu">
-<ion-header (click)="gotoAccountPage()" class="menuHeader" > <!--[style.backgroundColor]="(isEmployer)? '#FBBA00' : '#00519E'"-->
-  <ion-title style="padding-left: 0; vertical-align: middle;">
+<ion-header (click)="gotoAccountPage()" class="menuHeader" [style.backgroundColor]="(isEmployer)? '#14baa6' : '#757575'">
+  <ion-title style="padding-left: 0; vertical-align: middle;" [style.backgroundColor]="(isEmployer)? '#14baa6' : '#757575'">
     <ion-item style="background-color: transparent; width:100%;" no-lines text-wrap>
       <ion-avatar item-left>
         <img [src]="userImageURL" style="width: 8rem;height: 8rem;">
@@ -35,7 +35,7 @@
     </ion-item>
   </ion-title>
 
-  <!--ion-toolbar text-left [style.backgroundColor]="(isEmployer)? '#fbba00' : '#fbba00'"
+  <!--ion-toolbar text-left [style.backgroundColor]="(isEmployer)? '#14baa6' : '#757575'"
                style="height: inherit;">
 
   </ion-toolbar-->

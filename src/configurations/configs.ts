@@ -26,8 +26,6 @@ interface AbstractConfigs {
     currentUserVar: string;
     profilPictureVar: string;
     backGroundColor: string;
-
-    partnerCode: string;
 }
 
 class EmployerConfigs implements AbstractConfigs {
@@ -39,7 +37,7 @@ class EmployerConfigs implements AbstractConfigs {
     // Application opposite theme color
     inversedThemeColor: string = 'vojgreen';
     // Vit-On-Job Employer image
-    imageURL: string = 'assets/img/logoMG.png';
+    imageURL: string = 'assets/img/logo_employeur.png';
     // User employer image
     userImageURL = 'assets/img/employer.png';
     bgMenuURL: string = 'assets/img/bg_employer.png';
@@ -50,7 +48,7 @@ class EmployerConfigs implements AbstractConfigs {
     calendarTheme: number = 4;
     backgroundImage = {'background-image': "url('assets/img/bg_employer.png')"};
     fontColor = "white";
-    backGroundColor = '#00519E';
+    backGroundColor = '#757575';
     avatars = [
         {
             url: 'assets/img/employer.png'
@@ -75,8 +73,6 @@ class EmployerConfigs implements AbstractConfigs {
     };
     currentUserVar: string = "currentEmployer";
     profilPictureVar: string = "pictuteEmployer";
-
-    partnerCode = Configs.partnerCode;
 }
 
 class JobyerConfigs implements AbstractConfigs {
@@ -88,8 +84,8 @@ class JobyerConfigs implements AbstractConfigs {
     // Application opposite theme color
     inversedThemeColor: string = "vojgrey";
     // Vit-On-Job Jobyer image
-    imageURL: string = "assets/img/logoMG.png";
-    fontColor: string = '#fbba00';
+    imageURL: string = "assets/img/logo_jobyer.png";
+    fontColor: string = '#757575';
     // User employer image
     userImageURL = 'assets/img/jobyer.png';
     menuBackgroundImage = {'background-image': "url('assets/img/bg_menu_jobyer.png')"};
@@ -99,7 +95,7 @@ class JobyerConfigs implements AbstractConfigs {
     calloutURL: string = Configs.calloutURL;
     sqlURL: string = Configs.sqlURL;
     calendarTheme: number = 5;
-    backGroundColor = '#FBBA00';
+    backGroundColor = '#14baa6';
     avatars = [
         {
             url: 'assets/img/jobyer.png'
@@ -127,12 +123,10 @@ class JobyerConfigs implements AbstractConfigs {
     };
     currentUserVar: string = "currentJobyer";
     profilPictureVar: string = "pictuteJobyer";
-    partnerCode = Configs.partnerCode;
 }
 
 
 export class Configs {
-    public static partnerCode = "PARTNER";
 
     public static calloutURL: string = (GlobalConfigs.env === 'DEV') ?
         'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business' :
