@@ -307,17 +307,24 @@ export class SearchResultsPage implements OnInit {
                 if (!this.isEmployer && (Utils.isEmpty(result.entreprise)))
                     continue;
 
-                this.offersService.getOfferMinCalendar(result.idOffre, this.projectTarget).then((slot: CalendarSlot) => {
-                    let offerTemp = new Offer();
-                    offerTemp.calendarData = [slot];
-                    let obsolete = this.offersService.isOfferObsolete(offerTemp);
-                    if (!obsolete) {
-                        filteredResult.push(result);
-                    }
-                    if(i == jsonResults.length - 1 ){
+                if(!this.isEmployer) {
+                    this.offersService.getOfferMinCalendar(result.idOffre, this.projectTarget).then((slot: CalendarSlot) => {
+                        let offerTemp = new Offer();
+                        offerTemp.calendarData = [slot];
+                        let obsolete = this.offersService.isOfferObsolete(offerTemp);
+                        if (!obsolete) {
+                            filteredResult.push(result);
+                        }
+                        if (i == jsonResults.length - 1) {
+                            resolve(filteredResult);
+                        }
+                    });
+                }else{
+                    filteredResult.push(result);
+                    if (i == jsonResults.length - 1) {
                         resolve(filteredResult);
                     }
-                });
+                }
            }
         });
     }
