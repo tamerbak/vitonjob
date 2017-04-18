@@ -2358,7 +2358,7 @@ export class OffersService {
 
     getOfferMinCalendar(idOffer, projectTarget){
         let tableName = (projectTarget == "jobyer" ? 'user_offre_entreprise' : 'user_offre_jobyer');
-        let sql = "select min(jour) as date, min(heure_debut) as startHour, fk_" + tableName + " from user_disponibilites_des_offres where fk_" + tableName + " = " + idOffer + " group by fk_" + tableName;
+        let sql = "select min(jour) as date, min(heure_debut) as \"startHour\" from user_disponibilites_des_offres where fk_" + tableName + " = " + idOffer + " group by fk_" + tableName;
         console.log(sql);
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
