@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, ModalController, AlertController} from "ionic-angular";
+import {NavController, ModalController, AlertController, LoadingController} from "ionic-angular";
 import {AttachementsService} from "../../providers/attachements-service/attachements-service";
 import {ModalAttachementPage} from "../modal-attachement/modal-attachement";
 import {ModalGalleryPage} from "../modal-gallery/modal-gallery";
@@ -24,7 +24,11 @@ export class AttachementsPage {
 
   constructor(private nav: NavController,
               private service: AttachementsService,
-              public globalConfig: GlobalConfigs, _modal: ModalController, _alert: AlertController, public db: Storage) {
+              public globalConfig: GlobalConfigs,
+              _modal: ModalController,
+              _alert: AlertController,
+              public db: Storage,
+              public loading: LoadingController) {
     this.modal = _modal;
     this.alert = _alert;
     this.projectTarget = globalConfig.getProjectTarget();
@@ -49,7 +53,10 @@ export class AttachementsPage {
   }
 
   downloadAttachement(a) {
+    let loading = this.loading.create({content: "Merci de patienter..."});
+    loading.present();
     this.service.downloadActualFile(a.id, a.fileName).then((data: {stream: any}) => {
+      loading.dismiss();
       let scan = data.stream;
       let modal = this.modal.create(ModalGalleryPage, {scanUri: scan});
       modal.present();
