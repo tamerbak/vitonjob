@@ -6,7 +6,7 @@
 <-->
 <div class="modal">
     <div class="pics">
-        <img [src]="scanUri">
+        <img [src]="domSanitizationService.bypassSecurityTrustUrl(scanUri)" class="center-img"/>
         <button ion-button id="close" (click)="close()">
             <ion-icon id="close-icon" name="close"></ion-icon>
         </button>
