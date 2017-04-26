@@ -129,25 +129,25 @@ class JobyerConfigs implements AbstractConfigs {
 export class Configs {
 
     public static calloutURL: string = (GlobalConfigs.env === 'DEV') ?
-        'http://217.182.92.113/prometheus/api/business' :
+        'http://dev.vitonjob.com/prometheus/api/business' :
         'http://app.vitonjob.com/api/business';
     public static sqlURL: string = (GlobalConfigs.env === 'DEV') ?
-        'http://217.182.92.113/prometheus/api/sql':
+        'http://dev.vitonjob.com/prometheus/api/sql':
         'http://app.vitonjob.com/api/sql';
     public static yousignURL: string = (GlobalConfigs.env === 'DEV') ?
-        'http://217.182.92.113/prometheus/api/business':
+        'http://dev.vitonjob.com/prometheus/api/business':
         'http://app.vitonjob.com/api/business';
     public static smsURL: string = (GlobalConfigs.env === 'DEV') ?
-        'http://217.182.92.113/prometheus/api/envoisms':
+        'http://dev.vitonjob.com/prometheus/api/envoisms':
         'http://app.vitonjob.com/api/envoisms';
     public static emailURL: string = (GlobalConfigs.env === 'DEV') ?
-        'http://217.182.92.113/prometheus/api/envoimail':
+        'http://dev.vitonjob.com/prometheus/api/envoimail':
         'http://app.vitonjob.com/api/envoimail';
     public static fssURL: string = (GlobalConfigs.env === 'DEV') ?
-        'http://217.182.92.113/prometheus/api/fssjs':
+        'http://dev.vitonjob.com/prometheus/api/fssjs':
         'http://app.vitonjob.com/api/fssjs';
 
-    public static imgStore: string = "http://217.182.80.59/resources/";
+    public static imgStore: string = "http://dev.vitonjob.com/resources/";
 
     public static GA_INITIALIZED:boolean=false;
 
