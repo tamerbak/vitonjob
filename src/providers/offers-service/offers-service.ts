@@ -815,7 +815,7 @@ export class OffersService {
                         id : data[i].id_voj,
                         title : data[i].titre,
                         sector : data[i].id_secteur,
-                        img : 'https://s3-eu-west-1.amazonaws.com/vitonjob.photos/'+data[i].id_secteur+'.jpg',
+                        img : Configs.imgStore+data[i].id_secteur+'.jpg',
                         job : data[i].id_job,
                         adress : data[i].adress,
                         enterprise : "",

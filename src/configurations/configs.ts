@@ -129,47 +129,46 @@ class JobyerConfigs implements AbstractConfigs {
 export class Configs {
 
     public static calloutURL: string = (GlobalConfigs.env === 'DEV') ?
-        'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business' :
-        'https://app.vitonjob.com/api/business';
+        'http://dev.vitonjob.com/prometheus/api/business' :
+        'http://app.vitonjob.com/api/business';
     public static sqlURL: string = (GlobalConfigs.env === 'DEV') ?
-        'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql':
-        'https://app.vitonjob.com/api/sql';
+        'http://dev.vitonjob.com/prometheus/api/sql':
+        'http://app.vitonjob.com/api/sql';
     public static yousignURL: string = (GlobalConfigs.env === 'DEV') ?
-        'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business':
-        'https://app.vitonjob.com/api/business';
+        'http://dev.vitonjob.com/prometheus/api/business':
+        'http://app.vitonjob.com/api/business';
     public static smsURL: string = (GlobalConfigs.env === 'DEV') ?
-        'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoisms':
-        'https://app.vitonjob.com/api/envoisms';
+        'http://dev.vitonjob.com/prometheus/api/envoisms':
+        'http://app.vitonjob.com/api/envoisms';
     public static emailURL: string = (GlobalConfigs.env === 'DEV') ?
-        'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoimail':
-        'https://app.vitonjob.com/api/envoimail';
+        'http://dev.vitonjob.com/prometheus/api/envoimail':
+        'http://app.vitonjob.com/api/envoimail';
     public static fssURL: string = (GlobalConfigs.env === 'DEV') ?
-        'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/fssjs':
-        'https://app.vitonjob.com/api/fssjs';
+        'http://dev.vitonjob.com/prometheus/api/fssjs':
+        'http://app.vitonjob.com/api/fssjs';
+
+    public static imgStore: string = "http://dev.vitonjob.com/resources/";
 
     public static GA_INITIALIZED:boolean=false;
 
     public static getHttpJsonHeaders() {
         let headers = new Headers();
         headers.append("Content-Type", 'application/json');
-        if (GlobalConfigs.env === 'PROD')
-            headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
+        headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
         return headers;
     }
 
     public static getHttpTextHeaders() {
         let headers = new Headers();
         headers.append("Content-Type", 'text/plain');
-        if (GlobalConfigs.env === 'PROD')
-            headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
+        headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
         return headers;
     }
 
     public static getHttpXmlHeaders() {
         let headers = new Headers();
         headers.append("Content-Type", 'text/xml');
-        if (GlobalConfigs.env === 'PROD')
-            headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
+        headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
         return headers;
     }
 
