@@ -15,10 +15,13 @@
         </ion-list-header>
         <ion-item *ngFor="let item of contractList, let i=index">
             <h2>Contrat n° {{preventNull(item.num)}}</h2>
+            <h3>{{!isEmployer ? 'Employeur' : 'Jobyer'}} : {{preventNull(item.nom)}} {{preventNull(item.prenom)}}</h3>
             <h3>Créé le {{toDateString(item.created)}}</h3>
-            <h3>Jobyer : {{preventNull(item.nom)}} {{preventNull(item.prenom)}}</h3>
-            <button ion-button icon-only clear item-right [color]="themeColor" (click)="goToDocusignPage(item)" [disabled]="!currentUser.estEmployeur">
-                <ion-icon name="search"></ion-icon>
+            <h3>Début de la mission {{ toDateString(item.jour) }}
+                à {{ toHourString(item.heure_debut) }}</h3>
+            {{convertToDate(item.jour).setHours(0, 0, 0, 0) <= today.setHours(0, 0, 0, 0) ? "Ce contrat a expiré." : ""}}
+            <button ion-button icon-only clear item-right [color]="themeColor" (click)="goToDocusignPage(item)" [disabled]="item.isDraft.toUpperCase() == 'OUI' || (!isEmployer && item.signature_employeur.toUpperCase() == 'NON')">
+                <ion-icon name="ribbon"></ion-icon>
             </button>
         </ion-item>
     </ion-list>

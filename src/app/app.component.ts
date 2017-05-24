@@ -458,14 +458,14 @@ export class Vitonjob {
             //{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
         ];
         this.isEmployer = (this.projectTarget == 'employer');
+        this.loggedInPages.push({
+            title: "Contrat en attente",
+            description: "Liste des contrats en attente de signature",
+            component: ContractListPage,
+            icon: "logo-buffer",
+            isBadged: false
+        });
         if (this.isEmployer) {
-            this.loggedInPages.push({
-                title: "Contrat en attente",
-                description: "Liste des contrats en attente de signature",
-                component: ContractListPage,
-                icon: "logo-buffer",
-                isBadged: false
-            });
             this.loggedInPages.push({
                 title: "Recrutement groupé",
                 description: "Recruter un groupe de Jobyers",

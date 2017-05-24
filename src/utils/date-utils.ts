@@ -67,4 +67,8 @@ export class DateUtils {
     }
   }
 
+  public static convertToDate(d:string){
+     return new Date(d);
+  }
+
 }
