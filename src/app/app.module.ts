@@ -17,11 +17,13 @@ import {ContractWizardPage} from "../pages/contract-wizard/contract-wizard";
 import {ContractualisationPage} from "../pages/contractualisation/contractualisation";
 import {CorrespondenceAddressPage} from "../pages/correspondence-address/correspondence-address";
 import {GeneralConditionsPage} from "../pages/general-conditions/general-conditions";
+import {ModalMissionJobyerPage} from "../pages/modal-mission-jobyer/modal-mission-jobyer";
 import {InfoUserPage} from "../pages/info-user/info-user";
 import {JobAddressPage} from "../pages/job-address/job-address";
 import {LoginsPage} from "../pages/logins/logins";
 import {MailPage} from "../pages/mail/mail";
 import {MissionDetailsPage} from "../pages/mission-details/mission-details";
+import {MissionDetailsJobyerPage} from "../pages/mission-details-jobyer/mission-details-jobyer";
 import {MissionEndInvoicePage} from "../pages/mission-end-invoice/mission-end-invoice";
 import {MissionEndRelevePage} from "../pages/mission-end-releve/mission-end-releve";
 import {MissionListPage} from "../pages/mission-list/mission-list";
@@ -161,11 +163,13 @@ import {MessageModalPage} from "../pages/message-modal/message-modal";
         CorrespondenceAddressPage,
         GeneralConditionsPage,
         HomePage,
+        ModalMissionJobyerPage,
         InfoUserPage,
         JobAddressPage,
         LoginsPage,
         MailPage,
         MissionDetailsPage,
+        MissionDetailsJobyerPage,
         MissionEndInvoicePage,
         MissionEndRelevePage,
         MissionListPage,
@@ -265,11 +269,13 @@ import {MessageModalPage} from "../pages/message-modal/message-modal";
         CorrespondenceAddressPage,
         GeneralConditionsPage,
         HomePage,
+        ModalMissionJobyerPage,
         InfoUserPage,
         JobAddressPage,
         LoginsPage,
         MailPage,
         MissionDetailsPage,
+        MissionDetailsJobyerPage,
         MissionEndInvoicePage,
         MissionEndRelevePage,
         MissionListPage,

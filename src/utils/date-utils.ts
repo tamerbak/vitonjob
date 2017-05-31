@@ -17,6 +17,10 @@ export class DateUtils {
     return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " 00:00:00+00";
   }
 
+  public static sqlfyWithHours(d: Date) {
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " " + d.getHours() + ":" + d.getMinutes() + ":00+00";
+  }
+
   public static toDateString(date) {
     if(Utils.isEmpty(date)){
       return "";
@@ -71,4 +75,49 @@ export class DateUtils {
      return new Date(d);
   }
 
+  public static simpleDateFormat(d: Date) {
+    if (Utils.isEmpty(d)) {
+      return '';
+    }
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = (da < 10 ? '0' : '') + da + '/' + (m < 10 ? '0' : '') + m + "/" + d.getFullYear();
+    return sd
+  }
+
+  public static isDateValid(d: Date){
+    if(Utils.isEmpty(d) || isNaN(d.getTime())){
+      return false;
+    }else{
+      return true;
+    }
+  }
+
+  //t = "10:45"
+  public static isTimeValid(t: string){
+    if(Utils.isEmpty(t) || t.split(":").length != 2){
+      return false;
+    }else{
+      return true;
+    }
+  }
+
+  public static getFormattedHourFromDate(date: Date) {
+    if (Utils.isEmpty(date)) {
+      return "--:--";
+    }
+    let h = date.getHours();
+    let m = date.getMinutes();
+    return h + ":" + (m < 10 ? ('0' + m) : m);
+  }
+
+  public static convertToFormattedDateHour(d: Date){
+    if(!this.isDateValid(d)){
+      return "";
+    }
+
+    let sd = this.simpleDateFormat(d);
+    let hm = this.getFormattedHourFromDate(d);
+    return sd + " à " + hm;
+  }
 }

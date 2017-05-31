@@ -1,11 +1,13 @@
 import {Component} from "@angular/core";
-import {NavController,} from "ionic-angular";
+import {LoadingController, NavController} from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {ContractService} from "../../providers/contract-service/contract-service";
 import {MissionDetailsPage} from "../mission-details/mission-details";
 //import {MissionPointingPage} from "../mission-pointing/mission-pointing";
 import {Storage} from "@ionic/storage";
+import {Utils} from "../../utils/utils";
+import {MissionDetailsJobyerPage} from "../mission-details-jobyer/mission-details-jobyer";
 
 /*
  Generated class for the MissionListPage page.
@@ -20,6 +22,7 @@ export class MissionListPage {
   public projectTarget: string;
   public isEmployer: boolean;
   public themeColor: string;
+  public config: any;
 
   public employer: any;
   public jobyer: any;
@@ -28,111 +31,147 @@ export class MissionListPage {
   public currentUserVar: string;
   public inversedThemeColor: string;
   public backgroundImage: any;
-  public missionList: any;
   public currentUser: any;
   public backGroundColor:string;
 
+  public missionList: any;
+  public missionsType: string = "current";
+  public recentActiveSegment: String;
+
+  public missionsNow: any = [];
+  public missionsFutur: any = [];
+  public missionsPast: any = [];
+  public missionsCanceled: any = [];
+  public isLeaving: boolean = false;
+
+  //determine the number of elements that should be skipped by the query
+  public currentMissionOffset: number = 0;
+  public finishedMissionOffset: number = 0;
+  //determine the number of elemens to be retrieved by the query
+  public queryLimit: number = 5;
+
+  public userId: number;
+
   constructor(public gc: GlobalConfigs,
               public nav: NavController,
-              private contractService: ContractService, public storage:Storage) {
+              private contractService: ContractService,
+              public storage:Storage,
+              public loading: LoadingController) {
     // Get target to determine configs
     this.projectTarget = gc.getProjectTarget();
 
     // get config of selected target
-    let config = Configs.setConfigs(this.projectTarget);
+    this.config = Configs.setConfigs(this.projectTarget);
     // Set store variables and messages
-    this.themeColor = config.themeColor;
-    this.inversedThemeColor = config.inversedThemeColor;
-    this.currentUserVar = config.currentUserVar;
-    this.backgroundImage = config.backgroundImage;
+    this.themeColor = this.config.themeColor;
+    this.inversedThemeColor = this.config.inversedThemeColor;
+    this.currentUserVar = this.config.currentUserVar;
+    this.backgroundImage = this.config.backgroundImage;
     this.missionListTitle = "Suivi des missions";
     this.isEmployer = (this.projectTarget == 'employer');
-    this.backGroundColor = config.backGroundColor;
+    this.backGroundColor = this.config.backGroundColor;
 
   }
 
   ionViewWillEnter() {
-    console.log('••• On Init');
-    this.contractList = [];
-    let missionNow = [];
-    let missionFutur = [];
-    let missionPast = [];
-    let missionCanceled = [];
-
-    this.missionList = [];
-    let missionsObjNow = {header: 'Missions en cours', list: missionNow, loaded: false};
-    let missionsObjFutur = {header: 'Missions en attente', list: missionFutur, loaded: false};
-    let missionsObjPast = {header: 'Missions terminées', list: missionPast, loaded: false};
-    let missionsObjCancel = {header: 'Missions annulées', list: missionCanceled, loaded: false};
-    
-    this.missionList.push(missionsObjNow);
-    this.missionList.push(missionsObjFutur);
-    this.missionList.push(missionsObjPast);
-    this.missionList.push(missionsObjCancel);
-
-
-    //get contracts
+    this.isLeaving = false;
+    let currentUserVar = this.config.currentUserVar;
     this.storage.get(this.currentUserVar).then((value) => {
-      if (value) {
+      if (!Utils.isEmpty(value)) {
         this.currentUser = JSON.parse(value);
-        let id;
-        if (this.isEmployer) {
-          id = this.currentUser.employer.entreprises[0].id;
-        } else {
-          id = this.currentUser.jobyer.id;
-        }
-        this.contractService.getContracts(id, this.projectTarget).then((data: {data: any}) => {
-          if (data.data) {
-              console.log(data.data)
-            this.contractList = data.data;
-            for (let i = 0; i < this.contractList.length; i++) {
-              let item = this.contractList[i];
-              if (item.date_de_debut) {
-                /*if ((this.dayDifference(item.date_de_debut) == 0) || (this.dayDifference(item.date_de_debut) < 0 && this.dayDifference(item.date_de_fin) >= 0))*/
-                if (item.signature_jobyer.toUpperCase() == 'OUI' && item.accompli.toUpperCase() == 'NON' && item.annule_par == "null")
-                // Mission en cours
-                  missionNow.push(item);
-                /*else if (this.dayDifference(item.date_de_debut) > 0)*/
-                if (item.signature_jobyer.toUpperCase() == 'NON' && item.annule_par == "null")
-                // Mission in futur
-                  missionFutur.push(item);
-                //else
-                if (item.accompli.toUpperCase() == 'OUI' && item.annule_par == "null")
-                // Mission in past
-                  missionPast.push(item);
+        this.userId = (this.isEmployer ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id);
 
-                if (item.annule_par != "null")
-                  missionCanceled.push(item);
-              }
-            }
-
-            missionNow = missionNow.sort((a, b) => {
-              return this.contractService.dayDifference(b.date_de_debut, a.date_de_debut)
-            });
-
-            missionFutur = missionFutur.sort((a, b) => {
-              return this.contractService.dayDifference(a.date_de_debut, b.date_de_debut)
-            });
-
-            missionPast = missionPast.sort((a, b) => {
-              return this.contractService.dayDifference(b.date_de_debut, a.date_de_debut)
-            });
-
-             missionCanceled = missionCanceled.sort((a, b) => {
-              return this.contractService.dayDifference(b.date_de_debut, a.date_de_debut)
-            });
-          }
-          this.missionList[0].list = missionNow;
-          this.missionList[0].loaded = true;
-          this.missionList[1].list = missionFutur;
-          this.missionList[1].loaded = true;
-          this.missionList[2].list = missionPast;
-          this.missionList[2].loaded = true;
-          this.missionList[3].list = missionCanceled;
-          this.missionList[3].loaded = true;
-        });
+        this.onSegmentChange();
       }
     });
+  }
+
+  onSegmentChange(){
+    if (!Utils.isEmpty(this.recentActiveSegment) && this.recentActiveSegment == this.missionsType) {
+      return;
+    } else {
+      this.recentActiveSegment = this.missionsType;
+      if (this.missionsType == "current" && this.missionsNow.length == 0) {
+        this.missionList = [];
+        this.loadMissions();
+        return;
+      }
+      if (this.missionsType == "current" && this.missionsNow.length > 0) {
+        this.missionList = Utils.cloneObject(this.missionsNow);
+      }
+      if (this.missionsType == "finished" && this.missionsPast.length == 0) {
+        this.missionList = [];
+        this.loadMissions();
+        return;
+      }
+      if (this.missionsType == "finished" && this.missionsPast.length > 0) {
+        this.missionList = Utils.cloneObject(this.missionsPast);
+        return;
+      }
+    }
+  }
+
+  loadMissions(){
+    return new Promise(resolve => {
+      if(this.missionsType == 'current'){
+        this.loadMissionsByCriteria(this.missionsNow, this.userId, "current").then(() =>{
+          resolve();
+        });
+        return;
+      }
+
+      if(this.missionsType == 'finished'){
+        this.loadMissionsByCriteria(this.missionsPast, this.userId, "finished").then(() =>{
+          resolve();
+        });
+        return;
+      }
+    });
+  }
+
+  loadMissionsByCriteria(list, userId, mode){
+    return new Promise(resolve => {
+      let loading;
+      //loading should be displayed in the first call of the service. after that the infinit scroll loading icon is displyed
+      if(list.length == 0) {
+        loading = this.loading.create({content: "Merci de patienter..."});
+        loading.present();
+      }
+
+      this.contractService.getContractsByType((mode == "current" ? 0 : 2), (mode == "current" ? this.currentMissionOffset: this.finishedMissionOffset), this.queryLimit, userId, (this.isEmployer ? "employer" : "jobyer")).then((data: any) => {
+        if(list.length == 0 && loading) {
+          loading.dismiss();
+        }
+        //in case the user chooses another segment before the data loading is completed
+        if(!Utils.isEmpty(this.recentActiveSegment) && this.recentActiveSegment != mode){
+          resolve();
+          return;
+        }
+
+        if(data && data.data && data.status == "success"){
+          list = list.concat(data.data);
+          this.missionList = Utils.cloneObject(list);
+          if(mode == "finished") {
+            this.finishedMissionOffset = this.finishedMissionOffset + this.queryLimit;
+            this.missionsPast = list;
+          }else{
+            this.currentMissionOffset = this.currentMissionOffset + this.queryLimit;
+            this.missionsNow = list;
+          }
+        }
+        resolve();
+      });
+    });
+  }
+
+  doInfinite(infiniteScroll) {
+    console.log('Begin async operation');
+    setTimeout(() => {
+      this.loadMissions().then(() => {
+        console.log('Async operation has ended');
+        infiniteScroll.complete();
+      });
+    }, 500);
   }
 
   toStringDate(date: any) {
@@ -144,7 +183,11 @@ export class MissionListPage {
   }
 
   goToMissionDetailsPage(contract) {
-    this.nav.push(MissionDetailsPage, {contract: contract});
+    if(this.isEmployer) {
+      this.nav.push(MissionDetailsPage, {contract: contract});
+    }else{
+      this.nav.push(MissionDetailsJobyerPage, {contract: contract});
+    }
   }
 
   /*goToMissionPointingPage(contract) {

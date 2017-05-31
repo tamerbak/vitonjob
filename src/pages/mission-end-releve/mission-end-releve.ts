@@ -3,6 +3,7 @@ import {NavController, NavParams} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {FinanceService} from "../../providers/finance-service/finance-service";
 import {Configs} from "../../configurations/configs";
+import {MissionListPage} from "../mission-list/mission-list";
 
 /*
  Generated class for the MissionEndRelevePage page.
@@ -88,6 +89,6 @@ export class MissionEndRelevePage {
   }
 
   gotoInvoice() {
-    this.nav.pop();
+    this.nav.setRoot(MissionListPage);
   }
 }

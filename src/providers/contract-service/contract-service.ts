@@ -780,5 +780,67 @@ export class ContractService {
         });
     });
   }
+
+  //type = 0 : missions en cours
+  //type = 2 : missions terminées
+  getContractsByType(type:number, offset:number, limit:number, id: number, projectTarget: string) {
+    //  Init project parameters
+    let sqlComm = "SELECT " +
+      "distinct (SELECT COUNT(*) FROM user_heure_mission WHERE fk_user_contrat = c.pk_user_contrat AND (date_debut_pointe IS NULL OR date_fin_pointe IS NULL)) as pointages_a_faire, ";
+    let employerSql = sqlComm +
+      "c.*, " +
+      "j.nom, j.prenom, " +
+      "a.telephone, " +
+      "f.releve_signe_employeur " +
+      "FROM user_jobyer as j, user_account as a, user_contrat as c " +
+      "LEFT JOIN user_facture_voj as f ON c.pk_user_contrat = f.fk_user_contrat " +
+      "WHERE c.fk_user_jobyer = j.pk_user_jobyer " +
+      "AND j.fk_user_account = a.pk_user_account " +
+      "AND c.fk_user_entreprise ='" + id + "'";
+
+    var jobyerSql = sqlComm +
+      "c.pk_user_contrat,c.*, " +
+      "e.nom_ou_raison_sociale as nom, " +
+      "f.releve_signe_jobyer " +
+      "FROM user_entreprise as e, user_contrat as c " +
+      "LEFT JOIN user_facture_voj as f ON c.pk_user_contrat = f.fk_user_contrat " +
+      "where c.fk_user_entreprise = e.pk_user_entreprise " +
+      "and c.fk_user_jobyer ='" + id + "'";
+
+    var typeSql ="";
+    if(type ==0){
+      typeSql = " and c.date_de_debut is not null and upper(c.signature_jobyer) = 'OUI' and upper(c.releve_employeur)='NON' and c.annule_par is null";
+    }else if(type ==1){
+      typeSql = " and c.date_de_debut is not null and upper(c.signature_jobyer) = 'NON' and c.annule_par is null";
+    }else if(type ==2){
+      typeSql =  " and c.date_de_debut is not null and upper(c.releve_employeur) = 'OUI' and c.annule_par is null";
+    }else if(type ==3){
+      typeSql =  " and c.date_de_debut is not null and c.annule_par is not null";
+    }
+
+    var orderBySql = " AND c.dirty = 'N' ORDER BY c.date_de_debut DESC ";
+    var rangeSql = " LIMIT "+limit +" OFFSET "+offset;
+
+    this.configuration = Configs.setConfigs(projectTarget);
+    if (projectTarget == 'employer') {
+      orderBySql += ', j.nom ASC ';
+      var sql = employerSql + typeSql + orderBySql + rangeSql;
+    } else {
+      var sql = jobyerSql + typeSql + orderBySql + rangeSql;
+    }
+
+    //console.log(sql);
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
+          this.data = data;
+          resolve(this.data);
+        });
+    });
+  }
 }
 
