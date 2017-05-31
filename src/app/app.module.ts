@@ -13,6 +13,7 @@ import {BankAccountPage} from "../pages/bank-account/bank-account";
 import {CivilityPage} from "../pages/civility/civility";
 import {ContractPage} from "../pages/contract/contract";
 import {ContractListPage} from "../pages/contract-list/contract-list"
+import {ContractListJobyerPage} from "../pages/contract-list-jobyer/contract-list-jobyer"
 import {ContractWizardPage} from "../pages/contract-wizard/contract-wizard";
 import {ContractualisationPage} from "../pages/contractualisation/contractualisation";
 import {CorrespondenceAddressPage} from "../pages/correspondence-address/correspondence-address";
@@ -27,6 +28,7 @@ import {MissionDetailsJobyerPage} from "../pages/mission-details-jobyer/mission-
 import {MissionEndInvoicePage} from "../pages/mission-end-invoice/mission-end-invoice";
 import {MissionEndRelevePage} from "../pages/mission-end-releve/mission-end-releve";
 import {MissionListPage} from "../pages/mission-list/mission-list";
+import {MissionListJobyerPage} from "../pages/mission-list-jobyer/mission-list-jobyer";
 import {MissionPointingPage} from "../pages/mission-pointing/mission-pointing";
 import {ModalAttachementPage} from "../pages/modal-attachement/modal-attachement";
 import {ModalCalendarPage} from "../pages/modal-calendar/modal-calendar";
@@ -157,6 +159,7 @@ import {MessageModalPage} from "../pages/message-modal/message-modal";
         CivilityPage,
         ContractPage,
         ContractListPage,
+        ContractListJobyerPage,
         ContractEpiPage,
         ContractWizardPage,
         ContractualisationPage,
@@ -173,6 +176,7 @@ import {MessageModalPage} from "../pages/message-modal/message-modal";
         MissionEndInvoicePage,
         MissionEndRelevePage,
         MissionListPage,
+        MissionListJobyerPage,
         MissionPointingPage,
         ModalAttachementPage,
         ModalCalendarPage,
@@ -264,6 +268,7 @@ import {MessageModalPage} from "../pages/message-modal/message-modal";
         ContractPage,
         ContractEpiPage,
         ContractListPage,
+        ContractListJobyerPage,
         ContractWizardPage,
         ContractualisationPage,
         CorrespondenceAddressPage,
@@ -279,6 +284,7 @@ import {MessageModalPage} from "../pages/message-modal/message-modal";
         MissionEndInvoicePage,
         MissionEndRelevePage,
         MissionListPage,
+        MissionListJobyerPage,
         MissionPointingPage,
         ModalAttachementPage,
         ModalCalendarPage,

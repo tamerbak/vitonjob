@@ -5,6 +5,7 @@ import {ContractService} from "../../providers/contract-service/contract-service
 import {SmsService} from "../../providers/sms-service/sms-service";
 import {UserService} from "../../providers/user-service/user-service";
 import {MissionListPage} from "../mission-list/mission-list";
+import {MissionListJobyerPage} from "../mission-list-jobyer/mission-list-jobyer";
 import {Component} from "@angular/core";
 import {isUndefined} from "../../../node_modules/ionic-angular/util/util";
 import {PushNotificationService} from "../../providers/push-notification-service/push-notification-service";
@@ -111,7 +112,11 @@ export class YousignPage {
   }
 
   goToMissionsList() {
-    this.nav.push(MissionListPage);
+    if(this.isEmployer){
+      this.nav.push(MissionListPage);
+    }else{
+      this.nav.push(MissionListJobyerPage);
+    }
   }
 
   checkDocusignSignatureState(){

@@ -39,6 +39,8 @@ import {SqliteDBService} from "../providers/sqlite-db-service/sqlite-db-service"
 import {OfferAddPage} from "../pages/offer-add/offer-add";
 import {CivilityPage} from "../pages/civility/civility";
 import {SporadicService} from "../providers/sporadic-service/sporadic-service";
+import {MissionListJobyerPage} from "../pages/mission-list-jobyer/mission-list-jobyer";
+import {ContractListJobyerPage} from "../pages/contract-list-jobyer/contract-list-jobyer";
 //import {isUndefined} from "ionic-angular/util/util";
 
 //declare let cordova;
@@ -433,6 +435,8 @@ export class Vitonjob {
     }
 
     constituteDefaultMenu() {
+        this.isEmployer = (this.projectTarget == 'employer');
+
         this.loggedInPages = [
             {
                 title: "Mon compte",
@@ -451,17 +455,17 @@ export class Vitonjob {
             {
                 title: "Mes missions",
                 description: "Gestion des missions, horaires...",
-                component: MissionListPage,
+                component: (this.isEmployer ? MissionListPage : MissionListJobyerPage),
                 icon: "paper",
                 isBadged: false
             }
             //{title: "Déconnexion", component: HomePage, icon: "log-out", isBadged: false}
         ];
-        this.isEmployer = (this.projectTarget == 'employer');
+
         this.loggedInPages.push({
             title: "Contrat en attente",
             description: "Liste des contrats en attente de signature",
-            component: ContractListPage,
+            component: (this.isEmployer ? ContractListPage: ContractListJobyerPage),
             icon: "logo-buffer",
             isBadged: false
         });

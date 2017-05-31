@@ -74,6 +74,8 @@ export class Contract {
   enveloppeEmployeur: String;
   enveloppeJobyer: String;
 
+  isDraft: string;
+
 
   constructor(){
     this.id = 0;
@@ -147,5 +149,7 @@ export class Contract {
 
     this.offerContact = "";
     this.contactPhone = "";
+
+    this.isDraft = "OUI";
   }
 }
