@@ -3,6 +3,8 @@ import {NavController, NavParams} from "ionic-angular";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {FinanceService} from "../../providers/finance-service/finance-service";
 import {Configs} from "../../configurations/configs";
+import {MissionListPage} from "../mission-list/mission-list";
+import {MissionListJobyerPage} from "../mission-list-jobyer/mission-list-jobyer";
 
 /*
  Generated class for the MissionEndRelevePage page.
@@ -71,7 +73,7 @@ export class MissionEndRelevePage {
 
   initJobyerYousign() {
     //get the link yousign of the contract for the employer
-    let yousignEmployerLink = this.invoice.url_signature_de_releve_jobyer;
+    let yousignJobyerLink = this.invoice.url_signature_de_releve_jobyer;
 
     //Create to Iframe to show the contract in the NavPage
     let iframe = document.createElement('iframe');
@@ -82,12 +84,16 @@ export class MissionEndRelevePage {
     iframe.style.overflow = "hidden";
     iframe.style.height = "100%";
     iframe.style.width = "100%";
-    iframe.setAttribute("src", yousignEmployerLink);
+    iframe.setAttribute("src", yousignJobyerLink);
 
     document.getElementById("iframPlaceHolder").appendChild(iframe);
   }
 
   gotoInvoice() {
-    this.nav.pop();
+    if(this.isEmployer){
+      this.nav.setRoot(MissionListPage);
+    }else{
+      this.nav.setRoot(MissionListJobyerPage);
+    }
   }
 }

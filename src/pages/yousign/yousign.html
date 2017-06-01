@@ -10,12 +10,9 @@
 </ion-header>
 <ion-content padding class="yousign">
     <ion-row *ngIf="notSigned">
-        La signature du contrat n'a pas été effectuée. vous pouvez reprendre la signature ou annuler ce contrat à partir de l'écran des mission.
-    </ion-row>
-    <ion-row *ngIf="notSigned">
         <ion-col width-10></ion-col>
         <ion-col text-center>
-            <button ion-button [color]="themeColor" (click)="goToMissionsList()">
+            <button ion-button [color]="themeColor" (click)="checkDocusignSignatureState()">
                 Aller à mes missions
             </button>
         </ion-col>

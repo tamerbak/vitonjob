@@ -64,7 +64,7 @@ export class MissionListPage {
     let missionsObjFutur = {header: 'Missions en attente', list: missionFutur, loaded: false};
     let missionsObjPast = {header: 'Missions terminées', list: missionPast, loaded: false};
     let missionsObjCancel = {header: 'Missions annulées', list: missionCanceled, loaded: false};
-    
+
     this.missionList.push(missionsObjNow);
     this.missionList.push(missionsObjFutur);
     this.missionList.push(missionsObjPast);
@@ -83,7 +83,7 @@ export class MissionListPage {
         }
         this.contractService.getContracts(id, this.projectTarget).then((data: {data: any}) => {
           if (data.data) {
-              console.log(data.data)
+            console.log(data.data)
             this.contractList = data.data;
             for (let i = 0; i < this.contractList.length; i++) {
               let item = this.contractList[i];
@@ -118,7 +118,7 @@ export class MissionListPage {
               return this.contractService.dayDifference(b.date_de_debut, a.date_de_debut)
             });
 
-             missionCanceled = missionCanceled.sort((a, b) => {
+            missionCanceled = missionCanceled.sort((a, b) => {
               return this.contractService.dayDifference(b.date_de_debut, a.date_de_debut)
             });
           }
@@ -148,8 +148,8 @@ export class MissionListPage {
   }
 
   /*goToMissionPointingPage(contract) {
-    this.nav.push(MissionPointingPage, {contract: contract});
-  }*/
+   this.nav.push(MissionPointingPage, {contract: contract});
+   }*/
 
   isEmpty(str) {
     if (str == '' || str == 'null' || !str)

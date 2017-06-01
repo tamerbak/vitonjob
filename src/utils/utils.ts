@@ -1,4 +1,5 @@
 import {Injectable} from "@angular/core";
+import {isUndefined} from "ionic-angular/util/util";
 
 
 @Injectable()
@@ -165,6 +166,12 @@ export class Utils {
     else {
       return false;
     }
+  }
+
+  public static upperCase(str) {
+    if (this.isEmpty(str))
+      return '';
+    return str.toUpperCase();
   }
 
 }

@@ -1,4 +1,5 @@
 import {Pipe} from "@angular/core";
+import {DateUtils} from "../../utils/date-utils";
 
 @Pipe({
     name: 'dateConverter'
@@ -21,6 +22,9 @@ export class DateConverter {
         }
         if (args == 'short') {
             return new Date(value.replace(' ', 'T')).toLocaleDateString('fr-FR', this.shortDateOptions);
+        }
+        if(args == 'dateHour'){
+            return DateUtils.convertToFormattedDateHour(new Date(value));
         }
     }
 }

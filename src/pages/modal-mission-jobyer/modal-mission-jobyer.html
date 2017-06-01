@@ -1,0 +1,102 @@
+<ion-header>
+  <ion-navbar [color]="themeColor">
+    <ion-title>Détails</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="closeModal()">
+        <ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding class="modal-mission-jobyer">
+  <ion-card-header style="white-space: normal;">
+    Journée du {{day.jour_debut | dateConverter:'long'}}
+    <br/>
+    Heure de {{isStart ? 'début' : 'fin'}}: {{isStart ? day.heure_debut_temp : day.heure_fin_temp}}
+  </ion-card-header>
+  
+  <ion-card>
+    <ion-item>
+      <ion-label stacked>Heure prévue</ion-label>
+      <ion-label>{{isStart ? day.heure_debut_temp : day.heure_fin_temp}}</ion-label>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label stacked>Heure pointée/modifiée par le jobyer</ion-label>
+      <ion-label [color]="setColorForPointedHours(day, isStart)">
+        <span *ngIf="isStart">
+          {{ !isEmpty(day.date_debut_pointe_modifie) ?
+        (day.date_debut_pointe_modifie | dateConverter:'dateHour') :
+      (!isEmpty(day.date_debut_pointe) ? (day.date_debut_pointe | dateConverter:'dateHour') : '--/--/---- à --:--')
+          }}</span>
+        <span *ngIf="!isStart">
+          {{ !isEmpty(day.date_fin_pointe_modifie) ?
+        (day.date_fin_pointe_modifie | dateConverter:'dateHour') :
+      (!isEmpty(day.date_fin_pointe) ? (day.date_fin_pointe | dateConverter:'dateHour') : '--/--/---- à --:--')
+          }}</span>
+      </ion-label>
+    </ion-item>
+  
+    <ion-item>
+      <ion-label stacked>Heure validée/refusée par l'employeur</ion-label>
+      <ion-label [color]="setColorForValidatedHours(day, isStart)">
+        <span *ngIf="isStart">{{ !isEmpty(day.date_debut_pointe_corrige) ?
+          (day.date_debut_pointe_corrige | dateConverter:'dateHour') : '--/--/---- à --:--'}}</span>
+        <span *ngIf="!isStart">{{ !isEmpty(day.date_fin_pointe_corrige) ?
+          (day.date_fin_pointe_corrige | dateConverter:'dateHour') : '--/--/---- à --:--'}}</span>
+      </ion-label>
+    </ion-item>
+  </ion-card>
+  
+  <!-- Buttons -->
+  <ion-row>
+    <ion-col text-center>
+      <button [color]="themeColor" ion-button icon-left small
+              *ngIf="((isEmpty(day.date_debut_pointe) && isStart) || (isEmpty(day.date_fin_pointe) && !isStart))
+              && canPoint && !isEmpReleveGenerated"
+              (click)="pointHour(day, isStart)">
+        <ion-icon name="finger-print"></ion-icon>
+        Pointer
+      </button>
+  
+      <button [color]="themeColor" ion-button icon-left small
+              *ngIf="((!isEmpty(day.date_debut_pointe) && isStart) || (!isEmpty(day.date_fin_pointe) && !isStart))
+              && ((isEmpty(day.date_debut_pointe_corrige) && isStart) || (isEmpty(day.date_fin_pointe_corrige) && !isStart))
+              && canPoint && !isEmpReleveGenerated"
+              (click)="modifyPointedHour(day, isStart)">
+        <ion-icon name="create"></ion-icon>
+        Modifier l'heure pointée
+      </button>
+    </ion-col>
+  </ion-row>
+  
+  <!--Légende-->
+  <ion-item class="labelInItem" text-wrap>
+    <h3>
+      <ion-icon name="ios-information-circle-outline"></ion-icon>
+      Informations :
+    </h3>
+    <p>
+      <ion-icon name="ios-radio-button-on" style="color: gray"></ion-icon>
+      Horaire pointé par le jobyer
+    </p>
+    <p>
+      <ion-icon name="ios-radio-button-on" style="color: blue"></ion-icon>
+      Horaire modifié par le jobyer
+    </p>
+    <p>
+      <ion-icon name="ios-radio-button-on" style="color: green"></ion-icon>
+      Horaire pointé et validé par l'employeur
+    </p>
+    <p>
+      <ion-icon name="ios-radio-button-on" style="color: orange"></ion-icon>
+      Horaire modifié et validé par l'employeur
+    </p>
+    <p>
+      <ion-icon name="ios-radio-button-on" style="color: red"></ion-icon>
+      Horaire invalidé par l'employeur
+    </p>
+  
+  </ion-item>
+</ion-content>

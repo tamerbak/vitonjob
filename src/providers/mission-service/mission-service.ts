@@ -25,22 +25,30 @@ export class MissionService {
     }
 
     listMissionHours(contract, forPointing) {
+        let sql="";
         if (forPointing) {
-            var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_pointe, h.heure_fin_pointe, h.debut_corrigee as is_heure_debut_corrigee, h.fin_corrigee as is_heure_fin_corrigee, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, p.debut_corrigee as is_pause_debut_corrigee, p.fin_corrigee as is_pause_fin_corrigee, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
+            sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, " +
+              "h.heure_debut, h.heure_fin, " +
+              "h.date_debut_pointe, h.date_fin_pointe, " +
+              "h.date_debut_pointe_modifie, h.date_fin_pointe_modifie, " +
+              "h.date_debut_pointe_corrige, h.date_fin_pointe_corrige, " +
+              "h.est_heure_debut_aime, h.est_heure_fin_aime, " +
+              "h.debut_corrigee as is_heure_debut_corrigee, h.fin_corrigee as is_heure_fin_corrigee, " +
+              "h.heure_debut_new, h.heure_fin_new, " +
+              "p.debut as pause_debut, p.fin as pause_fin, p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, p.debut_corrigee as is_pause_debut_corrigee, p.fin_corrigee as is_pause_fin_corrigee, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
         } else {
-            var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
+            sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
         }
-        console.log(sql);
 
         return new Promise(resolve => {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
-            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data: any) => {
-                    this.data = data;
-                    resolve(this.data);
-                });
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+              .map((res) => res.json())
+              .subscribe((data) => {
+                  this.data = data;
+                  resolve(this.data);
+              });
         });
     }
 
@@ -371,9 +379,9 @@ export class MissionService {
             }
         } else {
             if (isStart) {
-                sql = "update user_heure_mission set heure_debut_pointe = '" + pointing.pointe + "' where pk_user_heure_mission = '" + pointing.id + "'";
+                sql = "update user_heure_mission set date_debut_pointe = '" + pointing.pointe + "' where pk_user_heure_mission = '" + pointing.id + "'";
             } else {
-                sql = "update user_heure_mission set heure_fin_pointe = '" + pointing.pointe + "' where pk_user_heure_mission = '" + pointing.id + "'";
+                sql = "update user_heure_mission set date_fin_pointe = '" + pointing.pointe + "' where pk_user_heure_mission = '" + pointing.id + "'";
             }
         }
         console.log(sql);
@@ -382,11 +390,41 @@ export class MissionService {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
             this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-                .map(res => res.json())
-                .subscribe((data: any) => {
-                    this.data = data;
-                    resolve(this.data);
-                });
+              .map(res => res.json())
+              .subscribe((data: any) => {
+                  this.data = data;
+                  resolve(this.data);
+              });
+        });
+    }
+
+    saveModifiedPointing(id, date, isDayMission, isStart) {
+        let sql;
+        if (isDayMission && isStart) {
+            sql = "update user_heure_mission set date_debut_pointe_modifie = '" + date + "' where pk_user_heure_mission = '" + id + "'";
+        }
+        if (isDayMission && !isStart) {
+            sql = "update user_heure_mission set date_fin_pointe_modifie = '" + date + "' where pk_user_heure_mission = '" + id + "'";
+        }
+
+        /*if (isPause) {
+         if (isStart) {
+         //sql = "update user_pause set debut_pointe = '" + date + "' where pk_user_pause = '" + id + "'";
+         } else {
+         //sql = "update user_pause set fin_pointe = '" + date + "' where pk_user_pause = '" + id + "'";
+         }
+         } */
+
+        console.log(sql);
+
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe((data: any) => {
+                  resolve(data);
+              });
         });
     }
 
@@ -751,6 +789,20 @@ export class MissionService {
                     }
                     resolve(signed);
                 });
+        });
+    }
+
+    setContratToVu(contractId) {
+        let sql = "update user_contrat set vu = 'Oui' where pk_user_contrat = '" + contractId + "'; ";
+
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+              .map(res => res.json())
+              .subscribe((data: any) => {
+                  resolve(data);
+              });
         });
     }
 }

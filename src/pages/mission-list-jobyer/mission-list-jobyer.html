@@ -1,0 +1,77 @@
+<ion-header no-border class="myToolbar">
+  <ion-toolbar transparent>
+    <button ion-button icon-left menuToggle style="background-color: transparent; box-shadow: none" [style.color]="backGroundColor">
+      <ion-icon name="menu" color="vojgrey"></ion-icon>
+      &nbsp;&nbsp;{{missionListTitle}}
+    </button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding class="mission-list-jobyer" [ngStyle]="backgroundImage">
+    
+    <div padding>
+        <ion-segment [(ngModel)]="missionsType" (ionChange)="onSegmentChange()">
+            <ion-segment-button value="current">
+                En cours
+            </ion-segment-button>
+            <ion-segment-button value="finished">
+                Terminées
+            </ion-segment-button>
+            <!--<ion-segment-button value="canceled" disabled>
+                Annulées
+            </ion-segment-button>-->
+        </ion-segment>
+    </div>
+    
+    <div [ngSwitch]="missionsType">
+        <ion-list *ngSwitchCase="missionsType" text-wrap>
+            <ion-item [color]="item.color" no-lines *ngFor="let item of missionList" (click)="goToMissionDetailsPage(item)">
+                <h2 [style.color]="item.color" class="h3-margintop">{{item.titre}}</h2>
+                
+                <h3 [style.color]="themeColor">
+                    &nbsp;Contrat N° {{item.numero}}
+                </h3>
+                <h3 [style.color]="themeColor">
+                    &nbsp;<span *ngIf="isEmployer">Vous l'avez signé </span>
+                    &nbsp;<span *ngIf="!isEmployer">Signé par {{item.contact}} </span>
+                   le {{item.date_signature | dateConverter:'short'}}
+                </h3>
+                <h3 [style.color]="themeColor" [hidden]="!isEmployer">
+                    avec {{ isEmployer ? item.prenom +' '+ item.nom : item.nom  }}
+                </h3>
+                <h3 [style.color]="item.color">
+                    &nbsp;Date de la mission:
+                    {{ toStringDate(item.date_de_debut) }}
+                    {{(toStringDate(item.date_de_fin) != toStringDate(item.date_de_debut))
+                    ? 'au ' + toStringDate(item.date_de_fin)
+                    : ''
+                    }}
+                </h3>
+    
+                <ion-row>
+                    <ion-col text-right>
+                        <ion-badge *ngIf="upperCase(item.signature_jobyer) === 'OUI'"
+                                   style="background-color: #14baa6; font-size: xx-small;">
+                            Contrat signé
+                        </ion-badge>
+                        <ion-badge *ngIf="upperCase(item.pointages_a_faire) == 0"
+                                   style="background-color: #14baa6; font-size: xx-small;">Horaires pointés
+                        </ion-badge>
+                        <ion-badge *ngIf="(isEmployer && upperCase(item.releve_signe_employeur) == 'OUI') || (!isEmployer && upperCase(item.releve_signe_jobyer) == 'OUI')"
+                                   style="background-color: #14baa6; font-size: xx-small;">
+                            Fin de mission
+                        </ion-badge>
+                        <!--<ion-badge [hidden]="upperCase(item.approuve) === 'NON'"
+                                   style="background-color: #14baa6; font-size: xx-small;">
+                            Horaires signés
+                        </ion-badge>-->
+                    </ion-col>
+                </ion-row>
+            </ion-item>
+        </ion-list>
+        
+        <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+            <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+    </div>
+</ion-content>

@@ -695,15 +695,76 @@ export class ContractService {
   }
 
   getNonSignedContracts(entrepriseId){
-    let sql = 'select c.pk_user_contrat as id, c.numero as num, c.fk_user_offre_entreprise as \"idOffer\", c.created, c.tarif_heure as \"baseSalary\", c.horaires_fixes as \"isScheduleFixed\", c.heure_debut as \"workStartHour\", c.heure_fin as \"workEndHour\", c.date_de_debut as \"missionStartDate\", c.date_de_fin as \"missionEndDate\", c.date_debut_terme as \"termStartDate\", c.date_fin_terme as \"termEndDate\", c.periode_essai as \"trialPeriod\", c.motif_de_recours as motif, c.recours as justification, c.surveillance_medicale_renforcee as \"medicalSurv\", c.equipements_fournis_par_l_ai as epi, c.elements_non_soumis_a_des_cotisations as \"elementsNonCotisation\", c.elements_soumis_a_des_cotisations as \"elementsCotisation\", c.zones_transport as \"zonesTitre\", c.titre_transport as \"titreTransport\", c.debut_souplesse as \"debutSouplesse\", c.fin_souplesse as \"finSouplesse\", c.liste_epi as \"epiString\", c.moyen_d_acces as \"moyenAcces\", c.contact_sur_place as \"offerContact\", c.telephone_contact as \"contactPhone\", c.caracteristiques_du_poste as characteristics, c.duree_moyenne_mensuelle as \"MonthlyAverageDuration\", c.siege_social as \"headOffice\", c.statut as category, c.filiere as sector, c.contact, c.indemnite_fin_de_mission as \"indemniteFinMission\", c.n_titre_travail as \"numeroTitreTravail\", c.periodes_non_travaillees as \"periodesNonTravaillees\", c.centre_de_medecine_entreprise as \"centreMedecineEntreprise\", c.adresse_centre_de_medecine_entreprise as \"adresseCentreMedecineEntreprise\", c.risques as \"postRisks\", c.lien_employeur as \"partnerEmployerLink\", ' +
-      ' j.nom, j.prenom, j.numero_securite_sociale as \"numSS\", j.lieu_de_naissance as \"lieuNaissance\",j.date_de_naissance as \"jobyerBirthDate\", j.pk_user_jobyer as \"jobyerId\", j.debut_validite as \"debutTitreTravail\", j.fin_validite as \"finTitreTravail\", ' +
-      ' n.libelle as \"nationaliteLibelle\", ' +
-      ' a.email, a.telephone as tel, ' +
-      ' o.titre as qualification ' +
-      ' from user_contrat as c, user_jobyer as j, user_nationalite as n, user_account as a, user_offre_entreprise as o ' +
-      ' where c.fk_user_entreprise=' + entrepriseId + " and upper(c.signature_employeur) = 'NON' " +
-      " and c.fk_user_jobyer = j.pk_user_jobyer and j.fk_user_nationalite = n.pk_user_nationalite and a.pk_user_account = j.fk_user_account and o.pk_user_offre_entreprise = c.fk_user_offre_entreprise " +
-      " order by c.created desc";
+    let sql = 'SELECT '
+      + 'c.pk_user_contrat as id '
+      + ', c.numero as num '
+      + ', c.en_brouillon as "isDraft" '
+      + ', c.fk_user_offre_entreprise as "idOffer" '
+      + ', uoe.fk_user_offre_entreprise as "idOfferType" '
+      + ', c.created, c.lien_employeur as "partnerEmployerLink" '
+      + ', j.nom, j.prenom, j.lieu_de_naissance as "lieuNaissance" '
+      + ', j.date_de_naissance as "jobyerBirthDate" '
+      + ', j.numero_securite_sociale as "numSS" '
+      + ', j.pk_user_jobyer as "jobyerId" '
+      + ', a.email '
+      + ', a.telephone as tel '
+      + ', (SELECT ' +
+      'count(*) ' +
+      'FROM user_offre_entreprise uoe2 ' +
+      'WHERE uoe2.fk_user_offre_entreprise = uoe.fk_user_offre_entreprise' +
+      ') AS "nbChildren" '
+      + ', slot.premier_jour as jour '
+      + ", to_char(slot.premier_jour, 'HH24')::integer * 60 + to_char(slot.premier_jour, 'MI')::integer as heure_debut "
+      + 'FROM '
+      + 'user_contrat as c, '
+      + 'user_jobyer as j, '
+      + 'user_account as a, '
+      + 'user_offre_entreprise as uoe '
+      + 'LEFT JOIN ( '
+      + "SELECT d.fk_user_offre_entreprise, MIN(d.jour + (d.heure_debut::text||' minute')::INTERVAL) as premier_jour "
+      + 'FROM user_disponibilites_des_offres d '
+      + 'GROUP BY d.fk_user_offre_entreprise '
+      + ') slot ON slot.fk_user_offre_entreprise = uoe.pk_user_offre_entreprise '
+      + 'WHERE '
+      + "c.dirty='N' "
+      + 'AND c.fk_user_entreprise=' + entrepriseId + ' '
+      + "AND upper(c.signature_employeur) = 'NON' "
+      + 'AND c.fk_user_jobyer = j.pk_user_jobyer '
+      + 'AND a.pk_user_account = j.fk_user_account '
+      + 'AND uoe.pk_user_offre_entreprise = c.fk_user_offre_entreprise '
+      + 'ORDER BY c.created DESC '
+    ;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  getNonSignedJobyerContracts(jobyerId){
+    let sql = "SELECT minHM.fk_user_contrat, minHM.jour, minHM.heure_debut, " +
+      'c.pk_user_contrat as id, c.numero as num, c.created, c.en_brouillon as "isDraft",c.signature_employeur, c.lien_jobyer as \"partnerJobyerLink\", ' +
+      "e.nom, e.prenom " +
+      "FROM " +
+      "(SELECT MIN(uhm.jour_debut)as jour, " +
+      "MIN(uhm.heure_debut) as heure_debut, " +
+      "uhm.fk_user_contrat " +
+      "FROM user_heure_mission as uhm " +
+      "GROUP BY uhm.fk_user_contrat " +
+      "ORDER BY uhm.fk_user_contrat " +
+      ") minHM, user_contrat as c, user_entreprise as ent, user_employeur as e " +
+      "WHERE minHM.fk_user_contrat = c.pk_user_contrat " +
+      "AND c.fk_user_jobyer = " + jobyerId + " " +
+      "AND upper(c.signature_employeur) = 'OUI' " +
+      "AND upper(c.signature_jobyer) = 'NON' " +
+      "AND c.dirty = 'N' " +
+      "AND c.fk_user_entreprise = ent.pk_user_entreprise " +
+      "AND ent.fk_user_employeur = e.pk_user_employeur " +
+      "ORDER BY c.created DESC";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -746,6 +807,68 @@ export class ContractService {
             adr = adr.trim();
           }
           resolve(adr);
+        });
+    });
+  }
+
+  //type = 0 : missions en cours
+  //type = 2 : missions terminées
+  getContractsByType(type:number, offset:number, limit:number, id: number, projectTarget: string) {
+    //  Init project parameters
+    let sqlComm = "SELECT " +
+      "distinct (SELECT COUNT(*) FROM user_heure_mission WHERE fk_user_contrat = c.pk_user_contrat AND (date_debut_pointe IS NULL OR date_fin_pointe IS NULL)) as pointages_a_faire, ";
+    let employerSql = sqlComm +
+      "c.*, " +
+      "j.nom, j.prenom, " +
+      "a.telephone, " +
+      "f.releve_signe_employeur " +
+      "FROM user_jobyer as j, user_account as a, user_contrat as c " +
+      "LEFT JOIN user_facture_voj as f ON c.pk_user_contrat = f.fk_user_contrat " +
+      "WHERE c.fk_user_jobyer = j.pk_user_jobyer " +
+      "AND j.fk_user_account = a.pk_user_account " +
+      "AND c.fk_user_entreprise ='" + id + "'";
+
+    var jobyerSql = sqlComm +
+      "c.pk_user_contrat,c.*, " +
+      "e.nom_ou_raison_sociale as nom, " +
+      "f.releve_signe_jobyer " +
+      "FROM user_entreprise as e, user_contrat as c " +
+      "LEFT JOIN user_facture_voj as f ON c.pk_user_contrat = f.fk_user_contrat " +
+      "where c.fk_user_entreprise = e.pk_user_entreprise " +
+      "and c.fk_user_jobyer ='" + id + "'";
+
+    var typeSql ="";
+    if(type ==0){
+      typeSql = " and c.date_de_debut is not null and upper(c.signature_jobyer) = 'OUI' and upper(c.releve_employeur)='NON' and c.annule_par is null";
+    }else if(type ==1){
+      typeSql = " and c.date_de_debut is not null and upper(c.signature_jobyer) = 'NON' and c.annule_par is null";
+    }else if(type ==2){
+      typeSql =  " and c.date_de_debut is not null and upper(c.releve_employeur) = 'OUI' and c.annule_par is null";
+    }else if(type ==3){
+      typeSql =  " and c.date_de_debut is not null and c.annule_par is not null";
+    }
+
+    var orderBySql = " AND c.dirty = 'N' ORDER BY c.date_de_debut DESC ";
+    var rangeSql = " LIMIT "+limit +" OFFSET "+offset;
+
+    this.configuration = Configs.setConfigs(projectTarget);
+    if (projectTarget == 'employer') {
+      orderBySql += ', j.nom ASC ';
+      var sql = employerSql + typeSql + orderBySql + rangeSql;
+    } else {
+      var sql = jobyerSql + typeSql + orderBySql + rangeSql;
+    }
+
+    //console.log(sql);
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
+          this.data = data;
+          resolve(this.data);
         });
     });
   }
