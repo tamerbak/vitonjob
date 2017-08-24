@@ -122,7 +122,7 @@
             votre recherche
         </ion-card-content>
     </ion-card>
-    <ion-slides #cardSlider [options]="cardsOptions" (didChange)="onSlideChanged()" *ngIf="cardView">
+    <ion-slides #cardSlider pager (didChange)="ionSlideWillChange($event)" *ngIf="cardView">
         <ion-slide *ngFor="let item of searchResults">
             <ion-card id="card">
                 <ion-row>

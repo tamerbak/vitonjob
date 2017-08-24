@@ -20,8 +20,9 @@
             <h3>Début de la mission {{ toDateString(item.jour) }}
                 à {{ toHourString(item.heure_debut) }}</h3>
             {{convertToDate(item.jour).setHours(0, 0, 0, 0) <= today.setHours(0, 0, 0, 0) ? "Ce contrat a expiré." : ""}}
-            <button ion-button icon-only clear item-right [color]="themeColor" (click)="goToDocusignPage(item)" [disabled]="item.isDraft.toUpperCase() == 'OUI' || (!isEmployer && item.signature_employeur.toUpperCase() == 'NON')">
-                <ion-icon name="ribbon"></ion-icon>
+            <button ion-button icon-left outline item-right [color]="themeColor" (click)="goToDocusignPage(item)" [disabled]="item.isDraft.toUpperCase() == 'OUI' || (!isEmployer && item.signature_employeur.toUpperCase() == 'NON')">
+                <ion-icon name="md-create"></ion-icon>
+                Signer
             </button>
         </ion-item>
     </ion-list>

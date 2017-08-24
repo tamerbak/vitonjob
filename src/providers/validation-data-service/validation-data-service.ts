@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {BrowserDomAdapter} from "@angular/platform-browser/src/browser/browser_adapter";
+//import {BrowserDomAdapter} from "@angular/platform-browser/src/browser/browser_adapter";
 //import { DOM } from '@angular/src/platform/dom/dom_adapter';
 
 /**
@@ -9,10 +9,10 @@ import {BrowserDomAdapter} from "@angular/platform-browser/src/browser/browser_a
 
 @Injectable()
 export class ValidationDataService {
-    dom: BrowserDomAdapter;
+    //dom: BrowserDomAdapter;
 
     constructor() {
-        this.dom = new BrowserDomAdapter();
+        //this.dom = new BrowserDomAdapter();
     }
 
     /**

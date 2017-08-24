@@ -1,12 +1,12 @@
 import {Component} from "@angular/core";
-import {ViewController, ModalController
+import {
+    ViewController, ModalController, LoadingController
 } from "ionic-angular";
 import {Configs} from "../../configurations/configs";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {GlobalService} from "../../providers/global-service/global-service";
 import {Utils} from "../../utils/utils";
 import {ModalCorporamaSearchPage} from "../modal-corporama-search/modal-corporama-search";
-import {LoadingController} from "ionic-angular/components/loading/loading";
 import {LoadListService} from "../../providers/load-list-service/load-list-service";
 import {Storage} from "@ionic/storage";
 import {Entreprise} from "../../dto/entreprise";

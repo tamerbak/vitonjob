@@ -1,9 +1,8 @@
 import {Component} from "@angular/core";
-import {NavController, Platform} from "ionic-angular";
+import {NavController, Platform, PickerController} from "ionic-angular";
 import {OffersService} from "../../providers/offers-service/offers-service";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {DatePicker} from "ionic-native";
-import {PickerController} from "ionic-angular/components/picker/picker";
 import {PickerColumnOption} from "ionic-angular/components/picker/picker-options";
 import {Storage} from "@ionic/storage";
 

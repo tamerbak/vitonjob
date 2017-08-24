@@ -23,8 +23,8 @@ import {ProfileService} from "../../providers/profile-service/profile-service";
 import {Utils} from "../../utils/utils";
 import {AccountConstraints} from "../../validators/account-constraints";
 import {ModalCorporamaSearchPage} from "../modal-corporama-search/modal-corporama-search";
-import {LoadingController} from "ionic-angular/components/loading/loading";
-import {AlertController} from "ionic-angular/components/alert/alert";
+import {LoadingController} from "ionic-angular";
+import {AlertController} from "ionic-angular";
 import {LoadListService} from "../../providers/load-list-service/load-list-service";
 import {AuthenticationService} from "../../providers/authentication-service/authentication-service";
 import {Storage} from "@ionic/storage";
@@ -957,7 +957,16 @@ export class CivilityPage {
                         this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
                         this.events.publish('user:civility', this.currentUser);
 
-                        if (this.fromPage == "profil" && !this.company) {
+                        if (this.params.data.hunterAccess){
+                            loading.dismiss();
+                            this.nav.setRoot(HomePage);
+                            // go back to hunter app
+                            let hunterReturn: string = encodeURIComponent(JSON.stringify(this.currentUser));
+                            let target = this.projectTarget === 'employer' ? 'Employeur' : 'Jobyer';
+                            let link: string = 'hunter://vitonjob.com/users/'+ target + '/' + hunterReturn;
+                            console.log('launching hunter..', link);
+                            window.open(link, '_system');
+                        } else if (this.fromPage == "profil" && !this.company) {
                             this.nav.pop();
                             loading.dismiss();
                         } else {
@@ -1105,6 +1114,7 @@ export class CivilityPage {
                                     let hunterReturn: string = encodeURIComponent(JSON.stringify(this.currentUser));
                                     let target = this.projectTarget === 'employer' ? 'Employeur' : 'Jobyer';
                                     let link: string = 'hunter://vitonjob.com/users/'+ target + '/' + hunterReturn;
+                                    console.log('launching hunter..', link);
                                     window.open(link, '_system');
                                 } else {
                                     if(this.moreDetails)
@@ -1197,7 +1207,16 @@ export class CivilityPage {
                         this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
                         this.events.publish('user:civility', this.currentUser);
 
-                        if (this.fromPage == "profil" && !this.company) {
+                        if (this.params.data.hunterAccess) {
+                            loading.dismiss();
+                            this.nav.setRoot(HomePage);
+                            // go back to hunter app
+                            let hunterReturn: string = encodeURIComponent(JSON.stringify(this.currentUser));
+                            let target = this.projectTarget === 'employer' ? 'Employeur' : 'Jobyer';
+                            let link: string = 'hunter://vitonjob.com/users/'+ target + '/' + hunterReturn;
+                            console.log('Jobyer : launching hunter..', link);
+                            window.open(link, '_system');
+                        } else if (this.fromPage == "profil" && !this.company) {
                             loading.dismiss();
                             this.nav.pop();
                         } else {
@@ -1348,6 +1367,7 @@ export class CivilityPage {
                                     let hunterReturn: string = encodeURIComponent(JSON.stringify(this.currentUser));
                                     let target = this.projectTarget === 'employer' ? 'Employeur' : 'Jobyer';
                                     let link: string = 'hunter://vitonjob.com/users/'+ target + '/' + hunterReturn;
+                                    console.log('Jobyer : launching hunter..', link);
                                     window.open(link, '_system');
                                 } else {
                                     if(this.moreDetails)

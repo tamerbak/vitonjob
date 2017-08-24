@@ -1,4 +1,4 @@
-import {Component, ViewChild} from "@angular/core";
+import {Component, ViewChild, ChangeDetectorRef, NgZone} from "@angular/core";
 import {
     Platform,
     Nav,
@@ -13,8 +13,6 @@ import {
 import {StatusBar, Splashscreen, Deeplinks, BackgroundMode} from "ionic-native";
 import {HomePage} from "../pages/home/home";
 import {OffersService} from "../providers/offers-service/offers-service";
-import {NgZone} from "../../node_modules/@angular/core/src/zone/ng_zone";
-import {ChangeDetectorRef} from "../../node_modules/@angular/core/src/change_detection/change_detector_ref";
 import {NetworkService} from "../providers/network-service/network-service";
 import {NotationService} from "../providers/notation-service/notation-service";
 import {GlobalConfigs} from "../configurations/globalConfigs";
@@ -206,34 +204,37 @@ export class Vitonjob {
             this.offerService.loadSectorsToLocal();
             this.offerService.loadJobsToLocal();
 
-            //  Let us initialize the background process
-            BackgroundMode.setDefaults({
-                title:"Vit-On-Job",
-                ticker:"Mise à jour des données de l'application",
-                silent:true
-            });
+            if (this.platform.is('cordova')) {
+                //  Let us initialize the background process
+                BackgroundMode.setDefaults({
+                    title:"Vit-On-Job",
+                    ticker:"Mise à jour des données de l'application",
+                    silent:true
+                });
 
-            this.updateCachedData(gc);
-            BackgroundMode.onactivate().subscribe(()=>{
-                console.log("BG ACTIVATED");
-                setInterval(this.updateCachedData(gc),1800000);//1800000
-            });
+                this.updateCachedData(gc);
+                BackgroundMode.onactivate().subscribe(()=>{
+                    console.log("BG ACTIVATED");
+                    setInterval(this.updateCachedData(gc),1800000);//1800000
+                });
 
-            BackgroundMode.ondeactivate().subscribe(()=>{
-                console.log("BG DEACTIVATED");
-                setInterval(this.updateCachedData(gc),1800000);//1800000
-            });
+                BackgroundMode.ondeactivate().subscribe(()=>{
+                    console.log("BG DEACTIVATED");
+                    setInterval(this.updateCachedData(gc),1800000);//1800000
+                });
 
-            if(BackgroundMode.isEnabled()){
-             BackgroundMode.disable();
-             BackgroundMode.enable();
-             }else {
-                BackgroundMode.enable();
+                if(BackgroundMode.isEnabled()){
+                    BackgroundMode.disable();
+                    BackgroundMode.enable();
+                }else {
+                    BackgroundMode.enable();
+                }
+
+                if(BackgroundMode.isActive()){
+                    console.log("BG MODE IS ACTIVE");
+                }
             }
 
-            if(BackgroundMode.isActive()){
-                console.log("BG MODE IS ACTIVE");
-            }
 
             //if (GlobalConfigs.env === 'DEV'){
             let loader = this.loading.create({content: "Merci de patienter..."});
